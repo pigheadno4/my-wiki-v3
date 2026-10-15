@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-instant-card-funding",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen instant card funding\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/instant-card-funding\"\nraw_files:\n  - \"adyen/docs/online-payments/instant-card-funding/2026-09-15.md\"\ntags: [adyen, instant-card-funding, card-payments, wallet-top-up, money-transfer, checkout-api]\n---\n\n## Overview\n\nThis Adyen guide describes **card-sourced funding**: a shopper moves money from a Visa or Mastercard card toward another card, digital wallet or bank account. Examples include prepaid/wallet top-ups and funding a person-to-person transfer. The documented pay-in is a Checkout API `/payments` request with sender and, where applicable, recipient data. It is not an ordinary merchant goods purchase, an outbound card payout, or proof that a downstream P2P transfer completed. The raw metadata says last modified 2025-10-13; the page was captured 2026-09-15. See [[adyen]], [[adyen-online-payments]] and [[adyen-card-payouts]].\n\n## Key takeaways\n\n- **Enablement is gated:** the merchant must submit compliance documents, identify its use case and meet card-scheme compliance requirements, discuss them with its Adyen Account Manager, then contact Support for configuration after completing the compliance process. The page's Visa/Mastercard statement does not prove a particular merchant, card, country, currency, MCC, scheme program or transaction is eligible.\n- The `/payments` request must add funding context. The **top-up** table identifies the sender's name, billing address, email and phone plus a unique recipient wallet/account identifier; sender name and address need not be repeated under `fundOrigin` when supplied in the standard `shopperName`/`billingAddress` request fields. The **P2P funding** table also identifies the origin wallet/account and the recipient's name, address and wallet/account identifier. Missing required data can cause refusal. These wallet identifiers are merchant-supplied references, not proof of the destination's financial account ownership or movement of funds after the card pay-in.\n- Additional validation applies when Adyen facilitates money transfers **between different entities**; nonconforming data is declined. The page says only ASCII is supported and gives restrictions on name/address placeholders, lengths and repeated values. However its allowed-special-character list includes an em dash, which is non-ASCII; this internal mismatch is unresolved. Use the raw field list for exact constraints and obtain Adyen clarification before treating the em dash as accepted.\n- The page's **Partial authorization** paragraph recommends partial authorizations \u201cfor online payouts\u201d despite appearing in this instant-card-**funding** guide. It does not establish partial-authorization availability for a particular funding transaction or change the separately documented card-payout flow. The `## See also` link points to instant card payouts, a different outbound operation.\n- The example `/payments` payloads contain test-style card and personal data and no response or webhook outcome. They do not establish authorization success, capture, payout timing, end-recipient credit, chargeback allocation, seller/payee or merchant-of-record roles, or a complete P2P money-movement service. The page gives no region, MCC, amount/velocity limit or settlement timetable for the funding product.\n\n## Detail locators\n\n- Lines 14\u201326: card-source purpose, Visa/Mastercard statement, top-up and P2P funding examples.\n- `## Enable instant card funding` (lines 28\u201336): compliance/use-case and Support configuration gates.\n- `## Process an instant card funding transaction` and **Top-up** (lines 38\u201390): Checkout `/payments`, origin/recipient table, standard-field alternatives and example.\n- **Person to person money transfer** (lines 92\u2013156): origin and recipient identity/address/wallet-identifier table and illustrative request.\n- `## Data validation` (lines 158\u2013178): different-entity condition, ASCII and detailed value restrictions, including inconsistent em-dash allowance.\n- `## Partial authorization` and `## See also` (lines 180\u2013186): payout-worded recommendation and separate instant-card-payout navigation.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Checkout API provider concept and reciprocal funding source route.\n- [[adyen-card-payouts]] \u2014 distinct outbound card payout operation.\n- [[source-adyen-docs-online-payments-online-payouts-instant-payouts]] \u2014 separately documented legacy payout flow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/instant-card-funding/2026-09-15|Instant card funding, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Instant card funding lets you process transactions for a shopper moving money from a card to another card, digital wallet or bank account. Adyen supports instant card funding transactions for Visa and Mastercard. Possible use cases include:",
+      "location": "raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md:16"
+    },
+    {
+      "text": "To enable instant card funding, you must submit compliance documents to Adyen. You must also specify your use case and fulfill compliance requirements for the card scheme. Contact your Account Manager to discuss the requirements.",
+      "location": "raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md:32"
+    },
+    {
+      "text": "To process transactions for instant card funding, you must send some additional data fields in your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request to indicate who is sending the funds and, if applicable, who is receiving them. The data you submit in your requests must meet our requirements to pass our [data validation](#data-validation) checks.",
+      "location": "raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md:40"
+    },
+    {
+      "text": "Instant card funding [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) requests sent without this data can be refused.",
+      "location": "raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md:52"
+    },
+    {
+      "text": "We perform additional validations when facilitating money transfers between different entities, and decline transactions where the data provided does not meet our requirements.",
+      "location": "raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md:160"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-instant-card-funding-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-instant-card-funding]] \u2014 2025-modified, 2026-09-15-captured Checkout `/payments` card-funding guide for top-ups and P2P funding, gated by compliance/enablement and separate from outbound payout; data-validation and partial-authorization wording conflicts remain qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md",
+  "raw_sha256": "29936e66f7e68b1b474c906ba4a9e819c8dec12e1c4b7bcec06e2c79b08278a5",
+  "status": "candidate_ready"
+}

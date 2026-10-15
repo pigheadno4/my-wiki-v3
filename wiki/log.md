@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-15] ingest | Adyen website C10
+
+- Fifty independently approved developer authentication, security/privacy/PCI, operations/testing, versioning, migration and batch-processing documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 17 concepts touched (5 new); source_count 514 = 500 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-10/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-15] ingest | Adyen website C09
 
 - Fifty independently approved unified-commerce, Pay by Link, Classic API, authentication, tokenization, modification and PCI-DSS documentation sources; first full-review approvals 46/50 and 4 targeted correction reviews. 10 concepts touched (0 new); source_count 464 = 450 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-09/`; details [[adyen-log]]. No commit/push.

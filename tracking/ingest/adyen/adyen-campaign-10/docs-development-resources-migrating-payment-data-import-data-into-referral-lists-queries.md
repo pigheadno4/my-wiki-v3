@@ -1,0 +1,11 @@
+# Referral-list bulk import retrieval checks
+
+Canonical route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-risk-management.md` → `wiki/sources/adyen/source-adyen-docs-development-resources-migrating-payment-data-import-data-into-referral-lists.md` → `raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md`.
+
+## Q1 — purpose, scope, and what not to infer
+
+This 2020-modified guide describes a PGP-encrypted bulk CSV import of referral data for fraud-check lists, submitted with Adyen Support; it explicitly distinguishes that path from Customer Area CSV editing (`raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md:10, 14–20`). It is not a Referrals API upload, payment execution, payment-method credential import, or proof of completed ingestion. The tables require `merchantAccountCode` described as merchant account name, while the example uses `YourMerchantOrCompanyAccount`; this page does not settle company-versus-merchant effective scope, MOR, seller or payee allocation (`:40–155, 157–169`). A list entry, `trust`/`block`/`delete` flag or submitted file does not guarantee a risk decision or financial outcome.
+
+## Q2 — central capability, prerequisites, and warnings
+
+Build RFC 4180 CSV in UTF-8 with a supported type prefix and one referral per line, no header or multiline fields; variable row lengths are allowed and the stated maximum is 100,000 lines if file size permits (`:22–32`). Encrypt using a PGP public key supplied by Support or the Adyen contact, then send the file to Adyen for Support-assisted upload (`:20, 34–38`). Type sections cover card PAN, SEPA IBAN, shopper name/email/IP/reference/address/phone, each with required account, description and action flag fields; address has its own required subfields (`:40–155`). These are sensitive card, bank and shopper data, so the page's encryption requirement should not be mistaken for a complete PCI/privacy or retention determination. The sample rows are illustrations only (`:157–169`). Effective risk behavior also depends on separately documented list enablement, payment-field matching and profile settings in `source-adyen-docs-risk-management-configure-your-risk-profile-risk-lists`.

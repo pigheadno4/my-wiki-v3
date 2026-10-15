@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-security-sensitive-data-tls",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TLS version, cipher, and certificate guidance\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/security/sensitive-data/tls\"\nraw_files:\n  - \"adyen/docs/development-resources/security/sensitive-data/tls/2026-09-15.md\"\ntags: [adyen, integration-security, tls, certificates, api-connectivity]\n---\n\n## Overview\n\nThis [[adyen]] security guide describes TLS configuration for connections between an integration and Adyen's platform. It applies across Adyen integration types and states that unsupported versions or ciphers can prevent Adyen from receiving API requests. This transport requirement is distinct from [[adyen-api-access|API credentials and access permissions]] and from the optional client-certificate route for mTLS. The version, cipher, and certificate statements below are from the pinned 2026-09-15 webpage snapshot, not live negotiation or current security proof.\n\n## Key takeaways\n\n- The snapshot supports TLS 1.2 only for existing merchants using the listed strong ciphers. New integrations must use TLS 1.3 with `TLS_AES_256_GCM_SHA384` or `TLS_CHACHA20_POLY1305_SHA256`; existing TLS 1.2 users are encouraged to upgrade. TLS connections must use SNI. The full TLS 1.2 cipher list is at the raw table.\n- Adyen says cipher strength and support can change and that it monitors versions and ciphers, notifying affected users through Customer Area notifications. A configured TLS version or cipher alone does not prove a particular request negotiated successfully.\n- Adyen strongly recommends against certificate pinning because a replacement server certificate can break a client connection even when the new certificate chains to a trusted CA. The page says Adyen does not support pinning of any kind.\n- If an organization must pin by policy, the guide gives a risk-reduction exception: pin all listed root certificates, not a leaf or whole chain, and track updates. Adyen says ordinary root-CA changes are announced by system message 30 days in advance, while emergency notice can be shorter. The integration owner remains responsible for handling certificate changes. The five root names and current validity must be checked against the raw locator and present trust information before implementation.\n\n## Detail locators\n\n- **Purpose, applicability and connection failure warning:** raw lines 15\u201334, under `# Transport Layer Security (TLS)` and `## Requirements`.\n- **Existing TLS 1.2 versus new TLS 1.3, exact ciphers, SNI and upgrade guidance:** raw lines 36\u201354, under `## Supported TLS versions and ciphers`.\n- **Pinning prohibition/recommendation and certificate-rotation failure mode:** raw lines 56\u201365, under `## Certificate pinning`.\n- **Conditional root-only pinning list, notices and owner responsibility:** raw lines 67\u201386, under `### Certificate changes`.\n\n## Related\n\n- [[adyen]]\n- [[adyen-api-access]]\n- [[source-adyen-docs-development-resources-mtls]]\n- [[source-adyen-docs-development-resources-security-api-security]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/security/sensitive-data/tls/2026-09-15|Adyen TLS configuration guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you do not use the correct TLS version and cipher suite, it is possible that we cannot receive your API requests.",
+      "location": "raw line 26, # Transport Layer Security (TLS)"
+    },
+    {
+      "text": "New integrations must use TLS 1.3 with the TLS\\_AES\\_256\\_GCM\\_SHA384 or TLS\\_CHACHA20\\_POLY1305\\_SHA256 cipher suite.",
+      "location": "raw line 47, ## Supported TLS versions and ciphers"
+    },
+    {
+      "text": "Make sure your TLS connections use SNI.",
+      "location": "raw line 45, ## Supported TLS versions and ciphers"
+    },
+    {
+      "text": "We strongly recommend that you do not use [certificate pinning](https://www.ssl.com/blogs/what-is-certificate-pinning/).",
+      "location": "raw line 58, ## Certificate pinning"
+    },
+    {
+      "text": "Emergency cases: the notice period can be shorter before we make the change.",
+      "location": "raw line 84, ### Certificate changes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-tls-api-access-route",
+        "target_path": "wiki/concepts/adyen-api-access.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-security-sensitive-data-tls]] \u2014 transport TLS version, cipher, SNI and certificate-rotation guidance, with existing/new integration split and conditional root-pinning exception (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/security/sensitive-data/tls/2026-09-15.md",
+  "raw_sha256": "aa70120a00de34394f57a7e790f0870b8f6b0645580f07a0dc95c5d574f09e8d",
+  "status": "candidate_ready"
+}

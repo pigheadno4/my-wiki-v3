@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen transaction batch files through SFTP\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, pgp, file-transfer]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide explains preparing and transferring **transaction batch files through SFTP** for bulk processing. It gives refunds and failed-capture retries as examples, not as automatic safe-retry instructions. The page metadata says last modified in 2020. SFTP transport, PGP protection, acknowledgment of rejection, and individual payment/modification outcomes are distinct; this guide does not prove that an uploaded request succeeded financially.\n\n## Key takeaways\n\n- The guide says a batch file holds one request type per merchant account and directs separate files for request types such as authorization, refund and capture. It also says Support can enable modifications for multiple merchant accounts. The parent [[source-adyen-docs-development-resources-batch-processing]] table states one request type and one merchant account per SFTP file; this page does not explain how a Support-enabled multi-account modification case changes file composition. Preserve that unresolved qualification.\n- Adyen requires a secure SFTP channel and PGP data encryption. To provision an SFTP directory, the merchant sends Support its Customer Area company account, external upload-server IPs, an RSA SSH public key (2048 or 4096 bits), and technical contact details; Support responds when access is ready. The page lists distinct test and live hosts, ports, usernames and allowlist IPs. These are dated connection details to verify before actual use. See `SFTP configuration` and `Connecting to the SFTP server`.\n- Encrypt each batch input file with Adyen's PGP key before upload. The page says Adyen signs the batch result file with its PGP key; registering the merchant's PGP public key is an optional extra so Adyen encrypts result files for that merchant. Registering it requires **Batch Files** as the key purpose. See `PGP encryption`.\n- The troubleshooting section says a rejected file can yield a batch acknowledgment file with rejection details. It names decryption/signature or unconfigured-key issues, missing response-encryption public key, and an unencrypted file containing live card numbers as possible causes. A transport connection or acknowledgment is not a per-record financial result; result files and relevant later outcome signals must be assessed separately. See `PGP troubleshooting`.\n\n## Detail locators\n\n- `SFTP configuration`, lines 29\u201338: exact Support provisioning inputs and SSH key-size requirement.\n- `Connecting to the SFTP server`, lines 40\u201354: test/live hosts, ports, Support-provided user formats and IP allowlists.\n- `PGP encryption`, lines 56\u201369: input encryption, Adyen result signing, optional merchant-key result encryption and Customer Area key route.\n- `PGP troubleshooting`, lines 71\u201378: acknowledgment-file link and file-level rejection examples; no per-transaction success semantics.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing]]\n- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/2026-09-15|Adyen SFTP batch-file guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Each batch file can hold only one\u00a0request type per merchant account. Create separate files for each request like authorisation, refund, capture etc.",
+      "location": "line 23, opening batch-file scope"
+    },
+    {
+      "text": "If you need to process modifications for multiple merchant accounts, contact our\u00a0[Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable this for you.",
+      "location": "line 25, opening multi-account qualification"
+    },
+    {
+      "text": "A secure communication channel is required to submit batch files. To achieve that, we use the [SFTP](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol) transfer protocol and [PGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) data encryption.",
+      "location": "line 27, opening security requirement"
+    },
+    {
+      "text": "To keep your customer data secure, you must encrypt batch files with Adyen's PGP key before uploading them. Then, Adyen processes the batch and signs a [batch result file](/development-resources/batch-processing/advanced-sftp-batch-files/batch-result-file) using Adyen's PGP key.",
+      "location": "line 58, ## PGP encryption"
+    },
+    {
+      "text": "In some cases, your file may be rejected. You receive a\u00a0[batch acknowledgment file](/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file)\u00a0providing details about the rejections. Common causes for batch file rejection are:",
+      "location": "line 73, ### PGP troubleshooting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-sftp-batch-files-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]] \u2014 2026-09-15 SFTP batch hub for Support-provisioned connection, SSH and PGP input/result protection, and file-rejection ACK routing; its multi-account-modification enablement is not reconciled with the parent one-merchant-per-file table.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The parent batch overview says one merchant account per SFTP file, while this hub mentions Support-enabled multi-account modifications without specifying the resulting file composition."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/2026-09-15.md",
+  "raw_sha256": "4b690e386381117d5e9c6a4333f422572228d2a05a91ce544a3f59b79f331ce5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-development-resources-raw-acquirer-responses-visa-integrity-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Mapping to Visa system integrity fee categories | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/raw-acquirer-responses/visa-integrity-fees\"\nraw_files:\n  - \"adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md\"\ntags: [adyen, visa, raw-acquirer-responses, payment-retries, scheme-fees]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen webpage snapshot maps raw refusal responses for failed Visa transactions to Visa system integrity fee categories. It is aimed at an online-payments integration with merchant-built retry logic, so the merchant can distinguish refusals that the page says must not be retried from those with a dated retry allowance. The page describes excessive-retry and data-quality fee types; it does not establish current fee amounts, regional applicability, merchant-specific liability, or a live scheme rule. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Before using the mapping, the page requires an online-payments integration and enabling raw responses in Customer Area. Its `refusalCodeRaw` field is available only for Visa and Mastercard transactions through Adyen's own acquiring platform; `refusalReasonRaw` contains the full raw response. See raw `## Requirements` and `## Mapping of raw responses to categories`.\n- In this dated page, category 1 means do not retry; categories 2, 3, and 4 describe at most 15 retries in a 30-day period. Category 3 is associated with incorrect payment details and the page also discusses data-quality fees. Consult the raw category text and code table before interpreting any particular refusal; this snapshot is not a current retry policy.\n- The raw table lists code `14` in both category 1 (no retry) and category 3 (maximum 15 in 30 days). This internal conflict leaves code `14` without a reliable single retry instruction from this page. Do not infer which row governs from the snapshot alone.\n\n## Detail locators\n\n- `## Categories of system integrity fees`: fee types, category meanings, retry statements, and the page's conditions.\n- `## Mapping of raw responses to categories`: response-field availability and the complete code/reason/retry table, including the conflicting code `14` rows.\n- `## See also`: Adyen's links to its raw responses and risk-management guides; those linked pages are navigation only here.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15|Adyen Visa integrity-fee mapping, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you have built your own retry logic, in order to avoid Visa system integrity fees, you need to identify if you can or cannot retry a failed Visa transaction.",
+      "location": "raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md:21"
+    },
+    {
+      "text": "Before you begin, in your Customer Area [enable receiving raw responses](/development-resources/raw-acquirer-responses#receive-raw-responses).",
+      "location": "raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md:28"
+    },
+    {
+      "text": "You can retry the transaction up to 15 times in a 30-day period. Visa charges excessive retry fees if you exceed this limit.",
+      "location": "raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md:47"
+    },
+    {
+      "text": "14: Invalid Account Number (No such Number)",
+      "location": "raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md:74, category 1 no-retry row"
+    },
+    {
+      "text": "14: Invalid account number (No such Number)",
+      "location": "raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md:100, category 3 max-15 row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-visa-integrity-fees-online-payments-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-raw-acquirer-responses-visa-integrity-fees]] \u2014 2026-09-15 Adyen Visa raw-refusal fee-category and retry mapping for merchant-built online retry logic; raw code `14` conflicts between no-retry and limited-retry rows.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a dated Adyen webpage snapshot, not proof of current Visa fee rules or regional applicability.",
+          "Raw code 14 appears in category 1 and category 3 with incompatible retry instructions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md",
+  "raw_sha256": "d1b5a585a663c3af2d6569fe5b8d8689669ad98a0c3612f1f613ac2b651679dd",
+  "status": "candidate_ready"
+}

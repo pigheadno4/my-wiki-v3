@@ -1,0 +1,7 @@
+# C10 retrieval probes — SFTP batch acknowledgement file
+
+Q1. What does an Adyen batch ACK report after successful validation, and what does it not prove?
+Expected: This 2026-09-15 snapshot of a 2019-modified guide describes an ACK generated after validation of a submitted batch request file. The successful example has `FH` header data, an `R` record with processed block and line counts, and an `N` next-file submission number. The header identifies test/live environment, company account, submission platform, file sequence, linked API-credential username and file type; the raw table holds exact positions and allowed values. Successful file validation and these counts are not proof of each transaction's financial outcome. Raw lines 10, 14–68; canonical route https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file.
+
+Q2. What does a failed ACK show, and when is `NextFileSubmissionNumber` unreliable?
+Expected: For validation failures the ACK includes an `E` record for each failed request-file line, indicating `FH` header, `L` line, `SL` sub-line or `F` incomplete/unreadable-file error, plus line number, code and description. The `N,NextFileSubmissionNumber` record appears whether validation succeeds or fails. After an erroneous file the system may only guess the next number; if the header cannot be read or parsed, the number is always incorrect. Its presence alone does not prove a rejected file advanced the sequence. Raw lines 66–94, 96–152; same canonical route.

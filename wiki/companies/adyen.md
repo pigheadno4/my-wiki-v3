@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 464
+source_count: 514
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Four hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Five hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 450 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09).
-- Total source summaries: 464 (450 website + 14 GitHub).
+- Ingested website documentation sources: 500 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10).
+- Total source summaries: 514 (500 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -620,6 +620,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-unified-commerce-retail-use-cases-click-and-collect]] — Adyen click-and-collect retail use cases (webpage, 2026-10-15)
 - [[source-adyen-docs-unified-commerce-retail-use-cases-endless-aisle]] — Adyen endless aisle retail use cases (webpage, 2026-10-15)
 - [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows]] — Adyen Classic API other 3D Secure flows (webpage, 2026-10-15)
+
+### Website documentation — Campaign 10
+
+- [[source-adyen-docs-development-resources-security]] — Adyen security resources (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-client-side-authentication]] — Adyen client-side authentication (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing]] — Adyen batch processing (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-overview-response-handling]] — Adyen payment response layers overview (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-versioning]] — Adyen API and Server-side Library Versioning (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-refusal-reasons]] — Adyen Online Payment Refusal Reasons (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-raw-acquirer-responses-visa-integrity-fees]] — Mapping to Visa system integrity fee categories | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]] — Adyen batch acknowledgement file (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-sensitive-data-pgp-encryption]] — Adyen PGP encryption for sensitive files (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0]] — Adyen Docs: Upgrade to Android v5.0.0 (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-migrating-payment-data-import-data-into-referral-lists]] — Adyen bulk import into referral lists (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-testing-result-codes]] — Testing result codes and refusal reasons | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-e2ee-p2pe-comparison]] — Adyen E2EE and P2PE comparison for payment terminals (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-integration-security-allowlisting]] — Adyen network allowlisting guidance (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards]] — Adyen Create Test Cards (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-documentation-tools]] — Adyen Documentation and Knowledge Tools (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-webhooks-webhook-types-account-settings-webhooks]] — Account settings webhooks | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-instant-card-funding]] — Adyen instant card funding (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-out-of-app-payments-on-ios]] — Out-of-app payments on iOS | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-submit-modifications]] — Adyen Customer Area batch modifications (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-sensitive-data-tls]] — Adyen TLS version, cipher, and certificate guidance (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-secure-coding]] — Adyen Secure Coding Guidance (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-client-side-authentication-migrate-from-origin-key-to-client-key]] — Migrate to client key | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards-test-cards-api]] — Adyen Test cards API reference (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-developer-dashboard]] — Adyen Developer dashboard (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library]] — Adyen Docs: Upgrade your Java API library for Checkout API v72 (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-testing-risk-features]] — Adyen testing risk features (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-integration-security]] — Protecting your Adyen integration (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files]] — Adyen transaction batch files through SFTP (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-mcp-server]] — Adyen API-interacting MCP server (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-pci-dss-compliance-guide-saq-a-eligibility]] — Adyen SAQ A Eligibility (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-ios-5-0-0]] — Adyen iOS v5.0.0 Upgrade Guide (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-pci-dss-compliance-guide-merchant-levels]] — PCI compliance levels | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-logs-resources-api-logs]] — Adyen API logs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-iam]] — Adyen identity and access management guidance (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-pci-dss-compliance-guide-pci-with-qsa]] — Adyen guide to engaging a PCI Qualified Security Assessor (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-migrating-payment-data]] — Import data from another payment provider | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-checkout-api-v72]] — Adyen Checkout API v72 request-value upgrade checks (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-testing-result-codes-cvc-cvv-cid-result-codes]] — Adyen test CVC/CVV/CID result-code triggers (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-data-protection-api]] — Adyen Data Protection API (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-pci-dss-compliance-guide-vulnerability-scanning-regulation]] — Adyen ecommerce vulnerability scanning (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-logs-resources-webhook-event-logs]] — Webhook event logs | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2]] — 3D Secure 2 redirect authentication | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-security-sensitive-data]] — Adyen sensitive-data protection routes (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-test-cards-and-credentials]] — Adyen test cards and credentials hub (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web]] — Redirect 3D Secure for Web | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-donations-integration-options]] — Integrate Adyen Giving with online payments | Adyen Docs (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android]] — Adyen Android redirect 3DS integration routes (webpage, 2026-10-15)
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios]] — Adyen Redirect 3D Secure for iOS Routes (webpage, 2026-10-15)
+- [[source-adyen-docs-development-resources-logs-resources]] — Adyen logs resources (webpage, 2026-10-15)
 
 ### GitHub repository evidence
 

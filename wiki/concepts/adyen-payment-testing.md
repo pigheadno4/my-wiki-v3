@@ -20,6 +20,24 @@ These fixtures exercise test integration behavior; they do not prove production 
 Adyen's white physical POS test card v1 has currency-selected Mastercard/Maestro applications and amount/currency-selected CVM or decline simulations. It cannot test contactless payments or mobile Tap to Pay; the guide points to green-blue v2.4+ for those. Repeated incorrect PIN attempts can make the test card unusable. Simulation tables and raw refusal details are test fixtures, not live issuer or card-network behavior. The pinned v1 page does not state that the card is retired. [[source-adyen-docs-point-of-sale-testing-pos-payments-test-card-v1]]
 ## Sources
 
+- [[source-adyen-docs-development-resources-test-cards-and-credentials]] — 2023-modified test-credentials landing page routing to card numbers, alternative-method credentials, and custom test-card creation (2026-09-15 snapshot; navigation only).
+
+
+- [[source-adyen-docs-development-resources-testing-result-codes-cvc-cvv-cid-result-codes]] — Checkout test guide for `paymentMethod.cvc` result-code triggers and returned CVC fields in Advanced or Sessions-with-additional-methods flows (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-testing-risk-features]] — 2026-09-15 test-only routes for simulated chargebacks, configured RevenueProtect rules, AVS fixtures and Auto Rescue retry/link triggers; no live risk or payment outcome inference.
+
+
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards-test-cards-api]] — 2026-09-15 test-platform TestCard API reference for custom ranges, required credentials, per-range creation result codes, and parent-guide role/example qualifications.
+
+
+- [[source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards]] — 2026-09-15 Adyen guide to Customer Area or API creation of custom test card ranges, role and range checks, and test-only funding boundary.
+
+
+- [[source-adyen-docs-development-resources-testing-result-codes]] — 2026-09-15 Checkout test guide for `/payments` result/refusal triggers through holder name or requested test acquirer code, including method-specific simulator and response distinctions.
+
+
 - [[source-adyen-docs-point-of-sale-testing-pos-payments-b2-test-cards]] — Adyen Docs 2026-09-15 guide to B2 physical Europe/North America POS test-card sets, card-edition caveat, offline/CVM limits, and MKE expiration rule.
 
 

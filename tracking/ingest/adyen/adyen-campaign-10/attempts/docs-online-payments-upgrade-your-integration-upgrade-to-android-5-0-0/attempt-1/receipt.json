@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Upgrade to Android v5.0.0\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0\"\nraw_files:\n  - \"adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md\"\ntags: [adyen, android, sdk, drop-in, components, migration]\n---\n\n## Overview\n\nAdyen's Android migration guide lists breaking integration changes for apps moving from Android v4.13.3 or earlier to v5.0.0. It covers build dependencies, configuration, Drop-in and Component methods, Component views, launch calls, imports, and optional action handling. This is version-specific documentation, not evidence that an SDK migration or payment flow was executed successfully.\n\n## Key takeaways\n\n- The guide recommends Checkout API v70; it does not state that v70 is a minimum requirement. Its build table specifies compile and target SDK 34 and named dependency versions for this migration snapshot. Consult the raw table before updating a project.\n- In the configuration object, `shopperLocale`, `environment`, and `clientKey` are required. `amount` is conditional on showing the amount on the Pay button. The guide distinguishes `Environment.TEST` for testing from a live environment for go-live.\n- For Drop-in, replace `makePaymentsCall` with `onSubmit` and `makeDetailsCall` with `onAdditionalDetails`; `onActivityResult` is no longer applicable. Launching with `DropIn.startPayment` now takes the documented context, launcher, deserialized `/paymentMethods` response, configuration, and service class; a result intent can no longer launch Drop-in.\n- For Components, remove the observer methods, implement `ComponentCallback` for `onSubmit`, `onAdditionalDetails`, and `onError`, and use `AdyenComponentView` instead of per-Component views. In the guide's advanced-flow example, the merchant server makes `/payments` and `/payments/details` requests. The Component launch uses `PROVIDER.get` with the activity or fragment, payment method, configuration, and callback.\n- The guide also calls for fixing moved or renamed imports and avoiding classes marked internal by Restricted API lint. Its optional action-handling step says payment method Components can handle required actions; the card example handles redirect and threeDS2 without separate RedirectComponent or Adyen3DS2Component implementations. A different-page action flow can use `GenericActionComponent`.\n- Although the page is titled as a v5.0.0 upgrade, its configuration and launching sections explicitly introduce v5.3.0 links. Preserve that distinction when applying those examples to an exact SDK version.\n\n## Detail locators\n\n- Raw lines 15\u201324: migration starting version and Checkout API v70 recommendation.\n- Raw lines 25\u201347: compile/target SDK 34 and exact dependency-version table.\n- Raw lines 49\u2013112: conditional versus required configuration properties and separate Drop-in/Components examples; v5.3.0 configuration links.\n- Raw lines 114\u2013179: Drop-in method replacement, Component callback and merchant-server roles, and required `AdyenComponentView`.\n- Raw lines 181\u2013242: Drop-in and Component launch parameters, `/paymentMethods` inputs, result-intent removal, and v5.3.0 launch links.\n- Raw lines 244\u2013257: import and internal-API changes, plus optional Component action handling.\n\n## Related\n\n- [[adyen]]\n- [[adyen-android-sdk]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-online-payments-upgrade-your-integration]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15|Adyen Android v5 migration guide snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If your integration uses Android v4.13.3 and earlier, and you are upgrading it to use v5.0.0, make the following changes to your integration.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md:19"
+    },
+    {
+      "text": "In v5.3.0, how you [configure Drop-in](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in\\&version=5.3.0#configure) changes.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md:62"
+    },
+    {
+      "text": "Remove methods from the **v4.13.3** column and replace them with the ones from the **v5.0.0** column:",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md:118"
+    },
+    {
+      "text": "2. You must now implement a callback interface that you pass to the provider. Implement methods in `ComponentCallback` to pass data between your frontend app and your backend server.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md:134"
+    },
+    {
+      "text": "You must now use `AdyenComponentView` with all Components. You can no longer use an individual view for each Component. Add `AdyenComponentView` to your layout `.xml` file.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md:171"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "android-v5-guide-source-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0]] - Adyen Docs Android v4.13.3-or-earlier to v5.0.0 migration guide for Drop-in and Components (2026-09-15 snapshot)",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "The migration page also references v5.3.0 configuration and launch guidance; preserve exact version scope."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md",
+  "raw_sha256": "69bb6cda5d1e8772176a4dcc3a0a924d7c54c1ece631043edb30ad70fbc597aa",
+  "status": "candidate_ready"
+}

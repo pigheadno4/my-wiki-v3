@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-testing-risk-features",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen testing risk features\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/testing/risk-features\"\nraw_files:\n  - \"adyen/docs/development-resources/testing/risk-features/2026-09-15.md\"\ntags: [adyen, payment-testing, risk-management, avs, auto-rescue, chargebacks]\n---\n\n## Overview\n\nThis Adyen **test-only** guide routes merchants through simulated chargebacks, configured risk-rule triggers, AVS fixtures and Auto Rescue scenarios before going live. It is a set of testing entry points and example triggers, not proof of production risk rules, issuer AVS responses, live chargebacks, authorization rates or successful recovery. See [[adyen]], [[adyen-payment-testing]] and [[adyen-risk-management]].\n\n## Key takeaways\n\n- **Chargebacks:** the guide links to a chargeback-simulation flow, then says a simulated dispute can be handled in test Customer Area or the Disputes API. The detailed prerequisites, timing and supported scenarios belong to that separate guide; this page does not turn a test chargeback into a live dispute.\n- **Risk rules:** the page uses the legacy **RevenueProtect** name and conditions rule testing on risk rules already turned on and configured. It links to a specific risk-rule trigger guide. No unconditional rule execution or actual fraud decision follows from the link.\n- **AVS:** billing-address details must be included in the payment request to enable and test AVS. The page lists test-card/address fixtures, then instructs making a test card payment and looking up the AVS result in the corresponding PSP reference's API response or webhook. The fixture data and response route do not establish what a live issuer will return; use the dedicated AVS guide for its scheme/region and simulated-response qualifications.\n- **Auto Rescue:** enable the feature in **test Customer Area** for shopper-not-present transactions, such as subscription renewals. The listed test `merchantReference` trigger strings cover a first-retry success, second-retry success, all retries failing, and fraud refusal with **no retry**. For triggered retry scenarios, the guide says an `AUTHORISATION` webhook arrives for each retry and its `success` field reports that retry's result. The page calls the trigger input `merchantReference` in a test `/payments` request; use this as a documented fixture label, not an independently verified Checkout request schema.\n- The optional **Pay by Link after failed rescue** path applies **if the merchant enabled sending a link**. The test sequence uses the all-fail trigger, receives an `AUTORESCUE` webhook with `paymentLink.url`, opens and completes a separate Pay by Link test payment, then receives an `AUTHORISATION` webhook. A failed rescue does not imply automatic link delivery without that setting, and the link/payment webhooks do not prove a live recovery or settlement.\n\n## Detail locators\n\n- `## Chargebacks` and `## Risk management` (lines 19\u201328): simulation route and configured legacy risk-rule condition.\n- `## Address Verification System (AVS)` (lines 30\u201352): billing-address prerequisite, test fixtures and PSP-reference response/webhook lookup.\n- `## Auto Rescue` and `### Retry attempts` (lines 54\u201369): test-environment enablement, shopper-not-present scope, `merchantReference` triggers and per-retry webhook signal.\n- `### Failed retry attempt that sends a payment link` (lines 71\u201381): optional setting, all-fail trigger, `AUTORESCUE` link URL and distinct link-test payment.\n\n## Related\n\n- [[adyen-payment-testing]] \u2014 primary test-fixture concept and reciprocal source route.\n- [[adyen-risk-management]] \u2014 risk-setting context.\n- [[source-adyen-docs-risk-management-disputes-api-test-applicable-dispute-reasons]] \u2014 detailed simulated chargeback route.\n- [[source-adyen-docs-risk-management-avs-checks]] \u2014 AVS support, simulated response and rule timing.\n- [[source-adyen-docs-online-payments-auto-rescue]] \u2014 non-test Auto Rescue overview and webhook conditions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/testing/risk-features/2026-09-15|Testing risk features, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To test the dispute flow, you can simulate a chargeback to [test chargeback scenarios](/risk-management/disputes-api/test-applicable-dispute-reasons/).\\",
+      "location": "raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md:23"
+    },
+    {
+      "text": "When you use RevenueProtect, and have turned on and configured risk rules, you can [test if the risk rule triggers](/risk-management/configure-manual-risk/#test-risk-rules).",
+      "location": "raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md:28"
+    },
+    {
+      "text": "You have to include billing address details in the payment request to enable and test [AVS](/risk-management/avs-checks#enable-and-test-avs).",
+      "location": "raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md:32"
+    },
+    {
+      "text": "For shopper-not-present transactions, like subscription renewal payments, the [Auto Rescue](/online-payments/auto-rescue/) feature determines when to automatically retry failed payments. Test it by enabling it in your test Customer Area and triggering the following scenarios.",
+      "location": "raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md:56"
+    },
+    {
+      "text": "In these test scenarios, the payment is refused, so Auto Rescue makes retry attempts. To trigger specific retry scenarios, include the following values in the `merchantReference` field when making a test [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request:",
+      "location": "raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md:60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-testing-risk-features-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-testing-risk-features]] \u2014 2026-09-15 test-only routes for simulated chargebacks, configured RevenueProtect rules, AVS fixtures and Auto Rescue retry/link triggers; no live risk or payment outcome inference.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md",
+  "raw_sha256": "892927dd801f4ba0ef2695ac0ea7777b945fbcbdb7bc43938c97729654879672",
+  "status": "candidate_ready"
+}

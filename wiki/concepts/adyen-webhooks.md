@@ -16,6 +16,12 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-docs-development-resources-logs-resources-webhook-event-logs]] — 2026-09-15 test Customer Area guide to 30-day webhook event logs, required viewing roles, account placement, request/response details, and search/filter diagnostics.
+
+
+- [[source-adyen-docs-development-resources-webhooks-webhook-types-account-settings-webhooks]] — dated Adyen account-settings change webhook guide for company, merchant, and store settings, including HMAC/acknowledgment, separate live setup, SOAP exclusions, and non-payment `pspReference` (collected 2026-09-15).
+
+
 - [[source-adyen-docs-point-of-sale-basic-tapi-integration-refund-payment-refund-webhooks]] — Adyen POS Standard-webhook guide captured 2026-09-15 for refund validation events, originalReference identity and success-versus-finality limits
 
 

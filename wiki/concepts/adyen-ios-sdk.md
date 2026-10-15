@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-ios-5-0-0]] — 2026-09-15 snapshot of Adyen's v4.10.1-or-earlier to iOS v5.0.0 online-checkout migration guide for callbacks, `AdyenContext`, Component/Drop-in settings, Apple Pay and card brand types; Checkout API v69 is recommended, while the iDEAL note is for later v5.9.0.
+
+
 - [[source-github-adyen-ios]] - cumulative exact-SHA repository evidence
 - [[changelog-github-adyen-ios]] - package-qualified release ledger
 - [[adyen-3ds2-ios-sdk]] - independently versioned native 3DS2 runtime

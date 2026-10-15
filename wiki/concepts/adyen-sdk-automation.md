@@ -53,6 +53,12 @@ This repository is distinct from `adyen-sdk-automation`: it provides generic rep
 
 ## Related
 
+- [[source-adyen-docs-development-resources-documentation-tools]] — 2026-09-15 Adyen documentation-access guide for discovery indexes, OpenAPI specifications, Markdown pages, ZIP mirror and update feeds; it links MCP but does not define MCP or generated-SDK runtime behavior.
+
+
+- [[source-adyen-docs-development-resources-versioning]] — 2026-09-15 Adyen documentation snapshot of new versus classic API change classification and separate server-side library semantic versioning; consult exact API and SDK releases for version-specific behavior.
+
+
 - [[source-adyen-docs-development-resources-libraries]] — merchant-facing webpage snapshot (2026-09-15) for optional server API libraries, language installation and TEST request examples, and Terminal API cloud/local library choices; version-specific runtime claims remain with downstream SDK sources.
 
 

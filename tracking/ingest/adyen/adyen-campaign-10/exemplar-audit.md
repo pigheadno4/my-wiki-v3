@@ -1,0 +1,9 @@
+# C10 coordinator full-read exemplar audit
+
+2026-10-15. All three predetermined samples pass after full pinned raw and entire promoted-source comparison. These are dated documentation checks, not live security, payment, SDK or compliance proof.
+
+- **Standard — docs-development-resources-security:** all 89 raw lines and complete source read. Overview categories, IAM/coding/API/security/encryption/incident labels and child navigation retained. No child controls, deployment or assessment result imported. PASS.
+- **Longest — docs-development-resources-versioning:** full 143-line raw including both complete compatibility tables and entire promoted source read. Per-API URL version versus library package version, classic/new API distinction, response-field exception, documentation deprecation versus removal, skipped numbers and no-visible-change versions, dated older-version policy and server-library semantic versioning retained. Routine rows remain at verified headings. PASS.
+- **Ordinary — docs-development-resources-security-sensitive-data-tls:** all 90 raw lines and complete source read. Existing-merchant TLS 1.2 versus new-integration TLS 1.3/ciphers, SNI, support evolution, against-pinning recommendation versus policy-required root-only mitigation, five-root list locator, ordinary 30-day versus shorter emergency notice and owner responsibility retained. Transport configuration is distinct from credentials, successful negotiation or compliance proof. PASS.
+
+No material partial/fail in fixed samples; full semantic audit expansion was not triggered. Additional coordinator full reads of both batch overview and SFTP raw support the separately independently reviewed three-page scope-warning amendment. Exhaustive hash, provenance, catalog, link and count checks still cover every campaign job at close.

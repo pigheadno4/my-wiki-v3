@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-testing-result-codes-cvc-cvv-cid-result-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen test CVC/CVV/CID result-code triggers\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/testing/result-codes/cvc-cvv-cid-result-codes\"\nraw_files:\n  - \"adyen/docs/development-resources/testing/result-codes/cvc-cvv-cid-result-codes/2026-09-15.md\"\ntags: [adyen, payment-testing, cvc, result-codes, checkout-api]\n---\n\n## Overview\n\nThis [[adyen]] test guide shows how an Advanced flow or Sessions flow with additional methods can simulate card CVC/CVV/CID check results before going live. It uses a test `/payments` request and a special `paymentMethod.cvc` value to select a returned `additionalData.cvcResult`. This is a test fixture for response handling, not a live issuer CVC check, card eligibility decision, shopper disclosure rule, or proof of payment authorization. See [[adyen-payment-testing]] for the wider simulation boundary.\n\n## Key takeaways\n\n- The merchant first enables the `additionalData.cvcResult` response field in the **test** Customer Area through **Developers \u2192 Additional data \u2192 Acquirer result**. For the exercise, the page says to use unencrypted test card details; its separate live-environment sentence says encrypted-card integrations receive the same response information, but this does not authorize using these test trigger values in live traffic.\n- In a test Checkout `/payments` request, prepend `00` to a listed result-code value and put it in `paymentMethod.cvc`; for example, `004` selects result code 4. The sample response reports `cvcResult` and `cvcResultRaw` and also shows `resultCode=Refused`. The requested CVC test result and overall payment result are distinct fields.\n- The table maps simulated values 0\u20136 to descriptions and Approval/Decline expectations. A simulated `Matches` or `Unknown` row is not evidence that a real issuer verified a real card, and a table's Approval label is not a guarantee of authorization for an individual request. The sample request JSON in the snapshot appears to have an extra closing brace near its end; use the field guidance and raw locators rather than copying it as runnable JSON.\n- The page notes issuer CVC checks can affect an online transaction and feed post-authorization risk rules. It specifies response data for integration testing; it does not tell the merchant which detailed check or refusal information to show a shopper.\n\n## Detail locators\n\n- **Flow scope, real-issuer context, and test Customer Area field enablement:** raw lines 15\u201332, under `# Testing card CVC/CVV/CID result codes` and `## Requirements`.\n- **Test-card restriction, `00` trigger construction, and illustrative request:** raw lines 33\u201360, under `## Step 1: Make a test payment request`; extra brace visible at lines 58\u201359.\n- **Returned CVC field versus payment result example:** raw lines 62\u201380, under `## Step 2: Get the result code in the response`.\n- **Simulated CVC result-code table:** raw lines 82\u201392, under `## Result code values`.\n\n## Related\n\n- [[adyen]]\n- [[adyen-payment-testing]]\n- [[source-adyen-docs-development-resources-testing-result-codes]]\n- [[source-adyen-docs-development-resources-test-cards-and-credentials-test-card-numbers]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/testing/result-codes/cvc-cvv-cid-result-codes/2026-09-15|Adyen CVC/CVV/CID test result-code guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can test this if your integration uses the following:",
+      "location": "raw line 19, # Testing card CVC/CVV/CID result codes"
+    },
+    {
+      "text": "Enable `additionalData.cvcResult` field in your API response:",
+      "location": "raw line 28, ## Requirements"
+    },
+    {
+      "text": "For testing, you must use unencrypted [test card details](/development-resources/test-cards-and-credentials/test-card-numbers/).",
+      "location": "raw line 35, ## Step 1: Make a test payment request"
+    },
+    {
+      "text": "Add **00** to the beginning of the value.",
+      "location": "raw line 37, ## Step 1: Make a test payment request"
+    },
+    {
+      "text": "The API response includes the `cvcResult` that you specified in the request:",
+      "location": "raw line 64, ## Step 2: Get the result code in the response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-cvc-result-testing-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-testing-result-codes-cvc-cvv-cid-result-codes]] \u2014 Checkout test guide for `paymentMethod.cvc` result-code triggers and returned CVC fields in Advanced or Sessions-with-additional-methods flows (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/testing/result-codes/cvc-cvv-cid-result-codes/2026-09-15.md",
+  "raw_sha256": "45b2bd856ae3efbc33bded3f55d80b770ce039a8430879bee9c50698309ccb77",
+  "status": "candidate_ready"
+}

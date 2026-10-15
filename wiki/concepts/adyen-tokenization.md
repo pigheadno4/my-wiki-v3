@@ -15,6 +15,12 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-development-resources-migrating-payment-data]] — 2026-09-15 capture of a 2019-modified, provider-assisted old-PSP data/card migration overview covering shopper-reference mapping, encrypted transfer and staged recurring-charge cutover.
+
+
+- [[source-adyen-docs-development-resources-data-protection-api]] — 2026-09-15 Data Protection API guide for payment-reference-scoped shopper erasure requests, asynchronous acceptance and recurring-transaction force flag; separate from Checkout stored-token deletion.
+
+
 - [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-tokenization-authorise-using-details-stored-with-a-third-party]] — inactive Classic authorisation guide for initial and subsequent card payments using details stored by a third party, with Ecommerce/ContAuth and fixed-schedule distinctions (webpage snapshot, 2026-09-15).
 
 

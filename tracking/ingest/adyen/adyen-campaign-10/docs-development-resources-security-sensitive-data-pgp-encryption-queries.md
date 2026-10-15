@@ -1,0 +1,13 @@
+# Fixed-query probes — Adyen PGP encryption
+
+## Q1 — purpose, scope, and non-inference
+
+**Question:** What is the purpose and scope of Adyen's PGP encryption guide, and what should it not be taken to prove?
+
+**Answer:** The captured guide explains how an Adyen payments integrator generates a PGP key pair and registers the armored **public** key with a selected Customer Area purpose so matching sensitive files are encrypted. It names batch-processing files, optionally encrypted reports, and sensitive-card-data files such as migration and Account Updater results. A merchant account can register keys only for encrypted **Reports** and **AccountUpdater**; the batch-file purpose example is not a blanket merchant-account permission. This 2023-last-modified, 2026-09-15-captured guide does not prove current eligibility, active registration, successful delivery/decryption, signing or signature verification, fingerprint validation, transport protection, or identical test/live configuration. Read [[source-adyen-docs-development-resources-security-sensitive-data-pgp-encryption]] and [[adyen-pgp-file-encryption]]; evidence is [[raw/adyen/docs/development-resources/security/sensitive-data/pgp-encryption/2026-09-15|PGP raw snapshot]] lines 15–42 and 110–136.
+
+## Q2 — capability, prerequisites, and warnings
+
+**Question:** How does the key-registration and expiry flow work, and what are the main prerequisites and cautions?
+
+**Answer:** The page requires an Adyen payments integration and gives a GnuPG walkthrough: generate a key pair, export the armored public key, switch to the intended company or merchant account in Customer Area, choose the purpose, and upload the public key. **Never upload the private key.** It says files matching the selected purpose are encrypted with the key. On a merchant account only Reports and AccountUpdater purposes are available in this captured guide. Adyen describes notice two weeks before expiry, recommends generating and registering a new key, and also documents extending the old key's expiry and re-registering its updated public key. An expired key can impair transaction processing or decryption; the merchant owns key validity. Do not infer that upload proves actual encryption or decryption, or that this page defines key-fingerprint checks, signing, SFTP protection, safe rotation overlap, or test/live parity. Read [[source-adyen-docs-development-resources-security-sensitive-data-pgp-encryption]] and [[adyen-pgp-file-encryption]]; evidence is [[raw/adyen/docs/development-resources/security/sensitive-data/pgp-encryption/2026-09-15|PGP raw snapshot]] lines 34–42, 56–108, 110–147 and 149–211.

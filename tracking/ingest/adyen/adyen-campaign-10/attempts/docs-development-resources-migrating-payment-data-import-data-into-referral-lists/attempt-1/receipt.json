@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-migrating-payment-data-import-data-into-referral-lists",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen bulk import into referral lists\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/migrating-payment-data/import-data-into-referral-lists\"\nraw_files:\n  - \"adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md\"\ntags: [adyen, risk-management, referral-lists, bulk-import, pgp, sensitive-data]\n---\n\n## Overview\n\nThis dated Adyen guide describes a **bulk CSV import** of card, bank and shopper referral data into lists used for fraud checks. It distinguishes this Support-assisted, PGP-encrypted file route from uploading block/trust-list items through Customer Area CSV. The raw metadata says last modified 2020-05-01 and the snapshot was captured 2026-09-15. See [[adyen]] and [[adyen-risk-management]].\n\n## Key takeaways\n\n- Prepare an RFC 4180 CSV with one referral item per line, a supported record-type prefix, **no header** and **no multiline fields**. Variable fields per line are allowed; the page caps a file at **100,000 lines if file size permits** and asks for UTF-8. Encrypt the file using a **PGP public key supplied by Adyen Support or the Adyen contact**, then send it to Adyen; Support is required for upload. The page does not describe a self-service API endpoint or a response/acceptance report for this route.\n- The eight type sections are `card`, `sepa`, `shopperName`, `shopperEmail`, `shopperIp`, `shopperReference`, `shopperAddress` and `shopperPhoneNumber`. Their required-field tables include a `merchantAccountCode`, a type-specific sensitive detail, `description`, and a `flag` with `trust`, `block` or `delete` action values. Address has multiple required parts; use its own table rather than treating all types as a common fixed-width row.\n- The input can contain full card numbers, IBANs, names, emails, IP addresses, references, postal addresses and phone numbers. Treat the source's example rows as illustrative data only. PGP encryption is an explicit transport prerequisite, not a statement that a merchant's privacy, PCI or retention obligations are satisfied.\n- Each type table describes `merchantAccountCode` as the **merchant account name**, while the example placeholder says `YourMerchantOrCompanyAccount`. The page does not resolve that difference or define effective list visibility, company/merchant inheritance, credential permissions, merchant of record or seller/payee allocation. Use the separately reviewed risk-list guide for general account-scope configuration and confirm the accepted import scope with Adyen before applying sensitive entries.\n- An encrypted file sent to Support is a submission, not proof that every item was accepted, that `trust` or `block` caused a risk decision, that `delete` removed an entry, or that a later payment was approved or declined. Risk-list enablement, payment-field matching and risk-profile configuration are separate.\n\n## Detail locators\n\n- Lines 14\u201320: fraud-check purpose, distinction from Customer Area CSV and encrypted Support upload.\n- `## Input file format` (lines 22\u201338): RFC 4180, row shape, no header/multiline, 100,000-line conditional cap, UTF-8, PGP key source and send step.\n- `## Card` and `## SEPA` (lines 40\u201366): record prefixes, account field, PAN/IBAN and action flags.\n- `## Shopper name` through `## Shopper phone number` (lines 68\u2013155): type-specific PII fields, required account/description/flag columns and address subfields.\n- `## Example file` (lines 157\u2013169): illustrative sample rows and account placeholder; not proof of ingestion or account scope.\n\n## Related\n\n- [[adyen-risk-management]] \u2014 provider risk concept and reciprocal source route.\n- [[source-adyen-docs-risk-management-configure-your-risk-profile-risk-lists]] \u2014 risk-list enablement, visibility and company/merchant configuration.\n- [[source-adyen-docs-risk-management-automate-submitting-referrals]] \u2014 separate Referrals API route and request outcomes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15|Referral-list bulk import, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can import referral data into the\u00a0Adyen payments platform to be placed on several [referral lists](/risk-management/configure-standard-risk-rules/referral-rules) used for fraud checks.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md:16"
+    },
+    {
+      "text": "This bulk import of referral data is different from uploading items to a block or trust list using a CSV file in the Customer Area.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md:18"
+    },
+    {
+      "text": "The CSV file that contains the referral data for the bulk import must be encrypted, and uploading the file requires our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md:20"
+    },
+    {
+      "text": "3. Encrypt the file using the PGP public key provided to you by either our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other), or your Adyen contact.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md:34"
+    },
+    {
+      "text": "| `merchantAccountCode`   | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | The merchant account name.                                                           |",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md:47"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-referral-bulk-import-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-migrating-payment-data-import-data-into-referral-lists]] \u2014 2020-modified bulk referral CSV import guide for encrypted Support upload, sensitive type-specific fields and trust/block/delete flags; import acceptance and effective risk scope remain separate (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md",
+  "raw_sha256": "c6bd0409161700819e86e5ecf78de0e1d4b87bc00e92a18a8d482c2046650ca7",
+  "status": "candidate_ready"
+}

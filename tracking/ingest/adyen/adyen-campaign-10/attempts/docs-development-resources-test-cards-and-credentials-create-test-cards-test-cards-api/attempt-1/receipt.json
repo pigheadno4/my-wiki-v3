@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-test-cards-and-credentials-create-test-cards-test-cards-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Test cards API reference\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api\"\nraw_files:\n  - \"adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md\"\ntags: [adyen, test-cards, api, testing]\n---\n\n## Overview\n\nThis Adyen Docs reference describes test-platform endpoints and request/result objects for creating custom test-card ranges for QA. It lists a SOAP `TestCard/v1` service and the JSON/FORM `createTestCardRanges` endpoint. Valid API credentials are required; this page is limited to the test platform and does not establish live-card creation or production eligibility.\n\n## Key takeaways\n\n- `CreateTestCardRangesRequest` supplies `accountCode`, case-sensitive `accountTypeCode` (`Company` or `MerchantAccount`), and one or more `testCardRanges`. The `TestCardRange` table defines address, holder, expiry, start/end card numbers, and optional CVC and 3D Secure fields. For AVS-compliant address data, the table says to include at least `streetAddress`; the start and end numbers are described as BIN-compliant and 6\u201319 digits.\n- `CreateTestCardRangesResult` contains `rangeCreationResults`; each `TestCardRangeCreationResult` exposes start/end numbers and `creationResultCode` with documented values `CREATED`, `ALREADY_EXISTS`, or `ERROR`. `ALREADY_EXISTS` in an example is not evidence that a newly requested range was created.\n- The API reference gives the test SOAP service and WSDL separately from the JSON/FORM endpoint. The parent **Create test cards** guide adds a **Manage test cards** Customer Area role requirement; it does not expressly distinguish whether that role applies identically to the API path. Check the current account configuration before relying on eligibility.\n- The parent guide's SOAP request example places `rangeStart` above `rangeEnd` numerically, while its error handling says a start larger than the end fails. Treat that example as internally inconsistent; follow the stated range constraint and verify against the service rather than copying the reversed pair.\n\n## Detail locators\n\n- Raw headings **Requirements**, **SOAP endpoints**, and **JSON and FORM endpoints**, lines 22\u201342: valid credentials, test service/WSDL, and JSON/FORM URL.\n- Raw headings **AvsAddress**, **CreateTestCardRangesRequest**, **CreateTestCardRangesResult**, and **TestCardRange**, lines 44\u2013113: request and address fields, exact required markers, range characteristics, and 3D Secure simulation options.\n- Raw heading **TestCardRangeCreationResult**, lines 115\u2013125: per-range identifiers and result-code values.\n- Related parent raw **Create test cards**, lines 27\u201339, 51\u201367, 110\u2013129 and 229\u2013245: role, range prerequisites, and SOAP-example versus failure-rule conflict.\n\n## Related\n\n- [[adyen]] \u2014 provider context\n- [[adyen-payment-testing]] \u2014 test-only payment and fixture boundaries\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15|Test cards API reference (2026-09-15 snapshot)]]\n\n## Related raw evidence\n\n- [[raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15|Create test cards parent guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This document lists all endpoints that are available for you to integrate with the test platform and run QA checks.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md:20"
+    },
+    {
+      "text": "You must have valid [API credentials](/development-resources/api-credentials) to make requests to endpoints.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md:26"
+    },
+    {
+      "text": "<https://pal-test.adyen.com/pal/services/TestCard/v1/createTestCardRanges>",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md:42"
+    },
+    {
+      "text": "Defines the properties of a test card range.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md:70"
+    },
+    {
+      "text": "Notification message. It informs about the outcome of the operation. Possible values:- CREATED",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md:123"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-test-card-api-testing-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards-test-cards-api]] \u2014 2026-09-15 test-platform TestCard API reference for custom ranges, required credentials, per-range creation result codes, and parent-guide role/example qualifications.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Parent Create test cards guide requires the Manage test cards role but does not explicitly partition its scope between UI and API paths.",
+          "Parent SOAP request example reverses numeric start/end values; parent error handling says start greater than end fails."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md",
+  "raw_sha256": "3a2a351d126bf70b0b9455ab02fae3d7f7f2dbc8655475182772b85eafc2b94c",
+  "status": "candidate_ready"
+}

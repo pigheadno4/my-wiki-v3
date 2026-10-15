@@ -64,6 +64,9 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0]] - Adyen Docs Android v4.13.3-or-earlier to v5.0.0 migration guide for Drop-in and Components (2026-09-15 snapshot)
+
+
 - [[source-github-adyen-android]] - cumulative exact-SHA repository evidence
 - [[changelog-github-adyen-android]] - package-qualified release ledger
 - [[adyen-3ds2-android-sdk]] - independently versioned native 3DS2 runtime

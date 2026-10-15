@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-development-resources-data-protection-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Data Protection API\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/data-protection-api\"\nraw_files:\n  - \"adyen/docs/development-resources/data-protection-api/2026-09-15.md\"\ntags: [adyen, data-protection, gdpr, erasure, shopper-data, recurring-payments]\n---\n\n## Overview\n\nThis Adyen guide describes the Data Protection API route for submitting a GDPR subject-erasure request for shopper-related data associated with an **original payment authorisation**. The page was captured 2026-09-15 and carries 2023-05-31 last-modified metadata. It documents an Adyen-side request and Customer Area redaction check; it is not proof of a completed erasure, cancellation of recurring activity, or deletion of merchant-held records.\n\n## Key takeaways\n\n- Submit `POST /requestSubjectErasure` with `merchantAccount` and the original payment's `pspReference`. The guide says the request targets shopper-related data **for that payment**, including payment details and examples such as delivery address or email. Its curl example uses an API key against `ca-test.adyen.com`; it says to switch the domain to `ca-live.adyen.com` for live. The page does not define a shopper-facing client flow.\n- `SUCCESS` means Adyen received the request for **asynchronous processing**; it is not a completed-deletion receipt. `ACTIVE_RECURRING_TOKEN_EXISTS` means shopper data cannot be deleted because a recurring transaction is associated with the payment details. Optional `forceErasure: true` permits deletion of shopper-related data for the specified payment despite that condition, but **does not cancel the existing recurring transaction**. Other listed results are `PAYMENT_NOT_FOUND` and `ALREADY_PROCESSED`.\n- After receiving a request, Adyen says it will delete transaction data **in accordance with the Merchant Agreement** and redact shopper-related data in Customer Area. The optional verification step checks that payment's fields show `REDACTED` and a redaction date. The page does not promise blanket erasure of every financial or compliance record, nor does this Adyen API itself delete data held on a merchant's systems.\n- This erasure route is distinct from managing a stored payment token through Checkout API `DELETE /storedPaymentMethods/{storedPaymentMethodId}`. The linked token-management source separately addresses merchant-server cleanup after token deletion; do not substitute one operation for the other.\n\n## Detail locators\n\n- `# Data Protection API` \u2014 GDPR subject-erasure purpose and shopper-data examples.\n- `## Submit a Subject Erasure Request`, step 1 \u2014 endpoint, required payment/account selectors, optional force flag and TEST request sample.\n- Step 2 \u2014 `result` meanings, asynchronous acceptance, Merchant Agreement qualification and Customer Area redaction.\n- Step 3 and final sentence \u2014 optional redaction check and TEST-to-live host change.\n\n## Related\n\n- Company: [[adyen]]\n- Recurring-token context and separate stored-payment-method deletion: [[adyen-tokenization]]\n- Token management source: [[source-adyen-docs-online-payments-tokenization-managing-tokens]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/data-protection-api/2026-09-15|2026-09-15 Adyen Data Protection API snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Use our API to submit a request to delete a shopper's data, including payment details and other shopper-related information, for example, delivery address or shopper email.",
+      "location": "raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md:21 (# Data Protection API)"
+    },
+    {
+      "text": "The PSP reference of the original payment authorisation. We will delete all shopper-related data for this payment.",
+      "location": "raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md:30 (## Submit a Subject Erasure Request parameter table)"
+    },
+    {
+      "text": "This only deletes the shopper-related data for the specific payment, but does not cancel the existing recurring transaction.",
+      "location": "raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md:31 (forceErasure parameter)"
+    },
+    {
+      "text": "**SUCCESS**: the request has been received, and will be processed asynchronously.",
+      "location": "raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md:54 (step 2 result values)"
+    },
+    {
+      "text": "After we receive your request, we will delete transaction data in accordance with the Merchant Agreement and redact shopper-related data from the [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md:59 (step 2 after result values)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-data-protection-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-data-protection-api]] \u2014 2026-09-15 Data Protection API guide for payment-reference-scoped shopper erasure requests, asynchronous acceptance and recurring-transaction force flag; separate from Checkout stored-token deletion.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md",
+  "raw_sha256": "826c83204e3b92f678f672ce934360e5e86b39a93e217f5948a8931441c775c1",
+  "status": "candidate_ready"
+}

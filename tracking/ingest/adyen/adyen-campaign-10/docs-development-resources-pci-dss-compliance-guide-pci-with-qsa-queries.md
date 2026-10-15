@@ -1,0 +1,13 @@
+# Retrieval checks — PCI with QSA
+
+## Q1. What is this page for, what is its scope, and what must a reader not infer?
+
+This historical Adyen page explains the Level 1 assessor choice (external QSA or trained, annually accredited internal ISA) and the work a QSA performs toward a Report on Compliance (RoC) and Attestation of Compliance (AoC). The raw page was last modified 2020-02-24 and captured 2026-09-15. It does not determine a particular merchant's PCI level, current eligibility, actual compliance, required SAQ, onsite-AoC or ecommerce script applicability, or today's scheme and PCI requirements. See `raw/adyen/docs/development-resources/pci-dss-compliance-guide/pci-with-qsa/2026-09-15.md:19-27` and `:43-47`. The separate general PCI and script-security source pages own their integration-specific details.
+
+Canonical retrieval route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-pci-dss-compliance.md` → `wiki/sources/adyen/source-adyen-docs-development-resources-pci-dss-compliance-guide-pci-with-qsa.md` → the raw file above. Canonical URL: https://docs.adyen.com/development-resources/pci-dss-compliance-guide/pci-with-qsa.
+
+## Q2. What central capability or process does it describe, with prerequisites and warnings?
+
+For the page's Level 1 assessment route, a merchant may use an external QSA or its own ISA; an internal ISA must complete PCI SSC ISA training and pass annual accreditation (`raw/adyen/docs/development-resources/pci-dss-compliance-guide/pci-with-qsa/2026-09-15.md:23-25`). The QSA process is gap analysis, an on-site assessment gathering interviews and technical and operational evidence, then remediation feedback and retesting; corrective actions reassessed during the audit are recorded as Items Noted For Improvement when applicable (`raw/adyen/docs/development-resources/pci-dss-compliance-guide/pci-with-qsa/2026-09-15.md:29-41`). Once eligible PCI DSS requirements are met and the audit is complete, the QSA writes the RoC and, after review, provides the AoC. The page directs the merchant to submit only the AoC to Adyen and never the full RoC because it details the cardholder-data environment (`raw/adyen/docs/development-resources/pci-dss-compliance-guide/pci-with-qsa/2026-09-15.md:43-47`). These described steps are neither proof that an individual merchant completed an assessment nor a current compliance determination.
+
+Canonical retrieval route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-pci-dss-compliance.md` → `wiki/sources/adyen/source-adyen-docs-development-resources-pci-dss-compliance-guide-pci-with-qsa.md` → `raw/adyen/docs/development-resources/pci-dss-compliance-guide/pci-with-qsa/2026-09-15.md`.

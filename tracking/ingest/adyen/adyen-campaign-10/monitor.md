@@ -1,0 +1,72 @@
+# Adyen Campaign 10
+
+- Campaign state: `complete`
+- Worker concurrency: `10`
+- Started at: `2026-10-15T13:37:32Z`
+- Completed at: `2026-10-15T14:12:20Z`
+- Full reviews: 50
+- Targeted reviews: 2
+- Coordinator repairs: 3
+- Elapsed: `2088 seconds`
+- Queued: 0
+- Running: 0
+- Candidate ready: 0
+- Risk pending: 0
+- Review deferred: 0
+- Reviewing: 0
+- Approved: 50
+- Failed: 0
+- Rejected: 0
+
+| Job | Attempt | State | Raw | Source target | Last event | Failure |
+| --- | --- | --- | --- | --- | --- | --- |
+| docs-development-resources-security | 1 | approved | raw/adyen/docs/development-resources/security/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security.md | review_approved |  |
+| docs-development-resources-client-side-authentication | 1 | approved | raw/adyen/docs/development-resources/client-side-authentication/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-client-side-authentication.md | review_approved |  |
+| docs-development-resources-batch-processing | 1 | approved | raw/adyen/docs/development-resources/batch-processing/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-batch-processing.md | review_approved |  |
+| docs-development-resources-overview-response-handling | 1 | approved | raw/adyen/docs/development-resources/overview-response-handling/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-overview-response-handling.md | review_approved |  |
+| docs-development-resources-versioning | 1 | approved | raw/adyen/docs/development-resources/versioning/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-versioning.md | review_approved |  |
+| docs-development-resources-refusal-reasons | 1 | approved | raw/adyen/docs/development-resources/refusal-reasons/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-refusal-reasons.md | review_approved |  |
+| docs-development-resources-raw-acquirer-responses-visa-integrity-fees | 1 | approved | raw/adyen/docs/development-resources/raw-acquirer-responses/visa-integrity-fees/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-raw-acquirer-responses-visa-integrity-fees.md | review_approved |  |
+| docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file | 1 | approved | raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file.md | review_approved |  |
+| docs-development-resources-security-sensitive-data-pgp-encryption | 1 | approved | raw/adyen/docs/development-resources/security/sensitive-data/pgp-encryption/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-sensitive-data-pgp-encryption.md | review_approved |  |
+| docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0 | 1 | approved | raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-android-5-0-0/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0.md | review_approved |  |
+| docs-development-resources-migrating-payment-data-import-data-into-referral-lists | 1 | approved | raw/adyen/docs/development-resources/migrating-payment-data/import-data-into-referral-lists/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-migrating-payment-data-import-data-into-referral-lists.md | review_approved |  |
+| docs-development-resources-testing-result-codes | 1 | approved | raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-testing-result-codes.md | review_approved |  |
+| docs-development-resources-e2ee-p2pe-comparison | 1 | approved | raw/adyen/docs/development-resources/e2ee-p2pe-comparison/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-e2ee-p2pe-comparison.md | review_approved |  |
+| docs-development-resources-security-integration-security-allowlisting | 1 | approved | raw/adyen/docs/development-resources/security/integration-security/allowlisting/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-integration-security-allowlisting.md | review_approved |  |
+| docs-development-resources-test-cards-and-credentials-create-test-cards | 2 | approved | raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards.md | review_approved |  |
+| docs-development-resources-documentation-tools | 1 | approved | raw/adyen/docs/development-resources/documentation-tools/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-documentation-tools.md | review_approved |  |
+| docs-development-resources-webhooks-webhook-types-account-settings-webhooks | 1 | approved | raw/adyen/docs/development-resources/webhooks/webhook-types/account-settings-webhooks/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-webhooks-webhook-types-account-settings-webhooks.md | review_approved |  |
+| docs-online-payments-instant-card-funding | 1 | approved | raw/adyen/docs/online-payments/instant-card-funding/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-instant-card-funding.md | review_approved |  |
+| docs-online-payments-out-of-app-payments-on-ios | 1 | approved | raw/adyen/docs/online-payments/out-of-app-payments-on-ios/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-out-of-app-payments-on-ios.md | review_approved |  |
+| docs-development-resources-batch-processing-submit-modifications | 1 | approved | raw/adyen/docs/development-resources/batch-processing/submit-modifications/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-batch-processing-submit-modifications.md | review_approved |  |
+| docs-development-resources-security-sensitive-data-tls | 1 | approved | raw/adyen/docs/development-resources/security/sensitive-data/tls/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-sensitive-data-tls.md | review_approved |  |
+| docs-development-resources-security-secure-coding | 1 | approved | raw/adyen/docs/development-resources/security/secure-coding/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-secure-coding.md | review_approved |  |
+| docs-development-resources-client-side-authentication-migrate-from-origin-key-to-client-key | 1 | approved | raw/adyen/docs/development-resources/client-side-authentication/migrate-from-origin-key-to-client-key/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-client-side-authentication-migrate-from-origin-key-to-client-key.md | review_approved |  |
+| docs-development-resources-test-cards-and-credentials-create-test-cards-test-cards-api | 1 | approved | raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/test-cards-api/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards-test-cards-api.md | review_approved |  |
+| docs-development-resources-developer-dashboard | 1 | approved | raw/adyen/docs/development-resources/developer-dashboard/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-developer-dashboard.md | review_approved |  |
+| docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library | 1 | approved | raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library.md | review_approved |  |
+| docs-development-resources-testing-risk-features | 1 | approved | raw/adyen/docs/development-resources/testing/risk-features/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-testing-risk-features.md | review_approved |  |
+| docs-development-resources-security-integration-security | 1 | approved | raw/adyen/docs/development-resources/security/integration-security/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-integration-security.md | review_approved |  |
+| docs-development-resources-batch-processing-advanced-sftp-batch-files | 1 | approved | raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files.md | review_approved |  |
+| docs-development-resources-mcp-server | 1 | approved | raw/adyen/docs/development-resources/mcp-server/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-mcp-server.md | review_approved |  |
+| docs-development-resources-pci-dss-compliance-guide-saq-a-eligibility | 1 | approved | raw/adyen/docs/development-resources/pci-dss-compliance-guide/saq-a-eligibility/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-pci-dss-compliance-guide-saq-a-eligibility.md | review_approved |  |
+| docs-online-payments-upgrade-your-integration-upgrade-to-ios-5-0-0 | 1 | approved | raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-ios-5-0-0/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-ios-5-0-0.md | review_approved |  |
+| docs-development-resources-pci-dss-compliance-guide-merchant-levels | 1 | approved | raw/adyen/docs/development-resources/pci-dss-compliance-guide/merchant-levels/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-pci-dss-compliance-guide-merchant-levels.md | review_approved |  |
+| docs-development-resources-logs-resources-api-logs | 1 | approved | raw/adyen/docs/development-resources/logs-resources/api-logs/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-logs-resources-api-logs.md | review_approved |  |
+| docs-development-resources-security-iam | 1 | approved | raw/adyen/docs/development-resources/security/iam/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-iam.md | review_approved |  |
+| docs-development-resources-pci-dss-compliance-guide-pci-with-qsa | 1 | approved | raw/adyen/docs/development-resources/pci-dss-compliance-guide/pci-with-qsa/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-pci-dss-compliance-guide-pci-with-qsa.md | review_approved |  |
+| docs-development-resources-migrating-payment-data | 2 | approved | raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-migrating-payment-data.md | review_approved |  |
+| docs-online-payments-upgrade-your-integration-upgrade-to-checkout-api-v72 | 1 | approved | raw/adyen/docs/online-payments/upgrade-your-integration/upgrade-to-checkout-api-v72/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-checkout-api-v72.md | review_approved |  |
+| docs-development-resources-testing-result-codes-cvc-cvv-cid-result-codes | 1 | approved | raw/adyen/docs/development-resources/testing/result-codes/cvc-cvv-cid-result-codes/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-testing-result-codes-cvc-cvv-cid-result-codes.md | review_approved |  |
+| docs-development-resources-data-protection-api | 1 | approved | raw/adyen/docs/development-resources/data-protection-api/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-data-protection-api.md | review_approved |  |
+| docs-development-resources-pci-dss-compliance-guide-vulnerability-scanning-regulation | 1 | approved | raw/adyen/docs/development-resources/pci-dss-compliance-guide/vulnerability-scanning-regulation/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-pci-dss-compliance-guide-vulnerability-scanning-regulation.md | review_approved |  |
+| docs-development-resources-logs-resources-webhook-event-logs | 1 | approved | raw/adyen/docs/development-resources/logs-resources/webhook-event-logs/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-logs-resources-webhook-event-logs.md | review_approved |  |
+| docs-online-payments-3d-secure-redirect-3ds2 | 1 | approved | raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-3d-secure-redirect-3ds2.md | review_approved |  |
+| docs-development-resources-security-sensitive-data | 1 | approved | raw/adyen/docs/development-resources/security/sensitive-data/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-security-sensitive-data.md | review_approved |  |
+| docs-development-resources-test-cards-and-credentials | 1 | approved | raw/adyen/docs/development-resources/test-cards-and-credentials/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-test-cards-and-credentials.md | review_approved |  |
+| docs-online-payments-3d-secure-redirect-3ds2-web | 1 | approved | raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/web/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web.md | review_approved |  |
+| docs-online-payments-donations-integration-options | 1 | approved | raw/adyen/docs/online-payments/donations/integration-options/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-donations-integration-options.md | review_approved |  |
+| docs-online-payments-3d-secure-redirect-3ds2-android | 1 | approved | raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/android/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android.md | review_approved |  |
+| docs-online-payments-3d-secure-redirect-3ds2-ios | 1 | approved | raw/adyen/docs/online-payments/3d-secure/redirect-3ds2/ios/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios.md | review_approved |  |
+| docs-development-resources-logs-resources | 1 | approved | raw/adyen/docs/development-resources/logs-resources/2026-09-15.md | wiki/sources/adyen/source-adyen-docs-development-resources-logs-resources.md | review_approved |  |

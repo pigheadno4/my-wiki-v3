@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-testing-result-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Testing result codes and refusal reasons | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/testing/result-codes\"\nraw_files:\n  - \"adyen/docs/development-resources/testing/result-codes/2026-09-15.md\"\ntags: [adyen, payment-testing, result-codes, refusal-reasons, checkout-api]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs snapshot shows how an **online Checkout API test integration** can trigger result codes and refusal reasons in a `/payments` response to exercise failure handling before go-live. It points in-person integrations to a separate POS decline-simulation guide. See [[adyen]] and [[adyen-payment-testing]].\n\n## Key takeaways\n\n- To select a test response, set either `paymentMethod.holderName` to a table value or `additionalData.RequestedTestAcquirerResponseCode` to its numeric code in a `/payments` request. The shown `CARD_EXPIRED` or code `6` example yields `Refused` with an expired-card refusal in the illustrated response. Its USD 10.00 amount is example payment data, not the documented trigger for that refusal.\n- Some card-related payment methods redirect to a simulator to choose the result; in that case the supplied holder name is ignored. The table must be used with that method-specific qualification, not as a guarantee that every trigger works for every payment method.\n- The mapping table covers more than refusals: `APPROVED` / code `1` maps to `Authorised`, and `PENDING` / code `13` maps to `Received`; it also includes `Error`, `Cancelled`, and many `Refused` cases. A test `Authorised` response is a simulated result, while `Received` is a distinct intermediate result; neither fixture proves a production authorization or final settlement.\n- The guide asks implementers to verify the triggered `resultCode` and `refusalReason` and check their integration's response handling. It motivates shopper messages, retry logic, and order-management handling as examples of uses, not mandatory policy for each refusal. Its sample `/payments` URL is Checkout v72 test, while API Explorer links use `latest`; do not transfer the table into an unverified production or fixed-version guarantee.\n\n## Detail locators\n\n- Test purpose and separate in-person route: lines 15\u201325.\n- Suggested reasons for testing unhappy flows: `Benefits of testing refusal reasons`, lines 27\u201333.\n- Two trigger fields, simulator exception, expired-card example, and response verification: `Trigger a refusal reason in a payment request`, lines 35\u2013119.\n- Full result/refusal trigger table, including `Authorised`, `Received`, `Error`, `Cancelled`, and `Refused`: `Values for testing refusal reasons`, lines 121\u2013176.\n- Related refusal, result-code, and response-handling navigation: `See also`, lines 178\u2013182.\n\n## Related\n\n- [[adyen-payment-testing]] \u2014 test integration scope and simulation outcome boundary.\n- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] \u2014 payment result-code interpretation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/testing/result-codes/2026-09-15|Testing result codes and refusal reasons (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To get a specific result code and refusal reason in the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response, you need to include a specific value either in the `holderName` or `RequestedTestAcquirerResponseCode` field. You can find the values to use in the [Values for testing refusal reasons](#values-for-testing-result-reasons) table.",
+      "location": "raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md:37"
+    },
+    {
+      "text": "Some card-related payment methods, for example Alipay, redirect you to a simulator where you can select the payment result. In this case, the value provided as the cardholder name will be ignored.",
+      "location": "raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md:45"
+    },
+    {
+      "text": "3. Make sure that the response contains the `resultCode` and `refusalReason` you triggered, and that your integration handles the response as expected.",
+      "location": "raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md:108"
+    },
+    {
+      "text": "| -                                                            | Authorised     | APPROVED                                   | 1                                   |",
+      "location": "raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md:132"
+    },
+    {
+      "text": "| -                                                            | Received       | PENDING                                    | 13                                  |",
+      "location": "raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md:144"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-result-code-testing-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-testing-result-codes]] \u2014 2026-09-15 Checkout test guide for `/payments` result/refusal triggers through holder name or requested test acquirer code, including method-specific simulator and response distinctions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/testing/result-codes/2026-09-15.md",
+  "raw_sha256": "81ad1cf226098ffe4f000699762827820cade0a7b80b1e9cd04b528f70375076",
+  "status": "candidate_ready"
+}

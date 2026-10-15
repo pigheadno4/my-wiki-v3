@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-migrating-payment-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Import data from another payment provider | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/migrating-payment-data\"\nraw_files:\n  - \"adyen/docs/development-resources/migrating-payment-data/2026-09-15.md\"\ntags: [adyen, payment-data-migration, tokenization, recurring-payments, pgp]\n---\n\n## Overview\n\nThis 2026-09-15 capture of an Adyen page last modified in 2019 outlines a **provider-assisted import** of payment data from a prior PSP to Adyen. It frames old payment activity as useful for analysis and then gives a staged card-detail and recurring-charge migration. It does not describe exporting data out of Adyen, transferring merchant-of-record status, or activating any specific payment method. See [[adyen]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Before import, the merchant must support tokenization and recurring charging across the two PSPs during transition, choose an internal `shopperReference` for Adyen, check how the old PSP can map it, and arrange the old PSP's file-transfer method. The reference links the shopper to stored details; it is not itself a payment credential or proof of shopper consent.\n- If the old PSP can export Adyen's required format, the page directs the merchant to Adyen Support for a custom PGP key. Otherwise, it says the old provider should encrypt its format with Adyen's PGP key so Adyen can manipulate it after receipt. This describes an encrypted provider-to-provider file path, not an API endpoint or evidence that a merchant met all PCI/data-protection obligations.\n- Adyen recommends three stages: route new tokenizations/sign-ups to Adyen while old-customer recurring charges remain at the old PSP; export old card details for Adyen import; then switch old-customer charging to Adyen. If new tokenizations cannot move immediately, the guide says to request any tokens the old PSP created during the transition. Import files for recurring details and referral data are separate. The detailed CSV fields and import-result handling belong to the linked recurring-import and referral-list guides.\n- The page says Adyen does not charge for migrating payment data and that migration usually takes at least 10 days because of technical/compliance complexity. These are dated provider statements, not a current price or delivery SLA. The closing \u201cready to process payments\u201d statement follows completion of the described migration; this snapshot alone does not prove any import succeeded, contract is chargeable, account is enabled, or payment authorized.\n\n## Detail locators\n\n- Historic-payment analysis purpose and dated price/timing statements: lines 15\u201321.\n- Two-PSP processes, shopper-reference selection/mapping, old-PSP transfer and PGP/Support branches: `Requirements`, lines 23\u201339.\n- Three-stage new-versus-old customer/token and charge cutover: `Import card details`, lines 41\u201353.\n- Separate recurring/referral import CSV files: lines 49\u201351.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored-payment and recurring scope.\n- [[source-adyen-docs-development-resources-migrating-payment-data-import-payment-details-for-recurring-payments]] \u2014 independently retained detailed encrypted CSV and result-file guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15|Import data from another payment provider (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If you have previously used a different payment provider, you may want to import your old payments data to the\u00a0Adyen payments platform\u00a0to maintain the history of payment activity for analysis.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md:19"
+    },
+    {
+      "text": "We do not charge for migrating payment data. Because of technical and compliance complexity, migrating payment data usually takes 10 days or more.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md:21"
+    },
+    {
+      "text": "1. Adjust your technical processes so tokenization and recurring charge processes can be performed at two different payment service providers (PSP).",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md:27"
+    },
+    {
+      "text": "* If they can export the data in the required format, contact\u00a0[Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other). We will create a custom PGP key which will speed up your card import process. For more information on required formats, see [recurring payments](/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments)\u00a0details and\u00a0[referral lists](/development-resources/migrating-payment-data/import-data-into-referral-lists).",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md:37"
+    },
+    {
+      "text": "Make sure that you format the CSV as described in\u00a0[Import payment details for recurring payments](/development-resources/migrating-payment-data/import-payment-details-for-recurring-payments) and [Import data into referral lists](/development-resources/migrating-payment-data/import-data-into-referral-lists). Import files can contain either recurring or referral data. To import both types of data, create two separate files.",
+      "location": "raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md:51"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-payment-data-migration-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-migrating-payment-data]] \u2014 2026-09-15 capture of a 2019-modified, provider-assisted old-PSP data/card migration overview covering shopper-reference mapping, encrypted transfer and staged recurring-charge cutover.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/migrating-payment-data/2026-09-15.md",
+  "raw_sha256": "c770345d575ae56c9283f7657a2a02210d3cc329466b40bc2a2abf8dafd568d9",
+  "status": "candidate_ready"
+}

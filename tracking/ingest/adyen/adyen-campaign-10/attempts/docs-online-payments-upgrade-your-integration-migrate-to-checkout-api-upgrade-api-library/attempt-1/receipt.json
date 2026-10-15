@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Upgrade your Java API library for Checkout API v72\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library\"\nraw_files:\n  - \"adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md\"\ntags: [adyen, java, api-library, checkout-api, migration, online-payments]\n---\n\n## Overview\n\nThis Adyen migration page addresses online-payment integrations with a payments server using the Java API library. Its 2026-09-15 snapshot directs an upgrade from an earlier `adyen-java-api-library` version, such as v4.1.0, to v40.0.0 or later to support **Checkout API v72**. The Java library version and Checkout API version are distinct. The page gives use-case-based server-code examples; it does not document a one-to-one Classic API call conversion or prove deployed library behavior.\n\n## Key takeaways\n\n- Adyen calls this a major product, feature, and architecture upgrade and says there is no linear path. Identify the integration's own use cases, compare the current Checkout API version with v72 using the API Diff Tool, and map supported models before changing server code. The named use cases include Sessions or Advanced payments, webhooks, authorization adjustments, subscriptions, and gift cards.\n- The example initializes a Java `Client` and `PaymentsApi` with `Environment.LIVE`, a live endpoint URL prefix, and an **API key**. The live prefix is an endpoint configuration in this example; the page does not establish a universal region or prefix for every merchant. The API key is server configuration, distinct from the HMAC key used to verify webhooks.\n- The `paymentMethods` and card `payments` request examples are explicitly for the **Advanced flow**. They are not a requirement that a Sessions integration make those same calls. The card example uses test encrypted-card strings as illustrative input, not evidence of a real payment or a complete production request.\n- For payment webhooks, the sample parses a `NotificationRequest`, selects its first item, validates its HMAC, and only then shows asynchronous event consumption. A separate Balance Platform/Management example validates the HMAC from the `hmacsignature` header before invoking a handler. These are different webhook examples; do not treat the sample's first-item assumption as a general batch-processing guarantee.\n- The guide shows `RequestOptions` carrying an `idempotency-key` for a request and catching `ApiException` to inspect status, response body, and `ApiError`. After upgrading, it instructs testing all supported use cases, webhook processing, error scenarios, and payment flows in the test environment. Documentation and examples do not establish that those tests passed.\n\n## Detail locators\n\n- Raw lines 15\u201327: Java library and Checkout API v72 version identities, major-upgrade rationale, payments-server requirement.\n- Raw lines 29\u201347: API Diff Tool scope and use-case-first migration, including Sessions/Advanced, webhook, adjustment, subscription, and gift-card routes.\n- Raw lines 49\u201373: server-code update pattern, live-environment client setup, live endpoint prefix, API key, and `PaymentsApi` initialization.\n- Raw lines 75\u2013113: Advanced-only `paymentMethods` and card `payments` examples, including illustrative test card strings.\n- Raw lines 115\u2013157: payment-webhook and other-webhook HMAC examples, first-item selection, and handler boundary.\n- Raw lines 159\u2013193: idempotency header and `ApiException` handling examples.\n- Raw lines 195\u2013210: test-environment checklist and linked API/library references.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-online-payments-upgrade-your-integration]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15|Adyen Java API library upgrade guide snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Upgrade your `adyen-java-api-library` from an earlier version (such as v4.1.0) to the latest version (v40.0.0 or later) to support Checkout API v72.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md:19"
+    },
+    {
+      "text": "There is no linear upgrade path. Identify the specific use cases in your integration. Common use cases include:",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md:39"
+    },
+    {
+      "text": "Update your server-side code to use the latest version of the Java API library.",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md:51"
+    },
+    {
+      "text": "For the Advanced flow, to make a card payment:",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md:90"
+    },
+    {
+      "text": "To process payment webhooks and verify the HMAC signature:",
+      "location": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md:117"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "java-checkout-v72-guide-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library]] \u2014 Java API library v40.0.0-or-later guide for Checkout API v72, use-case migration and server examples (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "This is a Java payments-server guide; do not generalize its v40.0.0 library version, live endpoint prefix, or Advanced-flow examples to other libraries, regions or Sessions integrations."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/upgrade-your-integration/migrate-to-checkout-api/upgrade-api-library/2026-09-15.md",
+  "raw_sha256": "c5b255b096055001002aeb657f2359660971f78d53619bba28c1953c935cdfdd",
+  "status": "candidate_ready"
+}

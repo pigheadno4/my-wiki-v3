@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-development-resources-refusal-reasons",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online Payment Refusal Reasons\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/refusal-reasons\"\nraw_files:\n  - \"adyen/docs/development-resources/refusal-reasons/2026-09-15.md\"\ntags: [adyen, online-payments, refusal-reasons, authorization, result-codes]\n---\n\n## Overview\n\nThis [[adyen]] development-resources reference catalogs `refusalReasonCode` and `refusalReason` values for unsuccessful online payment authorization. It explains how to interpret these alongside `resultCode`, while separating the HTTP status of an API request from the outcome of the payment or modification. See [[adyen-online-payments]] and [[source-adyen-docs-development-resources-response-handling]] for the wider response boundary.\n\n## Key takeaways\n\n- A payment authorization request can return HTTP `200 OK` when Adyen processed the request correctly even though the payment or modification was unsuccessful. In an unsuccessful case, `resultCode`, `refusalReason`, and `refusalReasonCode` describe the issue. Do not treat HTTP success as payment authorization or later capture or settlement.\n- The page describes `refusalReason` as a short explanation, `refusalReasonCode` as its numeral, and `resultCode` as the refused-payment category (`Refused`, `Error`, or `Cancelled`). It also says the same refusal fields appear in `additionalData` of `CAPTURE_FAILED` and `REFUND_FAILED` webhooks when an online capture or refund is refused; those are modification-failure events, not a new payment-authorization result.\n- Do not expose refusal-reason details to shoppers; the page cites malicious-use risk. This applies even when a detailed diagnostic is available to the merchant integration.\n- Read the table row and `resultCode` together: code `0` can accompany `Authorised`, in which case the page says to ignore the refusal code. The table includes issuer, card, authentication, risk, cancellation and processing conditions; its labels are mapped refusal reasons, not a universal raw issuer-response contract.\n- Retry instructions are specific to table rows and prerequisites: code `38` says retry with 3D Secure after an issuer declines an authentication exemption; code `40` says use a different payment method; codes `41` and `42` give their own retry paths. Code `46` describes Adyen blocking excessive retries to avoid penalty fees. The catalog does not authorize a blanket repeat of a pending or uncertain payment.\n- This is a 2026-09-15 documentation snapshot of an unversioned page. Its test-environment trigger link describes simulation, not live issuer behavior or an individual transaction outcome.\n\n## Detail locators\n\n- Test-environment refusal triggers and HTTP `200` versus payment outcome: raw lines 19\u201325.\n- Shopper-disclosure warning and online-payments/Standard-webhook requirements: raw lines 27\u201334.\n- Example object and field definitions: raw lines 36\u201353.\n- Full `refusalReasonCode`/`refusalReason` table, including code `0` with `Authorised`: `## Refusal responses`, raw lines 55\u2013107. Consult the row before using a diagnostic or conditional retry instruction.\n- Authentication and network retry rows plus excessive-retry prevention: raw lines 101\u2013106.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-development-resources-response-handling]] \u2014 HTTP request status and conditional response handling.\n- [[source-adyen-docs-online-payments-build-your-integration-payment-result-codes]] \u2014 online payment result-code lifecycle.\n- [[source-adyen-docs-online-payments-capture-failure-reasons]] \u2014 capture and refund failure events.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/refusal-reasons/2026-09-15|Adyen refusal reasons \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Although an HTTP response status code of `200` means that the request was submitted correctly and Adyen processed it successfully, it does not necessarily mean that the payment or modification request was successfully executed.",
+      "location": "raw line 23, paragraph after ##### Test refusal reasons"
+    },
+    {
+      "text": "When the payment or modification request is unsuccessful, the `resultCode`, `refusalReason`, and `refusalReasonCode` describe the issue.",
+      "location": "raw line 25, paragraph after ##### Test refusal reasons"
+    },
+    {
+      "text": "To prevent malicious use, do not expose the details of the refusal reason to shoppers.",
+      "location": "raw line 27, paragraph before ## Requirements"
+    },
+    {
+      "text": "Sometimes `refusalReasonCode` **0** is returned along with `resultCode` **Authorised**. When this happens, ignore the refusal reason code. The transaction succeeded.",
+      "location": "raw line 61, ## Refusal responses, code 0 row"
+    },
+    {
+      "text": "The issuer declined the authentication exemption request and requires authentication for the transaction. Retry with 3D Secure.",
+      "location": "raw line 101, ## Refusal responses, code 38 Authentication required row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-refusal-reasons-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-refusal-reasons]] \u2014 2026-09-15 Adyen webpage snapshot cataloging online authorization refusal fields and codes, their HTTP-versus-payment meaning, shopper-disclosure warning and row-specific retry guidance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/refusal-reasons/2026-09-15.md",
+  "raw_sha256": "998dede06322cc03d4750976a3a262619e618580726eb3677b7dbc02ca90b624",
+  "status": "candidate_ready"
+}

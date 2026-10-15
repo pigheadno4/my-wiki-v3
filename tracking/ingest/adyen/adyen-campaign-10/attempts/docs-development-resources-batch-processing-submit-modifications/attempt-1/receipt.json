@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-batch-processing-submit-modifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Customer Area batch modifications\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/submit-modifications\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/submit-modifications/2026-09-15.md\"\ntags: [adyen, batch-processing, customer-area, payment-modifications, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide covers **uploading a CSV of payment modification requests through Customer Area**. Its opening list names capture, cancel, refund and cancel-or-refund. The field table also lists `authoriseReferral`, an unresolved difference to check before treating it as supported through this route. This is a batch-submission and validation workflow: neither file upload, `COMPLETED` batch status nor a green row proves that a financial modification finally succeeded. The page metadata says last modified in 2023.\n\n## Requirements and file shape\n\n- The user needs **Merchant submit batch modifications** and **Merchant manage payments role**. To process modifications for multiple merchant accounts, the guide says to contact Adyen Support for enablement. Set up webhooks to receive modification outcome updates. See `Requirements`.\n- Prepare UTF-8 CSV following RFC 4180 with the page's exceptions: no header, one modification per line, identical fields across rows, no empty/null fields, and at most 6,000 records. The payment's PSP reference is marked required. The table describes merchant account, modification type, amount in minor units, currency and merchant reference. If merchant account is omitted, Customer Area uses the account uploading the file; missing modification, amount or currency can be added in Customer Area, but the supplied value applies to **all** rows. See `Create an input file`.\n- The rule against empty fields appears hard to reconcile with example rows that end in a comma, suggesting an empty final reference. Treat the examples as illustrative and resolve the CSV format against the route's current validation before upload. See rules at lines 43\u201348 and examples at lines 64\u201375.\n- The amount behavior depends on the modification: the table says `cancelOrRefund` **always refunds the full amount**, regardless of the amount value supplied. Do not use its sample `0` as evidence of a zero-value refund or a partial cancel/refund. See `Create an input file`, Amount row and example.\n\n## Upload and outcome boundary\n\nCustomer Area **Payments > Batch modifications** has an initial file submission and `Review Batch` validation, where errors can be corrected in the CSV or some missing fields supplied as one fixed value for every row. Selecting the later **Upload** queues then processes the batch. After batch status becomes `COMPLETED`, the downloadable result file gives individual messages. A green `successful` row means the modification **passed validation**; Adyen then attempts processing, which can still fail. Such a later failure is reported asynchronously through a webhook. Check that outcome before treating a capture, cancellation or refund as completed. See `Upload modifications` and `Check the result`.\n\n## Detail locators\n\n- `Create an input file`, lines 37\u201375: exact CSV rules, columns and field descriptions, optional account/default behavior, operation-list difference, amount semantics and examples.\n- `Upload modifications`, lines 77\u2013110: Customer Area path, Review Batch error categories, fixed-value repair applied to all rows, and QUEUED/PROCESSED statuses.\n- `Check the result`, lines 112\u2013122: COMPLETED batch status, green/red row messages, validation checks, and later webhook failure boundary.\n\n## Related\n\n- [[adyen]]\n- [[adyen-batch-processing]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/submit-modifications/2026-09-15|Adyen Customer Area batch-modification guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If you need to process modifications for multiple merchant accounts, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable this for you.",
+      "location": "line 33, ## Requirements"
+    },
+    {
+      "text": "For cancelOrRefund we will always refund the full amount, no matter which value you provide here.",
+      "location": "line 55, ## Create an input file, Amount row"
+    },
+    {
+      "text": "* If you do not provide the **Modification**, **Amount**, or **Currency**, you can use the Customer Area to add these fields. However, that would set the same value for all records.",
+      "location": "line 60, ## Create an input file"
+    },
+    {
+      "text": "After the batch file has finished processing, the status changes to COMPLETED. You can download the batch result file to check the result messages for the individual modifications. A result message can be green or red. Green (successful) means that the modification passed the validation. However, processing the modification can still fail.",
+      "location": "line 114, ## Check the result"
+    },
+    {
+      "text": "If a modification passes the validation, we mark the modification as successful and try to process it. If the modification then fails, we inform you asynchronously through a webhook.",
+      "location": "line 122, ## Check the result"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-customer-area-batch-modifications-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-submit-modifications]] \u2014 2026-09-15 Customer Area CSV modification guide for roles, multi-account enablement, 6,000-row and field rules, review/upload, and validation-versus-webhook outcome; opening operation list and table differ on `authoriseReferral`.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening list names capture, cancel, refund and cancel-or-refund, while the table also lists authoriseReferral; do not infer unqualified Customer Area support for it.",
+          "The no-empty-fields rule conflicts with example CSV rows ending in a comma; verify the current accepted row format before reuse."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/submit-modifications/2026-09-15.md",
+  "raw_sha256": "94a7f6f9725c37745863a3552a5fb7946f42500c355990863506721e28fb93e7",
+  "status": "candidate_ready"
+}

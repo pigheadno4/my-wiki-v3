@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen batch acknowledgement file\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file\"\nraw_files:\n  - \"adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md\"\ntags: [adyen, batch-processing, sftp, acknowledgement, validation]\n---\n\n## Overview\n\nThis Adyen Docs page describes the batch acknowledgement (ACK) file generated after validation of a submitted batch request file. A successful validation yields an overview of processed data; a failed validation identifies request-file lines that failed checks. The ACK describes file validation and does not itself establish each transaction's financial outcome.\n\n## Key takeaways\n\n- A successful ACK example contains file header `FH`, processed block and line counts in `R`, and the next file submission number in `N`. Its header identifies the environment (`TEST` or `LIVE`), company account, submission platform, file sequence, linked API credential username, and file type. Consult the raw field table for exact positions and allowed file types.\n- A failed-validation ACK includes an `E` line per failed request-file line. The error record identifies whether the problem belongs to the file header (`FH`), line (`L`), sub-line (`SL`), or incomplete/unreadable file (`F`), along with file line number, code, and description.\n- `N,NextFileSubmissionNumber` appears regardless of validation outcome. After an erroneous file, Adyen may only guess the next number, so it may be wrong; if the header cannot be read or parsed, the number is always incorrect. Do not use that value alone as proof that a rejected file advanced the submission sequence.\n\n## Detail locators\n\n- Raw heading **ACK - Validation successful**, lines 23\u201364: sample `FH`/`R`/`N` records and the successful ACK field tables.\n- Raw heading **Next File Submission Number [N]**, lines 66\u201394: submission-platform sequence and invalid-number warnings.\n- Raw heading **ACK - Validation failed**, lines 96\u2013122: failed-line sample and `E` field table.\n- Raw heading **Next File Submission Number [N]**, lines 124\u2013152: repeated `N` behavior for failed validation.\n\n## Related\n\n- [[adyen]] \u2014 provider context\n- [[adyen-batch-processing]] \u2014 batch-file flow and related source routes\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15|Batch acknowledgement file (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "After validating the submitted batch request file, an ACK file generates:",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md:18"
+    },
+    {
+      "text": "If the batch request file successfully passes the validation check, the ACK file provides a report overview of the processed data.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md:20"
+    },
+    {
+      "text": "When one or more validation errors occur, an error line gets generated per line in the requested file that did not pass validation.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md:98"
+    },
+    {
+      "text": "When a file in a batch process contains errors, the system tries to guess the submission number for the next file in the sequence. Therefore, this value may be incorrect.",
+      "location": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md:74"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-ack-batch-concept-route",
+        "target_path": "wiki/concepts/adyen-batch-processing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-acknowledgement-file]] \u2014 2026-09-15 Adyen Docs snapshot of batch ACK file validation status, error-line identity and next-submission-number caveat.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Proposed hub is coordinator-owned and may not yet exist; insert once the batch-processing concept and ## Sources anchor are available."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/batch-processing/advanced-sftp-batch-files/batch-acknowledgement-file/2026-09-15.md",
+  "raw_sha256": "6871d4e5cd217394b410314fe56d93aaab0ad04437963a4f67645245d72cac97",
+  "status": "candidate_ready"
+}

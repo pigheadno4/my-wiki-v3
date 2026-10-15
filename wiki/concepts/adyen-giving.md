@@ -28,6 +28,9 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-donations-integration-options]] — 2026-09-15 Adyen Giving navigation page selecting Sessions versus Advanced online-donation guides by server-side flow and interface category.
+
+
 - [[source-adyen-docs-point-of-sale-donate]] — Adyen POS Giving guide (2026-09-15 webpage snapshot) for terminal campaigns, distinct purchase/donation transactions, nonprofit settlement, eligible methods/models and outcome webhook.
 
 

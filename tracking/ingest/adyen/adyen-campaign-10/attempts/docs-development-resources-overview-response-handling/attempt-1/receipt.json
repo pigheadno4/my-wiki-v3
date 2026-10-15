@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-development-resources-overview-response-handling",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen payment response layers overview\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/overview-response-handling\"\nraw_files:\n  - \"adyen/docs/development-resources/overview-response-handling/2026-09-15.md\"\ntags: [adyen, online-payments, response-handling, result-codes, refusal-reasons]\n---\n\n## Overview\n\nThis [[adyen]] development-resources overview separates API request status, raw acquirer response, refusal reason, and payment result code at different stages of an online payment. HTTP status describes whether Adyen processed the API request; it does not by itself establish that the financial institution approved the transaction. Adyen maps raw acquirer responses to refusal reasons and result codes in the API response. See [[adyen-online-payments]] for the provider flow and [[source-adyen-docs-development-resources-response-handling|the HTTP handling guide]] for request-level status and retry detail.\n\n## Key takeaways\n\n- The response's type and details depend on the payment lifecycle stage and the responding entity. An HTTP `200/OK` can accompany a payment described in the API response as refused or cancelled; it only shows successful request processing at the transport/API layer.\n- For a submitted payment, the raw acquirer response indicates whether the financial institution authorized or rejected it and can give a rejection reason. Adyen maps the raw response to a refusal reason and result code. A refusal reason or `resultCode=Refused` identifies a payment-level refusal; the page notes that Adyen can also refuse when its risk score exceeds 99.\n- This overview lists `Authorised`, `Refused`, `Error`, and `Cancelled` result codes and their meanings. These are API-response summaries, not HTTP status codes. It describes `Authorised` as approved by the financial institution, `Error` as a communication error after payment receipt, and `Cancelled` as an approved submitted cancellation request.\n- The overview stops at API responses and routes to more detailed HTTP, error-code, raw-acquirer, and refusal-reason pages. It does not document later webhook delivery or prove a particular final payment, capture, or settlement outcome; consult the relevant payment lifecycle and [[adyen-webhooks]] sources for asynchronous state.\n\n## Detail locators\n\n- **Response-stage and responding-entity scope:** raw lines 15\u201325, under `# Response handling` and `## Types of responses`.\n- **HTTP request status and non-200 error diagnostics:** raw lines 27\u201337, under `### HTTP status codes` and `### Error codes and messages`.\n- **Raw acquirer response versus successful HTTP processing:** raw lines 39\u201345, under `### Raw acquirer responses`.\n- **Adyen's refusal-reason mapping and result-code table:** raw lines 47\u201372, under `## How Adyen handles responses`, `### Refusal reasons`, and `### Result codes`.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-webhooks]]\n- [[source-adyen-docs-development-resources-response-handling]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/overview-response-handling/2026-09-15|Adyen response handling overview \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The type of response and the details of a response depend on the transaction's stage in the payment lifecycle.",
+      "location": "raw line 19, # Response handling"
+    },
+    {
+      "text": "The HTTP status code indicates the status of the API request you sent.",
+      "location": "raw line 29, ### HTTP status codes"
+    },
+    {
+      "text": "A successful payment request (HTTP status code `200/OK`) does not automatically mean that the payment is successful.",
+      "location": "raw line 41, ### Raw acquirer responses"
+    },
+    {
+      "text": "When handling responses, the raw acquirer response is mapped to a refusal reason and result code.",
+      "location": "raw line 49, ## How Adyen handles responses"
+    },
+    {
+      "text": "Result codes are included in the API response.",
+      "location": "raw line 72, ### Result codes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c10-overview-response-handling-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-overview-response-handling]] \u2014 Adyen API response overview distinguishing HTTP request status, raw acquirer response, refusal reason and payment result code (webpage snapshot, 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/overview-response-handling/2026-09-15.md",
+  "raw_sha256": "b2d5b9aeedc1a89f64e176dedaec60a7dd36168b408e4267e8335d5016f670a5",
+  "status": "candidate_ready"
+}

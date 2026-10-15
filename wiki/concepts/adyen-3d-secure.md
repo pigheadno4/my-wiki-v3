@@ -23,6 +23,18 @@ This concept covers the high-level merchant website guide across web and mobile 
 
 ## Related
 
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios]] — 2019-modified, 2026-09-15-captured iOS redirect 3D Secure landing page routing to Drop-in or Components guides; navigation only, with no SDK or payment behavior specified.
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-android]] — Android redirect 3DS landing page choosing Drop-in or Components; navigation only (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-web]] — 2026-09-15 snapshot of a 2019-modified Web redirect 3DS landing page that routes to Drop-in and Components implementation guides; navigation only.
+
+
+- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2]] — 2026-09-15 Adyen redirect 3DS2 route page describing the shopper authentication URL and API-only Web, iOS, and Android Component navigation; implementation belongs to the linked platform guides.
+
+
 - [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows]] — 2019-modified, 2026-09-15-captured Classic `/authorise` navigation for third-party MPI data plus Adyen authorization and Brazil/Mastercard-only data-only requests; new Classic integrations are not accepted.
 
 

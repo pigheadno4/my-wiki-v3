@@ -15,6 +15,27 @@ At overview level, the integration is divided among a payments server that calls
 
 ## Sources
 
+- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-checkout-api-v72]] — 2026-09-15 Checkout API v72 online-payments request-value validation checklist and credential/Customer Area roles; the `dateOfBirth` example caption has an unresolved year typo and the page gives no SDK or runtime migration proof.
+
+
+- [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api-upgrade-api-library]] — Java API library v40.0.0-or-later guide for Checkout API v72, use-case migration and server examples (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-out-of-app-payments-on-ios]] — 2026-09-15 snapshot of a 2023-modified iOS app-to-browser payment guide for merchant Web or Adyen Hosted Checkout, with US App Store recommendation, setup roles, return path, and webhook outcome.
+
+
+- [[source-adyen-docs-online-payments-instant-card-funding]] — 2025-modified, 2026-09-15-captured Checkout `/payments` card-funding guide for top-ups and P2P funding, gated by compliance/enablement and separate from outbound payout; data-validation and partial-authorization wording conflicts remain qualified.
+
+
+- [[source-adyen-docs-development-resources-raw-acquirer-responses-visa-integrity-fees]] — 2026-09-15 Adyen Visa raw-refusal fee-category and retry mapping for merchant-built online retry logic; raw code `14` conflicts between no-retry and limited-retry rows.
+
+
+- [[source-adyen-docs-development-resources-refusal-reasons]] — 2026-09-15 Adyen webpage snapshot cataloging online authorization refusal fields and codes, their HTTP-versus-payment meaning, shopper-disclosure warning and row-specific retry guidance.
+
+
+- [[source-adyen-docs-development-resources-overview-response-handling]] — Adyen API response overview distinguishing HTTP request status, raw acquirer response, refusal reason and payment result code (webpage snapshot, 2026-09-15).
+
+
 - [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-client-side-encryption-cse-library-public-key-location-and-token]] — Classic CSE Customer Area procedure for distinct public key, library URL and token values, test-to-live change and phased-out Web scope (2026-09-15 snapshot).
 
 

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-development-resources-test-cards-and-credentials-create-test-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Create Test Cards\"\ntype: source\ndate_ingested: 2026-10-15\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/test-cards-and-credentials/create-test-cards\"\nraw_files:\n  - \"adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md\"\ntags: [adyen, test-cards, payment-testing, customer-area, api]\n---\n\n## Overview\n\nThis Adyen guide describes creating custom card-number ranges for test-platform payment simulations, through Customer Area or the `/createTestCardRanges` API endpoint. The pinned documentation was fetched 2026-09-15 and carries 2026-02-27 last-modified metadata. Generated cards are test fixtures: transactions with them do not credit or debit live accounts, and creation does not establish production card, issuer, merchant or payment-method eligibility.\n\n## Key takeaways\n\n- The Customer Area flow requires the **Manage test cards** role. The guide routes a user to the test Customer Area's **Settings > Test cards > Add new range** form; it also documents an API request to `/createTestCardRanges`. Its API examples are JSON and SOAP, with response and error examples. They do not prove that a new range was created: both shown success-format responses contain `ALREADY_EXISTS`.\n- A generated range uses card numbers of the same length, between 6 and 19 digits, with a valid six-digit BIN and card-number constraints suited to the intended brand. Billing address data must include at least a street address; ZIP is optional. The range bounds are not checked for Luhn compliance at creation, but a card used in a test payment undergoes normal card checks including Luhn verification. Avoid treating acceptance of a range as proof that every number in it can complete a test payment.\n- The guide identifies generation failures for reversed or mismatched ranges, length, BIN and AVS constraints, and provides service-exception examples. A submitted API call returns processing confirmation, HTTP status and a response message; inspect the result code or fault before treating a range as created. The guide gives `901 Invalid Merchant Account` as an example security error and `101 Invalid card number` for a Luhn fault.\n- For failure-scenario testing, the page points to result-code and refusal-reason guidance rather than requiring custom-card generation. Cardholder name, expiry, CVC, address and 3D-related values in request examples are fixture fields, not a claim about real card data or production authorization.\n\n## Detail locators\n\n- `## Requirements` and `## Test card requirements` \u2014 role, numeric range, BIN, Luhn-stage and AVS qualifications.\n- `## Generating test cards in Customer Area` \u2014 test Customer Area UI path.\n- `## Generating test cards via API` / `### Request`, `### Response`, `### Response with an error` \u2014 endpoint, JSON/SOAP examples, `ALREADY_EXISTS` and merchant-account error example.\n- `## Error handling` / `### Test card response handling` / `### Service exceptions` \u2014 processing response, generation failures, Luhn fault and exception messages.\n\n## Related\n\n- Company: [[adyen]]\n- Provider testing route: [[adyen-payment-testing]]\n- Preset test-card catalog: [[source-adyen-docs-development-resources-test-cards-and-credentials-test-card-numbers]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15|2026-09-15 Adyen create-test-cards snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Transactions carried out with these test cards do not result in actual credits or debits to live accounts.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md:19 (# Create test cards)"
+    },
+    {
+      "text": "| **Customer Area roles** | You must have the **Manage test cards** role.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md:27 (## Requirements table)"
+    },
+    {
+      "text": "Although the created test card start and end range numbers are not checked for Luhn compliance, if you carry out a test payment the test card is handled like a standard payment card.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md:37 (## Test card requirements)"
+    },
+    {
+      "text": "To create test card ranges using the API, send a request to the\u00a0`/createTestCardRanges`\u00a0endpoint.",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md:53 (## Generating test cards via API)"
+    },
+    {
+      "text": "Test card generation fails, with a 4XX or 5XX HTTP response, in the following cases:",
+      "location": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md:235 (### Test card response handling)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-create-test-cards-payment-testing-route",
+        "target_path": "wiki/concepts/adyen-payment-testing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-test-cards-and-credentials-create-test-cards]] \u2014 2026-09-15 Adyen guide to Customer Area or API creation of custom test card ranges, role and range checks, and test-only funding boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/test-cards-and-credentials/create-test-cards/2026-09-15.md",
+  "raw_sha256": "579f8446bcf2484b960632a2a77b9f81937ba7ffcb08ed67d861798b95c67392",
+  "status": "candidate_ready"
+}

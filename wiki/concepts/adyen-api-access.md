@@ -26,6 +26,27 @@ These snapshot statements do not prove current merchant or user eligibility, suc
 Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
 
+- [[source-adyen-docs-development-resources-security-sensitive-data]] — sensitive-data security landing page routing TLS transmission and PGP card-data-exchange guides, without configuration or compliance proof (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-mcp-server]] — locally run MCP server guide for credentialed Checkout and Management API tool calls, with role, endpoint-inventory and test/live configuration boundaries (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-client-side-authentication-migrate-from-origin-key-to-client-key]] — dated Web/iOS/Android origin- or public-key to client-key migration guide with version thresholds, credential and allowed-origin setup, environment scope, and old-key coexistence (2026-09-15 snapshot; raw last modified 2020).
+
+
+- [[source-adyen-docs-development-resources-security-sensitive-data-tls]] — transport TLS version, cipher, SNI and certificate-rotation guidance, with existing/new integration split and conditional root-pinning exception (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-security-integration-security-allowlisting]] — network allowlisting guide for merchant-to-Adyen API endpoints and Adyen-to-merchant webhook traffic, with DNS rotation and Geo-IP cautions (webpage snapshot, 2026-09-15).
+
+
+- [[source-adyen-docs-development-resources-client-side-authentication]] — 2026-09-15 client-key guide for public client-side credential identity, version-qualified SDK support, environment-bound allowed origins, and client-key rotation; API requests use a separate API key.
+
+
+- [[source-adyen-docs-development-resources-security]] — 2026-09-15 security-resources landing page routing integration security, IAM, secure coding, API security, sensitive-data and incident guides; category navigation only.
+
+
 - [[source-adyen-docs-development-resources-mtls]] — 2026-09-15 Adyen webpage guide to company-credential mTLS enrollment, certificate linking, supported APIs and endpoint routes, and the post-link certificate requirement.
 
 
