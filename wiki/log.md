@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-15] ingest | Messaging Components `1.99.0`
+
+Approved focused serial delta from `1.98.0`: prequalification amount forwarding, calculator/heading semantics and legacy disclaimer deduplication. Preserved earlier knowledge and added dated resolution notes for the SDK assembly's former Messaging-reading gap; hosted behavior remains unproven. Details: [[paypal-log]], [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]]. No commit/push.
+
 ## [2026-10-15] ingest | Adyen website C11
 
 - Fifty independently approved batch request/result formats and Customer Area structure/access/settings documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 5 concepts touched (2 new); source_count 564 = 550 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-11/`; details [[adyen-log]]. No commit/push.

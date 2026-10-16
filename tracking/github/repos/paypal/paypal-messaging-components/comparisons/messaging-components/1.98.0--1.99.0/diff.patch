@@ -1,0 +1,229 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index c09b295..ba40fb5 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,17 @@
+ # Changelog
+ 
++## [1.99.0](https://github.com/paypal/paypal-messaging-components/compare/v1.98.0...v1.99.0) (2026-10-08)
++
++
++### Features
++
++* pass prequal amt ([#1413](https://github.com/paypal/paypal-messaging-components/issues/1413)) ([b56476e](https://github.com/paypal/paypal-messaging-components/commit/b56476ed75cb1d19b54dd40ec7e0226a37df7655))
++
++
++### Bug Fixes
++
++* fix voiceover issues ([#1429](https://github.com/paypal/paypal-messaging-components/issues/1429)) ([832f995](https://github.com/paypal/paypal-messaging-components/commit/832f9958fafa03d98cdcebfaaace3b5e468cf07e))
++
+ ## [1.98.0](https://github.com/paypal/paypal-messaging-components/compare/v1.97.0...v1.98.0) (2026-09-28)
+ 
+ 
+diff --git a/package.json b/package.json
+index 5fafe53..74340e9 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "@paypal/messaging-components",
+-    "version": "1.98.0",
++    "version": "1.99.0",
+     "description": "PayPal messaging library for integrating PayPal Credit messaging on merchant websites",
+     "homepage": "https://github.com/paypal/paypal-messaging-components",
+     "repository": {
+diff --git a/src/components/modal/v2/lib/utils.js b/src/components/modal/v2/lib/utils.js
+index eab0ed1..dd6fdfa 100644
+--- a/src/components/modal/v2/lib/utils.js
++++ b/src/components/modal/v2/lib/utils.js
+@@ -154,10 +154,10 @@ export function createPrequalToken() {
+  * @param {Object} params - query parameters to append to the URL
+  */
+ export function openPrequalification(params = {}) {
+-    const { offer } = params;
++    const { offer, amount } = params;
+     const token = createPrequalToken();
+     const baseUrl = getGlobalUrl('PREQUALIFICATION');
+-    const query = Object.entries({ offer })
++    const query = Object.entries({ offer, amount })
+         .filter(([, val]) => typeof val !== 'undefined' && val !== null && val !== '')
+         // Encode values to keep URL valid; keys are expected to be safe identifiers.
+         .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+diff --git a/src/components/modal/v2/parts/Calculator.jsx b/src/components/modal/v2/parts/Calculator.jsx
+index 4329276..b1608b2 100644
+--- a/src/components/modal/v2/parts/Calculator.jsx
++++ b/src/components/modal/v2/parts/Calculator.jsx
+@@ -197,18 +197,6 @@ const Calculator = ({
+         return null;
+     };
+ 
+-    /**
+-     * Due to slight differences in the calculator input styling between
+-     * the US and DE versions of the universal modal, the function below
+-     * determines when to return the inputLabel content depending on the country.
+-     */
+-    const renderInputLabelOnEmptyField = offerCountry => {
+-        if (offerCountry === 'US') {
+-            return displayValue !== '' ? inputLabel : '';
+-        }
+-        return inputLabel;
+-    };
+-
+     return (
+         <div
+             className={`calculator ${useNewCheckoutDesign === 'true' ? 'checkout' : ''} ${
+@@ -221,21 +209,20 @@ const Calculator = ({
+                 } ${useNewCheckoutDesign === 'true' ? 'checkout' : ''} ${useDarkMode ? 'darkMode' : ''}`}
+                 onSubmit={submit}
+             >
+-                <h3 className={`title ${cta ? 'checkout-title' : ''}`}>
++                <label htmlFor="purchase-amount" className={`title ${cta ? 'checkout-title' : ''}`}>
+                     {!hasInitialAmount ? genericTitle || title : title}
+-                </h3>
++                </label>
+                 <div
+                     className={`input__wrapper transitional ${useV5Design === 'true' ? 'v5Design' : ''} ${
+                         cta ? 'checkout' : ''
+                     } ${country || ''} ${showVisualInputError ? 'input__wrapper--error' : ''}`}
+                 >
+-                    <label htmlFor="purchase-amount" className={`input__label ${country}`}>
+-                        {renderInputLabelOnEmptyField(country)}
+-                    </label>
++                    <span aria-hidden="true" className={`input__label ${country}`}>
++                        {inputLabel}
++                    </span>
+                     {inputCurrencySymbol && <div className="input__currency-symbol">{inputCurrencySymbol}</div>}
+                     <input
+                         id="purchase-amount"
+-                        aria-label={country === 'US' && displayValue === '' ? formattedInputPlaceholder : undefined}
+                         aria-invalid={hasInputError ? 'true' : undefined}
+                         aria-describedby={hasInputError ? 'purchase-amount-error' : undefined}
+                         aria-required="true"
+diff --git a/src/components/modal/v2/parts/CheckoutHeader.jsx b/src/components/modal/v2/parts/CheckoutHeader.jsx
+index 1e0ff4f..4dd2d98 100644
+--- a/src/components/modal/v2/parts/CheckoutHeader.jsx
++++ b/src/components/modal/v2/parts/CheckoutHeader.jsx
+@@ -57,7 +57,6 @@ const CheckoutHeader = ({
+                         aria-label={closeButtonLabel}
+                         type="button"
+                         id="close-btn"
+-                        aria-keyshortcuts="escape"
+                         onClick={() => handleClose('Close Button')}
+                     >
+                         <Icon name="chevron-left" />
+diff --git a/src/components/modal/v2/parts/Header.jsx b/src/components/modal/v2/parts/Header.jsx
+index d0c30c5..e3a13e1 100644
+--- a/src/components/modal/v2/parts/Header.jsx
++++ b/src/components/modal/v2/parts/Header.jsx
+@@ -67,7 +67,6 @@ const Header = ({
+                         aria-label={closeButtonLabel}
+                         type="button"
+                         id="close-btn"
+-                        aria-keyshortcuts="escape"
+                         onClick={() => handleClose('Close Button')}
+                     >
+                         <Icon name="close" />
+diff --git a/src/components/modal/v2/parts/OfferCard.jsx b/src/components/modal/v2/parts/OfferCard.jsx
+index da5be76..70c1097 100644
+--- a/src/components/modal/v2/parts/OfferCard.jsx
++++ b/src/components/modal/v2/parts/OfferCard.jsx
+@@ -25,7 +25,7 @@ const OfferCard = ({
+             className={`offer__container ${useV5Design === 'true' ? 'v5Design' : ''} ${useDarkMode ? 'darkMode' : ''}`}
+         >
+             <div className={`offer__row ${useV5Design === 'true' ? 'v5Design' : ''}`}>
+-                <h4
++                <h3
+                     className={`offer__field-header ${use5Dot1Design ? 'v5Dot1Design' : ''}`}
+                     // eslint-disable-next-line react/no-danger
+                     dangerouslySetInnerHTML={{ __html: offerHeaderField }}
+diff --git a/src/components/modal/v2/parts/views/LongTerm/Content.jsx b/src/components/modal/v2/parts/views/LongTerm/Content.jsx
+index 82b7723..b0ab9e6 100644
+--- a/src/components/modal/v2/parts/views/LongTerm/Content.jsx
++++ b/src/components/modal/v2/parts/views/LongTerm/Content.jsx
+@@ -99,7 +99,8 @@ export const LongTerm = ({
+     const { views, country } = useServerData();
+     const spendingPowerClickTitle = 'Check Spending Power';
+     const handlePrequalification = usePrequalification(spendingPowerClickTitle, onClick, {
+-        offer: product
++        offer: product,
++        amount
+     });
+     const { offers } = views.find(view => view.offers);
+     const { minAmount, maxAmount } = getComputedVariables(offers);
+diff --git a/src/components/modal/v2/parts/views/ShortTerm/Content.jsx b/src/components/modal/v2/parts/views/ShortTerm/Content.jsx
+index 44b124f..96b9350 100644
+--- a/src/components/modal/v2/parts/views/ShortTerm/Content.jsx
++++ b/src/components/modal/v2/parts/views/ShortTerm/Content.jsx
+@@ -46,10 +46,11 @@ export const ShortTerm = ({
+     useDarkMode
+ }) => {
+     const { views, country } = useServerData();
+-    const { onClick, onClose } = useXProps();
++    const { amount, onClick, onClose } = useXProps();
+     const spendingPowerClickTitle = 'Check Spending Power';
+     const handlePrequalification = usePrequalification(spendingPowerClickTitle, onClick, {
+-        offer: product
++        offer: product,
++        amount
+     });
+ 
+     const isQualifying = qualifying === 'true';
+diff --git a/src/server/message/index.jsx b/src/server/message/index.jsx
+index 99bea9f..8440f81 100644
+--- a/src/server/message/index.jsx
++++ b/src/server/message/index.jsx
+@@ -149,7 +149,7 @@ export default ({ options, markup, locale }) => {
+                             </div>
+                         </div>{' '}
+                         <p className="message__disclaimer">
+-                            <MutatedText tagData={markup.disclaimer} options={mutationRules.disclaimer} />
++                            <MutatedText tagData={markup.disclaimer} options={mutationRules.disclaimer} deduplicate />
+                         </p>
+                     </div>
+                 </div>
+diff --git a/src/server/message/parts/MutatedText.jsx b/src/server/message/parts/MutatedText.jsx
+index a4085a4..a2210e4 100644
+--- a/src/server/message/parts/MutatedText.jsx
++++ b/src/server/message/parts/MutatedText.jsx
+@@ -5,7 +5,7 @@ import { getDataByTag } from '../../../utils/server';
+ import Text from './Text';
+ import BreakText from './BreakText';
+ 
+-const MutatedText = ({ tagData, options }) => {
++const MutatedText = ({ tagData, options, deduplicate = false }) => {
+     if (typeof options !== 'string' && typeof options !== 'object') return null;
+ 
+     let uniformOptions;
+@@ -17,6 +17,32 @@ const MutatedText = ({ tagData, options }) => {
+         uniformOptions = options;
+     }
+ 
++    if (deduplicate) {
++        const indexedTagData = tagData.map(([, tags], entryIndex) => [entryIndex, tags]);
++        const resolvedOptions = uniformOptions.map(option => {
++            const tag = typeof option === 'string' ? option : option.tag;
++            const entryIndex = getDataByTag(indexedTagData, tag);
++            return {
++                option,
++                entryIndex,
++                exact: tagData[entryIndex]?.[1].includes(tag) ?? false
++            };
++        });
++        const preferredOptions = new Map();
++
++        resolvedOptions.forEach(resolved => {
++            if (resolved.entryIndex === '') return;
++            const previous = preferredOptions.get(resolved.entryIndex);
++            if (!previous || (resolved.exact && !previous.exact)) {
++                preferredOptions.set(resolved.entryIndex, resolved);
++            }
++        });
++
++        uniformOptions = resolvedOptions
++            .filter(resolved => preferredOptions.get(resolved.entryIndex) === resolved)
++            .map(({ option }) => option);
++    }
++
+     /**
+      * 1. (\$|£)?
+      * Either $ or £ or... neither

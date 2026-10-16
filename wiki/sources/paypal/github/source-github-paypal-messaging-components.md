@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-10-04
+date_updated: 2026-10-15
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json"
   - "github/paypal/paypal-messaging-components/supplements/2026-09-20-39769bc-70608700/manifest.json"
@@ -17,7 +18,7 @@ tags: [paypal, pay-later, paypal-credit, messaging, javascript, github-repositor
 
 `paypal/paypal-messaging-components` implements PayPal Credit and Pay Later promotional messaging for merchant websites. This cumulative page begins with package-qualified baseline `@paypal/messaging-components@1.95.1` at exact SHA `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00`.
 
-The latest ingested release here is `@paypal/messaging-components@1.98.0`, released September 28, 2026, at `a639ec71494d3278684f5896017a426ed1fbfcd1`. Its additive ingest records Canadian bilingual long-term presentment, FR/AT/DE credit warnings and layouts, currency formatting and a modal Tab guard. The `1.95.1` baseline, `1.96.0` accessibility/content delta and `1.97.0` page-type/disclosure history below remain preserved.
+The latest locally ingested release here is `@paypal/messaging-components@1.99.0`, released October 8, 2026, at `6c5b6649b08abbfd47e9e35029823bc278b4bb74`. It forwards prequalification amount context and changes calculator labels, offer headings and legacy disclaimer deduplication. The `1.95.1` baseline and `1.96.0` through `1.98.0` history below remain preserved. This is not a live upstream-latest or hosted-rollout assertion.
 
 Repository: <https://github.com/paypal/paypal-messaging-components>
 
@@ -244,9 +245,58 @@ Five exact excerpts from the `2026-10-04-a639ec7/files/` snapshot:
 
 No detected public API or dependency change: `package.json` changes only its version; Puppeteer is already `^25.3.0` in the prior snapshot. Commented demo accounts do not enable production accounts. This is not `paypal-js`, its React wrapper or checkout orchestration, and the release does not establish a new saved-payment/token contract. No build, browser, visual, screen-reader or payment test was run.
 
+## `1.99.0` Prequalification Amount And Accessibility
+
+Delta-ingested 2026-10-15 after `1.98.0`, at SHA `6c5b6649b08abbfd47e9e35029823bc278b4bb74`. Eleven retained files are modified, none added/removed, and 715 unchanged; the snapshot retains 726 files. Under this item's approved focused-reading method, changed implementation and affected prior code were read completely; unchanged cumulative changelog history and manifest/packet inventories were verified mechanically. No upstream code was executed.
+
+### Prequalification Amount Forwarding
+
+Both short- and long-term views now pass `{ offer: product, amount }` to the existing `usePrequalification()` hook. The amount comes from `useXProps()`: this change is not a new read of calculator-local `displayValue`. The unchanged hook calls `onClick({ linkName: clickTitle })` when supplied, then invokes `openPrequalification(queryParams)`.
+
+The redirect helper adds `amount` alongside `offer` to the existing tokenized prequalification URL. It omits undefined, null and empty-string values and URL-encodes included values; numeric zero is not filtered out by that predicate. Token generation, the configured endpoint and `window.location.assign()` navigation remain unchanged. This adds context to an existing prequalification flow; it is not the first prequalification support, a financing approval, a new checkout payment API or a React wrapper feature.
+
+```js
+// Internal implementation excerpt, not a public merchant integration method.
+const handlePrequalification = usePrequalification(spendingPowerClickTitle, onClick, {
+    offer: product,
+    amount
+});
+// openPrequalification now builds its optional query from both fields:
+const query = Object.entries({ offer, amount })
+    .filter(([, val]) => typeof val !== 'undefined' && val !== null && val !== '')
+    .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+    .join('&');
+```
+
+### Labels And Headings
+
+`Calculator.jsx` replaces its title h3 with a `label htmlFor="purchase-amount"`. Its former input label becomes an `aria-hidden="true"` span that always renders `inputLabel`, and the US empty-input placeholder `aria-label` branch is removed. The actual placeholder, invalid/described-by/required attributes, error region and loading/busy announcements remain. This supersedes the empty-US-input naming behavior recorded for `1.96.0`, without deleting that historical behavior.
+
+`OfferCard.jsx` changes its plan heading from h4 to h3, superseding the earlier h4. Both header components remove `aria-keyshortcuts="escape"` from the close button; their accessible labels and close click handlers are unchanged. Removal of shortcut metadata alone does not establish removal of Escape-key handling elsewhere. These are authored accessibility semantics, not independently tested VoiceOver outcomes.
+
+### Legacy Disclaimer Deduplication
+
+The legacy message renderer enables the new `deduplicate` prop only for its disclaimer `MutatedText` call. The default is false; headline/subheadline calls and the custom-renderer branch are not switched to this new behavior, and this is not the separate v2 message renderer.
+
+Options are resolved to content-entry indices through `getDataByTag()`, whose existing lookup tries an exact tag, then the prefix before a dot, then `default`, and returns an empty string for no match. Deduplication groups by resolved entry index, drops unmatched options, keeps the first option unless a later exact tag replaces a fallback, and renders retained options in their original relative order. It does not compare text strings or collapse identical text in distinct content entries. Currency formatting and text rendering after selection remain unchanged.
+
+### Grounding And Limits
+
+Five exact excerpts from `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/`:
+
+- `src/components/modal/v2/lib/utils.js:160`: `const query = Object.entries({ offer, amount })`
+- `src/components/modal/v2/parts/Calculator.jsx:212`: ``<label htmlFor="purchase-amount" className={`title ${cta ? 'checkout-title' : ''}`}>``
+- `src/components/modal/v2/parts/OfferCard.jsx:28`: `<h3`
+- `src/server/message/index.jsx:152`: `<MutatedText tagData={markup.disclaimer} options={mutationRules.disclaimer} deduplicate />`
+- `src/server/message/parts/MutatedText.jsx:36`: `if (!previous || (resolved.exact && !previous.exact)) {`
+
+The package manifest changes only its version; dependencies and scripts are unchanged. All 120 upstream changes have dispositions: 11 retained and 109 policy-excluded. Those exclusions include generated distributions, tests/snapshots and two modal SCSS files (`_calculator.scss` and NoInterest `styles.scss`), so visual parity and distributed/hosted behavior are not established. No browser, VoiceOver, visual, build or payment test was run. No merchant API migration, new eligibility, financing terms or current market availability is established by this delta.
+
+Assembly `@paypal/sdk-release@5.0.582` independently pins this exact component version; this ingest closes its earlier component-reading gap, not proof of deployment. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
+
 ## Version-Qualified Use
 
-Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0`, `1.97.0` and `1.98.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
+Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0` through `1.99.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
 
 ## Related
 
@@ -257,6 +307,18 @@ Use this source and [[changelog-github-paypal-messaging-components]] for the `1.
 - Combined SDK bill of materials: [[source-github-paypal-sdk-release]]
 
 ## Raw Sources
+
+- `1.99.0` snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json`
+- Release record and notes: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/manifest.json`, `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/release-notes.md`
+- Comparison, detail and patch: `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.json`, `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.md`, `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/diff.patch`
+- Prequalification helper: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/lib/utils.js`
+- Prequalification hook: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/lib/hooks/prequalification.js`
+- Short-/long-term callers: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/views/ShortTerm/Content.jsx`, `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/views/LongTerm/Content.jsx`
+- Calculator and headings: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/Calculator.jsx`, `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/OfferCard.jsx`
+- Header close buttons: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/Header.jsx`, `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/CheckoutHeader.jsx`
+- Disclaimer caller and selector: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/server/message/index.jsx`, `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/server/message/parts/MutatedText.jsx`
+- Tag lookup: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/utils/miscellaneous.js`
+- Package: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/package.json`
 
 - `1.98.0` snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json`
 - Release record: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/manifest.json`

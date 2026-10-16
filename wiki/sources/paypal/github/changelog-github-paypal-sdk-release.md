@@ -34,6 +34,8 @@ Package-qualified release history for `paypal/paypal-sdk-release`. Durable assem
 - **Updated:** additive source history and evidence gap, Checkout assembly concept, company/catalog/logs. Prior history retained.
 - **Evidence:** [snapshot](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/manifest.json), [package](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/files/package.json), [release](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.582/2026-10-15/manifest.json), [notes](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.582/2026-10-15/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/comparison.json), [details](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/comparison.md), [patch](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/diff.patch). See [[source-github-paypal-sdk-release]].
 
+Subsequent evidence resolution (2026-10-15): Messaging `1.99.0` has now been independently ingested in [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]], closing the preceding entry's collection/reading gap. This does not establish hosted rollout or merchant eligibility; the assembly-only checkpoint above remains historical.
+
 ## `@paypal/sdk-release@5.0.581` (2026-10-05)
 
 - **Transition:** `@paypal/sdk-release@5.0.580` -> `@paypal/sdk-release@5.0.581`; SHA `d37489b5266805670aeecee1cd846ce8242deba2`; serial delta ingest 2026-10-15.

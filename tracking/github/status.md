@@ -1271,6 +1271,31 @@
   To SHA: `e9c8ae99ae5365f91f8e5372ae2d9d2dc7a427e0`
   Comparison: Not applicable
 
+## `github-48dde1a31454955bf4fc`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `6c5b6649b08abbfd47e9e35029823bc278b4bb74`
+- Collection date: `2026-10-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-48dde1a31454955bf4fc/packet.md)
+- Review priority: `normal`
+- Required reading: `20` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.99.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.json)
+
 ## `github-4ef7ad96d01f40cfff58`
 
 - Repository: `stripe/stripe-ios`

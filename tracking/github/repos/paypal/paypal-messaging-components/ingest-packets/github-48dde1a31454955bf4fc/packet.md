@@ -1,0 +1,157 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-messaging-components`
+- Work item: `github-48dde1a31454955bf4fc`
+- Snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `@paypal/messaging-components`
+
+- Version: `1.98.0` -> `1.99.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `715`
+
+### Required reading
+
+- `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/manifest.json`
+- `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/release-notes.md`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/package.json`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/lib/utils.js`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/Calculator.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/CheckoutHeader.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/Header.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/OfferCard.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/views/LongTerm/Content.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/views/ShortTerm/Content.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/server/message/index.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/server/message/parts/MutatedText.jsx`
+- `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json`
+- `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.json`
+- `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.md`
+- `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `dist/bizcomponents/js/messaging.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/modal.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/renderMessage.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/renderMessage.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/renderV2Message.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/smart-credit-message.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/smart-credit-modal-v2-lander.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/smart-credit-modal-v2-lander.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/smart-credit-modal-v2.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/js/smart-credit-modal-v2.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/messaging@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/messaging@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/modal@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/modal@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/js/versioned/renderMessage@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/renderMessage@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/js/versioned/renderMessage@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/renderV2Message@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/renderV2Message@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/smart-credit-message@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/js/versioned/smart-credit-message@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/js/versioned/smart-credit-modal-v2-lander@1.98.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/js/versioned/smart-credit-modal-v2-lander@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/js/versioned/smart-credit-modal-v2-lander@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/js/versioned/smart-credit-modal-v2-lander@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/js/versioned/smart-credit-modal-v2@1.98.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/js/versioned/smart-credit-modal-v2@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/js/versioned/smart-credit-modal-v2@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/js/versioned/smart-credit-modal-v2@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/messaging.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/modal.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/renderMessage.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/renderMessage.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/renderV2Message.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/smart-credit-message.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/smart-credit-modal-v2-lander.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/smart-credit-modal-v2-lander.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/smart-credit-modal-v2.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/sandbox/smart-credit-modal-v2.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/messaging@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/messaging@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/modal@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/modal@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/sandbox/versioned/renderMessage@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/renderMessage@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/sandbox/versioned/renderMessage@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/renderV2Message@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/renderV2Message@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/smart-credit-message@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/sandbox/versioned/smart-credit-message@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2-lander@1.98.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2-lander@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2-lander@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2-lander@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2@1.98.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/sandbox/versioned/smart-credit-modal-v2@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/messaging.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/modal.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/renderMessage.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/renderMessage.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/renderV2Message.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/smart-credit-message.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/smart-credit-modal-v2-lander.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/smart-credit-modal-v2-lander.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/smart-credit-modal-v2.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `dist/bizcomponents/stage/smart-credit-modal-v2.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/messaging@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/messaging@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/modal@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/modal@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/stage/versioned/renderMessage@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/renderMessage@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/stage/versioned/renderMessage@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/renderV2Message@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/renderV2Message@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/smart-credit-message@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `dist/bizcomponents/stage/versioned/smart-credit-message@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2-lander@1.98.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2-lander@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2-lander@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2-lander@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2@1.98.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2@1.98.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2@1.99.0.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `dist/bizcomponents/stage/versioned/smart-credit-modal-v2@1.99.0.js.map`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/lib/utils.js`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/parts/Calculator.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/parts/CheckoutHeader.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/parts/Header.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/parts/OfferCard.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/parts/views/LongTerm/Content.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/parts/views/NoInterest/styles.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/components/modal/v2/parts/views/ShortTerm/Content.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/modal/v2/styles/components/_calculator.scss`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `src/server/message/index.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/server/message/parts/MutatedText.jsx`: `retained-evidence` (snapshot-file)
+- `modified` `tests/functional/snapshots/US/DEV000GENPYPL/text/logo.type-primary_text.align-center_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV000GENPYPL/text/logo.type-primary_text.align-left_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV000GENPYPL/text/logo.type-primary_text.align-right_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV00MRKGENPL/text/logo.type-primary_text.align-right_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0BTNPYPLPP/text/logo.type-primary_text.align-center_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0BTNPYPLPP/text/logo.type-primary_text.align-left_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0BTNPYPLPP/text/logo.type-primary_text.align-right_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0GENERICPL/text/logo.type-primary_text.align-right_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0MRKPYPLPP/text/logo.type-primary_text.align-center_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0MRKPYPLPP/text/logo.type-primary_text.align-left_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEV0MRKPYPLPP/text/logo.type-primary_text.align-right_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEVMRKGENPYPL/text/logo.type-primary_text.align-center_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEVMRKGENPYPL/text/logo.type-primary_text.align-left_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/functional/snapshots/US/DEVMRKGENPYPL/text/logo.type-primary_text.align-right_text.position-left-200-snap.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/playwright/tests/sdk/modals/multi.spec.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/unit/spec/server/message/index.test.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/unit/spec/server/message/parts/MutatedText.test.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/unit/spec/src/components/modal/v2/lib/utils.test.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/unit/spec/src/components/modal/v2/parts/Calculator.test.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/unit/spec/src/components/modal/v2/parts/OfferCard.test.js`: `intentional-policy-exclusion` (outside-capsule-policy)

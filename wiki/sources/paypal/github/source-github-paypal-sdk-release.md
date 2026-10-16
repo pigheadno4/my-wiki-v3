@@ -201,6 +201,8 @@ Separate workflows provide:
 
 The logo check reads the resolved `@paypal/sdk-logos` version from the lockfile and requests `paypal-default.svg` from the corresponding versioned CDN directory. Because the lockfile is outside this capsule, the exact logo version used by `5.0.569` is an explicit evidence gap.
 
+Resolution of the `5.0.582` ingest checkpoint (2026-10-15): the independently ingested Messaging `1.99.0` implementation now documents prequalification amount forwarding and authored label/heading/disclaimer changes. See [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]]. The earlier collection/reading gap above is closed; hosted rollout, eligibility and runtime accessibility remain unproven.
+
 ## Version-qualified use
 
 Use this repository first when a question asks which component versions formed a specific PayPal SDK release or how PayPal's release assembly was promoted. Then consult the independently versioned component source and changelog for implementation details. At initial baseline ingestion, the `5.0.569` manifest pinned Checkout Components `5.0.428`, while the then-local checkout-components source ended at `5.0.425`; that older snapshot did not establish behavior introduced in `5.0.426` through `5.0.428`. This is historical collection context, not the current endpoint of the independently maintained component history.

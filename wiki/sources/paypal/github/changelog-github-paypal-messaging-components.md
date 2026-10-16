@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-10-04
+date_updated: 2026-10-15
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json"
   - "github/paypal/paypal-messaging-components/supplements/2026-09-20-39769bc-70608700/manifest.json"
@@ -16,6 +17,33 @@ tags: [paypal, pay-later, paypal-credit, messaging, changelog, github-repository
 ## Overview
 
 Package-qualified release history for `paypal/paypal-messaging-components`. Durable implementation behavior belongs in [[source-github-paypal-messaging-components]]; this page records version transitions and their evidence.
+
+## `@paypal/messaging-components@1.99.0` (2026-10-08)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/messaging-components` | `1.98.0` | `1.99.0` | `6c5b6649b08abbfd47e9e35029823bc278b4bb74` | Delta, approved focused reading |
+
+**Important findings:** Both short-/long-term prequalification CTAs forward their xprops amount through the existing hook and redirect helper; URL query encoding/filtering and token navigation remain. Calculator title becomes the associated input label, decorative label text becomes aria-hidden, and the previous empty-US-input aria-label branch is removed. Offer headings change h4 to h3. Header shortcut metadata is removed without changing close click handlers. Legacy disclaimer options are deduplicated by resolved entry index, preferring exact tag matches over fallback matches.
+
+**Developer or merchant impact:** Additional context for an existing prequalification flow, not first support or a qualification decision. Amount is read from `useXProps()`, not a new calculator-local-value read. Deduplication is opt-in on the legacy disclaimer caller, not global equal-text deduplication or a v2-renderer change. Authored accessibility semantics do not establish tested VoiceOver results. Assembly `@paypal/sdk-release@5.0.582` pins this version; independent implementation reading now closes its earlier evidence gap, not the hosted-rollout boundary.
+
+**Migration action:** No detected merchant API or dependency migration; package changes only version. Runtime QA should check prequalification amount context, calculator naming, heading navigation and disclaimer output. Those checks were not run. Removing `aria-keyshortcuts` is not evidence that Escape handling was removed elsewhere.
+
+**Updated source sections:** additive `1.99.0` amount/accessibility behavior, scope and raw navigation; Pay Later concept first, then source/changelog, company/catalog/logs; dated resolution notes on prior assembly gap references. All older release knowledge preserved.
+
+**Evidence boundary:** 11 modified retained files, zero added/removed and 715 unchanged; 726-file snapshot. Fully read nine changed implementation files, current package, affected prior code, two supporting helpers plus server export, release records, new changelog section and authored comparison. Mechanically verified manifest/packet inventories and unchanged changelog suffix under the approved focused-reading exception. All 120 upstream paths classified: 11 retained, 109 excluded, including generated distributions, tests/snapshots and two modal SCSS paths. No build/browser/visual/screen-reader/payment execution, raw/policy/code change, commit or push.
+
+**Evidence:**
+
+- Snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json`
+- Release and notes: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/manifest.json`, `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/release-notes.md`
+- Comparison, detail and patch: `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.json`, `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.md`, `tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/diff.patch`
+- Prequalification: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/lib/utils.js`
+- Calculator: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/components/modal/v2/parts/Calculator.jsx`
+- Disclaimer selector: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/files/src/server/message/parts/MutatedText.jsx`
+
+See [[source-github-paypal-messaging-components]] for complete implementation context and additional exact raw links.
 
 ## `@paypal/messaging-components@1.98.0` (2026-09-28)
 

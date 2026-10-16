@@ -226,6 +226,8 @@ Assembly `@paypal/sdk-release@5.0.581` (after `5.0.580`): only the retained pack
 
 Assembly `@paypal/sdk-release@5.0.582` (after `5.0.581`): Checkout Components `5.0.436` -> `5.0.437`, Messaging Components `1.98.0` -> `1.99.0`; other ten direct pins and ten other retained files unchanged. This establishes manifest inclusion, not deployed traffic. Checkout implementation is independently documented in [[source-github-paypal-checkout-components]]; the `1.99.0` Messaging behavior remains unverified until separately collected/ingested under [[source-github-paypal-messaging-components]]. No PayPal JS loader/React package update follows from assembly numbering. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
 
+Resolution after the assembly checkpoint (2026-10-15): Messaging `1.99.0` is now independently ingested, documenting prequalification amount forwarding and source-level accessibility/disclaimer changes in [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]]. This closes the earlier collection/ingest gap, not the hosted-rollout or merchant-eligibility boundary.
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 
