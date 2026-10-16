@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-netsuite-set-up-pay-by-link",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen NetSuite Pay by Link setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/netsuite/set-up-pay-by-link\"\nraw_files:\n  - \"adyen/docs/plugins/netsuite/set-up-pay-by-link/2026-09-15.md\"\ntags: [adyen, netsuite, pay-by-link, hosted-checkout, customer-deposits]\n---\n\n## Overview\n\nThis Adyen guide configures Pay by Link in NetSuite so an invoice, sales order or Customer Deposit record can carry a URL to an Adyen-hosted payment page. It covers required bundle and Customer Area setup, a payment-method instance, processing-profile fields, company custom preferences and a record configuration that connects the subsidiary and profile. Link creation or sharing is a request for the shopper to pay, not evidence that payment, settlement or bank receipt occurred. See [[adyen]] and [[adyen-netsuite]] for provider and NetSuite integration context.\n\n## Key takeaways\n\n- The page requires the Adyen SuitePayments Bundle and Adyen Customer Area setup. Create a Pay by Link payment-method instance; Pay by Link invoice transactions additionally require a Pay by Reference instance. The processing profile selects the link method, default timeout and blocked/allowed payment codes or brands. CHECKOUT API KEY ENTRY is required only for Pay by Link invoices in NetSuite. The page names no separate NetSuite user role; linked setup guides own account and credential permissions.\n- Tokenization is optional. PAY BY LINK: TOKENIZATION controls whether shopper payment details used in a link transaction are tokenized; DEFAULT VIA TOKENIZATION saves tokenized details as the shopper's default only when tokenization is also enabled. These settings do not prove a token was created. Company Custom Preferences include a separate PAY BY LINK TEST MODE switch; an invoice preference chooses URL generation before versus after submit. The configuration record binds a named record to the processing-profile internal ID, its subsidiary and SuitePayment Config ID.\n- For an invoice, save the record with ADYEN PAY BY LINK CONFIG, retrieve its generated URL from Billing, then give it to the customer. The page says a payment record takes approximately 15 minutes to be created after the shopper completes payment; a generated invoice URL is not that record. Putting the URL on an invoice PDF requires adding its field to the template.\n- For a sales order, select the Pay by Link payment method and Process handling mode; if Payment Instruments are off, the guide also says to select Get Authorization. The order remains in Payment Hold until the customer pays through the link. Saving the order or seeing its URL does not clear that hold.\n- Customer Deposit links can collect full or partial payments and allow shoppers to modify the transaction amount, but this path is supported only for cards, alternative payment methods and ACH. The record selects Pay by Link, the processing profile and Process handling mode; a return URL is optional. After successful shopper payment, the deposit can be applied to an open invoice, and the guide directs checking the Customer Deposit's Applied to tab for amount and invoice. A saved Customer Deposit record or link is not proof that an amount was paid or applied.\n\n## Detail locators\n\n- Purpose, hosted URL and prerequisites: raw lines 17\u201324. Four setup steps and invoice Pay by Reference condition: `## Set up Pay by Link in NetSuite`, lines 26\u201335.\n- Processing-profile payment method, timeout, method restrictions, invoice-only API key and conditional tokenization: lines 37\u201362. Test mode, invoice URL timing, token-method and profile preferences: lines 64\u201378. Profile/subsidiary/config-ID record mapping: lines 80\u201396.\n- Invoice URL and approximate payment-record delay: `### Generate a payment link on the Invoice record`, lines 102\u2013116. PDF template field: lines 118\u2013146. Sales-order Payment Instruments condition and Payment Hold: lines 148\u2013166.\n- Customer Deposit amount, supported methods, optional return URL, successful-payment condition and invoice application check: lines 168\u2013200.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-netsuite]] \u2014 NetSuite bundle, setup and ERP record context.\n- [[source-adyen-docs-plugins-netsuite-set-up-netsuite-customer-center]] \u2014 NetSuite bundle, method-instance and processing-profile setup.\n\n## Related raw API references\n\n- The raw page links to Adyen Customer Area setup, the NetSuite glossary, the general Pay by Link guide and the Customer Center setup guide. Those linked destinations own their detailed eligibility and behavior until read separately.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/netsuite/set-up-pay-by-link/2026-09-15|Adyen Docs: Set up Pay by Link with NetSuite (2026-09-15 snapshot; page last modified 2023-05-16)]]\n",
+  "quotes": [
+    {
+      "text": "You can use Pay by Link in NetSuite to offer payment links as a payment method when you generate an [invoice, sales order, or customer deposit in NetSuite](/plugins/netsuite/#netsuite-glossary).",
+      "location": "raw line 19, # Set up Pay by Link"
+    },
+    {
+      "text": "This is only required when using Pay by Link Invoices in Netsuite.",
+      "location": "raw line 53, ### Step 2: Configure Pay By Link in your Payment Processing Profile, CHECKOUT API KEY ENTRY row"
+    },
+    {
+      "text": "This feature only works if the PAY BY LINK: TOKENIZATION box is also checked.",
+      "location": "raw line 62, ### Step 2: Configure Pay By Link in your Payment Processing Profile, DEFAULT VIA TOKENIZATION row"
+    },
+    {
+      "text": "The order is in Payment Hold until the customer pays using the payment link.",
+      "location": "raw line 164, ### Generate a payment link on the Sales Order record"
+    },
+    {
+      "text": "This feature is only supported for payments with cards, alternative payment methods, and ACH.",
+      "location": "raw line 172, ### Generate a payment link on the Customer Deposit record"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-netsuite-pay-by-link-route",
+        "target_path": "wiki/concepts/adyen-netsuite.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-netsuite-set-up-pay-by-link]] \u2014 2023-modified, 2026-09-15-captured guide to NetSuite invoice, sales-order and Customer Deposit payment links, profile/preferences setup, conditional tokenization and post-link payment-state boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply once the overview worker's adyen-netsuite concept is promoted; the concept is coordinator-owned, not created by this worker."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/netsuite/set-up-pay-by-link/2026-09-15.md",
+  "raw_sha256": "3fec1f01576efca3c5e842480ac34a1060635b0817dcbafea5937d699137acbc",
+  "status": "candidate_ready"
+}

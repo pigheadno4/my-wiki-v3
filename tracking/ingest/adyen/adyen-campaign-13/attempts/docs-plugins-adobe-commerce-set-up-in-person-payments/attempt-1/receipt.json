@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-set-up-in-person-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce in-person payment setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/set-up-in-person-payments\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md\"\ntags: [adyen, adobe-commerce, in-person-payments, terminal-api, pos]\n---\n\n## Overview\n\nThis 2024-last-modified, 2026-09-15-captured guide configures the Adyen Adobe Commerce plugin for **in-person payments through Terminal API**. It covers a separate POS merchant account, API key and roles, card capture delay, Terminal API/WebSockets settings, Commerce POS method fields, and optional tokenization. It does not identify an exact installed plugin or terminal software version, prove device/network readiness, or establish a successful terminal payment, order, capture or bank settlement. See [[adyen]], [[adyen-magento2]] and the separate [[adyen-terminal-api]] protocol concept.\n\n## Key takeaways\n\n- **Account and API setup:** The page requires a **separate merchant account** for in-person processing. A company-account Customer Area user selects a Payments or Platforms API credential, generates and securely stores an API key (the page says it cannot be copied after leaving), and saves it for Commerce configuration. Before live use, the credential needs **Merchant PAL webservice role**, with Support contact to enable it. Keep test and live keys in their respective Commerce fields; key generation and role configuration alone do not establish successful live API authentication.\n- **Card capture model and irreversible remainder:** The guide describes card authorization as verification/reservation and capture as a later funds-transfer step; a configurable delay applies where a method supports separate authorization/capture. It says the delay does **not** affect Alipay, WeChatPay and some other one-step wallets. POS capture-delay choices are immediate, a specified time, or manual; two hours is a **recommendation**, not a rule. Manual capture requires creating a Commerce invoice per payment. **If only part of the authorized amount is captured, the remaining authorization is automatically cancelled** per this guide. Do not assume later capture of that remainder.\n- **Terminal settings and access:** Account configuration requires **Merchant POS Terminal Management Admin role**. In test Customer Area at company scope, the guide enables Terminal API and WebSockets in terminal account configuration. It points to a separate terminal-selection guide but gives no model compatibility, local-network design, webhook setup or connector-version requirement here. Those must be checked in their own sources.\n- **Commerce POS fields and order timing:** Commerce's **In-person payments** settings include the POS merchant account, optional **Terminal Store ID** limiting terminal selection to a store, separate test/live API keys, matching capture delay, optional card-installment rules and **Order Creation Time**. The default is **After payment**; **Before payment** creates the order before a payment request is initiated. This is order-object timing, not evidence payment was authorized, captured or completed. An enabled POS method or selected terminal does not prove a terminal result.\n- **Optional recurring setup:** The page offers in-person tokenization with `CardOnFile`, `UnscheduledCardOnFile` or `Subscription` processing model. Enabling the field is configuration only; the page does not supply merchant consent, a created token, or a successful later charge.\n\n## Detail locators\n\n- Lines 15\u201325: Adobe Commerce/Terminal API scope and separate POS merchant account.\n- `## Step 1: Generate an API key`, lines 27\u201353: company-scope credential, key storage and live Merchant PAL role.\n- `## Step 2: Set up capture delay`, lines 55\u201386: two-step card model, wallet exception, immediate/timed/manual choices and partial-capture remainder cancellation.\n- `## Step 3: Set up the terminal configuration`, lines 88\u201399: terminal-management role, Terminal API and WebSockets toggles.\n- `## Step 4: Set up in-person payments in Adobe Commerce`, lines 101\u2013122: merchant/store, environment keys, capture, installments and before/after order creation.\n- `## Step 5 (optional): Set up recurring payments`, lines 124\u2013139: POS tokenization toggle and recurring model selection.\n\n## Related\n\n- [[adyen-magento2]] \u2014 reciprocal Adobe Commerce plugin concept and versioned implementation route.\n- [[adyen-terminal-api]] \u2014 separate terminal protocol and result handling.\n- [[source-github-adyen-magento2]] \u2014 exact `adyen/module-payment@11.0.0` implementation evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15|Adobe Commerce in-person setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Set up a separate merchant account for processing in-person payments.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md:25"
+    },
+    {
+      "text": "Before going live, make sure that your API credential has the **Merchant PAL webservice role**.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md:53"
+    },
+    {
+      "text": "When you capture a part of the authorised amount, the rest of the authorised amount is automatically cancelled.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md:84"
+    },
+    {
+      "text": "For account configuration, you need to have the *Merchant POS Terminal Management Admin role*.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md:92"
+    },
+    {
+      "text": "Set to **After payment** by default. If you want orders to be created before a payment request is initiated, set to **Before payment**.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md:120"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-adobe-commerce-pos-setup-source",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-set-up-in-person-payments]] \u2014 2024-modified, 2026-09-15-captured Adobe Commerce Terminal API POS setup guide for separate merchant account, API/POS roles, capture delay and partial-capture remainder cancellation, terminal toggles, store/key/order timing and optional tokenization; configuration is not terminal-payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This page says partial capture automatically cancels the remaining authorization; do not plan additional capture of that remainder from this flow.",
+          "Separate POS merchant/store/key/role and order-creation settings are conditional configuration, not proof of supported terminal, delivered webhook, payment or bank settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/set-up-in-person-payments/2026-09-15.md",
+  "raw_sha256": "6861541e926fb752bd60bedde12a07ce6674c24b0474660d292f5722b924f59f",
+  "status": "candidate_ready"
+}

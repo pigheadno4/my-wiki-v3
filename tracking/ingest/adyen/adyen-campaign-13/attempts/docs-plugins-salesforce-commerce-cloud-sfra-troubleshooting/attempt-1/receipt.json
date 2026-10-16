@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-sfra-troubleshooting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFRA cartridge troubleshooting\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/sfra/troubleshooting\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/sfra/troubleshooting/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, sfra, troubleshooting]\n---\n\n## Overview\n\nThis 2020-modified Adyen webpage snapshot gives a **Salesforce Commerce Cloud SFRA cartridge** troubleshooting sequence: check setup, isolate third-party/custom cartridges, inspect logs, then investigate named payment-method, configuration, and order-placement symptoms. The steps are diagnostic suggestions, not proof of a particular fix, payment result, or order state. See [[adyen]] and [[adyen-salesforce-commerce-cloud]].\n\n## Key takeaways\n\n- Adyen says its payment cartridge does **not** use the SFCC cache, but recommends clearing caches while troubleshooting because a third-party cartridge may use them. It also advises checking cartridge-path precedence, temporarily disabling third-party cartridges, and isolating customizations by removing a separate custom cartridge or comparing against a clean Adyen installation (raw lines 25\u201353). Those are conditional isolation steps, not a finding that cache or custom code caused the issue.\n- The guide locates error logs in Salesforce Business Manager's **Development Setup \u2192 WebDAV Log Files**, with browser console logs as another check if those logs show no errors (raw lines 55\u201363). For a missing payment method, inspect method-specific setup and the `service-adyen` logs for the `/paymentMethods` request's country/region and currency and for whether the method appears in its response (lines 73\u201379). A missing method in checkout is not by itself proof of merchant-account enablement or API failure.\n- For origin-key retrieval or nonfunctioning payment calls, the page says incorrectly loaded metadata is **likely** and recommends reimporting metadata. Only **cartridge v20.1.2 or earlier** gets the additional live-endpoint setup check in live Customer Area (raw lines 81\u201393). This is a version- and environment-limited diagnostic, not a current-version universal requirement.\n- For the exact order-placement error **\u201cNo user found for OriginKey on validation\u201d**, check the Business Manager merchant-account name, then generate a new API key in Customer Area, copy it to Business Manager, and verify its access to the integration's merchant account (raw lines 95\u2013102). Rotating the key changes a credential; it does not by itself prove that prior orders were fixed or safe to retry.\n- The exact **PayPal** error **\u201cExpected intent from order api call to be authorize, got capture\u201d** is attributed here to a mismatch between code capture setting and Adyen-side setting, with a suggested code setting of `SALE` (raw lines 104\u2013108). Do not generalize that setting to other PayPal flows or treat the advice as proof of capture/order success.\n- The page routes readers to release notes, the cartridge version shown under a payment's **Application Info \u2192 Payment Device Version**, open GitHub issues, and Support if the problem persists (raw lines 110\u2013131). It does not document webhook-job troubleshooting or authorize blindly retrying payment/order requests.\n\n## Detail locators\n\n- Steps 1\u20134, raw lines 25\u201363: cache, third-party/custom-cartridge isolation, and log access.\n- Step 5, raw lines 65\u2013108: symptom-specific payment-method, metadata/live-endpoint and order-placement checks.\n- Steps 6\u20138, raw lines 110\u2013131: version/release-note lookup and escalation routes.\n\n## Related\n\n- [[adyen-salesforce-commerce-cloud]] \u2014 SFRA versus Composable integration boundary.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge]] \u2014 SFRA setup route for keys, account scope, webhooks, and jobs.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/troubleshooting/2026-09-15|SFCC troubleshooting, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Adyen Payment cartridge does not make use of the Salesforce Commerce Cloud cache system.",
+      "location": "raw line 27, Step 1: Clear the cache"
+    },
+    {
+      "text": "Does the `/paymentMethods` API request include the correct country/region and currency combination for the payment method?",
+      "location": "raw line 78, Payment methods not showing up"
+    },
+    {
+      "text": "If using cartridge v20.1.2 or earlier, make sure that you [set up live endpoints](/development-resources/live-endpoints) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 93, Configuration errors"
+    },
+    {
+      "text": "Check that the API key has [access to the merchant account](/development-resources/api-credentials#manage-api-permissions) used for your integration.",
+      "location": "raw line 102, No user found for OriginKey on validation"
+    },
+    {
+      "text": "This error is specific to PayPal, and indicates that the capture setting in your code does not match the capture setting on Adyen's side.",
+      "location": "raw line 106, Expected intent order error"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-sfcc-sfra-troubleshooting-reciprocal",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-troubleshooting]] \u2014 2020-modified, 2026-09-15-captured SFRA cartridge diagnostic guide for cache/customization/log isolation, method/configuration errors and exact OriginKey/PayPal symptoms; remedies are conditional, not verified fixes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The SFCC concept exists but its provider-index link was absent during this worker audit; coordinator should complete the main index route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/troubleshooting/2026-09-15.md",
+  "raw_sha256": "662b0cc8a7e60f29f784597bf7e102e666f3ac56a47e9b013993badd2ebb9384",
+  "status": "candidate_ready"
+}

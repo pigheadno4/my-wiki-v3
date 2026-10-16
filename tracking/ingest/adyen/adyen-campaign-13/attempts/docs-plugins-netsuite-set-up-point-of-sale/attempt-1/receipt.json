@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-netsuite-set-up-point-of-sale",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen NetSuite SuiteCommerce InStore POS setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/netsuite/set-up-point-of-sale\"\nraw_files:\n  - \"adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md\"\ntags: [adyen, netsuite, suitecommerce-instore, pos, terminal-api]\n---\n\n## Overview\n\nThis 2023-last-modified, 2026-09-15-captured Adyen guide describes configuring **NetSuite SuiteCommerce InStore (SCIS)** for in-person payments through Adyen terminals and Terminal API. It is a NetSuite POS profile, credential, device and callback setup procedure, not evidence that it was performed or that a terminal sale, capture, refund, deposit or bank payout succeeded. See [[adyen]] and [[adyen-netsuite]]; [[adyen-terminal-api]] owns the broader terminal protocol boundary.\n\n## Key takeaways\n\n- **Prerequisites and scope:** The guide requires the NetSuite Chargeback Workflow Bundle and Adyen SuitePayments Bundle plus network connectivity for the POS app and terminal. It names supported terminal models in the raw, recommends a separate Adyen merchant account for in-person processing, and says multiple stores can share one merchant account with `storeID` distinguishing locations. Those are guide claims for this SCIS integration, not a current hardware/region eligibility check.\n- **Adyen credential and role setup:** From a **company-account** Customer Area login, create/select a Webservice API credential, generate an API key and note the separate Basic-auth password, store both securely because the guide says they cannot be restored later. Associate the relevant merchant accounts and enable **API PCI Payments Role** (requires Support contact mentioning NetSuite), **Merchant PAL Webservice Role**, and **Checkout webservice Role**; saved configuration makes the credentials effective. This is credential configuration, not proof of a usable live connection.\n- **NetSuite profile and terminals:** The guide sequences multiple shipping routes, an SCIS `EMV` payment-method instance, a separate POS payment-processing profile, and registered device IDs. The profile selects SCIS website, subsidiary, settlement currency/bank account, charge currencies, test mode, Adyen merchant account, POS shopper interaction and authorization/capture/sale/refund request types. **TEST MODE** overrides the production endpoint prefix. The production-prefix field's example is a `pos-payment-test` URL; verify the actual live URL from Customer Area rather than copying that example into production. Each terminal must be registered in NetSuite under a unique `[device model]-[serial number]` ID with Adyen EMV; registration alone proves no transaction.\n- **Callbacks and security:** For payment status changes, the guide configures a Standard webhook on the POS merchant account to the NetSuite payment-profile postback URL, with JSON and TLSv1.2 and selected merchant accounts. Separately, the Adyen Terminal API integration needs its Event URL set to the postback URL, choosing Public or Local network scope. It instructs contacting Support to enable WebSockets and applying device settings per device. A saved endpoint is not proof it is reachable, authenticated, receiving events or updating a NetSuite payment.\n- **Financial boundary:** The profile's settlement currency and bank-account fields are configuration targets. The guide supplies no actual amount, order reference, bank-credit record, settlement result, or assurance that every configured gateway request type succeeded.\n\n## Detail locators\n\n- `## Requirements`, lines 19\u201324: required bundles, network and named terminal models.\n- `## Step 1: Set up your Adyen Customer Area`, lines 26\u201365: recommended merchant/store mapping, API key versus Basic-auth password, three roles, Support and merchant-account association.\n- `## Step 2: Set up your NetSuite Customer Center`, lines 67\u2013127: ordered SCIS method/profile setup, currency/account fields, Test Mode override, production-prefix example and request types.\n- `### Set up device IDs`, lines 129\u2013146: unique terminal ID format and NetSuite Adyen EMV registration.\n- `## Step 3: Set up webhooks`, lines 148\u2013167: POS merchant-account Standard webhook, postback URL, JSON/TLS and scope.\n- `## Step 4: Enter the postback URL in the Terminal API settings`, lines 169\u2013192: enable Terminal API, Event URL Public/Local scope, Support WebSockets and per-device settings.\n\n## Related\n\n- [[adyen-netsuite]] \u2014 reciprocal NetSuite bundle concept.\n- [[adyen-terminal-api]] \u2014 protocol context, separate from this NetSuite setup.\n- [[source-adyen-docs-plugins-netsuite-set-up-netsuite-customer-center]] \u2014 separate ordered NetSuite bundle and customer-center setup source.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15|NetSuite SCIS in-person setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Configure SuiteCommerce InStore (SCIS) for processing point-of-sale (POS) payments with Adyen.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md:17"
+    },
+    {
+      "text": "We recommend creating a separate Adyen [merchant account](/account/account-structure) for your in-person payments processing.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md:28"
+    },
+    {
+      "text": "For connecting your NetSuite back end to the Adyen Terminal API, you need to have API credentials.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md:32"
+    },
+    {
+      "text": "If selected, this overrides the endpoint that you enter in the **PRODUCTION ENDPOINT DOMAIN PREFIX below**.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md:112"
+    },
+    {
+      "text": "To inform NetSuite of payment status changes, Adyen uses webhooks, sent as HTTP callbacks to endpoints on your server.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md:150"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-netsuite-pos-source",
+        "target_path": "wiki/concepts/adyen-netsuite.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-netsuite-set-up-point-of-sale]] \u2014 2023-modified, 2026-09-15-captured SCIS in-person setup guide for ordered bundles, merchant/store mapping, Terminal API credentials and roles, NetSuite POS profile/device IDs, Standard webhook and Terminal API event URLs; settings do not prove a terminal or bank outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's production-endpoint-prefix example contains a test-looking URL; verify actual environment URL and Test Mode before configuration.",
+          "Credential, webhook and device setup are separate steps and no successful payment, order, refund or settlement is evidenced."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/netsuite/set-up-point-of-sale/2026-09-15.md",
+  "raw_sha256": "5ddc28da8db0fe8b98505636cbe5977c825ac99f30db2b9637f577482cec07fe",
+  "status": "candidate_ready"
+}

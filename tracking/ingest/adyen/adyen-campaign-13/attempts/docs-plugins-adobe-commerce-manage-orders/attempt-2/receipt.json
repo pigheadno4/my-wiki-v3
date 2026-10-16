@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-manage-orders",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce order management\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/manage-orders\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md\"\ntags: [adyen, adobe-commerce, orders, capture, refund, webhooks]\n---\n\n## Overview\n\nThis 2023-last-modified, 2026-09-15-captured guide explains how Adobe Commerce and Adyen Customer Area expose **order capture, cancellation and refund** actions, and how plugin webhooks affect Commerce order, invoice and credit-memo statuses. An Adobe Commerce order, invoice or credit memo is a distinct object from its Adyen payment and from a bank settlement. This is procedural documentation without an exact plugin package version; the versioned implementation route is [[adyen-magento2]] and [[source-github-adyen-magento2]]. See [[adyen]].\n\n## Key takeaways\n\n- **Two admin surfaces and webhook dependency:** The guide permits order management through Commerce admin or Adyen Customer Area and describes webhooks keeping the platforms in sync. Commerce status names can be customized. A configured action or displayed status alone is not proof that a payment modification succeeded, funds returned, or settlement arrived.\n- **Manual capture and invoicing:** With manual capture configured, each order needs an explicit capture request. In Commerce the described action is **Invoice**, optionally reduce product quantity for a partial capture, then **Submit Invoice**. The guide says a `CAPTURE` webhook follows capture and the Commerce invoice moves to **Paid** after successful capture. The invoice status is not bank-payment evidence, and this page does not define a general multiple-capture entitlement or amount limit.\n- **Multiple-method order grain:** Where one order uses payment methods with differing capture modes, the plugin generates an invoice only after the **full order amount** has been authorized or captured, regardless of the order in which individual `AUTHORISATION` and `CAPTURE` webhooks arrive. That is an order/invoice creation rule; it does not mean every underlying payment has the same financial state or that all funds were settled.\n- **Cancel versus refund:** The page allows cancellation only for an authorized, **not yet captured** order with manual capture delay; after capture it directs the merchant to refund. Commerce cancellation changes the order to **Closed** or a configured status following the described webhook. For refund, the Commerce path selects an invoice, creates a **Credit Memo**, chooses item quantities and selects **Refund**. It says a `REFUND` notification and credit memo follow; partial refund leaves order **Processing**, full refund moves it to **Closed**, and a successful refund changes credit memo to **Refunded**. These are Commerce/plugin lifecycle observations, not independent proof of shopper bank receipt. This page calls the cancellation webhook `CANCELLATION`; the separate [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce]] order-status table calls it `CANCEL_OR_REFUND`. Verify the actual installed plugin and webhook event before relying on either label.\n- **Expiry and risk-review conditions:** The snapshot gives default expiration of 12 hours for card payments and up to 28 days for other methods, with Support contact for merchant/scheme/timeframe changes. For expired **SVS gift-card payments**, Adyen does not send `OFFER_CLOSED`. The guide says an offer closes automatically only if the shopper leaves the SVS page using **Previous**; other abandonment (such as closing the browser) requires manual closure in Adobe Commerce admin, or the alternative configured pending-payment order lifetime and scheduled cron route. Case management is optional and requires RevenueProtect premium plus role, trigger, action and webhook setup. Recommended accept/reject behavior requests Capture/Cancel and notification; optional Commerce manual-review statuses do not themselves establish a fraud or payment outcome.\n\n## Detail locators\n\n- Lines 15\u201323: scope, Commerce versus Customer Area and webhook/status route.\n- `## Capture an order`, lines 25\u201341: manual capture, Commerce Invoice action, quantity-based partial capture, `CAPTURE` webhook and mixed-method full-order invoice condition.\n- `## Cancel an order`, lines 43\u201355: authorized-uncaptured manual-only cancellation and `CANCELLATION` label; compare separate setup guide's `CANCEL_OR_REFUND` label.\n- `## Refund an order`, lines 57\u201372: invoice/Credit Memo path, partial/full order statuses and `REFUND` notification.\n- `## Expired payments`, lines 74\u201391: dated expiry defaults, `OFFER_CLOSED` and SVS exception.\n- `## Case management`, lines 93\u2013124: premium, roles/triggers/actions/webhooks and optional review-status settings.\n\n## Related\n\n- [[adyen-magento2]] \u2014 reciprocal plugin and exact-version implementation route.\n- [[source-github-adyen-magento2]] \u2014 exact `adyen/module-payment@11.0.0` lifecycle evidence.\n- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce]] \u2014 configuration and conflicting cancellation-event label.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15|Adobe Commerce Manage orders, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can manage orders in your Adobe Commerce admin panel, or in the Adyen Customer Area.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md:21"
+    },
+    {
+      "text": "If an order is paid with multiple payment methods that have different capture configurations",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md:41"
+    },
+    {
+      "text": "After an order is captured, it is impossible to cancel the order.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md:47"
+    },
+    {
+      "text": "If your refund was successful, the credit memo status changes to **Refunded**.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md:72"
+    },
+    {
+      "text": "An [exception](/plugins/release-notes?plugin=magento_2\\&version=8.19.0) occurs for SVS gift card payments where Adyen does not send an [OFFER\\_CLOSED](https://docs.adyen.com/api-explorer/Webhooks/latest/post/OFFER_CLOSED) webhook for expired SVS gift card payments.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md:87"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-adobe-commerce-manage-orders-source",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-manage-orders]] \u2014 2023-modified, 2026-09-15-captured Commerce order capture, cancellation, refund, expiry and case-management guide distinguishing order/invoice/credit-memo status from Adyen payment and financial outcomes; cancellation webhook label differs from the setup guide.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This page's CANCELLATION webhook label conflicts with the separate setup guide's CANCEL_OR_REFUND label; verify version-specific event handling.",
+          "Partial quantity capture, mixed-method invoice generation and Commerce Paid/Refunded/Closed statuses are not universal multiple-capture authority or bank-settlement/refund-receipt proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/manage-orders/2026-09-15.md",
+  "raw_sha256": "33aa2ce7d56bfee6c7dd68d1c09d42a3295345d3752d27358d038fd871192844",
+  "status": "candidate_ready"
+}

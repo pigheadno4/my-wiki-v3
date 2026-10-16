@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-sfra-go-live-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFRA go-live checklist\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/sfra/go-live-checklist\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/sfra/go-live-checklist/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, sfra, go-live, webhooks, credentials]\n---\n\n## Overview\n\nThis Adyen SFRA cartridge checklist (2024-01-19 last-modified metadata; captured 2026-09-15) lists live-account, finance, risk/compliance, API, webhook, end-to-end test, and Salesforce Business Manager tasks before accepting live payments. Test setup is not copied to live. The guide is a preparation checklist, not evidence that a merchant has switched environments, passed compliance review, processed a live payment/refund, migrated tokens, or received settlement. See [[adyen-salesforce-commerce-cloud]] and [[adyen]].\n\n## Key takeaways\n\n- Live setup requires account structure and individual live Customer Area users with task-appropriate roles/access; payment methods are rendered from enabled Customer Area methods. Finance tasks include payout-bank details, payout settings and settlement-report reconciliation, with reserve an optional funding consideration. [Raw lines 19\u201366]\n- Risk/compliance guidance includes reviewing risk rules and strongly recommending CAPTCHA against card testing; Visa/Mastercard 3DS enrollment may take up to seven days. Only cartridge v22.1.1 and earlier has the specified Business Manager 3DS2 enablement step. The page calls for PCI DSS assessment against SAQ A, recommends default card component for eligibility, and warns customization may require other assessment such as SAQ D; accessibility compliance remains the merchant's responsibility. These are qualifications, not compliance certification. [Raw lines 68\u2013102]\n- Live API communication requires a live Customer Area API key copied to Business Manager and live credentials with `Merchant Recurring`, `Checkout webservice`, and `Checkout encrypted cardholder data` permissions. Live webhooks must be configured in both systems; the cartridge's scheduled job handles events. A **200** from Test Configuration shows an HTTP response for that test, not proof that all event types, orders, or financial outcomes were processed. [Raw lines 104\u2013130]\n- Adyen asks for real-detail end-to-end tests covering successful, refused and fraud-risk payments, API refunds including partial refunds, and successful/failed 3DS challenge cases. Real payments incur fees. This testing instruction is not a record that any test was performed or passed, and the checklist provides no capture-mode or stored-token migration procedure. [Raw lines 132\u2013147]\n- Business Manager steps are **version-specific**: v25.3.0+, v25.2.0\u201325.2.1 and v24.1.0\u201325.1.0 use environment Live, new live API/client keys, live URL prefix, matching front-end region and live service credentials. v23.3.1 or earlier instead edits live endpoint prefixes and `adyen_mode`, and warns a Salesforce sandbox shares a single live URL prefix across connected live sites, preventing different prefixes for different go-live regions. Conditional wallet merchant IDs/certificates and India region setting are listed. Replacing credentials or shared prefixes affects the selected Business Manager configuration and requires merchant-specific review; this page does not document rollback. [Raw lines 149\u2013268]\n- The page says to test real payments after configuring live Customer Area/Business Manager (line 27), while its Business Manager section says to configure those settings after tests (line 151). Treat this as a sequence ambiguity in the dated checklist; verify the intended test/live transition for the installed version before using it as a runbook. The closing \u201cready to accept\u201d sentence is guidance, not live approval or payment proof. [Raw lines 27, 149\u2013151, 270\u2013272]\n\n## Detail locators\n\n- Account, method and finance checklist: raw lines 19\u201366. Risk, 3DS, PCI and accessibility scope: raw lines 68\u2013102. Credential roles and webhook/scheduled-job checks: raw lines 104\u2013130.\n- Real-payment test cases and fee warning: raw lines 132\u2013147. Versioned Business Manager branches, region matching and shared-prefix limitation: raw lines 149\u2013268. Closing readiness statement: raw lines 270\u2013280.\n- This source does not specify token migration, actual capture configuration, webhook-to-order transition proof, live account eligibility, or payment/payout finality.\n\n## Related\n\n- [[adyen-salesforce-commerce-cloud]]\n- [[adyen]]\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/go-live-checklist/2026-09-15|Adyen SFRA go-live checklist, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The setup from your test environment is not copied over to your live environment, so you need to configure live settings for:",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that your live API credentials have the following [permissions](/development-resources/api-credentials#manage-api-permissions):",
+      "location": "raw line 108"
+    },
+    {
+      "text": "The cartridge has a scheduled job that handles the webhook event.",
+      "location": "raw line 122"
+    },
+    {
+      "text": "If the webhook is working correctly, you will see a [successful HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#successful_responses), for example `ResponseCode`: **200**.",
+      "location": "raw line 130"
+    },
+    {
+      "text": "Currently, the cartridge does not support using multiple live URL prefixes in your Salesforce sandbox environment, and the prefix you set up in the sandbox is shared with all connected live sites.",
+      "location": "raw line 248"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-sfra-go-live-source",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-go-live-checklist]] \u2014 2026-09-15 SFRA live-preparation checklist for separate live account/credentials/webhooks, real-payment testing, versioned Business Manager settings and older shared-prefix limit; checklist completion is not outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The dated page's line 27 versus line 151 testing/configuration order is ambiguous; verify installed-version transition before using it as a runbook.",
+          "A test webhook HTTP 200 is not proof of scheduled-job order processing or financial success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/go-live-checklist/2026-09-15.md",
+  "raw_sha256": "2257dc22a8c3b23fe0bbc7b3a1d41def3dfcb57d08cc3326fb5027660e9a539e",
+  "status": "candidate_ready"
+}

@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 614
+source_count: 664
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Six hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Six hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 600 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12).
-- Total source summaries: 614 (600 website + 14 GitHub).
+- Ingested website documentation sources: 650 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13).
+- Total source summaries: 664 (650 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -779,6 +779,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-account-balances-next-payout]] — Adyen Next payout balance (webpage, 2026-10-16)
 - [[source-adyen-docs-reporting-settlement-reconciliation]] — Adyen settlement reconciliation hub (webpage, 2026-10-16)
 - [[source-adyen-docs-reporting-3d-secure]] — 3D Secure reporting | Adyen Docs (webpage, 2026-10-16)
+
+### Website documentation — Campaign 13
+
+- [[source-adyen-docs-plugins-adobe-commerce]] — Adyen Adobe Commerce plugin overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud]] — Adyen Salesforce Commerce Cloud B2C Commerce integrations (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite]] — NetSuite | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-shopify]] — Adyen payments apps for Shopify (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-install-and-set-up-the-package]] — Adyen Salesforce Composable Storefront package setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-headless-integration-express-checkout]] — Adyen Adobe Commerce headless Express checkout (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-headless-integration]] — Adyen Adobe Commerce headless integration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-set-up-payment-methods]] — Adyen Salesforce Composable Storefront payment-method setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge]] — Set up the SFRA cartridge | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-netsuite-customer-center]] — Set up Adyen NetSuite Customer Center (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-payment-methods]] — Adyen SFRA payment-method setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-go-live-checklist]] — Adyen SFRA go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-supported-payment-methods]] — Adyen Salesforce Commerce Cloud supported payment methods (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-payment-methods-in-adobe-commerce]] — Adyen Adobe Commerce payment-method setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-reconciliation-bundle]] — Adyen NetSuite reconciliation bundle (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-supported-payment-methods]] — Supported payment methods for Adobe Commerce | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-pay-by-link]] — Adyen NetSuite Pay by Link setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce]] — Adyen Adobe Commerce plugin installation and configuration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-troubleshooting]] — Adobe Commerce troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-migrate-to-a-new-version]] — Adyen Adobe Commerce major-version migration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-point-of-sale]] — Adyen NetSuite SuiteCommerce InStore POS setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-go-live-checklist]] — Adobe Commerce go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-adyen-customer-area]] — Set up Adyen Customer Area for Adobe Commerce | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-supported-payment-methods]] — Adyen NetSuite bundle supported payment methods (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-go-live-checklist]] — Adyen Composable Storefront go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-customization-guide]] — Adyen SFRA customization guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-manage-orders]] — Adyen Adobe Commerce order management (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-tokenization]] — Set up tokenization in NetSuite (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-customize]] — Customize the Adobe Commerce plugin | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-in-person-payments]] — Adyen Adobe Commerce in-person payment setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-payment-processing-in-netsuite]] — Payment processing in NetSuite (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-troubleshooting]] — Adyen SFRA cartridge troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-reconciliation-bundle-troubleshooting]] — Adyen NetSuite reconciliation bundle troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-oracle-xstore]] — Adyen Oracle Xstore integration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-upgrade]] — Upgrade the Salesforce Commerce Cloud SFRA cartridge (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-oracle-opera]] — Oracle Opera | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-tokenization]] — Adyen Adobe Commerce tokenization setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-customization-guide]] — Adyen Composable Storefront customization guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce-multiple-merchant-accounts]] — Manage multiple merchant accounts in Adobe Commerce (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-adyen-customer-area]] — Set up Adyen Customer Area for NetSuite | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-shopify-supported-payment-methods]] — Adyen Shopify supported payment methods (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-install-the-cartridge-and-import-the-metadata]] — Adyen SFRA cartridge installation and metadata import (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront]] — Adyen Composable Storefront package for Salesforce B2C Commerce (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-oracle-simphony]] — Adyen Oracle Simphony POS integration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-troubleshooting]] — Adyen Composable Storefront troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra]] — Adyen Salesforce Commerce Cloud SFRA cartridge overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-troubleshooting]] — NetSuite payments bundle troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-payment-notifications-in-netsuite]] — Payment notifications in NetSuite | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-upgrade]] — Adyen Adobe Commerce plugin upgrade steps (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-upgrade]] — Adyen Composable Storefront package upgrade (webpage, 2026-10-16)
 
 ### GitHub repository evidence
 

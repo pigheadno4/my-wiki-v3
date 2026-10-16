@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-headless-integration-express-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce headless Express checkout\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/headless-integration/express-checkout\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md\"\ntags: [adyen, adobe-commerce, headless, express-checkout]\n---\n\n## Overview\n\nThis 2024-modified Adyen webpage explains the separate **Adobe Commerce express checkout module** for a **headless** Adobe Commerce integration. It describes Apple Pay, Google Pay and PayPal buttons on product detail, cart and mini-cart pages, using Adyen Web Components for the shopper UI and Adobe Commerce APIs for the quote, shipping, order and payment flow. It does not document standard storefront behavior or establish live merchant/payment-method eligibility. See [[adyen]] and [[adyen-magento2]]; the retained [[source-github-adyen-magento2]] is separate package- and commit-qualified plugin evidence.\n\n## Key takeaways\n\n- Prerequisites in this guide are a headless Adobe Commerce plugin integration, Web Components integrations for the chosen express methods, the express checkout module and the selected methods' express-checkout implementation. REST uses use-case-specific endpoints. GraphQL uses Adobe Commerce's `/graphql` endpoint and **requires Adyen plugin v8.2.0 or later**; this page does not pin the express module's own version.\n- The quote lifecycle differs by surface. Cart/mini-cart has a cart-created quote; product detail requires manual quote initialization and later cart activation before placing the order. The initialization tables say passing an existing real cart ID disables that cart; the GraphQL activation mutation for logged-in users disables other real carts. The page says the plugin reactivates a disabled real cart after payment completes, while a shopper who abandons a product-detail flow needs the manually initialized quote cancelled through the documented event/API route. Treat cart IDs and quote activation/cancellation as stateful operations.\n- Shipping-address and method changes update the Adobe Commerce quote; if shipping changes the total, update both the quote and payment Component to the final amount. The REST/GraphQL steps split logged-in and guest cart identifiers. Apple Pay and Google Pay supply shopper details only after authorization, so the guide uses temporary dummy values for shipping information and calls for updating it when details arrive.\n- PayPal alone needs initial `paymentData` and the full `response.action` passed to the Component to open the lightbox. Shipping-address or method changes require updating the PayPal order; the documented updated amount has an ISO currency code and **minor-unit** value, and later updates reuse returned `paymentData`. For delivery-method lightboxes, the description is required by PayPal; the page recommends meaningful fallback logic when Title/Label are absent, without making its sample fallback order a universal rule.\n- Order placement uses Adobe Commerce REST payment-information endpoints or GraphQL `placeAdyenOrder`, followed by the standard headless payment-status check. A Component event, example request body, success-page redirect instruction or local test instruction is not evidence of a completed live order, authorization, capture or settlement. This page states no special Customer Area role or tokenization contract.\n\n## Detail locators\n\n- Scope, methods, prerequisites and REST/GraphQL version boundary: pinned raw lines 15\u201351.\n- Surface-specific quote setup, existing-cart disablement and IDs: pinned raw lines 53\u2013131.\n- Component shipping collection and PayPal lightbox initialization/action handoff: pinned raw lines 133\u2013246.\n- Shipping selection, temporary values and final amount synchronization: pinned raw lines 248\u2013303.\n- Cart activation, order submission and payment-outcome check: pinned raw lines 305\u2013409.\n- Abandoned quote cancellation and PayPal updateOrder with minor-unit amount/paymentData: pinned raw lines 411\u2013541.\n- Method-specific test routes: pinned raw lines 543\u2013549.\n\n## Related\n\n- [[adyen-magento2]] \u2014 Adobe Commerce plugin concept; versioned repository evidence remains separately qualified.\n- [[source-github-adyen-magento2]] \u2014 distinct `adyen/module-payment` snapshot, not a version pin for this express module.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15|Adyen headless Express checkout guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [express checkout module](https://github.com/Adyen/adyen-magento2-express-checkout) lets you implement [express checkout](/payment-methods/express-checkout) for your headless Adobe Commerce integration.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md:19"
+    },
+    {
+      "text": "Requires plugin v8.2.0 or later",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md:43"
+    },
+    {
+      "text": "If a cart already exists at the time of the initialization request, this request disables the existing real cart using the cart ID.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md:102"
+    },
+    {
+      "text": "The total payment amount may change depending on the shopper's selected shipping method. You must then update the payment method component and the Adobe Commerce quote with the final amount.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md:284"
+    },
+    {
+      "text": "For PayPal express payments, you must update the order each time your shopper changes the shipping address or method to update the PayPal lightbox.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md:448"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-magento2-headless-express-route",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-headless-integration-express-checkout]] \u2014 2024-modified, 2026-09-15-captured headless Adobe Commerce express-module guide for Apple Pay, Google Pay and PayPal quote/shipping/order flows, GraphQL v8.2.0+ requirement and cart-state warnings; separate from the versioned `adyen/module-payment` repository baseline.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/headless-integration/express-checkout/2026-09-15.md",
+  "raw_sha256": "cfa9cd9e8be9de1a6b40be5c56c863b5b2b823056a026ada24babc4642fe2816",
+  "status": "candidate_ready"
+}

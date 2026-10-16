@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-plugins-oracle-opera",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Oracle Opera | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/oracle-opera\"\nraw_files:\n  - \"adyen/docs/plugins/oracle-opera/2026-09-15.md\"\ntags: [adyen, oracle-opera, hospitality, opi, terminals, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs snapshot describes the Oracle Opera hospitality/property-management integration using Oracle Payment Interface (OPI) 6.2 to connect Opera workstations to Adyen terminals. It also describes merchant-account-enabled OPI tokens for ecommerce payments. Its transaction-type list and example `/payments` payload are capabilities and instructions, not evidence that an individual guest payment, token migration or settlement succeeded. [[adyen-oracle-opera]]\n\n## Key takeaways\n\n- Adyen says its plugin supports Opera workstations compatible with OPI across on-premise, hosted and cloud setups; it does not provide an exact Opera release matrix. After creating a test account, the merchant must contact Support to enable OPI in Customer Area. OPI sends workstation transaction messages directly to the Adyen terminal; this route should not be merged with a separate Oracle retail/Xstore integration.\n- Listed hospitality transaction types include preauthorization at check-in, optional daily top-up, authorization release, sales completion at checkout, direct Sale/Purchase, refund, same-settlement-day Void, connection-loss/timeout Reversal, and Get Token / Get Token Bulk. A preauthorized amount is a temporary hold, not a charge; Sales Completion or Sale/Purchase is the charging step described here. Void has the stated settlement-day limit. The page's labels do not verify the final state of any actual operation.\n- Terminal-entered data can be exchanged for an OPI token kept in the Oracle database for later top-ups or final settlement. Get Token Bulk is also described for token migration, third-party reservations and manually entered phone reservations; it is not evidence that a bulk migration has been performed or is safe without its detailed controls.\n- For ecommerce OPI tokens, Support must enable settings for the merchant account first. The guide then asks for an OPI trans token in a Checkout `/payments` request with `shopperInteraction=Ecommerce`, `recurringProcessingModel=CardOnFile`, `storePaymentMethod=true`, a shopper reference and the additional-data flag. The table's `shopperReference=not_provided` and example `Authorised` result are guide examples, not a general stored-credential or payment-success rule. The OPI token and recurring detail reference are distinct identifiers.\n\n## Detail locators\n\n- **OPI architecture, workstation/platform scope and test enablement:** raw lines 23\u201344.\n- **Hospitality transaction types, hold/charge distinction and void limit:** raw lines 48\u201374.\n- **Ecommerce OPI-token enablement, request settings and illustrative response:** raw lines 76\u2013143.\n\n## Related\n\n- [[adyen]]\n- [[adyen-oracle-opera]]\n- [[adyen-terminal-api]] \u2014 separate terminal-message architecture context; OPI is the named Opera interface here\n- [[adyen-tokenization]] \u2014 separate online stored-credential context\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/oracle-opera/2026-09-15|Adyen Oracle Opera integration \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen payment terminals use Oracle Payment Interface (OPI) 6.2 to integrate to Oracle Opera.",
+      "location": "raw/adyen/docs/plugins/oracle-opera/2026-09-15.md:25"
+    },
+    {
+      "text": "You can use our plugin to integrate with all Opera workstations that are compatible with OPI.",
+      "location": "raw/adyen/docs/plugins/oracle-opera/2026-09-15.md:31"
+    },
+    {
+      "text": "After you have created your test account, contact the [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable OPI in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/plugins/oracle-opera/2026-09-15.md:40"
+    },
+    {
+      "text": "An amount is held temporarily for authorization, but it is not a transaction charge.",
+      "location": "raw/adyen/docs/plugins/oracle-opera/2026-09-15.md:52"
+    },
+    {
+      "text": "To be able to retrieve OPI tokens for ecommerce payments, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).",
+      "location": "raw/adyen/docs/plugins/oracle-opera/2026-09-15.md:80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-oracle-opera-new-concept",
+        "target_path": "wiki/concepts/adyen-oracle-opera.md",
+        "update_kind": "durable_fact",
+        "anchor": "new_file",
+        "proposed_markdown": "---\ntitle: \"Adyen Oracle Opera Integration\"\ntype: concept\ncategory: technology\ntags: [adyen, oracle-opera, hospitality, opi, terminals, tokenization]\n---\n\n## Definition\n\nAdyen's Oracle Opera hospitality integration connects OPI-compatible Opera workstations to Adyen payment terminals through Oracle Payment Interface 6.2. The 2021-modified guide captured 2026-09-15 describes on-premise, hosted and cloud setups, plus a separate merchant-account-enabled route for ecommerce OPI tokens. It does not define an exact Opera-version matrix or establish a merchant's live enablement. [[source-adyen-docs-plugins-oracle-opera]]\n\n## Payment and token boundary\n\nOpera's listed preauthorization is a temporary hold rather than a charge; top-up and release act on that hold, while Sales Completion and direct Sale/Purchase are the guide's charge paths. Void is limited to the same settlement day, and Reversal is described for interrupted or timed-out OPI transactions. Terminal token and bulk-token routes are listed for later top-ups, final settlement or migration scenarios. Ecommerce OPI-token retrieval first requires Support-enabled merchant-account settings and a Checkout `/payments` request with guide-specified additional data; an example `Authorised` response is not transaction proof.\n\n## Scope and evidence boundary\n\nThis concept is for Oracle Opera hospitality/PMS and OPI. It does not import capabilities from a different Oracle retail product. A feature list, compatible-workstation statement or sample response does not verify terminal availability, token-migration safety, payment authorization, capture, refund or financial settlement for a particular guest.\n\n## Sources\n\n- [[source-adyen-docs-plugins-oracle-opera]] \u2014 Oracle Opera OPI 6.2 integration, hospitality transaction types, test-account enablement and ecommerce token route (2026-09-15 snapshot).\n\n## Related\n\n- [[adyen]]\n- [[adyen-terminal-api]]\n- [[adyen-tokenization]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Oracle Opera hospitality/OPI separate from Oracle Xstore retail; the latter's product behavior is not established by this source.",
+          "OPI-compatible workstation wording is not an exact Opera release matrix or merchant enablement proof; Support enablement is required for test OPI and separately for ecommerce token settings.",
+          "Preauthorization is a hold, not a charge; token and payment sample payloads do not verify a completed transaction, stored-credential permission or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/oracle-opera/2026-09-15.md",
+  "raw_sha256": "8fbaa6bb8c413c1e8fb9dbbf8feefe643f107cba1c5b6d7807ee6f46af107fb6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-plugins-netsuite-reconciliation-bundle",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen NetSuite reconciliation bundle\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/netsuite/reconciliation-bundle\"\nraw_files:\n  - \"adyen/docs/plugins/netsuite/reconciliation-bundle/2026-09-15.md\"\ntags: [adyen, netsuite, settlement-detail-report, reconciliation, bank-deposits]\n---\n\n## Overview\n\nAdyen's NetSuite reconciliation bundle is a NetSuite bank-deposit reconciliation workflow. It pulls Adyen Settlement Detail Reports (SDRs), matches entries to NetSuite transactions using PSP reference and record type, and creates NetSuite Bank Deposit records in configured accounts. A created NetSuite record is a reconciliation artifact, not independent evidence that a bank received funds. This 2026-09-15 captured page has older 2023 last-modified metadata and does not establish a particular account's installed bundle or processing result. [[adyen]] [[adyen-netsuite]]\n\n## Key takeaways\n\n- Setup begins with an Adyen payout account and currency and a subscription to the Settlement Detail Report. The page then installs the **ADYEN - Bank Deposit Reconciliation** SuiteBundle (ID 226682), configures NetSuite Adyen Integration Settings with `ca-test` or `ca-live` and an Adyen **Reporting** API credential/basic-auth password, and creates SDR Profiles. If the bundle search or Install button is missing, the page says it has not been shared with the NetSuite account and directs the user to Adyen support with the account number.\n- An SDR Profile selects the Adyen merchant account, NetSuite subsidiary, deposit account, and settlement currency. The page requires separate profiles for each subsidiary/currency and, when the SDR has multiple settlement currencies to match, one profile for each. A profile marked inactive is not used by the bundle. Fee, adjustment, chargeback, error-notification and warning settings are field-specific; `Invoice correction account` and `Consolidate Invoice Corrections` are explicitly marked **Not used**.\n- A Settlement Type Map pairs SDR CSV column/Type values with NetSuite script IDs and saved searches. The listed `SETTLED`, `REFUNDED`, `CHARGEBACK`, and `REVERSED` types can be matched to corresponding NetSuite transactions using a PSP field ID; the page says to leave saved-search defaults. Matching depends on the mapped references and account/currency scope, and a match is not a bank-credit confirmation.\n- **Automatically Create Deposits** controls whether Bank Deposit transactions are created on SDR generation or SDR records require approval first. The background process runs on a schedule; the Control Panel offers separate manual actions to poll/receive SDRs, find detail matches, and create Bank Deposits. The status page has `Pending Approval` \u2192 `Creating Deposits` and an error route. These states describe NetSuite processing, not completed external settlement.\n- The guide also permits manually uploading an SDR CSV, for example in advanced testing. It does not state deduplication or safe-replay behavior for repeated polling, manual import, approval, or deposit creation, so this snapshot alone cannot justify reprocessing a pending or errored report. Consult the linked troubleshooting route for a concrete error before corrective action.\n\n## Detail locators\n\n- Opening and `## Setup and installation`, lines 19\u201361: SDR/PSP matching, payout-account and SDR-subscription prerequisites, bundle ID/sharing, Reporting credential, environment domain, and profile creation.\n- `## Adyen SDR profile fields`, lines 63\u201396: merchant account, subsidiary/currency granularity, eligible deposit and fee accounts, inactive/unused fields, automatic-versus-approved deposit creation, notification, and Pacific-time date option.\n- `### Create a new mapping`, lines 98\u2013114: SDR CSV fields, four Type values, PSP field ID and saved-search defaults.\n- `## Polling for new Settlement Detail Reports` and `## Check status`, lines 116\u2013141: scheduled process, manual control-panel stages, approval and error states.\n- `## Manually upload a Settlement Detail Report`, lines 143\u2013151: manual CSV upload route and sample-report navigation.\n\n## Related\n\n- [[adyen-netsuite]] \u2014 provider NetSuite integration concept, pending promotion with this campaign.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 Adyen SDR entry and field reference; its report statements do not prove bank receipt.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/netsuite/reconciliation-bundle/2026-09-15|Adyen NetSuite reconciliation bundle guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The bundle pulls in an Adyen [Settlement Detail Report](/reporting/settlement-detail-report) (SDR), uses the [PSP reference](/get-started-with-adyen/adyen-glossary/#psp-reference) and record type to match to transactions in Netsuite, and then creates deposits to Netsuite accounts.",
+      "location": "line 19, opening bundle purpose"
+    },
+    {
+      "text": "then the bundle hasn't been shared with your account yet.",
+      "location": "line 40, Step 1 > install availability"
+    },
+    {
+      "text": "You must create a separate SDR Profile for each subsidiary/currency.",
+      "location": "line 70, Adyen SDR profile fields > Subsidiary"
+    },
+    {
+      "text": "If checked, Bank Deposit transactions will automatically be created whenever an SDR has been generated. If unchecked, SDR records must be approved prior to Bank Deposit transactions being created.",
+      "location": "line 91, Adyen SDR profile fields > Automatically Create Deposits"
+    },
+    {
+      "text": "The saved searches for each type should be left at their default values.",
+      "location": "line 112, Create a new mapping"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-netsuite-reconciliation-route",
+        "target_path": "wiki/concepts/adyen-netsuite.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-netsuite-reconciliation-bundle]] \u2014 Adyen NetSuite reconciliation SuiteBundle guide captured 2026-09-15 (metadata last modified 2023): Reporting-credential setup, subsidiary/currency SDR profiles, PSP-reference/record-type matching, and conditional NetSuite Bank Deposit creation; records are not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Apply after the approved Adyen NetSuite concept is promoted; do not create a competing concept.",
+          "Manual poll/import and approval routes have no documented safe-replay or deduplication guarantee in this source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/netsuite/reconciliation-bundle/2026-09-15.md",
+  "raw_sha256": "a58a1103a003cfa01411495c0c04b0204f6a0ffe3e54988bf8b9ffa06de78a35",
+  "status": "candidate_ready"
+}

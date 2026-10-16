@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-netsuite-payment-processing-in-netsuite",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Payment processing in NetSuite\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/netsuite/payment-processing-in-netsuite\"\nraw_files:\n  - \"adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md\"\ntags: [adyen, netsuite, authorisation, capture, refunds]\n---\n\n## Overview\n\nAdyen's NetSuite payment-processing guide (page metadata last modified 2023-08-01; captured 2026-09-15) describes the SuitePayment transaction paths for authorisation, capture, direct cash sales, and refunds, plus plug-in logs and a result-label mapping. It is a workflow description, not evidence that an individual NetSuite order, capture, refund, settlement, or bank receipt succeeded. See [[adyen-netsuite]] for the integration scope.\n\n## Key takeaways\n\n- A **Sales Order** represents purchase intent and can request authorisation before shipment, separately from capture. In NetSuite Customer Center, an available active payment processing profile may be selected automatically; **Get Authorisation** triggers the automated request. **Credit Card Approved** instead signals authorisation received outside automated communication, with an Adyen PSP reference entered manually in **P/N Ref.** and optional **Auth. Code**. The guide says a successful authorisation is saved on the order and a pre-capture authorisation can be voided; a checkbox alone is not proof of a provider authorisation (raw lines 16\u201331).\n- For a previously authorised Sales Order, shipment confirmation drives capture using the original reference. If the order was manually authorised, the Adyen **P/N Ref.** must be entered before shipment confirmation. NetSuite requests secondary confirmation on a capture request, after which Cash Sale details become available. Adyen creates references for stages, while the Adyen account transaction line references the original authorisation P/N Ref.; later references are available in NetSuite. The request and NetSuite record are distinct from a confirmed financial settlement (raw lines 33\u201342).\n- A direct **Cash Sale** needs no preceding Sales Order. Unless the card was manually pre-approved, it initiates an authorise-and-capture request. For a partial capture or imported authorisation, the PSP reference may need manual entry if not shown automatically (raw lines 44\u201354).\n- **Customer Refund** and **Cash Refund from a Cash Sale** initiate referenced refunds. Both require a **P/N Reference** against the original Auth/Sale; unreferenced refunds and credits in this SuitePayment bundle are not supported. The procedure asks to match request data and save, which does not prove the refund completed (raw lines 56\u201371).\n- Plug-in execution logs are available in NetSuite Customer Center and requested for Support. The Adyen-to-NetSuite result mapping includes Authorised \u2192 ACCEPT, Received/Pending/PENDING \u2192 CONFIRMATION_PENDING, Refused \u2192 GENERAL_REJECT and Cancelled \u2192 PAYMENT_TERMINATED; unlisted values fall to GENERAL_REJECT or FATAL_ERROR. These are mapped labels, not a substitute for checking the underlying payment stage or outcome (raw lines 73\u2013125).\n\n## Detail locators\n\n- Sales Order authorisation, manual approval fields and void: raw lines 16\u201331.\n- Shipment-linked capture, references and Cash Sale: raw lines 33\u201354.\n- Refund transaction types and original-reference rule: raw lines 56\u201371.\n- Plug-in execution-log route: raw lines 73\u201384.\n- Full Adyen/NetSuite result mapping and fallback labels: raw lines 86\u2013125.\n\n## Related\n\n- [[adyen-netsuite]] \u2014 NetSuite integration concept and source route.\n- [[adyen]] \u2014 Adyen provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15|NetSuite payment processing, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Authorisations are executed within NetSuite through a",
+      "location": "raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md line 18"
+    },
+    {
+      "text": "In this case, the reference information (**P/N Ref**) from Adyen must be entered manually into NetSuite before the shipment confirmation to proceed with the capture.",
+      "location": "raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md line 38"
+    },
+    {
+      "text": "If the credit card is not manually pre-approved, the cash sale initiates an authorise and capture request for the shopper's card.",
+      "location": "raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md line 46"
+    },
+    {
+      "text": "In both cases, you must provide a P/N Reference. This ensures the payment is refunded against the original Auth/Sale transaction. Unreferenced refunds are not supported.",
+      "location": "raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md line 63"
+    },
+    {
+      "text": "The results in NetSuite differ from those shown in Adyen. Consult the mapping overview below:",
+      "location": "raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md line 88"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-netsuite-payment-processing-in-netsuite-netsuite-route",
+        "target_path": "wiki/concepts/adyen-netsuite.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-netsuite-payment-processing-in-netsuite]] \u2014 2023-modified, 2026-09-15-captured SuitePayment Sales Order authorisation, shipment capture, direct Cash Sale and referenced-refund workflow with NetSuite/Adyen result-label mapping; transaction requests and labels are not settlement proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The webpage has no package-version or account-execution evidence; manual approval and NetSuite labels should not be promoted into verified Adyen financial outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/netsuite/payment-processing-in-netsuite/2026-09-15.md",
+  "raw_sha256": "0010161bfa8754cf81c6f173f42bbc814bd0599f6e4b11f4090faed2f57ccc9a",
+  "status": "candidate_ready"
+}

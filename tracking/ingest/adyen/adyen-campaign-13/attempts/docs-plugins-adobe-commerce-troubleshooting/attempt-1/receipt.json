@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-troubleshooting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adobe Commerce troubleshooting\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/troubleshooting\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md\"\ntags: [adyen, adobe-commerce, troubleshooting, webhooks]\n---\n\n## Overview\n\nAdyen's Adobe Commerce plugin troubleshooting guide (page metadata last modified 2023-05-19; captured 2026-09-15) walks through checkout and order-status diagnostics before contacting support. It covers cache and extension conflicts, logs, webhook acceptance and cron processing, selected payment API errors, payment-method visibility, customizations, and release/version checks. It is guidance for investigating a symptom, not evidence of a fix or a successful payment, capture, or order transition. The version-qualified plugin implementation baseline lives at [[adyen-magento2]] and should not be inferred from this older page.\n\n## Key takeaways\n\n- For missing or malfunctioning payment methods, clear Adobe Commerce and full-page caches including Varnish, then temporarily disable third-party plugins to isolate possible interference. These checks do not establish a root cause by themselves (raw lines 25\u201334).\n- Use `var/log/adyen/error.log` for plugin/PHP errors and `var/log/exception.log` for Adobe Commerce errors; the latter also contains unrelated entries. `info.log` records Adyen API request/response JSON, `notification.log` records received webhooks, and `cronjob.log` traces their use in order-status updates (raw lines 36\u201358).\n- An order status that does not update may involve an `OFFER_CLOSED` event not enabled for abandoned orders, webhooks not received, accepted, or stored, or cron not processing them or updating the order. The Customer Area endpoint test expects a successful HTTP acknowledgment such as 202. The guide names missing HMAC, mismatched notification credentials (often test/live mixing), and IP/server responses such as 302 or 401 as possible failures; acknowledgment alone does not establish order or financial outcome (raw lines 68\u2013110).\n- For queued notifications marked **Processing** and **Done** = **No**, the page directs contacting the technical team to restart cron. It also documents a technical-team database requeue step that changes `adyen_notification` Processing/Done from 1 to 0 and adjusts creation dates for notifications older than five days. These are conditional data-changing instructions, not a blanket retry; inspect the source and affected records before any operation. No operation was performed here (raw lines 112\u2013118).\n- For the generic order-placement error, inspect the `/payments` JSON response in `info.log`. In its examples, 500/code 905 suggests checking payment-method setup and contacting Support if persistent; 422/code 135 calls for `StateOrProvince` in the billing address. For a missing method, inspect additional setup, the `/paymentMethods` request's country/region and currency, and whether the response includes it. The examples do not classify every error or authorize a payment retry (raw lines 120\u2013158).\n- Customized plugins receive limited support; reproduce a suspected issue on a clean installation before attributing it. Check release notes and the installed version via Customer Area **Payment Device Version** or `merchantApplication.version` in `info.log`, then use GitHub issues or Support if unresolved (raw lines 162\u2013191).\n\n## Detail locators\n\n- Preflight and cache/third-party isolation: raw lines 19\u201334.\n- Log purposes and separation: raw lines 36\u201358.\n- Order-status diagnosis, webhook endpoint test, credentials, HMAC, delivery and cron: raw lines 68\u2013110.\n- Notification queue and technical-team requeue conditions: raw lines 112\u2013118.\n- Payment error examples and payment-method visibility checks: raw lines 120\u2013158.\n- Customizations, release/version checks and support routes: raw lines 162\u2013191.\n\n## Related\n\n- [[adyen-magento2]] \u2014 Adobe Commerce plugin concept and separately version-qualified implementation baseline.\n- [[adyen]] \u2014 Adyen provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15|Adobe Commerce troubleshooting, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When troubleshooting, clear your cache storage and full page cache system, including accelerators such as *Varnish*.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md line 29"
+    },
+    {
+      "text": "Step by step overview of how notification webhooks are used to update the order status in Adobe Commerce.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md line 57"
+    },
+    {
+      "text": "This is needed to close abandoned orders.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md line 72"
+    },
+    {
+      "text": "Your server must [acknowledge webhooks with a successful HTTP response status code (like **202**)](#accept-webhooks).",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md line 85"
+    },
+    {
+      "text": "To pick up the queued notifications again, your technical team can also update the `adyen_notification` table to set the **Processing** and **Done** columns from 1 to 0. For notifications older than 5 days, you also need to update the creation date to less than 5 days.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md line 118"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-adobe-commerce-troubleshooting-magento2-route",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-troubleshooting]] \u2014 Adyen Docs Adobe Commerce plugin troubleshooting guide (2023-modified, 2026-09-15 capture) for cache, logs, webhook/cron order-status diagnostics, and selected checkout errors; diagnostic guidance does not prove a fix or a payment outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This 2023-modified webpage is separate from the version-qualified adyen/module-payment@11.0.0 repository baseline; do not import page behavior as verified v11 implementation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15.md",
+  "raw_sha256": "4e769687122c6739251cf4dfe9544fcfc19a80901599adac2a2781f9191634cc",
+  "status": "candidate_ready"
+}

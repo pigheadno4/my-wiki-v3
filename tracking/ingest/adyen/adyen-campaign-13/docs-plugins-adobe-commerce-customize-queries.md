@@ -1,0 +1,9 @@
+# Fixed retrieval checks — Adyen Adobe Commerce customization
+
+## Q1 — What is this page for, what is its scope, and what should not be inferred?
+
+The captured guide describes separate-module customization for an existing Adyen Adobe Commerce plugin integration, including checkout and plugin behavior changes (raw/adyen/docs/plugins/adobe-commerce/customize/2026-09-15.md:19–38). Adyen recommends keeping custom code out of the default plugin; editing that module may affect support and make upgrades/troubleshooting harder (lines 21–25). Its snippets and commands do not prove a real deployment, installed-package compatibility, security or successful payment outcome. Canonical route: `[[index]]` → `[[adyen-index]]` → `[[adyen-magento2]]` → `[[source-adyen-docs-plugins-adobe-commerce-customize]]` → `[[raw/adyen/docs/plugins/adobe-commerce/customize/2026-09-15]]`; canonical URL: https://docs.adyen.com/plugins/adobe-commerce/customize.
+
+## Q2 — Which extension patterns and prerequisites matter, and where are the warnings?
+
+The prerequisites are an Adobe Commerce plugin integration and a custom module with an `Adyen_Payment` dependency and Composer integration (raw lines 27–121). The guide illustrates DI class overrides, before/after/around method plugins, and checkout layout/CSS/JavaScript changes (lines 123–206). Its Composer sample has `YOUR_ADYEN_PAYMENTS_PLUGIN_VERSION` and an inline comment in the displayed JSON, so validate version and syntax against the exact deployed release rather than copy the example as-is (lines 92–109). For major upgrades, check release notes and migration guidance (line 25). The guide then lists Magento deployment commands and recommends staging/development, automated/manual UI and test-card checks before the live checklist (lines 208–238). These are instructions, not proof of payment authorization, capture or settlement. Use the same concept→source→raw route.

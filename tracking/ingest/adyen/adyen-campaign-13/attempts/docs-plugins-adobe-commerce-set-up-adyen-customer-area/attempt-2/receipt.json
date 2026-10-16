@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-set-up-adyen-customer-area",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Set up Adyen Customer Area for Adobe Commerce | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/set-up-adyen-customer-area\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md\"\ntags: [adyen, adobe-commerce, customer-area, credentials, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs snapshot describes Customer Area preparation for the Adobe Commerce plugin. It separates automated setup, available from plugin v8.4.0, from manual setup for all versions. It is an instruction page, not evidence that a merchant's keys, webhooks, capture setting or payment processing have actually been configured. [[adyen-magento2]]\n\n## Key takeaways\n\n- Automated setup uses an API key to configure required settings and is recommended for new plugin users. Reconfiguring this way loses the older configuration. Manual setup has the user generate credentials and configure the integration; it is the guide's recommendation for prior Adobe Commerce plugin users. These are documented version-scoped choices, not proof that an exact deployed release is compatible.\n- Both paths instruct generation of a server API key and a client key, and explicitly require secure storage of the API key. The manual path also adds allowed domains as client-key origins. The page shows the test Customer Area, but does not specify a role grant for the operator or prove live-environment credentials; setup and live readiness remain separate. Do not expose key values in wiki evidence.\n- The manual path instructs a Standard webhook for payment-status changes with `OFFER_CLOSED` so expired payments can be closed. The raw gives default expiry examples of 12 hours for cards and up to 28 days for other methods, with Support required for a custom date. It recommends company-account webhook configuration to avoid duplicates; the webhook can cover all, selected or excluded merchant accounts. The guide specifies JSON, TLS 1.2, Basic authentication and HMAC key handling, and version-dependent endpoints: plugin v9+ `/adyen/webhook`, v8 `/adyen/process/json`. These instructions are not webhook-delivery or signature-verification proof.\n- The webhook-response CSP warning is scoped to the response header Adyen receives: Adobe Commerce's CSP header can exceed Adyen's 8192-byte response-header limit. It should not be generalized into disabling storefront CSP.\n- Each path has a capture-delay step at merchant-account level: `manual` for manual capture in Adobe Commerce or `immediate` after authorization, shown as the default. Authorization, capture setting and actual capture outcome are distinct. Subsequent plugin installation and payment-method configuration are linked next steps, not completed by this page.\n\n## Detail locators\n\n- **Automated/manual choice, version floor and reconfiguration loss:** raw lines 17\u201332.\n- **Automated credentials and capture delay:** raw lines 34\u201368.\n- **Manual credentials, origins, webhook/expiry/CSP and endpoint/HMAC settings:** raw lines 70\u2013136.\n- **Manual capture delay and next setup routes:** raw lines 138\u2013176.\n\n## Related\n\n- [[adyen]]\n- [[adyen-magento2]]\n- [[adyen-api-access]] \u2014 separate API-credential and access context\n- [[adyen-webhooks]] \u2014 separate webhook lifecycle context\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15|Adyen Adobe Commerce Customer Area setup \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "**Automated**: available for Adobe Commerce plugin version 8.4.0 or later.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md:21"
+    },
+    {
+      "text": "You can also reconfigure your integration using this option, but in that case the older configuration will be lost.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md:25"
+    },
+    {
+      "text": "Adyen uses [webhooks](/development-resources/webhooks) to inform your Adobe Commerce platform of payment status changes.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md:87"
+    },
+    {
+      "text": "v9 or later: Your website URL followed by\u00a0**/adyen/webhook**.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md:120"
+    },
+    {
+      "text": "Generate the HMAC Key, copy it, and store it securely in your system.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md:130"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-magento2-customer-area-setup-source",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-set-up-adyen-customer-area]] \u2014 2024-modified Adobe Commerce Customer Area setup guide captured 2026-09-15: v8.4+ automated versus manual setup, credential/webhook/HMAC and capture-delay instructions, with reconfiguration-loss and v8/v9 endpoint qualifications.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Automated setup from plugin v8.4.0 can overwrite an older configuration; do not collapse it into the manual path or assume the exact GitHub v11 baseline uses identical setup behavior.",
+          "Webhook URL differs for v8 and v9+, and HMAC/Basic-auth instructions are configuration requirements, not delivered-webhook proof.",
+          "The source does not verify actual Customer Area role grants, installed credential values, live readiness, capture success or payment settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/set-up-adyen-customer-area/2026-09-15.md",
+  "raw_sha256": "5202cc1ccd557068872eae6a02e55738881896154f74d518e1550920065df8a8",
+  "status": "candidate_ready"
+}

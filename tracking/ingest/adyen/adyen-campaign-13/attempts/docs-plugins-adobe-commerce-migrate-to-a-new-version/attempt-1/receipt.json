@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-migrate-to-a-new-version",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce major-version migration\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/migrate-to-a-new-version\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/migrate-to-a-new-version/2026-09-15.md\"\ntags: [adyen, adobe-commerce, magento2, migration]\n---\n\n## Overview\n\nThis Adyen webpage snapshot gives separate **major-version migration paths to plugin v11, v10, and v9** for an existing Adobe Commerce integration. It describes prerequisites and changes to review; it does not show that a merchant's deployment, webhook delivery, stored tokens, checkout, or payments survived an upgrade. See [[adyen]] and [[adyen-magento2]].\n\n## Key takeaways\n\n- **To v11:** the guide states PHP **8.2+** and Adobe Commerce **2.4.8+**; from v10 it says no platform upgrade is needed, while from v9 it directs the platform/PHP upgrade first. V11 uses Checkout API **v71**, Web Components **6.35.0**, and Adyen PHP API Library **v29.0.0**. Custom plugin logic, Components, headless flows, and API-object handling need compatibility review, followed by v11 breaking-change release notes (raw lines 21\u201347). Its \u201cno action\u201d sentence applies to default checkout/payment logic in the dependency-review step, not to skipping the plugin upgrade or all checks.\n- **To v10:** the guide says PHP **8.2+** and Adobe Commerce **2.4.8**, with no support for 2.4.7 or earlier. It lists Checkout API **v71** and Web Components **6.13.1**, plus custom/headless compatibility and breaking-change review (raw lines 49\u201374).\n- **To v9:** the page anchors dependencies to **v9.0.1**: Checkout API **v70** and Components **5.51.1**. It says later v9 releases may change these and must be checked in release notes. It also notes PHP **8.1+** when using Adobe Commerce 2.4.4 (raw lines 76\u201394). For **manually configured** integrations, the webhook server URL must change from `/process/json` to `/webhook` to continue receiving webhooks (lines 96\u2013106).\n- V9 separates payment-method registration, changes default shopper-method selection by **billing-address country/region** with an ISO Country Code override, and changes headless method names and the `shippingAddress` requirement for `/paymentMethods` (raw lines 108\u2013129). The gift-card route changes from an Adyen-hosted page to a native Checkout `/orders` flow, but previously configured gift cards need **additional Adyen-side configuration** to use it (lines 131\u2013137).\n- V9 uses **Adobe Commerce Vault** for tokenization. Merchants using tokenization must reconfigure selected methods and a recurring processing model. The guide says previously Adyen-stored token references migrate to the Vault automatically and recommends manually verifying the references (raw lines 139\u2013145). This is migration guidance, not proof that any particular stored credential remains usable.\n- **Compatibility conflict to retain:** this guide says v11 requires Adobe Commerce **2.4.8 or later** (raw line 25), whereas the retained exact `adyen/module-payment@11.0.0` repository summary says **2.4.8 only** ([[source-github-adyen-magento2]]). Check the exact target package/release before treating a later Commerce version as supported. The page gives a troubleshooting/monitoring route (lines 147\u2013151), but no rollback procedure.\n\n## Detail locators\n\n- `Migrate to version 11`, raw lines 21\u201347: platform requirements, dependencies and custom-code/breaking-change review.\n- `Migrate to version 10`, raw lines 49\u201374: platform/dependency requirements and review.\n- `Migrate to version 9`, raw lines 76\u2013145: specific v9.0.1 dependency baseline, manual webhook URL change, payment-method/gift-card/tokenization changes.\n\n## Related\n\n- [[adyen-magento2]] \u2014 plugin architecture and exact package baseline.\n- [[source-github-adyen-magento2]] \u2014 exact v11.0.0 repository evidence and compatibility qualification.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/migrate-to-a-new-version/2026-09-15|Migrate to a new version, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Version 11 of the plugin requires PHP 8.2 or later and Adobe Commerce 2.4.8 or later.",
+      "location": "raw line 25, Migrate to version 11 / Step 1"
+    },
+    {
+      "text": "[Web Components version 6.35.0]",
+      "location": "raw line 38, Migrate to version 11 / Step 3"
+    },
+    {
+      "text": "If you [set up your integration manually](/plugins/adobe-commerce/set-up-adyen-customer-area/?tab=manual_2), you have to change your webhook server configuration to ensure you continue to receive webhooks from us.",
+      "location": "raw line 98, Migrate to version 9 / Step 4"
+    },
+    {
+      "text": "Change the ending of the **URL** from `/process/json` to `/webhook`.",
+      "location": "raw line 104, Migrate to version 9 / Step 4"
+    },
+    {
+      "text": "If you previously used Adyen tokenization, the tokens are migrated to the Adobe Commerce Vault automatically. To verify the migration, you can manually check if your token references are stored correctly.",
+      "location": "raw line 145, Migrate to version 9 / Step 7"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-adobe-migration-reciprocal",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-migrate-to-a-new-version]] \u2014 2024-modified, 2026-09-15-captured v9/v10/v11 migration guide for platform/dependency, manual webhook, method/gift-card and Vault changes; v11 Commerce support wording conflicts with exact package evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v11 migration page says Adobe Commerce 2.4.8 or later; retained adyen/module-payment@11.0.0 repository evidence says 2.4.8 only. Keep exact-version compatibility qualification rather than resolving the conflict silently."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/migrate-to-a-new-version/2026-09-15.md",
+  "raw_sha256": "f21e266e43bc6cfec24a3e4159f14ebaf981ccbcae052eff96d8efe74ae66d7e",
+  "status": "candidate_ready"
+}

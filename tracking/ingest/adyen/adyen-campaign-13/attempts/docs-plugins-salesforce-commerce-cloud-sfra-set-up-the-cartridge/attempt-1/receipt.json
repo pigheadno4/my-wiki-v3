@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Set up the SFRA cartridge | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, sfra, cartridge, webhooks, configuration]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs snapshot is the setup guide for Adyen's **Salesforce Commerce Cloud Storefront Reference Architecture (SFRA) cartridge**, with configuration in Adyen Customer Area and Salesforce Business Manager. It is a setup path for a storefront using one Adyen merchant account, not evidence of an installed cartridge, approved live account, delivered webhook, completed order or successful payment. [[adyen-salesforce-commerce-cloud]]\n\n## Key takeaways\n\n- Before setup, the guide calls for an Adyen test account, completed cartridge metadata import, and HTTPS enforced across SFCC sites for Chrome v80 cookie compatibility. It says Salesforce allows only one Adyen merchant account per storefront. The guide gives separate storefront and Business Manager cartridge paths and an Administrator Business Manager Modules permission step to show Adyen Settings. See raw lines 23\u201368.\n- Connection uses an Adyen **API key** for API access and a **client key** for the payment environment, generated against the integration credential in Customer Area and entered in Business Manager. Store the API key securely because the page says it cannot be copied again after leaving; the client-key setup adds allowed origins. The Account settings use **Test** during setup, **Live** when following the separate go-live checklist, and an SFRA v6/v7 enablement switch only for those SFRA versions. Live prefix and front-end resource region are deferred to go-live. No universal cartridge package version is specified here; Level 2/3 data and system-integrator-info features are separately marked as supported from v20.1.3. See raw lines 70\u2013131, 355\u2013385.\n- Payment-status updates use a configured **Standard webhook** with a server URL ending `/Adyen-Notify`, HTTP POST and TLS 1.3; the guide maps Basic authentication credentials into Business Manager and strongly recommends HMAC signatures. It requires a successful HTTP acknowledgement such as 202. SFCC stores received webhooks as custom objects; the imported `Process` job processes events to update order payment status, then `Clean` deletes processed objects. Running that job every minute is a recommendation, not a required interval. A configuration test or HTTP acknowledgement alone does not prove an order was updated. See raw lines 133\u2013216.\n- Optional branches include tokenization and saved shopper details (with Support-assisted deletion setup), in-person endless aisle and Terminal API store mapping, Giving campaigns/method eligibility and test-to-live webhook setup, premium RevenueProtect case management, Level 2/3 data, localization, and opt-in performance analytics. The source contains separate prerequisites and platform/store conditions for each; follow the raw locators before enabling them. See raw lines 218\u2013431.\n- Customer Service Center orders use Adyen payment links. The described **pending payment** state requires the shopper to fulfill the link before the order can be processed; the guide routes status inspection to Customer Area and the link to SFCC Order Notes. It gives no proof that any particular shopper paid or that an order was processed. Payment-method setup and live configuration remain separate next-step guides. See raw lines 433\u2013465.\n\n## Detail locators\n\n- **Prerequisites, SFRA/storefront account limit, cartridge paths and Business Manager roles:** raw lines 23\u201368.\n- **Keys, allowed origins, environment and version-qualified settings:** raw lines 70\u2013131, 355\u2013385.\n- **Webhook endpoint/security, testing, acknowledgements and scheduled order-status job:** raw lines 133\u2013216.\n- **Optional tokenization, POS, Giving, risk, localization and analytics:** raw lines 218\u2013431.\n- **Customer Service Center pending-link/order path and separate next steps:** raw lines 433\u2013465.\n\n## Related\n\n- [[adyen]]\n- [[adyen-salesforce-commerce-cloud]]\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15|Adyen SFRA cartridge setup \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "However, in Salesforce, you can only have one merchant account for each storefront.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md:41"
+    },
+    {
+      "text": "To connect your Commerce Cloud store to the Adyen API, you need to [generate an API key in your Customer Area](#api-key-customer-area) and add it to your Salesforce Business Manager.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md:74"
+    },
+    {
+      "text": "To inform your Commerce Cloud store of payment status changes, Adyen uses [webhooks](/development-resources/webhooks), sent as HTTP callbacks to endpoints on your server.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md:137"
+    },
+    {
+      "text": "Webhooks are stored in Commerce Cloud as custom object instances to be processed by scheduled jobs.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md:205"
+    },
+    {
+      "text": "The pending payment error message indicates that a pending payment needs to be fulfilled before the order can be processed.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md:447"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-sfra-setup-sfcc-route",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge]] \u2014 2026-09-15 Adyen SFRA cartridge setup guide for test/live keys, storefront and Business Manager configuration, webhook security and scheduled order-status processing, plus optional features and pending CSC payment-link orders.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply this route after the campaign overview worker creates the Adyen Salesforce Commerce Cloud concept; this worker does not propose a competing concept file.",
+          "Setup, webhook testing and a pending CSC link do not establish live eligibility, payment success or completed order processing.",
+          "Feature support from v20.1.3 applies only where the source marks those features; the page does not pin the installed cartridge version."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge/2026-09-15.md",
+  "raw_sha256": "b3d994b640c115fe3540aeee6e4b55c917784d4ee6efa234944d690c7aa76358",
+  "status": "candidate_ready"
+}

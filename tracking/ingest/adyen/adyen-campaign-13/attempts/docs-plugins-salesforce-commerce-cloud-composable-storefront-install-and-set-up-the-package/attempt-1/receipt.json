@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-composable-storefront-install-and-set-up-the-package",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Salesforce Composable Storefront package setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, composable-storefront, pwa, integration]\n---\n\n## Overview\n\nThis [[adyen]] guide sets up the Salesforce Commerce Cloud (SFCC) Composable Storefront integration using the `@adyen/adyen-salesforce-pwa` npm package together with the `int_adyen_PWA` companion cartridge. The cartridge adds Business Manager metadata, custom SCAPI endpoints and a hook for payment/order and webhook work beyond standard SCAPI; the PWA package supplies checkout components and server routes. The guide is setup and testing guidance, not evidence that a storefront is deployed, a payment is authorised, or an order is fulfilled. See [[adyen-salesforce-commerce-cloud]] for the provider integration route.\n\n## Key takeaways\n\n- The dated prerequisites list Salesforce PWA Kit **v3.12.0 or later**, Node **v22 or later**, npm **v11 or later**, a connected SFCC sandbox, configured sites/locales/currencies/inventory, WebDAV credentials, Salesforce-enabled Managed Runtime with **Admin** permission, and Commerce API **Customization with Hooks**. These are source requirements for this Composable Storefront path; the page does not pin an npm package version for its base install. [Raw: Requirements, lines 27\u201343]\n- Install/build the companion cartridge, import site-specific payment, object-extension and job metadata, and set its Business Manager cartridge path. Its Notify endpoint stores webhooks for scheduled processing; Create Order assigns an order number before payment where gift cards require it; Get Order retrieves order details. The PWA setup then imports Adyen SSR routes **before** default Salesforce and custom routes, renders `AdyenCheckout` on checkout/confirmation pages, and supplies error/redirect routes. [Raw: Steps 1\u20133, lines 45\u2013197]\n- `AdyenCheckout` needs shopper `authToken`, site, locale, navigation and basket props. Its `returnUrl` is optional but, when used, must have a protocol, be URL-encoded for non-ASCII content and exclude personal information. Optional back-navigation and error-recovery hooks clean up redirect failures; the documented cleanup **fails pending Salesforce orders and recreates the basket**, so it changes order state. Locale/currency settings belong to the PWA site configuration. [Raw: Steps 4\u20136, lines 199\u2013391]\n- A new Adyen API key is skipped for an existing SFRA or SiteGenesis integration if one is already available. Standard webhook setup for this path specifies the site-ID URL, JSON, TLSv1.3, Basic authentication and HMAC key, and selects `OFFER_CLOSED`; `AUTHORISATION` is implemented by default. Webhooks are stored as SFCC custom objects, then the scheduled **Process** job updates order payment status and **Clean** deletes processed instances; a one-minute frequency is recommended. The guide says webhooks cannot be tested on localhost. [Raw: Steps 7\u20138, lines 392\u2013481]\n- Managed Runtime setup is Salesforce-enabled and environment-specific. The required configuration includes Adyen API/client keys, merchant account, test/live environment, webhook user/password and HMAC, Salesforce Commerce API/site/instance identifiers and scopes; a live URL prefix is conditional on live use. Keep secrets out of logs and inject them at runtime. From package **v4.3.0**, a JavaScript options object can supply supported configuration keys, with site-specific options taking precedence over site-specific environment variables, then global options, then global environment variables. The page says a deployment connects one region, MRT organization, SFCC site and Adyen Customer Area account, yet also describes a single host serving multiple sites through per-site options. Treat that as an unresolved scope tension, not proof of multi-site support for a specific deployment. [Raw: Step 9, lines 484\u2013644, especially 510 and 555\u2013623]\n- Optional features have separate qualifications: Level 2/3 card data and Giving start at package **v4.3.0**; Giving needs a matching-currency campaign and donation-token-capable non-gift-card payment method. The separate in-person terminal path starts at **v4.4.0**, uses site/store-specific Terminal API settings, and requires the current shopper's store ID to be among configured active store IDs. Standard ecommerce Drop-in does not require terminal settings. Existing SFRA/SiteGenesis Adyen stores need page migration; test-card payments and Customer Area test status checks precede the separate payment-method and live steps. [Raw: Optional Steps 10\u201313, lines 645\u2013831; Migrate pages and Testing, lines 832\u2013849]\n- This 2026-09-15 snapshot has embedded last-modified metadata from 2024. Examples and configuration do not establish current package compatibility, supported payment-method eligibility, successful webhook delivery, live payment or order outcomes, refunds, or settlement.\n\n## Detail locators\n\n- Versions and Salesforce-side prerequisites: `Requirements`, lines 27\u201343.\n- Cartridge metadata, SCAPI endpoints, WebDAV/build/import and site path: `Step 1`, lines 45\u2013107.\n- PWA project, npm package, SSR route order and checkout/redirect page overrides: `Steps 2\u20133`, lines 108\u2013197.\n- Component props and redirect/order cleanup effects: `Steps 4\u20135`, lines 199\u2013366.\n- Locale/currency site configuration: `Step 6`, lines 367\u2013391.\n- API key reuse condition, webhook authentication/events and Salesforce Process/Clean jobs: `Steps 7\u20138`, lines 392\u2013481.\n- MRT enablement/deployment, required variables, options precedence, site-scope tension and secret warning: `Step 9`, lines 482\u2013644.\n- Optional country list, Level 2/3, Giving and terminal payments with package-version boundaries: `Steps 10\u201313`, lines 645\u2013831.\n- Existing-page migration, test-card check and next routes: `Migrate pages`, `Testing`, and `Next steps`, lines 832\u2013860.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-salesforce-commerce-cloud]] \u2014 SFCC integration concept route.\n- [[adyen-webhooks]] \u2014 general Adyen webhook behavior; this guide owns its SFCC processing setup.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package/2026-09-15|Adyen Salesforce Composable Storefront setup (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The npm package for the Composable Storefront integration works together with a cartridge for the Salesforce Commerce Cloud (SFCC) cartridge.",
+      "location": "line 49, Step 1: Install the cartridge and import the metadata"
+    },
+    {
+      "text": "This fails any pending Salesforce orders and recreates the basket.",
+      "location": "line 276, Step 5 (Optional): Handle the browser back button"
+    },
+    {
+      "text": "You cannot test Adyen webhooks on localhost.",
+      "location": "line 465, Step 8: Set up webhooks"
+    },
+    {
+      "text": "Your Composable Storefront integration with Adyen can only have one region connected to one MRT organization, one SFCC site, and one Adyen Customer Area account.",
+      "location": "line 510, Step 9 > Set up the MRT environment"
+    },
+    {
+      "text": "**Never** log the options object as is. It can carry secrets such as `ADYEN_API_KEY`, `ADYEN_HMAC_KEY`, and `ADYEN_WEBHOOK_PASSWORD`.",
+      "location": "line 623, Step 9 > Supported keys"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-sfcc-composable-setup-route",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-install-and-set-up-the-package]] \u2014 2026-09-15 Adyen Composable Storefront setup guide for the PWA npm package and SFCC cartridge, site/credential/webhook/MRT configuration, optional version-gated features and migration/testing boundaries.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply after the C13 SFCC overview worker creates adyen-salesforce-commerce-cloud, if it does not already exist.",
+          "The setup guide's one-SFCC-site MRT statement at line 510 conflicts in scope with its multi-site options use case at line 560; retain both qualifications."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package/2026-09-15.md",
+  "raw_sha256": "22742188bd468f9c2d8b95b50492ed6c1ac599b61de75ad228c61b98adb31779",
+  "status": "candidate_ready"
+}

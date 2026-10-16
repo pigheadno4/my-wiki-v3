@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-16] ingest | Adyen website C13
+
+- Fifty independently approved commerce/ERP/hospitality plugin documentation sources; first full-review approvals 41/50 and 9 targeted correction reviews. 7 concepts touched (6 new); source_count 664 = 650 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-13/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-16] ingest | Adyen website C12
 
 - Fifty independently approved account balance/payment-management and reporting/reconciliation documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 6 concepts touched (3 new); source_count 614 = 600 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-12/`; details [[adyen-log]]. No commit/push.

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-netsuite-set-up-netsuite-customer-center",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Set up Adyen NetSuite Customer Center\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/netsuite/set-up-netsuite-customer-center\"\nraw_files:\n  - \"adyen/docs/plugins/netsuite/set-up-netsuite-customer-center/2026-09-15.md\"\ntags: [adyen, netsuite, suitepayments, plugin, configuration]\n---\n\n## Overview\n\nThis Adyen guide configures the NetSuite Customer Center side of the Adyen payment plugin: install the chargeback and SuitePayments bundles, create payment-method instances, and set up a payment-processing profile. Optional alerts surface exceptions needing review. It documents configuration, not proof that a NetSuite order, payment, refund, capture or bank payout succeeded. See [[adyen]] and [[adyen-netsuite]] for provider and plugin context. The captured page does not identify a plugin package version or a named NetSuite administrator role.\n\n## Key takeaways\n\n- Install the NetSuite Chargeback Workflow Bundle (ID 127355) before the Adyen Payments Bundle for NetSuite (ID 125171), then activate ADYEN SUITEPAYMENTS IMPLEMENTATION. The first bundle supports chargeback/notification handling; the SuitePayments bundle supports processing between NetSuite clients and Adyen for cards and local payment methods. Menu paths and setup checkboxes are in the raw.\n- Create a separate payment-method instance for each accepted method. PAYMENT INSTRUMENTS must be enabled before creating instances, except the guide says it must be disabled for debit cards. Cards and ACH have distinct instance types; BACS, Hosted Checkout local methods, Klarna, WeChat Pay and Pay by Link use their indicated External Checkout setup. Pay by Reference is for Pay by Link invoice payments and requires PAYMENT INSTRUMENTS. Card-token and general-token instances are additional configuration if using tokenization in NetSuite; creating an instance does not show a stored token or a charge. Klarna Pay later and Pay over time are distinct methods and require line-level setup.\n- One processing profile can accept multiple charge currencies but settles in only one currency to one bank account, so create a separate profile for each settlement currency. Separate profiles for cards versus local methods and each NetSuite subsidiary are recommendations, not universal requirements. The profile selects website, subsidiary, settlement currency/account, charge currencies, 3D Secure option, test mode and inactivity; TEST MODE uses Adyen test endpoints and overrides the production endpoint prefix. The merchant-account ID and basic-auth credentials/API key bind the profile to the intended Adyen account and environment.\n- Credential handling has a persistence trap: NetSuite does not send nulls, so blanking a previously filled credential field still passes the previous value. Hosted Checkout requires the CHECKOUT ENDPOINT DOMAIN PREFIX. The guide says the plugin migrated HPP methods to Hosted Checkout from 2023-02-13; prior HPP users must add that prefix to their NetSuite processing profile. Endpoint examples are configuration instructions, not proof of a live call.\n- The SuiteCommerce Advanced table includes online payment with sales-order creation, optional purchase-order field, zero-order page hiding, payment-method display restrictions and card-info display settings. These website switches do not establish the submitted order amount or a payment result. Gateway request types selected are AUTHORIZATIONS, CAPTURES, SALES and REFUNDS. SuiteCommerce 3D Secure has a separate website checkout setting.\n- Optional saved-search emails cover notification exceptions and rejected/payment-hold events. Adyen says that, in rare cases such as a later capture failure, payment status may not be reflected in NetSuite and the order needs a manual update to synchronize the two back ends. An order record or queued alert therefore needs reconciliation with the payment event before claiming an outcome.\n\n## Detail locators\n\n- Setup sequence and optional alerts: raw lines 15\u201321. Bundle prerequisites, IDs, activation and NetSuite chargeback review path: `## Install the Adyen payments bundles`, lines 23\u201375.\n- Per-method instance types, PAYMENT INSTRUMENTS exception, token variants and Klarna line-level requirement: `## Create a payment method instance`, lines 77\u2013211.\n- Profile currency/bank-account grain, recommendations, fields, environment and credentials: `## Create a payment processing profile`, lines 213\u2013246. Merchant account and endpoint fields: lines 248\u2013265. Hosted Checkout migration, payment information and gateway request types: lines 267\u2013282.\n- SuiteCommerce Advanced website fields, including zero-order and card-info settings: lines 284\u2013309. Separate 3D Secure checkout setting: lines 311\u2013319. Notification and payment-event exception searches, with manual order-update warning: `## Set up email alerts`, lines 321\u2013385.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-netsuite]] \u2014 plugin overview and NetSuite route.\n- [[adyen-account-structure]] \u2014 Adyen merchant-account and company-account hierarchy; this page configures a NetSuite profile for a merchant-account ID.\n\n## Related raw API references\n\n- The raw page links to NetSuite tokenization, Adyen account structure, API credentials, 3D Secure, Pay by Link themes, capture failure and the NetSuite glossary. Those linked pages own their detailed behavior until read separately.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/netsuite/set-up-netsuite-customer-center/2026-09-15|Adyen Docs: Set up NetSuite Customer Center (2026-09-15 snapshot; page last modified 2024-12-30)]]\n",
+  "quotes": [
+    {
+      "text": "Before you begin, make sure that you have installed the **NetSuite Chargeback Workflow Bundle** in [Step 1](#step-1).",
+      "location": "raw line 61, ### Step 2: Install the ADYEN - SuitePayments Bundle"
+    },
+    {
+      "text": "Before creating payment method instances, make sure that **PAYMENT INSTRUMENTS** are **enabled**. As an exception, for debit cards, make sure that **PAYMENT INSTRUMENTS** are **disabled**.",
+      "location": "raw line 97, ## Create a payment method instance"
+    },
+    {
+      "text": "A payment processing profile can process payments in multiple currencies, but can only settle in one currency and to one bank account.",
+      "location": "raw line 215, ## Create a payment processing profile"
+    },
+    {
+      "text": "If you leave a previously filled out credential field blank, Netsuite will still pass the previous value.",
+      "location": "raw line 246, ### Authentication Credentials"
+    },
+    {
+      "text": "To keep your NetSuite and Adyen back ends synchronized, you need to *manually* update the order in NetSuite.",
+      "location": "raw line 330, ### Notification exceptions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-netsuite-customer-center-reciprocal",
+        "target_path": "wiki/concepts/adyen-netsuite.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-netsuite-set-up-netsuite-customer-center]] \u2014 2024-modified, 2026-09-15-captured NetSuite Customer Center setup guide for ordered bundles, method/token instances, processing profiles, Hosted Checkout migration and exception alerts; configuration does not prove execution.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply after the NetSuite overview worker's proposed adyen-netsuite concept is accepted; do not create a competing NetSuite concept.",
+          "Blank credential fields can retain prior values, and rare payment-status exceptions can require a manual NetSuite order update."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/netsuite/set-up-netsuite-customer-center/2026-09-15.md",
+  "raw_sha256": "e85e1fdf1cb0a43632d600cfb6c2b75e5b7889468fab7f76e206b9eb77b5f72c",
+  "status": "candidate_ready"
+}

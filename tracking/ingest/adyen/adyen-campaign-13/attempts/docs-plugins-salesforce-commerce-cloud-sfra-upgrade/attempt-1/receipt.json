@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-sfra-upgrade",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Upgrade the Salesforce Commerce Cloud SFRA cartridge\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/sfra/upgrade\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, sfra, upgrade]\n---\n\n## Overview\n\nAdyen's SFRA payments-cartridge upgrade guide (page metadata last modified 2024-01-04; captured 2026-09-15) recommends upgrading at major releases or from an unmaintained version and separates default from customized integration steps. It describes changing SFRA and cartridge versions, site metadata and cartridge paths; it does not certify compatibility, merchant readiness, completed deployment or payment outcomes. Route through [[adyen-salesforce-commerce-cloud]] for the SFRA-versus-Composable distinction.\n\n## Key takeaways\n\n- Upgrade effort depends on cartridge customization. Before either path, check the SFRA version required by the target cartridge and migrate SFRA if needed; the guide recommends the latest SFRA. Select a cartridge release from GitHub rather than assuming all versions are interchangeable (raw lines 16\u201333, 65\u201375).\n- For the default integration, re-upload metadata with customizations included, replace the RefArch `yourSiteId` and `jobs.xml` `site-id` values with the Business Manager site ID, import the zipped `site_import` through Business Manager, run `npm run build`, and update the SFRA cartridge path (raw lines 35\u201359). These are site-configuration changes, not evidence that the import/build worked.\n- The path table distinguishes **v23.3.2 or earlier** (`int_adyen_SFRA:int_adyen_overlay:app_storefront_base`) from **v24.1.0 or later** (`app_adyen_SFRA:int_adyen_SFRA:app_storefront_base`). Use the path for the target version; the raw table is at lines 61\u201363 (and 113\u2013115 for customized integration).\n- For a customized integration, first examine breaking changes, extract custom code from the Adyen cartridge into a separate cartridge, then check/migrate SFRA, download the target release, re-upload site metadata, build both the unmodified Adyen and custom cartridges, assess compatibility of custom code, set the custom cartridge ahead of the target Adyen path, and re-enable the Business Manager configuration page (raw lines 65\u2013117). The raw page points to the customization guide for extraction details; they are not established by this page alone.\n- Breaking changes must be considered across **all intervening releases** between the installed and target versions, not just the destination release; the page gives v21.2.0 \u2192 v23.1.0 as an example (raw lines 123\u2013127). It does not prescribe a backup/rollback procedure, test matrix, credential or token migration, or merchant-specific compatibility result; those require separate evidence and operational planning.\n\n## Detail locators\n\n- Upgrade recommendation, support schedule and customization fork: raw lines 16\u201327.\n- Default integration's SFRA check, metadata import, build and path: raw lines 29\u201363.\n- Customized integration's extraction, separate cartridge, two builds and Business Manager re-enable: raw lines 65\u2013117.\n- Breaking-change review across intervening versions: raw lines 123\u2013127.\n\n## Related\n\n- [[adyen-salesforce-commerce-cloud]] \u2014 SFCC integration concept, distinct SFRA and Composable routes.\n- [[adyen]] \u2014 Adyen provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15|SFRA cartridge upgrade, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The integration effort involved in upgrading depends on whether you have made any [customizations](/plugins/salesforce-commerce-cloud/sfra/customization-guide) to the cartridge.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md line 22"
+    },
+    {
+      "text": "Check which [SFRA version](/plugins/salesforce-commerce-cloud/sfra#supported-versions) is required for this upgrade and migrate if necessary.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md line 31"
+    },
+    {
+      "text": "The cartridge path](/plugins/salesforce-commerce-cloud/sfra/set-up-the-cartridge) depends on the version you are upgrading to:",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md line 59"
+    },
+    {
+      "text": "Before you begin, check if there are any [breaking changes](#breaking-changes-for-customized-integrations) that affect your custom code.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md line 67"
+    },
+    {
+      "text": "The changes you must consider depends on the cartridge version you are upgrading from.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md line 127"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-salesforce-commerce-cloud-sfra-upgrade-sfcc-route",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-upgrade]] \u2014 2024-modified, 2026-09-15-captured SFRA cartridge default/custom upgrade paths, v23.3.2-to-v24.1.0 path split and intervening breaking-change review; no merchant deployment or compatibility proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This source addresses the SFRA cartridge, not Composable Storefront/PWA Kit; it supplies no backup, test matrix, credential/token migration or merchant-specific outcome evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/upgrade/2026-09-15.md",
+  "raw_sha256": "0f8af72bbb4e39a0b4877729999407704ad51679c63624e06434593e27c980df",
+  "status": "candidate_ready"
+}

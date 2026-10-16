@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-sfra-customization-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFRA customization guide\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/sfra/customization-guide\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/sfra/customization-guide/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, sfra, cartridge-customization, checkout]\n---\n\n## Overview\n\nThis Adyen guide describes checkout-flow, payment-method configuration, and pre-authorization customization for the Salesforce Commerce Cloud Storefront Reference Architecture (SFRA) cartridge. It recommends placing merchant code in a separate cartridge before the Adyen cartridge so version upgrades can preserve that code and supported-version cartridge support can continue. The page is an SFRA customization guide, not Composable Storefront/PWA Kit authority or evidence that any custom checkout has been deployed or paid successfully. [[adyen]] [[adyen-salesforce-commerce-cloud]]\n\n## Key takeaways\n\n- The guide says direct changes to the default Adyen `/src/cartridges` can make support unavailable and upgrades/troubleshooting harder. Its separate-cartridge approach is available by default from v23.2.1, with the custom cartridge added before Adyen cartridges in the site cartridge path. It gives an extraction route for prior edits to the default code. The stated support continuation is conditional on a supported cartridge version, not a guarantee for arbitrary customization.\n- The payment-method section lists methods that accept custom configuration and examples of `showPayButton`, `environment` (`test` or `live`), `onSubmit`, `onError`, and `onAuthorised` options. These are storefront configuration/callback descriptions; the method list does not prove a merchant has each method enabled, regional eligibility, security compliance, or a successful payment. An `onAuthorised` callback describes authorization, not capture or settlement.\n- A material ambiguity in this page: its preferred separate-cartridge route discourages direct default-cartridge edits (lines 23\u201339), while `### How to customize` instructs editing files under `/src/cartridges/app_adyen_SFRA/...` (lines 160\u2013171). Treat that direct-edit procedure as subject to the earlier support and upgrade warning; this source does not resolve how the two instructions fit together.\n- From v25.4.0, an `app.payment.pre.auth` hook can run custom checks before the cartridge's Adyen `/payments` authorization request. Returning `error: true` stops the cartridge from making that request; `error: false` lets it proceed. The third-party risk-provider call is an example, not a built-in risk decision or proof of a payment outcome.\n- The guide directs unit/end-to-end testing and deployment checks around customization. Its listed `npm install` and `npm run build` commands alone do not demonstrate tests passed. Display troubleshooting points to `showPayButton` and live Customer Area enablement; API errors point to Business Manager credentials. Actual version compatibility and method behavior require the installed cartridge and environment.\n\n## Detail locators\n\n- Opening, lines 19\u201339: Salesforce customization route, support boundary, no-default-edit warning, v23.2.1 separate-cartridge condition.\n- `## Add custom code in a separate cartridge`, lines 41\u201367: creation, cartridge path order, build and test steps. `## Extract custom code from the default cartridge`, lines 73\u2013111: comparison and migration navigation.\n- `## Customize payment methods`, lines 113\u2013158: method list and featured configuration options; `### How to customize`, lines 160\u2013199: direct-path instructions and illustrative card configuration.\n- `## Implement pre-authorization checks`, lines 201\u2013214: v25.4.0 hook and return-value branch.\n- `## Troubleshoot common issues`, lines 216\u2013225: displayed-method, credential and deployment checks.\n\n## Related\n\n- [[adyen-salesforce-commerce-cloud]] \u2014 provider SFCC concept and SFRA-versus-Composable boundary.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge]] \u2014 SFRA setup and credential/webhook route.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-payment-methods]] \u2014 method-specific setup prerequisites.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/customization-guide/2026-09-15|Adyen SFRA customization guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Custom code that you add in a separate cartridge will not be transpiled and will be preserved when you upgrade to a new cartridge version.",
+      "location": "line 23, opening customization rationale"
+    },
+    {
+      "text": "If you customize the default Adyen cartridge, we may be unable to provide cartridge support, and it becomes harder to upgrade and troubleshoot your integration.",
+      "location": "line 25, opening support warning"
+    },
+    {
+      "text": "This setup is available by default on [v23.2.1](https://github.com/Adyen/adyen-salesforce-commerce-cloud/releases/tag/23.2.1) or later",
+      "location": "line 39, Add custom code in a separate cartridge"
+    },
+    {
+      "text": "In the cartridge, go to: `/src/cartridges/app_adyen_SFRA/cartridge/client/default/js/adyen/checkout/paymentMethodsConfiguration`.",
+      "location": "line 164, Customize payment methods > How to customize"
+    },
+    {
+      "text": "On v25.4.0 or later versions of the cartridge, you can implement your own pre-authorization checks.",
+      "location": "line 203, Implement pre-authorization checks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-sfra-customization-route",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-customization-guide]] \u2014 2026-09-15 SFRA cartridge customization guide for v23.2.1+ separate-cartridge overrides, method configuration and v25.4.0+ pre-authorization hook; default-cartridge edit instructions conflict with its support/upgrade warning.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide recommends separate-cartridge customization for support yet later directs payment-method edits under the default cartridge path; preserve that ambiguity and do not imply direct edits retain support.",
+          "Versioned hooks/configuration do not prove deployed behavior, method eligibility or payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/customization-guide/2026-09-15.md",
+  "raw_sha256": "5f19cc76eca762863da79896ef8a376dee0751af0de4fe72e5d2bdf67fa462d1",
+  "status": "candidate_ready"
+}

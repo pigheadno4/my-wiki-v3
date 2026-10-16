@@ -1,0 +1,9 @@
+# Fixed retrieval checks — NetSuite payment notifications
+
+## Q1 — What is this page for, what is its scope, and what should not be inferred?
+
+The captured guide tells a NetSuite user where to view Adyen webhook notifications about transaction confirmation/status changes and chargeback events (raw/adyen/docs/plugins/netsuite/payment-notifications-in-netsuite/2026-09-15.md:16–45). It warns that a sales order's authorization `approved='true'` may later be revoked (line 18). A notification log entry or NetSuite record is not proof of final payment, capture, settlement, dispute outcome or bank credit. Canonical route after coordinator provider-index placement: `[[index]]` → `[[adyen-index]]` → `[[adyen-netsuite]]` → `[[source-adyen-docs-plugins-netsuite-payment-notifications-in-netsuite]]` → `[[raw/adyen/docs/plugins/netsuite/payment-notifications-in-netsuite/2026-09-15]]`; canonical URL: https://docs.adyen.com/plugins/netsuite/payment-notifications-in-netsuite.
+
+## Q2 — How do the asynchronous and chargeback views behave, with what limits?
+
+**Transactions** > **Management** > **View Gateway Asynchronous Notifications** opens the Notifications Log. One transaction may have multiple entries, including when multiple Payment Processing Profiles exist (raw lines 20–35). The page's no-lag statement applies only after NetSuite receipt and does not guarantee upstream delivery or processing (lines 24–26). For a shopper chargeback or chargeback reversal, Adyen sends a notification and the plugin creates NetSuite chargeback records viewable under **View chargeback notifications** (lines 37–45). The page gives no role matrix or signature-validation steps; consult separate access/webhook sources before relying on those controls. Use the concept→source→raw route and distinguish event receipt from an irreversible financial outcome.

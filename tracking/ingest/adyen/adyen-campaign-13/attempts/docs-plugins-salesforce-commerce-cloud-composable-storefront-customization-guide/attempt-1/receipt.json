@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-composable-storefront-customization-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Composable Storefront customization guide\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, composable-storefront, customization, webhooks]\n---\n\n## Overview\n\nThis 2024-09-11-last-modified, 2026-09-15-captured guide describes extension points for Adyen's Salesforce Commerce Cloud **Composable Storefront/PWA** npm-package integration. It recommends starting after Managed Runtime deployment and integration testing, then overriding package functions for checkout UI, server controllers and webhook handling. It is separate from the SFRA cartridge route. See [[adyen-salesforce-commerce-cloud]] and [[adyen]].\n\n## Key takeaways\n\n- **Upgrade-safe extension boundary:** Create documented, modular overrides; the guide says not to modify Adyen npm package code. These are recommended practices for future upgrades and troubleshooting, not evidence that a deployed customization is compatible with any particular package version.\n- **Front end:** Pass checkout customizations to `AdyenCheckoutProvider`. The listed options include checkout styling, payment-method appearance through `paymentMethodsConfiguration`, localization, Drop-in `beforeSubmit`/`onSubmit` callbacks and an added CSS import. Linked GitHub implementations and Web Drop-in 5.63.0 references are examples, not a support or payment-success guarantee.\n- **Server and webhook controllers:** The guide describes adding/replacing controllers through an override array in `overrides/app/ssr.js`, with custom payment functions such as pre-authorization risk checks as examples. Its introductory path is misspelled `ovverrides/app/ssr.js` while its webhook section uses `overrides/app/ssr.js`; verify the installed package/path rather than copying the typo. The webhook example retains `authenticate`, `validateHmac`, and `parseNotification` before a custom handler; preserving those security steps matters when adapting the example.\n- **Order handling boundary:** After webhook setup, `AUTHORISATION` handling is described as enabled by default. Other event/order flows need a custom webhook controller; the guide points to B2C Commerce Orders API for order, payment and export statuses. The package has no pre-built integration with Adyen's Salesforce OMS package, so OMS compatibility requires custom webhook handling for ready-for-export synchronization. A registered controller, webhook receipt or updated Commerce status is not proof of a successful payment, export or settlement.\n\n## Detail locators\n\n- Lines 15\u201326: identity, recommended MRT deployment/testing prerequisite, modular overrides and do-not-modify-package guidance.\n- `## Front end customizations`, lines 28\u201346: provider, styling, translations, callbacks, CSS and linked examples.\n- `## Back-end customizations`, lines 48\u201359: controller override arrays, payment-controller example and misspelled introductory path.\n- `## Webhook controller customizations`, lines 61\u201392: configured webhooks, default AUTHORISATION handler, security-function chain, Orders API status route and absence of pre-built OMS integration.\n\n## Related\n\n- [[adyen-salesforce-commerce-cloud]] \u2014 SFRA versus Composable Storefront route and dated support boundary.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-install-and-set-up-the-package]] \u2014 deployment, test and webhook setup prerequisites.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-go-live-checklist]] \u2014 live-preparation and outcome-check boundary.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15|Composable Storefront customization guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "We recommend to start customizing only after you have [successfully deployed your app to Managed Runtime](/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package#deploy-to-mrt), and have [tested your integration](/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package#test-your-integration).",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md:19"
+    },
+    {
+      "text": "We recommend you to create modularized customizations, and to document the customizations you apply to the integration. You must not modify the Adyen npm package code.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md:26"
+    },
+    {
+      "text": "There are different customizations you can apply to the front end to create unique shopping experiences. You need to pass your customizations to the `AdyenCheckoutProvider`.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md:30"
+    },
+    {
+      "text": "After you have [set up webhooks](/plugins/salesforce-commerce-cloud/composable-storefront/install-and-set-up-the-package#set-up-webhooks), the [AUTHORISATION](https://docs.adyen.com/api-explorer/Webhooks/1/post/AUTHORISATION) webhook is enabled by default.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md:63"
+    },
+    {
+      "text": "The package does not have a pre-built integration with our [Salesforce Order Management System (OMS) package](/plugins/salesforce-order-management-system).",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md:92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-salesforce-commerce-cloud-composable-storefront-customization-guide-source",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-customization-guide]] \u2014 2024-modified, 2026-09-15-captured Composable Storefront/PWA package guide for front-end, server-controller and webhook overrides, with post-deployment/testing advice, package-edit prohibition and no pre-built Salesforce OMS integration.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw introductory back-end path says `ovverrides/app/ssr.js` while its webhook extension path says `overrides/app/ssr.js`; verify the installed package path.",
+          "Examples and status-update instructions are not proof of a completed payment, OMS export or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/customization-guide/2026-09-15.md",
+  "raw_sha256": "9419ab89d66559f6d464b44b9fa62eb99058293bbb6acbeb8a10431d76841937",
+  "status": "candidate_ready"
+}

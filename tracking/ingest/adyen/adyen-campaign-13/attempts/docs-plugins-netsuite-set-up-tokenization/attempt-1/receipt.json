@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-netsuite-set-up-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Set up tokenization in NetSuite\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/netsuite/set-up-tokenization\"\nraw_files:\n  - \"adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md\"\ntags: [adyen, netsuite, tokenization, recurring-payments]\n---\n\n## Overview\n\nAdyen's NetSuite tokenization setup guide (page metadata last modified 2023-11-20; captured 2026-09-15) describes the Payment Instruments prerequisite, Adyen payment-processing-profile fields, Customer Area additional data, token import, transaction overrides, and recurring-contract notifications. It describes configuration and token records for later recurring use; it does not establish a particular merchant's consent, token validity, payment authorization, or future payment success. Route through [[adyen-netsuite]] for the integration scope.\n\n## Key takeaways\n\n- NetSuite **Payment Instruments** must be enabled for tokenization; the page warns this changes its UI and fields. Pay by Link tokenization additionally requires its custom preferences. The guide then calls for editing the Adyen payment processing profile in NetSuite and selecting additional response data in the merchant-account Customer Area (raw lines 19\u201335, 61\u201378).\n- The profile separates card tokenization from recurring model choice (`CardOnFile`, `UnscheduledCardOnFile`, or `Subscription`, sent with the payment request). Pay by Link tokenization is separately enabled, and making a PBL token the shopper's default works only when PBL tokenization is checked. Replacing card details with a token applies only when **PAYMENT CARD TOKENIZATION** is **Yes**. Card and general token payment-method instances are distinct (raw lines 36\u201359).\n- Existing token import uses a Customer Record's **Financial \u2192 Payment Instruments** entry with **General Token** or **Payment Card Token**, a matching Adyen token payment method, token value, and Adyen token family. For a token created outside NetSuite, add the Adyen Shopper Reference; without it, NetSuite uses the shopper's internal ID, and the page warns Adyen invalidates an existing token that does not match that reference. The shopper reference is entered under the Customer Record's **Classification** tab (raw lines 80\u2013105).\n- For an individual credit-card transaction, **ADYEN PAYMENT CARD TOKENIZATION OVERRIDE** can choose Yes, No, or blank to inherit the profile setting; the recurring-processing-model override likewise inherits when blank. These are transaction-level options, not permission for an arbitrary future charge (raw lines 111\u2013124).\n- Token notifications require configured webhooks and the **RECURRING_CONTRACT** event code. Once enabled, the page says NetSuite creates general tokens for non-card payment details upon receiving that webhook; general-token notifications exclude card-token notifications. Card-token notifications are viewed on the transaction, while a token's creation can be checked in the Customer Record payment instrument (raw lines 126\u2013156).\n- The **Manually create tokens** section ends after an incomplete sentence, \u201cTo tokenize payment details of your shoppers after they have completed a payment\u201d; it supplies no complete manual procedure. Do not infer steps or a resulting token from this fragment (raw lines 107\u2013109).\n\n## Detail locators\n\n- Payment Instruments and Pay by Link prerequisites: raw lines 19\u201327.\n- Profile card/PBL/recurring choices and payment-method instances: raw lines 29\u201359.\n- Customer Area additional data selections: raw lines 61\u201378.\n- Import fields and shopper-reference invalidation warning: raw lines 80\u2013105.\n- Incomplete manual-token section and transaction overrides: raw lines 107\u2013124.\n- Webhook setup, general-versus-card notification paths and token inspection: raw lines 126\u2013156.\n\n## Related\n\n- [[adyen-netsuite]] \u2014 NetSuite integration concept and source route.\n- [[adyen]] \u2014 Adyen provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15|NetSuite tokenization setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You must turn on the **Payment Instruments** feature in NetSuite for tokenization to work. Turning on this feature changes the UI and the fields in NetSuite.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md line 23"
+    },
+    {
+      "text": "Adyen invalidates any existing token that does not match the Adyen Shopper Reference.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md line 99"
+    },
+    {
+      "text": "To tokenize payment details of your shoppers after they have completed a payment",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md line 109"
+    },
+    {
+      "text": "Select **Yes** to tokenize the transaction. Select **No** to not tokenize the transaction. Leave blank to inherit the setting from the Payment Processing Profile.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md line 123"
+    },
+    {
+      "text": "After you have enabled the **RECURRING\\_CONTRACT** webhook, NetSuite creates general tokens for each payment detail used in non-card payments upon receiving the webhook.",
+      "location": "raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md line 135"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-netsuite-set-up-tokenization-netsuite-route",
+        "target_path": "wiki/concepts/adyen-netsuite.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-netsuite-set-up-tokenization]] \u2014 2023-modified, 2026-09-15-captured NetSuite Payment Instruments, profile, token import/overrides and RECURRING_CONTRACT notification setup; shopper-reference mismatch may invalidate existing tokens, and the manual-token section is incomplete.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This source has no package-version or merchant-enablement proof; its token configuration and notification guidance do not guarantee a later recurring payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/netsuite/set-up-tokenization/2026-09-15.md",
+  "raw_sha256": "442355285ab2474f55851d7ff1ecea5e6ae255bfe1683a4cd1a313105abdd83c",
+  "status": "candidate_ready"
+}

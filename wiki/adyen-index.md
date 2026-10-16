@@ -646,6 +646,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-reporting-settlement-reconciliation]] — Adyen settlement reconciliation hub (webpage, 2026-10-16)
 - [[source-adyen-docs-reporting-3d-secure]] — 3D Secure reporting | Adyen Docs (webpage, 2026-10-16)
 
+### Website documentation — Campaign 13
+
+- [[source-adyen-docs-plugins-adobe-commerce]] — Adyen Adobe Commerce plugin overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud]] — Adyen Salesforce Commerce Cloud B2C Commerce integrations (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite]] — NetSuite | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-shopify]] — Adyen payments apps for Shopify (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-install-and-set-up-the-package]] — Adyen Salesforce Composable Storefront package setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-headless-integration-express-checkout]] — Adyen Adobe Commerce headless Express checkout (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-headless-integration]] — Adyen Adobe Commerce headless integration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-set-up-payment-methods]] — Adyen Salesforce Composable Storefront payment-method setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge]] — Set up the SFRA cartridge | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-netsuite-customer-center]] — Set up Adyen NetSuite Customer Center (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-payment-methods]] — Adyen SFRA payment-method setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-go-live-checklist]] — Adyen SFRA go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-supported-payment-methods]] — Adyen Salesforce Commerce Cloud supported payment methods (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-payment-methods-in-adobe-commerce]] — Adyen Adobe Commerce payment-method setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-reconciliation-bundle]] — Adyen NetSuite reconciliation bundle (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-supported-payment-methods]] — Supported payment methods for Adobe Commerce | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-pay-by-link]] — Adyen NetSuite Pay by Link setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce]] — Adyen Adobe Commerce plugin installation and configuration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-troubleshooting]] — Adobe Commerce troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-migrate-to-a-new-version]] — Adyen Adobe Commerce major-version migration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-point-of-sale]] — Adyen NetSuite SuiteCommerce InStore POS setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-go-live-checklist]] — Adobe Commerce go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-adyen-customer-area]] — Set up Adyen Customer Area for Adobe Commerce | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-supported-payment-methods]] — Adyen NetSuite bundle supported payment methods (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-go-live-checklist]] — Adyen Composable Storefront go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-customization-guide]] — Adyen SFRA customization guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-manage-orders]] — Adyen Adobe Commerce order management (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-tokenization]] — Set up tokenization in NetSuite (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-customize]] — Customize the Adobe Commerce plugin | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-in-person-payments]] — Adyen Adobe Commerce in-person payment setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-payment-processing-in-netsuite]] — Payment processing in NetSuite (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-troubleshooting]] — Adyen SFRA cartridge troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-reconciliation-bundle-troubleshooting]] — Adyen NetSuite reconciliation bundle troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-oracle-xstore]] — Adyen Oracle Xstore integration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-upgrade]] — Upgrade the Salesforce Commerce Cloud SFRA cartridge (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-oracle-opera]] — Oracle Opera | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-tokenization]] — Adyen Adobe Commerce tokenization setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-customization-guide]] — Adyen Composable Storefront customization guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce-multiple-merchant-accounts]] — Manage multiple merchant accounts in Adobe Commerce (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-set-up-adyen-customer-area]] — Set up Adyen Customer Area for NetSuite | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-shopify-supported-payment-methods]] — Adyen Shopify supported payment methods (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-install-the-cartridge-and-import-the-metadata]] — Adyen SFRA cartridge installation and metadata import (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront]] — Adyen Composable Storefront package for Salesforce B2C Commerce (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-oracle-simphony]] — Adyen Oracle Simphony POS integration (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-troubleshooting]] — Adyen Composable Storefront troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra]] — Adyen Salesforce Commerce Cloud SFRA cartridge overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-troubleshooting]] — NetSuite payments bundle troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-netsuite-payment-notifications-in-netsuite]] — Payment notifications in NetSuite | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-adobe-commerce-upgrade]] — Adyen Adobe Commerce plugin upgrade steps (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-upgrade]] — Adyen Composable Storefront package upgrade (webpage, 2026-10-16)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -678,6 +731,18 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-shopify]] — Adyen Shopify
+
+- [[adyen-salesforce-commerce-cloud]] — Adyen Salesforce Commerce Cloud
+
+- [[adyen-oracle-xstore]] — Adyen Oracle Xstore
+
+- [[adyen-oracle-simphony]] — Adyen Oracle Simphony
+
+- [[adyen-oracle-opera]] — Adyen Oracle Opera Integration
+
+- [[adyen-netsuite]] — Adyen NetSuite Integration
 
 - [[adyen-transaction-descriptions]] — Adyen Transaction Descriptions
 

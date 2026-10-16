@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-sfra-install-the-cartridge-and-import-the-metadata",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SFRA cartridge installation and metadata import\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, sfra, cartridge, metadata]\n---\n\n## Overview\n\nThis 2023-06-15-last-modified, 2026-09-15-captured guide lays out preparatory steps to build Adyen's **Salesforce Commerce Cloud SFRA cartridge** and import its site metadata into Business Manager. Its scope is the SFRA cartridge, not the Composable Storefront/PWA npm package. It does not establish that a specific merchant has installed, activated or tested the cartridge. See [[adyen-salesforce-commerce-cloud]] and [[adyen]].\n\n## Key takeaways\n\n- **Prerequisites and version condition:** The guide calls for Salesforce Sandbox access, the SFRA repository with developer access, and a downloaded Adyen cartridge. It says cartridge v25.3.0 or later uses ES6+ and requires transpilation when the Salesforce environment needs ES5; the page's 2023 last-modified metadata is older than that version reference, so confirm release-specific requirements before relying on it.\n- **Connection/build steps:** It instructs creating a cartridge-root `dw.json` with sandbox hostname, username, WebDAV access key and target code version, then running `npm install` and `npm run build`. The build description says the command transpiles/compiles source from `/src` and writes deployable output to `/cartridges`. The page does not document cartridge-path activation or a completed upload; the next linked setup guide carries subsequent configuration. Treat the `dw.json` fields as deployment credentials and avoid exposing their values.\n- **Metadata import changes configuration:** It directs merchants to customize the metadata, replace `yourSiteId` and `jobs.xml` `site-id` with the actual Business Manager site ID, zip `site_import`, then import it through **Site Import & Export**. The guide says this adds Adyen attributes for site preferences, orders and custom objects, plus named services including `AdyenPayment`, `AdyenRecurring` and `AdyenCheckoutPaymentMethods`. Import is a state-changing Business Manager action; this page does not specify overwrite behavior for an existing site configuration, so inspect the actual package and target before import.\n- **Endpoint/version and outcome boundary:** It warns against changing the imported services' endpoint version numbers because doing so can cause integration errors. The next step is separate cartridge setup in Adyen Customer Area and Business Manager. Commands, metadata examples and an import procedure are instructions, not evidence of actual installation, payment authorization, webhook processing or settlement.\n\n## Detail locators\n\n- `## Prerequisites`, lines 16\u201323: sandbox/SFRA/cartridge access and conditional v25.3.0+ ES6-to-ES5 rule.\n- `## Step 1: Set your credentials and version`, lines 25\u201336: `dw.json` WebDAV credentials and target code version.\n- `## Step 2: Install Node modules` and `## Step 3: Build the code`, lines 38\u201358: package install, build and `/cartridges` output.\n- `## Step 4: Import the metadata`, lines 60\u201388: site ID substitutions, Business Manager import path, attributes/services and endpoint-version warning.\n- `## Next steps`, lines 94\u2013100: subsequent cartridge configuration route.\n\n## Related\n\n- [[adyen-salesforce-commerce-cloud]] \u2014 SFRA versus Composable Storefront and version boundary.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-set-up-the-cartridge]] \u2014 subsequent Adyen Customer Area and Business Manager setup.\n- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-upgrade]] \u2014 version-specific upgrade path.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15|SFRA cartridge install and metadata import, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "4. v25.3.0 or later: the Adyen cartridge uses modern JavaScript ES6+. If your Salesforce environment requires ES5 compatibility, you must [transpile the source code](#step-3-build-the-code).",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md:23"
+    },
+    {
+      "text": "In your cartridge's root directory, create a `dw.json` file that includes the information required to establish a server connection and the code version that you want to upload your cartridge to.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md:27"
+    },
+    {
+      "text": "* Outputs deployable code in the **/cartridges** directory",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md:58"
+    },
+    {
+      "text": "3. Rename the\u00a0**yourSiteId** (RefArch) folder to the ID of your site in your Salesforce Business Manager.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md:66"
+    },
+    {
+      "text": "Make sure that you do not change the version numbers of the endpoints in the above services. Doing so could lead to errors in your integration.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md:88"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-salesforce-commerce-cloud-sfra-install-the-cartridge-and-import-the-metadata-source",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-sfra-install-the-cartridge-and-import-the-metadata]] \u2014 2023-modified, 2026-09-15-captured SFRA cartridge WebDAV/build and site-metadata import guide, with conditional ES5 transpilation, Business Manager service changes and endpoint-version warning; setup procedure is not deployment or payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw has 2023 last-modified metadata but references cartridge v25.3.0+; confirm applicable release-specific instructions.",
+          "Metadata import changes Business Manager configuration, but this page does not define overwrite behavior for existing target settings."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/sfra/install-the-cartridge-and-import-the-metadata/2026-09-15.md",
+  "raw_sha256": "8d9f8bf41a8082fa5b9b59ba713b06d71b42c62ca3f4ca99cffac7bac45ece27",
+  "status": "candidate_ready"
+}

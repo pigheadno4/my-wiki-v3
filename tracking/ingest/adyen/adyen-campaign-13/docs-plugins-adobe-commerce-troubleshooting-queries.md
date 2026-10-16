@@ -1,0 +1,13 @@
+# Fixed retrieval checks — docs-plugins-adobe-commerce-troubleshooting
+
+## Q1 — Purpose, scope, and what not to infer
+
+**Query:** What is this Adobe Commerce troubleshooting page for, and what does it not establish?
+
+**Answer:** It is a diagnostic guide for the Adyen Adobe Commerce plugin, starting with setup/FAQ, cache and temporary third-party plugin isolation, then logs, webhook/order-status checks, selected checkout errors, customizations, version/release checks, and escalation. It does not identify the cause of a particular merchant incident, prove a remedy worked, or prove an order, capture, or payment outcome. The page metadata says last modified 2023-05-19 and the raw snapshot was captured 2026-09-15; use [[adyen-magento2]] for separately version-qualified repository implementation facts. Evidence: raw lines 11, 19–34, 60–66, 162–191. Canonical route: [[adyen-index]] → [[adyen-magento2]] → ## Related → [[source-adyen-docs-plugins-adobe-commerce-troubleshooting]] → [[raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15]].
+
+## Q2 — Central capability, prerequisites, and warnings
+
+**Query:** How should one diagnose an Adobe Commerce order-status or checkout problem using this page, and what conditions and warnings matter?
+
+**Answer:** For an unchanged order status, distinguish whether the relevant event is enabled (including OFFER_CLOSED for abandoned orders), whether the webhook endpoint accepts and stores delivery, and whether Magento cron processes it into an order update. Customer Area endpoint testing expects a successful HTTP response such as 202; HMAC generation, matching notification credentials (test/live separation), and IP/server behavior can cause failures. Use notification and cron logs for those stages; `info.log` holds API JSON. The queue section sends **Processing**/**Done** = **No** cases to a technical team for cron restart and describes a conditional database requeue affecting status fields and >5-day creation dates; it is not a general retry instruction. For order-placement errors, inspect the actual `/payments` response: the page's code 905 and 135 examples have different conditional remedies. Missing methods require checking setup, country/region plus currency in `/paymentMethods`, and response inclusion. No capture-specific remedy or successful financial result is established. Evidence: raw lines 53–58, 68–118, 120–158. Canonical route: [[adyen-index]] → [[adyen-magento2]] → ## Related → [[source-adyen-docs-plugins-adobe-commerce-troubleshooting]] → [[raw/adyen/docs/plugins/adobe-commerce/troubleshooting/2026-09-15]].

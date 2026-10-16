@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-set-up-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce tokenization setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/set-up-tokenization\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/set-up-tokenization/2026-09-15.md\"\ntags: [adyen, adobe-commerce, tokenization, vault]\n---\n\n## Overview\n\nThis 2023-modified Adyen webpage snapshot describes saving a shopper's payment method through the Adobe Commerce plugin for later use. The shopper-facing **Save for my next payment** checkbox is the stated selection point; the plugin uses **Adobe Commerce Vault to store token information**. Setup and a stored token are not proof of shopper consent for a different use, a future charge, payment authorization, or successful subscription processing. See [[adyen]], [[adyen-magento2]], and [[recurring-payments]].\n\n## Key takeaways\n\n- The page lists card, Google Pay, Apple Pay, SEPA, Klarna, PayPal, iDEAL, Payconiq by Bancontact, and in-person payment tokenization; other methods are a feature-request route, not a supported guarantee (raw lines 19\u201321). It describes the checkbox during a shopper payment and an **Instant purchase** flow that asks for CVC (lines 23\u201327). The page provides no exact plugin-version applicability or merchant enablement proof.\n- **RECURRING_CONTRACT webhooks** must be enabled in Customer Area (raw lines 29\u201331). In Adobe Commerce, configure tokenization **per payment method**, enable it, and select `CardOnFile`, `UnscheduledCardOnFile`, or `Subscription` according to intended use (lines 33\u201349). The page says a later transaction can specify another applicable recurring model; this is not blanket permission to repurpose a shopper credential.\n- Stored-card payments default to requiring CVC. Setting **Require CVC for card payments** to **No** needs additional Adyen-side configuration for recurring card processing. **Allow multistore tokens** lets shoppers use tokenized details from a different Magento storefront when set to Yes (raw lines 41\u201347); the page does not say this crosses shopper or merchant-account identities.\n- In the merchant-account Customer Area, the guide enables specified card additional-data fields and **Recurring details** (raw lines 51\u201368). The optional risk section recommends excluding recurring transactions from risk evaluation and turning off IP-based and velocity risk checks for recurring transactions (lines 70\u201377). Those changes affect fraud controls and are **optional**, not a tokenization prerequisite.\n- Adobe Commerce has no native automatic shopper-not-present transaction functionality, so subscription billing requires additional integration effort (raw lines 79\u201388). The page maps Vault `shopperReference` to Adobe Commerce `customer_id` and `storedPaymentMethodId` to `gateway_token` (lines 83\u201386). These stored identifiers are not evidence of a completed or authorized later payment. In-person recurring setup is routed separately (lines 90\u201392).\n\n## Detail locators\n\n- Intro, `How it works`, and `Requirements`, raw lines 17\u201331: listed methods, shopper selection, CVC at instant purchase and webhook requirement.\n- `Set up the Vault` and `Set up recurring contracts`, raw lines 33\u201368: per-method model/CVC/multistore settings and merchant-account additional data.\n- Optional risk, subscription and in-person sections, raw lines 70\u201392: fraud-rule changes, non-native automatic subscriptions, Vault field mapping and separate POS route.\n\n## Related\n\n- [[adyen-magento2]] \u2014 exact package baseline and plugin lifecycle.\n- [[recurring-payments]] \u2014 stored-credential use and consent context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/set-up-tokenization/2026-09-15|Set up tokenization, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If the checkbox is selected, shopper payment details will be securely stored. The plugin uses the [Adobe Commerce Vault](https://developer.adobe.com/commerce/php/development/payments-integrations/vault/) to store the token information.",
+      "location": "raw line 25, How it works"
+    },
+    {
+      "text": "* [Enable **RECURRING\\_CONTRACT** webhooks](/development-resources/webhooks/webhook-types#non-default-event-codes) in your Customer Area.",
+      "location": "raw line 31, Requirements"
+    },
+    {
+      "text": "When set to **No**, processing recurring card payments require additional configuration on our end.",
+      "location": "raw line 46, Set up the Vault / Require CVC"
+    },
+    {
+      "text": "Turn off **IP-based risk checks for recurring transactions** and **Velocity risk checks for recurring transactions**.",
+      "location": "raw line 77, optional risk settings"
+    },
+    {
+      "text": "Implementing subscription payments therefore requires additional integration effort.",
+      "location": "raw line 81, Subscription payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-adobe-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-set-up-tokenization]] \u2014 2023-modified, 2026-09-15-captured Adobe Commerce Vault setup for shopper-selected stored methods, RECURRING_CONTRACT webhooks and recurring model/CVC options; optional risk-rule changes and non-native automatic subscriptions remain qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/set-up-tokenization/2026-09-15.md",
+  "raw_sha256": "8c8bf03b755de5b284f9153c837f6ef5e1b0868245562fa6965e77233f99a646",
+  "status": "candidate_ready"
+}

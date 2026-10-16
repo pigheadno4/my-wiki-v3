@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-salesforce-commerce-cloud-composable-storefront-set-up-payment-methods",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Salesforce Composable Storefront payment-method setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md\"\ntags: [adyen, salesforce-commerce-cloud, composable-storefront, payment-methods, express-checkout]\n---\n\n## Overview\n\nAdyen's Salesforce **Composable Storefront** package guide configures payment methods for the Retail React App and Salesforce Business Manager. It is scoped to the Composable Storefront integration, not an SFRA cartridge. It describes setup and version-qualified UI paths; it does not establish that a method is currently eligible for a merchant or that a payment, order, refund or settlement completed.\n\n## Key takeaways\n\n- First add desired methods in Adyen Customer Area, then in Salesforce Business Manager enable `AdyenComponent` and `CREDIT_CARD` under **Merchant tools > Ordering > Payment Methods** and set **Payment Processor** to `Adyen_Component` for both. The guide says most enabled Customer Area methods then appear without extra configuration, while its named methods need additional steps. The page does not specify Business Manager or Customer Area user roles, API credentials or webhook roles; follow the linked installation/account guides for those prerequisites.\n- **Go-live gate:** Under `## Next steps`, Adyen marks the Composable Storefront go-live checklist as required and directs merchants to follow it before accepting live payments. This page links to that checklist but does not provide its steps; method setup and checklist navigation do not prove a live payment or order.\n- **Apple Pay:** the package uses Adyen's Apple Pay certificate path. Web pages with Apple Pay require HTTPS and a valid SSL certificate; add Apple Pay in the test Customer Area with website URLs, and `http://localhost` cannot be used for testing. Live domain-association-variable instructions differ between package v1.2.0 and v2.0.0+. Apple Pay express is shown on cart/mini-cart in earlier tabs; the earlier blanket product-detail restriction is superseded by a separate **v4.2.0+** tab permitting product-detail launch with `isExpressPdp` and product `id`/`quantity`. That component does not handle product-detail quantity or variant changes. Use the matching version tab, not another tab's code.\n- **Click to Pay** starts at package v4.1.0 and needs a Content Security Policy allowing listed Visa/Mastercard domains for script, image, frame and connect sources; merchant display name is optional. This is a browser-resource configuration step, not confirmation of method eligibility or transaction success.\n- **Card installments** start at v4.3.0 for regular card payments, not Apple Pay, Google Pay or PayPal express. The test Customer Area must enable each merchant-account/card-scheme/country combination; otherwise `/payments` can reject even a valid storefront value. The guide restricts country/currency combinations to BR/BRL, MX/MXN and JP/JPY with different value rules. The PWA package gates the `installments` field server-side using the country in `locale` and removes it for other countries. The selected count is saved as `c_cardInstallments` on the Salesforce payment instrument after a successful payment and displayed on confirmation when present; configuration alone does not prove that outcome.\n- **PayPal express** starts at v4.2.0 for cart or product detail; product detail requires product `id`, `price` and `quantity` to create a temporary basket and cannot handle quantity/variant changes there. An optional review page must retrieve payment data and call `submitPaymentDetails()` on shopper confirmation; the sample callbacks and redirect code are examples, not an order or payment guarantee.\n- **Google Pay:** after test Customer Area enablement, the standard flow needs no additional page-specific setup; live setup requires a Google Merchant ID and registered storefront origins. Google Pay express starts at v4.3.0, requires applicable Salesforce shipping methods and a Google Pay-supported country from `locale.id`, and supports cart or product detail with different basket inputs. Its product-detail flow creates a temporary basket and does not handle quantity/variant changes; unsupported browsers/devices silently do not mount the component.\n\n## Detail locators\n\n- `## Requirements` / `## Enable Adyen as your payment processor` \u2014 Composable integration scope, Customer Area enablement first, Business Manager IDs and processor mapping.\n- `## Apple Pay` through `### Go live` \u2014 HTTPS/certificate/test-domain conditions; Apple Pay express tabs for v1.2.0, v2.0.0+, v4.0.0+, v4.2.0+; product-detail limit and version-specific domain association.\n- `## Click to Pay` \u2014 v4.1.0+ and CSP directives/domains.\n- `## Credit card installments` \u2014 v4.3.0+, Customer Area gate, country/currency/value table, locale-based server filtering, configuration and conditional order-display field.\n- `## PayPal express` \u2014 v4.2.0+, cart/PDP product inputs and optional review-page handoff.\n- `## Google Pay` \u2014 standard test/live setup and v4.3.0+ express shipping, locale, basket, browser and product-detail conditions.\n\n- `## Next steps`, lines 664-668 \u2014 required Composable Storefront go-live checklist route before accepting live payments; checklist contents are outside this source.\n\n## Related\n\n- Company: [[adyen]]\n- Salesforce Commerce Cloud integration concept: [[adyen-salesforce-commerce-cloud]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15|2026-09-15 Composable Storefront payment-method setup]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/go-live-checklist/2026-09-15|Composable Storefront go-live checklist (unread navigation)]]\n",
+  "quotes": [
+    {
+      "text": "This page guides you through setting up the payment methods you want to offer in your Composable Storefront. With our integration, most payment methods work out of the box, but some require additional configuration.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md:19"
+    },
+    {
+      "text": "Before you can set up payment methods in your Salesforce Business Manager, [add the payment methods that you want to offer](/plugins/salesforce-commerce-cloud/supported-payment-methods) in your Customer Area.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md:26"
+    },
+    {
+      "text": "On v4.2.0 and later of the package, you can also start the Apple Pay express flow on the product detail page.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md:192"
+    },
+    {
+      "text": "Credit card installments are supported on v4.3.0 and later of the package.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md:351"
+    },
+    {
+      "text": "Google Pay express is supported on v4.3.0 and later of the package.",
+      "location": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md:571"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-sfcc-composable-methods-route",
+        "target_path": "wiki/concepts/adyen-salesforce-commerce-cloud.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-set-up-payment-methods]] \u2014 2026-09-15 Adyen Composable Storefront guide for Business Manager method activation and version-qualified Apple Pay, Click to Pay, installments, PayPal express and Google Pay setup; distinct from SFRA and live-payment proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Coordinate the reciprocal route with the Salesforce Commerce Cloud overview worker if that worker creates the concept; do not create or overwrite the concept here."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-commerce-cloud/composable-storefront/set-up-payment-methods/2026-09-15.md",
+  "raw_sha256": "edcd4e3b9fbf2c12c252c03bda2a374948cc2f1e46de8ffaff8d701a67c1ca8a",
+  "status": "candidate_ready"
+}

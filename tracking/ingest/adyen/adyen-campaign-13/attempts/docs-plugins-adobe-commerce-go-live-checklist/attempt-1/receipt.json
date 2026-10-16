@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-go-live-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adobe Commerce go-live checklist\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/go-live-checklist\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md\"\ntags: [adyen, adobe-commerce, go-live, webhooks, live-payments]\n---\n\n## Overview\n\nAdyen's Adobe Commerce plugin go-live checklist (page metadata last modified 2023-05-03; captured 2026-09-15) lists account, finance, risk/compliance, API, webhook, and real-payment test preparations for a live environment. Test setup is not copied to live. This is a preparation and test plan, not proof that a particular merchant is enabled, compliant, live, or has completed any payment or capture. The separately version-qualified plugin implementation baseline is [[adyen-magento2]].\n\n## Key takeaways\n\n- Configure the live Customer Area and Adobe Commerce admin panel separately: merchant accounts if needed; distinct live users with task-appropriate roles and account access; live payment methods and checkout order. Confirm shopper statement behavior through the stated support route. Payout bank-account details, payout schedule and reconciliation reports are separate finance checks; Reserve is optional and described for refunds or other expenses when in-process funds are insufficient (raw lines 19\u201368).\n- Review live risk settings, fraud/chargeback notifications and the recommended CAPTCHA defense against card testing. The page warns that Visa/Mastercard 3D Secure enrollment can take up to seven days. Its compliance section calls for a merchant SAQ A assessment, recommends the default card component, says Adobe Commerce's PCI DSS 4.0.1 CSP script-integrity requirements apply regardless of SAQ A, calls for plugin v9.17.0 or later to meet those Adobe Commerce requirements, and assigns additional compliance review to customized/headless front ends; accessibility compliance remains merchant-owned (raw lines 70\u2013102). These are source-dated checklist statements, not a compliance certification.\n- Generate a live API key and client key; put the client key and live API key/endpoints into the indicated Adobe Commerce settings. The checklist names Merchant PAL webservice, Merchant Recurring, Checkout webservice and Checkout encrypted cardholder data as live API credential permissions. Do not substitute test credentials or infer credential validity from this page (raw lines 104\u2013117).\n- Configure live webhooks with the live credentials and HMAC key; enable non-default `OFFER_CLOSED` to close abandoned orders, accept the event types needed by the integration, and test Standard Webhook configuration. The example successful response is HTTP 200. The page also calls out the plugin cronjob that handles webhook events; an HTTP response by itself does not prove a corresponding order update or financial outcome (raw lines 119\u2013139).\n- Perform end-to-end scenarios with real payment details after live configuration. Such payments incur fees. The checklist asks for a successful real payment per offered method, refused and fraud examples, conditional manual capture/cancel and multiple-partial-capture checks, and successful/failed-challenge 3D Secure cases. Capture/cancel checks apply only to the stated capture settings, and the list does not establish that a particular test succeeded (raw lines 141\u2013161). This page supplies no stored-token migration procedure or proof that tokens moved between environments.\n\n## Detail locators\n\n- Test/live separation, account users/methods, payout and reconciliation: raw lines 19\u201368.\n- Risk, 3D Secure enrollment, PCI/CSP and accessibility: raw lines 70\u2013102.\n- Live API/client keys, roles and endpoint configuration: raw lines 104\u2013117.\n- Live webhook credentials, events, acceptance and cron test: raw lines 119\u2013139.\n- Fee-bearing real-payment scenarios and capture/3DS conditions: raw lines 141\u2013161.\n\n## Related\n\n- [[adyen-magento2]] \u2014 Adobe Commerce plugin concept and separately version-qualified implementation baseline.\n- [[adyen]] \u2014 Adyen provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15|Adobe Commerce go-live checklist, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The setup from your test environment is not copied over to your live environment, so you need to configure live settings for:",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md line 19"
+    },
+    {
+      "text": "To meet the Adobe Commerce requirements, use plugin [v9.17.0](https://github.com/Adyen/adyen-magento2/releases/tag/v9.17.0) or later.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md line 94"
+    },
+    {
+      "text": "Make sure that your live API credentials have the following [permissions](/development-resources/api-credentials#manage-api-permissions):",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md line 110"
+    },
+    {
+      "text": "The plugin has a cronjob that handles the webhook event. To test that this is working correctly:",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md line 131"
+    },
+    {
+      "text": "Payments with real details incur fees. To have enough funds available for refunds, consider setting up a [Reserve](#reserve).",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md line 145"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-adobe-commerce-go-live-checklist-magento2-route",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-go-live-checklist]] \u2014 2023-modified, 2026-09-15-captured Adobe Commerce live-setup and real-payment test checklist, including live credentials, webhook/cron and conditional capture checks; completion and outcomes require independent evidence.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The webpage's checklist and v9.17.0 CSP guidance are source-dated; do not transfer them into the adyen/module-payment@11.0.0 implementation baseline without version-specific evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/go-live-checklist/2026-09-15.md",
+  "raw_sha256": "46fa7b09ddc5e95bc42f612c925308e318c528d5fea2580bdcc501d1b3d7abe7",
+  "status": "candidate_ready"
+}

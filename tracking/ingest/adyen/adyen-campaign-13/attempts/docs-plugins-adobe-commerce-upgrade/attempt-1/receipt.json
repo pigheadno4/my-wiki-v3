@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-upgrade",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce plugin upgrade steps\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/upgrade\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/upgrade/2026-09-15.md\"\ntags: [adyen, adobe-commerce, magento2, upgrade]\n---\n\n## Overview\n\nThis Adyen webpage snapshot gives command-level upgrade steps for the Adobe Commerce `adyen/module-payment` plugin, branching between a **default** and a **customized** integration. It recommends upgrading for major releases and states that plugin versions earlier than **9.0.0** are unsupported (raw lines 14\u201327). The page is an instruction set, not evidence that a merchant ran the commands, completed database migration, preserved custom code, or processed a payment. See [[adyen]] and [[adyen-magento2]].\n\n## Key takeaways\n\n- In the default branch, go to the Adobe Commerce project root, run `composer require adyen/module-payment:VERSION_TO_UPGRADE`, then `bin/magento setup:upgrade` to run database migration scripts, then `bin/magento cache:flush` (raw lines 29\u201349). The v11.0.0 command is an **example target**, not an instruction that every installation should select that version.\n- In the customized branch, **extract custom code first**, then run the same dependency, database-upgrade, and cache-flush steps; afterward, check compatibility of that custom code with the selected new version and adjust it as needed (raw lines 51\u201375). The guide does not define a backup or rollback procedure, so extracting custom code should not be read as a complete recovery plan.\n- The page says upgrade effort depends on customizations and links to GitHub releases for fixes/features (raw lines 20\u201327). Use the separate [[source-adyen-docs-plugins-adobe-commerce-migrate-to-a-new-version]] guide for target-major platform prerequisites, dependency and webhook/tokenization changes. The commands here do not establish compatibility for a specific Commerce/PHP version or merchant configuration.\n- Raw metadata says last modified **2021-09-20**, while the captured body mentions a **v11.0.0** example (raw lines 10, 16, 39, 63). Treat both as snapshot evidence; do not infer an exact later update date or current support policy from that metadata alone.\n\n## Detail locators\n\n- Intro, raw lines 14\u201327: recommendation, support cutoff and default/customized branch selection.\n- `Default Integration`, raw lines 29\u201349: Composer requirement, database migration and cache flush.\n- `Customized Integration`, raw lines 51\u201375: extract custom code before upgrade and check compatibility after.\n\n## Related\n\n- [[adyen-magento2]] \u2014 versioned plugin architecture and package baseline.\n- [[source-adyen-docs-plugins-adobe-commerce-migrate-to-a-new-version]] \u2014 major-version-specific platform and behavior changes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/upgrade/2026-09-15|Upgrade the plugin, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "We recommend that you upgrade when we have a major release, such as [11.0.0](/plugins/release-notes/?version%5B0%5D=11.0.0).",
+      "location": "raw line 16, introduction"
+    },
+    {
+      "text": "We do not provide support for plugin versions earlier than [9.0.0](/plugins/release-notes/?plugin=magento_2\\&version=8.0.0).",
+      "location": "raw line 18, introduction"
+    },
+    {
+      "text": "composer require adyen/module-payment:VERSION_TO_UPGRADE",
+      "location": "raw line 36, Default Integration"
+    },
+    {
+      "text": "bin/magento setup:upgrade",
+      "location": "raw line 43, Default Integration"
+    },
+    {
+      "text": "Check if the custom code is compatible with the new version and apply any changes if needed.",
+      "location": "raw line 75, Customized Integration"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c13-adobe-upgrade-reciprocal",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-upgrade]] \u2014 2026-09-15-captured default/customized `adyen/module-payment` Composer, database-upgrade and cache-flush procedure with custom-code compatibility checks; target-major prerequisites remain in the separate migration guide.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw last-modified metadata is 2021-09-20 while the captured body names v11.0.0; do not infer an exact update date or present the dated support cutoff as independently current."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/upgrade/2026-09-15.md",
+  "raw_sha256": "24ac79da9c545531b716c205c7dae938aaffaeb85544d2ece000eb8fb4aa0984",
+  "status": "candidate_ready"
+}

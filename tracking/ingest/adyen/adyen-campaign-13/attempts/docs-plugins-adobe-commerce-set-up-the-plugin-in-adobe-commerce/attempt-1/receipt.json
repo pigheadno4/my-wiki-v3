@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Adobe Commerce plugin installation and configuration\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce\"\nraw_files:\n  - \"adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md\"\ntags: [adyen, adobe-commerce, magento2, plugin, installation, webhooks]\n---\n\n## Overview\n\nThis 2024-last-modified, 2026-09-15-captured Adyen guide describes installing `adyen/module-payment` in Adobe Commerce, running background processing, configuring test/live credentials and order management, then proceeding to payment-method and go-live guides. It is a **procedure**, not evidence a particular store ran it or that a payment, order, capture, refund or settlement succeeded. Check the exact package/version compatibility against [[adyen-magento2]] and [[source-github-adyen-magento2]]; this page's unpinned Composer commands must not be treated as an installed `11.0.0` record. See [[adyen]].\n\n## Key takeaways\n\n- **Installation and cache:** The guide assumes Composer in the Adobe Commerce folder, then lists `composer require adyen/module-payment`, enabling `Adyen_Payment`, running `bin/magento setup:upgrade`, and flushing cache. If a cache layer such as Varnish is used, `/adyen/process/*` must be excluded from caching. These are operational changes, including setup scripts, and were **not executed** by this ingest. The optional `adyen/adyen-magento2-expresscheckout` module requires Adobe Commerce 2.4.4+ and Adyen plugin 8.8.0+ per this dated guide, followed by its own enable/upgrade/cache steps; actual compatibility must be checked for the selected package releases.\n- **Background processing and cleanup:** Server cron is required for webhooks, cache updates and unfinished-order closure; the page says `adyen_payment` cron generation interval is one minute. RabbitMQ is an optional webhook-processing alternative once queueing and Commerce's **Webhook processor = Queue** are configured. Optional payment-response cleanup is disabled by default and, if enabled, removes `adyen_payment_response` rows for cancelled, complete or closed orders at midnight **server time**. Enabling it changes retained state; none of these settings proves webhooks were processed.\n- **Initial configuration and destructive reconfiguration:** Adyen Customer Area setup is a prerequisite. Automated setup is available for plugin 8.4.0+ and uses an API key to configure settings; **reconfiguring** with it loses the older configuration. Manual setup is available for all plugin versions and requires separately generating/configuring credentials. Both choose test or live environment and merchant account; the automated table says the client key and webhook Basic-auth credentials are fetched/generated, whereas the manual table requests API/client keys, webhook Basic-auth username/password and HMAC key. Do not mix test and live credentials. The manual table appears internally inconsistent: it describes the **Client key** as an \u201cAPI key\u201d and the **Webhook Password** as a \u201cusername.\u201d Verify credential identities against the linked Customer Area setup guide before applying them.\n- **Region, currency and order settings:** In manual setup, the Front-end Resource Region must match the live endpoint region; the guide mentions NEA from v11.0.0 for Japan. **Charged Currency** defaults to display currency, with a base/global/website alternative that can only be changed outside the UI. Capture Delay should match Adyen Customer Area's manual or automatic setting; open-invoice methods, PayPal manual capture and SEPA have their own settings/Support conditions. These choices configure processing and do not by themselves show a capture succeeded.\n- **Webhook-driven order states:** The guide distinguishes new-order state before webhook result, `AUTHORISATION`-confirmed authorization, capture-result confirmation via `AUTHORISATION` for immediate capture or `CAPTURE` for manual capture, and cancellation after `CANCEL_OR_REFUND`. Bank-transfer/SEPA pending webhook receipt is optional and requires Customer Area settings. A configured Adobe Commerce status is not independent proof of financial finality or fulfillment.\n\n## Detail locators\n\n- `## Step 1: Install the plugin`, lines 19\u201352: Composer/module/setup/cache commands and cache exclusion.\n- `### (Optional) Use Express Checkout flows`, lines 54\u201385: separate module and dated minimum-version claims.\n- `## Step 2: Run cron`, lines 87\u2013112: one-minute group, optional RabbitMQ, and disabled-by-default midnight cleanup.\n- `## Step 3: Configure the plugin in Adobe Commerce`, lines 114\u2013170: Customer Area prerequisite, automated/manual version boundary, destructive reconfiguration, environment, credential and currency/region fields; manual table inconsistencies at lines 161\u2013165.\n- `## Step 4: Configure order management settings`, lines 172\u2013203: capture/open-invoice/PayPal/SEPA settings and webhook-dependent order states.\n- `## Next steps`, lines 205\u2013221: separate payment-method, stored-method and live-account guides.\n\n## Related\n\n- [[adyen-magento2]] \u2014 exact-version implementation concept and reciprocal source route.\n- [[source-github-adyen-magento2]] \u2014 pinned `adyen/module-payment@11.0.0` implementation baseline and compatibility boundary.\n- [[source-adyen-docs-plugins-adobe-commerce]] \u2014 plugin overview and major-version docs table.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15|Adobe Commerce plugin setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The GitHub repository is connected to Packagist, so you can easily include it in your project through\u00a0[Composer](https://getcomposer.org/).",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md:24"
+    },
+    {
+      "text": "To process webhooks, update the cache, and close unfinished orders, you need to have cron running on your server.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md:89"
+    },
+    {
+      "text": "The cleanup cron job is disabled by default.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md:104"
+    },
+    {
+      "text": "You can also reconfigure your integration using this option, but in that case the older configuration will be lost.",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md:124"
+    },
+    {
+      "text": "The status for orders after capture result is confirmed by a webhook:",
+      "location": "raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md:201"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-adobe-commerce-setup-source",
+        "target_path": "wiki/concepts/adyen-magento2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-adobe-commerce-set-up-the-plugin-in-adobe-commerce]] \u2014 2024-modified, 2026-09-15-captured Adobe Commerce plugin install/configuration guide for Composer/module setup, cron or queue processing, automated/manual credentials, destructive reconfiguration, capture and webhook order-status settings; no installed-package or live-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Automated reconfiguration loses the prior configuration; optional cleanup deletes payment-response rows for final-state orders.",
+          "Manual client-key and webhook-password descriptions appear mislabeled in this raw; verify the linked Customer Area credential guide and exact package compatibility before applying settings."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/adobe-commerce/set-up-the-plugin-in-adobe-commerce/2026-09-15.md",
+  "raw_sha256": "a335e3c0e56715a9c683142b279e89314dc3cf8cf83f95cf90f0f14fa11c531a",
+  "status": "candidate_ready"
+}
