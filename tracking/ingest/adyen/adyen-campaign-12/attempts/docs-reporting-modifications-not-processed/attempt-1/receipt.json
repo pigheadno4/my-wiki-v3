@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-reporting-modifications-not-processed",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Modifications not processed | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/modifications-not-processed\"\nraw_files:\n  - \"adyen/docs/reporting/modifications-not-processed/2026-09-15.md\"\ntags: [adyen, reporting, payment-modifications, capture, cancel, refund]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs snapshot defines the **Modifications not processed** report for modification attempts on an original authorised payment that could not be processed. Its examples are captures, cancels and refunds. Each post-header row is a separate unprocessed-modification entry; the report is evidence of a failed modification attempt, not proof that a capture, cancellation or refund succeeded. [[adyen-reporting]]\n\n## Key takeaways\n\n- The original payment's Customer Area transaction status does **not** change for an unprocessed modification. The page's insufficient-balance refund example leaves the original transaction at `Settled`. A failed modification attempt also triggers a webhook carrying failure information; the page does not define webhook payload or a retry procedure. Reconcile the original and modification references and failure reason before deciding what action is safe. See raw lines 21\u201327.\n- Rows distinguish original-payment `Psp Reference`, merchant reference, transaction currency and original amount from `Modification Reference` (a separate PSP reference), optional modification merchant reference, modification currency and modification amount. `Modificationevent` can be `RefundNotProcessed`, `CaptureNotProcessed` or `CancelNotProcessed`; `Eventdescription` gives the reason. These fields identify the attempt and explain non-processing, rather than the result of a new attempt. See raw lines 33\u201358.\n- The account's time-zone setting affects report data. `Modification Date` is when Adyen received the modification. The raw column definition calls `Creation Date` the time Adyen received a **capture**, although the report also covers cancel and refund attempts; do not generalize that field wording to every modification type without checking the relevant event. Both timestamps are documented in `YYYY-MM-DD HH:MM:SS` format. See raw lines 19\u201321, 49\u201358.\n- This page does not specify access or generation roles, report schedule, a particular time zone, or a currency-conversion rule between original and modification amounts. The sample is a navigation route, not proof of a merchant's live report content. See raw lines 19\u201358.\n\n## Detail locators\n\n- **Population, original status, webhook and time-zone qualification:** raw lines 19\u201327.\n- **Entry grain and sample:** raw lines 29\u201341.\n- **Original versus modification identifiers, amounts, currencies, timestamps and event reason:** raw lines 43\u201358.\n\n## Related\n\n- [[adyen]]\n- [[adyen-reporting]]\n- [[adyen-payment-capture]]\n- [[adyen-refunds]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/modifications-not-processed/2026-09-15|Adyen Modifications not processed \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Your [time zone setting](/reporting/time-zone-setting) affects the data in this report.",
+      "location": "raw/adyen/docs/reporting/modifications-not-processed/2026-09-15.md:21"
+    },
+    {
+      "text": "The Modifications not processed report includes all modification attempts that couldn't be processed.",
+      "location": "raw/adyen/docs/reporting/modifications-not-processed/2026-09-15.md:23"
+    },
+    {
+      "text": "For each unprocessed modification in this report, the transaction status of its original authorised payment in your [Customer Area](https://ca-test.adyen.com/) doesn't change.",
+      "location": "raw/adyen/docs/reporting/modifications-not-processed/2026-09-15.md:25"
+    },
+    {
+      "text": "Adyen's unique identifier (PSP reference) for the modification request. Maximum length: 16 characters.",
+      "location": "raw/adyen/docs/reporting/modifications-not-processed/2026-09-15.md:52"
+    },
+    {
+      "text": "Possible values: **RefundNotProcessed**, **CaptureNotProcessed**, and **CancelNotProcessed**.",
+      "location": "raw/adyen/docs/reporting/modifications-not-processed/2026-09-15.md:57"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-modifications-not-processed-report-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-modifications-not-processed]] \u2014 2026-09-15 unprocessed capture/cancel/refund attempt report with distinct original/modification references, amounts and currencies, unchanged original Customer Area status, event reason and time-zone qualification; it gives no retry authorization.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A listed unprocessed attempt and its failure webhook do not prove the outcome of any later retry; inspect the original operation and failure context before acting.",
+          "The page supplies no report access role, retry procedure or specific time zone, and its Creation Date column is described in capture-specific terms despite the broader report population."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/modifications-not-processed/2026-09-15.md",
+  "raw_sha256": "d3bc5415a16f8c262f86daa0424e2f07adcdf19c12d65238d4a6634124409f13",
+  "status": "candidate_ready"
+}

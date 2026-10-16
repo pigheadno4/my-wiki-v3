@@ -1,0 +1,9 @@
+# C12 coordinator full-read exemplar audit
+
+2026-10-16. Historical snapshot evidence only; no provider/account/report/payment operations.
+
+- Longest — docs-account-payments-lifecycle: all 853 raw lines read in three bounded chunks, including all statuses and qualifications, plus entire promoted source. Roles/reference tracking, offers versus authorization/capture, Settled versus merchant payout, Refunded versus shopper receipt, report aliases, failure/reversal/installment/external scopes, online recipient payout versus merchant settlement and stored-value locators retained. PASS.
+- Ordinary — docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report: all 373 raw lines read in three bounded chunks with display-only table whitespace folding, plus entire promoted source. Selected merchant accounts and per-account roles, manual/scheduled/batch grain and names, entry types, PSP/modification references, gross/net currency, conditional fee components and negative commission, reference FX versus actual external FX, date/time-zone meaning, configurable columns/automation warning, journal debit/credit/return/SDP exceptions retained. Report versus bank-receipt evidence distinct. PASS.
+- Standard — docs-account-getting-paid: full 132-line raw and promoted source read. Merchant-account-separated net payable batches, positive-balance instruction, model and regional exceptions, supported-currency conditions, frequency/holiday/bank-arrival qualification, report creation and view-versus-manage roles retained. Merchant settlement stays distinct from legacy recipient Payout API. PASS.
+
+No material partial/fail found in all three samples; expansion is not triggered. All campaign hashes/provenance/catalogs/routes/counts remain subject to exhaustive closing checks.

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-reporting-merchant-statements-ccc",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Canada Code of Conduct merchant statements\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/merchant-statements-ccc\"\nraw_files:\n  - \"adyen/docs/reporting/merchant-statements-ccc/2026-09-15.md\"\ntags: [adyen, reporting, canada, merchant-statements, payment-fees]\n---\n\n## Overview\n\nThis [[adyen]] Canada Code of Conduct guide shows how to construct a merchant statement of aggregate payment fees and effective merchant discount rates from a Payment Accounting Report (PAR) or Interactive Payment Accounting Report (IPAR). Its stated transparency context is fees paid per Payment Card Network Operator (PCNO) in Canada; its worked aggregation groups payment costs first by **Psp Reference** and then calculates totals by **Payment Method**. The source describes a calculation workflow, not a separately generated statement whose row proves bank receipt. See [[adyen-reporting]] for the reporting route.\n\n## Key takeaways\n\n- The guide lists any Adyen integration type, a **Report service user** API credential role, Customer Area roles for column configuration (**Merchant admin**, **Merchant report**, **Merchant financial**, or **Merchant POS Report role**), and **Merchant report** for report generation and download. **Standard Webhook** subscription is conditional on using an automatically generated PAR rather than IPAR. [Raw: Requirements, lines 23\u201335]\n- Configure and download PAR or IPAR for the chosen period at merchant level. The suggested input columns include **Psp Reference**, **Payment Method**, **Booking Date**, **Record Type**, **Settlement Currency**, **Payable (SC)**, **Commission (SC)**, **Markup (SC)**, **Scheme Fees (SC)**, **Interchange (SC)**, **Processing Fee Currency**, and **Processing Fee (FC)**. Here SC is settlement currency and FC is processing-fee currency; the fees should not be silently treated as one currency. Commission is split into markup, scheme fees, and interchange instead when the acquirer provides interchange-level information. [Raw: Configure report columns, lines 58\u201386; Download IPAR or PAR, lines 87\u201394]\n- Add **Main Amount (SC)** as **Payable (SC) + Commission (SC) + Scheme Fees (SC) + Interchange (SC) + Markup (SC)**. The page describes this derived value as gross transaction amount in settlement currency. Build a pivot by **Psp Reference** with **Payment Method** as the column dimension, then calculate method-level totals, **Total Cost of Payment** as interchange plus scheme fees plus markup plus commission plus processing fees, and **Effective Merchant Discount Rate** as total cost divided by Main Amount total. These are period-level calculated outputs, not native PAR/IPAR row values. [Raw: How it works, lines 37\u201356; Main Amount, lines 96\u2013101; Create pivot table, lines 137\u2013154; Determine aggregate transaction costs, lines 156\u2013174]\n- For multiple currencies, the guide optionally uses an **Exchange rate** report for dates matching each PAR/IPAR **Booking Date**. Convert SC fields and **Processing Fee (FC)** to base-currency fields; use **Exchange Rate** for payments-only integrations and **Exchange Rate (Platform Settlement)** for platform/marketplace integrations. The single-currency formula table retains **Processing Fee (FC)** beside SC totals, so verify its fee currency before combining values. [Raw: Exchange rate report, lines 103\u2013112; Convert to Base Currency, lines 114\u2013135; pivot and formulas, lines 137\u2013174]\n- This is a 2026-09-15 webpage snapshot. It supplies a Canada-focused computation method; it does not certify a merchant's legal compliance, report completeness, current role eligibility, accounting finality, or arrival of a payout at a bank. Its formula should be applied to the relevant account, date period, and currency values rather than an unverified sample.\n\n## Detail locators\n\n- Canada Code and PCNO purpose, and effective merchant discount rate definition: opening, lines 15\u201321.\n- API, Customer Area, and conditional webhook requirements: `Requirements`, lines 23\u201335.\n- PAR/IPAR column configuration and exact field meanings: `1. Configure report columns`, lines 58\u201386.\n- Merchant-level date-period download: `2. Download IPAR or PAR`, lines 87\u201394.\n- Derived Main Amount formula: `3. Create new Main Amount column`, lines 96\u2013101.\n- Booking-Date exchange-rate matching and integration-specific rate columns: `4. (Optional) Download an Exchange rate report` and `5. (Optional) Convert Settlement Currency to Base Currency`, lines 103\u2013135.\n- PSP-reference pivot, method totals, total cost and effective rate formulas: `6. Create pivot table to aggregate costs` and `7. Determine aggregate transaction costs`, lines 137\u2013174.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-reporting]] \u2014 provider reporting concept.\n- [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report]] \u2014 PAR/IPAR source route for underlying report fields and account/date qualifications.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/merchant-statements-ccc/2026-09-15|Adyen Canada Code of Conduct merchant statements (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Create a merchant report that shows the aggregate fees and effective merchant discount rate of each payment method.",
+      "location": "line 17, opening purpose"
+    },
+    {
+      "text": "The instructions show how to compute your effective merchant discount rates per PCNO.",
+      "location": "line 21, opening scope"
+    },
+    {
+      "text": "If you want to create your report from an automatically generated Payment Accounting Report instead of the Interactive Payment Accounting Report, subscribe to the following webhook:- **Standard Webhook**",
+      "location": "line 35, Requirements > Webhooks"
+    },
+    {
+      "text": "**Main Amount (SC)** = **Payable (SC)** + **Commission (SC)** + **Scheme Fees (SC)** + **Interchange (SC)** + **Markup (SC)**",
+      "location": "line 101, Create new Main Amount column"
+    },
+    {
+      "text": "These dates should match the **Booking Date** entries in your IPAR or PAR report.",
+      "location": "line 105, Download an Exchange rate report"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-ccc-merchant-statement-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-merchant-statements-ccc]] \u2014 2026-09-15 Canada Code of Conduct merchant-statement calculation guide using PAR/IPAR, PSP-reference and payment-method aggregation, fee currencies, and effective merchant discount rate; a constructed statement is not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/merchant-statements-ccc/2026-09-15.md",
+  "raw_sha256": "6244753e6a74511d182e2854dd849d45d0d1e5eba463b87ea96bf516a8104933",
+  "status": "candidate_ready"
+}

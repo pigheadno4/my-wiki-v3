@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-account-sales-day-payout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Sales day payout\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/sales-day-payout\"\nraw_files:\n  - \"adyen/docs/account/sales-day-payout/2026-09-15.md\"\ntags: [adyen, sales-day-payout, merchant-settlement, payout-timing, reconciliation]\n---\n\n## Overview\n\nAdyen's Sales day payout groups funds from a sales day into a payable batch after a configured payout delay, rather than tying the merchant payout to each shopper payment method's settlement timeline. It is the default model in the captured page, while Pass-through payout is the only available model in Africa, Brazil, and Turkey. Use is subject to Adyen's Sales day payout Terms of Service. This merchant settlement model is distinct from the legacy outbound Payout API. [[adyen]] [[adyen-sales-day-payout]]\n\n## Key takeaways\n\n- A sales day is midnight to midnight in the merchant account's local time zone by default. A different fixed closing time can be configured, as late as 6:00 AM, and the page points to a separate dynamic-closing route for some cases.\n- The payout delay is the interval after a sale until its funds are assigned to a payable batch. Payout frequency affects grouping: daily is the default, while a monthly frequency can place several sales days into one batch. The page separately says a payable batch closes two hours after its sales-day closing time; it does not resolve the exact close for a non-daily schedule. The page's weekday schedule is an example for a daily frequency and two-business-day delay, not a universal payout promise.\n- Delay depends on the merchant account's payment-method settlement mix, accepted currencies, and acquiring country or region. The page describes typical two- or three-business-day delays under stated conditions, partner-connected delays of three, seven, or twelve business days by industry, and potentially longer delays for slower methods. Bank holidays can extend a currency's delay when they fall on or between sales and payout days.\n- Refunds, chargebacks, and other adjustments enter the payable batch when they occur, regardless of the original transaction's sales day. If Adyen cannot capture funds for a sale it already paid out, it subtracts them from a current payable batch. Consult Next Payout for the current payable balance rather than treating a sales-day total as the final transfer amount.\n- The payable batch closes two hours after the sales-day closing time. After it closes, Adyen creates a bank payout instruction and starts a Settlement details report if automatic report generation is configured. Batch assignment, closure, instruction creation, and report generation are separate from bank receipt.\n- For eligible merchant locations, a request to decrease the delay is reviewed by Adyen. The page gives unsupported currency/acquiring mix, unsupported payment-method mix, request error, and other reasons for refusal; some unsupported-method funds use Pass-through settlement when Adyen receives them. This snapshot does not establish a particular merchant's accelerated eligibility or bank-arrival date.\n\n## Detail locators\n\n- Opening and `## How it works`, lines 19\u201343: model, default and regional exception, payable-batch assignment, payout frequency, and illustrative schedule.\n- `### Adjustments to your payout`, lines 45\u201351: timing of refunds, chargebacks, capture shortfalls, and Next Payout balance.\n- `## Payout delay` and `### Payout delay calculation`, lines 53\u201388: assignment meaning, weekday example, bank-holiday caveat, currency/acquiring and partner qualifications.\n- `## Decreasing your payout delay`, lines 90\u2013114: eligible merchant locations, approval process, refusal reasons, and Pass-through outcome.\n- `## Defining your sales day`, lines 116\u2013122: local-time-zone default, fixed cutoff through 6:00 AM, and dynamic route.\n- `## Payable batch closing and report generation` and `## Bank holidays`, lines 124\u2013143: two-hour close, payout instruction, conditional automatic report generation, and holiday examples.\n\n## Related\n\n- [[adyen-sales-day-payout]] \u2014 provider concept for this merchant settlement model.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 report generated after batch close when configured automatically.\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/sales-day-payout/2026-09-15|Adyen Sales day payout, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You get all the funds from a particular [sales day](#sales-day) in a single payout batch, with a fixed [payout delay](#payout-delay).",
+      "location": "line 19, opening model description"
+    },
+    {
+      "text": "In Africa, Brazil, and Turkey, [Pass-through payout](/account/pass-through-payout) is the only available payout model.",
+      "location": "line 29, opening regional scope"
+    },
+    {
+      "text": "The payout delay is how long after the sale the corresponding funds get assigned to a payable batch.",
+      "location": "line 55, Payout delay"
+    },
+    {
+      "text": "By default, Adyen defines a sales day from midnight to midnight the next day, in the merchant account's local timezone.",
+      "location": "line 118, Defining your sales day"
+    },
+    {
+      "text": "After the payable batch closes we create a bank instruction to pay out to you.",
+      "location": "line 128, Payable batch closing and report generation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-sales-day-detail-route",
+        "target_path": "wiki/concepts/adyen-sales-day-payout.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-sales-day-payout]] \u2014 2026-09-15 Adyen Sales day payout model guide: local-time-zone sales-day cutoff, delay to payable-batch assignment, regional and method-mix limits, adjustments, two-hour batch close, bank instruction, and holiday effects; it does not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply after the upgrade worker's proposed Adyen Sales day payout concept is accepted; do not create a competing concept.",
+          "Sales Day Payout merchant settlement is distinct from the legacy outbound Payout API.",
+          "The page says batches close according to payout frequency (line 37) and also two hours after sales-day closing time (line 126); do not infer a non-daily close schedule from these statements."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/sales-day-payout/2026-09-15.md",
+  "raw_sha256": "bc4c0e0927b5aeb354be67327b73458fd8db045774433cb8c5f304c2ef2ebe22",
+  "status": "candidate_ready"
+}

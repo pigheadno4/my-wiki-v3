@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-account-manage-your-balances",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen merchant-account balance management\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/manage-your-balances\"\nraw_files:\n  - \"adyen/docs/account/manage-your-balances/2026-09-16.md\"\ntags: [adyen, merchant-account, balances, funds-transfer]\n---\n\n## Overview\n\nThis Adyen webpage snapshot explains how merchant-account balances are allotted and how a merchant can top up an account or transfer funds between eligible merchant accounts through Customer Area or the Balance Control API. It names **pending balance, refund reserve, next payout amount, deposit, and negative refund allowance**; Adyen determines fixed deposit and negative-refund-allowance amounts (raw lines 19\u201332). It does not by itself show that a top-up payment was received, a transfer was performed, or a bank payout arrived. See [[adyen]] and [[adyen-account-structure]].\n\n## Key takeaways\n\n- An increase first enters the merchant account's **pending balance**; after settlement, Adyen allots funds to the other balances. A top-up may state a reason: reserve funding, deposit funding, or offsetting a negative payable amount. Reserve funding above the threshold automatically increases that threshold to prevent those funds joining the next payout batch (raw lines 34\u201344).\n- Without a top-up reason, Adyen lists an allocation priority: cover a negative pending/next-payout amount, meet mandatory deposit requirements, bring reserve to its threshold, then pending balance and (once settled) next payout amount. The page gives the same priority for increases from processed payments or account transfers (raw lines 46\u201368). The described automatic **allocation** and threshold adjustment are not a claim that Adyen automatically obtains new funding.\n- A generated top-up payment adds funds only **when Adyen receives it**. The page gives EUR/USD arrival within two business days and up to four business days for other currencies, with special transfer details for some currencies such as ZAR (raw lines 84\u201390). Generation or initiation is not receipt.\n- Cross-account transfers require two merchant accounts under the **same company account and legal entity** with at least one common processing currency; that currency is used for the transfer (raw lines 107\u2013111). Customer Area transfer instructions require `Merchant financial` (line 115), while the general requirements table lists either `Merchant financial` or `Manage key financial tasks` for Customer Area reserve/top-up/transfer work (lines 79\u201381). Keep the transfer-specific role statement rather than silently treating the broader table as sufficient. The Balance Control API requires the `Balance control API - Balances management` credential role.\n- The API `POST /balanceTransfers` request specifies minor-unit `amount.value`, currency, source/destination merchants and transfer type; `reference` is optional, maximum 80 characters (raw lines 129\u2013150). The documented response carries a `pspReference` and `createdAt`, described as the time the transfer was performed (lines 173\u2013187). The Customer Area activity log and Company Payout/Settlement details reports are follow-up routes for balance adjustments (lines 189\u2013201), not proof of an external bank deposit.\n\n## Detail locators\n\n- `Fund allotment`, raw lines 34\u201370: reason-specific allocation and no-reason/payment/transfer priority.\n- `Requirements` and `Top up your account`, raw lines 72\u2013105: integration, roles, preparation, timing, and Customer Area steps.\n- `Transfer funds between accounts`, raw lines 107\u2013187: shared-account/legal-entity/currency condition, Customer Area role and steps, API field table and response.\n- `Keep track of balance changes`, raw lines 189\u2013201: activity log and report navigation.\n\n## Related\n\n- [[adyen-account-structure]] \u2014 merchant/company account hierarchy and access scope.\n- [[adyen-reporting]] \u2014 report evidence boundaries for balance-transfer review.\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/manage-your-balances/2026-09-16|Manage your balances, fetched 2026-09-16]]\n",
+  "quotes": [
+    {
+      "text": "The deposit and the negative refund allowance are fixed amounts determined by Adyen, but you can adjust all other balances in your merchant account in the following ways:",
+      "location": "raw line 27, introduction"
+    },
+    {
+      "text": "When you increase the available balance in your merchant account, the funds first go to your pending balance.",
+      "location": "raw line 36, Fund allotment"
+    },
+    {
+      "text": "If the adjustment causes the funds in the reserve to exceed the [reserve threshold](/account/balances/reserve#set-up-a-reserve), then we automatically increase the threshold.",
+      "location": "raw line 42, Fund allotment / Use top-ups"
+    },
+    {
+      "text": "You can transfer funds between two merchant accounts under the same company account and [legal entity](/account/define-account-structure#legal-entities).",
+      "location": "raw line 109, Transfer funds between accounts"
+    },
+    {
+      "text": "To transfer funds using the [Customer Area](https://ca-live.adyen.com/), you need the following [user role](/account/user-roles):",
+      "location": "raw line 115, Customer Area transfer tab"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-manage-balances-reciprocal",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-manage-your-balances]] \u2014 2026-09-16 merchant-account balance allocation, top-up and same-company/legal-entity transfer guide, with role-specific requirements and funding-versus-receipt boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "General Customer Area requirements table lists Merchant financial or Manage key financial tasks for transfers, while the transfer-specific Customer Area section requires Merchant financial; preserve the narrower route-specific statement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/manage-your-balances/2026-09-16.md",
+  "raw_sha256": "b9bf504fb07e408777602b508fe453e894a67a002834440277faeee741b4f4b9",
+  "status": "candidate_ready"
+}

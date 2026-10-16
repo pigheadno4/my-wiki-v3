@@ -593,6 +593,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutconfirm-request]] — PayoutConfirm request | Adyen Docs (webpage, 2026-10-15)
 - [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutdecline-request]] — Adyen SFTP PayoutDecline request sub-line (webpage, 2026-10-15)
 
+### Website documentation — Campaign 12
+
+- [[source-adyen-docs-account]] — Adyen Account overview (webpage, 2026-10-16)
+- [[source-adyen-docs-account-payments-lifecycle]] — Adyen payments lifecycle statuses (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting]] — Reporting | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-reports-and-the-payments-lifecycle]] — Adyen reports and the payments lifecycle (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] — Adyen Settlement details report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report]] — Adyen Payment accounting report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-closing-your-fiscal-period-monthly-and-daily-finance-report]] — Adyen Monthly and Daily finance reports (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-received-payment-details-report]] — Adyen Received payment details report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-transaction-description]] — Transaction description | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-advancements-detail-report]] — Adyen Advancements Detail Report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-closing-your-fiscal-period-account-receivable-position-dashboard]] — Adyen accounts receivable balance positions (webpage, 2026-10-16)
+- [[source-adyen-docs-account-view-your-balances]] — Adyen view your balances (webpage, 2026-10-16)
+- [[source-adyen-docs-account-supported-currencies]] — Supported payout currencies | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure-3ds-authentication-report]] — Adyen 3DS Authentication report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-merchant-statements-ccc]] — Adyen Canada Code of Conduct merchant statements (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-disputed-transactions]] — Adyen Disputed transactions report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-external-settlement-detail-report]] — Adyen External settlement detail report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances-reserve]] — Adyen reserve balance (webpage, 2026-10-16)
+- [[source-adyen-docs-account-sales-day-payout-upgrade-to-sdp]] — Upgrade to Sales day payout | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances-deposit]] — Adyen merchant-account deposit (webpage, 2026-10-16)
+- [[source-adyen-docs-account-manage-payments]] — Adyen manage payments in Customer Area (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-donation-campaigns]] — Donation campaigns | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-account-manage-your-balances]] — Adyen merchant-account balance management (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-automatically-get-reports]] — Adyen automatic report generation and download (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure-authentication-report]] — Adyen 3D Secure Authentication report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-sales-day-payout]] — Adyen Sales day payout (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level]] — Adyen transaction-level settlement reconciliation (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level-aggregate-settlement-details-report]] — Aggregate settlement details report | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-balance-transfers-company-payout-report]] — Adyen Company Payout report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-balance-transfers]] — Adyen balance transfers in settlement batches (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-dynamic-sales-day]] — Adyen Dynamic sales day closing time (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-reconcile-installment-payments]] — Adyen installments and advancements in Brazil (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-account-updater-results]] — Adyen Account Updater results report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-getting-paid]] — Adyen Getting paid (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-sales-and-payouts-dashboard]] — Sales to payouts dashboard | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level]] — Adyen batch-level settlement reconciliation (webpage, 2026-10-16)
+- [[source-adyen-docs-account-manage-payout-account-details]] — Adyen Manage payout bank account details (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-invoice-reconciliation]] — Adyen invoice reconciliation guide (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-time-zone-setting]] — Adyen report time-zone setting (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-invoice-reconciliation-payment-processing-invoice]] — Adyen payment processing invoice (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances]] — Adyen account balance types (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-modifications-not-processed]] — Modifications not processed | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-closing-your-fiscal-period]] — Adyen Closing your fiscal period (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-manually-get-reports]] — Adyen manually generate and download reports (webpage, 2026-10-16)
+- [[source-adyen-docs-account-pass-through-payout]] — Adyen Pass-through payout (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-dcc-transactions-and-fees]] — Adyen DCC transactions and fees reporting (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure-conversion-report]] — 3D Secure Conversion report | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances-next-payout]] — Adyen Next payout balance (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation]] — Adyen settlement reconciliation hub (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure]] — 3D Secure reporting | Adyen Docs (webpage, 2026-10-16)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -625,6 +678,12 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-transaction-descriptions]] — Adyen Transaction Descriptions
+
+- [[adyen-sales-day-payout]] — Adyen Sales Day Payout
+
+- [[adyen-reporting]] — Adyen Reporting
 
 - [[adyen-notification-center]] — Adyen Notification Center
 

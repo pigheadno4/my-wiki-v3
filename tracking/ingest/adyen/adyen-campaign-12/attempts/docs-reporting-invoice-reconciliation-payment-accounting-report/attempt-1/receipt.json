@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reporting-invoice-reconciliation-payment-accounting-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payment accounting report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/invoice-reconciliation/payment-accounting-report\"\nraw_files:\n  - \"adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md\"\ntags: [adyen, reporting, payment-accounting, invoice-reconciliation]\n---\n\n## Overview\n\nAdyen's Payment accounting report documents payment-lifecycle status changes, events and modifications, with costs by status for invoice reconciliation. This 2026-09-15 snapshot describes company- and merchant-account availability; it does not establish current account access. See [[adyen]] and [[adyen-reporting]].\n\n## Key takeaways\n\n- Each line below the report header is a separate **entry**, not necessarily one complete payment. The `Record Type` identifies an accounting event; the table includes pending, failed, reversed, externally settled and later-settled cases. A row or status alone is not proof of final funds or bank arrival.\n- Standard columns distinguish the **Booking Date** and its account time-zone code, **Main Currency/Amount**, **Payment Currency** registers (`Received`, `Authorised`, `Captured`), **Settlement Currency** registers (`Payable`, `Commission`, `Markup`, `Scheme Fees`, `Interchange`), and separate **Processing Fee Currency/Amount**. The report describes debit or credit amounts on registers; do not collapse these amounts, currencies or event signs into one net transaction amount. Commission is split into markup, scheme fees and interchange instead when the acquirer provides interchange-level data.\n- The **Interactive payment accounting** report is manually generated with selected date range, time zone and columns, and can have columns different from the standard report. For reconciliation to the payment processing invoice, Adyen instructs a first-of-month to first-of-next-month window at `00:00:00` in Central European Time because the invoice uses CET. The ordinary report uses the account's time-zone setting.\n- The interactive filename convention changed in February 2025 so newly generated reports no longer overwrite previous ones; automated ingestion may need updating. Configuring columns or their order can affect automated consumers and requires one of the listed Customer Area roles.\n\n## Detail locators\n\n- Generation, account scope and interactive invoice window: pinned raw lines 19\u201346.\n- Entry grain and standard field meanings, including currencies, dates and fee registers: pinned raw lines 54\u2013100.\n- Optional fields, including Amsterdam timestamps, payout date when available, ICSF details, modification reference and installment fields: pinned raw lines 102\u2013173.\n- Column configuration roles and steps: pinned raw lines 175\u2013194.\n- Record-type meanings, including `RefundNotProcessed`, `SettledReversed` and deprecated bulk journal types: pinned raw lines 196\u2013253. These are event descriptions, not an accounting sign-off rule.\n\n## Related\n\n- [[adyen-reporting]] \u2014 Adyen reporting concept route.\n- [[payment-reconciliation-reporting]] \u2014 cross-provider reporting context; its provider-specific examples do not define this Adyen report.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15|Adyen Payment accounting report, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Payment accounting report includes [Payments lifecycle](/reporting/reports-and-the-payments-lifecycle) status changes, events, and modifications for all transactions.",
+      "location": "raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md:19"
+    },
+    {
+      "text": "If you want to use the report to reconcile your [payment processing invoice](/reporting/invoice-reconciliation/payment-processing-invoice/), select the first day of the month until the first day of the next month, select `00:00:00` for both days, and select Central European Time.",
+      "location": "raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md:33"
+    },
+    {
+      "text": "The file name format of the Interactive payment accounting report has changed in February **2025**, and generating a new report no longer overwrites the previous one.",
+      "location": "raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md:44"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry.",
+      "location": "raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md:58"
+    },
+    {
+      "text": "If you have an automated system that uses the report's data, configuring the report columns can affect your automated system.",
+      "location": "raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md:177"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-reporting-payment-accounting-report-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report]] \u2014 2026-09-15 Adyen Payment accounting report snapshot for payment-event accounting entries, separate payment/settlement/fee currencies, interactive CET invoice window, and ingestion-sensitive report configuration; report records do not prove bank arrival or accounting finality.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target Adyen reporting concept is proposed by the separate reporting overview worker; coordinator should apply this reciprocal route only if that concept is created."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/invoice-reconciliation/payment-accounting-report/2026-09-15.md",
+  "raw_sha256": "1146ee0146ebc987569527c2bf85e840929757980317e3ec567634c87b1e11d1",
+  "status": "candidate_ready"
+}

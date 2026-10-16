@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reporting-invoice-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen invoice reconciliation guide\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/invoice-reconciliation\"\nraw_files:\n  - \"adyen/docs/reporting/invoice-reconciliation/2026-09-15.md\"\ntags: [adyen, reporting, invoice-reconciliation, payment-processing-fees]\n---\n\n## Overview\n\nAdyen's invoice reconciliation guide explains how to match transaction costs in the [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report|Payment accounting report]] to items on the monthly Payment processing invoice. It is a reconciliation workflow using two separate artifacts, not the Payment accounting report's field specification or proof that a payout reached a bank. [[adyen]] [[adyen-reporting]]\n\n## Key takeaways\n\n- The guide requires the Payment accounting report and invoice for the relevant month. For a full month, it directs an Interactive payment accounting report from the first day of that month at `00:00:00` through the first day of the next month at `00:00:00`, using Central European Time. The linked report reference owns account access, column definitions, and generation behavior; this guide states no user-role prerequisite.\n- For a settled transaction, the guide says to identify `Received`, `Authorised`, `SentForSettle`, and `Settled` report entries. To total Adyen processing fees, select `Received` and `SentForRefund` entries and add their `Processing Fee` amounts in the stated `Processing Fee Currency`. Compare that total with the invoice's **Specification of amounts already deducted from settlement \u2192 Processing Fees \u2192 Subtotal**.\n- If that amount differs from the invoice Summary's **Processing Fees** line, consult **Specification of final calculation including discounts**. The guide also says extra lines may cover externally acquired transactions or transactions refused by the risk engine; do not assume a single report subtotal explains every invoice line.\n- Acquiring and payment-method fees are charged at `Settled` status in this guide. For those entries, total `Markup`, `Scheme Fees`, and `Interchange`, then compare with the invoice's calculated amounts and itemized fees. Differences between payment-method fee sections may arise from transaction-level versus aggregate rounding; the sample amounts illustrate that mechanism, not a merchant-specific fee outcome.\n- The invoice's **Amount due** is month-end calculated costs minus amounts already deducted. The guide says it is added to or deducted from the next payout and appears as an `Invoice deduction` entry in the corresponding Settlement details report. That is an invoice and future payout booking relationship, not proof of final bank receipt, complete reconciliation, or correct accounting treatment. Do not collapse processing fee, acquiring fee, invoice amount due, and payment gross/net into one figure.\n\n## Detail locators\n\n- Opening and prerequisites, lines 19\u201324: two required artifacts and the exact Interactive report month window/time zone.\n- `## Step 1`, lines 26\u201335: the four `Record Type` entries for a settled transaction.\n- `## Step 2` and `## Step 3`, lines 37\u201362: processing-fee record types/currency/amount, invoice subtotal versus Summary, and additional-fee lines.\n- `## Step 4`, lines 64\u201386: `Settled` acquiring/payment-method fee fields, invoice comparison, and rounding illustration.\n- `## Step 5`, lines 88\u201390: `Amount due` and next-payout `Invoice deduction` relationship.\n\n## Related\n\n- [[adyen-reporting]] \u2014 Adyen reporting and reconciliation routes.\n- [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report]] \u2014 report grain, fields, generation, and access qualifications.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 later payout-batch invoice-deduction entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/invoice-reconciliation/2026-09-15|Adyen invoice reconciliation guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Match the costs of your transactions to the items on your [Payment processing invoice from Adyen](/reporting/invoice-reconciliation/payment-processing-invoice).",
+      "location": "line 19, opening purpose"
+    },
+    {
+      "text": "select the first day of the month until the first day of the next month, select `00:00:00` for both days, and select Central European Time.",
+      "location": "line 23, prerequisites > Interactive payment accounting report"
+    },
+    {
+      "text": "To see the transaction processing fees charged by Adyen, find entries with the **Record Type**: `Received` and `SentForRefund`.",
+      "location": "line 39, Step 2"
+    },
+    {
+      "text": "it may be due to a rounding difference.",
+      "location": "line 80, Step 4 > Payment method fees discrepancy"
+    },
+    {
+      "text": "Your **Amount due** will be added or deducted from your next payout and will be an [Invoice deduction entry](/reporting/settlement-reconciliation/transaction-level/settlement-details-report#invoice-deductions) in the corresponding Settlement details report.",
+      "location": "line 90, Step 5"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-invoice-reconciliation-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-invoice-reconciliation]] \u2014 2026-09-15 Adyen guide to matching Payment accounting report transaction costs against a monthly Payment processing invoice, with an exact CET month window, distinct processing/acquiring fee comparisons, rounding caveat, and next-payout invoice-deduction route; it does not prove bank receipt or accounting finality.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this invoice reconciliation procedure distinct from the Payment accounting report field reference and the monthly invoice itself."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/invoice-reconciliation/2026-09-15.md",
+  "raw_sha256": "a3fa7fddca8dd39864dfd5a9a0ab3a61e7abdd76403f8d3abfb268f26f8767ac",
+  "status": "candidate_ready"
+}

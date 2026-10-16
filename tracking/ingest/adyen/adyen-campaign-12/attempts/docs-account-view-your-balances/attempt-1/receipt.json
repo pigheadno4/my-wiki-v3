@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-account-view-your-balances",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen view your balances\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/view-your-balances\"\nraw_files:\n  - \"adyen/docs/account/view-your-balances/2026-09-15.md\"\ntags: [adyen, account-balances, balance-control-api, customer-area, reconciliation]\n---\n\n## Overview\n\nThis Adyen account guide (last-modified metadata 2026-09-15; captured 2026-09-15) shows how to view merchant-account balances and a company-level sum by currency in Customer Area or with the Balance Control API. It defines displayed components and access requirements; a balance overview is not a bank receipt, a guarantee that every component can be paid out, or a transaction-level reconciliation record. See [[adyen-account-structure]] for the account hierarchy and [[adyen]] for provider context.\n\n## Key takeaways\n\n- Merchant-account balances hold business funds. The company view aggregates balances from its merchant accounts **in the selected currency**; merchant and company views are available in Customer Area or via Balance Control API. The page supports online or POS integrations. Customer Area requires `Merchant financial` or `Manage key financial tasks`; API access requires `Balance control API - Balances management`. Only Customer Area supports the merchant-account activity log. [Raw lines 17\u201333, 35\u201337, 60\u201382]\n- `Available funds`/`availableFund` is defined here as pending balance + next payout amount + reserve + applicable negative refund allowance. **Pending** is not yet settled; **next payout/payable** is the amount slated for the next bank payout; **reserve** covers refunds, payouts, chargebacks and other operating expenses; the negative refund allowance, if Adyen permits it, adds refund-covering capacity. These labels therefore do not all mean immediately withdrawable cash or completed bank credit. [Raw lines 41\u201357, 75\u201382]\n- `Deposit` is separately shown as the amount Adyen withholds to cover potential payment-processing losses and liabilities. It is not identified as the next payout amount or part of the stated available-funds sum. [Raw lines 53\u201358, 204\u2013208, 255\u2013264]\n- Company API view uses `GET /balanceOverview/companies/{companyAccountCode}/balances` and a required three-character `currency` query, returning a `merchantBalancesOverview` array per merchant. Merchant API view separately describes required `merchantAccountCode` and currency, but its printed path uses `/companies/{merchantAccountCode}/balances`, and its example response labels `merchantAccount` as `YOUR_COMPANY_ACCOUNT`. The company USD example also includes EUR/GBP/AUD entries. Treat these as unresolved example/path inconsistencies; verify the live endpoint/schema before implementing. [Raw lines 84\u2013121, 129\u2013196, 227\u2013300]\n\n## Detail locators\n\n- Scope, roles and Customer Area activity-log limit: raw lines 19\u201333. Company view components and currency selection: raw lines 35\u201382. Company Balance Control API parameters and illustrative response: raw lines 84\u2013196.\n- Merchant Customer Area tabs and activity/deposit views: raw lines 198\u2013225. Merchant Balance Control API path/table and example: raw lines 227\u2013300.\n- The guide has no as-of timestamp rule for a displayed amount, bank posting confirmation, payout execution state, or reconciliation proof for a specific payment. Use account payout/reconciliation sources and actual bank evidence for those questions.\n\n## Related\n\n- [[adyen-account-structure]]\n- [[adyen]]\n- [[source-adyen-docs-account-payments-lifecycle]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/view-your-balances/2026-09-15|Adyen view your balances, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The funds belonging to your business are held in your merchant account as balances.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "You can only view the activity log for your merchant account using the Customer Area. This is not supported for the Balance Control API.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "This is the sum of the pending balance, next payout amount, reserve, and if applicable, the negative refund allowance.",
+      "location": "raw line 49"
+    },
+    {
+      "text": "The amount withheld by Adyen to cover potential losses and liabilities due to payment processing.",
+      "location": "raw line 58"
+    },
+    {
+      "text": "Make a GET `/balanceOverview/companies/{merchantAccountCode}/balances` request.",
+      "location": "raw line 231"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-view-balances-source",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-view-your-balances]] \u2014 2026-09-15 Customer Area and Balance Control API guide to merchant/company balance views by currency, pending/next-payout/reserve/deposit identity, roles, and inconsistent API examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Merchant API printed path and example account value conflict with the merchantAccountCode description; company USD example contains other currencies. Verify current endpoint/schema rather than copying those examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/view-your-balances/2026-09-15.md",
+  "raw_sha256": "55e6d361718b8cf4cb808b844f0f7108b66421769a770c4905ec10cb5b69cacc",
+  "status": "candidate_ready"
+}

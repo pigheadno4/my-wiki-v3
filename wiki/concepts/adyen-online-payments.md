@@ -15,6 +15,12 @@ At overview level, the integration is divided among a payments server that calls
 
 ## Sources
 
+- [[source-adyen-docs-account-manage-payments]] — 2026-09-15 Customer Area payment lookup and refund/cancel/capture/re-authorization action guide with role/state gates, re-authorization risk and request-versus-outcome boundary.
+
+
+- [[source-adyen-docs-account-payments-lifecycle]] — 2026-09-15 Customer Area payment-status lifecycle catalog across offers, authorization, settlement, refunds, disputes, online payouts and stored value; status finality differs from merchant payout or shopper receipt.
+
+
 - [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-checkout-api-v72]] — 2026-09-15 Checkout API v72 online-payments request-value validation checklist and credential/Customer Area roles; the `dateOfBirth` example caption has an unresolved year typo and the page gives no SDK or runtime migration proof.
 
 

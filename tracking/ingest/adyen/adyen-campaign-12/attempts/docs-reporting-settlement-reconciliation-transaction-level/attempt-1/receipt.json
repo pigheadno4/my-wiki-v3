@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-reporting-settlement-reconciliation-transaction-level",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen transaction-level settlement reconciliation\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/settlement-reconciliation/transaction-level\"\nraw_files:\n  - \"adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md\"\ntags: [adyen, reporting, settlement, reconciliation, payout-batch]\n---\n\n## Overview\n\nAdyen's transaction-level reconciliation guide explains how to compare transaction costs and the payout amount **within a single payout batch**. The primary input is the merchant-account Settlement details report; an External settlement detail report is conditional on an external-acquirer arrangement. This dated guide provides a report-matching method, not proof that a bank received the payout.\n\n## Key takeaways\n\n- Adyen recommends reconciling at merchant-account level because Settlement details reports are generated there. With external acquirers, the External settlement detail report is company-account generated; select entries for the matching merchant account and merge them, or reconcile an external-acquirer report separately if using that instead. Brazilian card installments need the separate installment-reconciliation instructions.\n- Each report line is an **entry**, and one transaction may have multiple entries. Use Adyen's Psp Reference and the merchant's Merchant Reference to find and match transaction records; do not count entries as unique payments.\n- For credits, the guide uses Gross Credit for customer-paid gross amount, Commission/Markup/Scheme Fees/Interchange Fees for costs, and Net Credit after costs. For debits such as refunds, chargebacks and fees, inspect Gross Debit and Net Debit with Type and Modification Reference. Keep Gross Currency and Net Currency distinct; sample EUR values illustrate the method, not a guarantee that every report row uses one currency.\n- Add net credits and subtract net debits to compare with the batch payout. A `MerchantPayout` entry has the payout amount in **Net Debit**; its Modification Reference includes a reference, batch number and merchant account, and the example says the reference can be used in the merchant's accounting system. This report row and accounting reference do not establish bank-statement arrival or final bank reconciliation.\n- Investigate differences caused by weekend sales entering the following week's batch, payments not yet settled, capture failure or an uncancelled payment/partial payment. The guide routes to open balances in monthly/daily finance reporting, aggregate settled amounts versus sales, received-payment and interactive-accounting reports, and Customer Area status/logs. A payment missing from `Settled` requires investigation rather than an assumed payout.\n- **Source wording conflict:** the debit prose calls Net Debit gross debit *minus* additional costs, but its chargeback example adds EUR 7.50 markup to EUR 120 gross debit and shows EUR 127.50 Net Debit. Preserve the report's Type, fee fields and signed columns when reconciling rather than applying the prose as a universal formula.\n\n## Detail locators\n\n- Opening through `## Step 1 (Optional)` \u2014 single-batch scope, Settlement details and conditional external-acquirer inputs, merchant/company report scope and Brazil installment exception.\n- `## Step 2: Find transactions` \u2014 entry versus transaction grain and PSP/merchant references.\n- `## Step 3` / `## Step 4` \u2014 gross/net credit and debit fields, fee columns, Gross/Net Currency examples, and the debit prose/example conflict.\n- `## Step 5` \u2014 `MerchantPayout`, Net Debit batch amount, Modification Reference and example batch number; these are report fields rather than a bank-statement match.\n- `## Step 6 (Optional)` \u2014 weekend-batch timing, unsettled-payment causes and four investigation routes.\n\n## Related\n\n- Company: [[adyen]]\n- Reporting concept: [[adyen-reporting]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15|2026-09-15 transaction-level reconciliation guide]]\n",
+  "quotes": [
+    {
+      "text": "This guide shows how to reconcile the costs of transactions and the payout amounts in a single payout batch on a transaction level.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md:23"
+    },
+    {
+      "text": "Because the Settlement details report is generated for [merchant accounts](/account/account-structure#merchant-accounts), we recommend doing reconciliation on the merchant account level.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md:30"
+    },
+    {
+      "text": "Each line in the report is an entry. Each transaction can have more than one entry.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md:45"
+    },
+    {
+      "text": "When you add up the net credits and subtract the net debits, the amount should equal the payout amount of the batch. To see the amount paid out to your account from Adyen, filter the **Type** column on **MerchantPayout**. This shows the payout entry.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md:99"
+    },
+    {
+      "text": "The **Gross Debit** amount is EUR\u00a0120, and the chargeback has an additional **Markup** cost of EUR\u00a07.5.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md:90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-transaction-level-reconciliation-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level]] \u2014 2026-09-15 Adyen guide for reconciling transaction entries and costs within one payout batch against a `MerchantPayout` report entry, with conditional external-acquirer merging and unsettled-payment exceptions; a report entry is not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The source's Net Debit prose says gross debit minus costs, while its chargeback example adds markup; source page retains this conflict rather than asserting a universal formula."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/2026-09-15.md",
+  "raw_sha256": "b11fe45de1adde1f5931746a53517e7bd30e52d1d446e0440cd7a601ff99efd2",
+  "status": "candidate_ready"
+}

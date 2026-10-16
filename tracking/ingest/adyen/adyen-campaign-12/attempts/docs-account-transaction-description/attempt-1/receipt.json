@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-account-transaction-description",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Transaction description | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/transaction-description\"\nraw_files:\n  - \"adyen/docs/account/transaction-description/2026-09-15.md\"\ntags: [adyen, transaction-description, shopper-statement, payment-methods, customer-area]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs snapshot explains the transaction description (statement/billing descriptor) used to help a shopper recognize a charge, and how a merchant configures it in the **live** Customer Area or Management API. It covers merchant-account/store settings and payment-method-specific overrides, plus payment-request shopper statements for dynamic descriptions. [[adyen-transaction-descriptions]]\n\n## Key takeaways\n\n- Without customization, the description uses the Name in the live Customer Area plus the merchant-account address city and country/region. City and country/region remain appended after customization. The page recommends a cardholder-recognizable brand or merchant name and warns that unrecognized charges can increase chargeback risk and potentially scheme fines. See raw lines 19\u201324, 40\u201344.\n- Options are a static DBA name, a dynamic shopper statement from the individual payment request, or DBA followed by that statement. Dynamic values must be enabled **and** sent as `shopperStatement` in each relevant request; otherwise the request value does not appear, and a configured DBA is the fallback when the request omits the statement. Ecommerce uses Checkout `/sessions` or `/payments`; POS carries it in Terminal API `SaleToAcquirerData`. See raw lines 46\u201377, 243\u2013248.\n- Live Customer Area configuration can apply one description to selected merchant accounts/stores or use a CSV for different descriptions (10 MB maximum). It applies across listed supported methods already added to the account/store. Live Management API configuration is per payment method and overrides the general Customer Area setting. The page distinguishes viewing roles from change roles: Customer Area needs Merchant admin or Change payment methods; Management API read can use Payment methods read or read and write, while changes require Payment methods read and write. See raw lines 26\u201338, 79\u201392, 94\u2013143, 154\u2013167, 191\u2013241.\n- The configured DBA, dynamic value, or combination has a **22-character** maximum including spaces; excess text is truncated before city and country/region are added. The page lists allowed characters. A single Customer Area change and a Management API method change are described as immediate for their selected transaction scope; a CSV change is applied within one calendar day. A Customer Area change affects current methods only, so newly added methods default to the DBA name. See raw lines 144\u2013162, 169\u2013189, 191\u2013216, 218\u2013241.\n- Customization is supported only for the methods listed in the raw page. Wallet use is conditional on an underlying listed card brand. For eligible local-market ecommerce `/payments`, `localizedShopperStatement` accompanies `shopperStatement`; missing/empty localized content or a cross-border transaction uses `shopperStatement`. Japan has additional in-person store and online Kanji/Katakana routes, with brand-dependent character widths; the online request value overrides account values. See raw lines 250\u2013335.\n\n## Detail locators\n\n- **Default, options, precedence and inspection:** raw lines 40\u2013143.\n- **Configuration paths, roles, format and propagation:** raw lines 144\u2013241.\n- **Request parameters and locale-specific behavior:** raw lines 243\u2013302.\n- **Supported methods and wallets:** raw lines 304\u2013335.\n\n## Related\n\n- [[adyen]]\n- [[adyen-transaction-descriptions]]\n- [[source-adyen-docs-point-of-sale-add-data]] \u2014 separate Terminal API additional-data route\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/transaction-description/2026-09-15|Adyen transaction description \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The city and country/region are always added to transaction descriptions, even if you customize the description.",
+      "location": "raw/adyen/docs/account/transaction-description/2026-09-15.md:44"
+    },
+    {
+      "text": "If you do not turn on dynamic values, the shopper statement from the payment request will *not* appear in your shoppers' bank statements.",
+      "location": "raw/adyen/docs/account/transaction-description/2026-09-15.md:70"
+    },
+    {
+      "text": "A payment method-specific customization overrules the general transaction description settings from the Customer Area.",
+      "location": "raw/adyen/docs/account/transaction-description/2026-09-15.md:92"
+    },
+    {
+      "text": "Anything exceeding that is truncated and left out. What remains is then sent along with the city and country/region.",
+      "location": "raw/adyen/docs/account/transaction-description/2026-09-15.md:146"
+    },
+    {
+      "text": "For cross-border transactions, `shopperStatement` is used.",
+      "location": "raw/adyen/docs/account/transaction-description/2026-09-15.md:261"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-transaction-descriptions-new-concept",
+        "target_path": "wiki/concepts/adyen-transaction-descriptions.md",
+        "update_kind": "durable_fact",
+        "anchor": "new_file",
+        "proposed_markdown": "---\ntitle: \"Adyen Transaction Descriptions\"\ntype: concept\ncategory: technology\ntags: [adyen, transaction-description, shopper-statement, payment-methods]\n---\n\n## Definition\n\nAdyen's transaction description is the text intended to help a shopper identify a charge on a bank statement. The merchant can set a static Doing Business As (DBA) name, use a transaction-specific shopper statement, or append that statement to the DBA name. The merchant-account address city and country/region are added even when the description is customized. [[source-adyen-docs-account-transaction-description]]\n\n## Configuration boundary\n\nThe captured guide describes **live** Customer Area merchant-account/store settings and **live** Management API per-payment-method settings; a method-specific setting takes precedence. A dynamic description needs both the enabled setting and a `shopperStatement` in the payment request, with the configured DBA as fallback when that request value is absent. Configuration is limited to listed supported payment methods, with separate locale and channel rules. Use the source for roles, 22-character/truncation and allowed-character limits, CSV size and propagation timing, current-versus-new-method behavior, ecommerce/POS request placement, and Japan/localized-statement conditions.\n\n## Sources\n\n- [[source-adyen-docs-account-transaction-description]] \u2014 2026-09-15 Adyen Docs snapshot covering live descriptor setup, request values, precedence, limits, supported methods, propagation and localization.\n\n## Related\n\n- [[adyen]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a 2026-09-15 source snapshot, not a live account inspection or proof of merchant/payment-method eligibility.",
+          "Configuration and shopper statement behavior must retain channel, supported-method, locale, role, and live-environment qualifiers."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/transaction-description/2026-09-15.md",
+  "raw_sha256": "9570b85751f493e765df65259cfcbfa3a87f870a85ce896883cdb97550f96cc1",
+  "status": "candidate_ready"
+}

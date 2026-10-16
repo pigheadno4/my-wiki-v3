@@ -13,6 +13,9 @@ tags: [adyen, customer-area, user-roles, access-control, permissions]
 
 This Adyen page catalogs **Customer Area user roles** and the actions they permit across account, developer, finance, POS, platform, risk and transaction functions. It was captured 2026-09-15 with page metadata last modified 2024-12-09. It is a role reference, not evidence of a specific user's current assignments, account scope, or approval of a requested action.
 
+> [!warning] Contradiction
+> The separately reviewed Donation campaigns guide includes **Merchant financial** among its report roles, then says those roles give no access to other payment information. This role catalog instead grants Merchant financial broader payment-analytics, payout and financial-report access. Do not treat Merchant financial as donation-only; the two snapshot statements conflict. Verify the actual role grants and account scope before assigning access. [[source-adyen-docs-reporting-donation-campaigns]]
+
 ## Key takeaways
 
 - A user can have multiple Customer Area roles, assigned individually or through **role groups**. The initial admin user has common roles including **Merchant admin** and can create other users. **Merchant user management** can create/edit users and grant only roles and account access that the managing user already has. Role assignment, account access and actual action outcome remain distinct.

@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-reporting-3d-secure-3ds-authentication-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen 3DS Authentication report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/3d-secure/3ds-authentication-report\"\nraw_files:\n  - \"adyen/docs/reporting/3d-secure/3ds-authentication-report/2026-09-15.md\"\ntags: [adyen, reporting, 3d-secure, authentication]\n---\n\n## Overview\n\nThis Adyen webpage snapshot describes the **3DS Authentication report** for analysing authentication performance where Adyen attempted 3D Secure authentication or applied an exemption. It excludes transactions with no applicable 3DS and transactions authenticated by a different provider. The report is authentication evidence, not proof that a payment was authorised, captured, settled, or paid out. See [[adyen]], [[adyen-reporting]], and [[adyen-3d-secure]].\n\n## Key takeaways\n\n- The report is available for company and merchant accounts, can be obtained manually or automatically, uses a **CET report time zone**, and lets the user select a Customer Area date range (raw lines 25\u201331). Availability by account type does not establish a particular user's report permission.\n- Each CSV line after the header is a separate transaction entry (raw lines 39\u201349). The `Creation Date` column is explicitly CET **or CEST** according to the transaction date, with format `YYYY-MM-DD HH:MM:SS` (line 77); preserve this column qualification alongside the page-level CET report statement.\n- This report is intended to replace the older **3D Secure Authentication report**, but updated filtering means the two reports' numbers cannot be fully reconciled. Adyen warns automatic or manual report-ingestion logic may need updates (raw lines 21\u201323). The **3D Secure Conversion report** has different coverage: it starts from all offered card transactions and may include drop-offs, while this authentication report focuses on Adyen's 3DS attempts and exemptions (lines 33\u201337).\n- Read `Authentication Flow` together with `Authentication Success`; the latter records whether **Adyen considers** authentication successful. Requested and applied flows can differ. `Authentication Only` requires additional configuration and the `authenticationOnly` payment-request parameter (raw lines 65\u201367, 97, 111\u2013127). Authentication success is separate from the `Acquirer Response` authorization column (line 56) and is not payment success.\n- The column table includes cardholder name, BIN, shopper email, shopper IP, merchant/shopper references, request metadata, and 3DS transaction identifiers (raw lines 59\u201360, 71\u201372, 82, 88\u201390, 94, 104\u2013109). Handle exports as potentially sensitive transaction/shopper data; the page supplies no specific role or retention policy.\n\n## Detail locators\n\n- `How to use this report`, raw lines 33\u201337: purpose and comparison with old authentication and conversion reports.\n- `Structure / Entries`, raw lines 39\u201349, and `Columns`, lines 51\u2013109: transaction grain, CSV types, currency/amount, timestamps, authentication/acquirer fields, identifiers, and shopper data. Amount is described in the `Currency Code` column's currency; a separate `Amount (EUR)` column is listed (lines 61\u201362, 78).\n- `Authentication flows and success`, raw lines 111\u2013127: per-flow values, including `No 3DS (exemption)` with no success value and `Rejected` with no authorization attempt.\n\n## Related\n\n- [[adyen-reporting]] \u2014 report retrieval and evidence boundaries.\n- [[adyen-3d-secure]] \u2014 merchant 3DS integration context, separate from report-row evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/3d-secure/3ds-authentication-report/2026-09-15|3DS Authentication report, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The 3DS Authentication report includes information about transactions for which Adyen attempted [3D Secure authentication](/online-payments/3d-secure/) or applied a 3D Secure exemption.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Because of this, you cannot fully reconcile the numbers between these two reports.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry. Each entry represents a transaction.",
+      "location": "raw line 43, Structure / Entries"
+    },
+    {
+      "text": "This flow requires additional configuration, and the payment request must contain the `authenticationOnly` parameter.",
+      "location": "raw line 66, Columns / Authentication Only"
+    },
+    {
+      "text": "The shopper's email address.",
+      "location": "raw line 105, Columns / Shopper Email"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-3ds-auth-report-reciprocal",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-3d-secure-3ds-authentication-report]] \u2014 2023-modified, 2026-09-15-captured transaction-entry report for Adyen 3DS attempts/exemptions, with changed filtering versus the previous report, CET/CET-or-CEST qualifications, and authentication-versus-payment outcome boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Adyen Reporting concept currently exists but its provider-index link was absent during this worker audit; coordinator should complete the main index route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/3d-secure/3ds-authentication-report/2026-09-15.md",
+  "raw_sha256": "0bc4e68d853b956733d21f758bda21f2ff62cdf8263ef467e6ea3043b3a6ac03",
+  "status": "candidate_ready"
+}

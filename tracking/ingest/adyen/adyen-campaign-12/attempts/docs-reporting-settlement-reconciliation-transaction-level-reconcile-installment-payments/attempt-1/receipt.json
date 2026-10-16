@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reporting-settlement-reconciliation-transaction-level-reconcile-installment-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen installments and advancements in Brazil\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments\"\nraw_files:\n  - \"adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md\"\ntags: [adyen, brazil, installments, advancements, reporting, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes **Brazil-specific credit-card installment and advancement flows** and routes readers to the reports used to track installments, refunds, forecast amounts, and advancement batches. In the described ordinary flow, the merchant receives each installment as the scheme pays it; advancements are an optional, separately enabled path for upfront funds. The journal states and report entries are not, by themselves, proof of a particular bank receipt or final accounting outcome. See [[adyen]] and [[adyen-reporting]].\n\n## Key takeaways\n\n- **Installment lifecycle and grain:** The page sequences `Received`, `Authorised`, capture/`SentForSettle`, one `SettledInInstallments` entry **per payment**, an `OpenInstallment` entry **per installment**, then a `SettledInstallment` entry for each installment when settled. That settled amount moves under the **Payable** report header for payout. A payment-level `SettledInInstallments` entry must not be counted as each installment having settled or arrived at a bank.\n- **Refund lifecycle:** A refund request creates `SentForRefund`; `RefundedInInstallments` occurs when the shopper is refunded and is one entry per payment in installments. The page says its amount matches `SentForRefund`. Each installment also has an `OpenInstallment` entry paired with a `RefundedInstallment` entry under the Installments report header. Keep request, shopper refund, and per-installment report entries separate.\n- **Report choice and signs:** Settlement details is the route for installment-level reconciliation. Monthly/Daily finance reports in installments summarize amounts credited or debited to the account: `SettledInstallment` is credit; `RefundedInstallment`, `Chargeback`, `SecondChargeback`, and some `SuspendInstallment` entries are debits, with `SuspendInstallment` not applying to every advancement type. The Forecast report estimates **net** amounts and dates, but refunds and chargebacks can make actual credited amounts differ. A forecast is not a payout or bank-arrival confirmation.\n- **Open-installment status:** The Payment accounting report can track open installments if `Payout Date`, `Installments (PC)`, `Installment`, and `Booking Type` columns are enabled; the guide directs readers to Support if needed. `Installments (PC)` is described as credited amount, with a negative value indicating a refund debit. `Installment` is a sequence such as 2/6. `Booking Type` includes `FIRST` captured/sent to scheme, `ACCELL` accelerated due to a refund request, `REPRESENTMENT` after chargeback defense, and `RETRY` after an initial failed installment capture. These labels describe report classification, not a successful later payout or defense outcome.\n- **Advancements and scope:** The guide says an enabled advancement can pay upfront for installment payments, within one day, and instructs merchants to contact an account manager or Support for fee details and enablement. For reconciliation it says advancements cover **batches** of installment payments sharing an advancement code; check `Advanced (PC)` and `Advancement Code` in Payment accounting, sum same-code `Advancement (PC)` rows, and compare with the amount received. This page does not give a fee rate or prove a specific merchant is eligible, enabled, paid, or reconciled. The separate [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-advancements-detail-report]] owns its own merchant-account grain and cost/fee fields.\n\n## Detail locators\n\n- Lines 15\u201329: Brazil-only scope, ordinary installments versus optional advancements, and coverage.\n- `## Installments lifecycle`, lines 31\u201340: payment-versus-installment journal grain and report-header transitions.\n- `### Installment refunds`, lines 42\u201348: request, shopper-refund and installment-entry sequence.\n- `## Installment reports and reconciliation`, lines 50\u201378: Settlement details, finance-report credit/debit states and Forecast caveat.\n- `### Track the status of open installments`, lines 80\u201399: required optional columns, signed `Installments (PC)`, sequence and booking-type meanings.\n- `## Advancements`, lines 101\u2013117: enablement/fee contact, stated timing, batch/code matching and comparison workflow.\n\n## Related\n\n- [[adyen-reporting]] \u2014 reciprocal reporting route.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-advancements-detail-report]] \u2014 separate advancement report grain, cost and fee field definitions.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 separate settlement-detail report field authority.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15|Installments and advancements in Brazil, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page describes the credit card installment and advancement flows specific to Brazil.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md:19"
+    },
+    {
+      "text": "There will be one **SettledInInstallments** journal entry for a given payment in installments, regardless of how many installments there are.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md:38"
+    },
+    {
+      "text": "Use the [Settlement details report](/reporting/settlement-reconciliation/transaction-level/settlement-details-report) to reconcile by installment.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md:56"
+    },
+    {
+      "text": "Due to refunds and chargebacks, the amounts provided in this report can be different from the amount that is paid to your account.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md:72"
+    },
+    {
+      "text": "**ACCELL**: Installment that was accelerated due to a refund request on the payment.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md:95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-reporting-brazil-installments-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-reconcile-installment-payments]] \u2014 2026-09-15 Brazil-specific guide to installment/refund journal grain, settlement/finance/forecast report routes, open-installment booking types and batch-code advancement reconciliation; forecast and journal entries do not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep payment-level and installment-level entries separate, signed finance-report values and net forecasts qualified, and advancement enablement/fees distinct from payout proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/reconcile-installment-payments/2026-09-15.md",
+  "raw_sha256": "8f5f966c79bdf1ade878f6e798534156a6d37822d1442c61f9f9abf32634efa0",
+  "status": "candidate_ready"
+}

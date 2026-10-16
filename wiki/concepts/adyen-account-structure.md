@@ -30,6 +30,30 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-docs-account-balances-next-payout]] — 2023-modified, 2026-09-15-captured Adyen guide to a merchant account's changing Next payout balance, expense-driven negatives, possible refund/payout/deposit effects, and conditional Reserve auto-funding or top-up/transfer routes; balance is not bank receipt.
+
+
+- [[source-adyen-docs-account-balances]] — 2026-09-15 snapshot of a 2021-modified Adyen balance-definition guide: pending, next payout, reserve and conditional negative refund allowance form available funds, while Adyen-held deposit is separate.
+
+
+- [[source-adyen-docs-account-manage-payout-account-details]] — 2026-09-15 Adyen merchant-account payout-bank-details guide for reviewed live additions/edits, same-legal-entity copy of approved details, test reconciliation setup, view/edit roles, and removal without approval; configuration does not prove bank receipt.
+
+
+- [[source-adyen-docs-account-manage-your-balances]] — 2026-09-16 merchant-account balance allocation, top-up and same-company/legal-entity transfer guide, with role-specific requirements and funding-versus-receipt boundary.
+
+
+- [[source-adyen-docs-account-balances-deposit]] — 2026-09-15 snapshot of Adyen's merchant-account deposit guide: daily exposure/coverage requirement, conditional payout withholding and release, reserve distinction and role-qualified balance view.
+
+
+- [[source-adyen-docs-account-balances-reserve]] — 2026-09-15 Adyen merchant-account reserve guide for refund shortfalls, payable-to-reserve threshold changes, auto-funding, top-ups and qualified same-company/legal-entity balance transfers; configuration requests are distinct from completed transfers.
+
+
+- [[source-adyen-docs-account-view-your-balances]] — 2026-09-15 Customer Area and Balance Control API guide to merchant/company balance views by currency, pending/next-payout/reserve/deposit identity, roles, and inconsistent API examples.
+
+
+- [[source-adyen-docs-account]] — 2026-09-14 snapshot of Adyen's Account landing page, routing Customer Area readers to account setup, payment management and lifecycle, getting paid, balances, and reports; navigation only, not operational or financial outcome evidence.
+
+
 - [[source-adyen-docs-account-define-account-structure-framework-onboarding]] — 2026-09-15 framework-entity onboarding guide mapping holding/processing legal entities to company/merchant accounts and requiring Adyen approval before go-live.
 
 

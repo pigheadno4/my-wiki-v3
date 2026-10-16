@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-reporting-settlement-reconciliation-transaction-level-advancements-detail-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Advancements Detail Report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/settlement-reconciliation/transaction-level/advancements-detail-report\"\nraw_files:\n  - \"adyen/docs/reporting/settlement-reconciliation/transaction-level/advancements-detail-report/2026-09-15.md\"\ntags: [adyen, reporting, advancements, installments, reconciliation]\n---\n\n## Overview\n\nAdyen's Advancements Detail Report identifies the installments used to determine an amount advanced to a merchant and presents transaction-level funding details where Adyen can identify the installments. The report is available only where Adyen offers the Advancement Product, is generated for a merchant account and advancement code, and can also contain bulk entries when individual installments cannot be identified. See [[adyen]] and [[adyen-reporting]] for provider and reporting context. This report is advancement evidence; its rows alone do not establish payment settlement or independently verify a bank deposit.\n\n## Key takeaways\n\n- The report is merchant-account scoped even though one advancement operation code may cover merchant accounts under the same legal-entity number. Consult each relevant merchant account's report to obtain the operation total; do not treat one report's total as the legal entity's total. The filename embeds the code, first accounting-registration date and report-request date; separately requested days do not overwrite older versions.\n- Transaction entries are AdvancedInstallment or AdvancedInstallmentCancelled. AdvancedBulk and AdvancedBulkCancelled represent amounts Adyen cannot attribute to individual installments; bulk entries therefore cannot be treated as complete transaction-level linkage and have no estimated commission in the Commission column. The final Advancement row totals gross (in Advanced (NC)), net and advancement cost for that code and merchant account; Adyen describes this row as where the amount received in the related bank account appears.\n- Keep Gross Currency and Gross Debit/Credit (GC, payment currency) separate from Net Currency and Net Debit/Credit (NC, settlement currency). Debit and credit have separate columns; cancellation rows describe amounts no longer advanced. Net credit/debit examples account for advancement fee. The installment advancement cost is calculated and can round; the Advancement row gives actual total cost and carries a rounding-difference correction. Do not infer a universal signed amount or convert these report fields into a settlement result.\n- Commission (NC) is an aggregated estimated amount for an identifiable installment. Markup, Scheme Fees and Interchange columns are empty because the report's events are not settlement events. Additional columns and order can vary with account settings; changing report column configuration may affect automated consumers.\n- The report is currently CET/CEST only, including Creation Date's TimeZone field. Access is limited to merchant accounts: generating or downloading requires the See installments reports role on every merchant account included. An unrecognized advancement code in manual generation may yield an empty report.\n\n## Detail locators\n\n- Eligibility, time zone and merchant-account availability: raw lines 17\u201329. Filename, legal-entity code scope and date meanings: `## File name format`, lines 31\u201348.\n- Manual/automatic generation, role and empty-code warning: `## Generate and download reports`, lines 55\u2013103. Sample and account-dependent columns: lines 105\u2013109.\n- Transaction, bulk and total row grains: `### Entries`, lines 113\u2013127. Standard currency, debit/credit, fee, time-zone and rounding fields: `#### Standard columns`, lines 133\u2013169. Optional partial-advancement fields and configuration impact: lines 171\u2013195.\n- Exact journal meanings, cancellation conditions, bulk attribution limit and Advancement total: `## Journal types`, lines 197\u2013207.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-reporting]] \u2014 reporting concept and other report routes.\n- [[adyen-account-structure]] \u2014 merchant-account scope and access hierarchy.\n\n## Related raw API references\n\n- The raw See also section links to installments and advancements in Brazil, transaction-level reconciliation, balance transfers, DCC and sales-day closing (lines 209\u2013215). Those destinations are navigation until read separately.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/advancements-detail-report/2026-09-15|Adyen Docs: Advancements detail report (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This report provides details of the installments that were used by Adyen to determine the amount advanced to the merchant.",
+      "location": "raw line 21, # Advancements detail report"
+    },
+    {
+      "text": "This report is generated per merchant account, and per advancement code.",
+      "location": "raw line 57, ## Generate and download reports"
+    },
+    {
+      "text": "In the event that we are unable to select specific installments for the advancement, we will show the remaining amount as **AdvancedBulk** and/or **AdvancedBulkCancelled**.",
+      "location": "raw line 123, #### Aggregated lines"
+    },
+    {
+      "text": "However, since the events on this report are not related to settlement, **this column will be empty**.",
+      "location": "raw line 155, #### Standard columns, Markup (NC) row"
+    },
+    {
+      "text": "This is where you will find the amount received in the bank account related to advancement.",
+      "location": "raw line 207, ## Journal types, Advancement row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "advancements-detail-report-reciprocal",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-advancements-detail-report]] \u2014 2026-09-15 Adyen Advancements Detail Report snapshot: merchant-account and advancement-code scoped installment funding, bulk exceptions and total-row/fee-field boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply only if the reporting-overview worker's adyen-reporting concept is accepted; otherwise coordinator should route this source through the approved main reporting concept without creating a competing concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/advancements-detail-report/2026-09-15.md",
+  "raw_sha256": "ff1f91da64ac92f02a96aee7851469d5b0b363a35cb10109a20a79a42c5201ff",
+  "status": "candidate_ready"
+}

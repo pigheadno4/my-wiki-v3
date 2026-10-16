@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-account-balances-reserve",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen reserve balance\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/account/balances/reserve\"\nraw_files:\n  - \"adyen/docs/account/balances/reserve/2026-09-15.md\"\ntags: [adyen, reserve, merchant-account, balances, refunds, funding]\n---\n\n## Overview\n\nAdyen's reserve is a merchant-account balance intended to cover refunds, chargebacks and other operational expenses. This 2026-09-15 page explains reserve thresholds, funding methods, and merchant-account balance transfers. Its configuration and request procedures do not prove a particular transfer or debit has completed.\n\n## Key takeaways\n\n- For a refund, Adyen says funds first come from pending and next payout balances; if both are insufficient, the amount comes from reserve. If no reserve is set or it too is insufficient, the refund fails. Adyen does **not** automatically retry refunds that failed for insufficient funds; resubmit the failed request when funds are available. The `Modifications not processed` report is the route to these unprocessed refunds.\n- A reserve threshold is the desired amount in reserve. On payout-batch close, an increase draws the needed amount from payable; lowering the threshold releases the excess to payable. A threshold edit is not an immediate bank transfer or evidence that a payout happened. Low-reserve Customer Area notifications can be configured as a percentage of the threshold.\n- Auto-funding initiates a direct debit from the merchant account's payout bank account when the specified percentage **has been used** (for example, 30% used triggers below 70% of threshold). It seeks to fill reserve to the threshold. The page limits auto-funding to payout bank accounts in EUR, GBP or USD and requires both Merchant financial and Merchant admin roles to request setup; a request does not establish a completed debit.\n- A top-up payment adds funds to reserve when Adyen receives it; the page says this can take up to four business days, with EUR/USD funds added within two business days and most other currencies within three. Funds above the reserve threshold return with the next payout. Funding in a currency different from the reserve currency credits payable instead, to offset negative payable amounts in that currency. Check currency-specific bank-transfer instructions where applicable.\n- Transfers between merchant accounts require the same company account and legal entity plus at least one common processing currency, which is used for the transfer. Customer Area transfer includes a `Reconfigure reserve if necessary` option for the destination. The Balance Control API request specifies a minor-unit amount/currency, source and destination merchant accounts and `type: credit`; the documented successful response includes a PSP reference and creation time. Adyen says deduction from source pending is immediate after initiation, while destination pending visibility can take up to one hour. Do not infer immediate destination availability from the transfer request alone.\n- Customer Area and API permissions differ by operation: reserve management lists Merchant financial, Merchant admin or Manage key financial tasks, while threshold setup/change names Merchant financial; top-up permits Merchant financial or Manage key financial tasks; auto-funding requires both Merchant financial and Merchant admin; Customer Area transfer names Merchant financial; API transfer requires `Balance control API - Balances management`. These are documented role requirements, not proof of actual user or credential access.\n\n## Detail locators\n\n- Opening paragraphs and `## Requirements` \u2014 refund balance order, failed-refund resubmission, report route, integration and role prerequisites.\n- `## Set up a reserve`, `### Change the reserve threshold`, `## Receive notifications about your reserve` \u2014 payout-batch threshold behavior, permissions, notification trigger.\n- `### Set up auto-funding` and `### Top up your Adyen account` \u2014 percentage-used trigger, payout-bank currency restriction, roles, top-up timing, excess and currency mismatch.\n- `### Make a transfer from another merchant account` \u2014 legal-entity/company/common-currency conditions; Customer Area option; API request fields, minor units, response and visibility timing. The section links to `/balanceTransfers` and shows a plural-path curl example, but its numbered step says POST `/balanceTransfer`; consult the linked API reference before implementing the endpoint.\n\n## Related\n\n- Company: [[adyen]]\n- Merchant-account hierarchy: [[adyen-account-structure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/account/balances/reserve/2026-09-15|2026-09-15 Adyen reserve guide]]\n",
+  "quotes": [
+    {
+      "text": "Adyen does not automatically retry refund requests that failed due to insufficient funds. When enough funds are available again, resubmit the failed refund request.",
+      "location": "raw/adyen/docs/account/balances/reserve/2026-09-15.md:23"
+    },
+    {
+      "text": "Setting up a reserve means defining a threshold. The threshold is the amount that you want to be available in the reserve. The amount that is needed to fill the reserve up to this threshold is deducted from your payable balance when the [payout batch](/account/sales-day-payout) closes.",
+      "location": "raw/adyen/docs/account/balances/reserve/2026-09-15.md:41"
+    },
+    {
+      "text": "With auto-funding, we initiate a direct debit payment when a certain percentage of the reserve has been used.",
+      "location": "raw/adyen/docs/account/balances/reserve/2026-09-15.md:99"
+    },
+    {
+      "text": "If you fund your account in a currency different from your reserve currency, this will credit your payable instead of your reserve. This is done to offset any negative payable amounts in that particular currency.",
+      "location": "raw/adyen/docs/account/balances/reserve/2026-09-15.md:141"
+    },
+    {
+      "text": "The transfer is initiated immediately, and the funds are deducted from the pending balance of the source merchant account. However, it can take up to one hour for the funds to become visible on the pending balance of the target merchant account.",
+      "location": "raw/adyen/docs/account/balances/reserve/2026-09-15.md:223"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-reserve-account-structure-route",
+        "target_path": "wiki/concepts/adyen-account-structure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-account-balances-reserve]] \u2014 2026-09-15 Adyen merchant-account reserve guide for refund shortfalls, payable-to-reserve threshold changes, auto-funding, top-ups and qualified same-company/legal-entity balance transfers; configuration requests are distinct from completed transfers.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a reserve operations source adjacent to merchant-account hierarchy; keep detailed funds flow and roles in the source page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/account/balances/reserve/2026-09-15.md",
+  "raw_sha256": "65146abd95d557567d21bf0cb6786859327f18d5c048bcd4a4a8b7f198d23a8a",
+  "status": "candidate_ready"
+}

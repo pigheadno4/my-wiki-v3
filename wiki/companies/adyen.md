@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 564
+source_count: 614
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Five hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Six hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 550 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11).
-- Total source summaries: 564 (550 website + 14 GitHub).
+- Ingested website documentation sources: 600 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12).
+- Total source summaries: 614 (600 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -726,6 +726,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-modification-request-file-cancelorrefund-request]] — Adyen SFTP batch CancelOrRefund request (webpage, 2026-10-15)
 - [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutconfirm-request]] — PayoutConfirm request | Adyen Docs (webpage, 2026-10-15)
 - [[source-adyen-docs-development-resources-batch-processing-advanced-sftp-batch-files-batch-request-file-payoutmodification-request-file-payoutdecline-request]] — Adyen SFTP PayoutDecline request sub-line (webpage, 2026-10-15)
+
+### Website documentation — Campaign 12
+
+- [[source-adyen-docs-account]] — Adyen Account overview (webpage, 2026-10-16)
+- [[source-adyen-docs-account-payments-lifecycle]] — Adyen payments lifecycle statuses (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting]] — Reporting | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-reports-and-the-payments-lifecycle]] — Adyen reports and the payments lifecycle (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] — Adyen Settlement details report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report]] — Adyen Payment accounting report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-closing-your-fiscal-period-monthly-and-daily-finance-report]] — Adyen Monthly and Daily finance reports (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-received-payment-details-report]] — Adyen Received payment details report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-transaction-description]] — Transaction description | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-advancements-detail-report]] — Adyen Advancements Detail Report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-closing-your-fiscal-period-account-receivable-position-dashboard]] — Adyen accounts receivable balance positions (webpage, 2026-10-16)
+- [[source-adyen-docs-account-view-your-balances]] — Adyen view your balances (webpage, 2026-10-16)
+- [[source-adyen-docs-account-supported-currencies]] — Supported payout currencies | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure-3ds-authentication-report]] — Adyen 3DS Authentication report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-merchant-statements-ccc]] — Adyen Canada Code of Conduct merchant statements (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-disputed-transactions]] — Adyen Disputed transactions report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-external-settlement-detail-report]] — Adyen External settlement detail report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances-reserve]] — Adyen reserve balance (webpage, 2026-10-16)
+- [[source-adyen-docs-account-sales-day-payout-upgrade-to-sdp]] — Upgrade to Sales day payout | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances-deposit]] — Adyen merchant-account deposit (webpage, 2026-10-16)
+- [[source-adyen-docs-account-manage-payments]] — Adyen manage payments in Customer Area (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-donation-campaigns]] — Donation campaigns | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-account-manage-your-balances]] — Adyen merchant-account balance management (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-automatically-get-reports]] — Adyen automatic report generation and download (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure-authentication-report]] — Adyen 3D Secure Authentication report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-sales-day-payout]] — Adyen Sales day payout (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level]] — Adyen transaction-level settlement reconciliation (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level-aggregate-settlement-details-report]] — Aggregate settlement details report | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-balance-transfers-company-payout-report]] — Adyen Company Payout report (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-balance-transfers]] — Adyen balance transfers in settlement batches (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-dynamic-sales-day]] — Adyen Dynamic sales day closing time (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-reconcile-installment-payments]] — Adyen installments and advancements in Brazil (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-account-updater-results]] — Adyen Account Updater results report (webpage, 2026-10-16)
+- [[source-adyen-docs-account-getting-paid]] — Adyen Getting paid (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-sales-and-payouts-dashboard]] — Sales to payouts dashboard | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level]] — Adyen batch-level settlement reconciliation (webpage, 2026-10-16)
+- [[source-adyen-docs-account-manage-payout-account-details]] — Adyen Manage payout bank account details (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-invoice-reconciliation]] — Adyen invoice reconciliation guide (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-time-zone-setting]] — Adyen report time-zone setting (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-invoice-reconciliation-payment-processing-invoice]] — Adyen payment processing invoice (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances]] — Adyen account balance types (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-modifications-not-processed]] — Modifications not processed | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-closing-your-fiscal-period]] — Adyen Closing your fiscal period (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-manually-get-reports]] — Adyen manually generate and download reports (webpage, 2026-10-16)
+- [[source-adyen-docs-account-pass-through-payout]] — Adyen Pass-through payout (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-dcc-transactions-and-fees]] — Adyen DCC transactions and fees reporting (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure-conversion-report]] — 3D Secure Conversion report | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-account-balances-next-payout]] — Adyen Next payout balance (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-settlement-reconciliation]] — Adyen settlement reconciliation hub (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-3d-secure]] — 3D Secure reporting | Adyen Docs (webpage, 2026-10-16)
 
 ### GitHub repository evidence
 

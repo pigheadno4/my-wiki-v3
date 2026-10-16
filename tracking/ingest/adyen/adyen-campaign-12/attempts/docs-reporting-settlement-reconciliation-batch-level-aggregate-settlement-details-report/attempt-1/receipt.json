@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-reporting-settlement-reconciliation-batch-level-aggregate-settlement-details-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Aggregate settlement details report | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report\"\nraw_files:\n  - \"adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md\"\ntags: [adyen, reporting, settlement-reconciliation, aggregate-report, merchant-payout]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs snapshot defines the Aggregate settlement details report for **batch-level** settlement reconciliation. It shows payout batches in a selected date range, with credits, debits and transaction counts split by merchant account, store, terminal, payment method, journal type and creation date. This is an aggregate entry report, distinct from a transaction-level Settlement details report. [[adyen-reporting]]\n\n## Key takeaways\n\n- The report is available at company-account and merchant-account scope. It can be retrieved manually or automatically. The selected Customer Area date range follows **Batch Closed Date**, which is the date the settlement batch closed and resulted in `MerchantPayout` and/or `BalanceTransfer` to the next batch. The report uses the account's time-zone setting. See raw lines 19\u201336, 75\u201379.\n- Its first two lines summarize account code, start/end dates, possible aggregation criteria and multiple country codes. Subsequent lines are separate aggregate entries. Default fields include account/store/terminal, batch number, method, creation date/time zone, journal type, gross and net debit/credit columns, exchange rate, commission, DCC markup and transaction count. Store and terminal are empty for balance-level bookings such as `MerchantPayout` or fees, or when that dimension is not enabled. See raw lines 44\u201399.\n- **Creation Date** is the sale day for payment-level bookings, related to terminal transaction or capture date; for balance-level bookings it is the Adyen booking timestamp. **Gross Currency** is transaction currency; **Net Currency** is settlement currency. Gross and net debit/credit occupy distinct columns; the raw defines `Net Debit` and `Net Credit` as request amounts less Bank/Card Commission. Bank/Card Commission includes markup, scheme fee and interchange. A negative DCC Markup indicates a credit to the account, not a universal sign rule for all amount fields. See raw lines 73\u201399.\n- Optional fields include Payable booking date, a `MerchantPayout`-only payout reference, and Settlement Flow. The payout reference can match the description of a transfer on a bank statement, but its presence in this report does not prove that a particular bank received funds. Account-dependent reports may contain columns beyond the sample. Configuring columns or their order can affect automated consumers and requires one of Merchant admin, Merchant report, Merchant financial or Merchant POS Report roles. These are **column-configuration** roles; this page does not state a separate role requirement for generating the report. See raw lines 38\u201342, 101\u2013130.\n\n## Detail locators\n\n- **Purpose, aggregation dimensions, account scope, date range and time zone:** raw lines 15\u201336.\n- **Summary and entry structure:** raw lines 44\u201364.\n- **Default journal, currency, amount, fee and count fields:** raw lines 66\u201399.\n- **Optional columns, payout-reference scope and configuration roles:** raw lines 101\u2013130.\n\n## Related\n\n- [[adyen]]\n- [[adyen-reporting]]\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 distinct transaction-level report\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15|Aggregate settlement details report \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Aggregate settlement details report shows details of payout batches in a specific date range.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md:19"
+    },
+    {
+      "text": "For each settlement batch, the report shows credits, debits, and counts of transactions for all payment journal type entries.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md:21"
+    },
+    {
+      "text": "**Time zone**: The [time zone setting](/reporting/time-zone-setting) of your account.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md:32"
+    },
+    {
+      "text": "Date on which the settlement batch was closed (resulting in MerchantPayout and/or BalanceTransfer to next batch).",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md:76"
+    },
+    {
+      "text": "This also appears in the description of the transfer in your bank account or bank statement. Only applies to the `MerchantPayout` entry.",
+      "location": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md:108"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-aggregate-settlement-details-report-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level-aggregate-settlement-details-report]] \u2014 2026-09-15 Adyen Aggregate settlement details report for payout-batch credits, debits and counts by merchant/store/terminal/method/journal/date, with separate gross/net currencies, fee fields and report time zone; a payout reference is not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep batch-level aggregate entries distinct from transaction-level Settlement details entries and bank payout receipt.",
+          "Column-configuration roles in this page must not be recast as report-generation roles."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/aggregate-settlement-details-report/2026-09-15.md",
+  "raw_sha256": "b837ee1dad55d9f193b22d6b79e0d15a8ebfaeaf4ce9ca3696fd65840e0e5e39",
+  "status": "candidate_ready"
+}

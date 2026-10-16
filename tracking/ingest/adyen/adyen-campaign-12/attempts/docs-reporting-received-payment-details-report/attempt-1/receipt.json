@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-reporting-received-payment-details-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Received payment details report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/received-payment-details-report\"\nraw_files:\n  - \"adyen/docs/reporting/received-payment-details-report/2026-09-15.md\"\ntags: [adyen, reporting, received-payments, authorisation, transaction-details]\n---\n\n## Overview\n\nAdyen's Received payment details report is a transaction-detail report for authorised and refused payments processed through Adyen. It includes shopper interaction, risk score and acquirer response, and can be obtained manually or automatically. This 2026-09-15 snapshot describes a report, not capture, settlement, payout or financial finality.\n\n## Key takeaways\n\n- Each line below the header is a separate entry; the report can contain line items for multiple merchant accounts. It is available for company and merchant accounts and uses the account's reporting time-zone setting. The Creation Date is when the payment was created on Adyen's platform, with a separate Creation Date Time Zone column; it is not a settlement date.\n- The standard Amount is the positive **authorisation amount**, including when the payment was cancelled before capture. Currency is a three-character ISO code. Do not use Amount as a captured, settled or paid-out balance.\n- The normalized Acquirer Response is **not necessarily the final payment status**; for a payment cancelled before capture it is Unknown, and the raw acquirer response is empty. The report's authorised/refused scope and response fields do not by themselves establish later lifecycle outcomes.\n- Standard columns include company/merchant account, PSP and merchant references, payment method, creation date, currency, Amount, risk score, shopper interaction, acquirer response and authorisation code. The schema can contain sensitive shopper/card/bank details: Shopper PAN shows last four card digits for cards but IBAN/BIC for SEPA; other columns include shopper IP, email and billing/delivery data. Check the raw column definitions before handling or exporting these fields.\n- Adyen says its report-generation migration may require automated ingestion pipelines to change. Standard-column names/order reflect the post-migration default; additional columns and order are configurable, some reserved columns were removed, and removing Creation Date means sort order is no longer guaranteed. Column configuration in Customer Area requires one of Merchant admin, Merchant report role, Merchant financial or Merchant POS Report role; this role list is for configuration, not proof of any user's access.\n\n## Detail locators\n\n- Opening paragraphs before `## Sample report` \u2014 purpose, manual/automatic generation routes, account time zone, company/merchant availability and migration warning.\n- `## Report structure` > `### Entries` and `#### Standard columns` \u2014 row grain; identifiers; Creation Date/time zone; currency and positive authorisation Amount; shopper, risk and acquirer fields.\n- `#### Removed standard columns` and `### Additional columns` \u2014 removed reserved columns and configurable original/POS amounts, DCC, metadata, risk, token and POS fields. Additional fields are not assumed present in every report.\n- `## Configure report columns` \u2014 Customer Area roles and steps, automated-system impact, and Creation Date sorting condition.\n\n## Related\n\n- Company: [[adyen]]\n- Reporting concept: [[adyen-reporting]]\n- Account hierarchy: [[adyen-account-structure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/received-payment-details-report/2026-09-15|2026-09-15 Received payment details report]]\n",
+  "quotes": [
+    {
+      "text": "Use this report to get details about authorised and refused payments, including the shopper interaction, risk score, and acquirer response.",
+      "location": "raw/adyen/docs/reporting/received-payment-details-report/2026-09-15.md:17"
+    },
+    {
+      "text": "We have migrated to a new technology platform to make report generation faster. You may have to update your data ingestion pipeline if you automatically ingest report data.",
+      "location": "raw/adyen/docs/reporting/received-payment-details-report/2026-09-15.md:27"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry.",
+      "location": "raw/adyen/docs/reporting/received-payment-details-report/2026-09-15.md:37"
+    },
+    {
+      "text": "The amount of the payment (authorisation amount). Always a positive value, even if the payment was canceled before being captured.",
+      "location": "raw/adyen/docs/reporting/received-payment-details-report/2026-09-15.md:57"
+    },
+    {
+      "text": "The normalized response from the acquirer. Not necessarily the final status of the payment. When a payment is canceled before being captured, the acquirer response will be *Unknown*.",
+      "location": "raw/adyen/docs/reporting/received-payment-details-report/2026-09-15.md:69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-received-payment-details-report-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-received-payment-details-report]] \u2014 2026-09-15 Adyen Docs snapshot of the Received payment details transaction report for authorised/refused payments, including report grain, authorisation Amount, acquirer response and column-configuration boundaries; it does not evidence settlement.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Coordinate with the reporting-overview worker if this concept is newly created; add the route once without overwriting its concept prose."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/received-payment-details-report/2026-09-15.md",
+  "raw_sha256": "1dc87cd7d074999da8c29ef3c196626a04d1313e3d0241ef15063cbbb902669b",
+  "status": "candidate_ready"
+}

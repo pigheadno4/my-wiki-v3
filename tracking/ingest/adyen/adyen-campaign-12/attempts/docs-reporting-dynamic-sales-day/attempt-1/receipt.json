@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-reporting-dynamic-sales-day",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Dynamic sales day closing time\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/dynamic-sales-day\"\nraw_files:\n  - \"adyen/docs/reporting/dynamic-sales-day/2026-09-15.md\"\ntags: [adyen, reporting, sales-day, reconciliation, payout-schedule]\n---\n\n## Overview\n\nThis [[adyen]] guide describes a merchant-account sales-day cutoff that can be closed for a particular night by a Management API request, so a variable close in a business application can align with Adyen's settlement-details report and payable-batch grouping. It affects which sales-day report receives captured payments; it does not demonstrate payout or bank receipt. See [[adyen-reporting]] for the reporting route.\n\n## Key takeaways\n\n- The merchant account normally closes at a static time, defaulting to midnight. A night-audit business application can close at a different time each night; if its close and Adyen's cutoff differ, reconciliation can become difficult. A successful dynamic request closes that night's sales day at the time the request is sent. If no request arrives, or it arrives too late, the static cutoff applies. The next day also defaults to the static cutoff unless another request is sent. [Raw: Solution to reconciliation problems, lines 31\u201339; Set the closing time for this night, lines 74\u2013111]\n- Eligibility in this snapshot requires **Sales day payout T+1 or T+2** and a one-to-one relationship between the merchant account and the business application closing the sales day. The guide says Sales day payout, and thus this feature, is unavailable in Africa, Brazil, and Turkey. It specifically does not solve the case where several applications feed one merchant account but close at different times. [Raw: When dynamic closing times do not help, lines 41\u201355]\n- Preparation requires moving the merchant account's static closing time after midnight; the guide recommends 06:00 as the latest possible time, rather than making that exact setting mandatory. In Customer Area, select Sales day payout T+1 or T+2 and the closing time. The static-setting user needs **Change payout schedule** or **Merchant admin**; the nightly API credential needs **Management API\u2014Sales Day Payout read and write**. [Raw: Requirements, lines 21\u201329; Preparation, lines 57\u201372]\n- Send `POST /merchants/{merchantId}/closeSalesDay` after midnight but before 06:00 in the account time zone, or before its earlier static closing time. A missing body, `closeNow: true`, and `closeNow: false` have the same documented immediate-close effect. Check the response for `salesDayClosed: true`; the example 422 `36_001` can reflect an already closed night or an out-of-window request. Do not treat the response as a payment settlement or payout confirmation. [Raw: Set the closing time for this night, lines 74\u2013111; Troubleshooting, lines 113\u2013133]\n- Payments captured before the close request go in that sales day's Settlement details report; those captured after it go to the next sales day's payable pending batch and report. This is a booking/reporting cutoff based on capture timing, not a claim about when a shopper paid or when funds reach a bank. [Raw: Booking of payments, lines 135\u2013140]\n- This is a 2026-09-15 snapshot. It does not establish current regional/account eligibility, successful execution of a particular API call, completed settlement, or financial finality.\n\n## Detail locators\n\n- Account cutoff, hotel/restaurant Night Audit context, and static fallback: `Solution to reconciliation problems`, lines 31\u201339.\n- T+1/T+2 and region limits, one-to-one relationship and multi-application exception: `When dynamic closing times do not help`, lines 41\u201355.\n- Roles, static-cutoff preparation, recommended 06:00, and Customer Area settings: `Requirements`, lines 21\u201329; `Preparation: set the static closing time`, lines 57\u201372.\n- Request timing, endpoint, optional body, response, and next-day reset: `Set the closing time for this night`, lines 74\u2013111.\n- 422 example and possible causes: `Troubleshooting`, lines 113\u2013133.\n- Captured-payment assignment across report and payable batch: `Booking of payments`, lines 135\u2013140.\n\n## Related\n\n- [[adyen]] \u2014 provider page.\n- [[adyen-reporting]] \u2014 reporting concept.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 the report whose daily grouping this cutoff affects.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/dynamic-sales-day/2026-09-15|Adyen Dynamic sales day closing time (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Your Adyen merchant account also has a sales day closing time. This determines in which settlement details report and payable batch the payments of the day end up.",
+      "location": "line 35, Solution to reconciliation problems"
+    },
+    {
+      "text": "Your merchant account must be set to [Sales day payout](/account/sales-day-payout/) **T+1** or **T+2**.",
+      "location": "line 45, When dynamic closing times do not help"
+    },
+    {
+      "text": "To set the sales day closing time for a particular night, you need to send your request on time: after midnight, but before 6:00\u00a0AM in your time zone or the static closing time for your merchant account if that is earlier than 6:00\u00a0AM.",
+      "location": "line 76, Set the closing time for this night"
+    },
+    {
+      "text": "The next day, the sales day closing time for that night defaults to the static closing time of your merchant account, unless you send a new request.",
+      "location": "line 111, Set the closing time for this night"
+    },
+    {
+      "text": "Any payments captured before the time you sent the request to close the sales day, end up in the settlement details report for that sales day.",
+      "location": "line 139, Booking of payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-dynamic-sales-day-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-dynamic-sales-day]] \u2014 2026-09-15 Adyen guide to one-night merchant-account sales-day cutoff requests, eligibility, local-time window, static fallback, and captured-payment report/payable-batch assignment; closure does not prove payout.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/dynamic-sales-day/2026-09-15.md",
+  "raw_sha256": "6d609f5967af9ec8932dfe55bca25340abe7bd4c5a8aab9cb63689c879c63a99",
+  "status": "candidate_ready"
+}

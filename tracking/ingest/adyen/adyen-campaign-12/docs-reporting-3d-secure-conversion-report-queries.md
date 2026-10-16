@@ -1,0 +1,9 @@
+# Fixed retrieval checks — Adyen 3D Secure Conversion report
+
+## Q1 — What is this page for, what is its scope, and what should not be inferred?
+
+This captured Adyen page is the column reference for the 3D Secure Conversion report. Its population is transactions that used 3D Secure, its report time-zone basis is CET, and each line after the header is a separate entry (raw/adyen/docs/reporting/3d-secure/conversion-report/2026-09-15.md:19–29). The title does not supply a conversion-rate numerator or denominator, and the page gives no eligibility filters beyond that population, access role or report-generation rule. A row or field is not proof of payment approval, capture or settlement. Proposed canonical route: `[[index]]` → `[[adyen-index]]` → `[[adyen-reporting]]` → `[[source-adyen-docs-reporting-3d-secure-conversion-report]]` → `[[raw/adyen/docs/reporting/3d-secure/conversion-report/2026-09-15]]`; canonical URL: https://docs.adyen.com/reporting/3d-secure/conversion-report.
+
+## Q2 — Which fields matter for 3DS analysis, and what are their limits?
+
+The columns give company/merchant and PSP/merchant references, acquirer and method, creation date, transaction time-zone field, currency and amount, shopper/CVC attributes, acquirer authorisation responses, and directory/authentication responses (raw lines 35–58). `threed_directory_response` is described as whether 3DS was offered, with **C** as an example; `threed_authentication_response` is described as the outcome of an authorisation attempt, with **Y** as an example (lines 57–58). Those are example values, not a full state map. Keep CET report basis separate from the transaction time-zone column; keep 3DS and acquirer fields separate from final payment outcome. The source's absence of formulas, filters and roles means a conversion rate or permission claim needs a different authority. Use the same concept→source→raw route and `[[adyen-3d-secure]]` for separate integration context.

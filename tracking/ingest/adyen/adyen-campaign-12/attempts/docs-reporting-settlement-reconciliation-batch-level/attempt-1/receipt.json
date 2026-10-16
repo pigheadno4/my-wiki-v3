@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-reporting-settlement-reconciliation-batch-level",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen batch-level settlement reconciliation\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/settlement-reconciliation/batch-level\"\nraw_files:\n  - \"adyen/docs/reporting/settlement-reconciliation/batch-level/2026-09-15.md\"\ntags: [adyen, reporting, settlement, reconciliation]\n---\n\n## Overview\n\nThis Adyen webpage snapshot explains how to use the **Aggregate Settlement Details Report** to identify payout batches in a date range and compare their reported totals with a bank statement. It is a batch-level report workflow, not a transaction-by-transaction ledger or independent evidence that a bank received a payout. See [[adyen]] and [[adyen-reporting]].\n\n## Key takeaways\n\n- Find a batch by **Batch Number**. One batch may occupy multiple report entries because its settlements span creation dates, payment methods, journal types, or currencies (raw lines 23\u201334). A batch number alone therefore does not identify a single row or a single currency amount.\n- For entries whose **Journal Type** is `Settled`, the guide describes each entry as a group of transactions. `Gross Credit` is the group total, `Bank/Card Commission` and `DCC Markup` are deductions, `Num Txs` is its transaction count, and `Net Credit` is described as gross less those two fee/markup amounts (raw lines 60\u201368). Do not apply that formula to every journal type or treat an aggregated entry as one payment.\n- The examples illustrate two distinct tasks: batch 604 has `Settled` and `Balancetransfer` rows across USD, EUR, and SEK (raw lines 36\u201358); batch 608 totals `Net Credit`, commission, and transaction counts in EUR from three `Settled` rows (lines 70\u201382). These are examples, not universal values or a rule to add unlike currencies. The table has separate `Net Debit (NC)` and `Net Credit (NC)` columns; no universal sign convention is established on this page.\n- The guide frames reconciliation **against a bank statement**. The report supplies a batch identifier and report amounts to compare; this page contains no bank-statement entry or receipt confirmation for any particular batch. Its description of `Net Credit` as an amount settled to a bank account must be read within that comparison workflow.\n\n## Detail locators\n\n- `Step 1: Find settlement batches`, raw lines 23\u201358: batch number, reasons for multiple entries, and the mixed-journal/mixed-currency illustration.\n- `Step 2: Find the total transaction amounts and fees in a batch`, raw lines 60\u201382: `Settled`-entry fields and same-currency EUR calculation example.\n- `See also`, raw lines 84\u201386: navigation to transaction-level reconciliation for a different grain.\n\n## Related\n\n- [[adyen-reporting]] \u2014 reporting and reconciliation evidence boundary.\n- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level-aggregate-settlement-details-report]] \u2014 report-specific fields and generation details.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level]] \u2014 transaction-level reconciliation route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/settlement-reconciliation/batch-level/2026-09-15|Batch-level reconciliation, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To reconcile payout batches against your bank statement, you need:",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Each batch can have more than one entry in the report if it includes settlements with more than one:",
+      "location": "raw line 29, Step 1: Find settlement batches"
+    },
+    {
+      "text": "* Currency: for example, it includes settlement amounts in EUR and USD.",
+      "location": "raw line 34, Step 1: Find settlement batches"
+    },
+    {
+      "text": "Each entry with the **Journal Type** of **Settled** shows the amount settled for a group of transactions.",
+      "location": "raw line 62, Step 2: Find the total transaction amounts and fees in a batch"
+    },
+    {
+      "text": "This is the amount in **Gross Credit** minus the amounts in **Bank/Card Commission** and **DCC Markup**.",
+      "location": "raw line 68, Step 2: Net Credit definition"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-batch-reconciliation-reciprocal",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-settlement-reconciliation-batch-level]] \u2014 2022-modified, 2026-09-15-captured Aggregate Settlement Details workflow for batch-number matching and Settled-entry gross/fee/net totals, preserving multi-row/multi-currency grain and bank-statement comparison boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/settlement-reconciliation/batch-level/2026-09-15.md",
+  "raw_sha256": "133553a7407a7907cbbbee2ec805db8a8fdcb8cbc32ac27086ccb2310b44fe28",
+  "status": "candidate_ready"
+}

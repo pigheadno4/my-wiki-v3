@@ -1,0 +1,26 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "adyen-sales-day-payout-new-concept",
+      "target_path": "wiki/concepts/adyen-sales-day-payout.md",
+      "update_kind": "durable_fact",
+      "anchor": "new_file",
+      "proposed_markdown": "---\ntitle: \"Adyen Sales Day Payout\"\ntype: concept\ncategory: technology\ntags: [adyen, sales-day-payout, merchant-settlement, payable-batch, reconciliation]\n---\n\n## Definition\n\nSales day payout is Adyen's merchant-settlement model that groups transactions from one sales day into a payable batch and pays that batch after a fixed delay, even when a card scheme or payment method has not yet settled those funds to Adyen. Pass-through payout instead books funds to the merchant payable batch when the scheme or method settles, which can spread one sales day across multiple batches. This is a merchant-sales payout model, distinct from the legacy Payout API for paying another recipient. [[source-adyen-docs-account-sales-day-payout-upgrade-to-sdp]]\n\n## Reconciliation boundary\n\nThe upgrade guide adds four Settlement Details Report adjustment journal types for failed capture, failed refund, delayed scheme settlement and uncleared refund. Such entries adjust earlier `Settled` or `Refunded` bookings; report and Customer Area states must be read at their own grain and do not alone prove bank-deposit arrival. The captured guide supplies no specific payout delay, cutoff, time zone, region, fee or eligibility rule. Its refund flow table has conflicting debit/credit and record-type wording, so use the source's row-level locators for those cases.\n\n## Sources\n\n- [[source-adyen-docs-account-sales-day-payout-upgrade-to-sdp]] \u2014 2026-09-15 Adyen Docs snapshot of the Pass-through-to-Sales-day model change, additional SDR journals and capture/refund reconciliation flows.\n\n## Related\n\n- [[adyen]]\n- [[adyen-reporting]]\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This merchant-settlement payout model must not be conflated with the legacy recipient Payout API or bank-deposit finality.",
+        "The raw refund flow table at lines 79\u201391 has conflicting debit/credit, record-type and already-debited wording; do not infer a repaired flow.",
+        "The source does not specify delay duration, cutoff, time zone, regions, fees or merchant eligibility."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-reporting-settlement-reconciliation-transaction-level-external-settlement-detail-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen External settlement detail report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/settlement-reconciliation/transaction-level/external-settlement-detail-report\"\nraw_files:\n  - \"adyen/docs/reporting/settlement-reconciliation/transaction-level/external-settlement-detail-report/2026-09-15.md\"\ntags: [adyen, reporting, external-acquirer, settlement, reconciliation]\n---\n\n## Overview\n\nAdyen's External settlement detail report describes transactions for which Adyen is not the acquirer. The page gives direct American Express or PayPal funding arrangements as examples. It is a transaction-entry report for reviewing externally acquired settlement activity; a listed transaction does **not** confirm that the external acquirer has paid the merchant. This scope differs from the Adyen [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report|Settlement details report]]. [[adyen]] [[adyen-reporting]]\n\n## Key takeaways\n\n- A report is available for company and merchant accounts, with a date selected in Customer Area. The report uses the account's time-zone setting; `Creation Date` has its own `TimeZone` field. The page links manual and automatic retrieval without specifying a generation schedule here.\n- Each line under the header is a separate entry. The standard fields include company and merchant account, PSP and merchant references, payment method, creation date, journal `Type`, gross transaction currency and debit/credit amounts, exchange rate, net settlement currency and debit/credit amounts, acquirer fee fields, acquirer, MID, and matching references. One report can contain entries for multiple merchant accounts.\n- Gross and net debit/credit values are separate fields; the net descriptions subtract acquirer fees from the submitted amount. Fee detail is conditional on information from the external acquirer: `Commission` holds the total when interchange-level detail is unavailable; when it is supplied, `Commission` is empty and `Markup`, `Scheme Fees`, and `Interchange` are populated. Do not infer a universal amount sign from a journal name alone; use the field and journal occurrence.\n- Journal types distinguish externally settled payments, refunds, chargebacks, acquirer payouts, and unmatched entries, with debit, credit, or debit/credit occurrence as listed. An `AcquirerPayout` reference can be an acquirer settlement batch number found on a bank statement, but neither that row nor another listed transaction proves funds arrived.\n- The sample is illustrative: a generated report can have additional data or columns based on account settings. Optional columns and order can be configured in Customer Area; changing them can affect automated consumers. The listed Merchant admin, Merchant report, Merchant financial, and Merchant POS Report roles are for configuring columns, not a stated universal prerequisite for receiving a report.\n\n## Detail locators\n\n- `## Structure > ### Entries`, line 39: row grain and explicit external-funding warning.\n- `### Columns > #### Standard columns`, lines 49\u201378: account, reference, date/time-zone, type, gross and net amount/currency, fee, acquirer/MID, and installment fields. `Psp Reference` has different meanings for unmatched transactions and `AcquirerPayout`; `Modification Reference` may contain an acquirer reference for unmatched transactions.\n- `#### Additional columns`, lines 80\u201392: optional store, merchant order, acquirer auth, card, submerchant, and metadata fields. The acquirer auth code is not unique and must not be used for reconciliation.\n- `## Configure report columns`, lines 94\u2013113: configuration steps, role list, and automated-system impact.\n- `## Journal types`, lines 115\u2013134: exact booking labels and debit/credit occurrences, including matched and unmatched external-acquirer entries.\n\n## Related\n\n- [[adyen-reporting]] \u2014 Adyen reporting route.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 separate Adyen Settlement details report.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/external-settlement-detail-report/2026-09-15|Adyen External settlement detail report, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Use this report to review payments settled by an external acquirer.",
+      "location": "line 17, opening statement"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry. A transaction shown in this report does not confirm that the external acquirer has paid you the funds.",
+      "location": "line 39, Structure > Entries"
+    },
+    {
+      "text": "In this scenario column 17 is empty, and columns 18, 19, and 20 are populated.",
+      "location": "line 65, Standard columns > Commission"
+    },
+    {
+      "text": "This code is not unique and should not be used for reconciliation.",
+      "location": "line 88, Additional columns > Acquirer Auth Code"
+    },
+    {
+      "text": "If you have an automated system that uses the report's data, configuring the report columns can affect your automated system.",
+      "location": "line 96, Configure report columns"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-external-settlement-report-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-external-settlement-detail-report]] \u2014 2026-09-15 Adyen External settlement detail report for transaction entries where Adyen is not the acquirer, with gross/net currencies, conditional acquirer fee detail, and journal debit/credit meanings; entries do not confirm external-acquirer payment.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Keep this external-acquirer report distinct from Adyen's Settlement details report and from proof of bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/settlement-reconciliation/transaction-level/external-settlement-detail-report/2026-09-15.md",
+  "raw_sha256": "44c9d1cf0f2f553990158956de84e78b1b22bac669efbdfef81417a1057453a4",
+  "status": "candidate_ready"
+}

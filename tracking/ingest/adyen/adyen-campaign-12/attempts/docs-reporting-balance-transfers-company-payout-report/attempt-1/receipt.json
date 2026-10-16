@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-reporting-balance-transfers-company-payout-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Company Payout report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/balance-transfers/company-payout-report\"\nraw_files:\n  - \"adyen/docs/reporting/balance-transfers/company-payout-report/2026-09-15.md\"\ntags: [adyen, reporting, company-account, merchant-payouts, balance-transfers]\n---\n\n## Overview\n\nAdyen's Company Payout report is available at the company-account level and summarizes merchant payout events: successful, returned and non-executed payouts, with status as of report generation. It is a company-account reporting view of merchant payouts, not a single company-level payout or proof that a particular bank account received funds. See [[adyen]], [[adyen-reporting]] and [[adyen-account-structure]] for provider, reporting and account-scope context.\n\n## Key takeaways\n\n- The Overview sheet records company account and generation time, counts by journal type, and MerchantPayout counts by executing partner bank, payout currency and status. The MerchantPayout sheet has one payout per row and includes merchant Account Code, bank, Currency, numeric Amount, Payable Number/batch, bank-instruction reference, Status, Status Date and optional Store Code. Adyen says the report's entries have a one-to-one relationship with merchant-account Settlement detail report entries; that is a reconciliation route, not a bank statement.\n- Merchant payout statuses move through Created, Sent and Debit Confirmed toward Credited; Adyen calls Credited the final status for a successful payout. Forwarded is handed to another party; Rejected is final and rare; Failed means an attempt failed and the transfer will be returned or retried, so check a later report. The report records the status at generation time. A report status or bank-instruction reference should be checked against the actual bank statement when bank receipt matters.\n- BankInstructionReturned has one returned merchant payout per row. Its Returned Date is when funds were booked back to Payable and is usually when they reached Adyen's bank account; Reason Code appears only when a partner bank provides one, and codes vary by currency and region. BalanceTransfer has one non-executed payout per row with a reason-code field. Here BalanceTransfer is the report's non-executed-payout journal type; the page does not make it evidence of an executed inter-account transfer.\n- Each detailed sheet has its own Currency and numeric Amount columns; the source does not specify signed-amount conventions or monetary subunits, so interpret values with journal type and payout currency. Status Date and Returned Date mean different events. The report uses the account's configured reporting time zone; it does not state a universal CET/CEST rule.\n- The page routes manual and automatic generation to separate guides and gives no role requirement on this page. Those linked procedures must be checked for access conditions.\n\n## Detail locators\n\n- Company-account availability, payout uses, snapshot status, retrieval and account time zone: raw lines 17\u201330. Sheet list and one-to-one Settlement detail route: `## Report structure`, lines 36\u201345.\n- Overview counts, bank/currency/status grouping and status definitions: `## Overview sheet`, lines 47\u2013100. One-payout row and field definitions: `## MerchantPayout sheet`, lines 102\u2013125.\n- Returned-payout grain, Returned Date and conditional reason code: `## BankInstructionReturned sheet`, lines 127\u2013149. Non-executed-payout grain and fields: `## BalanceTransfer sheet`, lines 151\u2013171.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-reporting]] \u2014 reporting and reconciliation routes.\n- [[adyen-account-structure]] \u2014 company-account versus merchant-account scope.\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]] \u2014 merchant-account Settlement detail counterpart.\n\n## Related raw API references\n\n- The raw page links to manual and automatic report retrieval, the account time-zone setting, balance-transfer reasons and the merchant-account Settlement detail report. Details of those linked guides require their own source evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/balance-transfers/company-payout-report/2026-09-15|Adyen Docs: Company Payout report (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The Company Payout report is available in [company accounts](/account/account-structure#company-account) and includes additional data about events that occurred during the payout.",
+      "location": "raw line 19, # Company Payout report"
+    },
+    {
+      "text": "The entries in this report have a [one-to-one relationship](https://experienceleague.adobe.com/docs/commerce-business-intelligence/mbi/analyze/warehouse-manager/table-relationships.html?lang=en) with entries in the [Settlement detail report](/reporting/settlement-reconciliation/transaction-level/settlement-details-report), which can be generated and downloaded for a [merchant account](/account/account-structure#merchant-accounts).",
+      "location": "raw line 45, ## Report structure"
+    },
+    {
+      "text": "**Credited**: Merchant payout is credited. This is the final status for a successful payout.",
+      "location": "raw line 97, ### Merchant payout summary, status list"
+    },
+    {
+      "text": "**Failed**: Merchant payout attempt failed. The transfer will be returned or retried. Check the report later for the updated payout status.",
+      "location": "raw line 100, ### Merchant payout summary, status list"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry. Each entry is for a non-executed payout.",
+      "location": "raw line 157, ## BalanceTransfer sheet > ### Entries"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c12-company-payout-report-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-balance-transfers-company-payout-report]] \u2014 2026-09-15 company-account report of merchant payout statuses, returns and non-executed BalanceTransfer entries, with merchant-account Settlement detail counterpart; report status is not independent bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/balance-transfers/company-payout-report/2026-09-15.md",
+  "raw_sha256": "fbad17284e533b81032e754a68e6de27c150b8d5e8266e43fbc06b1f6da86aa5",
+  "status": "candidate_ready"
+}
