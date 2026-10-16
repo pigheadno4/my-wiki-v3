@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-plugins-mirakl-reconciliation-and-invoices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Reconciliation and invoices | Adyen Mirakl connector\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/mirakl/reconciliation-and-invoices\"\nraw_files:\n  - \"adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md\"\ntags: [adyen, mirakl, reconciliation, invoices, marketplace, payouts]\n---\n\n## Overview\n\nThis Adyen Mirakl connector guide describes how seller invoices, platform balance-account reporting, Mirakl invoice fields and Adyen transfer references support reconciliation. It covers seller payout and commission amounts in the connector flow, not the marketplace pay-in flow or independent proof that funds reached a seller bank account. [[adyen-mirakl]]\n\n## Seller invoice and account flows\n\n- Mirakl generates an invoice for each seller at the end of a billing cycle; the documented default is ten days, typically three invoices per month. The invoice shows the **net remaining amount** to pay the seller and the commission to transfer to the platform's liable balance account. This page gives no gross-to-net calculation, currency conversion, negative-payable treatment or calendar/time-zone rule.\n- On invoice generation, the connector synchronizes invoice details through Mirakl IV01: the seller payout amount and commissions deducted from the seller. In Mirakl back office, the route is **Accounting \u2192 Billing and documents \u2192 Accounting documents**.\n- **Only if Payment Confirmation is enabled**, the generated invoice is **Pending**; the commission is transferred from the seller's account to the platform account, and after payout completion the connector sets the invoice **Paid** through Mirakl IV07. The documented status sequence is conditional and is not, by itself, evidence of a bank statement credit or final settlement outside the described connector flow.\n\n## Report and API reconciliation\n\n- The Balance Platform Accounting Report is a daily record of balance changes across the platform's balance accounts, including the liable and user accounts. Customer Area can generate it on a schedule or manually for a chosen day. The page recommends using Mirakl invoices with this report; it does not define the report's row-level schema or establish a transaction-level gross/fee/net equation.\n- In Mirakl IV07, `invoice.summary.amount_transferred_to_operator` identifies commission sent to the liable balance account, while `invoice.summary.amount_transferred` identifies the payout amount sent to the seller. Keep these account destinations and amounts separate.\n- The connector makes Adyen `/transfers` requests for payouts and commissions. The response's `referenceForBeneficiary` is also supplied to the recipient and related transfer webhooks; its components are connector invoice `id`, attempt `count`, and transfer `type` (**P** payout, **C** commission, **S** subscription). The transfer `description` also includes type and invoice ID. These identifiers support matching and status tracking; a request or response alone does not establish completion or bank receipt.\n\n## Detail locators\n\n- **Invoice cadence, net seller amount, commission and IV01 synchronization:** raw lines 19\u201328.\n- **Conditional Payment Confirmation invoice statuses and commission transfer:** raw line 30.\n- **Daily Balance Platform Accounting Report and reconciliation use:** raw lines 32\u201338.\n- **Mirakl IV07 amount fields:** raw lines 40\u201349.\n- **Adyen transfer references, attempt count and type codes:** raw lines 51\u201367.\n\n## Related\n\n- [[adyen-mirakl]]\n- [[adyen-payouts]]\n- [[adyen-reporting]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15|Adyen Mirakl reconciliation \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The invoice shows the net remaining amount to be paid out to the seller, and the commission to be transferred to your liable balance account.",
+      "location": "raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md:21"
+    },
+    {
+      "text": "If you have the **Payment Confirmation** feature enabled, the status of this invoice is set to **Pending** when the invoice is generated.",
+      "location": "raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md:30"
+    },
+    {
+      "text": "The Balance Platform Accounting Report is a daily report that tracks all balance changes on all balance accounts in your platform, including liable accounts and the accounts of your users.",
+      "location": "raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md:34"
+    },
+    {
+      "text": "`invoice.summary.amount_transferred_to_operator`: the commission amount sent to your liable balance account.",
+      "location": "raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md:48"
+    },
+    {
+      "text": "`invoice.summary.amount_transferred`: the payout amount sent to the seller.",
+      "location": "raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md:49"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-mirakl-reconciliation-invoices-source",
+        "target_path": "wiki/concepts/adyen-mirakl.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-mirakl-reconciliation-and-invoices]] \u2014 2026-09-15 Mirakl seller invoice and Adyen balance-account reconciliation guide: net seller payout, commission to platform liable balance, conditional Payment Confirmation, daily BPAR and transfer references; report/status records are not independent bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Mirakl seller invoice payout and commission fields tied to their distinct seller and platform liable balance-account destinations.",
+          "Pending-to-Paid behavior applies only when Payment Confirmation is enabled; invoice Paid and transfer references do not independently prove bank receipt.",
+          "The page does not define negative-payable handling, gross-to-net arithmetic, currency or time-zone conversion, or BPAR row-level schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/mirakl/reconciliation-and-invoices/2026-09-15.md",
+  "raw_sha256": "4c6a624c93c1d0bb6ad6a8bccb5607d91bd4bea8d242ee78c6a774112c4c3d0c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,11 @@
+# C14 coordinator full-read exemplar audit
+
+2026-10-16. Three predetermined samples PASS. Historical documentation ingestion only; no connector installation, OAuth request, account change or financial operation.
+
+- Standard — docs-plugins-mirakl: full raw and entire promoted source read. Seller onboarding/KYC/account synchronization, domestic payout and commission scope, categorical pay-in exclusion, separately implemented payment/refund/chargeback flows, ecommerce split prerequisite, negative-payable/migration contact conditions and no universal MOR or bank-outcome inference retained. PASS.
+- Longest — docs-plugins-cegid-retail-y2-set-up-the-plugin: all 332 raw lines and entire corrected promoted source read. Initial truncated table display was filled by bounded reread from line 131; raw bytes unchanged. v2.1.33 upgrade uninstall/reboot, local encryption versus cloud API credential/WebSockets, Adyen terminals and IDs, required/optional fields, mapping/refund exceptions, unknown-result/Legacy/void warnings, merchant-reference prefix-longer fallback with equal case unspecified, separate device/test/live/upgrade steps retained. PASS.
+- Ordinary — docs-partners-oauth-integration: all 305 raw lines in two bounded chunks and entire promoted source read. Partner/test/live role conditions, client-secret storage, immutable all-or-nothing scope registration, grant consent and returned accounts, PKCE S256 verifier/challenge conflict, redirect/state, code/token request and response identity, 24-hour default expiry, one-use refresh and grace period with prior-token invalidation, unchanged refreshed scope and separate live cutover retained. No revocation endpoint or actual authorization/payment outcome invented. PASS.
+
+No material partial/fail found in the fixed samples; semantic audit expansion was not triggered. Exhaustive close validation covers all hashes/provenance, catalog completeness, reciprocal routes, links and counts.
+
+The Mirakl overview received a separately reviewed source/commission-phase warning after the base full-read audit. The original overview meaning remains; the payout-guide phase is explicitly attributed. See mirakl-overview-amendment-review.json. No material full-read failure or sample expansion was triggered.

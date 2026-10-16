@@ -19,6 +19,12 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-reporting-platform-reports]] — 2026-09-15 platform/marketplace reporting hub separating new Adyen for Platforms Balance Platform reports from classic Marketplace/Marketpay report routes.
+
+
+- [[source-adyen-docs-reporting-your-payment-terminals]] — 2022-modified, 2026-09-15-captured POS Terminal fleet Scheduled report field guide for one-row-per-terminal inventory, account/time-zone scope, last-online status and 14-day timestamp omission; not live device-state or payment-result proof.
+
+
 - [[source-adyen-docs-reporting-manually-get-reports]] — 2026-09-15 Adyen Customer Area guide to one-time report generation and download, role and account scope, report-specific settings, queued-versus-generated state, and captured two-year retention with invoice exception; retrieval is not financial-outcome proof.
 
 

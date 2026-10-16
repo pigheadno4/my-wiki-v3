@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-microsoft-dynamics",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Dynamics 365 Commerce payment connector\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/microsoft-dynamics\"\nraw_files:\n  - \"adyen/docs/plugins/microsoft-dynamics/2026-09-15.md\"\ntags: [adyen, microsoft-dynamics, dynamics-365-commerce, pos, ecommerce, connector]\n---\n\n## Overview\n\nAdyen's 2023-modified Dynamics 365 Commerce guide describes the **Dynamics 365 Payment Connector for Adyen** across retail POS, e-Commerce and Call Center channels. Modern POS uses local Terminal API communications and can continue processing while offline; Cloud POS uses cloud Terminal API communications, runs in a browser and cannot work offline; e-Commerce and Call Center use Checkout API. This is a channel-specific setup guide, not an ERP-wide feature claim or evidence of a live transaction or funds movement.\n\n## Key takeaways\n\n- Begin with an Adyen test account; application for a live account is a separate process. For multiple sales channels, the guide requires a **separate merchant account per channel** and emphasizes **separate API credentials per channel**. Do not configure the default company API credential. The channel API key must be securely stored; the guide says it cannot be restored if lost. These instructions do not identify the legal seller, merchant of record, settlement account or actual merchant eligibility.\n- MPOS and CPOS credentials use Web service/API key; the merchant enables Merchant Recurring Role while Adyen Support enables additional POS, terminal-management, encryption and firmware roles and configures the back office. The POS merchant-account setup selects **Immediate** POS Capture Delay. e-Commerce and Call Center have their own Checkout/payment roles; the e-Commerce list additionally includes `API Payment RefundWithData`. For **V002** of the connector, the e-Commerce setup also has an Origin Key step. Read each channel tab before assigning roles; creating a key alone does not establish role or merchant-account access.\n- MPOS/CPOS need Adyen-software-injected terminals, store IDs, ordered test terminals and boarding. Dynamics POS hardware profiles use terminal IP, POIID and encryption-key identifiers/passphrase/version from Customer Area. MPOS local communication can work offline and directly reach peripherals; CPOS cloud communication cannot work offline and reaches peripherals through a hardware station. These are documented channel capabilities, not proof of a particular terminal's availability or completed payment.\n- Dynamics 365 connector setup routes to Microsoft documentation. For **e-Commerce/Call Center**, Optional Domain may be blank in test but requires the live Adyen merchant prefix at go-live to avoid `PaymentException`; for **CPOS**, the live Optional Domain is `https://terminal-api-live.adyen.com/sync`, with a reminder to check current cloud endpoint versions. The document's specific instructions are a dated snapshot, not a current version-compatibility matrix.\n- Tokenization is supported only after Adyen-side configuration requested through Support. Before accepting payments, test methods in each channel and inspect test payments; live setup separately requires live merchant accounts as needed, stores/live terminals for POS, live account configuration, and Dynamics Headquarters **Gateway environment = Live** plus the channel's Optional Domain. Setup and tests do not establish payment authorization, capture, refund, settlement, payout or bank receipt.\n\n## Detail locators\n\n- Opening before `## Requirements` \u2014 connector identity, supported channels and local/cloud/Checkout API split.\n- `## Requirements` \u2014 test-account start, separate merchant account per channel, live-account application boundary.\n- `## Step 1: Configure your Adyen account` > MPOS, CPOS, eCommerce and Call Center tabs \u2014 separate credentials, default-credential warning, secure API keys, distinct roles/Support tasks, Immediate POS Capture Delay and V002 Origin Key.\n- `## Step 2 (MPOS or CPOS)` \u2014 Adyen-software terminals, stores, ordering and boarding.\n- `## Step 3: Set up Dynamics 365` \u2014 Microsoft documentation route, test/live Optional Domain differences and POS hardware-profile fields.\n- `## Tokenization`, `## Test and go live` \u2014 Support-enabled tokenization, per-channel testing, live merchant/store/terminal setup and Dynamics Headquarters environment.\n\n## Related\n\n- Company: [[adyen]]\n- Dynamics 365 Commerce connector concept: [[adyen-microsoft-dynamics]]\n- Terminal API context: [[adyen-terminal-api]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15|2026-09-15 Dynamics 365 Commerce connector guide]]\n",
+  "quotes": [
+    {
+      "text": "When you use Microsoft Dynamics 365 Commerce as your omnichannel solution, the **Dynamics 365 Payment Connector for Adyen** allows you to process payments across your sales channels through the Adyen payments platform.",
+      "location": "raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15.md:23"
+    },
+    {
+      "text": "If you use more than one sales channel, for example MPOS and e-Commerce, [request additional merchant accounts](/account/manage-account-structure#request-merchant-account). You need to have a separate merchant account for each channel.",
+      "location": "raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15.md:43"
+    },
+    {
+      "text": "Our Support Team will take care of part of your account configuration. But there are a few steps that you need to do yourself. The most important step is to create separate API credentials for each of your sales channels.",
+      "location": "raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15.md:53"
+    },
+    {
+      "text": "For e-Commerce and Call Center: When requested to specify the **Optional Domain**, you can leave this field blank for the test environment. But when going live you must provide your Adyen merchant prefix, otherwise you get a `PaymentException` error.",
+      "location": "raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15.md:297"
+    },
+    {
+      "text": "The Adyen payment connector supports [tokenization](/get-started-with-adyen/payment-glossary#tokenization-definition), but this functionality requires some configuration on our end. Contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable tokenization.",
+      "location": "raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15.md:323"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c14-microsoft-dynamics-concept-create",
+        "target_path": "wiki/concepts/adyen-microsoft-dynamics.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept file",
+        "proposed_markdown": "---\ntitle: \"Adyen Microsoft Dynamics 365 Commerce\"\ntype: concept\ncategory: technology\ntags: [adyen, microsoft-dynamics, dynamics-365-commerce, point-of-sale, ecommerce]\n---\n\n## Definition\n\nAdyen's Dynamics 365 Payment Connector guide covers Dynamics 365 **Commerce** channels: MPOS and CPOS use local and cloud Terminal API communications respectively, while e-Commerce and Call Center use Checkout API. The 2023-modified, 2026-09-15-captured page requires separate merchant accounts and API credentials for each channel when several channels are used. It is a connector setup guide, not a general Dynamics ERP integration claim. [[source-adyen-docs-plugins-microsoft-dynamics]]\n\n## Evidence boundary\n\nSupport-side roles, back-office configuration and tokenization enablement, plus test/live terminal and account setup, are separate from creating credentials. This guide does not establish an actual merchant's current eligibility, seller or merchant-of-record identity, successful payment/refund/capture, settlement or bank receipt. Channel-specific roles, Optional Domain and V002 Origin Key instructions remain in the source page.\n\n## Sources\n\n- [[source-adyen-docs-plugins-microsoft-dynamics]] \u2014 2023-modified Adyen Dynamics 365 Commerce channel, credential, terminal, tokenization and test-to-live setup guide captured 2026-09-15.\n\n## Related\n\n- [[adyen-terminal-api]]\n- [[adyen]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "No existing Dynamics concept was found through root and Adyen indexes; coordinator should create this provider concept and add its provider-index route with source promotion. The source is a 2023-modified snapshot and does not establish current connector version compatibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/microsoft-dynamics/2026-09-15.md",
+  "raw_sha256": "9d70bed3a64b9455da356e30bf7d32e7f6bcbde96e7f49fad4dfc64027ca7b76",
+  "status": "candidate_ready"
+}

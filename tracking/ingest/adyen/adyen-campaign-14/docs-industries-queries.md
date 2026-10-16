@@ -1,0 +1,9 @@
+# Fixed retrieval queries — Adyen industries and markets hub
+
+## Q1. What is this page for, what scope does it cover, and what should a reader not infer?
+
+**Expected answer:** It is Adyen's work-in-progress industries-and-markets documentation hub, defining the terms for the section and introducing recommendations intended to help select minimally required and additional integration features, particularly across sales channels. It does not itself establish a merchant's industry classification, feature enablement, legal obligations, merchant-of-record role, or the behavior of any linked product or industry guide. The pinned page does not list travel, retail or hospitality segment-specific procedures. **Evidence:** pinned raw `raw/adyen/docs/industries/2026-09-15.md:15-27`; canonical retrieval route `[[source-adyen-docs-industries]]` through `[[adyen-index]]` from `[[index]]`.
+
+## Q2. What central capability, prerequisites, and warnings does it give?
+
+**Expected answer:** Its central capability is navigation to Industry recommendations (`/industries/feature-packs`), Markets (`/industries/markets`), Peak season readiness (`/industries/peak-season`), and World Cup readiness (`/industries/world-cup`). The page gives no operational prerequisites or payment flow. Because it says the section is new and more topics will be added, the links and labels must not be read as a complete or current eligibility catalogue; child documents are needed for their own conditions and behavior. World Cup readiness is labeled as preparing in-person payments for international visitors, not a promise of supported methods, legal status, payment success, or settlement. **Evidence:** pinned raw `raw/adyen/docs/industries/2026-09-15.md:19-21,29-53`; canonical retrieval route `[[source-adyen-docs-industries]]` through `[[adyen-index]]` from `[[index]]`.

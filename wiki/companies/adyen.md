@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 664
+source_count: 714
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Six hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Seven hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. C14 adds Mirakl, Salesforce OMS, Cegid and Dynamics connectors plus partner OAuth, Uplift, regional and seasonal references through [[adyen-mirakl]], [[adyen-salesforce-order-management-system]], [[adyen-cegid-retail-y2]], [[adyen-microsoft-dynamics]], [[adyen-partners]], [[adyen-partner-oauth]] and [[adyen-peak-season-readiness]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 650 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13).
-- Total source summaries: 664 (650 website + 14 GitHub).
+- Ingested website documentation sources: 700 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13 + C14).
+- Total source summaries: 714 (700 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -832,6 +832,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-plugins-netsuite-payment-notifications-in-netsuite]] — Payment notifications in NetSuite | Adyen Docs (webpage, 2026-10-16)
 - [[source-adyen-docs-plugins-adobe-commerce-upgrade]] — Adyen Adobe Commerce plugin upgrade steps (webpage, 2026-10-16)
 - [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-upgrade]] — Adyen Composable Storefront package upgrade (webpage, 2026-10-16)
+
+### Website documentation — Campaign 14
+
+- [[source-adyen-docs-plugins-mirakl]] — Adyen Mirakl connector overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system]] — Adyen Salesforce Order Management System package (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2]] — Cegid Retail Y2 | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-partners]] — Adyen partners documentation overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-set-up-the-plugin]] — Adyen Cegid Retail Y2 CPOS plugin setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-manual-setup]] — Adyen Salesforce OMS manual package setup (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-uplift-enablement]] — Adyen partner Uplift enablement (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-microsoft-dynamics]] — Adyen Dynamics 365 Commerce payment connector (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth-integration]] — Partner OAuth integration | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-integration-checklist]] — Adyen partner integration checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-set-up-oobo]] — Adyen Salesforce OMS Order on Behalf Of setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-set-up-the-connector]] — Set up the Adyen Mirakl connector (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-tap-to-pay]] — Tap to Pay with Cegid Retail Y2 | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-upgrade]] — Adyen Salesforce OMS package upgrade (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-japan-credit-card-security-guidelines-compliance-guide]] — Adyen Japan Credit Card Security Guidelines 5.0 guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-troubleshooting]] — Cegid Retail Y2 CPOS troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-refunds]] — Peak-season refunds and payouts | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-in-person-payments]] — Adyen peak-season in-person payment preparation (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-japan-scta-and-psa]] — Adyen Japan SCTA and PSA overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package]] — Install and set up the Salesforce OMS package (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-set-up-payment-flows]] — Adyen Mirakl connector payment-flow setup (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season]] — Adyen peak season readiness hub (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-major-sports-event]] — Adyen Major sports event readiness (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-application-information]] — Adyen partner API application information (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-india]] — Adyen domestic payments in India overview (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth-scopes]] — Adyen partner OAuth scopes (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-risk-and-disputes]] — Peak-season risk and disputes | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-authorization-reversal]] — Adyen Salesforce OMS authorization reversal (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-giftcards]] — Adyen Cegid Retail Y2 gift card payment setup (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-status-and-help]] — Adyen peak-season status updates and help (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-your-payment-terminals]] — Adyen POS terminal fleet Scheduled report (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-onboard-sellers]] — Onboard sellers with the Adyen Mirakl connector (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-online-payments]] — Peak-season online payments | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-test-and-go-live]] — Adyen Mirakl connector test and go-live guide (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-afp]] — Adyen for Platforms peak-season readiness (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-reconciliation-and-invoices]] — Reconciliation and invoices | Adyen Mirakl connector (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-pay-by-link]] — Adyen Pay by Link in Cegid Retail Y2 Mobile POS and Live Store (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-giving]] — Adyen Giving peak-season guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-payouts]] — Adyen Mirakl seller payouts (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth]] — Adyen partner OAuth overview (webpage, 2026-10-16)
+- [[source-adyen-docs-payments]] — Adyen payments documentation entry (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth-installed-oauth-apps]] — Manage installed Adyen OAuth apps (webpage, 2026-10-16)
+- [[source-adyen-docs-industries]] — Industries and markets | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-financial-products]] — Adyen financial products (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-troubleshooting]] — Troubleshooting the Adyen Mirakl Marketplace connector (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-japan]] — Adyen compliant payments in Japan overview (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-platform-reports]] — Adyen platform reports hub (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-order-status-lifecycle]] — Adyen Salesforce OMS order-status lifecycle (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets]] — Adyen Markets documentation directory (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-feature-packs]] — Features per industry | Adyen Docs (webpage, 2026-10-16)
 
 ### GitHub repository evidence
 

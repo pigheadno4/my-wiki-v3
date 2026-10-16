@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-order-management-system-install-and-set-up-the-package",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Install and set up the Salesforce OMS package\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-order-management-system/install-and-set-up-the-package\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md\"\ntags: [adyen, salesforce-oms, setup, capture, credentials]\n---\n\n## Overview\n\nAdyen's Salesforce OMS package setup guide (page metadata last modified 2023-12-12; captured 2026-09-15) addresses an OMS Org connected to a Salesforce Commerce Cloud storefront using the Adyen payments cartridge. It covers prerequisites, app installation, v3.3.0+ guided configuration, capture-mode safeguards and test-to-live credential changes. [[adyen-salesforce-order-management-system]] is the OMS concept; [[adyen-salesforce-commerce-cloud]] covers the separate storefront family. This guide is instructions, not proof that a gateway, webhook, capture or live payment was configured or completed.\n\n## Key takeaways\n\n- The prerequisite table calls for an SFCC storefront with the Adyen payments cartridge, Standard webhooks, a Salesforce OMS Org connected to SFCC, manual capture enabled in Adyen Customer Area, and the dependent **API Library Apex Adyen** package. Installation in the OMS Org also calls for multiple currencies and the **Adyen Payments for Salesforce Order Management** app (raw lines 19\u201338, 50\u201354). The page gives no gateway user-role matrix; the linked manual-setup guide owns its detailed credential/permission configuration.\n- The page says guided configuration is included **from v3.3.0 onward** and reached through OMS **App Launcher \u2192 Adyen Config Page**. Manual setup remains an optional linked route. It then directs capture settings and go-live steps; none establishes which package version a merchant installed or that on-screen configuration succeeded (raw lines 40\u201364).\n- Capture behavior depends on Adyen Customer Area settings: manual capture permits OMS capture after authorization; automatic capture occurs after authorization without a separate manual OMS capture. The later automatic-capture section explains the **Auto Capture Enabled** adapter setting to avoid duplicate requests, and a **Manual Capture Payment Methods** list for methods requiring manual capture even with automatic capture enabled (raw lines 68\u2013108). This later branch sits alongside the earlier blanket manual-capture prerequisite; check the merchant's actual intended mode and relevant version rather than silently treating both as simultaneously required.\n- Some methods capture immediately regardless of configured mode. The guide instructs listing those enabled methods in SFCC Business Manager's **Payment methods without separate capture**, so OMS does not send duplicate capture requests. The raw list is an example of variants, not a universal set for every merchant (raw lines 110\u2013119).\n- For live transition, the page directs applying for a live account and following the SFCC go-live checklist with a stated Business Manager exception. It then says to update the OMS HMAC key, live merchant-account name if different, Adyen Checkout named-credential URL using the live prefix, and its linked external-credential API key. These are environment-specific security/credential changes, not evidence of production readiness or successful processing (raw lines 121\u2013145). Authorization-reversal and OOBO links are next-step navigation (raw lines 147\u2013155).\n\n## Detail locators\n\n- SFCC cartridge/OMS prerequisites, webhooks, dependent package and installation: raw lines 19\u201354.\n- Guided v3.3.0+ versus optional manual setup: raw lines 56\u201364.\n- Manual/automatic capture and duplicate-capture safeguards: raw lines 68\u2013119.\n- Live HMAC, account, named URL and external API-key transition: raw lines 121\u2013145.\n- OOBO and reversal navigation: raw lines 147\u2013155.\n\n## Related\n\n- [[adyen-salesforce-order-management-system]] \u2014 OMS concept and source route.\n- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-manual-setup]] \u2014 separate manual gateway/credential setup authority.\n- [[adyen-salesforce-commerce-cloud]] \u2014 connected SFCC storefront concept.\n- [[adyen]] \u2014 provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15|Salesforce OMS package setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to integrate with our OMS package to manage orders for your Salesforce Commerce Cloud store that uses the Adyen payments cartridge.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md line 19"
+    },
+    {
+      "text": "[Enable manual capture](/online-payments/capture/#enable-manual-capture) in your Customer Area.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md line 37"
+    },
+    {
+      "text": "From v3.3.0 onwards, the Salesforce OMS package includes a guided configuration.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md line 60"
+    },
+    {
+      "text": "Regardless of your setting, payments for some payment methods are captured immediately after authorization. You must [specify these payment methods](#payment-methods-without-capture) in your Salesforce Business Manager to prevent duplicate capture requests.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md line 75"
+    },
+    {
+      "text": "Update your HMAC key.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md line 133"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-oms-route",
+        "target_path": "wiki/concepts/adyen-salesforce-order-management-system.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package]] \u2014 2023-modified, 2026-09-15-captured OMS cartridge/Org prerequisites, v3.3.0+ guided setup, capture-mode duplicate-request safeguards and live HMAC/URL/API-key transition; setup is not runtime proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The prerequisites table says enable manual capture, while a later section gives automatic-capture configuration; preserve both and verify merchant mode instead of collapsing the branches.",
+          "Detailed gateway roles belong to the separate manual-setup guide; do not import them or assert actual configured permissions here."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/2026-09-15.md",
+  "raw_sha256": "1ef3913e53f3c4803c74d807f61eeab66819259e854799389b353cbd2b9cd0e2",
+  "status": "candidate_ready"
+}

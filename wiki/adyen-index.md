@@ -699,6 +699,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-plugins-adobe-commerce-upgrade]] — Adyen Adobe Commerce plugin upgrade steps (webpage, 2026-10-16)
 - [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-upgrade]] — Adyen Composable Storefront package upgrade (webpage, 2026-10-16)
 
+### Website documentation — Campaign 14
+
+- [[source-adyen-docs-plugins-mirakl]] — Adyen Mirakl connector overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system]] — Adyen Salesforce Order Management System package (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2]] — Cegid Retail Y2 | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-partners]] — Adyen partners documentation overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-set-up-the-plugin]] — Adyen Cegid Retail Y2 CPOS plugin setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-manual-setup]] — Adyen Salesforce OMS manual package setup (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-uplift-enablement]] — Adyen partner Uplift enablement (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-microsoft-dynamics]] — Adyen Dynamics 365 Commerce payment connector (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth-integration]] — Partner OAuth integration | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-integration-checklist]] — Adyen partner integration checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-set-up-oobo]] — Adyen Salesforce OMS Order on Behalf Of setup (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-set-up-the-connector]] — Set up the Adyen Mirakl connector (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-tap-to-pay]] — Tap to Pay with Cegid Retail Y2 | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-upgrade]] — Adyen Salesforce OMS package upgrade (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-japan-credit-card-security-guidelines-compliance-guide]] — Adyen Japan Credit Card Security Guidelines 5.0 guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-troubleshooting]] — Cegid Retail Y2 CPOS troubleshooting (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-refunds]] — Peak-season refunds and payouts | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-in-person-payments]] — Adyen peak-season in-person payment preparation (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-japan-scta-and-psa]] — Adyen Japan SCTA and PSA overview (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package]] — Install and set up the Salesforce OMS package (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-set-up-payment-flows]] — Adyen Mirakl connector payment-flow setup (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season]] — Adyen peak season readiness hub (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-major-sports-event]] — Adyen Major sports event readiness (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-application-information]] — Adyen partner API application information (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-india]] — Adyen domestic payments in India overview (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth-scopes]] — Adyen partner OAuth scopes (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-risk-and-disputes]] — Peak-season risk and disputes | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-authorization-reversal]] — Adyen Salesforce OMS authorization reversal (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-giftcards]] — Adyen Cegid Retail Y2 gift card payment setup (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-status-and-help]] — Adyen peak-season status updates and help (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-your-payment-terminals]] — Adyen POS terminal fleet Scheduled report (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-onboard-sellers]] — Onboard sellers with the Adyen Mirakl connector (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-online-payments]] — Peak-season online payments | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-test-and-go-live]] — Adyen Mirakl connector test and go-live guide (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-afp]] — Adyen for Platforms peak-season readiness (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-reconciliation-and-invoices]] — Reconciliation and invoices | Adyen Mirakl connector (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-cegid-retail-y2-pay-by-link]] — Adyen Pay by Link in Cegid Retail Y2 Mobile POS and Live Store (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-peak-season-giving]] — Adyen Giving peak-season guide (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-payouts]] — Adyen Mirakl seller payouts (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth]] — Adyen partner OAuth overview (webpage, 2026-10-16)
+- [[source-adyen-docs-payments]] — Adyen payments documentation entry (webpage, 2026-10-16)
+- [[source-adyen-docs-partners-oauth-installed-oauth-apps]] — Manage installed Adyen OAuth apps (webpage, 2026-10-16)
+- [[source-adyen-docs-industries]] — Industries and markets | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-financial-products]] — Adyen financial products (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-mirakl-troubleshooting]] — Troubleshooting the Adyen Mirakl Marketplace connector (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets-japan]] — Adyen compliant payments in Japan overview (webpage, 2026-10-16)
+- [[source-adyen-docs-reporting-platform-reports]] — Adyen platform reports hub (webpage, 2026-10-16)
+- [[source-adyen-docs-plugins-salesforce-order-management-system-order-status-lifecycle]] — Adyen Salesforce OMS order-status lifecycle (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-markets]] — Adyen Markets documentation directory (webpage, 2026-10-16)
+- [[source-adyen-docs-industries-feature-packs]] — Features per industry | Adyen Docs (webpage, 2026-10-16)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -731,6 +784,28 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-uplift]] — Adyen Uplift
+
+- [[adyen-salesforce-order-management-system]] — Adyen Salesforce Order Management System
+
+- [[adyen-peak-season-readiness]] — Adyen Peak Season Readiness
+
+- [[adyen-payments]] — Adyen Payments
+
+- [[adyen-partners]] — Adyen Partners
+
+- [[adyen-partner-oauth]] — Adyen Partner OAuth
+
+- [[adyen-mirakl]] — Adyen Mirakl
+
+- [[adyen-microsoft-dynamics]] — Adyen Microsoft Dynamics 365 Commerce
+
+- [[adyen-japan-scta-and-psa]] — Adyen Japan SCTA and PSA
+
+- [[adyen-financial-products]] — Adyen Financial Products
+
+- [[adyen-cegid-retail-y2]] — Adyen Cegid Retail Y2 Integration
 
 - [[adyen-shopify]] — Adyen Shopify
 

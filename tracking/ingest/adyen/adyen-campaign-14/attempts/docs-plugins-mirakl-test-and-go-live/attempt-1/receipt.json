@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-plugins-mirakl-test-and-go-live",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Mirakl connector test and go-live guide\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/mirakl/test-and-go-live\"\nraw_files:\n  - \"adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md\"\ntags: [adyen, mirakl, marketplace, testing, go-live]\n---\n\n## Overview\n\nThis 2026-09-15-captured guide gives a **Mirakl Marketplace connector** test checklist followed by separate live connector configuration and pilot-seller checks. It recommends test-environment integration testing first, then live testing with a small number of sellers because real payouts cannot be tested in Adyen's test environment. It describes checks to perform, not results for any actual merchant or seller. See [[adyen-mirakl]] and [[adyen]].\n\n## Key takeaways\n\n- **Test scope and seller identity:** The checklist covers Mirakl seller onboarding/synchronization to Adyen, Hosted Onboarding Page KYC including a failed-KYC seller, and connector operator emails. A synchronized seller or test KYC scenario does not establish a verified live seller, actual marketplace permission or payout eligibility.\n- **Payment and modification checks:** Test `/payments` for use cases with split data **excluding commissions**, and verify `applicationInfo` appears in Customer Area. Test full and partial captures; each partial capture should have a unique reference so amounts remain separately reconcilable rather than merged. Test partial/full refunds and chargebacks; the guide restricts refunds to a balance account in the original split payment/capture using the same unique split reference. These are requested test flows, not proof of authorization, capture, refund or dispute outcome.\n- **Billing-cycle check versus bank receipt:** The guide asks for seller invoice generation in Mirakl, invoice presence in Customer Area, and Mirakl marking it **Paid** after seller payout. A report or invoice label alone does not prove bank receipt; the guide explicitly directs a small **live** pilot to ensure payouts reach seller bank accounts because real payouts are unavailable in test.\n- **Live setup gate and side effects:** After satisfactory test results, an Adyen contact can configure the connector in the live environment. Before contacting them, check Mirakl Operator API key roles, live **KYC Status** and **Payment Confirmation** features, and a small starter seller list. By default, the connector manages seller payment blocking and unsuspends newly KYC-verified shops; the operator can ask Adyen to disable either behavior. Those defaults can affect seller operation, so confirm desired controls before live configuration. The page gives no migration cutoff, merchant-of-record allocation or grant of live approval.\n\n## Detail locators\n\n- Lines 15\u201323: test-first and limited live-pilot sequence.\n- `### KYC` and `### Payments`, lines 25\u201333: synchronization, pass/fail KYC, split data excluding commission and `applicationInfo`.\n- `### Captures` and `### Refunds`, lines 35\u201352: full/partial captures, unique references and refund balance-account/split-reference restriction.\n- `### Payouts` and `### Operational checks`, lines 54\u201362: invoice/payout label and operator email checks.\n- `## Go live`, lines 64\u201377: Adyen live setup, Operator API key roles, feature flags and default seller blocking/unsuspension.\n- `### Test in live environment`, lines 79\u201390: inability to test real payout in test, pilot sellers and repeated checks.\n\n## Related\n\n- [[adyen-mirakl]] \u2014 connector ownership and separate pay-in boundary.\n- [[source-adyen-docs-plugins-mirakl-set-up-the-connector]] \u2014 Operator key roles, feature flags and connector settings.\n- [[source-adyen-docs-plugins-mirakl-set-up-payment-flows]] \u2014 operator-implemented payment/split behavior.\n- [[source-adyen-docs-partners-application-information]] \u2014 `applicationInfo` partner-request metadata.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15|Mirakl connector test and go-live, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To make sure there are no issues with your integration before going live, we recommend to first test your Adyen integration with Mirakl in your test environment. Once you have done this, use your live environment to test with a small number of pilot sellers.",
+      "location": "raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md:19"
+    },
+    {
+      "text": "* Make [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) requests for your different use cases, with split payment data, [excluding commissions](/plugins/mirakl/payouts).",
+      "location": "raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md:32"
+    },
+    {
+      "text": "You can only refund from a balance account that was part of the original split payment or capture, using the same unique reference you specified for the original split.",
+      "location": "raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md:52"
+    },
+    {
+      "text": "After you are satisfied with the testing results in your test environment, your Adyen contact can configure the connector in your live environment.",
+      "location": "raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md:66"
+    },
+    {
+      "text": "You cannot test real payouts in your test environment. Instead, we recommend testing with a small number of pilot sellers in your live environment, to ensure that payouts reach their bank accounts.",
+      "location": "raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md:81"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-mirakl-test-and-go-live-source",
+        "target_path": "wiki/concepts/adyen-mirakl.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-mirakl-test-and-go-live]] \u2014 2026-09-15 Mirakl connector test-to-live checklist for seller sync/KYC, split-pay-in and modification tests, invoice/payout checks, Adyen-configured live settings and pilot sellers; real bank payouts require live verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Test environment cannot test real payouts; Mirakl invoice Paid label is not independent bank-receipt proof.",
+          "The connector manages seller-payment blocking and unsuspends new KYC-verified shops by default unless the operator asks Adyen to disable either feature; confirm desired seller controls.",
+          "Checklist does not grant live approval, define MOR or establish successful payment/settlement outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/mirakl/test-and-go-live/2026-09-15.md",
+  "raw_sha256": "e5f71b7cf079790b298ff34e66509660982419ae40c2ee05bcace0f38fefbee2",
+  "status": "candidate_ready"
+}

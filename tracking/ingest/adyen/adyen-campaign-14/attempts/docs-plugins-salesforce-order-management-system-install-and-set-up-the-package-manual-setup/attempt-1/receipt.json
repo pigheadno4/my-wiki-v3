@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-manual-setup",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Salesforce OMS manual package setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md\"\ntags: [adyen, salesforce-oms, package-setup, webhooks, capture]\n---\n\n## Overview\n\nThis Adyen page explains **manual** configuration of the Salesforce Order Management System (OMS) package for orders from a Salesforce Commerce Cloud storefront using Adyen's payments cartridge. From **Salesforce OMS v3.3.0**, guided configuration is the stated default; this page is the manual alternative. It is separate from the SFCC storefront integration and does not prove a merchant's OMS installation, payment result, capture, refund or bank receipt. See [[adyen]] and the proposed [[adyen-salesforce-order-management-system]] concept.\n\n## Key takeaways\n\n- Before manual setup, the page calls for an OMS Org connected to the SFCC storefront, Standard webhooks, Customer Area manual capture and the dependent **API Library Apex Adyen** package. It then installs the Adyen Payments for SOM app and enables multiple currencies. The page later describes **automatic-capture configuration** as a separate branch; do not infer every deployment remains on manual capture.\n- The main Salesforce **Payment Gateway** record uses Adyen OMS Provider, merchant credential `AdyenCheckout` and an External Reference that must match the SFCC B2C Payment Processor ID. A second `AdyenPos` gateway is only for in-person endless-aisle payments. Fields on Sales Channel, Payment and Payment Authorization objects and optional sales-channel-to-merchant-account mapping are setup choices, not merchant-of-record or legal-entity assignments.\n- The webhook path exposes Salesforce site endpoints for default status updates and Customer Area payment modifications. It enables **Guest Access to the Payments API**, site custom-metadata/Apex/principal access and a Named Credential site URL. Customer Area Standard webhooks require JSON, selected TLS, an HMAC key and capture/refund event subscriptions; CANCELLATION and AUTHORISATION are conditional on Authorization Reversal and Order on Behalf Of. A configuration-test HTTP 200 checks endpoint response, not downstream payment or OMS state.\n- **A REFUND or CAPTURE webhook with `success: true` can still precede a later failure**, while a processed Salesforce payment status cannot be changed. The page directs monitoring `PaymentGatewayLog.GatewayResultCode` for `CAPTURE_FAILED` or `REFUND_FAILED`; keep this exception distinct from a final success conclusion.\n- Named Credentials are installed by the app, but a **Principal Credential** with API key and permission-set access must be configured for the Automated Process user, or the replacement automation user if process settings differ. Salesforce legacy Named Credentials are deprecated for this package version. The Adyen Adapter metadata carries a **case-sensitive merchant account**, HMAC key and webhook ID; optional sales channels can override its default merchant account subject to API permissions and their own metadata.\n- Capture behavior depends on the Customer Area setting. With automatic capture, configure OMS to avoid duplicate requests, while listed method variants can still require manual capture; payment methods captured immediately after authorization must be listed in SFCC Business Manager as **without separate capture**. The supplied variant list is an example, not a universal merchant setting. For live operation the page calls for a live account, refreshed HMAC/merchant account if applicable, live Checkout Named Credential URL and live API key. These are configuration steps, not evidence of successful live execution.\n\n## Detail locators\n\n- Scope, v3.3.0 guided default and prerequisites: pinned raw lines 15\u201350.\n- App install and conditional Payment Gateway records: pinned raw lines 51\u2013100.\n- Site endpoint, guest permissions, webhook JSON/TLS/HMAC/events and later-failure warning: pinned raw lines 102\u2013214.\n- Layout, Principal Credential, permission set, automated user and Adyen Adapter metadata: pinned raw lines 216\u2013338.\n- Alternative-method object access and capture-setting branches: pinned raw lines 340\u2013405.\n- Live-account, HMAC, URL and API-key transition: pinned raw lines 407\u2013431.\n\n## Related\n\n- [[adyen-salesforce-order-management-system]] \u2014 proposed OMS concept route owned by the campaign overview worker.\n- [[adyen-salesforce-commerce-cloud]] \u2014 distinct storefront integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15|Adyen Salesforce OMS manual setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For Salesforce OMS v3.3.0 and later, the default setup is through the [guided configuration](/plugins/salesforce-order-management-system/install-and-set-up-the-package?plugin=Salesforce%20OMS\\&integration=package#guided-configuration).",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md:21"
+    },
+    {
+      "text": "This value must match your SFCC B2C Payment Processor ID.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md:78"
+    },
+    {
+      "text": "Rarely, a refund or capture can fail after you have received a **REFUND** or **CAPTURE** webhook with `success:` **true**.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md:202"
+    },
+    {
+      "text": "Assign the permission set you have created to the **Automated Process** user.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md:277"
+    },
+    {
+      "text": "Regardless of your setting, payments for some payment methods are captured immediately after authorization.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md:361"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-soms-manual-setup-route",
+        "target_path": "wiki/concepts/adyen-salesforce-order-management-system.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-manual-setup]] \u2014 2025-modified, 2026-09-15-captured manual Salesforce OMS setup guide for gateway/credential/webhook permissions, capture-mode safeguards and separate live-credential transition; v3.3.0+ defaults to guided setup and success webhooks can precede later failure.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The OMS overview worker owns creation of adyen-salesforce-order-management-system; apply this reciprocal route only after that concept exists.",
+          "The page states manual capture as an initial setup step and also documents an automatic-capture branch; preserve both without assuming which merchant configuration is active."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-order-management-system/install-and-set-up-the-package/manual-setup/2026-09-15.md",
+  "raw_sha256": "229ca7e1d1ae9f411b41afd06ec833b1ed8a9d6b125e3caf7438901640c5c402",
+  "status": "candidate_ready"
+}

@@ -111,6 +111,9 @@ Adyen's regulation-compliance overview is region-, actor-, scheme-, period-, tra
 
 ## Sources
 
+- [[source-adyen-docs-industries-markets-japan-credit-card-security-guidelines-compliance-guide]] — 2023-modified, 2026-09-15-captured Adyen interpretation of Japan Credit Card Security Guidelines 5.0, with April 2025 Japan-acquiring credit-card scope, recurring/out-of-scope qualifications and versioned 3DS2 routing controls; dated guidance, not legal or merchant-compliance proof.
+
+
 - [[source-adyen-docs-online-payments-auspaynet-compliance-guide]] — Adyen's dated Australian CNP framework guide to merchant fraud thresholds, conditional SCA exemptions, and 3D Secure control choices (webpage snapshot, 2026-09-15).
 
 

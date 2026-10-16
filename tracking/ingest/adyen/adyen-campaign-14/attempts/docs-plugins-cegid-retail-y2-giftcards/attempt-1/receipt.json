@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-cegid-retail-y2-giftcards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cegid Retail Y2 gift card payment setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/cegid-retail-y2/giftcards\"\nraw_files:\n  - \"adyen/docs/plugins/cegid-retail-y2/giftcards/2026-09-15.md\"\ntags: [adyen, cegid-retail-y2, pos, gift-cards, stored-value]\n---\n\n## Overview\n\nThis Cegid Retail Y2 CPOS plugin guide, marked last modified 2023-04-17 and captured 2026-09-15, describes how to configure gift-card operations, keypad buttons, and a gift-card payment method in Cegid. It is a product-specific configuration procedure, not evidence of a completed activation, an authorized redemption, or merchant/provider availability. See [[adyen-cegid-retail-y2]] for the plugin and [[adyen-pos-gift-cards]] for the separately documented Terminal API gift-card payment flow.\n\n## Key takeaways\n\n- The guide lists activation (optionally loading an initial balance), balance inquiry, cash-out to a credit card, gift-card credit note via referenced or unreferenced refund, redemption for payment, and reloading an activated card. Activation or reloading value is distinct from redeeming it for a payment; this page does not provide a payment authorization result.\n- For each desired gift-card operation other than Redemption, configure a Cegid Register Operation with the documented financial-item/credit-request fields and **Send amount to EPT** setting, then assign a keypad button to each operation. The operation table leaves some fields blank; the pinned table governs each operation\u2019s exact configuration.\n- To redeem a gift card, create a Cegid payment method using the general plugin setup flow, set its Front-Office **Type** to **Gift card**, add it to the plugin\u2019s payment-method mapping table, then add a gift-card line in the EPT **Payment Configuration** field. The `GCD` code in the guide is an example tied to the code chosen for the Cegid payment method; `GC` denotes the gift-card operation.\n- The example EPT line is `GCD:GC,MSE,StoredValueProvider{givex}`. The guide defines `MSE` as magnetic stripe, `SCA` as barcode scanning, and `MKE` as terminal manual key entry; if no entry mode is set, the cashier is prompted to choose one for each gift-card transaction. It lists `svs`, `givex`, and `valuelink` as provider values. These are configuration values, not a guarantee that each provider or entry mode is enabled for a given merchant.\n- The page does not specify partial-tender authorization, balance-shortfall handling, gift-card refund eligibility limits, or a CPOS plugin package version. Do not import the generic POS gift-card flow or the separate Cegid setup page\u2019s refund exceptions into this guide without their own evidence.\n\n## Detail locators\n\n- Page identity, snapshot age, supported operation descriptions and three setup stages: pinned raw lines 5\u201333.\n- Register-operation field table and keypad-button setup: pinned raw lines 34\u201361.\n- Gift-card payment method, mapping, EPT line, entry modes and provider values: pinned raw lines 63\u201397.\n- Optional Tap to Pay and Pay by Link navigation: pinned raw lines 99\u2013107.\n\n## Related\n\n- [[adyen]]\n- [[adyen-cegid-retail-y2]]\n- [[adyen-pos-gift-cards]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/cegid-retail-y2/giftcards/2026-09-15|Cegid Retail Y2 gift-card setup snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "**Activation**: when issuing a new gift card to a shopper, make an activation request so that the shopper can use the card for transactions. While activating the gift card, you can also load an initial balance.",
+      "location": "raw line 21, Set up gift card payments"
+    },
+    {
+      "text": "**Redemption**: redeem the gift card balance to use the available funds for a payment.",
+      "location": "raw line 25, Set up gift card payments"
+    },
+    {
+      "text": "You do not have to create a register operation for **Redemption**.",
+      "location": "raw line 36, Step 1"
+    },
+    {
+      "text": "To redeem a gift card and accept it as a payment method you need to create a new payment method for gift cards, and add additional payment method configuration.",
+      "location": "raw line 65, Step 3"
+    },
+    {
+      "text": "**{YOUR\\_GIFT\\_CARD\\_PROVIDER}**: specify the gift card provider you use. Possible values: **svs**, **givex**, or **valuelink**.",
+      "location": "raw line 94, Step 3"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cegid-retail-y2-giftcards-reciprocal",
+        "target_path": "wiki/concepts/adyen-cegid-retail-y2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-cegid-retail-y2-giftcards]] \u2014 2023-modified, 2026-09-15-captured CPOS guide to Cegid gift-card operations, keypad buttons, payment-method mapping and EPT provider/entry-mode configuration.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This Cegid-specific setup page does not establish partial-tender behavior, actual activation or payment outcomes, provider enablement, or a CPOS package version."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/cegid-retail-y2/giftcards/2026-09-15.md",
+  "raw_sha256": "b5f51dcfcb4b28ec1b3cb98198897428713ee9d28a0f1f17bf406ffc0488d80a",
+  "status": "candidate_ready"
+}

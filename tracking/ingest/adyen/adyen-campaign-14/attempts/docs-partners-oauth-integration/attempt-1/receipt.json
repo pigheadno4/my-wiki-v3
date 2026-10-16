@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-partners-oauth-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Partner OAuth integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/partners/oauth/integration\"\nraw_files:\n  - \"adyen/docs/partners/oauth/integration/2026-09-15.md\"\ntags: [adyen, partners, oauth, delegated-access, pkce, tokens]\n---\n\n## Overview\n\nThis 2026-09-15 capture of a 2023-modified [[adyen]] guide describes a **partner OAuth client** requesting delegated access to selected customer account resources. After the customer authenticates and authorizes the request, the partner receives tokens for API calls on that customer's behalf, bounded by returned scopes and merchant accounts. This is distinct from an ordinary merchant API credential and does not itself establish seller identity, merchant of record, a payment result or live partner eligibility. [[adyen-partner-oauth]] [[adyen-partners]]\n\n## Key takeaways\n\n- Registration requires an account with the **OAuth apps manage** user role. The page says test merchant accounts created since November 2023 have it by default, directs older test accounts to Support, and limits the live role to partner accounts. Test integration first is **advice**, especially for online-payments scope. In Partner Portal, register an app with name/URL/description, Redirect URL and requested scopes, then securely retain the client secret because it cannot be retrieved later. Scopes cannot be extended after app creation; customers can authorize only the entire requested scope set. See raw lines 29\u201354.\n- The partner sends the customer to an Adyen authorization page in the chosen test/live environment. The grant URL uses client ID, `response_type=code`, exact registered redirect URI, a random `state` for CSRF protection, and scopes matching the registered app. The guide requires PKCE `S256`: each request uses a unique verifier (43\u2013128 allowed characters) and its base64url SHA-256 challenge. On success the redirect carries short-lived code and the returned state; on failure it carries an OAuth error. The parameter table at line 70 misleadingly calls `code_challenge` a \u201cunique code verifier\u201d; the dedicated PKCE instructions define the verifier and derived challenge separately. See raw lines 56\u2013144.\n- Exchange the code at the environment-specific OAuth `/v1/token` endpoint using Basic authentication built from client ID and secret, `authorization_code` grant, associated `code_verifier` and matching redirect URI. The response supplies bearer access token, one-time refresh token, scope and merchant-account `accounts`; the default access-token expiry is 86,400 seconds (24 hours). Use the access token as a Bearer header for resource API calls. These are documented request/response contracts, not evidence that a real customer granted access. See raw lines 186\u2013247.\n- On refresh, submit the refresh token with the `refresh_token` grant. The previous access token expires immediately; the previous refresh token expires shortly, with a brief retry grace for network errors. Refreshed access keeps the original scope and merchant-account set. The page does not document a revocation endpoint or imply that refresh extends the customer's consent scope. See raw lines 249\u2013297.\n- Live setup is separate: register a client in the **live Partner Portal**, replace the client ID, secret and client URI, and change all test endpoints to live. No live OAuth request or account change is evidenced by this snapshot. See raw lines 299\u2013305.\n\n## Detail locators\n\n- **Role, environment, client registration, secret and immutable scopes:** raw lines 29\u201354.\n- **Consent grant URL, PKCE/state, redirect success/failure:** raw lines 56\u2013144.\n- **Code exchange, token fields, account scope and Bearer use:** raw lines 186\u2013247.\n- **Refresh lifecycle and unchanged authorization scope:** raw lines 249\u2013297.\n- **Live client and endpoint cutover:** raw lines 299\u2013305.\n\n## Related\n\n- [[adyen]]\n- [[adyen-partners]]\n- [[adyen-partner-oauth]]\n- [[adyen-api-access]] \u2014 separate ordinary API credential model\n\n## Raw Sources\n\n- [[raw/adyen/docs/partners/oauth/integration/2026-09-15|Adyen partner OAuth integration \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With an OAuth integration, you can request access to a selection of your customer's account resources. When your customer authorizes your access request, you get a token that you can use to authorize API requests on their behalf.",
+      "location": "raw/adyen/docs/partners/oauth/integration/2026-09-15.md:19"
+    },
+    {
+      "text": "On our live environment, only partner accounts have the **OAuth apps manage** role.",
+      "location": "raw/adyen/docs/partners/oauth/integration/2026-09-15.md:36"
+    },
+    {
+      "text": "At the moment it is not possible to extend the scopes after the OAuth app has been created. Your customer can also not select or deselect requested scopes. The authorization can only be granted with all requested scopes.",
+      "location": "raw/adyen/docs/partners/oauth/integration/2026-09-15.md:54"
+    },
+    {
+      "text": "The merchant accounts that the `access_token` provides access to.",
+      "location": "raw/adyen/docs/partners/oauth/integration/2026-09-15.md:231"
+    },
+    {
+      "text": "Your previous `access_token` immediately expires. This ensures there is no more than one valid `access_token` per authorization at a given point in time.",
+      "location": "raw/adyen/docs/partners/oauth/integration/2026-09-15.md:278"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c14-adyen-partner-oauth-new-concept",
+        "target_path": "wiki/concepts/adyen-partner-oauth.md",
+        "update_kind": "durable_fact",
+        "anchor": "new_file",
+        "proposed_markdown": "---\ntitle: \"Adyen Partner OAuth\"\ntype: concept\ncategory: technology\ntags: [adyen, partners, oauth, delegated-access, merchant-consent]\n---\n\n## Definition\n\nAdyen partner OAuth lets a partner-registered application request customer authorization for selected account resources and then use a bearer access token for API calls on that customer's behalf. The token's returned `scope` and `accounts` delimit access; this delegation is distinct from an ordinary merchant API credential. [[source-adyen-docs-partners-oauth-integration]]\n\n## Authorization boundary\n\nThe captured integration guide requires an OAuth-app management role, registered redirect URI and all-or-nothing scopes, plus an authorization-code flow with PKCE `S256` and CSRF `state`. Its live role is described as partner-account-only. Access tokens expire after a default 24 hours; one-time refresh tokens rotate access, immediately invalidating the previous access token while preserving scope and merchant accounts. The page documents no revocation endpoint. Use the source for environment-specific URLs, secret handling, retry grace and the guide's `code_challenge` terminology conflict. A documented flow is not proof of customer consent, granted scopes, live authorization or payment execution.\n\n## Sources\n\n- [[source-adyen-docs-partners-oauth-integration]] \u2014 2026-09-15 snapshot of 2023-modified Adyen partner OAuth registration, consent, PKCE, token exchange, refresh and live cutover.\n\n## Related\n\n- [[adyen]]\n- [[adyen-partners]]\n- [[adyen-api-access]]\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is delegated partner OAuth, separate from ordinary merchant API credentials and webhook-endpoint OAuth.",
+          "The grant parameter table calls code_challenge a verifier, while the PKCE steps define it as a SHA-256-derived challenge; preserve the conflict and use the dedicated steps for implementation.",
+          "The source documents no revocation API and proves no actual consent, granted account scope, live account eligibility or payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/partners/oauth/integration/2026-09-15.md",
+  "raw_sha256": "df73dfad440f63c6bd25a50042f49e641e4961a232493f9612353345e79cb06a",
+  "status": "candidate_ready"
+}

@@ -15,6 +15,9 @@ Refund processing is asynchronous. A `REFUND` webhook reports validation success
 
 ## Sources
 
+- [[source-adyen-docs-industries-peak-season-refunds]] — 2026-09-15 seasonal guide to reserve advice, asynchronous ecommerce/POS and always-referenced omnichannel refunds, offline constraints, and direct-merchant versus platform payout timing; request or schedule is not bank-credit proof.
+
+
 - [[source-adyen-docs-online-payments-classic-integrations-modify-payments-cancel-or-refund]] — inactive Classic `/cancelOrRefund` guide for uncertain capture state, split and multiple-partial-capture exclusions, original payment reference, and webhook outcome boundary (webpage snapshot, 2026-09-15).
 
 

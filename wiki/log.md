@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-16] ingest | Adyen website C14
+
+- Fifty independently approved connector/partner/industry/reporting documentation sources; first full-review approvals 40/50 and 10 targeted correction reviews. 19 concepts touched (11 new); source_count 714 = 700 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-14/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-16] ingest | PayPal Android `3.1.0`
 
 - Serial delta after completed `3.0.0`: public TokenType fix, initialized card-vault demo client, BN-code session forwarding, demo user-action cleanup and Magnes import relocation. Versioned history/evidence limits preserved. Details: [[paypal-log]], [[source-github-paypal-android]], [[changelog-github-paypal-android]]. No commit/push.

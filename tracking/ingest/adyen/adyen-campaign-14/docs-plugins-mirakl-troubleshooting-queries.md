@@ -1,0 +1,9 @@
+# Fixed retrieval queries — Mirakl connector troubleshooting
+
+## Q1. What is this page for, what scope does it cover, and what should a reader not infer?
+
+**Expected answer:** It is a short Adyen Mirakl Marketplace connector troubleshooting and Support-escalation page, last modified in 2023 and captured in 2026. It directs the reader to setup checks, release-note checks and a Support request with environment, reproduction, error evidence and logs. It does not diagnose specific credential/API errors, prescribe seller KYC or invoice repair, prove a configuration fix, or establish payment or payout success. **Evidence:** pinned raw `raw/adyen/docs/plugins/mirakl/troubleshooting/2026-09-15.md:11,15-38`; canonical retrieval route `[[source-adyen-docs-plugins-mirakl-troubleshooting]]` via `[[adyen-mirakl]]` and `[[adyen-index]]`.
+
+## Q2. What central capability, prerequisites, and warnings does it give?
+
+**Expected answer:** The sequence is check connector setup, inspect release notes for a known bundle issue, then contact Support if the issue persists. The release-note step itself says “Coming soon”; it names no concrete fixed version. The Support request should mention Mirakl and supply test/live environment, reproduction and tried steps, screenshots/error details and connector logs, which the page says are retained up to two weeks. Support can help with operator emails, payout/full/partial account-sync schedules, and restarting failed payouts **after they reach the retry limit**. This is Support-assisted; there is no safe self-service retry procedure or proof that a restarted payout completed or reached a seller bank. **Evidence:** pinned raw `raw/adyen/docs/plugins/mirakl/troubleshooting/2026-09-15.md:21-48`; canonical retrieval route `[[source-adyen-docs-plugins-mirakl-troubleshooting]]` via `[[adyen-mirakl]]` and `[[adyen-index]]`.

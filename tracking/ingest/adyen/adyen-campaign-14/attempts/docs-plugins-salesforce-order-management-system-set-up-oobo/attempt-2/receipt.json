@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-plugins-salesforce-order-management-system-set-up-oobo",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Salesforce OMS Order on Behalf Of setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-order-management-system/set-up-oobo\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md\"\ntags: [adyen, salesforce-oms, oobo, pay-by-link, order-entry]\n---\n\n## Overview\n\nThis 2024-10-09-last-modified, 2026-09-15-captured guide describes **Order on Behalf Of (OOBO)** in the Adyen Salesforce Order Management System package: a customer-service employee places a Salesforce order using a card entry route or creates an Adyen Pay by Link for shopper payment. It covers required SFCC/OMS connections, roles and configuration, then a link-management and diagnostic route. A Salesforce account/order, generated link, Adyen payment and capture are distinct states. See [[adyen-salesforce-order-management-system]] and [[adyen]].\n\n## Key takeaways\n\n- **Platform and role prerequisites:** The page requires an Adyen SFCC cartridge for SFRA or SiteGenesis, Adyen OMS package, a functioning OMS Org connected to SFCC, Standard webhooks and a Web Service user with the API PCI Payments role. Pay by Link additionally calls for Merchant admin or Pay by Link Settings in Customer Area, employee External Credential assignment and the page's separate Salesforce permission/setup steps. These are role and connection requirements, not evidence they are granted in a particular Org.\n- **Two routes, with a version gate:** The card path follows Salesforce OOBO and External Payments Package setup; the guide lists cartridge-supported credit cards. OOBO with Pay by Link is described for OMS package **v3.2.0+**, with iDEAL, Apple Pay, PayPal and supported cards listed for the snapshot. An existing v3.1.0-or-earlier integration moving to v3.2.0 for Pay by Link must update webhook configuration to receive payment-status events. A card path's phrase \u201cdo not require additional verification\u201d does not establish a universal authentication exemption or card acceptance.\n- **Pay by Link order transition:** The employee needs a Salesforce shopper account with contact email and matching store/account currency, selects store/product and delivery details, then **Submit Order** creates an order and generates a payment link. The merchant must build its own sharing logic. This order/link generation is not shopper completion, authorization, capture, settlement or bank receipt. The page does not define a capture policy for these OOBO paths.\n- **Identity and configuration:** The guide provisions the Cart and Checkout Data connection, matches WebStore identity and locale to SFCC, identifies the Adyen Payment Gateway ID and creates a `StoreIntegratedService` joining those IDs. Pay by Link adds custom metadata for expiry duration (default 24 hours), return URL and theme, plus Order Summary page layout. `Expire` invalidates **all** links on the order; `Regenerate` invalidates all existing links and creates a new one, so these actions change shopper-accessible links.\n- **Security and troubleshooting:** The guide's 403 diagnostic points to the API PCI Payments role; a disabled-user message points to Salesforce Order Management Operations Manager permission. These are conditional remedies, not proof of the only possible cause. Preserve credential access and verify actual Salesforce/Adyen permissions and webhook configuration for the installed version.\n\n## Detail locators\n\n- Lines 15\u201321: OOBO identity and card versus hosted Pay by Link choices.\n- `## Requirements`, lines 23\u201335: SFCC/OMS, API/Customer Area roles, Standard webhooks, v3.2.0+ link gate and connected Org.\n- Lines 37\u201357: listed payment methods and card OOBO setup navigation.\n- Lines 59\u201398: Pay by Link flow, order/link creation, own sharing logic, setup and v3.2.0 webhook migration.\n- Lines 100\u2013146: Cart and Checkout connection, WebStore/Payment Gateway identification, `StoreIntegratedService`, employee External Credential.\n- Lines 148\u2013202: link metadata, default expiry, Order Summary layout and expire/regenerate effects.\n- Lines 204\u2013234: conditional locale, permission, tenant, delivery, gateway and API-role troubleshooting.\n\n## Related\n\n- [[adyen-salesforce-order-management-system]] \u2014 OMS package concept and OOBO route.\n- [[adyen-salesforce-commerce-cloud]] \u2014 separate storefront cartridge prerequisite.\n- [[source-adyen-docs-plugins-salesforce-order-management-system]] \u2014 OMS package overview.\n- [[source-adyen-docs-plugins-salesforce-order-management-system-install-and-set-up-the-package-manual-setup]] \u2014 manual OMS credential and webhook setup route.\n- [[source-adyen-docs-unified-commerce-pay-by-link]] \u2014 hosted link concept and payment lifecycle boundary.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15|Salesforce OMS OOBO setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With our OMS package, you can place OOBO orders with card payment methods, or use [Pay by Link](/unified-commerce/pay-by-link) to accept payments using an Adyen-hosted payment page, and offer the option to pay with more payment methods.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md:21"
+    },
+    {
+      "text": "OOBO with Pay by Link is only available on v3.2.0 and later versions of our OMS package, and supports [limited payment methods](#supported-payment-methods).",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md:33"
+    },
+    {
+      "text": "5. To create the order, your store employee selects **Submit Order**, and a payment link is generated. You must build your own logic to share this link with your shoppers.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md:74"
+    },
+    {
+      "text": "If you had an integration with the Adyen OMS package v3.1.0 or earlier, and are updating to v3.2.0 to use the Pay by Link feature, make sure to update your [webhook configuration for v3.2.0]",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md:98"
+    },
+    {
+      "text": "* **Regenerate**: all payment links associated with the order will be expired, and a new payment link will be generated.",
+      "location": "raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md:202"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-salesforce-order-management-system-set-up-oobo-source",
+        "target_path": "wiki/concepts/adyen-salesforce-order-management-system.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-order-management-system-set-up-oobo]] \u2014 2024-modified, 2026-09-15-captured OOBO card/Pay by Link setup guide for Salesforce OMS, with v3.2.0+ link gate, SFCC/OMS roles and connections, order/link creation, webhook migration and link-expiry controls; link generation is not payment or capture proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The existing OMS concept is present but lacks a visible provider-index link; coordinator should add the canonical concept route.",
+          "OOBO Pay by Link order and link generation do not establish shopper payment, authorization, capture or settlement; this page gives no capture policy.",
+          "Link Expire and Regenerate actions invalidate all previously associated links for the order."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-order-management-system/set-up-oobo/2026-09-15.md",
+  "raw_sha256": "9823c4ef5eeaafaabd31d3314418080e3be88faa91387e74889d8bd74801efdf",
+  "status": "candidate_ready"
+}

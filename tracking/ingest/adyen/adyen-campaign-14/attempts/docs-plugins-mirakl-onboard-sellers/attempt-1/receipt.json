@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-mirakl-onboard-sellers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Onboard sellers with the Adyen Mirakl connector\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/mirakl/onboard-sellers\"\nraw_files:\n  - \"adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md\"\ntags: [adyen, mirakl, seller-onboarding, kyc]\n---\n\n## Overview\n\nAdyen's Mirakl seller-onboarding page (last modified and captured 2026-09-15) describes how the connector submits seller details, produces a Hosted Onboarding Page (HOP) link, and synchronizes KYC status with Mirakl. It covers sellers offering products, services or both. This workflow description does not prove a particular seller's identity was verified, payout eligibility granted, funds received, or who is merchant of record. [[adyen-mirakl]] holds the connector and separate pay-in boundary.\n\n## Key takeaways\n\n- Each seller added to Mirakl undergoes KYC onboarding. If a seller has multiple shops for payments in different currencies, the page says Adyen treats each shop as a separate legal entity and each needs separate onboarding; do not merge their identities or infer shared eligibility (raw lines 19\u201321).\n- Seller email and company legal-business name are supplied to create the Adyen legal entity, following the seller's country/region data format. Address components apply **when an address is provided**; State/Province is conditional on US or Canada. Bank currency, owner, country and IBAN apply **when a bank account is provided**, not as unconditional fields in this page (raw lines 25\u201345).\n- The connector submits the seller information in a `/legalEntities` request. At the next sync it creates an HOP link visible under the Mirakl shop's **Additional Information \u2192 Hop Url** field. The seller answers connector-page security questions before redirection to Adyen HOP, where the account holder and any additional shareholders undergo KYC checks (raw lines 47\u201360). A created link or request is not completed verification.\n- After checks, the connector synchronizes KYC status to Mirakl. The page describes passed-check and failed-check email paths, and lists in-process statuses **Awaiting KYC data**, **Awaiting KYC verification**, and **KYC failed**. These status and notification descriptions do not state that a particular seller can receive payouts or that a bank transfer succeeded (raw lines 62\u201373).\n- To sync seller data, phone numbers must include `+` and country code, including on HOP. Mirakl requires Bank name and BIC, while Adyen HOP asks only for IBAN; if the seller supplies bank data via HOP, the connector syncs the IBAN to Adyen and fills Mirakl Bank name/BIC with dummy values. The page recommends entering bank details in Mirakl first. Dummy values and HOP submission are not bank-account verification or bank-receipt proof (raw lines 75\u201394).\n- Payment-flow and payout/commission pages are next-step navigation, not payment or payout behavior established by this onboarding page (raw lines 96\u2013108).\n\n## Detail locators\n\n- Seller/shop and legal-entity separation: raw lines 19\u201321.\n- Country-format, conditional address and bank fields: raw lines 25\u201345.\n- Legal-entity request, HOP creation, security and KYC flow: raw lines 47\u201360.\n- KYC status and notification descriptions: raw lines 62\u201373.\n- Phone and bank-data synchronization, dummy-value warning: raw lines 75\u201394.\n- Payment and payout child routes: raw lines 96\u2013108.\n\n## Related\n\n- [[adyen-mirakl]] \u2014 connector concept and separate pay-in boundary.\n- [[adyen]] \u2014 provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15|Mirakl seller onboarding, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If a seller has multiple shops to accept payments in different currencies, each shop is treated as a separate legal entity by Adyen. Therefore, each shop needs to be onboarded separately.",
+      "location": "raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md line 21"
+    },
+    {
+      "text": "The data provided must match the [data format per country/region](/marketplaces/verification-requirements/data-formats-per-country), for the country/region where the seller is based.",
+      "location": "raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md line 27"
+    },
+    {
+      "text": "The connector submits the seller's information to Adyen in a [`/legalEntities` ](/marketplaces/onboard-users/onboarding-steps)request.",
+      "location": "raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md line 47"
+    },
+    {
+      "text": "The statuses between Mirakl and Adyen are automatically synced by the connector.",
+      "location": "raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md line 62"
+    },
+    {
+      "text": "If the data is provided through the Adyen HOP, the IBAN is synced to Adyen and the connector populates dummy values for the **Bank name** and **BIC** fields.",
+      "location": "raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md line 92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-mirakl-onboard-sellers-mirakl-route",
+        "target_path": "wiki/concepts/adyen-mirakl.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-mirakl-onboard-sellers]] \u2014 2026-09-15 Mirakl seller/shop legal-entity onboarding, HOP/security/KYC status sync and conditional bank-data mapping; statuses and emails are not seller payout or merchant-of-record proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Multiple currency shops are separate legal entities in this source; do not merge their onboarding status.",
+          "HOP-entered IBAN can yield dummy Mirakl Bank name/BIC fields; neither HOP submission nor status email establishes bank verification or payout eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/mirakl/onboard-sellers/2026-09-15.md",
+  "raw_sha256": "5059fa1b1f6d37ab67c23e59cd66ac2151373988e1c0cb8b0c381b9024cbfdc9",
+  "status": "candidate_ready"
+}

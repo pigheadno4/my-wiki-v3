@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-plugins-mirakl-set-up-payment-flows",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Mirakl connector payment-flow setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/mirakl/set-up-payment-flows\"\nraw_files:\n  - \"adyen/docs/plugins/mirakl/set-up-payment-flows/2026-09-15.md\"\ntags: [adyen, mirakl, marketplace, payment-splits, refunds, chargebacks]\n---\n\n## Overview\n\nThis guide describes the marketplace operator's **separately implemented pay-in, capture, refund and chargeback flows** while integrated with Adyen's Mirakl connector. The connector synchronizes account/order-related data but **does not manage marketplace payment flows**. The marketplace needs its own ecommerce payment implementation for seller transactions. The page describes account and balance splits, not a universal merchant-of-record allocation, an executed transaction, or bank-received seller payout.\n\n## Key takeaways\n\n- To keep Mirakl synchronized, the guide says captures and refunds must be performed **from Mirakl**; operations outside Mirakl require manual balance adjustment there. In the described operator process, a pending Mirakl debit is resolved by the operator obtaining pending debits through PA11, seller account-holder/balance-account IDs through S20, and sending an Adyen Checkout `/payments` or eligible capture request with the specified `applicationInfo` and `splits` data. S20 is rate-limited, so the guide suggests maintaining a local shop/account mapping instead of calling it for every transaction.\n- Online payment methods are limited to those supported for marketplaces, and a new method must first be requested for the merchant account. Payment funds may be split among platform balance accounts, including the liable balance account. Split data can be sent at payment authorization or at capture **only for methods supporting separate captures**. Multi-seller orders require split entries for all sellers. The split account is a balance-account ID; amount value is in minor units and reference is a unique split identifier. The `PaymentFee` split type needs Adyen contact and has a stated seller-available-balance and initial-payout-failure/retry warning.\n- A `CAPTURE` webhook follows processing of the capture request but can be followed by `CAPTURE_FAILED`; likewise a `REFUND` webhook can later be followed by `REFUND_FAILED`. Adyen recommends waiting **15 minutes** before changing Mirakl order status after either webhook because Mirakl order statuses cannot be reverted. That delay is a recommendation for this integration, not a guarantee of finality.\n- Mirakl marketplace operators and sellers can issue refunds in Mirakl; its billing cycle adjusts seller balances after a refund. Following a Mirakl-initiated refund, the operator can process and split the refund across platform balance accounts. For chargebacks, the disputed amount can be booked entirely to the platform's liable balance account or according to the payment's original split ratio. The guide routes seller payouts and commissions to a separate page; it does not establish payout or bank receipt here.\n- The sample Checkout test request is an example, including a test endpoint and placeholder credentials/account values. Use the linked API references for executable schema and lifecycle details; the sample does not prove a payment or production configuration.\n\n## Detail locators\n\n- Raw lines 15\u201329: connector exclusion, Mirakl-origin capture/refund synchronization rule, and marketplace payment-method request.\n- Raw lines 31\u201366, `Payments`: balance-account splits, capture-method condition, PA11/S20 identities and rate limit, `applicationInfo`, split fields, `PaymentFee` warning.\n- Raw lines 68\u2013117: illustrative Checkout test request; endpoint and values are examples.\n- Raw lines 119\u2013143, `Captures` and `Refunds`: webhooks, later failures, Mirakl irreversible order-status timing, billing-cycle balance adjustment.\n- Raw lines 145\u2013166, `Chargebacks` and `Next steps`: disputed-amount allocation options and separate payout/commission/reconciliation routes.\n\n## Related\n\n- [[adyen]] \u2014 provider company context.\n- [[adyen-mirakl]] \u2014 connector's seller-onboarding, account sync, balance and payout boundary.\n- [[adyen-payouts]] \u2014 separate payout lifecycle; not established by this payment-flow setup page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/mirakl/set-up-payment-flows/2026-09-15|Mirakl payment-flow setup, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The connector does not manage the payment flows on your Marketplace. To process transactions such as authorisations, captures, or refunds for your sellers, you must implement payment flows yourself.",
+      "location": "raw line 19, Set up payment flows"
+    },
+    {
+      "text": "To keep the connector synchronized, you must perform captures and refunds only from Mirakl. If you perform any operations outside Mirakl, you must manually adjust balances in Mirakl.",
+      "location": "raw line 23, Set up payment flows"
+    },
+    {
+      "text": "Note that you can only split at capture for payment methods that support [separate captures](/online-payments/capture).",
+      "location": "raw line 33, Payments"
+    },
+    {
+      "text": "In rare cases, a capture can fail even after you received a successful **CAPTURE** webhook. You then receive a [**CAPTURE\\_FAILED** webhook](/online-payments/capture#failed-capture).",
+      "location": "raw line 127, Captures > Webhooks"
+    },
+    {
+      "text": "In rare cases, a refund can fail even after you received a successful **REFUND** webhook. You then receive a [**REFUND\\_FAILED** webhook](/online-payments/refund#refund-failed).",
+      "location": "raw line 141, Refunds"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c14-mirakl-payment-flows-reciprocal",
+        "target_path": "wiki/concepts/adyen-mirakl.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-mirakl-set-up-payment-flows]] \u2014 2026-09-15 Mirakl connector payment-flow guide for operator-implemented pay-ins, balance-account splits, Mirakl-coordinated captures/refunds, webhook failure timing and chargeback allocation; seller payout/commission mechanics are separate.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/mirakl/set-up-payment-flows/2026-09-15.md",
+  "raw_sha256": "447a1128c0d1df7d7397108ca43821c29517eeecccc14438d7c1b4d10219ce73",
+  "status": "candidate_ready"
+}

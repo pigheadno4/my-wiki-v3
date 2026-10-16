@@ -28,6 +28,9 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-docs-industries-peak-season-giving]] — 2026-09-15 peak-season Giving overview for nonprofit campaign selection, in-person terminal prompt versus online donation request, and channel-support navigation.
+
+
 - [[source-adyen-docs-online-payments-donations-integration-options]] — 2026-09-15 Adyen Giving navigation page selecting Sessions versus Advanced online-donation guides by server-side flow and interface category.
 
 

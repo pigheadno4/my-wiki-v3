@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-mirakl-set-up-the-connector",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Set up the Adyen Mirakl connector\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/mirakl/set-up-the-connector\"\nraw_files:\n  - \"adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md\"\ntags: [adyen, mirakl, marketplace, connector, onboarding]\n---\n\n## Overview\n\nAdyen's Mirakl connector setup page (last modified and captured 2026-09-15) describes Mirakl Operator API access, seller custom fields, feature/email settings, connector and Adyen credentials, and synchronization scheduling. It prepares a Mirakl Marketplace for Adyen for Platforms seller onboarding/KYC and split-payment-related data; it does not prove seller verification, live eligibility, payment splitting, payout completion, bank receipt or which party is merchant of record. See [[adyen-mirakl]] for the connector/pay-in boundary.\n\n## Key takeaways\n\n- In Mirakl back office, create an API integration with **Operator API** scope and an **Access token**, then store that token securely. This Mirakl token is distinct from the Adyen Balance Platform and Legal Entity Management API credentials later supplied for connector onboarding; this page does not describe an OAuth app or client secret (raw lines 19\u201329, 110\u2013124).\n- To initiate KYC checks and split-payment processing, create marketplace-model shop-profile custom fields that the connector maps to Adyen fields on seller-shop sync. The page says these connector fields must **not** be marked required; other required custom fields can prevent connector operation and should be raised with the Adyen contact. The table distinguishes seller balance-account, legal-entity, account-holder and transfer-instrument IDs, a read-only Hosted Onboarding Page URL, and conditional VAT/original-channel fields. The VAT field applies only to the stated cross-region invoice-VAT payout case; original channel only to multiple channels (raw lines 31\u201358).\n- Mirakl Support must enable **KYC status** and **Payment confirmation**. KYC status lets the connector update Mirakl about check results/actions; Payment confirmation lets it mark invoices **Paid**, distinct from **Pending payment**. The connector's failure emails and recommended KYC-failure template are notification setup, not evidence that KYC or settlement occurred (raw lines 60\u201379).\n- Supply the Adyen contact with connector settings (HOP return/name, operator emails, HOP questions, maximum invoice payout retry count, locale) plus Mirakl service URL/access token and Adyen balance-platform details. Optional defaults include **Manage Payment Block** enabled (skip seller in billing cycle on balance/KYC/sync issue), **Use Subscription** disabled (one combined commission/subscription payout when disabled), and **Unsuspend New Shops** enabled after KYC success; Adyen seller status is determined separately. These settings alter eligibility/scheduling behavior but do not prove a seller's funds moved (raw lines 81\u2013115).\n- Adyen settings call for the liable balance-account ID, which should retain sufficient funds for negative commissions or transfers can fail; a Balance Platform Configuration/Transfers web-service user with **Balance Platform BCL** role; and a separate Scope/LEM API web-service user. The page supplies account/credential identity and role guidance, not authority to expose keys or evidence of a completed transfer (raw lines 117\u2013124).\n- Schedule **Partial Sync** for changed shops, **Full Sync** for all shops, and **Start Invoice Sync** for payout scheduling. Give Adyen the invoice-sync start date to avoid importing older invoices and confirm that date with Support in both test and live environments; the June 1/May 31 example illustrates inclusion, not a universal date or payout guarantee (raw lines 126\u2013136). Seller onboarding and payment-flow pages are next-step navigation (raw lines 138\u2013150).\n\n## Detail locators\n\n- Mirakl Operator API token and secure storage: raw lines 19\u201329.\n- Seller custom-field requirements, IDs, permissions and conditional VAT/channel: raw lines 31\u201358.\n- Mirakl feature enablement and notifications: raw lines 60\u201379.\n- Connector optional defaults and Mirakl settings: raw lines 81\u2013115.\n- Liable balance account and Adyen API credentials/role: raw lines 117\u2013124.\n- Sync types and test/live invoice start date: raw lines 126\u2013150.\n\n## Related\n\n- [[adyen-mirakl]] \u2014 connector concept and separate pay-in boundary.\n- [[adyen]] \u2014 provider page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15|Mirakl connector setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The connector maps each custom field to an Adyen field and populates these fields when a seller's shop is synced with Adyen.",
+      "location": "raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md line 33"
+    },
+    {
+      "text": "These fields must **not** be marked **required**.",
+      "location": "raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md line 44"
+    },
+    {
+      "text": "**Payment confirmation**: required for the connector to mark invoices as **Paid**, allowing you to differentiate between invoices that have the **Pending payment** and **Paid** status.",
+      "location": "raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md line 65"
+    },
+    {
+      "text": "Make sure the **Balance Platform BCL** role is enabled for your user.",
+      "location": "raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md line 123"
+    },
+    {
+      "text": "For the **Start Invoice Sync**, you additionally need to inform Adyen of the date the invoice sync should start from. This is to avoid syncing older invoices.",
+      "location": "raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md line 134"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-plugins-mirakl-set-up-the-connector-mirakl-route",
+        "target_path": "wiki/concepts/adyen-mirakl.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-mirakl-set-up-the-connector]] \u2014 2026-09-15 Mirakl connector setup for Operator API token, non-required seller/KYC fields, Mirakl feature flags, Adyen Balance Platform/LEM credentials and test/live invoice-sync scheduling; settings are not seller or payout proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer OAuth app/secret, merchant-of-record, live account enablement, successful pay-in split or bank-received payout from this setup page.",
+          "Invoice Paid label and payout scheduling are connector/Mirakl process descriptions, not independent financial finality."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/mirakl/set-up-the-connector/2026-09-15.md",
+  "raw_sha256": "cf9edcb35f7d6871edd37edd0ae45187af284957cfefbbbcb6ca94a6eb82a7a4",
+  "status": "candidate_ready"
+}

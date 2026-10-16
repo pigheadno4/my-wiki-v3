@@ -1,0 +1,26 @@
+{
+  "company": [],
+  "concepts": [
+    {
+      "update_id": "c14-adyen-partner-oauth-new-concept",
+      "target_path": "wiki/concepts/adyen-partner-oauth.md",
+      "update_kind": "durable_fact",
+      "anchor": "new_file",
+      "proposed_markdown": "---\ntitle: \"Adyen Partner OAuth\"\ntype: concept\ncategory: technology\ntags: [adyen, partners, oauth, delegated-access, merchant-consent]\n---\n\n## Definition\n\nAdyen partner OAuth lets a partner-registered application request customer authorization for selected account resources and then use a bearer access token for API calls on that customer's behalf. The token's returned `scope` and `accounts` delimit access; this delegation is distinct from an ordinary merchant API credential. [[source-adyen-docs-partners-oauth-integration]]\n\n## Authorization boundary\n\nThe captured integration guide requires an OAuth-app management role, registered redirect URI and all-or-nothing scopes, plus an authorization-code flow with PKCE `S256` and CSRF `state`. Its live role is described as partner-account-only. Access tokens expire after a default 24 hours; one-time refresh tokens rotate access, immediately invalidating the previous access token while preserving scope and merchant accounts. The page documents no revocation endpoint. Use the source for environment-specific URLs, secret handling, retry grace and the guide's `code_challenge` terminology conflict. A documented flow is not proof of customer consent, granted scopes, live authorization or payment execution.\n\n## Sources\n\n- [[source-adyen-docs-partners-oauth-integration]] \u2014 2026-09-15 snapshot of 2023-modified Adyen partner OAuth registration, consent, PKCE, token exchange, refresh and live cutover.\n\n## Related\n\n- [[adyen]]\n- [[adyen-partners]]\n- [[adyen-api-access]]\n",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "This is delegated partner OAuth, separate from ordinary merchant API credentials and webhook-endpoint OAuth.",
+        "The grant parameter table calls code_challenge a verifier, while the PKCE steps define it as a SHA-256-derived challenge; preserve the conflict and use the dedicated steps for implementation.",
+        "The source documents no revocation API and proves no actual consent, granted account scope, live account eligibility or payment outcome."
+      ]
+    }
+  ],
+  "index": [],
+  "log": []
+}

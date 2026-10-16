@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-industries-peak-season-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Peak-season refunds and payouts | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/industries/peak-season/refunds\"\nraw_files:\n  - \"adyen/docs/industries/peak-season/refunds/2026-09-15.md\"\ntags: [adyen, refunds, point-of-sale, omnichannel, payouts, peak-season]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Docs guide gives peak-season preparation advice for refund funding, ecommerce/POS/omnichannel refund paths and payout scheduling. Its reserve and timing suggestions are recommendations for a possible volume spike, while channel-specific identifiers and asynchronous refund events are operational distinctions. No refund request, notification or payout-schedule setting in this page proves shopper-bank credit or merchant-bank receipt. [[adyen-refunds]]\n\n## Key takeaways\n\n- Adyen recommends considering a refund reserve because peak-season refunds and chargebacks may exceed the usual payable balance and refunds can fail. A merchant can set or temporarily raise a reserve threshold and fund it by auto-funding, a bank-transfer payment-link top-up or a transfer between merchant accounts. The guide says a bank transfer can take a day or two. These are options, not a blanket reserve mandate or proof funds are available for a specific refund.\n- **Ecommerce:** Checkout `/payments/{paymentPspReference}/refunds` is a referenced refund against the original payment PSP reference; partial refund support varies by method and is below the captured amount. A `REFUND` webhook gives asynchronous request outcome/validation reason, and a rare later `REFUND_FAILED` can follow successful validation. Request acceptance or validation is not final shopper-bank credit.\n- **POS:** A referenced refund connects to the original payment through both terminal tender reference and Adyen PSP reference, with `REFUND` outcome. An unreferenced refund can send an amount to a card presented at the terminal and uses `REFUND_WITH_DATA`; it carries fraud/error risk, so the guide suggests delay/cancellation time and checking card identity, not as universal permission to refund any card. While offline, only unreferenced refunds are supported, with a recommended maximum amount; later referenced refund of an offline payment must account for a missing PSP reference in its offline response.\n- **Omnichannel:** These returns are always referenced and use the merchant account that processed the original payment for the in-process funds deduction. The guide directs use of webhooks for the reference; ecommerce-to-POS refunds need original PSP reference, date and currency because no terminal tender reference exists for that ecommerce payment. A return location does not shift the original merchant-account funding identity.\n- **Payouts:** Adyen advises against changing payout frequency or payout accounts during peak season and suggests doing needed changes beforehand. For direct merchants, frequency changes take effect at the start of the next period of the original schedule; for platforms/marketplaces, push-sweep changes are described as immediate, although the page still advises avoiding peak-season changes. Neither schedule configuration nor a payout initiation proves bank receipt.\n\n## Detail locators\n\n- **Seasonal reserve recommendations and funding options:** raw lines 19\u201338.\n- **Ecommerce request references, asynchronous and later-failure events:** raw lines 48\u201354.\n- **POS referenced/unreferenced identifiers, fraud safeguards and offline limits:** raw lines 56\u201372.\n- **Omnichannel original-account/reference rules:** raw lines 74\u201380.\n- **Direct-merchant versus platform payout timing and advice:** raw lines 82\u201394.\n\n## Related\n\n- [[adyen]]\n- [[adyen-refunds]] \u2014 online refund lifecycle context; this guide also covers POS and omnichannel\n- [[adyen-payouts]] \u2014 separate payout schedule and funding context\n- [[adyen-unified-commerce]] \u2014 separate omnichannel context\n\n## Raw Sources\n\n- [[raw/adyen/docs/industries/peak-season/refunds/2026-09-15|Adyen peak-season refunds and payouts \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "refunds can fail.",
+      "location": "raw/adyen/docs/industries/peak-season/refunds/2026-09-15.md:30"
+    },
+    {
+      "text": "In rare cases, a refund that was successfully validated, is still declined.",
+      "location": "raw/adyen/docs/industries/peak-season/refunds/2026-09-15.md:54"
+    },
+    {
+      "text": "This carries a risk of return fraud (a payment being refunded multiple times) and human error (store staff enter the wrong refund amount).",
+      "location": "raw/adyen/docs/industries/peak-season/refunds/2026-09-15.md:62"
+    },
+    {
+      "text": "Omnichannel refunds are always referenced refunds",
+      "location": "raw/adyen/docs/industries/peak-season/refunds/2026-09-15.md:78"
+    },
+    {
+      "text": "changes to the payout frequency](/account/getting-paid#payout-frequency) are not effective immediately.",
+      "location": "raw/adyen/docs/industries/peak-season/refunds/2026-09-15.md:90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-refunds-peak-season-source",
+        "target_path": "wiki/concepts/adyen-refunds.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-industries-peak-season-refunds]] \u2014 2026-09-15 seasonal guide to reserve advice, asynchronous ecommerce/POS and always-referenced omnichannel refunds, offline constraints, and direct-merchant versus platform payout timing; request or schedule is not bank-credit proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This source spans online, POS, omnichannel and payout topics while the existing adyen-refunds concept is online-focused; keep each channel's identifiers and outcome rules in the source rather than generalizing online behavior.",
+          "Refund reserve, delay, card checks and avoiding peak-season payout changes are provider recommendations, not blanket requirements or account-specific authorizations.",
+          "REFUND validation can precede later REFUND_FAILED; webhook outcome and payout schedule changes do not independently prove shopper or merchant bank credit."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/industries/peak-season/refunds/2026-09-15.md",
+  "raw_sha256": "e99ac8bb4a0bf04b75db28b254842970ad25b5790ff13b152909c01fb6155ef5",
+  "status": "candidate_ready"
+}

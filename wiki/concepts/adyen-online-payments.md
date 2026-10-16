@@ -15,6 +15,12 @@ At overview level, the integration is divided among a payments server that calls
 
 ## Sources
 
+- [[source-adyen-docs-industries-peak-season-online-payments]] — 2026-09-15 seasonal online-checkout readiness guide for early changes, local-method consideration and test-market/SCA/webhook/failure-path checks; proposed benefits and tests do not prove live availability or payment outcome.
+
+
+- [[source-adyen-docs-industries-markets-india]] — 2026-09-15-captured Adyen domestic India overview for local-entity/integration and account-manager onboarding, card-data/recurring mandate conditions, conditional RuPay/UPI threshold and qualified BillDesk dispute route; provider snapshot, not current approval or legal-compliance proof.
+
+
 - [[source-adyen-docs-account-manage-payments]] — 2026-09-15 Customer Area payment lookup and refund/cancel/capture/re-authorization action guide with role/state gates, re-authorization risk and request-versus-outcome boundary.
 
 

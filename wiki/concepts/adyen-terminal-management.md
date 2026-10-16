@@ -15,6 +15,9 @@ Management API requests need an API credential, API key, and operation-specific 
 
 ## Sources
 
+- [[source-adyen-docs-industries-peak-season-in-person-payments]] — 2026-09-15 Adyen peak-season in-person planning guide for method testing, fleet/software preparation, outage options and cloud endpoint checks; terminal version/freeze details are 2025-season guidance with an inconsistent date range.
+
+
 - [[source-adyen-docs-point-of-sale-menu-access]] — Adyen 2026-09-15 terminal menu/passcode guide for Customer Area and Management API roles, setting inheritance, unattended Android screen-lock caution, and maintenance/restart timing.
 
 

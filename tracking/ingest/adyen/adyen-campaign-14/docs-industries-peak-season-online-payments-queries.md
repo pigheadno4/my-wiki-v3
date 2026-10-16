@@ -1,0 +1,9 @@
+# Fixed retrieval checks — Adyen peak-season online payments
+
+## Q1 — What is this page for, what is its scope, and what should not be inferred?
+
+The captured page is seasonal online-checkout readiness guidance: consider appropriate methods, complete large changes before peak season, and test the integration even if no feature was added (raw/adyen/docs/industries/peak-season/online-payments/2026-09-15.md:17–27). Its wallet/banking/BNPL examples and benefit language do not prove method availability, merchant enablement, conversion lift, authorization success or settlement. Canonical route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-industries-peak-season-online-payments]]` → `[[raw/adyen/docs/industries/peak-season/online-payments/2026-09-15]]`; canonical URL: https://docs.adyen.com/industries/peak-season/online-payments.
+
+## Q2 — Which method and test checks does it recommend, with what conditions?
+
+The guide suggests locally relevant methods alongside cards and names wallet, online-banking and BNPL examples; a company-account user may review Uplift dashboard recommendations (raw lines 29–54). It points to test cards/utilities, API and webhook logs and Developer dashboard, and asks merchants to check local methods/translations, relevant browsers/mobile flows, Standard webhook receipt plus order-management updates, and refusals or multi-tab/back/double-click paths (lines 56–75). Test 3DS2 only when PSD2 SCA applies to the transactions (line 69). The guide does not specify token-storage or risk-rule requirements, a detailed role matrix, or current method eligibility. Demo/test/log observations are not live payment or financial-finality proof. Use the concept→source→raw route and linked detailed guides for method and test constraints.

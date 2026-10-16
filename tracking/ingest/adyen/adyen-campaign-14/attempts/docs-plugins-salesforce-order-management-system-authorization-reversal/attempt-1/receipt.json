@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-plugins-salesforce-order-management-system-authorization-reversal",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Salesforce OMS authorization reversal\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-order-management-system/authorization-reversal\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-order-management-system/authorization-reversal/2026-09-15.md\"\ntags: [adyen, salesforce-oms, authorization-reversal, cancellation, webhooks]\n---\n\n## Overview\n\nThis 2023-last-modified Salesforce Order Management System (OMS) guide explains enabling and requesting **Salesforce Authorization Reversal** through its Payment Authorization Reversal Service API and the Adyen OMS package. In Adyen's integration, the reversal maps to **cancelling an uncaptured payment authorization**, such as when an order cannot be fulfilled. It is distinct from a refund of captured funds or cancelling the Salesforce order itself. The page gives setup and outcome checks; it does not prove a live reversal or a shopper's issuer hold release.\n\n## Key takeaways\n\n- Requirements are a functioning Salesforce OMS Org connected to an SFCC storefront, the Adyen OMS package **v3.1.0 or later**, and Salesforce's reversal API guidance. The Salesforce site must expose the Adyen non-payment webhook handler Apex class. The page does not specify an operator role or universally supported order state.\n- For **OMS 3.3.0 or later**, an additional Authorization Reversal webhook configuration is not required. For the described manual setup, use the merchant account handling captures/refunds, configure a standard JSON webhook to the Salesforce site non-payment endpoint, use the existing HMAC key, and select `CANCELLATION`. The package cancels the payment for the Salesforce order; cancelling the **order** requires the implementer's own logic.\n- The Salesforce reversal request's `amount` must match **Available to Capture** on the Order Payment Summary object. This is an authorization/cancellation condition, not a request to refund or capture money.\n- Salesforce `PaymentGatewayLog` records `InteractionType: AuthorizationReversal` and a `GatewayResultCode`; the page says the **final outcome comes asynchronously from Adyen's CANCELLATION webhook**. Its `originalReference` is the original authorization PSP reference. `success=true` means the cancel request succeeded; `success=false` includes a reason. Example payloads are illustrative test examples, not actual merchant events.\n- Failure handling is not a blind retry: the webhook section says to review the reason, fix the issue if possible, and resubmit; the final paragraph instead directs a failed reversal to manual reversal in Adyen Customer Area. Preserve that difference and verify the specific original authorization and current state before another action, to avoid duplicate or conflicting cancellation attempts. Neither a log state nor this guide confirms issuer-side hold release or settlement effects.\n\n## Detail locators\n\n- Raw lines 15\u201327: Salesforce reversal purpose, Adyen cancel mapping and OMS/package prerequisites.\n- Raw lines 29\u201382: Salesforce site Apex access, version-specific webhook setup, HMAC and payment-versus-order cancellation boundary.\n- Raw lines 84\u201392: request through Salesforce API, Available to Capture amount and asynchronous outcome.\n- Raw lines 94\u2013114: Salesforce gateway logs versus Adyen `CANCELLATION` webhook fields and failure reason.\n- Raw lines 116\u2013170: illustrative success/failure payloads and differing final failure guidance.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-salesforce-order-management-system]] \u2014 OMS package and order-management payment operations.\n- [[adyen-salesforce-commerce-cloud]] \u2014 separate connected storefront integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-order-management-system/authorization-reversal/2026-09-15|Salesforce OMS authorization reversal, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "An Authorization Reversal in Salesforce is equivalent to [cancelling a payment](/online-payments/cancel/) in Adyen.",
+      "location": "raw line 21, Authorization Reversal"
+    },
+    {
+      "text": "[Install and set up the Adyen Salesforce OMS package](/plugins/salesforce-order-management-system/install-and-set-up-the-package) v3.1.0 or later.",
+      "location": "raw line 26, Requirements"
+    },
+    {
+      "text": "If you are on Salesforce OMS 3.3.0 or later, you do not need to configure an additional webhook for Authorization Reversal.",
+      "location": "raw line 45, Configure webhooks in Adyen"
+    },
+    {
+      "text": "Our package only supports cancelling the payment for the order in Salesforce. To cancel the order itself, you must implement your own logic.",
+      "location": "raw line 82, Configure webhooks in Adyen"
+    },
+    {
+      "text": "After you make a request to reverse an authorization, our package processes the authorization reversal. You can monitor the status of your reversal request in the [Salesforce logs](#logs), but you get the final outcome from Adyen in a [webhook](#webhook).",
+      "location": "raw line 92, Get the outcome"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c14-salesforce-oms-authorization-reversal-reciprocal",
+        "target_path": "wiki/concepts/adyen-salesforce-order-management-system.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-order-management-system-authorization-reversal]] \u2014 2023-modified, 2026-09-15-captured OMS v3.1.0+ Salesforce Authorization Reversal guide for Adyen payment cancellation, version-specific CANCELLATION webhook setup, Available-to-Capture matching and asynchronous outcome checks; order cancellation is separate.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The OMS concept exists, but no provider-index link to it was present during worker audit; coordinator should complete the main concept route.",
+          "Raw lines 114 and 170 give different failed-reversal follow-ups (reason/fix/resubmit versus manual reversal in Customer Area); retain both without treating either as an unconditional retry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-order-management-system/authorization-reversal/2026-09-15.md",
+  "raw_sha256": "daa54f94b08dbf6c9280b470e10c8e06690566ec3db6247d82422440f1fa875e",
+  "status": "candidate_ready"
+}

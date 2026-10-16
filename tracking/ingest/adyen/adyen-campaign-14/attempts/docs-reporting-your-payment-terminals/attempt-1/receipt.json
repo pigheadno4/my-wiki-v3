@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-reporting-your-payment-terminals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen POS terminal fleet Scheduled report\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/reporting/your-payment-terminals\"\nraw_files:\n  - \"adyen/docs/reporting/your-payment-terminals/2026-09-15.md\"\ntags: [adyen, reporting, point-of-sale, terminal-fleet, inventory]\n---\n\n## Overview\n\nThis 2022-01-06-last-modified, 2026-09-15-captured field guide describes the **POS Terminal fleet Scheduled report** for terminal inventory and last-seen technical status. It says a terminal receives a report entry upon shipment, and each data row represents one unique terminal. The report can be generated/downloaded manually or automatically, uses the account time-zone setting, and is described as available for company and merchant accounts. See [[adyen-reporting]], [[adyen-terminal-management]] and [[adyen]].\n\n## Key takeaways\n\n- **Fleet grain and identifiers:** The guide offers counts by model/software/country/store and fields such as Unique Terminal Id (Terminal API `POIID`), serial/permanent terminal ID, company/merchant registration, inventory versus in-store state, store code and boarded flag. A shipped terminal's row does not mean it has been assigned, boarded, powered, connected or used for a successful payment.\n- **Last-seen status is historical:** The `Status` column says Online today, Last seen 1\u20137 days ago, or **Switched off** when last online more than a week ago. This is a report-defined last-online category, not a live power-state measurement or diagnosis. `Last Transaction` and `Last Activity` are timestamps omitted when their events were more than 14 days ago; omission does not prove no earlier activity or a failed transaction.\n- **Technical inventory, not a transaction log:** Columns include firmware, network MAC/IP/SSID, link negotiation, SIM state and ICCID. A last-transaction timestamp has no payment identity, amount, outcome, authorization, capture or settlement fields on this page. The sample CSV is a data example, not evidence of the merchant's fleet.\n- **Account and time boundary:** Availability to company and merchant accounts and use of their time-zone setting do not specify who has report-generation permission or ensure a particular account sees a complete cross-account fleet. Check the applicable account, report run and current device source before operational decisions.\n\n## Detail locators\n\n- Lines 15\u201333: fleet-report purpose, shipment entry, manual/automatic retrieval, account time zone and company/merchant availability.\n- `## Structure`, lines 39\u201347: one row per unique terminal and column definitions.\n- Lines 49\u201368: identifiers, last-seen `Status`, firmware, company/merchant/store assignment.\n- Lines 69\u201381: 14-day omission rule for transaction/activity timestamps and network/SIM details.\n\n## Related\n\n- [[adyen-reporting]] \u2014 report retrieval and account/time-zone routes.\n- [[adyen-terminal-management]] \u2014 separate live fleet administration and device assignment.\n- [[source-adyen-docs-reporting-manually-get-reports]] \u2014 report generation/access procedure.\n- [[source-adyen-docs-reporting-automatically-get-reports]] \u2014 scheduled report retrieval procedure.\n\n## Raw Sources\n\n- [[raw/adyen/docs/reporting/your-payment-terminals/2026-09-15|POS terminal fleet Scheduled report, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen adds an [entry](#entries) for a terminal as soon as we [ship it to you](/point-of-sale/managing-terminals/order-terminals#track-delivery).",
+      "location": "raw/adyen/docs/reporting/your-payment-terminals/2026-09-15.md:27"
+    },
+    {
+      "text": "**Availability**: Available for [company accounts](/account/account-structure#company-account) and [merchant accounts](/account/account-structure#merchant-accounts).",
+      "location": "raw/adyen/docs/reporting/your-payment-terminals/2026-09-15.md:33"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry. Each entry is for a unique terminal.",
+      "location": "raw/adyen/docs/reporting/your-payment-terminals/2026-09-15.md:43"
+    },
+    {
+      "text": "| Status                                 | The status of the terminal: - Online today, Last seen 1 day ago, Last seen 2 days ago, up to Last seen 7 days ago: Indicates when in the past week the terminal was last online. - Switched off: Indicates the terminal was last online more than a week ago.",
+      "location": "raw/adyen/docs/reporting/your-payment-terminals/2026-09-15.md:55"
+    },
+    {
+      "text": "This is not included when the last transaction was more than 14 days ago.",
+      "location": "raw/adyen/docs/reporting/your-payment-terminals/2026-09-15.md:69"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-reporting-your-payment-terminals-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-reporting-your-payment-terminals]] \u2014 2022-modified, 2026-09-15-captured POS Terminal fleet Scheduled report field guide for one-row-per-terminal inventory, account/time-zone scope, last-online status and 14-day timestamp omission; not live device-state or payment-result proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "`Switched off` is defined as last online more than a week ago in this report, not a live power measurement.",
+          "`Last Transaction` is only a timestamp and is omitted after 14 days; this is not a payment log or outcome report.",
+          "Company/merchant availability does not define user-role permissions or cross-account completeness."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/reporting/your-payment-terminals/2026-09-15.md",
+  "raw_sha256": "23334276cb3a51149dd3bd1e977065ba0d812538a7a33300aec93bf8cdecadd7",
+  "status": "candidate_ready"
+}

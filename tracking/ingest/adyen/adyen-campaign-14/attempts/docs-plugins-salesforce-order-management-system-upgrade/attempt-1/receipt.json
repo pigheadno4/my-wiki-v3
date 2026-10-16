@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-salesforce-order-management-system-upgrade",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Salesforce OMS package upgrade\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/salesforce-order-management-system/upgrade\"\nraw_files:\n  - \"adyen/docs/plugins/salesforce-order-management-system/upgrade/2026-09-15.md\"\ntags: [adyen, salesforce-oms, upgrade, webhooks]\n---\n\n## Overview\n\nThis Adyen webpage snapshot has two **Salesforce Order Management System package** migration branches: **v2 to v3** and **v1 directly to v3.2.0**. It describes gateway, credential, webhook, account-routing, site-access, data-migration, and old-package removal steps. These are instructions for an OMS integration, not a Salesforce Commerce Cloud storefront upgrade or proof of a successful deployment, capture, refund, reversal, order, or payout. See [[adyen]] and [[adyen-salesforce-order-management-system]].\n\n## Key takeaways\n\n- **From v2 to v3:** update the existing **Adyen Payment Gateway** record to the package-provided `Adyen OMS Provider` and `AdyenCheckout` Merchant Credential, then retain the provider ID for the webhook URL (raw lines 21\u201345). V3 makes **HMAC signature verification mandatory** and enables `REFUND_FAILED` and `CAPTURE_FAILED` webhooks. The page instructs updating the existing webhook endpoint using that provider ID, generating/storing an HMAC key, adding it to Salesforce metadata, and testing the new configuration (lines 47\u2013115). A saved configuration or test instruction is not evidence that notifications were delivered or verified.\n- V3 changes sales-channel merchant-account selection: leave the channel's field empty to use the **Adyen Default** metadata merchant account, or link a specific merchant account to the channel (raw lines 117\u2013145). The included Named Credential uses **API keys instead of basic authentication** and needs a Principal Credential setup (lines 147\u2013151). These are account/credential routing rules, not proof of access to a particular merchant account.\n- **From v1:** Adyen strongly recommends going directly to **v3.2.0**, whose separate namespace allows installation alongside the existing integration (raw lines 153\u2013163). The setup path reuses/updates the existing gateway and Salesforce site instead of creating new ones. For the existing site, it calls for **Guest Access to the Payments API** and `Adyen Adapter` in enabled Custom Metadata Type Access (lines 165\u2013188). This is a narrowly described site-access configuration, not a general permission grant.\n- The v1 path's `BatchAdyenOMSMigration.cls` script copies **payment-method custom attribute values** into new custom fields; the page does not say it migrates tokens or prove any record was copied (raw lines 190\u2013207). After upgrade steps, it instructs testing **before uninstalling the older package**, and says to remove the migration script if uninstalling has issues (lines 209\u2013213). Uninstall is a consequential change, not a rollback or a guarantee of preserved functionality.\n- The page routes the migrated version to separate **go-live** instructions (raw lines 215\u2013217). It does not specify payment retries, capture/refund reversal behavior, or financial outcome semantics in these upgrade steps; those require the relevant operational and result evidence.\n\n## Detail locators\n\n- `Migrate from v2`, raw lines 21\u2013151: gateway/provider ID, HMAC and failure webhooks, sales-channel account selection and API-key Named Credential.\n- `Migrate from v1`, raw lines 153\u2013213: v3.2.0 side-by-side install, existing gateway/site updates, migration script and old-package uninstall sequence.\n- `Go live`, raw lines 215\u2013217: separate version-specific live route.\n\n## Related\n\n- [[adyen-salesforce-order-management-system]] \u2014 OMS product and package context.\n- [[adyen-salesforce-commerce-cloud]] \u2014 distinct storefront integration family.\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/salesforce-order-management-system/upgrade/2026-09-15|Salesforce OMS upgrade, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "It is mandatory to [verify HMAC signatures](/development-resources/webhooks/secure-webhooks/verify-hmac-signatures/).",
+      "location": "raw line 51, Migrate from v2 / Update webhook configuration"
+    },
+    {
+      "text": "The package includes the Named Credential by default, and uses API keys for authentication instead of [basic authentication](/plugins/salesforce-order-management-system/install-and-set-up-the-package?plugin=Salesforce%20OMS\\&integration=package\\&version=2.1.2#configure-named-credential).",
+      "location": "raw line 149, Migrate from v2 / Named Credential"
+    },
+    {
+      "text": "V3.2.0 of the package has a [separate namespace](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_unlocked_pkg_plan_namespaces.htm). Therefore, you can install it with your existing integration.",
+      "location": "raw line 161, Migrate from v1 / Install new version"
+    },
+    {
+      "text": "This script copies your package's custom attribute values from your existing OMS version to the new version.",
+      "location": "raw line 192, Migrate from v1 / Run the migration script"
+    },
+    {
+      "text": "After you have completed the steps to upgrade, test your integration to make sure everything works as expected. Then, [uninstall the package for the older version from your Salesforce Org.]",
+      "location": "raw line 211, Migrate from v1 / Uninstall older version"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c14-salesforce-oms-upgrade-reciprocal",
+        "target_path": "wiki/concepts/adyen-salesforce-order-management-system.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-salesforce-order-management-system-upgrade]] \u2014 2024-modified, 2026-09-15-captured OMS v2\u2192v3 and v1\u2192v3.2.0 upgrade branches for gateway/API-key/HMAC/account routing, v1 data script and post-test old-package uninstall; no deployment or payment outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Salesforce OMS concept exists but its provider-index link was absent during this worker audit; coordinator should complete the main index route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/salesforce-order-management-system/upgrade/2026-09-15.md",
+  "raw_sha256": "22e6ec1d944e3632e1a6e8242a941fce8e753124ecb05abdf00e511d918f4017",
+  "status": "candidate_ready"
+}

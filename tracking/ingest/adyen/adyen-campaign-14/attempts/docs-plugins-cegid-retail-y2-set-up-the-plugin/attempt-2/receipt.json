@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-plugins-cegid-retail-y2-set-up-the-plugin",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Cegid Retail Y2 CPOS plugin setup\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/plugins/cegid-retail-y2/set-up-the-plugin\"\nraw_files:\n  - \"adyen/docs/plugins/cegid-retail-y2/set-up-the-plugin/2026-09-15.md\"\ntags: [adyen, cegid-retail-y2, pos, plugin, setup]\n---\n\n## Overview\n\nAdyen\u2019s setup guide for its Cegid Retail Y2 CPOS plugin covers installing the v2.1.33 file, configuring Adyen and Cegid Retail Y2 for local or cloud Terminal API communications, mapping terminal payment-method variants, configuring refunds, and moving from test setup to a live setup. It is a procedure for a merchant\u2019s POS integration, not evidence that a particular merchant is eligible or has processed a live payment. See [[adyen-cegid-retail-y2]] for the plugin family.\n\n## Key takeaways\n\n- The v2.1.33 installation ZIP is password-protected; request its password from Adyen Support. For an existing integration upgrading to a later version, uninstall the older plugin and reboot the Cegid device before installing. The installer targets the CPOS directory; changing that directory after installation requires uninstalling and reinstalling. The later upgrade section says to repeat the download/install steps, without repeating the other setup steps.\n- Adyen account configuration requires the Merchant POS Terminal Management Admin role and company account level. Local communications require enabling Terminal API and securely storing the encryption key identifier, passphrase, and version for the Cegid EPT settings. If encryption fields are unavailable, ask Support for the required permission. Cloud communications use a Web service API credential and securely stored API key, Terminal API enabled, and Support-enabled WebSockets.\n- The plugin communicates only with terminals injected with Adyen software. The documented test path creates stores, orders test terminals and a test card, and boards the terminals. In Cegid, local EPT settings use the device IP `https://YOUR_DEVICE_IP:8443/nexo`, Local connection type, Sale ID, terminal POI ID, and the encryption key values. Cloud settings use the test sync endpoint for test or a geographically appropriate live endpoint for live, Cloud connection type, Sale ID, POI ID, and API key. The source\u2019s local and cloud field tables are the authority for required versus optional fields.\n- Cegid payment methods must be created and a mapping table activated so Adyen terminal `paymentMethodVariant` values map to Cegid values. A payment method\u2019s Mixed direction permits refunds. The EPT payment configuration defaults to `D:CP,RR` (referenced refunds); `D:CP,NR` selects unreferenced as default. Referenced refunds need additional register settings, yet partial refunds and multi-method payments can use unreferenced refunds regardless of the default. Optional merchant-reference configuration requires administrator rights and a number length greater than the prefix length. The guide explicitly says CPOS uses date and time instead when the prefix is longer than the configured length; it does not specify the equal-length case.\n- Treat configuration choices carefully: the optional Allow Booking of Undetermined Payment accepts a payment with an unknown result after a failed transaction; Legacy Mode should remain off unless Cegid instructs otherwise; Confirm Void is recommended for explicit cashier confirmation. These settings are described in both EPT field tables.\n- The guide\u2019s device test checks plugin-terminal communication, followed by a separate test-card transaction and Cegid receipt check. Before real payments, it calls for new live terminals, repeating Adyen account configuration in the live Customer Area, and testing the configured integration. This source does not establish that those steps were performed or that a live payment succeeded.\n\n## Detail locators\n\n- Installation version, password, uninstall/reboot, CPOS path and EPT driver: pinned raw lines 23\u201355.\n- Local versus cloud Customer Area credentials and WebSockets: pinned raw lines 57\u2013105.\n- Test terminal acquisition and boarding: pinned raw lines 107\u2013115.\n- Cegid EPT field-by-field requiredness, endpoints, timeouts, receipts, unknown-result booking, Legacy Mode and void handling: pinned raw lines 116\u2013187.\n- Cash-register authorization choices and payment-method mapping: pinned raw lines 188\u2013249.\n- Refund types and exceptions: pinned raw lines 250\u2013267. Optional merchant reference and length rule: lines 269\u2013284.\n- Device test, test transaction, live transition and upgrade instructions: pinned raw lines 286\u2013318.\n\n## Related\n\n- [[adyen]]\n- [[adyen-cegid-retail-y2]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/plugins/cegid-retail-y2/set-up-the-plugin/2026-09-15|Adyen Cegid Retail Y2 CPOS setup snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Download and unzip the password-protected [Cegid Retail Y2 CPOS plugin installation file](/plugins/cegid-retail-y2/set-up-the-plugin/Cegid-Plugin-v2.1.33.zip) for [v2.1.33](/plugins/release-notes?title%5B0%5D=Cegid%20Retail%20Y2).",
+      "location": "raw line 31, Step 1"
+    },
+    {
+      "text": "Merchant POS Terminal Management Admin role",
+      "location": "raw line 61, Step 2"
+    },
+    {
+      "text": "The plugin can only communicate with terminals that are injected with Adyen software.",
+      "location": "raw line 109, Step 3"
+    },
+    {
+      "text": "Keep in mind that in some cases, the amount will be refunded by unreferenced refund regardless of your **Payment configuration**. For example, partial refunds, and refunds for payments completed with multiple payment methods, the refund type will be unreferenced.",
+      "location": "raw line 265, Step 7"
+    },
+    {
+      "text": "There are steps you have to complete after testing your integration before you can start accepting real payments:",
+      "location": "raw line 308, Go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cegid-retail-y2-setup-reciprocal",
+        "target_path": "wiki/concepts/adyen-cegid-retail-y2.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-plugins-cegid-retail-y2-set-up-the-plugin]] \u2014 Cegid Retail Y2 CPOS plugin v2.1.33 setup guide: installation, local/cloud Terminal API configuration, mapping, refund settings, and test-to-live checklist.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply after the Cegid Retail Y2 overview worker creates this concept; the target was absent during this worker\u2019s audit."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/plugins/cegid-retail-y2/set-up-the-plugin/2026-09-15.md",
+  "raw_sha256": "bc8b932568c6fc79994d1e9ca9fdda01721630e47a5300afdd3db0d05dcd8a92",
+  "status": "candidate_ready"
+}
