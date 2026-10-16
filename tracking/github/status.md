@@ -5305,6 +5305,56 @@
   Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.3/2026-10-06/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.2--1.50.3/comparison.json)
 
+## `github-fce7ee241c398cc73695`
+
+- Repository: `paypal/paypal-android`
+- SHA: `d100313f2247b512cedf6080bb7b6ecaada26d42`
+- Collection date: `2026-10-16`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-android/snapshots/2026-10-16-d100313/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-android/ingest-packets/github-fce7ee241c398cc73695/packet.md)
+- Review priority: `high`
+- Required reading: `27` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-android@3.1.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-android/releases/paypal-android/3.1.0/2026-10-16/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-android/comparisons/paypal-android/3.0.0--3.1.0/comparison.json)
+
+## `github-fda0a37813212896f0ec`
+
+- Repository: `paypal/paypal-android`
+- SHA: `3540adff974abdc20371d66fe47748e4c5174592`
+- Collection date: `2026-10-16`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-android/ingest-packets/github-fda0a37813212896f0ec/packet.md)
+- Review priority: `high`
+- Required reading: `164` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-android@3.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-android/releases/paypal-android/3.0.0/2026-10-16/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-android/comparisons/paypal-android/2.3.0--3.0.0/comparison.json)
+
 ## `github-fdb611aa510b593685f6`
 
 - Repository: `stripe/stripe-node`

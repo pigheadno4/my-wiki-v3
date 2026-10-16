@@ -1,0 +1,316 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-android`
+- Package: `paypal-android`
+- From: `2.3.0` (`d69a2fad7a96155e71f2681dc7cbfa9957fff544`)
+- To: `3.0.0` (`3540adff974abdc20371d66fe47748e4c5174592`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `CardPayments/api/CardPayments.api`
+- `CardPayments/build.gradle`
+- `CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthChallenge.kt`
+- `CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthLauncher.kt`
+- `CardPayments/src/main/java/com/paypal/android/cardpayments/CardClient.kt`
+- `CardPayments/src/main/java/com/paypal/android/cardpayments/CardPresentAuthChallengeResult.kt`
+- `CardPayments/src/main/java/com/paypal/android/cardpayments/DataVaultPaymentMethodTokensAPI.kt`
+- `CardPayments/src/main/java/com/paypal/android/cardpayments/analytics/CardAnalytics.kt`
+- `CorePayments/api/CorePayments.api`
+- `CorePayments/build.gradle`
+- `CorePayments/src/main/AndroidManifest.xml`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/APIClientError.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/APIRequest.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/BrowserSwitchRequestCodes.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/CoreConfig.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/DeepLinkUtils.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/Environment.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/Http.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/HttpResponse.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/HttpRoundTripTiming.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/LinkType.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/PayPalSDKErrorCode.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/RestClient.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/ReturnToAppStrategy.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsService.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/api/AuthenticationSecureTokenServiceAPI.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchClient.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchOptions.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchPendingState.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchStartResult.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/ChromeCustomTabsClient.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/common/Headers.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLClient.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLResult.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/model/APIResult.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/model/AppSwitchEligibility.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityResponse.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyResult.kt`
+- `CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyUseCase.kt`
+- `Demo/build.gradle`
+- `Demo/src/main/java/com/paypal/android/DemoConstants.kt`
+- `Demo/src/main/java/com/paypal/android/api/model/PaymentMethodSelected.kt`
+- `Demo/src/main/java/com/paypal/android/api/model/PaymentSource.kt`
+- `Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt`
+- `Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt`
+- `Demo/src/main/java/com/paypal/android/api/model/serialization/PayPalModels.kt`
+- `Demo/src/main/java/com/paypal/android/api/services/MerchantIntegration.kt`
+- `Demo/src/main/java/com/paypal/android/api/services/SDKSampleServerAPI.kt`
+- `Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt`
+- `Demo/src/main/java/com/paypal/android/customenvironment/SelectedEnvironment.kt`
+- `Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt`
+- `Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt`
+- `Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/di/NetworkModule.kt`
+- `Demo/src/main/java/com/paypal/android/models/OrderRequest.kt`
+- `Demo/src/main/java/com/paypal/android/ui/DemoApp.kt`
+- `Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt`
+- `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderUiState.kt`
+- `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/ui/approveorder/CardFormatter.kt`
+- `Demo/src/main/java/com/paypal/android/ui/features/Feature.kt`
+- `Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutResultView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalUiState.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultUiState.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebCheckoutResultView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebUiState.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/StartPayPalWebCheckoutForm.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultUiState.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultView.kt`
+- `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardUiState.kt`
+- `Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt`
+- `Demo/src/main/java/com/paypal/android/uishared/components/AmountForm.kt`
+- `Demo/src/main/java/com/paypal/android/uishared/components/CreateOrderWithVaultOptionForm.kt`
+- `Demo/src/main/java/com/paypal/android/uishared/components/DemoAppTopBar.kt`
+- `Demo/src/main/java/com/paypal/android/uishared/components/PayPalUserIdentityForm.kt`
+- `Demo/src/main/java/com/paypal/android/uishared/components/StoreInVaultOptionForm.kt`
+- `Demo/src/main/java/com/paypal/android/uishared/state/ActionState.kt`
+- `Demo/src/main/java/com/paypal/android/usecase/CreateCardSetupTokenUseCase.kt`
+- `Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt`
+- `Demo/src/main/java/com/paypal/android/usecase/CreatePayPalSetupTokenUseCase.kt`
+- `FraudProtection/api/FraudProtection.api`
+- `FraudProtection/build.gradle`
+- `FraudProtection/src/main/java/com/paypal/android/fraudprotection/CoreConfigMagnesExt.kt`
+- `FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt`
+- `PayPalPayments/api/PayPalPayments.api`
+- `PayPalPayments/build.gradle`
+- `PayPalPayments/src/main/AndroidManifest.xml`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalCheckoutFundingSource.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishStartResult.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishVaultResult.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalLauncher.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPhoneNumber.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPresentAuthChallengeResult.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalResultCallback.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalSessionStore.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserAction.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserIdentity.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/ReturnToAppUrlConfig.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/CreatePayPalSessionEvent.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/LatencyEvent.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalEvent.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalError.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalErrorCode.kt`
+- `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/usecase/GetEffectiveReturnUrlConfigUseCase.kt`
+- `PayPalWebPayments/api/PayPalWebPayments.api`
+- `PayPalWebPayments/build.gradle`
+- `PayPalWebPayments/src/main/AndroidManifest.xml`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalPresentAuthChallengeResult.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutClient.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishStartResult.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishVaultResult.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFundingSource.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutRequest.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutSessionStore.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebLauncher.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebStartCallback.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebVaultRequest.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/CheckoutEvent.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/PayPalWebAnalytics.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/VaultEvent.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutError.kt`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutErrorCode.kt`
+- `PaymentButtons/build.gradle`
+- `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayLaterButton.kt`
+- `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalButton.kt`
+- `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalCreditButton.kt`
+- `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PaymentButton.kt`
+- `README.md`
+- `Venmo/build.gradle`
+- `build.gradle`
+- `gradle/libs.versions.toml`
+- `settings.gradle`
+- `v2_MIGRATION_GUIDE.md`
+- `version.properties`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `CardPayments/api/CardPayments.api`
+- `modified`: `CardPayments/build.gradle`
+- `modified`: `CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthChallenge.kt`
+- `modified`: `CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthLauncher.kt`
+- `modified`: `CardPayments/src/main/java/com/paypal/android/cardpayments/CardClient.kt`
+- `modified`: `CardPayments/src/main/java/com/paypal/android/cardpayments/CardPresentAuthChallengeResult.kt`
+- `modified`: `CardPayments/src/main/java/com/paypal/android/cardpayments/DataVaultPaymentMethodTokensAPI.kt`
+- `modified`: `CardPayments/src/main/java/com/paypal/android/cardpayments/analytics/CardAnalytics.kt`
+- `modified`: `CorePayments/api/CorePayments.api`
+- `modified`: `CorePayments/build.gradle`
+- `modified`: `CorePayments/src/main/AndroidManifest.xml`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/APIClientError.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/APIRequest.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/BrowserSwitchRequestCodes.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/CoreConfig.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/DeepLinkUtils.kt`
+- `deleted`: `CorePayments/src/main/java/com/paypal/android/corepayments/Environment.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/Http.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/HttpResponse.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/HttpRoundTripTiming.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/LinkType.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/PayPalSDKErrorCode.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/RestClient.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/ReturnToAppStrategy.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsService.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/api/AuthenticationSecureTokenServiceAPI.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchClient.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchOptions.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchPendingState.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchStartResult.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/ChromeCustomTabsClient.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/common/Headers.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLClient.kt`
+- `modified`: `CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLResult.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/model/APIResult.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/model/AppSwitchEligibility.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityResponse.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyResult.kt`
+- `added`: `CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyUseCase.kt`
+- `modified`: `Demo/build.gradle`
+- `added`: `Demo/src/main/java/com/paypal/android/DemoConstants.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/api/model/PaymentMethodSelected.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/api/model/PaymentSource.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/api/model/serialization/PayPalModels.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/api/services/MerchantIntegration.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/api/services/SDKSampleServerAPI.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/customenvironment/SelectedEnvironment.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/di/NetworkModule.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/models/OrderRequest.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/DemoApp.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderUiState.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderView.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/approveorder/CardFormatter.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/features/Feature.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt`
+- `renamed`: `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebCheckoutResultView.kt` -> `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutResultView.kt`
+- `renamed`: `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebView.kt` -> `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutView.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalUiState.kt`
+- `renamed`: `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultUiState.kt` -> `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultUiState.kt`
+- `renamed`: `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultView.kt` -> `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultView.kt`
+- `renamed`: `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultViewModel.kt` -> `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultViewModel.kt`
+- `deleted`: `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebUiState.kt`
+- `deleted`: `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebViewModel.kt`
+- `deleted`: `Demo/src/main/java/com/paypal/android/ui/paypalweb/StartPayPalWebCheckoutForm.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardUiState.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/uishared/components/AmountForm.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/uishared/components/CreateOrderWithVaultOptionForm.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/uishared/components/DemoAppTopBar.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/uishared/components/PayPalUserIdentityForm.kt`
+- `added`: `Demo/src/main/java/com/paypal/android/uishared/components/StoreInVaultOptionForm.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/uishared/state/ActionState.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/usecase/CreateCardSetupTokenUseCase.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt`
+- `modified`: `Demo/src/main/java/com/paypal/android/usecase/CreatePayPalSetupTokenUseCase.kt`
+- `modified`: `FraudProtection/api/FraudProtection.api`
+- `modified`: `FraudProtection/build.gradle`
+- `deleted`: `FraudProtection/src/main/java/com/paypal/android/fraudprotection/CoreConfigMagnesExt.kt`
+- `modified`: `FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt`
+- `added`: `PayPalPayments/api/PayPalPayments.api`
+- `renamed`: `PayPalWebPayments/build.gradle` -> `PayPalPayments/build.gradle`
+- `renamed`: `PayPalWebPayments/src/main/AndroidManifest.xml` -> `PayPalPayments/src/main/AndroidManifest.xml`
+- `renamed`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFundingSource.kt` -> `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalCheckoutFundingSource.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishStartResult.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishVaultResult.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalLauncher.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPhoneNumber.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPresentAuthChallengeResult.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalResultCallback.kt`
+- `renamed`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutSessionStore.kt` -> `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalSessionStore.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserAction.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserIdentity.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/ReturnToAppUrlConfig.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/CreatePayPalSessionEvent.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/LatencyEvent.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalEvent.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalError.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalErrorCode.kt`
+- `added`: `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/usecase/GetEffectiveReturnUrlConfigUseCase.kt`
+- `deleted`: `PayPalWebPayments/api/PayPalWebPayments.api`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalPresentAuthChallengeResult.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutClient.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishStartResult.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishVaultResult.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutRequest.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebLauncher.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebStartCallback.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebVaultRequest.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/CheckoutEvent.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/PayPalWebAnalytics.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/VaultEvent.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutError.kt`
+- `deleted`: `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutErrorCode.kt`
+- `modified`: `PaymentButtons/build.gradle`
+- `modified`: `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayLaterButton.kt`
+- `modified`: `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalButton.kt`
+- `modified`: `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalCreditButton.kt`
+- `modified`: `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PaymentButton.kt`
+- `modified`: `README.md`
+- `modified`: `Venmo/build.gradle`
+- `modified`: `build.gradle`
+- `modified`: `gradle/libs.versions.toml`
+- `modified`: `settings.gradle`
+- `modified`: `v2_MIGRATION_GUIDE.md`
+- `added`: `version.properties`

@@ -117,6 +117,33 @@ def _plain_tag_package(config: RepoConfig, package_name: Optional[str]) -> Optio
     return None
 
 
+def discover_untracked_major_releases(config: RepoConfig, clone_path: Path) -> Tuple[str, ...]:
+    """Surface stable tags above configured majors without extending collection policy."""
+    ceilings: Dict[str, int] = {}
+    for track in config.version_tracks:
+        package, target = _track_scope(track)
+        if package is not None:
+            ceilings[package] = max(ceilings.get(package, -1), target.major)
+    tags, _ = _remote_tag_metadata(clone_path)
+    found = set()
+    for tag in tags:
+        qualified = parse_package_tag(tag)
+        if qualified is not None:
+            package, raw_version = qualified
+        elif len(ceilings) == 1:
+            package = next(iter(ceilings))
+            if _plain_tag_package(config, package) != package:
+                continue
+            raw_version = tag
+        else:
+            continue
+        version = parse_semver(raw_version)
+        if (package in ceilings and version is not None and version.is_exact
+                and version.prerelease is None and version.major > ceilings[package]):
+            found.add(package + "@" + _normalized_version(raw_version))
+    return tuple(sorted(found))
+
+
 def select_release_candidates(
     track: VersionTrack,
     candidates: Sequence[ReleaseCandidate],

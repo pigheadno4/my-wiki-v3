@@ -12,6 +12,17 @@ The tagged adapter does not run package managers or builds and does not fabricat
 
 For `future = "all-stable"`, select every stable release newer than the highest retained version. Do not silently backfill older gaps; use an exact release request or reviewed backfill policy.
 
+Selectors remain major-scoped: `package:example-sdk@2` does not authorize v3
+collection. Before a routine `--mode future` check applies these selectors,
+inspect remote stable semantic tags for each configured package. A major above
+its highest configured major returns `needs_manual_review`, with package-qualified
+versions and `manual-review` in the collection index; never report it as
+`unchanged`. This guard applies to dry runs too. Prerelease tags and unrelated
+package namespaces do not trigger it. Exact historical-release requests remain
+available. Review renamed modules, required roots, API files and budgets before
+adding a new track. Preserve older tracks and evidence; new-major detection never
+collects snapshots, creates ingest work, or approves ingestion by itself.
+
 ## Evidence and commands
 
 Each package release links to one exact-SHA snapshot and has its own immutable record:

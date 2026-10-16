@@ -64,6 +64,7 @@ from github_releases import (
     ReleaseEvidenceError,
     ReleaseNotesEvidence,
     discover_release_candidates,
+    discover_untracked_major_releases,
     fetch_release_notes,
     select_release_candidates,
 )
@@ -668,6 +669,14 @@ def _collect_release_attempt(
     with tempfile.TemporaryDirectory(prefix="wiki-github-") as temporary:
         clone_path = Path(temporary) / "repository"
         clone_repository(effective, clone_path)
+        if release is None and release_mode == "future":
+            untracked = discover_untracked_major_releases(config, clone_path)
+            if untracked:
+                return CollectionResult(
+                    config.id, "needs_manual_review", untracked, (), (),
+                    ("untracked stable major: " + ", ".join(untracked)
+                     + "; review version tracks and capsule paths before collection",),
+                )
         candidates = _select_candidates(
             effective, config, clone_path, existing_items, release_mode, release
         )

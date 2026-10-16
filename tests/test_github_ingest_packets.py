@@ -1561,6 +1561,7 @@ class GitHubIngestPacketTests(unittest.TestCase):
             "Cartfile": "github \"example/dependency\"\n",
             "android/build.gradle": "dependencies {}\n",
             "android/gradle.properties": "StripeSdkVersion=1\n",
+            "version.properties": "major=3\nminor=0\npatch=0\n",
             "android/gradle/libs.versions.toml": "[versions]\nkotlin = '2.0.0'\n",
             ".factory/settings.json": "{\"skills\":{}}\n",
             "gradle/wrapper/gradle-wrapper.properties": "distributionUrl=https://example.test/gradle.zip\n",

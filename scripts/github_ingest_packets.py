@@ -1262,6 +1262,7 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
             "settings.gradle",
             "terraform-registry-manifest.json",
             "version",
+            "version.properties",
         )
         or filename.endswith(
             (

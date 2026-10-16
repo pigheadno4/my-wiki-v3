@@ -144,6 +144,16 @@ Payment Method Tokens 3.4 defines create/list/get/delete payment tokens and crea
 
 - [[paypal]] — PayPal company overview
 
+## Android Version 3 Vault Lifecycle
+
+The `3.1.0` delta resolves the `3.0.0` restricted-`TokenType` problem and initializes the demo's `CardClient` before vaulting, retaining that instance for challenge completion. Shopper-session prewarming, explicit finish handling and server-side payment-token exchange remain required. These are code-level fixes, not a reproduced successful vault operation. Source: [[source-github-paypal-android]]; history: [[changelog-github-paypal-android]].
+
+The full `paypal-android@3.0.0` baseline replaces `PayPalWebCheckoutClient` and request objects with `PayPalClient` in `com.paypal.android:paypal-payments`. Prewarm with `createPayPalSession(TokenType.VAULT_ID, userIdentity, urlConfig, userAction)`, then call `vault(activity, setupTokenId, PayPalResultCallback)`. Presentation success is not consent completion: finish the returning intent with `finishVault(intent)`, then exchange the approved setup token server-side. A session is consumed per launch attempt; restoring browser auth state does not restore prewarming.
+
+For purchase-with-vault, the demo sets `ON_SUCCESS` on the merchant-created order, prewarms an `ORDER_ID` session, starts checkout, resolves its return, and completes the order server-side. Its standalone PayPal setup-token sample uses `MERCHANT`, unlike the older `PLATFORM` guide below; choose the merchant model from authoritative server requirements, not by merging the examples. `PayPalUserIdentity.existingPayPalSessionId` identifies a shopper session, not a saved payment credential or authorization for an automatic charge.
+
+The required `TokenType` is library-group restricted at `3.0.0`. The card-vault sample additionally never initializes its nullable client before invoking `vault`; do not copy that wiring. These are exact-version source findings, not sandbox execution results. Source: [[source-github-paypal-android]]; history: [[changelog-github-paypal-android]].
+
 ## Save PayPal Wallet (during purchase, Android SDK)
 
 Uses `PayPalWebCheckoutClient` (browser-based web checkout) - not `CardClient`. At `paypal-android@2.3.0`, the older listener examples are version 1 history:
@@ -370,8 +380,8 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-github-paypal-checkout-components]] — package-qualified runtime, Venmo setup-token, and eligibility evidence
 - [[source-github-paypal-ios]] — cumulative native iOS evidence through `paypal-ios@2.0.1`, including v2 Result/async APIs, cancellation handling, and the no-native-Venmo enum boundary
 - [[changelog-github-paypal-ios]] — package-qualified iOS major-version and patch history
-- [[source-github-paypal-android]] — cumulative native Android evidence through `paypal-android@2.3.0`, including v2 callbacks, manual browser completion, and the native Venmo evidence boundary
+- [[source-github-paypal-android]] — cumulative Android through `3.1.0`: session-first v3 vaulting, public token enum and demo fix; v2 callbacks and Venmo boundary retained
 - [[source-github-v6-web-sdk-sample-integration]] — current Web SDK setup-token, payment-token, and purchase-with-vault sample paths
-- [[changelog-github-paypal-android]] — package-qualified Android major-version and `2.3.0` callback history
+- [[changelog-github-paypal-android]] — package-qualified Android full `3.0.0` and delta `3.1.0` history alongside earlier baselines
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Payment Method Tokens 3.4 and Orders 2.32 schema boundary
 - [[source-github-postman-collections]] — exact-commit setup-token, payment-token, save-during-purchase, and returning-buyer sequences

@@ -71,6 +71,22 @@ def _item(repo_id, state, mode="delta", *, day="2026-08-01"):
 
 
 class CollectionIndexTests(unittest.TestCase):
+    def test_untracked_major_check_overrides_wait_without_changing_accepted_release(self):
+        repo = _repo("alpha/sdk", frequency="weekly")
+        item = _item(repo.id, "ingested")
+        rows = build_collection_index(
+            (repo,), (item,),
+            checked_state={repo.id: {
+                "last_checked_date": "2026-08-02",
+                "latest_discovered_ref": "example-sdk@2.0.0",
+                "last_error": "untracked stable major: example-sdk@2.0.0",
+            }},
+            today=date(2026, 8, 2),
+        )
+        row = rows["repositories"][0]
+        self.assertEqual("manual-review", row["next_action"])
+        self.assertEqual("example-sdk@1.1.0", row["last_accepted_ref"])
+
     def test_same_day_core_patch_follows_shared_monorepo_release(self):
         core = replace(
             _item("alpha/sdk", "ingested").package_changes[0],

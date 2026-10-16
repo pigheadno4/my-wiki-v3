@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-16] ingest | PayPal Android `3.1.0`
+
+- Serial delta after completed `3.0.0`: public TokenType fix, initialized card-vault demo client, BN-code session forwarding, demo user-action cleanup and Magnes import relocation. Versioned history/evidence limits preserved. Details: [[paypal-log]], [[source-github-paypal-android]], [[changelog-github-paypal-android]]. No commit/push.
+
+## [2026-10-16] ingest | PayPal Android `3.0.0`
+
+- Approved additive full baseline: session-first PayPalClient, app-switch/return routing, migration and source cautions; all 278 retained files read, generated files checked under the approved exception. V1/v2 history and source count preserved. Details: [[paypal-log]], [[source-github-paypal-android]], [[changelog-github-paypal-android]]. No commit/push.
+
 ## [2026-10-16] ingest | Adyen website C13
 
 - Fifty independently approved commerce/ERP/hospitality plugin documentation sources; first full-review approvals 41/50 and 9 targeted correction reviews. 7 concepts touched (6 new); source_count 664 = 650 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-13/`; details [[adyen-log]]. No commit/push.

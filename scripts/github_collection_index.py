@@ -287,6 +287,8 @@ def _build_row(
     last_error = " ".join(last_error.split())[:240]
     next_due = _next_due(last_checked, repo.collection_frequency)
     action = _next_action(repo, queue_item, bool(accepted), next_due, today)
+    if repo.enabled and _checked_value(checked, "last_error").startswith("untracked stable major:"):
+        action = "manual-review"
     adapter = repo.capsules[0].adapter if len(repo.capsules) == 1 else ""
     return CollectionIndexRow(
         repo.id,

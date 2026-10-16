@@ -11,7 +11,24 @@ The PayPal Mobile Android SDK enables merchants to accept PayPal, credit, and de
 
 Repo: <https://github.com/paypal/paypal-android>
 
-## Current Baseline
+## Version 3 Baseline
+
+Latest ingested is `paypal-android@3.1.0` (`d100313f2247b512cedf6080bb7b6ecaada26d42`, delta 2026-10-16), following the additive `3.0.0` baseline below. It removes `TokenType`'s library-group restriction and includes the enum in the public API inventory. It also forwards optional `CoreConfig.bnCode` into shopper-session eligibility, fixes the card-vault demo's missing client initialization, and changes Magnes imports to the namespace accompanying the release-noted collision fix. The demo now supplies user action only through session creation, not its order payload. No new native Venmo API or live payment proof follows from these changes. Sources: [[source-github-paypal-android]], [[changelog-github-paypal-android]].
+
+The approved full baseline `paypal-android@3.0.0` (`3540adff974abdc20371d66fe47748e4c5174592`, ingested 2026-10-16) adds a shopper-session-first checkout/vault lifecycle. Replace `paypal-web-payments` with `com.paypal.android:paypal-payments`, `PayPalWebCheckoutClient` with `PayPalClient`, and `Environment` / `CoreConfig.environment` with `CoreEnvironment` / `coreEnvironment`. Android SDK 23+ remains the declared minimum.
+
+Call `createPayPalSession(tokenType, userIdentity, urlConfig, userAction)` before each `start(activity, orderId, callback)` or `vault(activity, setupTokenId, callback)` attempt. Prewarming returns immediately; launch awaits it and consumes the session. Missing or failed prewarming reports failure rather than silently opening legacy checkout. `PayPalResultCallback.onPayPalResult` reports presentation, not payment completion: retain `finishStart(intent)` / `finishVault(intent)` and server capture/authorization or setup-token exchange. `instanceState` preserves browser auth state, not the pending prewarm.
+
+App switch requires server eligibility and an enabled, resolvable PayPal app meeting the implementation's version-code threshold; otherwise the returned checkout fallback URL is used. `ReturnToAppUrlConfig` supplies return/cancel App Links and a custom-scheme fallback. These code paths do not prove account enablement, verified return routing, or production checkout success.
+
+> [!warning] Contradiction - version 3 documentation versus final API
+> The `3.0.0` notes mention request-object/async migration alternatives that are absent from the final public API, and call `fallbackSchemeUrl` mandatory even though implementation accepts a nonblank return App Link without it. Use exact-version signatures and verify supported merchant return configuration; permissive validation is not an availability promise. Earlier v1/v2 examples below remain historical, not drop-in v3 code.
+
+At `3.0.0`, the required `TokenType` is public Kotlin but marked `LIBRARY_GROUP`-restricted and omitted from the public API inventory. The retained card-vault demo also leaves its nullable `cardClient` uninitialized before `cardClient?.vault(...)`; this is a sample wiring defect, not proof the SDK's card vault API fails. See [[source-github-paypal-android]] and [[changelog-github-paypal-android]] for exact evidence and limitations. The v3 `Venmo.api` still exposes only `BuildConfig`, not a native Venmo integration.
+
+`CoreConfig(clientId, merchantId, coreEnvironment, bnCode)` now requires both client and merchant IDs; `bnCode` remains optional. Do not reuse the one-ID v2 configuration example below for v3.
+
+## Historical Version 2 Baseline
 
 The approved GitHub baseline is `paypal-android@2.3.0` at SHA `d69a2fad7a96155e71f2681dc7cbfa9957fff544`. It supports Android SDK 23+, is written in Kotlin, and supports Kotlin and Java integrations. This version uses callback result types and explicit browser-return completion methods; the listener APIs summarized from older product pages are version 1 history.
 
@@ -21,7 +38,7 @@ The independent `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137
 
 The same app presents Payment Links as a separate hosted-browser option. It handles warm and cold App Link returns, but it trusts the return URI for UI completion and does not verify settlement. See [[source-github-paypal-android-sdk-demo-app]] and [[changelog-github-paypal-android-sdk-demo-app]].
 
-## Available Modules
+## Version 2 Modules
 
 | Module | Gradle artifact | Purpose |
 | ------ | --------------- | ------- |
@@ -32,7 +49,7 @@ The same app presents Payment Links as a separate hosted-browser option. It hand
 
 `PayPalNativePayments` was deprecated in version 1 and removed from version 2. The retained `Venmo` directory at `2.3.0` contains build metadata but no public integration API.
 
-## Core Pattern
+## Version 2 Core Pattern
 
 All modules share a `CoreConfig`:
 
@@ -151,7 +168,7 @@ See [[source-paypal-save-cards-android-sdk]] for full detail.
 - [[source-paypal-save-paypal-android-sdk]] — PayPal Wallet vault during purchase: `PayPalWebCheckoutClient`, deep link, `vault.id` for returning payers
 - [[source-paypal-save-cards-android-sdk]] — Card vault during purchase: Compose checkbox, returning payer pattern, APPROVED/VAULTED, RTAU
 - [[source-github-paypal-android]] — GitHub source: CardClient constructor, instance state, Demo ViewModels, server API contract
-- [[changelog-github-paypal-android]] — package-qualified Android SDK release history through `2.3.0`
+- [[changelog-github-paypal-android]] — package-qualified Android history through `3.1.0`, retaining v1/v2 and the full `3.0.0` baseline
 - [[source-github-paypal-android-sdk-demo-app]] — Jetpack Compose PayPal, card, and hosted Payment Link checkout sample at `d1137d5`
 - [[changelog-github-paypal-android-sdk-demo-app]] — commit-qualified demo baseline and retained limitations
 - [[source-github-paypal-messages-android]] — GitHub paypal-messages-android: PayPalMessageConfig API, callbacks, Compose support, Android vs iOS differences

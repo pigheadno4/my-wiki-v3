@@ -1811,6 +1811,7 @@ class RegistryTests(unittest.TestCase):
                     False,
                     ("5.8.0",),
                 ),
+                VersionTrack("package:stripeterminal@6", "all-stable", "all-stable"),
             ),
             repo.version_tracks,
         )
@@ -1887,6 +1888,7 @@ class RegistryTests(unittest.TestCase):
                     False,
                     ("21.2.0",),
                 ),
+                VersionTrack("package:stripe-php@22", "all-stable", "all-stable"),
             ),
             repo.version_tracks,
         )
@@ -1928,6 +1930,7 @@ class RegistryTests(unittest.TestCase):
                     "latest-stable",
                     "all-stable",
                 ),
+                VersionTrack("package:@stripe/stripe-js@10", "all-stable", "all-stable"),
             ),
             stripe_js.version_tracks,
         )
@@ -1972,6 +1975,7 @@ class RegistryTests(unittest.TestCase):
                     "latest-stable",
                     "all-stable",
                 ),
+                VersionTrack("package:@stripe/react-stripe-js@7", "all-stable", "all-stable"),
             ),
             react_stripe_js.version_tracks,
         )
@@ -2312,7 +2316,7 @@ class RegistryTests(unittest.TestCase):
                 "2",
                 "2.3.0",
                 6,
-                47,
+                48,
             ),
             (
                 "braintree/braintree_android",
@@ -2360,7 +2364,8 @@ class RegistryTests(unittest.TestCase):
                             (pinned,),
                         ),
                     ),
-                    repo.version_tracks,
+                    repo.version_tracks[:1] if repo_id == "paypal/paypal-android"
+                    else repo.version_tracks,
                 )
                 self.assertEqual(1, len(repo.capsules))
                 capsule = repo.capsules[0]
@@ -2389,6 +2394,21 @@ class RegistryTests(unittest.TestCase):
                 self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
                 self.assertEqual(550, capsule.max_packet_files)
                 self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
+
+    def test_paypal_android_v3_paths_preserve_the_historical_v2_policy(self):
+        repo = next(r for r in load_registry(ROOT / "tracking/github/repo-registry.toml")
+                    if r.id == "paypal/paypal-android")
+        self.assertIn("package:paypal-android@3", [t.selector for t in repo.version_tracks])
+        self.assertIn("package:paypal-android@2", [t.selector for t in repo.version_tracks])
+        capsule = repo.capsules[0]
+        self.assertIn("PayPalPayments/src/main/java", capsule.default_required_roots)
+        self.assertNotIn("PayPalWebPayments/src/main/java", capsule.default_required_roots)
+        self.assertIn("PayPalPayments/api/PayPalPayments.api", capsule.include_paths)
+        self.assertIn("PayPalPayments/build.gradle", capsule.include_paths)
+        self.assertIn("PayPalPayments/src/main/AndroidManifest.xml", capsule.include_paths)
+        self.assertIn("version.properties", capsule.include_paths)
+        self.assertIn("c0376ccf1e8e394e33bec22aef38f271f05c325a7eec066831e934634894cfc5",
+                      capsule.historical_policy_hashes)
 
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

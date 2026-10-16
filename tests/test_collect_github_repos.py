@@ -160,6 +160,41 @@ class CollectGitHubReposTests(unittest.TestCase):
         defaults.update(values)
         return collect_one(self.root, self.config, **defaults)
 
+    def test_future_check_flags_untracked_major_without_publishing_evidence(self):
+        self.collect()
+        queue_path = self.root / "tracking/github/work-items.json"
+        before = queue_path.read_bytes()
+        tag(self.remote, "@paypal/paypal-js@11.0.0")
+
+        result = self.collect(release_mode="future")
+
+        self.assertEqual("needs_manual_review", result.state)
+        self.assertIn("@paypal/paypal-js@11.0.0", result.release_ids)
+        self.assertIn("untracked stable major", result.errors[0])
+        self.assertEqual((), result.snapshot_paths)
+        self.assertEqual((), result.work_item_ids)
+        self.assertEqual(before, queue_path.read_bytes())
+
+    def test_future_check_ignores_other_packages_and_prerelease_majors(self):
+        self.collect()
+        tag(self.remote, "@paypal/paypal-js@11.0.0-beta.1")
+        tag(self.remote, "@other/sdk@99.0.0")
+        result = self.collect(release_mode="future")
+        self.assertEqual("unchanged", result.state)
+
+    def test_future_dry_run_flags_untracked_major_without_writing(self):
+        tag(self.remote, "@paypal/paypal-js@11.0.0")
+        result = self.collect(release_mode="future", dry_run=True)
+        self.assertEqual("needs_manual_review", result.state)
+        self.assertFalse((self.root / "raw").exists())
+        self.assertFalse((self.root / "tracking").exists())
+
+    def test_exact_historical_release_is_not_blocked_by_untracked_major(self):
+        self.collect()
+        tag(self.remote, "@paypal/paypal-js@11.0.0")
+        result = self.collect(release="@paypal/paypal-js@10.0.0", release_mode=None)
+        self.assertEqual("unchanged", result.state)
+
     def test_backfill_groups_same_sha_releases_into_one_awaiting_item(self):
         result = self.collect()
 

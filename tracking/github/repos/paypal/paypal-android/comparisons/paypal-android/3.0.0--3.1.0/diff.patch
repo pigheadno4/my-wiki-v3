@@ -1,0 +1,449 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b19c2a8..9083420 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,12 @@
+ # PayPal Android SDK Release Notes
+ 
++## 3.1.0 (2026-10-05)
++
++* CorePayments
++  * Fixed `TokenType` being inaccessible outside the SDK despite being a required parameter of `PayPalClient.createPayPalSession()`
++* FraudProtection
++  * Update Magnes SDK embedded jar file to avoid symbol collisions with other PayPal SDKs.
++
+ ## 3.0.0 (2026-08-18)
+ 
+ * CardPayments
+diff --git a/CorePayments/api/CorePayments.api b/CorePayments/api/CorePayments.api
+index 8712d49..51aab34 100644
+--- a/CorePayments/api/CorePayments.api
++++ b/CorePayments/api/CorePayments.api
+@@ -326,3 +326,12 @@ public final class com/paypal/android/corepayments/model/APIResult$Success : com
+ 	public fun toString ()Ljava/lang/String;
+ }
+ 
++public final class com/paypal/android/corepayments/model/TokenType : java/lang/Enum {
++	public static final field BILLING_TOKEN Lcom/paypal/android/corepayments/model/TokenType;
++	public static final field ORDER_ID Lcom/paypal/android/corepayments/model/TokenType;
++	public static final field VAULT_ID Lcom/paypal/android/corepayments/model/TokenType;
++	public static fun getEntries ()Lkotlin/enums/EnumEntries;
++	public static fun valueOf (Ljava/lang/String;)Lcom/paypal/android/corepayments/model/TokenType;
++	public static fun values ()[Lcom/paypal/android/corepayments/model/TokenType;
++}
++
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt
+index 4ae0ddf..9c8066d 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt
+@@ -89,6 +89,7 @@ class CreateShopperSessionWithAppSwitchEligibilityAPI internal constructor(
+                     isWebLLSEligible = false,
+                     isWebView = false,
+                     paymentType = params.paymentType,
++                    bnCode = params.bnCode,
+                 ),
+                 merchantOptInForAppSwitch = true,
+                 osType = OS_TYPE,
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt
+index 5df997d..df2c305 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt
+@@ -35,6 +35,7 @@ internal data class CreateShopperSessionExperimentationContext(
+     val isWebLLSEligible: Boolean,
+     val isWebView: Boolean,
+     val paymentType: String,
++    val bnCode: String? = null,
+ )
+ 
+ @OptIn(InternalSerializationApi::class)
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt
+index 98dfdd5..02044c7 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt
+@@ -15,6 +15,7 @@ import androidx.annotation.RestrictTo
+  * @param buyerEmailAddressMerchantPassed The shopper's email address, as passed by the
+  * merchant to identify user.
+  * @param existingPayPalSessionId A server-side shopper session id from a previous session.
++ * @param bnCode The merchant's BN Code.
+  */
+ @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+ data class CreateShopperSessionWithAppSwitchEligibilityParams(
+@@ -27,4 +28,5 @@ data class CreateShopperSessionWithAppSwitchEligibilityParams(
+     val nationalNumber: String? = null,
+     val buyerEmailAddressMerchantPassed: String? = null,
+     val existingPayPalSessionId: String? = null,
++    val bnCode: String? = null,
+ )
+diff --git a/CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt b/CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt
+index 65295b9..8cf9ee4 100644
+--- a/CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt
++++ b/CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt
+@@ -1,8 +1,5 @@
+ package com.paypal.android.corepayments.model
+ 
+-import androidx.annotation.RestrictTo
+-
+-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+ enum class TokenType {
+     ORDER_ID,
+     VAULT_ID,
+diff --git a/Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt b/Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt
+deleted file mode 100644
+index 5b14451..0000000
+--- a/Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt
++++ /dev/null
+@@ -1,19 +0,0 @@
+-package com.paypal.android.api.model
+-
+-import kotlinx.serialization.Serializable
+-
+-/**
+- * The call-to-action label on the PayPal checkout page, sent as
+- * `payment_source.paypal.experience_context.user_action` on order creation.
+- */
+-@Serializable
+-enum class UserActionSelected {
+-    /** Displays a "Continue" button. */
+-    CONTINUE,
+-
+-    /** Displays a "Pay Now" button. Use when the order amount is final at checkout. */
+-    PAY_NOW,
+-
+-    /** Displays a "Set Up" button. Use for vault-without-purchase flows. */
+-    SETUP_NOW
+-}
+diff --git a/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt b/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt
+index 25f039b..ae655a1 100644
+--- a/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt
++++ b/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt
+@@ -2,7 +2,6 @@ package com.paypal.android.api.model.serialization
+ 
+ import com.paypal.android.api.model.OrderIntent
+ import com.paypal.android.api.model.PaymentMethodSelected
+-import com.paypal.android.api.model.UserActionSelected
+ import kotlinx.serialization.Serializable
+ 
+ @Serializable
+@@ -67,7 +66,6 @@ data class PayPalOrderExperienceContext(
+     val returnUrl: String,
+     val cancelUrl: String,
+     val paymentMethodSelected: PaymentMethodSelected? = null,
+-    val userAction: UserActionSelected? = null,
+     val appSwitchContext: AppSwitchContext? = null
+ )
+ 
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt b/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt
+index 198771a..52ae78f 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt
+@@ -25,6 +25,9 @@ data class DemoEnvironmentSettings(
+ 
+     /** Optional merchant ID override. When blank, falls back to the default integration merchant ID. */
+     val customMerchantId: String = "",
++
++    /** Optional BN Code override. When blank, falls back to the default (none). */
++    val customBnCode: String = "",
+ ) {
+     /**
+      * True when the config is ready to use. Only false when [selectedEnvironment] is CUSTOM
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt
+index 5eb6876..73ee321 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt
+@@ -36,6 +36,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
+ 
+ private val successGreen = Color(color = 0xff007f5f)
+ 
++private data class SettingsCallbacks(
++    val onEnvironmentChange: (SelectedEnvironment) -> Unit,
++    val onCustomSdkRestUrlChange: (String) -> Unit,
++    val onCustomSdkGraphQLUrlChange: (String) -> Unit,
++    val onCustomClientIdChange: (String) -> Unit,
++    val onCustomMerchantBaseUrlChange: (String) -> Unit,
++    val onCustomMerchantIdChange: (String) -> Unit,
++    val onCustomBnCodeChange: (String) -> Unit,
++    val onSaveClick: () -> Unit,
++    val onClearClick: () -> Unit
++)
++
+ @Composable
+ fun SettingsView(
+     viewModel: SettingsViewModel = hiltViewModel()
+@@ -43,28 +55,24 @@ fun SettingsView(
+     val uiState by viewModel.uiState.collectAsState()
+     SettingsContent(
+         uiState = uiState,
+-        onEnvironmentChange = viewModel::updateSelectedEnvironment,
+-        onCustomSdkRestUrlChange = viewModel::updateCustomSdkRestUrl,
+-        onCustomSdkGraphQLUrlChange = viewModel::updateCustomSdkGraphQLUrl,
+-        onCustomClientIdChange = viewModel::updateCustomClientId,
+-        onCustomMerchantBaseUrlChange = viewModel::updateCustomMerchantBaseUrl,
+-        onCustomMerchantIdChange = viewModel::updateCustomMerchantId,
+-        onSaveClick = viewModel::saveConfig,
+-        onClearClick = viewModel::clearConfig
++        callbacks = SettingsCallbacks(
++            onEnvironmentChange = viewModel::updateSelectedEnvironment,
++            onCustomSdkRestUrlChange = viewModel::updateCustomSdkRestUrl,
++            onCustomSdkGraphQLUrlChange = viewModel::updateCustomSdkGraphQLUrl,
++            onCustomClientIdChange = viewModel::updateCustomClientId,
++            onCustomMerchantBaseUrlChange = viewModel::updateCustomMerchantBaseUrl,
++            onCustomMerchantIdChange = viewModel::updateCustomMerchantId,
++            onCustomBnCodeChange = viewModel::updateCustomBnCode,
++            onSaveClick = viewModel::saveConfig,
++            onClearClick = viewModel::clearConfig
++        )
+     )
+ }
+ 
+ @Composable
+ private fun SettingsContent(
+     uiState: SettingsUiState,
+-    onEnvironmentChange: (SelectedEnvironment) -> Unit,
+-    onCustomSdkRestUrlChange: (String) -> Unit,
+-    onCustomSdkGraphQLUrlChange: (String) -> Unit,
+-    onCustomClientIdChange: (String) -> Unit,
+-    onCustomMerchantBaseUrlChange: (String) -> Unit,
+-    onCustomMerchantIdChange: (String) -> Unit,
+-    onSaveClick: () -> Unit,
+-    onClearClick: () -> Unit
++    callbacks: SettingsCallbacks
+ ) {
+     val scrollState = rememberScrollState()
+     Column(
+@@ -74,22 +82,30 @@ private fun SettingsContent(
+             .padding(horizontal = 16.dp, vertical = 24.dp),
+         verticalArrangement = Arrangement.spacedBy(8.dp)
+     ) {
++        BnCodeField(
++            value = uiState.settings.customBnCode,
++            onValueChange = callbacks.onCustomBnCodeChange,
++        )
++        Spacer(modifier = Modifier.height(8.dp))
+         SettingsHeader()
+-        EnvironmentSelector(selected = uiState.settings.selectedEnvironment, onSelect = onEnvironmentChange)
++        EnvironmentSelector(
++            selected = uiState.settings.selectedEnvironment,
++            onSelect = callbacks.onEnvironmentChange
++        )
+         if (uiState.settings.selectedEnvironment == SelectedEnvironment.CUSTOM) {
+             CustomEnvironmentFields(
+                 uiState = uiState,
+-                onCustomSdkRestUrlChange = onCustomSdkRestUrlChange,
+-                onCustomSdkGraphQLUrlChange = onCustomSdkGraphQLUrlChange,
+-                onCustomMerchantBaseUrlChange = onCustomMerchantBaseUrlChange,
+-                onCustomClientIdChange = onCustomClientIdChange,
+-                onCustomMerchantIdChange = onCustomMerchantIdChange,
++                onCustomSdkRestUrlChange = callbacks.onCustomSdkRestUrlChange,
++                onCustomSdkGraphQLUrlChange = callbacks.onCustomSdkGraphQLUrlChange,
++                onCustomMerchantBaseUrlChange = callbacks.onCustomMerchantBaseUrlChange,
++                onCustomClientIdChange = callbacks.onCustomClientIdChange,
++                onCustomMerchantIdChange = callbacks.onCustomMerchantIdChange,
+             )
+         }
+         Spacer(modifier = Modifier.height(4.dp))
+         SettingsStatus(settings = uiState.settings)
+         Spacer(modifier = Modifier.height(8.dp))
+-        SettingsActionButtons(onSaveClick = onSaveClick, onClearClick = onClearClick)
++        SettingsActionButtons(onSaveClick = callbacks.onSaveClick, onClearClick = callbacks.onClearClick)
+         if (uiState.showSaveSuccess) {
+             Text(
+                 text = "Custom URLs saved successfully.",
+@@ -147,6 +163,25 @@ private fun CustomEnvironmentFields(
+     )
+ }
+ 
++@Composable
++private fun BnCodeField(
++    value: String,
++    onValueChange: (String) -> Unit,
++) {
++    OutlinedTextField(
++        value = value,
++        onValueChange = onValueChange,
++        label = { Text("BN Code") },
++        placeholder = { Text("Enter BN Code (optional)", style = MaterialTheme.typography.bodySmall) },
++        modifier = Modifier.fillMaxWidth(),
++        singleLine = true,
++        keyboardOptions = KeyboardOptions(
++            keyboardType = KeyboardType.Ascii,
++            imeAction = ImeAction.Done
++        )
++    )
++}
++
+ @Composable
+ private fun SettingsHeader() {
+     Text(
+@@ -258,19 +293,23 @@ private fun SettingsViewPreview() {
+                         customClientId = "client-id-entered-at-runtime",
+                         customMerchantBaseUrl = "bad merchant url",
+                         customMerchantId = "merchant-id-entered-at-runtime",
++                        customBnCode = "bn-code-entered-at-runtime",
+                     ),
+                     restUrlError = "URL must start with https://",
+                     graphQLUrlError = "URL is required",
+                     merchantBaseUrlError = "URL must not contain spaces"
+                 ),
+-                onEnvironmentChange = {},
+-                onCustomSdkRestUrlChange = {},
+-                onCustomSdkGraphQLUrlChange = {},
+-                onCustomClientIdChange = {},
+-                onCustomMerchantBaseUrlChange = {},
+-                onCustomMerchantIdChange = {},
+-                onSaveClick = {},
+-                onClearClick = {}
++                callbacks = SettingsCallbacks(
++                    onEnvironmentChange = {},
++                    onCustomSdkRestUrlChange = {},
++                    onCustomSdkGraphQLUrlChange = {},
++                    onCustomClientIdChange = {},
++                    onCustomMerchantBaseUrlChange = {},
++                    onCustomMerchantIdChange = {},
++                    onCustomBnCodeChange = {},
++                    onSaveClick = {},
++                    onClearClick = {}
++                )
+             )
+         }
+     }
+diff --git a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt
+index 4df04c0..adc02cd 100644
+--- a/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt
++++ b/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt
+@@ -79,6 +79,15 @@ class SettingsViewModel @Inject constructor(
+         }
+     }
+ 
++    fun updateCustomBnCode(value: String) {
++        _uiState.update {
++            it.copy(
++                settings = it.settings.copy(customBnCode = value),
++                showSaveSuccess = false
++            )
++        }
++    }
++
+     /** Validates URLs (CUSTOM only) then persists to SharedPreferences. */
+     fun saveConfig() {
+         val settings = _uiState.value.settings
+diff --git a/Demo/src/main/java/com/paypal/android/models/OrderRequest.kt b/Demo/src/main/java/com/paypal/android/models/OrderRequest.kt
+index 1d46104..8fae138 100644
+--- a/Demo/src/main/java/com/paypal/android/models/OrderRequest.kt
++++ b/Demo/src/main/java/com/paypal/android/models/OrderRequest.kt
+@@ -2,7 +2,6 @@ package com.paypal.android.models
+ 
+ import com.paypal.android.api.model.OrderIntent
+ import com.paypal.android.api.model.PaymentMethodSelected
+-import com.paypal.android.api.model.UserActionSelected
+ import kotlinx.serialization.Serializable
+ 
+ @Serializable
+@@ -11,5 +10,4 @@ data class OrderRequest(
+     val shouldVaultOnSuccess: Boolean,
+     val amount: String = "10.99",
+     val paymentMethodSelected: PaymentMethodSelected = PaymentMethodSelected.PAYPAL,
+-    val userAction: UserActionSelected = UserActionSelected.PAY_NOW,
+ )
+diff --git a/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt b/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt
+index a2042b9..1726b70 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt
+@@ -10,7 +10,6 @@ import com.paypal.android.DemoConstants
+ import com.paypal.android.api.model.Order
+ import com.paypal.android.api.model.OrderIntent
+ import com.paypal.android.api.model.PaymentMethodSelected
+-import com.paypal.android.api.model.UserActionSelected
+ import com.paypal.android.api.services.SDKSampleServerAPI
+ import com.paypal.android.corepayments.CoreConfig
+ import com.paypal.android.corepayments.model.TokenType
+@@ -135,8 +134,7 @@ class PayPalCheckoutViewModel @Inject constructor(
+                     intentOption,
+                     shouldVault,
+                     amount,
+-                    paymentMethodOption.toPaymentMethodSelected(),
+-                    userAction.toUserActionSelected()
++                    paymentMethodOption.toPaymentMethodSelected()
+                 )
+             }
+             createOrderState = createOrderUseCase(orderRequest).mapToActionState()
+@@ -150,12 +148,6 @@ class PayPalCheckoutViewModel @Inject constructor(
+             PayPalCheckoutFundingSource.PAYPAL -> PaymentMethodSelected.PAYPAL
+         }
+ 
+-    private fun PayPalUserAction.toUserActionSelected(): UserActionSelected = when (this) {
+-        PayPalUserAction.CONTINUE -> UserActionSelected.CONTINUE
+-        PayPalUserAction.PAY_NOW -> UserActionSelected.PAY_NOW
+-        PayPalUserAction.SETUP_NOW -> UserActionSelected.SETUP_NOW
+-    }
+-
+     fun startCheckout(activity: ComponentActivity) {
+         val orderId = createdOrder?.id
+         if (orderId == null) {
+diff --git a/Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt b/Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt
+index daa2119..7020344 100644
+--- a/Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt
++++ b/Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt
+@@ -133,6 +133,7 @@ class VaultCardViewModel @Inject constructor(
+         val card = parseCard(_uiState.value)
+         val returnAppUrl = DemoConstants.returnToAppUrlConfig.returnAppUrl
+         val cardVaultRequest = CardVaultRequest(setupTokenId, card, returnAppUrl)
++        cardClient = CardClient(applicationContext, buildCoreConfig())
+         cardClient?.vault(cardVaultRequest) { result ->
+             when (result) {
+                 is CardVaultResult.Success -> {
+diff --git a/Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt b/Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt
+index 07185ce..38d1b35 100644
+--- a/Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt
++++ b/Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt
+@@ -37,8 +37,7 @@ class CreateOrderUseCase @Inject constructor(
+                 experienceContext = PayPalOrderExperienceContext(
+                     returnUrl = returnToAppUrlConfig.returnAppUrl,
+                     cancelUrl = returnToAppUrlConfig.cancelAppUrl,
+-                    paymentMethodSelected = request.paymentMethodSelected,
+-                    userAction = request.userAction
++                    paymentMethodSelected = request.paymentMethodSelected
+                 )
+             )
+         )
+diff --git a/FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt b/FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt
+index 073a9f1..d33eecb 100644
+--- a/FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt
++++ b/FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt
+@@ -3,10 +3,10 @@ package com.paypal.android.fraudprotection
+ import android.content.Context
+ import android.util.Log
+ import com.paypal.android.corepayments.CoreConfig
+-import lib.android.paypal.com.magnessdk.InvalidInputException
+-import lib.android.paypal.com.magnessdk.MagnesSDK
+-import lib.android.paypal.com.magnessdk.MagnesSettings
+-import lib.android.paypal.com.magnessdk.MagnesSource
++import lib.android.com.paypal.magnessdk.InvalidInputException
++import lib.android.com.paypal.magnessdk.MagnesSDK
++import lib.android.com.paypal.magnessdk.MagnesSettings
++import lib.android.com.paypal.magnessdk.MagnesSource
+ 
+ /**
+  * Enables you to collect data about a customer's device and correlate it with a session identifier on your server.
+diff --git a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt
+index c8cf681..8636db4 100644
+--- a/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt
++++ b/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt
+@@ -441,6 +441,7 @@ class PayPalClient internal constructor(
+                 nationalNumber = userIdentity?.phone?.nationalNumber,
+                 buyerEmailAddressMerchantPassed = userIdentity?.email,
+                 existingPayPalSessionId = userIdentity?.existingPayPalSessionId,
++                bnCode = coreConfig.bnCode,
+             ),
+         )
+ 
+diff --git a/version.properties b/version.properties
+index 72f3693..a182471 100644
+--- a/version.properties
++++ b/version.properties
+@@ -1,3 +1,5 @@
++#Updated by changeReleaseVersion task
++#Mon Oct 05 19:33:53 UTC 2026
+ patch=0
+ major=3
+-minor=0
++minor=1

@@ -22,6 +22,7 @@ from github_releases import (  # noqa: E402
     ReleaseNotesEvidence,
     ReleaseSelectionError,
     discover_release_candidates,
+    discover_untracked_major_releases,
     fetch_release_notes,
     select_release_candidates,
 )
@@ -125,6 +126,40 @@ class GitHubReleasesTests(unittest.TestCase):
         git(self.repo, "remote", "add", "origin", str(self.remote))
         git(self.repo, "push", "--tags", "origin", "main")
         git(self.root, "clone", "--no-checkout", str(self.remote), str(self.clone))
+
+    def test_untracked_plain_major_uses_package_identity_and_ignores_prereleases(self):
+        config = self._config(
+            version_tracks=(self._track(selector="package:paypal-android@2"),),
+            capsules=(CapsuleConfig(
+                id="android", adapter="tagged-tree-v1",
+                focus_packages=("paypal-android",),
+                dependency_scope="configured-repository-paths",
+            ),),
+        )
+        with mock.patch("github_releases._remote_tag_metadata", return_value=({
+            "2.3.0": "a" * 40, "3.0.0": "b" * 40,
+            "3.1.0": "c" * 40, "4.0.0-beta.1": "d" * 40,
+        }, {})):
+            found = discover_untracked_major_releases(config, self.clone)
+        self.assertEqual(("paypal-android@3.0.0", "paypal-android@3.1.0"), found)
+
+    def test_untracked_major_uses_highest_track_per_package(self):
+        config = self._config(
+            version_strategy="monorepo-packages",
+            version_tracks=(
+                self._track(selector="package:@acme/core@2", future="none"),
+                self._track(selector="package:@acme/core@3"),
+                self._track(selector="package:@acme/react@2"),
+            ),
+        )
+        with mock.patch("github_releases._remote_tag_metadata", return_value=({
+            "@acme/core@3.1.0": "a" * 40,
+            "@acme/react@3.0.0": "b" * 40,
+            "@other/sdk@99.0.0": "c" * 40,
+            "v99.0.0": "d" * 40,
+        }, {})):
+            found = discover_untracked_major_releases(config, self.clone)
+        self.assertEqual(("@acme/react@3.0.0",), found)
 
     def test_all_stable_selects_every_stable_candidate_in_semantic_order(self):
         selected = select_release_candidates(

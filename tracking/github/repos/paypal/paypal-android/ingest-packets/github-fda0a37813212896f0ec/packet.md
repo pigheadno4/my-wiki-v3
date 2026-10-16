@@ -1,0 +1,425 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-android`
+- Work item: `github-fda0a37813212896f0ec`
+- Snapshot: `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `paypal-android`
+
+- Version: `2.3.0` -> `3.0.0`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `150`
+
+### Required reading
+
+- `raw/github/paypal/paypal-android/releases/paypal-android/3.0.0/2026-10-16/manifest.json`
+- `raw/github/paypal/paypal-android/releases/paypal-android/3.0.0/2026-10-16/release-notes.md`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/CorePayments/src/main/java/com/paypal/android/corepayments/Environment.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebCheckoutResultView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalweb/StartPayPalWebCheckoutForm.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/FraudProtection/src/main/java/com/paypal/android/fraudprotection/CoreConfigMagnesExt.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/api/PayPalWebPayments.api`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalPresentAuthChallengeResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishStartResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishVaultResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFundingSource.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutRequest.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutSessionStore.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebLauncher.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebStartCallback.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebVaultRequest.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/CheckoutEvent.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/PayPalWebAnalytics.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/VaultEvent.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutError.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/files/PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutErrorCode.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-07-31-d69a2fa/manifest.json`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/api/CardPayments.api`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthChallenge.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthLauncher.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/src/main/java/com/paypal/android/cardpayments/CardClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/src/main/java/com/paypal/android/cardpayments/CardPresentAuthChallengeResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/src/main/java/com/paypal/android/cardpayments/DataVaultPaymentMethodTokensAPI.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CardPayments/src/main/java/com/paypal/android/cardpayments/analytics/CardAnalytics.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/api/CorePayments.api`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/AndroidManifest.xml`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/APIClientError.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/APIRequest.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/BrowserSwitchRequestCodes.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/CoreConfig.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/DeepLinkUtils.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/Http.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/HttpResponse.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/HttpRoundTripTiming.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/LinkType.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/PayPalSDKErrorCode.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/RestClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/ReturnToAppStrategy.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsService.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/api/AuthenticationSecureTokenServiceAPI.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchOptions.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchPendingState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchStartResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/ChromeCustomTabsClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/common/Headers.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/model/APIResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/model/AppSwitchEligibility.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityResponse.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyUseCase.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/DemoConstants.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/model/PaymentMethodSelected.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/model/PaymentSource.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/model/serialization/PayPalModels.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/services/MerchantIntegration.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/api/services/SDKSampleServerAPI.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/customenvironment/SelectedEnvironment.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/di/NetworkModule.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/models/OrderRequest.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/DemoApp.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/approveorder/CardFormatter.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/features/Feature.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutResultView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypal/PayPalUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultView.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardUiState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/uishared/components/AmountForm.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/uishared/components/CreateOrderWithVaultOptionForm.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/uishared/components/DemoAppTopBar.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/uishared/components/PayPalUserIdentityForm.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/uishared/components/StoreInVaultOptionForm.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/uishared/state/ActionState.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/usecase/CreateCardSetupTokenUseCase.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Demo/src/main/java/com/paypal/android/usecase/CreatePayPalSetupTokenUseCase.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/FraudProtection/api/FraudProtection.api`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/FraudProtection/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/api/PayPalPayments.api`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/AndroidManifest.xml`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalCheckoutFundingSource.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishStartResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishVaultResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalLauncher.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPhoneNumber.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPresentAuthChallengeResult.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalResultCallback.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalSessionStore.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserAction.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserIdentity.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/ReturnToAppUrlConfig.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/CreatePayPalSessionEvent.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/LatencyEvent.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalEvent.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalError.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalErrorCode.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PayPalPayments/src/main/java/com/paypal/android/paypalpayments/usecase/GetEffectiveReturnUrlConfigUseCase.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PaymentButtons/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayLaterButton.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalButton.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalCreditButton.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PaymentButton.kt`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/README.md`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/Venmo/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/build.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/gradle/libs.versions.toml`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/settings.gradle`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/v2_MIGRATION_GUIDE.md`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/files/version.properties`
+- `raw/github/paypal/paypal-android/snapshots/2026-10-16-3540adf/manifest.json`
+- `tracking/github/repos/paypal/paypal-android/comparisons/paypal-android/2.3.0--3.0.0/comparison.json`
+- `tracking/github/repos/paypal/paypal-android/comparisons/paypal-android/2.3.0--3.0.0/comparison.md`
+- `tracking/github/repos/paypal/paypal-android/comparisons/paypal-android/2.3.0--3.0.0/diff.patch`
+
+### Files absent from current snapshot
+
+Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.
+
+- `CorePayments/src/main/java/com/paypal/android/corepayments/Environment.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebCheckoutResultView.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebUiState.kt`: `upstream-deletion`; upstream: `deleted`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebView.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebViewModel.kt`: `upstream-deletion`; upstream: `deleted`
+- `Demo/src/main/java/com/paypal/android/ui/paypalweb/StartPayPalWebCheckoutForm.kt`: `upstream-deletion`; upstream: `deleted`
+- `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultUiState.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultView.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/src/main/java/com/paypal/android/ui/paypalwebvault/PayPalWebVaultViewModel.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `FraudProtection/src/main/java/com/paypal/android/fraudprotection/CoreConfigMagnesExt.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `PayPalWebPayments/api/PayPalWebPayments.api`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/build.gradle`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalPresentAuthChallengeResult.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutClient.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishStartResult.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishVaultResult.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFundingSource.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutRequest.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutSessionStore.kt`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebLauncher.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebStartCallback.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebVaultRequest.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/CheckoutEvent.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/PayPalWebAnalytics.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/VaultEvent.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutError.kt`: `upstream-deletion`; upstream: `deleted`
+- `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutErrorCode.kt`: `upstream-deletion`; upstream: `deleted`
+
+### Upstream changes
+
+- `modified` `.github/ISSUE_TEMPLATE/bug_report.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/PULL_REQUEST_TEMPLATE.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/actions/publish_all_modules/action.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/build.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/create_release_pr.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/docs.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/release_1.x.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/release_snapshot.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/static_analysis.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.gitignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.idea/misc.xml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/api/CardPayments.api`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthChallenge.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/main/java/com/paypal/android/cardpayments/CardAuthLauncher.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/main/java/com/paypal/android/cardpayments/CardClient.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/main/java/com/paypal/android/cardpayments/CardPresentAuthChallengeResult.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/main/java/com/paypal/android/cardpayments/DataVaultPaymentMethodTokensAPI.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/main/java/com/paypal/android/cardpayments/analytics/CardAnalytics.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CardPayments/src/test/java/com/paypal/android/cardpayments/CardAuthLauncherUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CardPayments/src/test/java/com/paypal/android/cardpayments/CardClientUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CardPayments/src/test/java/com/paypal/android/cardpayments/DataVaultPaymentMethodTokensAPIUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/api/CorePayments.api`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/build.gradle`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/debug/java/com/paypal/android/corepayments/CoreEnvironment.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/src/main/AndroidManifest.xml`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/APIClientError.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/APIRequest.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/BrowserSwitchRequestCodes.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/CoreConfig.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/DeepLinkUtils.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/Http.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/HttpResponse.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/HttpRoundTripTiming.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/LinkType.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/PayPalSDKErrorCode.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/RestClient.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/ReturnToAppStrategy.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventData.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/TrackingEventsAPI.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/UpdateClientConfigAPI.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsEventData.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/analytics/AnalyticsService.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/api/AuthenticationSecureTokenServiceAPI.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPI.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchClient.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchOptions.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchPendingState.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchStartResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/browserswitch/ChromeCustomTabsClient.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/common/DeviceInspector.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/common/Headers.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLClient.kt`: `retained-evidence` (snapshot-file)
+- `modified` `CorePayments/src/main/java/com/paypal/android/corepayments/graphql/GraphQLResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/model/APIResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/model/AppSwitchEligibility.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityModels.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityParams.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/model/CreateShopperSessionWithAppSwitchEligibilityResponse.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/model/TokenType.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyUseCase.kt`: `retained-evidence` (snapshot-file)
+- `added` `CorePayments/src/main/res/raw/graphql_query_create_shopper_session_with_app_switch_eligibility.graphql`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `CorePayments/src/release/java/com/paypal/android/corepayments/CoreEnvironment.kt`: `intentional-policy-exclusion` (renamed-outside-capsule-policy)
+- `modified` `CorePayments/src/test/java/com/paypal/android/corepayments/CoreConfigUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `CorePayments/src/test/java/com/paypal/android/corepayments/CoreEnvironmentUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/src/test/java/com/paypal/android/corepayments/HttpUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/src/test/java/com/paypal/android/corepayments/RestClientUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/src/test/java/com/paypal/android/corepayments/TrackingEventsAPIUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/src/test/java/com/paypal/android/corepayments/analytics/AnalyticsServiceTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `CorePayments/src/test/java/com/paypal/android/corepayments/api/AuthenticationSecureTokenServiceAPIUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `CorePayments/src/test/java/com/paypal/android/corepayments/api/CreateShopperSessionWithAppSwitchEligibilityAPIUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `CorePayments/src/test/java/com/paypal/android/corepayments/browserswitch/BrowserSwitchClientUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `CorePayments/src/test/java/com/paypal/android/corepayments/common/DeviceInspectorUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CorePayments/src/test/java/com/paypal/android/corepayments/graphql/GraphQLClientUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `CorePayments/src/test/java/com/paypal/android/corepayments/usecase/GetReturnToAppStrategyUseCaseUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Demo/build.gradle`: `retained-evidence` (snapshot-file)
+- `added` `Demo/keystores/debug.keystore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/CardApproveOrderTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `Demo/src/androidTest/java/com/paypal/android/CardTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/CardVaultTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/PayPalCheckoutTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/PayPalVaultTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/robots/ChromeRobot.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/robots/DemoRobot.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/robots/DeviceSettingsRobot.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/robots/OtpPageRobot.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/robots/PayPalWebPageRobot.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/robots/WebUtils.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/utils/TestCard.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/utils/TestConfig.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/utils/TestConstants.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/androidTest/java/com/paypal/android/utils/TestUtils.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `Demo/src/androidTestShared/java/com/paypal/android/testutils/AppDriver.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/debug/java/com/paypal/android/customenvironment/CustomEnvironmentRepository.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Demo/src/main/AndroidManifest.xml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/main/java/com/paypal/android/DemoConstants.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/api/model/PaymentMethodSelected.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/api/model/PaymentSource.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/api/model/UserActionSelected.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/api/model/serialization/OrderModels.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/api/model/serialization/PayPalModels.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/api/services/MerchantIntegration.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/api/services/SDKSampleServerAPI.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/customenvironment/DemoEnvironmentSettings.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/customenvironment/SelectedEnvironment.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/customenvironment/SettingsUiState.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/customenvironment/SettingsView.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/customenvironment/SettingsViewModel.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/di/NetworkModule.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/models/OrderRequest.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/DemoApp.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/DemoAppDestinations.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderUiState.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderView.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/approveorder/ApproveOrderViewModel.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/approveorder/CardFormatter.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/features/Feature.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/features/FeaturesView.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutResultView.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutView.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalCheckoutViewModel.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/ui/paypal/PayPalUiState.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultUiState.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultView.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/src/main/java/com/paypal/android/ui/paypalvault/PayPalVaultViewModel.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebUiState.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `Demo/src/main/java/com/paypal/android/ui/paypalweb/PayPalWebViewModel.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `Demo/src/main/java/com/paypal/android/ui/paypalweb/StartPayPalWebCheckoutForm.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardUiState.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/ui/vaultcard/VaultCardViewModel.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/uishared/components/AmountForm.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/uishared/components/CreateOrderWithVaultOptionForm.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/uishared/components/DemoAppTopBar.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/uishared/components/PayPalUserIdentityForm.kt`: `retained-evidence` (snapshot-file)
+- `added` `Demo/src/main/java/com/paypal/android/uishared/components/StoreInVaultOptionForm.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/uishared/state/ActionState.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/usecase/CreateCardSetupTokenUseCase.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/usecase/CreateOrderUseCase.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/java/com/paypal/android/usecase/CreatePayPalSetupTokenUseCase.kt`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/src/main/res/values/strings.xml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/src/release/java/com/paypal/android/customenvironment/CustomEnvironmentRepository.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `Demo/src/test/java/com/paypal/android/ExampleUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `FraudProtection/api/FraudProtection.api`: `retained-evidence` (snapshot-file)
+- `modified` `FraudProtection/build.gradle`: `retained-evidence` (snapshot-file)
+- `added` `FraudProtection/src/debug/java/com/paypal/android/fraudprotection/CoreConfigMagnesExt.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `FraudProtection/src/main/java/com/paypal/android/fraudprotection/PayPalDataCollector.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `FraudProtection/src/release/java/com/paypal/android/fraudprotection/CoreConfigMagnesExt.kt`: `intentional-policy-exclusion` (renamed-outside-capsule-policy)
+- `modified` `FraudProtection/src/test/java/com/paypal/android/fraudprotection/PayPalDataCollectorUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `PayPalPayments/.gitignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `PayPalPayments/api/PayPalPayments.api`: `retained-evidence` (snapshot-file)
+- `renamed` `PayPalPayments/build.gradle`: `retained-evidence` (snapshot-file)
+- `renamed` `PayPalPayments/consumer-rules.pro`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `PayPalPayments/proguard-rules.pro`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `PayPalPayments/src/main/AndroidManifest.xml`: `retained-evidence` (snapshot-file)
+- `renamed` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalCheckoutFundingSource.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalClient.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishStartResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalFinishVaultResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalLauncher.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPhoneNumber.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalPresentAuthChallengeResult.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalResultCallback.kt`: `retained-evidence` (snapshot-file)
+- `renamed` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalSessionStore.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserAction.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/PayPalUserIdentity.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/ReturnToAppUrlConfig.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/AnalyticsEventParams.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/CreatePayPalSessionEvent.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/LatencyEvent.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalAnalytics.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/analytics/PayPalEvent.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalError.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/errors/PayPalErrorCode.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/main/java/com/paypal/android/paypalpayments/usecase/GetEffectiveReturnUrlConfigUseCase.kt`: `retained-evidence` (snapshot-file)
+- `added` `PayPalPayments/src/test/java/com/paypal/android/paypalpayments/PayPalClientUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `PayPalPayments/src/test/java/com/paypal/android/paypalpayments/PayPalLauncherUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `PayPalPayments/src/test/java/com/paypal/android/paypalpayments/analytics/PayPalAnalyticsUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `PayPalPayments/src/test/java/com/paypal/android/paypalpayments/usecase/GetEffectiveReturnUrlConfigUseCaseUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `PayPalPayments/src/test/resources/robolectric.properties`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `PayPalWebPayments/api/PayPalWebPayments.api`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalPresentAuthChallengeResult.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutClient.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishStartResult.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutFinishVaultResult.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutRequest.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebLauncher.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebStartCallback.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/PayPalWebVaultRequest.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/CheckoutEvent.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/PayPalWebAnalytics.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/analytics/VaultEvent.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutError.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/main/java/com/paypal/android/paypalwebpayments/errors/PayPalWebCheckoutErrorCode.kt`: `retained-evidence` (snapshot-file)
+- `deleted` `PayPalWebPayments/src/test/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutClientUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `PayPalWebPayments/src/test/java/com/paypal/android/paypalwebpayments/PayPalWebCheckoutRequestUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `PayPalWebPayments/src/test/java/com/paypal/android/paypalwebpayments/PayPalWebLauncherUnitTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `PaymentButtons/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayLaterButton.kt`: `retained-evidence` (snapshot-file)
+- `modified` `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalButton.kt`: `retained-evidence` (snapshot-file)
+- `modified` `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PayPalCreditButton.kt`: `retained-evidence` (snapshot-file)
+- `modified` `PaymentButtons/src/main/java/com/paypal/android/paymentbuttons/PaymentButton.kt`: `retained-evidence` (snapshot-file)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `Venmo/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `build.gradle`: `retained-evidence` (snapshot-file)
+- `added` `ci`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `gradle/libs.versions.toml`: `retained-evidence` (snapshot-file)
+- `modified` `settings.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `v2_MIGRATION_GUIDE.md`: `retained-evidence` (snapshot-file)
+- `added` `version.properties`: `retained-evidence` (snapshot-file)
