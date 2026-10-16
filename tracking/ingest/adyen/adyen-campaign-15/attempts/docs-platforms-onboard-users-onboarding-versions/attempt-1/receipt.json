@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-onboard-users-onboarding-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms onboarding versions and v4 migration\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/onboard-users/onboarding-versions\"\nraw_files:\n  - \"adyen/docs/platforms/onboard-users/onboarding-versions/2026-09-15.md\"\ntags: [adyen, platforms, onboarding, legal-entity-management, versioning]\n---\n\n## Overview\n\nThis Adyen Platforms page explains how onboarding versions package breaking changes in the Legal Entity Management (LEM) API, hosted onboarding, and KYC verification checks, and gives a v2-to-v4 update route for Hosted and API-only integrations. It calls v4 the latest stable version at the top and in the update steps, but a later sunset paragraph calls v3 the latest stable version; treat that sentence as an unresolved inconsistency in this 2026-09-15 snapshot rather than a current-version claim. The page was last modified 2025-02-10. See [[adyen]] and [[adyen-platforms]] for provider and Platforms context.\n\n## Key takeaways\n\n- An onboarding release can change one or more of LEM API, hosted onboarding, and KYC checks. Adyen says immediate updating is unnecessary and it will give approximately 6\u201312 months' notice before sunsetting a version; after an API version's sunset it can no longer be used. Both API-only and Hosted integrations must update their API version before the applicable sunset. Older stable versions receive no additional updates. An API-only release candidate is a changeable pilot preview obtained through an Adyen account manager, not the stable Hosted release.\n- The stated update sequence is to contact Adyen, update the server integration to LEM API v4, review and implement features, test, then go live. Hosted onboarding remains on LEM v2 until its integration is updated and then uses LEM v4. The page describes v2-to-v4 differences; it does not provide a separate v3-to-v4 migration matrix.\n- For older users after v2-to-v4 updating, verification deadlines become available, but capabilities invalid in the older version do not automatically receive them. PCI and Terms of Service acceptance are backfilled; sales-channel changes may require a new PCI questionnaire and newly requested capabilities require additional ToS. New users face the listed PCI enforcement and ToS requirement. Updating alone does not immediately rerun verification checks: a user data update or required data review triggers new checks. These conditions do not establish a completed verification or enabled capability.\n- Both migration tabs call for required-data-review notification, verification-deadline logic, country/region compliance review, updated verification-error and webhook structures, required data and name/address validation review. Verification errors move from per-capability placement to an array of affected capabilities; `/checkVerificationErrors` is an additional endpoint. The `sendToTransferInstrument` capability is checked at transfer-instrument and legal-entity levels. Business-line creation uses `service` in place of deprecated `capability`, with `paymentProcessing`/`banking`/`issuing` mapping to receivePayments/issueBankAccount/issueCard; source of funds is required for card issuing and business accounts. These are integration instructions, not proof of a transfer.\n- API-only onboarding additionally calls for collection of user support phone and email, and a transfer-instrument `type` that distinguishes IBAN from local bank account and changes required information. Adyen recommends transfer-instrument components, describing instant bank-account verification when details are added or updated; the recommendation is not a universal requirement or a verified status for an individual account. For API-only users, capability status remains visible at legal-entity level until a data update or required data review.\n- Before testing, Adyen says to contact it to ensure new features are enabled in the test environment, then test major features and unsuccessful-verification error handling. The page does not name a specific API credential or role; country, entity, and capability requirements vary by linked detail guides. Its migration directions are historical guidance, not evidence that a particular integration was upgraded, approved, live, or compliant today.\n\n## Detail locators\n\n- Scope, stable-version assertion, sunset notice, and nonbreaking-versus-breaking changes: raw lines 19\u201347. Stable/release-candidate and sunset guidance, including conflicting v3 wording: lines 51\u201367. Update sequence: lines 69\u201377.\n- v2-to-v4 older/new user differences and verification trigger: lines 79\u201389. Hosted migration requirements: lines 91\u2013117. API-only migration requirements and components: lines 119\u2013149. Test prerequisites and error handling: lines 151\u2013153.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 Platforms onboarding, legal-entity and verification context.\n- [[source-adyen-docs-platforms-onboard-users-onboarding-versions-onboarding-v4]] \u2014 the separate v4 overview linked for detailed requirements.\n\n## Related raw API references\n\n- The snapshot links to the v4 overview, country/region compliance, required-data, verification, API Diff, and release-note guides. Those linked pages own their detailed requirements; this page alone does not establish current account settings or permissions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/onboard-users/onboarding-versions/2026-09-15|Adyen Docs: Onboarding versions (2026-09-15 snapshot; page last modified 2025-02-10)]]\n",
+  "quotes": [
+    {
+      "text": "The latest stable onboarding version is v4.",
+      "location": "raw line 19, # Onboarding versions"
+    },
+    {
+      "text": "onboarding v3, the latest stable onboarding version.",
+      "location": "raw line 67, #### Sunsetting LEM API versions and updating to new versions"
+    },
+    {
+      "text": "Note that after updating your onboarding version, verification checks are not immediately triggered for your users.",
+      "location": "raw line 89, ### Update from v2 to v4"
+    },
+    {
+      "text": "After the update, it automatically uses LEM v4.",
+      "location": "raw line 93, ### Tab: Hosted onboarding"
+    },
+    {
+      "text": "The new [type](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#request-type) field specifies whether the bank account is an IBAN or local account.",
+      "location": "raw line 137, ### Tab: API-only onboarding"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-onboarding-versions-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-onboard-users-onboarding-versions]] \u2014 dated onboarding-version overview and v2-to-v4 Hosted/API-only migration conditions; its v4 stable statement conflicts with a later v3 stable reference.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 19 identifies v4 as stable, while raw line 67 calls v3 stable; preserve the contradiction and verify current version independently before acting.",
+          "Migration steps and component claims are guidance, not proof of current API eligibility, verification, capability activation, transfers, or live integration status."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/onboard-users/onboarding-versions/2026-09-15.md",
+  "raw_sha256": "05749d6848f38c6605154007563976d9cc83f74bb671de8835788e0e967f6a47",
+  "status": "candidate_ready"
+}

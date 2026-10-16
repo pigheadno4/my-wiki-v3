@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-platforms-verification-overview-data-review-process",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms periodic data-review process\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/verification-overview/data-review-process\"\nraw_files:\n  - \"adyen/docs/platforms/verification-overview/data-review-process/2026-09-15.md\"\ntags: [adyen, platforms, verification, onboarding, data-review]\n---\n\n## Overview\n\nAdyen describes periodic reviews in which a platform user confirms that legal-entity and associated-entity data remains current. Adyen may require a review; a platform may optionally request one for an eligible user. After a review is triggered, Adyen checks existing data and reports requirements through an account-holder webhook. See [[adyen]] and [[adyen-platforms]]. This 2026-09-15 documentation capture is a process reference, not evidence of any present user's status, eligibility, approved capability, or payment outcome.\n\n## Key takeaways\n\n- A user with verification errors must update data if needed, resolve the errors, **and** confirm the data; without errors the user still must review and confirm. The review is finalized only after confirmation and resolution of all verification errors. While the deadline is active, capabilities allowed before the review request can remain usable; unresolved errors or missing confirmation cause them to be disallowed at the deadline. See raw lines 19\u201331.\n- The `balancePlatform.accountHolder.updated` review-required webhook identifies a `3_10` \u201cReview of data is required\u201d error and `3_100` confirmation action, with `verificationStatus=invalid`, `allowed=true`, and `verificationDeadlines`. These fields have different meanings: invalid verification does not itself mean the capability is already disallowed. The example's account holder, legal entity IDs, `sendToBalanceAccount` capability, deadline timestamp and test environment are illustrative. See raw lines 33\u2013102.\n- Optional proactive requests use POST `/legalEntities/{id}/requestPeriodicReview` with the **user legal entity ID**, and are available only for onboarding v3 or v4. A 204 means the request succeeded; the subsequent webhook conveys review requirements. Adyen says an ineligible request is not activated, with example reasons including next scheduled review more than one year away, onboarding within 180 days, or a previous review within 180 days; the page documents 422 errors. Adyen may also require review outside the scheduled period after significant information/risk changes. See raw lines 104\u2013195.\n- Hosted onboarding presents a summary/Submit review flow after the platform reviews and, if needed, updates submitted data. API-only onboarding requires presenting the user and associated entities' information, gathering supporting resources as relevant, updating as needed, and POSTing `/legalEntities/{id}/confirmDataReview` after user confirmation. Its `dataReviewedAt` response is a confirmation timestamp, not a valid-verification result. See raw lines 197\u2013237.\n- After submission, Adyen reports verification results through another account-holder webhook. Valid checks show `verificationStatus=valid` and `allowed=true`; invalid checks can show `allowed=false` or `allowed=true` with a deadline and unresolved `problems`. The platform must address returned verification errors. Transfer-instrument-resource problems require Adyen contact to enable that view. See raw lines 239\u2013339.\n\n## Detail locators\n\n- **Review-required notification and object identities:** raw lines 33\u2013102; the sample's account holder links a legal entity, while a `problems.entity` entry identifies the affected legal entity.\n- **Optional request and rejection messages:** raw lines 104\u2013195, especially onboarding-version gate at 106, eligibility cases at 110\u2013117, request/204 at 119\u2013122, and troubleshooting at 191\u2013195.\n- **Hosted and API-only user review:** raw lines 197\u2013237. The user confirms; the platform retrieves/updates data and, in API-only mode, calls the confirmation endpoint.\n- **Valid/invalid result branches:** raw lines 239\u2013339, including status and allowed distinctions at 247\u2013289. Sample webhook values are illustrative, not current account proof.\n- **Test-only flow:** raw lines 341\u2013363. The documented `x-requested-verification-code: 3_10` PATCH scenario requires the account holder's capabilities to already be allowed; it is a test recipe, not an operation performed here.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform user-onboarding and verification context.\n- [[source-adyen-docs-platforms-kyc-verification-codes-general-verification-errors]] \u2014 general error-code `3_10` lookup.\n- [[source-adyen-docs-platforms-kyc-verification-codes-sub-errors]] \u2014 granular verification suberror lookup.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/verification-overview/data-review-process/2026-09-15|Adyen Periodic data reviews, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen occasionally requires your users to review and confirm that their data is up-to-date.",
+      "location": "Periodic data reviews, raw line 19"
+    },
+    {
+      "text": "The review is only considered finalized when the user has confirmed the data **and** resolved all verification errors.",
+      "location": "Periodic data reviews, raw line 31"
+    },
+    {
+      "text": "This feature is only available if you are using onboarding v3 or v4.",
+      "location": "Step 2 (optional): Proactively request a data review for your user, raw line 106"
+    },
+    {
+      "text": "If the request is successful, you receive a **204** response.",
+      "location": "Step 2 (optional): Proactively request a data review for your user, raw line 120"
+    },
+    {
+      "text": "The response returns the time when the data review was confirmed in the [dataReviewedAt](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/\\(id\\)/confirmDataReview#responses-200-dataReviewedAt) field.",
+      "location": "API-only onboarding, raw line 227"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-periodic-data-review-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-verification-overview-data-review-process]] \u2014 2023-modified, 2026-09-15-captured periodic user-data review process: webhook/deadline, optional v3/v4 proactive request, hosted/API-only confirmation, and subsequent valid/invalid verification results; no account-specific outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/verification-overview/data-review-process/2026-09-15.md",
+  "raw_sha256": "1f3112312e7ed89b3aa4a31d0196aa1b55cb47068a873e71968801ffe34aff3e",
+  "status": "candidate_ready"
+}

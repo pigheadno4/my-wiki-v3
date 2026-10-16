@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-onboard-users-pci-forms",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms PCI security questionnaires\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/onboard-users/pci-forms\"\nraw_files:\n  - \"adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md\"\ntags: [adyen, platforms, onboarding, pci-dss, saq, verification]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] for Platforms guide describes how platform users sign PCI DSS Self-Assessment Questionnaires (SAQs) before card processing and how a platform using its own onboarding UI can generate, present, sign and retrieve the documents through the Legal Entity Management API. Signing is a user's declaration and documented onboarding step, not independent proof of current PCI compliance, Adyen verification approval, card-processing capability or a payment outcome. [[adyen-platforms]]\n\n## Responsibilities and prerequisites\n\n- The page says **platform users**, because they connect directly with card schemes, must meet PCI DSS requirements for cardholder-data handling and sign an SAQ before processing card payments. Sales channels determine whether one or more SAQs are required. Adyen supplies simplified questionnaires and, when multiple apply, the user signs once. The platform must not treat the signature alone as an audit of the cardholder-data environment.\n- The documented flow requires an Adyen for Platforms setup, Legal Entity Management API credentials and a `balancePlatform.accountHolder.updated` webhook subscription. Before beginning, create the main/user legal entity and the individual signer's legal entity, business lines covering supported sales channels, and the user's account holder. The business-line `salesChannels` affect which/how many documents are required. Main organization and individual signer have different legal-entity IDs.\n- In hosted onboarding, users sign in Adyen's hosted page; to display questionnaires, add payment methods to the user's store **or** require signing through hosted onboarding settings. For a custom UI, the platform must generate, display and submit questionnaires through the Legal Entity Management API. These are alternative presentation routes, not a single mandatory UI design.\n\n## Custom UI sequence and status boundaries\n\n- Listen to `balancePlatform.accountHolder.updated` and inspect `verificationErrors` to determine whether PCI forms are required. The included **test** example shows `sendToTransferInstrument` with `requested: true`, `enabled: true`, `allowed: false` and `verificationStatus: invalid`, plus an unsigned-forms error; those flags are distinct and the example does not establish another account holder's actual capability.\n- Generate simplified templates at `/legalEntities/{id}/pciQuestionnaires/generatePciTemplates` using the **organization** legal-entity ID. English is default, with an optional ISO 639-1 language. `additionalSalesChannels` is optional when stores/payment methods already supply the relevant channels. The response includes base64 content and `pciTemplateReferences`; an **empty** reference array means the user is not required to sign. Decode and present any required forms to the user. The Adyen Document Viewer is an available presentation aid, with npm recommended over the embed option; neither installation choice changes form requirements.\n- After the user declares and signs, submit `/legalEntities/{id}/pciQuestionnaires/signPciTemplates` for the **main** legal entity with the individual signer's `signedBy` legal-entity ID and the required `pciTemplateReferences`. The response lists signed SAQ document IDs. The guide then offers list and download endpoints; returned document metadata includes `createdAt` and `validUntil`, and the downloaded content is base64 PDF. Example timestamps, signed IDs and an API response do not establish current validity, acceptance of a particular user, PCI compliance, or card-processing authorization. Check actual account-holder verification/capability status separately.\n\n## Detail locators\n\n- **User PCI responsibility and sales-channel-dependent SAQs:** raw lines 19\u201325.\n- **Platform/credential/webhook/resource prerequisites and hosted vs custom UI:** raw lines 27\u201345.\n- **Webhook verification error and test capability flags:** raw lines 47\u201399.\n- **Template generation, optional language/channels, empty references and viewer:** raw lines 101\u2013359.\n- **Signer identity, signing request, returned IDs, list/download and validity metadata:** raw lines 361\u2013636.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-pci-dss-compliance]] \u2014 broader PCI context\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15|Adyen Platforms PCI forms \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To prove their compliance, they must sign a Self-Assessment Questionnaire (SAQ) before they can start processing card payments.",
+      "location": "raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md:23"
+    },
+    {
+      "text": "Depending on your user's sales channels, they must sign one or more SAQs.",
+      "location": "raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md:25"
+    },
+    {
+      "text": "If your user is required to sign PCI forms, it is indicated in the `verificationErrors` array.",
+      "location": "raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md:51"
+    },
+    {
+      "text": "If the array is empty, the user is not required to sign questionnaires.",
+      "location": "raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md:308"
+    },
+    {
+      "text": "You must ask your user to declare that they comply with the scheme requirements by signing the generated questionnaires.",
+      "location": "raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md:363"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-pci-forms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-onboard-users-pci-forms]] \u2014 2026-09-15 Platforms guide to sales-channel-dependent user SAQs, hosted/custom-UI signing and Legal Entity Management API document/status routes; submission is not independent PCI or capability approval.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "PCI SAQ signing is the platform user's declaration; the guide does not independently prove current PCI DSS compliance, Adyen approval or granted card-processing/payout capability.",
+          "Keep main/user legal entity, individual signer legal entity and account holder distinct; sales channels govern questionnaire need, and an empty generated reference array means none is required.",
+          "The webhook JSON and API samples are test examples; `enabled`, `requested`, `allowed` and `verificationStatus` have distinct meanings and do not establish a real account holder's state."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/onboard-users/pci-forms/2026-09-15.md",
+  "raw_sha256": "94a623daca02abd23b9e22f2e3678a304109035cabf4864205cac4f35704f1f9",
+  "status": "candidate_ready"
+}

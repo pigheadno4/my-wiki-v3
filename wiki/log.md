@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-16] ingest | Adyen website C15
+
+- Fifty independently approved Platforms foundation/onboarding/verification/account-management documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 2 concepts touched (1 new); source_count 764 = 750 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-15/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-16] ingest | Adyen website C14
 
 - Fifty independently approved connector/partner/industry/reporting documentation sources; first full-review approvals 40/50 and 10 targeted correction reviews. 19 concepts touched (11 new); source_count 714 = 700 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-14/`; details [[adyen-log]]. No commit/push.

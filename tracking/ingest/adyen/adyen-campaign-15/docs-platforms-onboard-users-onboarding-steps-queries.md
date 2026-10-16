@@ -1,0 +1,9 @@
+# Fixed retrieval checks — Onboarding steps for platforms
+
+## Q1. What is this page for, what is in scope, and what should not be inferred?
+
+The 2026-09-15 export is a filter landing page intended to find user-specific verification information and submission instructions. It lists onboarding type, hosted flow, version, location and legal-entity/legal-arrangement type. The pinned export has no concrete result because Location and entity type remain unselected. Its filter options are not an eligibility matrix, and its hosted/on-invite/v4 current selection is not a universal rule. It supplies no terms/consent, API-step, role, verification-status or payout proof. Raw: `raw/adyen/docs/platforms/onboard-users/onboarding-steps/2026-09-15.md:15-37`. Canonical route: `wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-platforms.md#Sources → wiki/sources/adyen/source-adyen-docs-platforms-onboard-users-onboarding-steps.md → raw/adyen/docs/platforms/onboard-users/onboarding-steps/2026-09-15.md`.
+
+## Q2. What is the central capability, prerequisites, and material warnings?
+
+The page's capability is selecting dimensions on the interactive page, or adding query parameters to the .md export, to retrieve a concrete onboarding result. It explicitly names Location and Legal entity/legal arrangement type as missing filters; the current hosted/on-invite/version-4 choices alone are insufficient. The pinned export states no concrete verification inputs, resource order, API call, role, consent step, approval or outcome. A fully selected result or separately read source is needed for those details. Raw: `raw/adyen/docs/platforms/onboard-users/onboarding-steps/2026-09-15.md:19-37`. Canonical route: `wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-platforms.md#Sources → wiki/sources/adyen/source-adyen-docs-platforms-onboard-users-onboarding-steps.md → raw/adyen/docs/platforms/onboard-users/onboarding-steps/2026-09-15.md`.

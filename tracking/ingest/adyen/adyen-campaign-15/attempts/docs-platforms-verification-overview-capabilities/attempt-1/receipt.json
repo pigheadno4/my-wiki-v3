@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-verification-overview-capabilities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms user capabilities and verification status\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/verification-overview/capabilities\"\nraw_files:\n  - \"adyen/docs/platforms/verification-overview/capabilities/2026-09-15.md\"\ntags: [adyen, platforms, account-holders, capabilities, verification]\n---\n\n## Overview\n\nThis 2024-modified, 2026-09-15-captured Adyen for Platforms guide describes account-holder capabilities, financial-product capability names, capability verification statuses, and the distinct `requested`, `allowed`, and `enabled` settings. It concerns permissions for a platform user\u2019s account holder, not evidence that a particular user passed KYC, has an enabled product, received a payment, or moved funds. See [[adyen-platforms]].\n\n## Key takeaways\n\n- Adyen says it configures default capabilities for a platform during design in most cases; those are requested automatically when the platform creates users\u2019 account holders. A nondefault capability must be requested separately and may prompt additional KYC checks. Requested is therefore not the same as verified, allowed, or enabled.\n- The core table distinguishes receiving from another account holder\u2019s balance account, receiving top-ups from a verified transfer instrument, receiving split-payment funds, receiving payments by a payment method, sending to another account holder\u2019s balance account, and sending to a verified transfer instrument. The receive/send balance-account capabilities are required only across different account holders. `receiveFromTransferInstrument` is required only for the top-up feature and its request triggers upfront verification. Consult raw lines 25\u201336 for exact API names and conditions.\n- Additional capabilities depend on the business offering the relevant financial product: business accounts (`issueBankAccount`, third-party receive/send), issuing (`issueCard`, `useCard`, ATM/restricted-country/industry and transfer capabilities), or Capital (`getGrantOffers`, `receiveGrants`). The business-account table says third-party receive/send are enabled by default when `issueBankAccount` is present. For issuing, the guide says Legal Entity Management API v3 verifies `sendToTransferInstrument` at transfer-instrument level, so one verified card can be usable independently of the legal entity\u2019s other instruments. These are product-scoped statements, not universal platform permissions.\n- Card-issuing capability levels are low, medium, or high, with per-card, per-day thresholds in the table and potentially more checks and monitoring at higher levels. Restricted-industry limits are industry-specific; the table is dated, and a level label alone does not establish current geography, product access, or transaction approval.\n- An initially requested capability under `pending` verification has `requested=true` and `allowed=false`. A previously allowed capability may remain `allowed=true` while changed user data is checked. `valid` normally sets `allowed=true`; `rejected` is final and sets `allowed=false`. `invalid` normally sets `allowed=false` with remediation errors, yet the page describes a distinct post-success user-data-change/missing-data period where status reverts to `invalid`, a deadline applies, and `allowed` stays true so use may continue during that period. Do not reduce status alone to a permission decision.\n- The account-holder API response and created/updated webhooks expose capability state. `requested` indicates request, `allowed` indicates Adyen permission, and `enabled` controls the platform\u2019s offer/access; use requires both `allowed=true` and `enabled=true`. Changing `enabled` does not itself trigger verification or prevent a capability request. The document names no fixed grace deadline, and reading a state is not authorization to change a live account.\n\n## Detail locators\n\n- Account-holder default versus added capability requests: pinned raw lines 15\u201327.\n- Core capability names and cross-account/top-up conditions: pinned raw lines 29\u201336.\n- Business account, card issuing and Legal Entity Management API v3 transfer-instrument qualification: pinned raw lines 38\u201369.\n- Issuing levels, per-card/day thresholds and Capital capabilities: pinned raw lines 71\u201393.\n- `pending`, `valid`, `invalid`, `rejected` and remediation/deadline exceptions: pinned raw lines 95\u2013109.\n- Account-holder webhook/GET routes and requested/allowed/enabled settings: pinned raw lines 111\u2013128.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/verification-overview/capabilities/2026-09-15|Platforms capability-status snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Every account holder has a list of capabilities that determine what they can do on your platform.",
+      "location": "raw line 19, User capabilities"
+    },
+    {
+      "text": "If a user needs a specific capability that is not part of their default configuration, you must [request the additional capability](/platforms/manage-account-holders#request-capability).",
+      "location": "raw line 21, User capabilities"
+    },
+    {
+      "text": "At this verification phase, a capability requested for the first time is set to [`requested` ](#requested): **true** and [`allowed` ](#allowed): **false**.",
+      "location": "raw line 106, Verification status of a capability"
+    },
+    {
+      "text": "During this period, the user can continue using the capability, and its setting remains as [`allowed` ](#allowed): **true**.",
+      "location": "raw line 108, invalid status"
+    },
+    {
+      "text": "Note that this capability can only be used if it is both enabled and allowed.",
+      "location": "raw line 122, enabled setting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platform-capabilities-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-verification-overview-capabilities]] \u2014 2024-modified, 2026-09-15-captured account-holder capability guide for requested/allowed/enabled settings, verification statuses, product-specific capability tables and deadline exceptions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A pending or invalid verification status can coexist with allowed=true in the documented recheck/grace scenarios; actual use still requires enabled=true and allowed=true.",
+          "The Adyen Platforms concept exists, but its adyen-index route was absent during this worker\u2019s audit; coordinator owns index publication."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/verification-overview/capabilities/2026-09-15.md",
+  "raw_sha256": "511c21a4aa754fda781cd8180ab8c9816f7ab1ac66d255171503ce1281e72080",
+  "status": "candidate_ready"
+}

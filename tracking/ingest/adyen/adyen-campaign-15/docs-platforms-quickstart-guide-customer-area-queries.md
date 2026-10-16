@@ -1,0 +1,9 @@
+# Fixed retrieval checks — Platforms Customer Area quickstart
+
+## Q1. What is this page for, what is in scope, and what should not be inferred?
+
+The 2026-09-15 page introduces the Adyen for Platforms Customer Area as an interface for business-process visibility and support. It names payment/onboarding summaries, user-payment splits and balance-account destinations, account-holder errors, and payout views. It does not evidence a specific account's live status, payment, settlement, verification, payout or bank receipt, and the linked ca-test URL is not live-operation proof. Raw: `raw/adyen/docs/platforms/quickstart-guide/customer-area/2026-09-15.md:15-19,29-36`. Canonical route: `wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-platforms.md#Sources → wiki/sources/adyen/source-adyen-docs-platforms-quickstart-guide-customer-area.md → raw/adyen/docs/platforms/quickstart-guide/customer-area/2026-09-15.md`.
+
+## Q2. What is the central capability, prerequisites, and material warnings?
+
+Team members can be given unique Customer Area logins. Each account is scoped to the company account or particular merchant accounts, while assigned user roles govern tasks; platform-user account holders and balance accounts are separate records. The page recommends an access administrator, correct roles, current user list/deactivation, restricted PII roles including View account holders PII, and splitting payout initiation from bank-account updating across team members. Those are recommendations, not a full role matrix or a guarantee that access grants a financial outcome. Raw: `raw/adyen/docs/platforms/quickstart-guide/customer-area/2026-09-15.md:38-53`. Canonical route: `wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-platforms.md#Sources → wiki/sources/adyen/source-adyen-docs-platforms-quickstart-guide-customer-area.md → raw/adyen/docs/platforms/quickstart-guide/customer-area/2026-09-15.md`.

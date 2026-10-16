@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-manage-balance-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage balance accounts | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/manage-balance-accounts\"\nraw_files:\n  - \"adyen/docs/platforms/manage-balance-accounts/2026-09-15.md\"\ntags: [adyen, platforms, balance-accounts, account-holders, configuration-api]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] for Platforms guide describes Configuration API and Customer Area routes for creating, viewing, updating and permanently closing an account holder's balance account. A balance account is a resource concerning funds held for a platform user and belongs to a broader onboarding and verification process. It is distinct from the account holder, a legal entity, the platform's liable account, a payout-bank transfer instrument, or an actual transfer/payment event. [[adyen-platforms]]\n\n## Operations and boundaries\n\n- **Create:** POST `/balanceAccounts` with the `accountHolderId` to attach the new balance account to that account holder. Retain the returned balance-account `id` for later view, update or close operations. The shown test request and response are examples: the response's `defaultCurrencyCode: EUR`, zero balances, `timeZone` and `status: active` do not assert a default currency, funded balance, enabled capability or completed onboarding for other accounts.\n- **View:** Customer Area **Balances \u2192 Balance accounts** shows one selected balance platform at a time and can open/search a balance-account ID. API routes list an account holder's balance accounts with pagination, retrieve one balance account and its balances, or list the **payment instruments (cards)** associated with the balance account. Those cards are not the user's bank-account **transfer instrument** used for payout. Viewing an available balance is not proof of settlement or bank receipt.\n- **Update:** PATCH `/balanceAccounts/{id}` is shown for changing a description. This source does not demonstrate general changes to account-holder ownership, currency, legal entity, reserve/liable identity or underlying funds. Sample code uses test-environment credentials and versioned libraries; consult the raw for implementation details, not for current runtime proof.\n- **Close:** The page calls this **permanent**. Only an empty balance account can be closed; check for zero balance, and if funds remain, separately pay them out or transfer them before setting `status` to `Closed` through an update. The guide points to a separate account-holder deactivation path when the contractual relationship ends. Closing the balance account is not the same as deactivating its account holder and is not proof that a payout or transfer cleared. This source gives no self-service reversal of closure.\n\n## Detail locators\n\n- **Balance-account identity, larger verification/onboarding context and create call:** raw lines 15\u201327.\n- **Versioned test code and sample create response/ID/balance fields:** raw lines 29\u2013254.\n- **Customer Area and API view routes, pagination and associated cards:** raw lines 256\u2013278.\n- **Description PATCH example and versioned test code:** raw lines 280\u2013471.\n- **Empty-balance prerequisite and permanent close/deactivation distinction:** raw lines 473\u2013482.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-payouts]] \u2014 separate payout flow\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15|Adyen Platforms balance-account management \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A [balance account](/platforms/account-structure-resources/) is an API resource that contains information about the funds held by your user.",
+      "location": "raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15.md:19"
+    },
+    {
+      "text": "Make a POST [/balanceAccounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts) request using the account holder ID you want to attach the balance account to.",
+      "location": "raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15.md:27"
+    },
+    {
+      "text": "This endpoint returns a paginated list of balance accounts.",
+      "location": "raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15.md:276"
+    },
+    {
+      "text": "The following example shows how to update the description of a balance account.",
+      "location": "raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15.md:282"
+    },
+    {
+      "text": "You can only close empty balance accounts, so if there are funds left, you must [pay out](/platforms/managed-payouts) or [transfer](/platforms/internal-fund-transfers) any remaining balance.",
+      "location": "raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15.md:479"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-manage-balance-accounts-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-manage-balance-accounts]] \u2014 2026-09-15 Configuration API/Customer Area guide to account-holder-linked balance-account creation, viewing, description update and permanent zero-balance closure; examples do not prove funded state or payout.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep balance-account ID and account-holder ID distinct; associated payment-instrument cards are not payout-bank transfer instruments, and this page does not define platform liable/reserve account behavior.",
+          "Closure is permanent and only for an empty balance account; funds require a separate payout or internal transfer before closure, and closing is not account-holder deactivation or proof of fund receipt.",
+          "The sample EUR, zero-balance and active fields and versioned test snippets are examples, not account-specific state or universal currency/role constraints."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/manage-balance-accounts/2026-09-15.md",
+  "raw_sha256": "2df1eddeeb6a2833b44ab72c6bd0349200e806698225ff7ae9b7d83ec136076e",
+  "status": "candidate_ready"
+}

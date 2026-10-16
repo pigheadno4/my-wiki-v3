@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-kyc-verification-codes-remediating-actions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms remediating action codes\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/kyc-verification-codes/remediating-actions\"\nraw_files:\n  - \"adyen/docs/platforms/kyc-verification-codes/remediating-actions/2026-09-15.md\"\ntags: [adyen, platforms, issuing, verification, remediation-codes]\n---\n\n## Overview\n\nThis Adyen code catalog maps remediating action codes to messages for verification errors in Adyen for Platforms or Adyen Issuing integrations. An error may have multiple actions. Adyen sends them, when possible, on a parent `verificationErrors` item only when common to its `subErrors`, or on individual `subErrors`. The action is guidance for the reported error, not a universal onboarding requirement, proof that submitted data is valid, or a guarantee that verification or a financial capability will be approved. See [[adyen]] and [[adyen-platforms]] for provider and platform context. The page was last modified in 2021 and captured in 2026; use the actual error payload and current applicable verification route for an account-specific decision.\n\n## Key takeaways\n\n- Match the received code and message to its error level and affected resource before acting. The catalog groups `1_1xx` general, `1_3xx` individual, `1_5xx` organization, `1_6xx` legal arrangement, `1_7xx` bank account, `1_8xx` proof of signatory, and `1_9xx` business-line checks. `2_1xx`\u2013`2_2xx` list missing data, `2_9xx` missing contracts, and `3_1xx` data review. These headings and rows are lookup locations, not a statement that every listed field is required for every entity, country or product.\n- Actions have distinct objects and effects: `1_100` says no remediation possible; `1_101` says contact Support; individual/organization rows request data updates or specific documents; bank-account rows can request bank details, a different account or bank documents; business-line rows address industry/web information. Do not translate a bank-account action into a legal-entity field update or treat a listed upload as a completed check.\n- Missing-data rows are described as possible when error type is `dataMissing` and name the target object, for example `2_101` adds `individual.identificationData` to a legal entity while `2_113` adds `bankAccount.iban` to a bank account. The `2_198` code is printed twice with different organization address fields at raw lines 248\u2013249; do not resolve that conflict from this snapshot alone.\n- Missing-contract rows include `2_901` Sign PCI and `2_902` Accept TOS; these are remediation messages, not evidence the merchant has signed or accepted. `3_100` points to `/legalEntities/{id}/confirmDataReview` to indicate data confirmation; invoking that endpoint is not represented here as automatic verification approval.\n- The final JSON is an illustrative error payload with `verificationErrors`, `subErrors` and action arrays. Its `1_30` parent verification code and `1_3001`/`1_3000` suberror codes are different from the nested `1_300`/`1_301` remediation codes. The example does not establish a live account state or a universal sequence of actions.\n\n## Detail locators\n\n- Purpose, multiple actions and parent-versus-suberror placement: raw lines 15\u201319. Historical Platforms/Issuing scope statement and code-family index: `## Requirements` and `## Types of error codes`, lines 21\u201338.\n- General, individual, organization and legal-arrangement messages: lines 40\u2013113. Bank, signatory and business-line messages: lines 115\u2013145.\n- Conditional `dataMissing` table and object-specific fields, including duplicated `2_198`: `## Missing data`, lines 147\u2013281. Contract and data-review messages: lines 283\u2013296. Error-array example and distinct parent/suberror/remediation code positions: lines 298\u2013357.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 Platforms onboarding and verification route.\n- [[source-adyen-docs-platforms-manage-legal-entities]] \u2014 distinct legal-entity create/view/update operations and verification-rerun conditions.\n\n## Related raw API references\n\n- The raw catalog links to Adyen for Platforms, Issuing and the data-review confirmation endpoint; those linked guides own current permissions, status semantics and verification criteria until read separately.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/kyc-verification-codes/remediating-actions/2026-09-15|Adyen Docs: Remediating action codes (2026-09-15 snapshot; page last modified 2021-01-19)]]\n",
+  "quotes": [
+    {
+      "text": "There can be multiple remediating actions to resolve an error.",
+      "location": "raw line 16, # Remediating action codes"
+    },
+    {
+      "text": "The remediating actions are only sent in this array when there are common actions for the `subErrors`.",
+      "location": "raw line 18, # Remediating action codes, verificationErrors bullet"
+    },
+    {
+      "text": "If you have an [Adyen for Platforms](/adyen-for-platforms-model/) or [Adyen Issuing](/issuing) integration, there are no additional requirements, limitations, or preparations.",
+      "location": "raw line 23, ## Requirements"
+    },
+    {
+      "text": "The following remediation codes may be returned when the error type is **dataMissing**.",
+      "location": "raw line 149, ## Missing data"
+    },
+    {
+      "text": "Use the [/legalEntities/{id}/confirmDataReview](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/\\(id\\)/confirmDataReview) to indicate that the data is confirmed",
+      "location": "raw line 296, ### Data review, 3\\_100 row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-remediating-actions-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-kyc-verification-codes-remediating-actions]] \u2014 2021-modified, 2026-09-15-captured Platforms/Issuing verification remediation-code catalog with parent/suberror placement, object-specific messages, conditional missing-data codes and duplicated `2_198` wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The duplicate `2_198` entries at raw lines 248\u2013249 conflict; do not infer one unambiguous action without the reported message and current authority.",
+          "Code messages describe remediation, not verified capability or payment eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/kyc-verification-codes/remediating-actions/2026-09-15.md",
+  "raw_sha256": "94487573cb48501ebaf4cd54ee28c06b50b5858d1d5f5e96d6d20dfe652c0f51",
+  "status": "candidate_ready"
+}

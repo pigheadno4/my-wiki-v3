@@ -1,0 +1,13 @@
+# Fixed queries — docs-platforms-verification-requirements-document-requirements
+
+## Q1 — purpose, scope, and non-inference
+
+**Query:** When and for whom does this Adyen document-requirements page apply, and does document upload mean verification succeeded?
+
+**Answer:** It is a dated Adyen for Platforms verification reference, last modified 2023-11-29 and captured 2026-09-15. Adyen may request documents when automatic user/legal-entity or bank-account verification fails. The list spans individuals, organizations, sole proprietorships and bank accounts, with narrower business-account, issuing, onboarding-v4 and country cases (raw lines 15–62, 199–214, 387–413, 611–615, 725–731). The statement of no extra Adyen for Platforms/Issuing preparation at line 25 does not cancel the later conditional document rules. Upload does not prove acceptance, verification/capability activation, current legal compliance, payment or payout. Canonical route: [[adyen-index]] → coordinator-owned [[adyen-platforms]] → [[source-adyen-docs-platforms-verification-requirements-document-requirements]] → pinned raw.
+
+## Q2 — central capability, prerequisites, and warnings
+
+**Query:** How should a platform choose and submit verification evidence under this page, and what material exceptions matter?
+
+**Answer:** Follow the requested subject and document type, use original unedited evidence, and check the exact section's identity, freshness, format and file-size rules (raw lines 19–29). API-only bank proof uses `bankStatement` on Legal Entity Management `POST /documents`; hosted bank upload auto-detection is snapshot-limited to AU/FR/UK/US, and bank proof has a 4 MB maximum (lines 64–128). Selfie/Onfido consent and separate-upload timing are limited to business accounts using onboarding v4; photo ID has exact legal-name and same-request front/back conditions and country exceptions (lines 199–370). UK director, business-account signatory, 3/12-month residency, ownership-chart signer/support and minor-representative cases have distinct conditions (lines 387–413, 480–609, 801–821). Source-of-funds evidence for business accounts/issuing uses `POST /businessLines` with `banking` or `issuing`; source-of-wealth documents use their own type and illustrative evidence table (lines 611–799). Constitutional proof's 30 MB limit differs from common 2 MB sections, and country registration/tax tables are examples, not current eligibility (lines 130–197, 823–906). Canonical route: [[adyen-index]] → coordinator-owned [[adyen-platforms]] → [[source-adyen-docs-platforms-verification-requirements-document-requirements]] → pinned raw.

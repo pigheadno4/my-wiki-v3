@@ -1,0 +1,9 @@
+# Fixed retrieval queries — Platforms reserve account
+
+## Q1. What is this page for, what scope does it cover, and what should a reader not infer?
+
+**Expected answer:** It explains the platform reserve account, a liable-account-holder-linked balance account used as collateral for negative user balances caused by transfers initiated by the platform or users. It is distinct from the user's balance account and from the reserved compensation account used for refund/chargeback negatives. The page does not establish reserve funds for a particular platform, a universal percentage/currency/role rule, successful payout, bank receipt or current account enablement. **Evidence:** pinned raw `raw/adyen/docs/platforms/manage-reserve-account/2026-09-15.md:15-23,34-42`; canonical retrieval route `[[source-adyen-docs-platforms-manage-reserve-account]]` via `[[adyen-platforms]]` and `[[adyen-index]]`.
+
+## Q2. What central capability, prerequisites, and warnings does it give?
+
+**Expected answer:** For a transfer request that would make a user's balance account negative, Adyen checks whether reserve funds are sufficient; otherwise the request fails. If sufficient, it blocks collateral equal to the transfer-caused negative balance and processes the transfer. The collateral is released when the user balance account receives enough funds to offset that negative balance, with no fixed release time in this page. Adyen recommends watching available reserve balance and lists internal transfers, split-payment receipts and top-ups as ways to increase it. A request, reserve authorization/collateral block or listed funding route is not proof of a completed transfer or seller bank payout. **Evidence:** pinned raw `raw/adyen/docs/platforms/manage-reserve-account/2026-09-15.md:19-42`; canonical retrieval route `[[source-adyen-docs-platforms-manage-reserve-account]]` via `[[adyen-platforms]]` and `[[adyen-index]]`.

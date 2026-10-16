@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-manage-legal-entities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms: Manage legal entities\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/manage-legal-entities\"\nraw_files:\n  - \"adyen/docs/platforms/manage-legal-entities/2026-09-15.md\"\ntags: [adyen, platforms, legal-entities, onboarding, verification]\n---\n\n## Overview\n\nThis Adyen for Platforms guide explains creation, viewing and updating of a user's legal entity resource with Legal Entity Management API v3, Customer Area or Hosted onboarding. A legal entity describes an individual or organization on a Balance Platform, including identifying information and associations used in Adyen verification. It is distinct from the linked account holder and does not itself define a balance account, legal seller, merchant of record or funds owner. The page is a 2024-modified, 2026-09-15-captured guide; examples and API responses do not establish current compliance or successful verification for any user. See [[adyen]] and [[adyen-platforms]] for provider and platform scope.\n\n## Key takeaways\n\n- The guide requires the Adyen for Platforms integration type. Legal Entity Management API operations require a Legal Entity Management web service user with Manage LegalEntities via API and Balance Platform BCL Legal Entity roles. Required creation data depends on location and entity type; the US organization request is an example, not a universal schema. POST `/legalEntities` returns a generated legal entity ID used later to create an account holder, view/update that entity, or start Hosted onboarding. Creating the resource is only a step toward verification of the linked account holder.\n- View the main entity from the account holder in Customer Area, GET `/legalEntities/{id}`, or a Hosted onboarding link. Associated entities have separate IDs and API retrieval. The Customer Area shows transfer-instrument bank-account information under the main entity view, but this does not make the legal entity a balance-account ledger or establish bank ownership or movement. For an individual or sole proprietorship, listed PII is redacted unless the user has the View account holders PII data role.\n- Changes to account-holder details, such as address or ownership, call for legal-entity updates. Customer Area editing requires Manage account holders and legal entities and opens Hosted onboarding; API PATCH `/legalEntities/{id}` updates only fields supplied in the body. Hosted onboarding details updates rerun verification checks. A submitted change or updated API response is not a verified state.\n- Entity type can change only for the main legal entity; an incorrectly typed associated entity requires a new legal entity. A main-entity type change reruns all verification checks. The page lists retained legal entity ID, transfer instruments, bank-statement details, proof of industry, processed amounts and business lines; between individual and organization it migrates country and name to corresponding fields. API-only direct type changes are limited to individual\u2194organization, and additional required information may need a subsequent PATCH. The organization-to-sole-proprietorship API route first changes to individual, then associates a sole proprietorship.\n- Sample calls use `kyc-test.adyen.com/lem/v3` and language-specific SDK versions. Follow the verified raw locators for exact request bodies and current API references. This snapshot does not prove a live account's eligibility, legal classification, completed verification, compliance sign-off or any payment/payout event.\n\n## Detail locators\n\n- Resource meaning, association/verification context and Legal Entity Management API: raw lines 17\u201325. Integration type and API credential roles: `## Requirements`, lines 27\u201333. Location/type-dependent creation data and POST route: lines 35\u201343; test examples and generated ID uses: lines 45\u2013401.\n- Customer Area, API and Hosted onboarding view routes, associated-entity lookup and PII redaction/role: `## View legal entity details`, lines 403\u2013626.\n- Customer Area update role and API PATCH behavior: `## Update a legal entity`, lines 628\u2013651. Hosted update and verification rerun: lines 972\u2013981. Main-only type change, associated-entity replacement, retained/migrated fields and API-only type restriction: lines 983\u20131036. Additional PATCH after migration and sole-proprietorship sequence: lines 1227\u20131247.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 current platform integration and separate account-resource routes.\n- [[adyen-account-structure]] \u2014 Adyen company/merchant account hierarchy, distinct from Balance Platform legal entity and account-holder resources.\n\n## Related raw API references\n\n- The raw page links to Legal Entity Management API operations, region-specific KYC information, verification overview, account-holder creation and hosted/API-only onboarding. Those destinations own detailed requirements and statuses until independently read.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/manage-legal-entities/2026-09-15|Adyen Docs: Manage legal entities (2026-09-15 snapshot; page last modified 2024-01-04)]]\n",
+  "quotes": [
+    {
+      "text": "A legal entity is an API resource that describes an individual or an organization on your Balance Platform.",
+      "location": "raw line 19, # Manage legal entities"
+    },
+    {
+      "text": "The minimum required information for creating a legal entity depends on the location and entity type that you are onboarding.",
+      "location": "raw line 39, ## Create a legal entity"
+    },
+    {
+      "text": "To view this information in its unredacted state, you must have the **View account holders PII data** [user role](/account/user-roles#platforms).",
+      "location": "raw line 430, ### Tab: Customer Area under ## View legal entity details"
+    },
+    {
+      "text": "Verification checks will be run again when legal entity details are updated.",
+      "location": "raw line 981, ### Tab: Hosted onboarding under ## Update a legal entity"
+    },
+    {
+      "text": "You can only change the type of the main legal entity. If the type of an [associated legal entity](/platforms/onboard-users/onboarding-steps) is incorrect, you need to create a new legal entity.",
+      "location": "raw line 992, ### Change legal entity type"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-manage-legal-entities-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-manage-legal-entities]] \u2014 2024-modified, 2026-09-15-captured Adyen for Platforms Legal Entity Management API v3 guide for creating, viewing and updating legal entities, with role, region and verification-rerun boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply once the platforms overview worker's adyen-platforms concept is accepted; do not create a duplicate foundation.",
+          "Legal entity and linked account holder are distinct resources; transfer-instrument display is not a balance-account or funds-ownership determination."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/manage-legal-entities/2026-09-15.md",
+  "raw_sha256": "74d3d143fe5f652ebbf51d75c01908eb77d6e37042c913f838813cb1d5c05302",
+  "status": "candidate_ready"
+}

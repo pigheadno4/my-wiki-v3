@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-manage-stores",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms manage stores\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/manage-stores\"\nraw_files:\n  - \"adyen/docs/platforms/manage-stores/2026-09-15.md\"\ntags: [adyen, platforms, stores, payment-routing]\n---\n\n## Overview\n\nThis 2025-06-19-modified Adyen for Platforms guide, captured 2026-09-15, covers creating, viewing and updating a platform user's **store** through Customer Area or Management API. A store is linked to the user's **legal entity through business lines** and is associated with a merchant account; its own ID, merchant-account-scoped reference, status, shopper statement and optional split configuration have separate roles. A store resource or active status does not establish a verified account holder, enabled payment methods, live eligibility or successful transaction. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The guide says a payment processed through the user's store can be split across platform balance accounts, including the liable balance account, either per payment or through an optional store-linked split configuration profile. This describes routing/configuration choices, not proof that a split or payout occurred. The store ID is Adyen-wide unique, while an optional store reference is unique only within its merchant account; the ID is needed for updates, and the reference is used to route Checkout payment/payment-method requests to a store.\n- Store status is **active** on creation under the guide's model. **Inactive** blocks new transactions but still permits capture of outstanding ones; reactivation reverses that restriction. **Closed** requires first changing to inactive and cannot be reopened. These are consequential store-state rules, distinct from account-holder capability or KYC verification status.\n- Customer Area creation is available by default for platforms using **onboarding on invite**; others must contact an Adyen representative to activate that feature. It requires **Merchant POS terminal management admin**. A new store's country/region must already be associated with the account holder; otherwise the guide says create another account holder. Use a business line for the industry-code/sales-channel combination. eCommerce needs a contact phone; POS needs address and phone. The Customer Area presents country/region-based default payment methods for review and edit, not an assurance every method is enabled or usable.\n- Management API creation needs credentials with **Management API-Stores read and write**, the merchant account ID and business-line context, plus store address/phone and shopper-statement details. Its POST table marks address, description, merchantId, phoneNumber and shopperStatement as required; businessLineIds becomes required when the merchant account has multiple business lines and only one is permitted. The merchant-scoped POST alternative omits merchantId from the body. These are the page's captured API-guide conditions, not proof of current schema or account authorization.\n- Viewing in Customer Area requires **Balance platform base role**; the API route requires **Management API-Stores read**. Updates require the Customer Area admin role or API read/write role. The optional **Change payment methods** role is described for access to transaction descriptions. PATCH is partial; an empty address line can remove that line, but the **country cannot be changed**. The guide lists updateable business line, split configuration, contact/location and status fields; permanent closure remains irreversible.\n- The examples use test endpoints and dated SDK versions. Linked payment-method and route-payment pages are next-step navigation; this page is no live operation, seller-of-record determination, region-eligibility decision or payment outcome evidence.\n\n## Detail locators\n\n- Store/legal-entity/business-line relationship, splits, identity and statuses: pinned raw lines 15\u201341.\n- Customer Area creation enablement, roles, country/sales-channel conditions and default payment methods: pinned raw lines 43\u201390.\n- Management API creation roles, merchant/business-line IDs and parameter table: pinned raw lines 92\u2013130.\n- View roles and Customer Area/API differences: pinned raw lines 132\u2013157.\n- Update roles, partial PATCH, country immutability and closure: pinned raw lines 159\u2013254.\n- Illustrative test SDK/address response and linked next steps: pinned raw lines 254\u2013540.\n\n## Related\n\n- [[adyen-platforms]] \u2014 provider Platforms hub for distinct platform-user, legal-entity, account-holder and store resources.\n- [[adyen-account-structure]] \u2014 company/merchant account hierarchy; this store is linked through a platform user's business line and merchant account.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/manage-stores/2026-09-15|Adyen Manage stores, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Stores are linked to the legal entity of your user through business lines.",
+      "location": "raw/adyen/docs/platforms/manage-stores/2026-09-15.md:19"
+    },
+    {
+      "text": "You can split funds manually for each payment, or you can add a [split configuration profile](/platforms/automatic-split-configuration/create-split-configuration) to your user's store to automatically split all payments processed through that store.",
+      "location": "raw/adyen/docs/platforms/manage-stores/2026-09-15.md:21"
+    },
+    {
+      "text": "**Inactive**: When you change the store status from **active** to **inactive**, the store is blocked from accepting new transactions, but capturing outstanding transactions is still possible.",
+      "location": "raw/adyen/docs/platforms/manage-stores/2026-09-15.md:39"
+    },
+    {
+      "text": "**Closed**: Before you can close a store, you must first change the store status to **inactive**. It is not possible to change the status anymore because a closed store cannot be reopened.",
+      "location": "raw/adyen/docs/platforms/manage-stores/2026-09-15.md:41"
+    },
+    {
+      "text": "You can only create a new store in a country/region that is already associated with the account holder. To open a store in a different country/region, you must create a new account holder.",
+      "location": "raw/adyen/docs/platforms/manage-stores/2026-09-15.md:70"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-platforms-stores-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-manage-stores]] \u2014 2025-modified, 2026-09-15-captured Platforms Customer Area/Management API store guide for legal-entity business-line linking, country/role prerequisites, optional splits and irreversible store closure.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/manage-stores/2026-09-15.md",
+  "raw_sha256": "5cfada028c8f0c062a6bbb0d73b2a7529e59a501b87f4a406d0d2735a7e0bfe7",
+  "status": "candidate_ready"
+}

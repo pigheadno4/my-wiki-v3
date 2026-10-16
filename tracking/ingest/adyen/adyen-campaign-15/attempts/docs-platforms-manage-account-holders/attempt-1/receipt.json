@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-manage-account-holders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms manage account holders\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/manage-account-holders\"\nraw_files:\n  - \"adyen/docs/platforms/manage-account-holders/2026-09-15.md\"\ntags: [adyen, platforms, account-holders, verification]\n---\n\n## Overview\n\nThis Adyen for Platforms guide (last modified 2023-03-28; captured 2026-09-15) describes account-holder operations through the **Configuration API** and Customer Area. An account holder is the platform-user API resource linking legal entities, balance accounts and capability information. It is distinct from the underlying legal entity, its balance accounts and the platform's liable account holder; the guide does not itself prove a merchant's legal role, live eligibility, verification, payment or payout. See [[adyen]] and proposed [[adyen-platforms]].\n\n## Key takeaways\n\n- **Create and view:** Create a legal entity first, then POST an account holder with its legal-entity ID; for a sole proprietorship, the page specifies the owner's individual legal-entity ID. The response includes a distinct account-holder ID and default capability object; save the ID to match later webhooks, create a balance account and update the holder. Creation is part of broader onboarding and verification, not approval. Customer Area and GET routes show holder status, linked legal entities, separate balance accounts, capabilities and verification deadlines. The liable account holder is related to the platform company's legal entity, not a synonym for each seller holder.\n- **Update and status:** PATCH can update an account holder, with changing its primary balance account shown as an example. Holders cannot be deleted. API suspension disables **payout capabilities** while related balance accounts and payment instruments remain active. API reactivation is limited to a holder currently suspended by the platform; the guide says an Adyen-suspended holder cannot be reactivated through that API. Status-change webhooks cover platform and Adyen-initiated updates. Do not infer all linked resources are disabled by suspension.\n- **Permanent close:** To close a holder, first bring **each balance account to zero** by payout or transfer if necessary, close non-primary balance accounts before the primary, then set the account holder status to Closed. The guide also permits closing a balance account while retaining an active holder. These are consequential instructions, not an authorization to operate on a real account; completion of a transfer or bank payout is not established by the page.\n- **Capabilities:** `requested`, `allowed`, `enabled` and `verificationStatus` convey different states. A request goes to Adyen for approval; the example response has requested true, allowed false and pending verification, so a request is not permission to use the capability. Customer Area request and enable/disable actions require the **Manage account holder capabilities** role. Audit-log viewing requires **View capabilities audit trail**.\n- **KYC and access:** The Customer Area shows a legal-entity KYC summary/timeline and documents. Its legal-entity statuses include awaiting data, in review, verified, unsuccessful and rejected; **Rejected** is described as final. Viewing/downloading KYC documents requires respective roles and privacy care; searching an individual's legal-entity name/email requires **View account holders PII**. These status views are historical source descriptions, not a particular person's current compliance proof.\n- API URLs and SDK examples in the raw use **test** environments and named library versions; they are illustrations rather than live-operation evidence. The page does not establish country- or entity-type-specific eligibility beyond its stated sole-proprietorship ID rule.\n\n## Detail locators\n\n- Resource identity, create prerequisite, API examples, response ID/default capabilities and webhook: pinned raw lines 15\u2013290.\n- View/search, liable account holder and distinct balance accounts: pinned raw lines 292\u2013538.\n- PATCH primary balance account and suspend/reactivate effects: pinned raw lines 540\u20131211.\n- Destructive close ordering and zero-balance prerequisite: pinned raw lines 1213\u20131223.\n- Capability state/request/enable roles and examples: pinned raw lines 1225\u20131859.\n- Capability audit log, KYC status, documents and access roles: pinned raw lines 1861\u20131939.\n\n## Related\n\n- [[adyen-platforms]] \u2014 proposed platform account-holder and balance-platform hub owned by the campaign foundation worker; this entry requests a reciprocal link only.\n- [[adyen-account-structure]] \u2014 Adyen company/merchant account hierarchy, a separate account model from the platform account holder.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/manage-account-holders/2026-09-15|Adyen Manage account holders, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Account holders are the main API resource that represent users of your platform integration. It contains the legal entities and balance accounts of the user.",
+      "location": "raw/adyen/docs/platforms/manage-account-holders/2026-09-15.md:19"
+    },
+    {
+      "text": "Account holders cannot be deleted. You can temporarily [suspend them](#suspend-account-holder) to disable payout capabilities, or [close them permanently](#permanent-deactivation).",
+      "location": "raw/adyen/docs/platforms/manage-account-holders/2026-09-15.md:23"
+    },
+    {
+      "text": "Changing the status to suspended disables payout capabilities. Related balance accounts and payment instruments remain active when you use the API to suspend an account holder.",
+      "location": "raw/adyen/docs/platforms/manage-account-holders/2026-09-15.md:752"
+    },
+    {
+      "text": "You can only change the status to **active** if the current status is **suspended**. If Adyen suspended the account holder, you cannot reactivate them with the API.",
+      "location": "raw/adyen/docs/platforms/manage-account-holders/2026-09-15.md:983"
+    },
+    {
+      "text": "You can only close empty balance accounts, so if there are funds left, you must [pay out](/platforms/managed-payouts) or [transfer](/platforms/internal-fund-transfers) any remaining balance.",
+      "location": "raw/adyen/docs/platforms/manage-account-holders/2026-09-15.md:1221"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-platforms-account-holders-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-manage-account-holders]] \u2014 2023-modified, 2026-09-15-captured Configuration API/Customer Area guide for platform account-holder creation, status, closure and capabilities; legal entities and balance accounts remain distinct.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Adyen Platforms concept is already proposed by the C15 foundation worker; coordinator should apply this reciprocal after that shared concept is created, without creating a duplicate."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/manage-account-holders/2026-09-15.md",
+  "raw_sha256": "aa37da86924973bc0702e06e4354d0b7884cff62ff95b8773970f20353fd53f8",
+  "status": "candidate_ready"
+}

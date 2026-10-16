@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-manage-transfer-instruments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms manage transfer instruments\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/manage-transfer-instruments\"\nraw_files:\n  - \"adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md\"\ntags: [adyen, platforms, transfer-instruments, payouts, bank-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms guide (last modified 2023-03-28; captured 2026-09-15) defines a transfer instrument as an API resource representing an external bank account. It covers Legal Entity Management API create/view/update/delete for users' bank accounts and platform payout accounts, plus Customer Area management of the platform's own payout accounts. A user's bank account belongs to an account holder's legal entity; the platform payout account is its own company's bank account linked to the liable account. These are distinct from an account holder, legal entity, balance account and actual fund transfer. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Ownership and identifiers:** A create request uses bankAccount type and the legalEntityId of the entity with the contractual relationship to the platform that owns the bank account; for sole proprietorships, the guide names the individual owner's legal entity. Bank details depend on bank location. The response supplies a separate transfer-instrument id that a sweep or manual transfer may target. Do not substitute the legal-entity, account-holder, balance-account or liable-account ID for that target.\n- **Access and state:** The stated prerequisite is Adyen for Platforms with a Legal Entity Management web service user holding Manage LegalEntities via API and Balance Platform BCL Legal Entity role. Customer Area lists Manage account holders & legal entities and, to manage payout accounts, Merchant manage bank accounts. The create example has sendToTransferInstrument requested true, allowed false and verificationStatus pending; problems can report bank-verification issues. The Customer Area payout account is usable when its status is valid after verification. Creating or viewing an instrument does not establish enabled payout capability or bank receipt.\n- **Updates and deletion:** PATCH modifies supplied fields and, in the guide's bank-account update example, retains the transfer-instrument ID, so schedules and requests aimed at that ID remain associated with it. DELETE cannot be undone; future scheduled or on-demand payouts referencing the deleted ID fail. The guide's payout-account rotation sequence is add a new instrument, update schedules or requests, verify receipt, then delete the old one. This is a documented sequence, not evidence that any payout occurred.\n- **Company payout accounts:** The platform's payout accounts connect to its liable account for settlement to company bank accounts. The Customer Area path Balances > Payout accounts manages only these platform accounts, not users' transfer instruments; the page mentions adding accounts in additional currencies. It does not establish country/currency eligibility or a particular platform's settlement result.\n- Dated examples show test hosts and mixed Legal Entity Management API versions (create curl v3; later operations v4). Check the relevant API Explorer and current account configuration before implementing; these examples do not prove current availability or authorization.\n\n## Detail locators\n\n- Definition, two account types, scope and role prerequisites: pinned raw lines 15-40.\n- Create fields, owner legalEntityId, location-dependent bank details, response id and pending capability, verification problems: pinned raw lines 47-57 and 343-374.\n- GET details and PATCH behavior: pinned raw lines 376-548 and 815-836.\n- Irreversible deletion and future payout references: pinned raw lines 838-986.\n- Liable-account company payout accounts, Customer Area scope, valid status and rotation sequence: pinned raw lines 988-1017.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform-integration concept and reciprocal source route.\n- [[source-adyen-docs-platforms-manage-account-holders]] \u2014 separate platform user and legal-entity identity.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15|Adyen Manage transfer instruments, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A transfer instrument is an API resource that represents an external bank account.",
+      "location": "raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md:19"
+    },
+    {
+      "text": "* **Your payout accounts**: These are your own company's bank accounts that you add to your platform. Adyen uses these accounts to settle funds to you. In an Adyen for Platforms integration, these are the transfer instruments that are connected to your liable account.",
+      "location": "raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md:24"
+    },
+    {
+      "text": "Unique identifier of the legal entity that has the contractual relationship with your platform and owns the bank account. For sole proprietorships, this is the legal entity ID of the individual owner.",
+      "location": "raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md:56"
+    },
+    {
+      "text": "You cannot undo a delete request. If you need the same account added back, [create a new transfer instrument](#create-a-transfer-instrument). Any future scheduled or on-demand payouts that use the deleted ID will fail.",
+      "location": "raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md:986"
+    },
+    {
+      "text": "The Customer Area is only available to manage your platform's payout accounts, not your users' transfer instruments.",
+      "location": "raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md:992"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-platforms-transfer-instruments-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-manage-transfer-instruments]] \u2014 2023-modified, 2026-09-15-captured Legal Entity Management API/Customer Area guide distinguishing user bank-account instruments from liable-account company payout accounts, verification state and deletion effects.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/manage-transfer-instruments/2026-09-15.md",
+  "raw_sha256": "412868510380d51ae24d91861af01e495e76448296b5f9dcea82926e8286b5af",
+  "status": "candidate_ready"
+}

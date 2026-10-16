@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-kyc-verification-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms verification codes\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/kyc-verification-codes\"\nraw_files:\n  - \"adyen/docs/platforms/kyc-verification-codes/2026-09-15.md\"\ntags: [adyen, platforms, issuing, kyc, verification-codes]\n---\n\n## Overview\n\nThis Adyen verification-code overview (last modified 2021-01-19; captured 2026-09-15) explains how Platforms or Issuing integrations find and interpret verification-error codes in account-holder capability problems. It is a code taxonomy and route to detailed catalogs, not evidence that a particular legal entity is verified or a remediation has succeeded. See [[adyen]] and [[adyen-platforms]] for the Platforms context; Issuing is separately scoped.\n\n## Key takeaways\n\n- **Three code layers:** A general error code broadly describes a failed check, a linked specific suberror gives a more granular cause, and a remediating action code suggests a possible fix. Adyen says it sends a remediating action for every error whenever possible, not invariably. Use suberror detail to design API-only onboarding error handling; the guide recommends handling all possible codes while allowing implementation to fit the use case and resources.\n- **Where to inspect:** The Customer Area Account holder details > Capabilities view shows enabled, allowed and verification-status information. The page requires Manage account holder capabilities for that view. API inspection uses a Configuration API web-service credential and GET /accountHolders/{id}; account-holder created/updated webhooks are another route. Account-holder ID or reference and linked legal-entity ID are search choices, not interchangeable object identities.\n- **Problems shape:** In an account-holder capability problems array, entity.id identifies the legal entity with the verification error. Each verificationErrors item can carry type (invalidInput or dataMissing), general code/message, a remediatingActions object when a common action exists across suberrors, and subErrors entries with their own type/code/message/remediatingActions array. The example has general 1_30, suberrors 1_3001 and 1_3000, action codes 1_301 and 1_300, and verificationStatus invalid; those are one illustrated case, not all codes or outcomes.\n- The detailed remediating-action, general-error and sub-error catalogs are separate pages. Codes can explain reported problems and possible user actions; they do not grant capability, certify compliance, prove current eligibility or ensure the next verification succeeds.\n\n## Detail locators\n\n- Three-level taxonomy, possible-action qualification and integration prerequisites: pinned raw lines 19-35.\n- Customer Area and Configuration API/webhook routes: pinned raw lines 37-61.\n- API-only recommendation and precise problems, entity and nested error/action structure: pinned raw lines 63-81.\n- Illustrative codes, nested actions and invalid verification status: pinned raw lines 83-144.\n- Routes to separate testing/action/general/suberror references: pinned raw lines 146-164.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform verification concept and reciprocal source route.\n- [[source-adyen-docs-platforms-kyc-verification-codes-remediating-actions]] \u2014 detailed action catalog.\n- [[source-adyen-docs-platforms-kyc-verification-codes-general-verification-errors]] \u2014 detailed general-code catalog.\n- [[source-adyen-docs-platforms-kyc-verification-codes-sub-errors]] \u2014 detailed suberror catalog.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15|Adyen Verification codes, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a verification error occurs, Adyen uses specific verification codes. These codes provide information such as which checks failed and what your users can do to fix the errors.",
+      "location": "raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15.md:19"
+    },
+    {
+      "text": "* **Remediating action codes**: Provides possible solutions to fix a verification error. Whenever possible, Adyen sends a remediating action for every error.",
+      "location": "raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15.md:21"
+    },
+    {
+      "text": "* **Specific suberror codes**: Provides a more granular and specific cause of the verification error. Suberrors are linked to the general error codes.",
+      "location": "raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15.md:23"
+    },
+    {
+      "text": "* [entity](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/\\(id\\)) object: The ID of the legal entity that has a verification error.",
+      "location": "raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15.md:73"
+    },
+    {
+      "text": "* [remediatingActions](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/\\(id\\)#responses-200-capabilities-problems-verificationErrors-remediatingActions): This object is sent when there is a common remediating action in the suberrors. This contains a `code` and `message`.",
+      "location": "raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15.md:80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c15-platforms-kyc-verification-codes-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-kyc-verification-codes]] \u2014 2021-modified, 2026-09-15-captured Platforms/Issuing verification-code taxonomy and account-holder capability problems retrieval route; actions are conditional suggestions, not verification outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page also covers Issuing; the Platforms reciprocal does not import Issuing-specific eligibility or behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/kyc-verification-codes/2026-09-15.md",
+  "raw_sha256": "5b3d6073ffe3e94a7b3de06bd09317a8e9a2aa8c5a54ea6b9656dd27da70d911",
+  "status": "candidate_ready"
+}

@@ -752,6 +752,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-industries-markets]] — Adyen Markets documentation directory (webpage, 2026-10-16)
 - [[source-adyen-docs-industries-feature-packs]] — Features per industry | Adyen Docs (webpage, 2026-10-16)
 
+### Website documentation — Campaign 15
+
+- [[source-adyen-docs-platforms]] — Adyen for Platforms overview (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-get-started]] — Get started with Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-integration-checklist]] — Adyen for Platforms integration and go-live checklist (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-document-requirements]] — Adyen platform verification document-upload requirements (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-data-formats-per-country]] — Adyen platform legal-entity data formats by country and region (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-account-holders]] — Adyen Platforms manage account holders (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-kyc-verification-codes-sub-errors]] — Adyen Platforms KYC suberror codes (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-onboarding-versions-onboarding-v4]] — Adyen Platforms onboarding v4 changes (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements]] — Determine platform verification requirements | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-legal-entities]] — Adyen for Platforms: Manage legal entities (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-transfer-instruments]] — Adyen Platforms manage transfer instruments (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-onboarding-guidelines]] — Adyen for Platforms onboarding guidelines (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-stores]] — Adyen Platforms manage stores (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-components]] — Adyen Platforms onboarding components (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-kyc-verification-codes-general-verification-errors]] — Adyen Platforms general KYC verification error codes (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-terms-of-service]] — Adyen for Platforms Terms of Service acceptance | Adyen Docs (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-kyc-verification-codes-remediating-actions]] — Adyen Platforms remediating action codes (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-quickstart-guide-onboarding-and-kyc]] — Adyen Platforms onboarding and verification quickstart (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-customize-hosted-onboarding]] — Adyen Platforms customize hosted onboarding (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-pci-forms]] — Adyen for Platforms PCI security questionnaires (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-overview-capabilities]] — Adyen for Platforms user capabilities and verification status (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-overview-data-review-process]] — Adyen Platforms periodic data-review process (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-overview]] — Adyen for Platforms user-verification process (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-kyc-insights]] — Adyen Platforms KYC verification insights (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-quickstart-guide-support]] — Adyen for Platforms support quickstart (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-reference-additional-products]] — Adyen Platforms additional-capabilities verification reference (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-onboarding-versions]] — Adyen Platforms onboarding versions and v4 migration (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users]] — Adyen Platforms onboard and verify users (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-access-api-credentials-web-service]] — API credentials for an Adyen balance platform (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-balance-accounts]] — Manage balance accounts | Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-account-holder-risk]] — Adyen platform account-holder risk management (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-identify-account-holder-risk]] — Adyen Score for platform account-holder risk (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-upload-bank-document]] — Adyen Hosted Onboarding bank-document upload (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-account-holder-status]] — Adyen Platforms account-holder status (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-kyc-verification-codes]] — Adyen Platforms verification codes (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-quickstart-guide]] — Adyen for Platforms quickstart guide (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-account-structure-resources]] — Adyen for Platforms account structure and resources (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-account-structure-resources-platform-structure]] — Adyen platform payment-facilitator account structure (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-account-structure-resources-financial-products]] — Adyen Platforms account structure with financial products (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-overview-verification-types]] — Adyen Platforms upfront and staggered verification (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-access-webservice-roles]] — Adyen Platforms web service roles for API credentials (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-quickstart-guide-customer-area]] — Adyen Platforms Customer Area quickstart (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-liable-accounts]] — Manage liable balance accounts in Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-reserve-account]] — Manage a reserve account | Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-manage-access]] — Adyen for Platforms Customer Area team access (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-financial-products]] — Adyen platform financial products overview (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-account-structure-resources-legal-entity-management]] — Adyen Platforms legal entity management resources (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-onboard-users-onboarding-steps]] — Adyen Platforms onboarding steps filter landing page (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-reference-additional-products-industry-codes]] — Adyen Platforms industry codes list (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — Brand-specific industry codes | Adyen for Platforms (webpage, 2026-10-16)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -784,6 +837,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-platforms]] — Adyen for Platforms
 
 - [[adyen-uplift]] — Adyen Uplift
 

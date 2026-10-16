@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-integration-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms integration and go-live checklist\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/integration-checklist\"\nraw_files:\n  - \"adyen/docs/platforms/integration-checklist/2026-09-15.md\"\ntags: [adyen, platforms, integration, onboarding, split-payments, go-live]\n---\n\n## Overview\n\nThis 2023-last-modified [[adyen]] for Platforms checklist, captured 2026-09-15, sequences account structure, API credentials, webhooks, components, user onboarding and verification, payment splits, payouts, internal transfers, reconciliation, and test-to-live preparation. Its test examples and checklist are guidance for a **platform** integration, not evidence that any merchant or user is verified, authorized for a capability, processing live payments, or receiving bank funds. [[adyen-platforms]]\n\n## Key takeaways\n\n- Before building, the page instructs the platform to design its implementation with an Adyen implementation manager. It calls for familiarity with distinct company and merchant accounts, stores, balance platform, account holders, balance accounts, legal entities, verified transfer instruments, and business lines. An account holder's capabilities specify what a user can do; a legal entity carries verification data, a balance account holds platform/user funds, and a transfer instrument represents a user's payout bank account. These objects must not be collapsed into a single merchant or seller identity.\n- Development preparation separates Balance Platform/Transfers/FX/session credentials, Legal Entity Management/session credentials, and company-scoped Checkout/Management credentials. Server-side libraries are **optional**, while the listed API credentials and webhook configuration support the documented integration. The raw includes many test-environment API/library examples, including a test card `Authorised` response; these examples do not demonstrate live credentials, payment capture or settlement. See the raw locators for versioned sample calls.\n- The page describes webhook endpoint/acknowledgment configuration and HMAC security, plus optional prebuilt components using server-created authentication sessions. For onboarding it recommends hosted onboarding (invite or API-initiated) and also describes API-only onboarding. Adyen must verify user information before the platform can process payments for users and pay out to them; API-only setup includes a transfer instrument that Adyen must verify before payout, terms/PCI steps, and verification/capability updates. A created resource, webhook, or onboarding invitation is not completed verification or granted payout capability.\n- For payment processing, the platform must book funds and fees to the correct user and platform liable balance accounts. Automatic store-level split profiles are an option; **Adyen checks the profile at capture**, so a change after authorization but before capture applies to capture, and transaction-specific capture split instructions override the profile. Manual split routes exist for online Checkout API and in-person Terminal API. Split configuration is not itself proof of authorization, capture, settlement or payout.\n- Managed payouts are **recommended**, with custom payouts also offered; these bank-account payouts differ from internal transfers between balance accounts. Report downloads require a reports credential from the Adyen contact and authenticated GET after report generation. To go live, apply for a live account, explicitly replicate test setup, switch credentials/endpoints, and run end-to-end checks for resources, successful and refused payments, payouts, verification errors, webhooks and reports. The checklist says test setup is not replicated automatically. Live-readiness steps do not establish that these checks or financial outcomes occurred.\n\n## Detail locators\n\n- **Implementation design and platform resource identities:** raw lines 19\u201345.\n- **Optional libraries, credential families and test API/library examples:** raw lines 47\u20131040; test Checkout response around lines 1039\u20131040.\n- **Webhook/component setup and onboarding variants/verification:** raw lines 1042\u20131189.\n- **Pay-in splits, capture-time profile precedence, payouts and internal transfers:** raw lines 1191\u20131264.\n- **Report credentials and test-to-live checklist:** raw lines 1266\u20131312.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-webhooks]]\n- [[adyen-reporting]]\n- [[adyen-payouts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/integration-checklist/2026-09-15|Adyen for Platforms integration checklist \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you start building your integration, make sure that you have already [designed your implementation](/platforms/get-started#scope-and-design-your-implementation) with your Adyen implementation manager.",
+      "location": "raw/adyen/docs/platforms/integration-checklist/2026-09-15.md:25"
+    },
+    {
+      "text": "Every Adyen for Platforms integration must have at least the following resource types:",
+      "location": "raw/adyen/docs/platforms/integration-checklist/2026-09-15.md:33"
+    },
+    {
+      "text": "Before you can start processing payments for your users and pay out to them, Adyen needs to [verify their information](/platforms/verification-overview).",
+      "location": "raw/adyen/docs/platforms/integration-checklist/2026-09-15.md:1076"
+    },
+    {
+      "text": "If you update the profile after a payment is authorized but before it is captured, we apply the updated profile to the capture. Transaction-specific split instructions in a capture request override the profile.",
+      "location": "raw/adyen/docs/platforms/integration-checklist/2026-09-15.md:1209"
+    },
+    {
+      "text": "The setup from your test Adyen for Platforms account is *not* replicated to your live Adyen for Platforms account automatically.",
+      "location": "raw/adyen/docs/platforms/integration-checklist/2026-09-15.md:1282"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-integration-checklist-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-integration-checklist]] \u2014 2023-modified, 2026-09-15-captured Adyen for Platforms resource, API, onboarding, splits, payout, reporting and go-live checklist; test examples and steps do not prove verified capabilities or financial outcomes.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply this route to current Adyen for Platforms account-holder/balance-platform integration, not Classic Platforms, Mirakl-specific connector behavior or issuing.",
+          "The `adyen-platforms` concept is separately proposed by the campaign foundation worker; this reciprocal route depends on coordinator creation of that concept and does not propose a duplicate concept.",
+          "Hosted onboarding and managed payouts are recommendations, server-side libraries are optional, and test API samples are not live financial proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/integration-checklist/2026-09-15.md",
+  "raw_sha256": "b09da4374d0a36bc426e47853160c7725506b3e630456fc0ed07627c9a0be083",
+  "status": "candidate_ready"
+}

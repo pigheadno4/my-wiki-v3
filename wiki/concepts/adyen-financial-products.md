@@ -15,6 +15,9 @@ The 2023-modified landing page captured 2026-09-15 supplies orientation and link
 
 ## Sources
 
+- [[source-adyen-docs-platforms-financial-products]] — 2023-modified, 2026-09-15-captured Platforms financial-products hub for Business accounts, Capital, Issuing and Payouts; product-specific eligibility and activation remain in child guides.
+
+
 - [[source-adyen-docs-financial-products]] — 2026-09-15 captured Adyen Financial Products landing page for Business accounts, Capital, Issuing and Payouts descriptions and child navigation.
 
 ## Related
