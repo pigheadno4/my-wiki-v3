@@ -2410,6 +2410,26 @@ class RegistryTests(unittest.TestCase):
         self.assertIn("c0376ccf1e8e394e33bec22aef38f271f05c325a7eec066831e934634894cfc5",
                       capsule.historical_policy_hashes)
 
+    def test_paypal_ios_v3_paths_preserve_the_historical_v2_policy(self):
+        repo = next(r for r in load_registry(ROOT / "tracking/github/repo-registry.toml")
+                    if r.id == "paypal/paypal-ios")
+        self.assertEqual(
+            (VersionTrack("package:paypal-ios@2", "latest-stable", "all-stable",
+                          False, ("2.0.1",)),
+             VersionTrack("package:paypal-ios@3", "all-stable", "all-stable")),
+            repo.version_tracks,
+        )
+        capsule = repo.capsules[0]
+        self.assertIn("Sources/PayPalPayments", capsule.default_required_roots)
+        self.assertIn("Demo/Demo/PayPalPayments", capsule.default_required_roots)
+        self.assertNotIn("Sources/PayPalWebPayments", capsule.default_required_roots)
+        self.assertNotIn("Demo/Demo/PayPalWebPayments", capsule.default_required_roots)
+        self.assertIn("v3_MIGRATION_GUIDE.md", capsule.include_paths)
+        self.assertIn("83c96e9b6452b55a6036f327ebe0f35ceae4ba08d63de33e56680ef556b93d21",
+                      capsule.historical_policy_hashes)
+        self.assertEqual(300, capsule.max_capsule_files)
+        self.assertEqual(2000000, capsule.max_capsule_utf8_bytes)
+
     def test_registry_matches_appendix_a_inventory_and_collection_cadence(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")
 

@@ -6,6 +6,28 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-16] ingest | PayPal iOS `3.1.1`
+
+- Approved delta item `github-85652bd08413a3ffc568`, SHA `de98414f5cf74dc3db2239a4828b4760ef391d20`, after closing full `3.1.0`. Fully read all nine changed retained files, release notes and cumulative wiki context; affected prior code read during the preceding full cycle. Generated manifests/inventories/duplicated diffs mechanically verified under approval; 153 unchanged files hash-verified, all 162 snapshot hashes/sizes pass. Four grounding excerpts extracted before edits.
+- Concept audit first; added BN context forwarding/encoding, demo persistence and incomplete Clear behavior, whitespace-only CardClient disposition and the later unsupported-3.0.0 notice. Retained original release attribution despite later cumulative-changelog rearrangement. Source/changelog, concepts, company/catalog and logs updated; source count and older knowledge preserved. No cross-company comparison warranted.
+- No runtime dependency/build/payment proof, commit or push. Next: final validation and scoped review of the three sequential ingests.
+- Close check: six typed pages and whitespace pass; all 486 files across three new snapshots retain their recorded hashes/sizes. New evidence links resolve, catalog entries are unique, company source_count is unchanged and historical source/changelog sections and raw references are preserved. Scoped diff reviewed; no unrelated work reverted. Next: commit/push approval after reporting the version findings.
+- Final lifecycle validation caught and repaired three missing machine-readable comparison-manifest references in the new changelog entries. Rerun returns exactly the ten unrelated pre-existing errors, none for PayPal iOS, and zero pending items. All three items are `ingested` in approved full/full/delta order. No commit/push.
+
+## [2026-10-16] ingest | PayPal iOS `3.1.0`
+
+- Approved full override item `github-5cce6532a34ea07a94ef`, SHA `67e4a9635f8e3ff829221c6d64573590937d1a2f`, after closing `3.0.0`. Fully read all 162 current retained files (including 151 unchanged), release notes and cumulative source/changelog. Generated inventories, manifests and duplicated diff mechanically verified; snapshot/notes/packet/comparison hashes pass. Five exact source quotes extracted before edits.
+- Concept audit first; added iOS 16 minimum, external exact risk dependency, fixed userAction forwarding and revised installed-app eligibility/analytics behavior. Full baseline reconfirms payment/vault/server boundaries. Absent invalid-action error remains flagged; corrected URL-helper ownership in the earlier source finding. Preserved all prior versions and source_count; no cross-company comparison warranted.
+- No upstream build/dependency execution/payment proof, commit or push. Next: validate and close before `3.1.1` delta.
+- Close check: six typed pages, whitespace and new root-relative evidence links pass; 162 file hashes/sizes and release/packet/comparison hashes verified. Global unrelated packet errors remain the previously recorded baseline. Next: serial `3.1.1` delta.
+
+## [2026-10-16] ingest | PayPal iOS `3.0.0`
+
+- Approved full item `github-28bbeeaf63ba759b78ef`, SHA `fc69f404fa68b2c7336a684296543a67e0e809d5`, from `2.0.1`. Fully read all 162 retained files, assigned prior source, release evidence and cumulative source/changelog. Generated manifests, inventories and duplicated diff mechanically verified under explicit approval; five grounding excerpts extracted before writes.
+- Concept audit first; added session-first APIs, renamed module/configuration, app-switch/browser returns, card/server finalization boundaries and version-qualified userAction/funding/return-routing cautions. Preserved v1/v2 history and source count; no cross-company comparison warranted. Exact-version source contradictions are flagged on both source and SDK concept.
+- No upstream build or payment execution, commit or push. Next: validate and close before approved full `3.1.0` ingest.
+- Close check: six typed pages and whitespace pass; all 162 snapshot file hashes/sizes and new root-relative evidence links pass. Packet/notes/comparison identities and hashes verified; inventories/diff checked mechanically. Global GitHub validation retains ten pre-existing unrelated errors, none for PayPal iOS. Next: full `3.1.0`.
+
 ## [2026-10-16] ingest | PayPal Android `3.1.0`
 
 - Approved delta item `github-fce7ee241c398cc73695`, SHA `d100313f2247b512cedf6080bb7b6ecaada26d42`, after closing `3.0.0`. Read all 17 changed retained files, the removed/prior source already read in the full cycle, release evidence and cumulative wiki context. Generated inventories and duplicated diff checked mechanically under separately approved exception; all 277 snapshot hashes/sizes pass, with 260 hash-unchanged paths. The authored delta diff was also read.

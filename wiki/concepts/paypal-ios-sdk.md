@@ -7,11 +7,33 @@ tags: [paypal, ios, mobile, swift, card-payments, web-payments, fraud-protection
 
 ## PayPal iOS SDK
 
-The PayPal iOS SDK provides native Swift modules for cards, browser-based PayPal checkout, PayPal-branded buttons, vault approval, and device data collection. The latest ingested package is `paypal-ios@2.0.1`; this is wiki ingest status, not a claim about the latest upstream release.
+The PayPal iOS SDK provides native Swift modules for cards, PayPal checkout, PayPal-branded buttons, vault approval, and device data collection. The latest ingested package is `paypal-ios@3.1.1`; this is wiki ingest status, not a claim about the latest upstream release. Version 1/2 guidance below remains historical.
 
 Repository: <https://github.com/paypal/paypal-ios>
 
-## Requirements and Modules
+## Version 3 Session-First Integration
+
+At `3.1.1`, optional `CoreConfig.bnCode` is forwarded into `ShopperSessionExperimentationContext` and encoded as `bnCode` (explicit null when nil). The demo adds trimmed BN input and UserDefaults persistence, then passes it through CoreConfigManager. This is attribution-context wiring, not a new payment method, eligibility guarantee or proof of attribution credit. Its Clear action does not reset the separately stored BN code.
+
+> [!warning] Version support and history
+> The cumulative CHANGELOG retained at `3.1.1` marks `3.0.0` unsupported and directs users to `3.1.0`; it also moves earlier v3 release descriptions under `3.1.0`. Original `3.0.0`/`3.1.0` notes and exact source snapshots remain separate historical evidence. Do not use the later changelog rearrangement to change when code first appeared. See [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
+
+The subsequent full `3.1.0` baseline requires **iOS 16+**, retaining Swift 5.9+/Xcode 15+ in the README. It fixes session payment-type forwarding: `.continue` -> `CONTINUE`, `.payNow` -> `PAY`, `.setupNow` -> `COMMIT`. This resolves the hardcoded-PAY defect below, not the still-unimplemented invalid-action error documented in `PayPalUserAction`.
+
+At `3.1.0`, local installed-app detection is removed: the eligibility request optimistically sends `paypalNativeAppInstalled: true`, while analytics sets installed-state to nil. The SDK still requires server eligibility/redirect/session data before attempting a Universal Link, with browser fallback if opening fails. This is not proof the app is installed. FraudProtection now depends on external `paypal/paypal-risk-ios` exactly `5.6.0` (SPM product/pod `PayPalRisk`) instead of a vendored binary; dependency internals remain uncollected. The full source recheck retains the session-per-attempt, callback-only PayPal and separate server-finalization boundaries. Source/history: [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
+
+The full `paypal-ios@3.0.0` baseline renames `PayPalWebPayments` to `PayPalPayments`, `PayPalWebCheckoutClient` to `PayPalClient`, and `Environment` to `CoreEnvironment`. `CoreConfig(clientID:environment:merchantID:bnCode:)` requires the merchant ID; BN code is optional. Its README/SPM/podspec retain iOS 14+, Swift 5.9+ and Xcode 15+.
+
+Call `createPayPalSession(sessionType:userIdentity:urlConfig:userAction:)` with `.checkout` or `.vaultWithoutPurchase`, then `start(orderID:completion:)` or `vault(setupTokenID:completion:)` using a merchant-server-created identifier. These PayPal APIs expose completion handlers, not the removed v2 request/async overloads. Card APIs retain Result and async/await. Prewarming is consumed per launch attempt; it is not durable process-restoration state.
+
+In `3.0.0`, app switching requires installed-app detection, server eligibility and valid redirect/session data. Failure to open the eligible Universal Link falls back to browser authentication. Session creation failure instead returns an error. Forward validated app-return URLs to `handleReturnURL`; the browser path completes through its authentication callback. Merchant-server capture/authorization or payment-token exchange remains separate. Email/structured-phone hints or an existing shopper-session ID are not saved-payment credentials.
+
+> [!warning] Contradiction - version 3.0.0 action intent
+> The public API accepts `userAction` and its comments describe action-specific behavior, but the retained session request does not forward that argument and defaults to `PAY`. The documented `invalidUserActionError` is absent from the retained error/API implementation. Do not infer enforced `.setupNow` validation. See [[source-github-paypal-ios]] and [[changelog-github-paypal-ios]].
+
+The renamed funding enum still contains only `.paypal`, `.paylater` and `.paypalCredit`; the public `start` no longer accepts the old request's funding-source argument. Native Venmo support is not added. See [[source-github-paypal-ios]] for exact-SHA evidence and demo limitations.
+
+## Version 2 Requirements and Modules
 
 | Module | Purpose |
 | --- | --- |
@@ -23,7 +45,7 @@ Repository: <https://github.com/paypal/paypal-ios>
 
 The package supports Swift Package Manager and CocoaPods. The `2.0.1` source requires iOS 14+, Swift 5.9+, Xcode 15+, and macOS Ventura 13.
 
-## Shared Configuration
+## Version 2 Shared Configuration
 
 ```swift
 let config = CoreConfig(clientID: "CLIENT_ID", environment: .sandbox)
@@ -70,7 +92,7 @@ let result = try await cardClient.approveOrder(request: request)
 
 `CardResult` includes the order ID, optional status, and whether 3DS was attempted. SCA options are `.scaWhenRequired` and `.scaAlways`.
 
-## PayPal Web Checkout
+## Version 2 PayPal Web Checkout
 
 ```swift
 let request = PayPalWebCheckoutRequest(orderID: orderID, fundingSource: .paypal)
@@ -147,7 +169,7 @@ See [[source-github-paypal-messages-ios]] for its versioned API evidence.
 
 ## Sources
 
-- [[source-github-paypal-ios]] - cumulative package-qualified source through `paypal-ios@2.0.1`
+- [[source-github-paypal-ios]] - cumulative package-qualified source through `3.1.1` delta, retaining full `3.0.0`/`3.1.0` and v1/v2 history
 - [[changelog-github-paypal-ios]] - major-version and patch release ledger
 - [[source-paypal-ios-card-payments]] - older official iOS integration guide
 - [[source-paypal-save-paypal-purchase-later-ios-sdk]] - older PayPal vault-without-purchase delegate guidance

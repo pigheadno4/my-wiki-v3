@@ -165,6 +165,18 @@ Uses `PayPalWebCheckoutClient` (browser-based web checkout) - not `CardClient`. 
 - **Create Order payload**: identical to JS SDK PayPal vault (`store_in_vault: ON_SUCCESS`, `usage_type: MERCHANT`, `customer_type: CONSUMER`)
 - **APPROVED vs VAULTED** + webhook — same pattern as all other vault integrations
 
+## iOS Version 3 Vault Lifecycle
+
+The `3.1.1` delta forwards optional BN code into shopper-session context without changing vault API signatures or server token-exchange requirements. Its cumulative changelog marks `3.0.0` unsupported and points to `3.1.0`; earlier snapshots below remain historical evidence, not recommended integration targets. Source/history: [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
+
+The full `3.1.0` baseline raises the deployment minimum to iOS 16 and correctly forwards the selected action (`.setupNow` -> `COMMIT`, `.continue` -> `CONTINUE`, `.payNow` -> `PAY`). It removes local installed-app gating and sends an optimistic installed flag for eligibility; the server decision and successful OS Universal Link open still govern app switching, otherwise browser fallback applies. The earlier hardcoded-PAY finding below is specific to `3.0.0`; the documented invalid-action error is still absent. Server token exchange, validated returns and re-prewarming remain necessary. See [[source-github-paypal-ios]].
+
+The full `paypal-ios@3.0.0` baseline replaces the wallet request-object API with `PayPalClient` in `PayPalPayments`. Call `createPayPalSession(sessionType: .vaultWithoutPurchase, userIdentity: ..., urlConfig: ..., userAction: ...)`, create the setup token on the merchant server, then `vault(setupTokenID:completion:)`. An existing shopper-session ID is an identity/session hint, not a permanent payment token. The session task is consumed per launch attempt.
+
+The app-switch return is delivered to `handleReturnURL`; browser approval uses the SDK's authentication callback. `PayPalVaultResult.tokenID` is the approved setup token, not a durable vault credential: exchange it server-side for a payment token and verify the customer association. Purchase-with-vault instead sets `ON_SUCCESS` on the order, uses `.checkout`, and completes the order on the merchant server. The direct-merchant demo retains `usageType: MERCHANT`; older `PLATFORM` guidance below is not silently replaced.
+
+At `3.0.0`, the selected `userAction` is not forwarded into the session request (default `PAY`), and app-switch returns are parsed without host/scheme/order binding inside the handler. Route only validated app callbacks and verify server results; these are static source findings, not reproduced payment outcomes. Sources: [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
+
 ## Save PayPal Wallet (during purchase, iOS SDK)
 
 Uses `PayPalWebCheckoutClient` - same pattern as Android but Swift/SwiftUI. The older product guide below uses the version 1 delegate API; `paypal-ios@2.0.1` uses completion `Result` or async/await instead.
@@ -378,7 +390,7 @@ The `customer.id` is a PayPal-generated identifier — store it against the paye
 - [[source-paypal-save-cards-js-sdk]] — Card vault JS SDK: checkbox UX, SCA_ALWAYS/SCA_WHEN_REQUIRED with vault, usage_type/customer_type/permit_multiple_payment_tokens fields, 14 test cards
 - [[source-github-paypal-js]] — versioned core v10.0.1 legacy Buttons setup-token approval types plus React Braintree billing-agreement, checkout-with-vault, and Pay Later evidence
 - [[source-github-paypal-checkout-components]] — package-qualified runtime, Venmo setup-token, and eligibility evidence
-- [[source-github-paypal-ios]] — cumulative native iOS evidence through `paypal-ios@2.0.1`, including v2 Result/async APIs, cancellation handling, and the no-native-Venmo enum boundary
+- [[source-github-paypal-ios]] — cumulative native iOS through `3.1.1`: BN session forwarding, iOS 16+, action/app-switch changes and retained earlier history
 - [[changelog-github-paypal-ios]] — package-qualified iOS major-version and patch history
 - [[source-github-paypal-android]] — cumulative Android through `3.1.0`: session-first v3 vaulting, public token enum and demo fix; v2 callbacks and Venmo boundary retained
 - [[source-github-v6-web-sdk-sample-integration]] — current Web SDK setup-token, payment-token, and purchase-with-vault sample paths

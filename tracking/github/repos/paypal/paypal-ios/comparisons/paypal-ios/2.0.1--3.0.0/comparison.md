@@ -1,0 +1,203 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-ios`
+- Package: `paypal-ios`
+- From: `2.0.1` (`2008a6de7c00a2ae53c669932d5fb19674c35b1e`)
+- To: `3.0.0` (`fc69f404fa68b2c7336a684296543a67e0e809d5`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `Demo/Demo/CardPayments/CardPaymentViewModel/CardPaymentViewModel.swift`
+- `Demo/Demo/CardPayments/CardViewComponents/CardOrderApproveView.swift`
+- `Demo/Demo/CardVault/CardVaultViewModel/CardVaultViewModel.swift`
+- `Demo/Demo/CardVault/CardVaultViews/CardVaultView.swift`
+- `Demo/Demo/CardVault/CardVaultViews/UpdateSetupTokenView.swift`
+- `Demo/Demo/DemoSettings/CustomEnvironmentView.swift`
+- `Demo/Demo/DemoSettings/DemoEnvironment.swift`
+- `Demo/Demo/DemoSettings/DemoSettings.swift`
+- `Demo/Demo/DemoSettings/Environment.swift`
+- `Demo/Demo/Models/CreateOrderParams.swift`
+- `Demo/Demo/Models/CreateSetupTokenParam.swift`
+- `Demo/Demo/Models/CreateSetupTokenResponse.swift`
+- `Demo/Demo/Models/Order.swift`
+- `Demo/Demo/Networking/DemoMerchantAPI.swift`
+- `Demo/Demo/Networking/MerchantIntegration.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalPaymentState.swift`
+- `Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `Demo/Demo/PayPalVault/PayPalVaultViewModel/PayPalVaultViewModel.swift`
+- `Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultResultView.swift`
+- `Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalPaymentState.swift`
+- `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift`
+- `Demo/Demo/SwiftUIComponents/CommonComponents/FloatingLabelTextField.swift`
+- `Demo/Demo/SwiftUIComponents/CommonComponents/ShopperSessionURLConfigFactory.swift`
+- `Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityFactory.swift`
+- `Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityView.swift`
+- `Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift`
+- `Demo/Demo/Vault/VaultViewModel/VaultState.swift`
+- `Demo/Demo/Vault/VaultViewModel/VaultViewModel.swift`
+- `Demo/Demo/Vault/VaultViews/CreateSetupTokenView.swift`
+- `Package.swift`
+- `PayPal.podspec`
+- `Sources/CardPayments/CardClient.swift`
+- `Sources/CardPayments/Models/PaymentSource.swift`
+- `Sources/CorePayments/AnalyticsEventData.swift`
+- `Sources/CorePayments/CoreConfig.swift`
+- `Sources/CorePayments/CorePaymentsError.swift`
+- `Sources/CorePayments/Networking/AnalyticsService.swift`
+- `Sources/CorePayments/Networking/AuthenticationTokenResponse.swift`
+- `Sources/CorePayments/Networking/AuthenticationTokenServiceAPI.swift`
+- `Sources/CorePayments/Networking/Enums/CoreEnvironment.swift`
+- `Sources/CorePayments/Networking/Enums/Environment.swift`
+- `Sources/CorePayments/Networking/Enums/HTTPHeader.swift`
+- `Sources/CorePayments/Networking/Enums/HTTPMethod.swift`
+- `Sources/CorePayments/Networking/HTTP.swift`
+- `Sources/CorePayments/Networking/HTTPResponse.swift`
+- `Sources/CorePayments/Networking/HTTPResponseParser.swift`
+- `Sources/CorePayments/Networking/NetworkingClient.swift`
+- `Sources/CorePayments/Networking/NetworkingError.swift`
+- `Sources/CorePayments/Networking/RESTRequest.swift`
+- `Sources/CorePayments/Networking/TrackingEventsAPI.swift`
+- `Sources/CorePayments/Networking/UpdateClientConfigAPI.swift`
+- `Sources/CorePayments/PayPalCheckoutAnalyticsData.swift`
+- `Sources/CorePayments/PayPalCoreConstants.swift`
+- `Sources/CorePayments/UIApplication+URLOpener.swift`
+- `Sources/CorePayments/WebAuthenticationSession.swift`
+- `Sources/FraudProtection/CoreConfig+MagnesSDK.swift`
+- `Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift`
+- `Sources/PayPalPayments/APIRequests/CreateShopperSessionResponse.swift`
+- `Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift`
+- `Sources/PayPalPayments/CoreEnvironment+PayPal.swift`
+- `Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift`
+- `Sources/PayPalPayments/Models/PayPalFlowType.swift`
+- `Sources/PayPalPayments/Models/PayPalURLConfig.swift`
+- `Sources/PayPalPayments/Models/PayPalUserAction.swift`
+- `Sources/PayPalPayments/Models/PayPalUserIdentity.swift`
+- `Sources/PayPalPayments/PayPalCheckoutFundingSource.swift`
+- `Sources/PayPalPayments/PayPalCheckoutResult.swift`
+- `Sources/PayPalPayments/PayPalCheckoutURLBuilder.swift`
+- `Sources/PayPalPayments/PayPalClient.swift`
+- `Sources/PayPalPayments/PayPalError.swift`
+- `Sources/PayPalPayments/PayPalVaultResult.swift`
+- `Sources/PayPalPayments/PrivacyInfo.xcprivacy`
+- `Sources/PayPalPayments/SystemLatencyTracker.swift`
+- `Sources/PayPalWebPayments/Environment+PayPalWebCheckout.swift`
+- `Sources/PayPalWebPayments/PayPalError.swift`
+- `Sources/PayPalWebPayments/PayPalVaultRequest.swift`
+- `Sources/PayPalWebPayments/PayPalVaultResult.swift`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutClient.swift`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutFundingSource.swift`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutRequest.swift`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutResult.swift`
+- `Sources/PayPalWebPayments/PrivacyInfo.xcprivacy`
+- `Sources/PaymentButtons/Coordinator.swift`
+- `Sources/PaymentButtons/PaymentButton.swift`
+- `v3_MIGRATION_GUIDE.md`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `Demo/Demo/CardPayments/CardPaymentViewModel/CardPaymentViewModel.swift`
+- `modified`: `Demo/Demo/CardPayments/CardViewComponents/CardOrderApproveView.swift`
+- `modified`: `Demo/Demo/CardVault/CardVaultViewModel/CardVaultViewModel.swift`
+- `modified`: `Demo/Demo/CardVault/CardVaultViews/CardVaultView.swift`
+- `modified`: `Demo/Demo/CardVault/CardVaultViews/UpdateSetupTokenView.swift`
+- `added`: `Demo/Demo/DemoSettings/CustomEnvironmentView.swift`
+- `added`: `Demo/Demo/DemoSettings/DemoEnvironment.swift`
+- `modified`: `Demo/Demo/DemoSettings/DemoSettings.swift`
+- `deleted`: `Demo/Demo/DemoSettings/Environment.swift`
+- `modified`: `Demo/Demo/Models/CreateOrderParams.swift`
+- `modified`: `Demo/Demo/Models/CreateSetupTokenParam.swift`
+- `modified`: `Demo/Demo/Models/CreateSetupTokenResponse.swift`
+- `modified`: `Demo/Demo/Models/Order.swift`
+- `modified`: `Demo/Demo/Networking/DemoMerchantAPI.swift`
+- `modified`: `Demo/Demo/Networking/MerchantIntegration.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift` -> `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`
+- `added`: `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift` -> `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift` -> `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift` -> `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift` -> `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift` -> `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift`
+- `renamed`: `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalPaymentState.swift` -> `Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalPaymentState.swift`
+- `added`: `Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `modified`: `Demo/Demo/PayPalVault/PayPalVaultViewModel/PayPalVaultViewModel.swift`
+- `modified`: `Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultResultView.swift`
+- `modified`: `Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultView.swift`
+- `deleted`: `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `deleted`: `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `modified`: `Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift`
+- `modified`: `Demo/Demo/SwiftUIComponents/CommonComponents/FloatingLabelTextField.swift`
+- `added`: `Demo/Demo/SwiftUIComponents/CommonComponents/ShopperSessionURLConfigFactory.swift`
+- `added`: `Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityFactory.swift`
+- `added`: `Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityView.swift`
+- `modified`: `Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift`
+- `modified`: `Demo/Demo/Vault/VaultViewModel/VaultState.swift`
+- `modified`: `Demo/Demo/Vault/VaultViewModel/VaultViewModel.swift`
+- `modified`: `Demo/Demo/Vault/VaultViews/CreateSetupTokenView.swift`
+- `modified`: `Package.swift`
+- `modified`: `PayPal.podspec`
+- `modified`: `Sources/CardPayments/CardClient.swift`
+- `modified`: `Sources/CardPayments/Models/PaymentSource.swift`
+- `modified`: `Sources/CorePayments/AnalyticsEventData.swift`
+- `modified`: `Sources/CorePayments/CoreConfig.swift`
+- `modified`: `Sources/CorePayments/CorePaymentsError.swift`
+- `modified`: `Sources/CorePayments/Networking/AnalyticsService.swift`
+- `added`: `Sources/CorePayments/Networking/AuthenticationTokenResponse.swift`
+- `added`: `Sources/CorePayments/Networking/AuthenticationTokenServiceAPI.swift`
+- `renamed`: `Sources/CorePayments/Networking/Enums/Environment.swift` -> `Sources/CorePayments/Networking/Enums/CoreEnvironment.swift`
+- `modified`: `Sources/CorePayments/Networking/Enums/HTTPHeader.swift`
+- `modified`: `Sources/CorePayments/Networking/Enums/HTTPMethod.swift`
+- `modified`: `Sources/CorePayments/Networking/HTTP.swift`
+- `modified`: `Sources/CorePayments/Networking/HTTPResponse.swift`
+- `modified`: `Sources/CorePayments/Networking/HTTPResponseParser.swift`
+- `modified`: `Sources/CorePayments/Networking/NetworkingClient.swift`
+- `modified`: `Sources/CorePayments/Networking/NetworkingError.swift`
+- `modified`: `Sources/CorePayments/Networking/RESTRequest.swift`
+- `modified`: `Sources/CorePayments/Networking/TrackingEventsAPI.swift`
+- `modified`: `Sources/CorePayments/Networking/UpdateClientConfigAPI.swift`
+- `added`: `Sources/CorePayments/PayPalCheckoutAnalyticsData.swift`
+- `modified`: `Sources/CorePayments/PayPalCoreConstants.swift`
+- `added`: `Sources/CorePayments/UIApplication+URLOpener.swift`
+- `modified`: `Sources/CorePayments/WebAuthenticationSession.swift`
+- `modified`: `Sources/FraudProtection/CoreConfig+MagnesSDK.swift`
+- `added`: `Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift`
+- `added`: `Sources/PayPalPayments/APIRequests/CreateShopperSessionResponse.swift`
+- `added`: `Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift`
+- `renamed`: `Sources/PayPalWebPayments/Environment+PayPalWebCheckout.swift` -> `Sources/PayPalPayments/CoreEnvironment+PayPal.swift`
+- `added`: `Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift`
+- `added`: `Sources/PayPalPayments/Models/PayPalFlowType.swift`
+- `added`: `Sources/PayPalPayments/Models/PayPalURLConfig.swift`
+- `added`: `Sources/PayPalPayments/Models/PayPalUserAction.swift`
+- `added`: `Sources/PayPalPayments/Models/PayPalUserIdentity.swift`
+- `renamed`: `Sources/PayPalWebPayments/PayPalWebCheckoutFundingSource.swift` -> `Sources/PayPalPayments/PayPalCheckoutFundingSource.swift`
+- `renamed`: `Sources/PayPalWebPayments/PayPalWebCheckoutResult.swift` -> `Sources/PayPalPayments/PayPalCheckoutResult.swift`
+- `added`: `Sources/PayPalPayments/PayPalCheckoutURLBuilder.swift`
+- `added`: `Sources/PayPalPayments/PayPalClient.swift`
+- `renamed`: `Sources/PayPalWebPayments/PayPalError.swift` -> `Sources/PayPalPayments/PayPalError.swift`
+- `renamed`: `Sources/PayPalWebPayments/PayPalVaultResult.swift` -> `Sources/PayPalPayments/PayPalVaultResult.swift`
+- `renamed`: `Sources/PayPalWebPayments/PrivacyInfo.xcprivacy` -> `Sources/PayPalPayments/PrivacyInfo.xcprivacy`
+- `added`: `Sources/PayPalPayments/SystemLatencyTracker.swift`
+- `deleted`: `Sources/PayPalWebPayments/PayPalVaultRequest.swift`
+- `deleted`: `Sources/PayPalWebPayments/PayPalWebCheckoutClient.swift`
+- `deleted`: `Sources/PayPalWebPayments/PayPalWebCheckoutRequest.swift`
+- `modified`: `Sources/PaymentButtons/Coordinator.swift`
+- `modified`: `Sources/PaymentButtons/PaymentButton.swift`
+- `added`: `v3_MIGRATION_GUIDE.md`

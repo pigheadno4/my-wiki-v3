@@ -120,3 +120,115 @@ and records demo user-action cleanup and Magnes namespace changes. Binary,
 variant-source and runtime evidence limits remain explicit in the cumulative
 source and changelog. Six typed wiki pages and whitespace checks pass; global
 GitHub validation retains the same ten unrelated errors, none for Android.
+
+## PayPal iOS v3 Path Review - 2026-10-16
+
+Review only: no registry activation, accepted raw collection, work-item creation
+or wiki ingestion. Remote annotated tags were peeled to these exact commits;
+GitHub recursive trees were checked for truncation.
+
+| Release | Exact commit | Proposed files | Tree-reported bytes |
+| --- | --- | --- | --- |
+| paypal-ios@3.0.0 | fc69f404fa68b2c7336a684296543a67e0e809d5 | 162 | 375722 |
+| paypal-ios@3.1.0 | 67e4a9635f8e3ff829221c6d64573590937d1a2f | 162 | 376418 |
+| paypal-ios@3.1.1 | de98414f5cf74dc3db2239a4828b4760ef391d20 | 162 | 378154 |
+
+Proposed policy change: replace `Sources/PayPalWebPayments` with
+`Sources/PayPalPayments` and `Demo/Demo/PayPalWebPayments` with
+`Demo/Demo/PayPalPayments`; include `v3_MIGRATION_GUIDE.md`. All other required
+roots and explicit includes exist at all three tags. Explicit PaymentButtons
+includes cover every Swift source under that target at 3.1.1. The 3.0.0 package
+manifest declares the renamed PayPalPayments target; its migration guide adds
+required merchantID and optional partner bnCode to CoreConfig.
+
+No snapshot-budget increase is indicated: 162 candidates are below 300 files,
+largest candidate is 41987 bytes versus 512000, aggregate is below 2000000.
+These metadata checks do not replace collection's UTF-8, hashing, secret scanning,
+classification and packet-budget checks. The Magnes binary remains excluded.
+Preserve the v2 track and register historical policy hash
+`83c96e9b6452b55a6036f327ebe0f35ceae4ba08d63de33e56680ef556b93d21`
+when approving the active v3 policy. Recollecting an old layout under the new
+active roots still requires policy review, as for Android.
+
+Recommended next approval: apply these bounded registry/test changes, add
+`package:paypal-ios@3` with all-stable backfill/future, and collect 3.0.0, 3.1.0
+and 3.1.1. Stop at packet review; recommend full 3.0.0 then assess each later
+delta from collected evidence. No ingest or publication is authorized by this
+path review alone.
+
+## Approved PayPal iOS Collection - 2026-10-16
+
+Applied only the reviewed iOS registry changes and a regression test, preserving
+v2 and its historical policy hash. The new test failed before the registry edit
+and passes afterwards. Discovery selected exactly the three approved releases.
+The partial-clone blob lookup was slow; a bounded-size refetch hydrated the four
+comparison tags in temporary storage, allowing collection to finish without
+changing the collector or accepted evidence.
+
+| Release | Files / bytes | Retained changes from prior | Work item | State |
+| --- | --- | --- | --- | --- |
+| paypal-ios@3.0.0 | 162 / 375722 | 31 added, 45 modified, 14 removed, 6 renamed, 80 unchanged | github-28bbeeaf63ba759b78ef | awaiting_approval |
+| paypal-ios@3.1.0 | 162 / 376418 | 11 modified, 151 unchanged | github-5cce6532a34ea07a94ef | awaiting_approval |
+| paypal-ios@3.1.1 | 162 / 378154 | 9 modified, 153 unchanged | github-85652bd08413a3ffc568 | awaiting_approval |
+
+Pre-ingest findings from retained release notes, comparisons and selected complete
+source/build files; this is not a completed full-capsule ingest review:
+
+- `3.0.0` renames the PayPal module/client/results/funding enum, replaces request
+  objects with session-first ID-based checkout/vault, requires merchantID in
+  CoreConfig, renames Environment to CoreEnvironment and adds structured phone
+  identity. Public PayPalSessionType exposes checkout/vaultWithoutPurchase,
+  unlike Android's public TokenType. Recommend full historical ingest.
+- The `3.1.1` cumulative changelog explicitly marks `3.0.0` unsupported, advising
+  `3.1.0` instead. It also retrospectively rearranges entries under `3.1.0`;
+  preserve original release-note records and exact code boundaries rather than
+  copying the later changelog's attribution over earlier history.
+- `3.1.0` raises the deployment target from iOS 14 to 16 in both SPM and CocoaPods,
+  fixes hardcoded PAY to honor CONTINUE/PAY/COMMIT, removes the installed-app helper,
+  and replaces the bundled risk framework with paypal/paypal-risk-ios exact 5.6.0
+  (PayPalRisk product/pod). The session API now sends paypalNativeAppInstalled=true
+  optimistically; that field is not proof of an installed app. Recommend full
+  rather than the script's delta suggestion because platform compatibility and
+  dependency packaging change. Dependency implementation is not collected here.
+- `3.1.1` forwards CoreConfig.bnCode into encoded session experimentation context,
+  adds persisted demo BN-code configuration, and changes CardClient only in
+  formatting in the bounded comparison. Recommend delta, subject to complete
+  assigned reading during approved ingest.
+
+Raw snapshots: `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/`,
+`2026-10-16-67e4a96/` and `2026-10-16-de98414/`. Release records and comparison/
+packet files are linked from generated `tracking/github/status.md`. All 486 new
+snapshot file hashes/sizes plus release-note, packet and comparison hashes pass;
+each packet records zero evidence gaps and zero unclassified changes. These
+counts do not imply that excluded binary/dependency implementation is known.
+
+Full suite: 810 tests, 808 pass; the same Adyen Postman packet-limit and PayPal
+Messages iOS v2-track expectation failures remain. Global GitHub validation has
+the same ten unrelated structural errors, none for PayPal iOS, and three pending
+items. Whitespace checks pass. Existing iOS source/changelog/concept pages are
+byte-unchanged. No ingest approval/claim, canonical wiki edits, commit or push.
+Next approval: serial full 3.0.0, full 3.1.0, then delta 3.1.1; preserve older
+knowledge and annotate 3.0.0's later unsupported status.
+
+## Approved PayPal iOS Serial Ingest - 2026-10-16
+
+The preceding collection section records the pre-ingest state. The user then
+approved full 3.0.0, full 3.1.0 and delta 3.1.1 in that order, with mechanical
+verification of generated manifests/inventories/duplicated diffs only. Each
+full cycle read all 162 current retained files; the delta read all nine changed
+files plus affected prior code and cumulative wiki context. Each cycle completed
+concept audit, additive source/changelog, company/concepts, contradiction review,
+catalog/log updates and focused validation before advancing to the next item.
+
+The wiki now preserves v1/v2 and all three v3 releases, including 3.0.0's
+session/API migration and action defect, 3.1.0's iOS 16/risk dependency/action and
+routing changes, and 3.1.1's BN forwarding and later unsupported-3.0.0 notice.
+The absent invalid-action error, return binding, browser URL construction and
+demo BN Clear limitations remain explicitly version-qualified static findings.
+External risk implementation and successful payment behavior remain unverified.
+
+Six typed wiki pages validate; all 486 new snapshot file hashes/sizes pass;
+new evidence targets, catalog uniqueness, unchanged source_count and preservation
+of older source/changelog sections were checked. Global validation retains the
+ten unrelated pre-existing packet errors. No commit or push authorized for this
+round. Next: report findings and request scoped commit/push approval.

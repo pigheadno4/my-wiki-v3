@@ -1,0 +1,274 @@
+# GitHub ingest packet
+
+- Repository: `paypal/paypal-ios`
+- Work item: `github-28bbeeaf63ba759b78ef`
+- Snapshot: `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/manifest.json`
+- Recommended mode: `full`
+- Review priority: `high`
+
+## `paypal-ios`
+
+- Version: `2.0.1` -> `3.0.0`
+- Recommendation: `full` / `high`
+- Unchanged retained files: `80`
+
+### Required reading
+
+- `raw/github/paypal/paypal-ios/releases/paypal-ios/3.0.0/2026-10-16/manifest.json`
+- `raw/github/paypal/paypal-ios/releases/paypal-ios/3.0.0/2026-10-16/release-notes.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/DemoSettings/Environment.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalPaymentState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/CorePayments/Networking/Enums/Environment.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/Environment+PayPalWebCheckout.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalVaultRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutFundingSource.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/files/Sources/PayPalWebPayments/PayPalWebCheckoutResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-07-31-2008a6d/manifest.json`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/CHANGELOG.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/CardPayments/CardPaymentViewModel/CardPaymentViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/CardPayments/CardViewComponents/CardOrderApproveView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/CardVault/CardVaultViewModel/CardVaultViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/CardVault/CardVaultViews/CardVaultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/CardVault/CardVaultViews/UpdateSetupTokenView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/DemoSettings/CustomEnvironmentView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/DemoSettings/DemoEnvironment.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/DemoSettings/DemoSettings.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Models/CreateOrderParams.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Models/CreateSetupTokenParam.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Models/CreateSetupTokenResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Models/Order.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Networking/DemoMerchantAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Networking/MerchantIntegration.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalPaymentState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalWebViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalVault/PayPalVaultViewModel/PayPalVaultViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultResultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/SwiftUIComponents/CommonComponents/FloatingLabelTextField.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/SwiftUIComponents/CommonComponents/ShopperSessionURLConfigFactory.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityFactory.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Vault/VaultViewModel/VaultState.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Vault/VaultViewModel/VaultViewModel.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Demo/Demo/Vault/VaultViews/CreateSetupTokenView.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Package.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/PayPal.podspec`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CardPayments/CardClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CardPayments/Models/PaymentSource.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/AnalyticsEventData.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/CoreConfig.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/CorePaymentsError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/AnalyticsService.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/AuthenticationTokenResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/AuthenticationTokenServiceAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/Enums/CoreEnvironment.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/Enums/HTTPHeader.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/Enums/HTTPMethod.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/HTTP.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/HTTPResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/HTTPResponseParser.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/NetworkingClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/NetworkingError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/RESTRequest.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/TrackingEventsAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/Networking/UpdateClientConfigAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/PayPalCheckoutAnalyticsData.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/PayPalCoreConstants.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/UIApplication+URLOpener.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/CorePayments/WebAuthenticationSession.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/FraudProtection/CoreConfig+MagnesSDK.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/APIRequests/CreateShopperSessionResponse.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/CoreEnvironment+PayPal.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/Models/PayPalFlowType.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/Models/PayPalURLConfig.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/Models/PayPalUserAction.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/Models/PayPalUserIdentity.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PayPalCheckoutFundingSource.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PayPalCheckoutResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PayPalCheckoutURLBuilder.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PayPalClient.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PayPalError.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PayPalVaultResult.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/PrivacyInfo.xcprivacy`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PayPalPayments/SystemLatencyTracker.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PaymentButtons/Coordinator.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/Sources/PaymentButtons/PaymentButton.swift`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/files/v3_MIGRATION_GUIDE.md`
+- `raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/manifest.json`
+- `tracking/github/repos/paypal/paypal-ios/comparisons/paypal-ios/2.0.1--3.0.0/comparison.json`
+- `tracking/github/repos/paypal/paypal-ios/comparisons/paypal-ios/2.0.1--3.0.0/comparison.md`
+- `tracking/github/repos/paypal/paypal-ios/comparisons/paypal-ios/2.0.1--3.0.0/diff.patch`
+
+### Files absent from current snapshot
+
+Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.
+
+- `Demo/Demo/DemoSettings/Environment.swift`: `upstream-deletion`; upstream: `deleted`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`: `upstream-deletion`; upstream: `deleted`
+- `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalPaymentState.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalWebViewModel.swift`: `upstream-deletion`; upstream: `deleted`
+- `Sources/CorePayments/Networking/Enums/Environment.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Sources/PayPalWebPayments/Environment+PayPalWebCheckout.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Sources/PayPalWebPayments/PayPalError.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Sources/PayPalWebPayments/PayPalVaultRequest.swift`: `upstream-deletion`; upstream: `deleted`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutClient.swift`: `upstream-deletion`; upstream: `deleted`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutFundingSource.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutRequest.swift`: `upstream-deletion`; upstream: `deleted`
+- `Sources/PayPalWebPayments/PayPalWebCheckoutResult.swift`: `not-retained-in-current-snapshot`; upstream: `renamed`
+
+### Upstream changes
+
+- `modified` `.github/workflows/build.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/publish-docs.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/release.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/swiftlint.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/tests.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.gitignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo.xcodeproj/project.pbxproj`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Demo/Demo/CardPayments/CardPaymentViewModel/CardPaymentViewModel.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/CardPayments/CardViewComponents/CardOrderApproveView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/CardVault/CardVaultViewModel/CardVaultViewModel.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/CardVault/CardVaultViews/CardVaultView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/CardVault/CardVaultViews/UpdateSetupTokenView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Demo.entitlements`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Demo/Demo/DemoSettings/CustomEnvironmentView.swift`: `retained-evidence` (snapshot-file)
+- `added` `Demo/Demo/DemoSettings/DemoEnvironment.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/DemoSettings/DemoSettings.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `Demo/Demo/DemoSettings/Environment.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Info.plist`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Demo/Demo/Models/CreateOrderParams.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Models/CreateSetupTokenParam.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Models/CreateSetupTokenResponse.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Models/Order.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Networking/DemoMerchantAPI.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Networking/MerchantIntegration.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebButtonsView.swift`: `retained-evidence` (snapshot-file)
+- `added` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebPaymentsView.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalApprovalResultView.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCompletionResultView.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalOrderCreateResultView.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebPaymentsView/PayPalWebResultViews/PayPalWebTransactionView.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalPaymentState.swift`: `retained-evidence` (snapshot-file)
+- `added` `Demo/Demo/PayPalPayments/PayPalWebViewModel/PayPalWebViewModel.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/PayPalVault/PayPalVaultViewModel/PayPalVaultViewModel.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultResultView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/PayPalVault/PayPalVaultViews/PayPalVaultView.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `Demo/Demo/PayPalWebPayments/PayPalWebPaymentsView/PayPalWebCreateOrderView.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `Demo/Demo/PayPalWebPayments/PayPalWebViewModel/PayPalWebViewModel.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/SwiftUIComponents/CommonComponents/FloatingLabelTextField.swift`: `retained-evidence` (snapshot-file)
+- `added` `Demo/Demo/SwiftUIComponents/CommonComponents/ShopperSessionURLConfigFactory.swift`: `retained-evidence` (snapshot-file)
+- `added` `Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityFactory.swift`: `retained-evidence` (snapshot-file)
+- `added` `Demo/Demo/SwiftUIComponents/CommonComponents/UserIdentityView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Vault/VaultViewModel/VaultState.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Vault/VaultViewModel/VaultViewModel.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Demo/Demo/Vault/VaultViews/CreateSetupTokenView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Package.swift`: `retained-evidence` (snapshot-file)
+- `modified` `PayPal.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `PayPal.xcodeproj/project.pbxproj`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `PayPal.xcodeproj/xcshareddata/xcschemes/PayPalPayments.xcscheme`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `PayPal.xcodeproj/xcshareddata/xcschemes/PayPalPaymentsTests.xcscheme`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `PayPal.xcodeproj/xcshareddata/xcschemes/UnitTests.xcscheme`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `SampleApps/SPMTest/SPMTest.xcodeproj/project.pbxproj`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `SampleApps/SPMTest/SPMTest/ContentView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Sources/CardPayments/CardClient.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CardPayments/Models/PaymentSource.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/AnalyticsEventData.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/CoreConfig.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/CorePaymentsError.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/AnalyticsService.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/CorePayments/Networking/AuthenticationTokenResponse.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/CorePayments/Networking/AuthenticationTokenServiceAPI.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/CorePayments/Networking/Enums/CoreEnvironment.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/Enums/HTTPHeader.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/Enums/HTTPMethod.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/HTTP.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/HTTPResponse.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/HTTPResponseParser.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/NetworkingClient.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/NetworkingError.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/RESTRequest.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/TrackingEventsAPI.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/Networking/UpdateClientConfigAPI.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/CorePayments/PayPalCheckoutAnalyticsData.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/PayPalCoreConstants.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/CorePayments/UIApplication+URLOpener.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/CorePayments/WebAuthenticationSession.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/FraudProtection/CoreConfig+MagnesSDK.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/APIRequests/CreateShopperSessionResponse.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/PayPalPayments/CoreEnvironment+PayPal.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/Models/PayPalFlowType.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/Models/PayPalURLConfig.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/Models/PayPalUserAction.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/Models/PayPalUserIdentity.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/PayPalPayments/PayPalCheckoutFundingSource.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/PayPalPayments/PayPalCheckoutResult.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/PayPalCheckoutURLBuilder.swift`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/PayPalClient.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/PayPalPayments/PayPalError.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/PayPalPayments/PayPalVaultResult.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `Sources/PayPalPayments/PrivacyInfo.xcprivacy`: `retained-evidence` (snapshot-file)
+- `added` `Sources/PayPalPayments/SystemLatencyTracker.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `Sources/PayPalWebPayments/PayPalVaultRequest.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `Sources/PayPalWebPayments/PayPalWebCheckoutClient.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `Sources/PayPalWebPayments/PayPalWebCheckoutRequest.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/PaymentButtons/Coordinator.swift`: `retained-evidence` (snapshot-file)
+- `modified` `Sources/PaymentButtons/PaymentButton.swift`: `retained-evidence` (snapshot-file)
+- `modified` `UnitTests/CardPaymentsTests/CardClient_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/CardPaymentsTests/CheckoutOrdersAPI_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/CardPaymentsTests/VaultPaymentTokensAPI_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/CorePaymentTests/AuthenticationSecureTokenServiceAPI_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/CorePaymentTests/CoreConfig_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/CorePaymentTests/UpdateClientConfigAP_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/FraudProtectionTests/PayPalDataCollector_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/CreateShopperSessionAPI_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `UnitTests/PayPalPaymentsTests/Environment+PayPalWebCheckout_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/PayPalClients_HandleRequestURL_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/PayPalURLConfig_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/PayPalWebCheckoutClient_CreateSession_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/PayPalWebCheckoutClient_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/PayPalWebCheckoutURLBuilder_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/PayPalPaymentsTests/SystemLatencyTracker_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `UnitTests/PayPalWebPaymentsTests/PayPalWebCheckoutClient_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/AnalyticsEventData_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/AnalyticsService_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/Environment_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/HTTPResponseParser_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/HTTP_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/Mocks/MockTrackingEventsAPI.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/NetworkingClient_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/PaymentsCoreTests/TrackingEventsAPI_Tests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/TestShared/MockAuthenticationSecureTokenServiceAPI.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/TestShared/MockCreateShopperSessionAPI.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/TestShared/MockNetworkingClient.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `UnitTests/TestShared/MockURLOpener.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `UnitTests/TestShared/MockWebAuthenticationSession.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `ci`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `v3_MIGRATION_GUIDE.md`: `retained-evidence` (snapshot-file)

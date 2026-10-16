@@ -1,0 +1,258 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b37ccac..52cdbd6 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,20 +1,18 @@
+ 
+ # PayPal iOS SDK Release Notes
+ 
++## 3.1.1 (2026-10-08)
++
++* PayPal
++  * Internal Send `bnCode` within `ShopperSessionExperimentationContext` internally.
++
+ ## 3.1.0 (2026-08-28)
+ 
+ * All Modules
+   * **Breaking:** Bump minimum iOS version from 14 to 16.
+-* PayPalPayments
+-  * Fix `createPayPalSession()` sending a hardcoded `PAY` payment type in the shopper session experimentation context regardless of the caller's `userAction` — now correctly passes `CONTINUE`, `PAY`, or `COMMIT` based on `userAction`
+ * FraudProtection
+   * Migrate SDK to use new PPRiskMagnes Swift Package
+   * Remove PPRiskManges.xcframework from project
+-* CorePayments
+-  * **Deprecated:** `UIApplication.isPayPalAppInstalled()` has been removed
+-
+-## 3.0.0 (2026-08-19)
+-
+ * PayPalPayments
+   * **Breaking:** Rename the `PayPalWebPayments` module to `PayPalPayments` — update `import PayPalWebPayments` to `import PayPalPayments`
+   * **Breaking:** Rename `PayPalWebCheckoutClient` to `PayPalClient`
+@@ -29,11 +27,17 @@
+   * **Breaking:** Remove `PayPalClient.start(request, completion)` and `start(request)` — use `createPayPalSession()` followed by `start(orderId, completion)` instead
+   * **Breaking:** Remove `PayPalClient.vault(request, completion)` and `vault(request)` — use `createPayPalSession()` followed by `vault(setupTokenID, completion)` instead
+   * **Breaking:** Remove `PayPalWebCheckoutRequest` and `PayPalVaultRequest` types (used only by the removed APIs)
++  * Fix `createPayPalSession()` sending a hardcoded `PAY` payment type in the shopper session experimentation context regardless of the caller's `userAction` — now correctly passes `CONTINUE`, `PAY`, or `COMMIT` based on `userAction`
+ * CorePayments
+   * **Breaking:** `CoreConfig` requires a `merchantID` parameter; optional `bnCode` parameter added. See the [v3 Migration Guide](v3_MIGRATION_GUIDE.md) for details.
+   * **Breaking:** Remove `PatchCCOWithAppSwitchEligibility` (and its `AppSwitchEligibility` response type) and the `ExternalTokenKind` constants — the legacy PatchCCO app-switch-eligibility path is no longer used
+   * **Breaking:** Rename `Environment` to `CoreEnvironment`
+   * Improve error messages for non-JSON/unstructured error responses to include the HTTP status, request URL, and raw response body
++  * **Deprecated:** `UIApplication.isPayPalAppInstalled()` has been removed
++
++## ~3.0.0 (2026-08-19)~
++
++This version is no longer supported. Please use version 3.1.0 instead.
+ 
+ ## 2.0.1 (2025-11-03)
+ 
+diff --git a/Demo/Demo/DemoSettings/CustomEnvironmentView.swift b/Demo/Demo/DemoSettings/CustomEnvironmentView.swift
+index b8bb8ab..4ba3146 100644
+--- a/Demo/Demo/DemoSettings/CustomEnvironmentView.swift
++++ b/Demo/Demo/DemoSettings/CustomEnvironmentView.swift
+@@ -13,6 +13,7 @@ struct CustomEnvironmentView: View {
+     @State private var restBaseURL: String
+     @State private var graphQLBaseURL: String
+     @State private var merchantBaseURL: String
++    @State private var bnCode: String
+ 
+     init(onSave: @escaping () -> Void, onCancel: @escaping () -> Void) {
+         self.onSave = onSave
+@@ -22,6 +23,7 @@ struct CustomEnvironmentView: View {
+         _restBaseURL = State(initialValue: config?.restBaseURL ?? "")
+         _graphQLBaseURL = State(initialValue: config?.graphQLBaseURL ?? "")
+         _merchantBaseURL = State(initialValue: config?.merchantBaseURL ?? "")
++        _bnCode = State(initialValue: DemoSettings.bnCode ?? "")
+     }
+ 
+     // MARK: - Validation
+@@ -42,6 +44,10 @@ struct CustomEnvironmentView: View {
+         merchantBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+     }
+ 
++    private var trimmedBNCode: String {
++        bnCode.trimmingCharacters(in: .whitespacesAndNewlines)
++    }
++
+     private var clientIDError: String? {
+         trimmedClientID.isEmpty ? "Client ID is required" : nil
+     }
+@@ -124,6 +130,15 @@ struct CustomEnvironmentView: View {
+                     errorText(merchantBaseURLError)
+                 }
+ 
++                Section(
++                    header: Text("BN Code"),
++                    footer: Text("Optional. The partner attribution code forwarded to CoreConfig.")
++                ) {
++                    TextField("Optional", text: $bnCode)
++                        .autocapitalization(.none)
++                        .disableAutocorrection(true)
++                }
++
+                 Section {
+                     Button(role: .destructive) {
+                         clearFields()
+@@ -182,6 +197,7 @@ struct CustomEnvironmentView: View {
+             graphQLBaseURL: trimmedGraphQLBaseURL,
+             merchantBaseURL: trimmedMerchantBaseURL.isEmpty ? nil : trimmedMerchantBaseURL
+         )
++        DemoSettings.bnCode = trimmedBNCode.isEmpty ? nil : trimmedBNCode
+         DemoSettings.environment = .custom
+         onSave()
+         presentationMode.wrappedValue.dismiss()
+diff --git a/Demo/Demo/DemoSettings/DemoSettings.swift b/Demo/Demo/DemoSettings/DemoSettings.swift
+index 9bc8f28..833ad00 100644
+--- a/Demo/Demo/DemoSettings/DemoSettings.swift
++++ b/Demo/Demo/DemoSettings/DemoSettings.swift
+@@ -15,6 +15,7 @@ enum DemoSettings {
+     private static let DemoEnvironmentDefaultsKey = "environment"
+     private static let ClientIDKey = "clientID"
+     private static let MerchantIntegrationDefaultKey = "merchantIntegration"
++    private static let BNCodeDefaultsKey = "bnCode"
+     #if DEBUG
+     private static let CustomEnvironmentKey = "customEnvironment"
+     #endif
+@@ -65,4 +66,19 @@ enum DemoSettings {
+             UserDefaults.standard.set(newValue.displayName, forKey: MerchantIntegrationDefaultKey)
+         }
+     }
++
++    /// The partner attribution (BN) code forwarded to `CoreConfig`. `nil` when not set.
++    static var bnCode: String? {
++        get {
++            let value = UserDefaults.standard.string(forKey: BNCodeDefaultsKey)
++            return (value?.isEmpty ?? true) ? nil : value
++        }
++        set {
++            if let newValue, !newValue.isEmpty {
++                UserDefaults.standard.set(newValue, forKey: BNCodeDefaultsKey)
++            } else {
++                UserDefaults.standard.removeObject(forKey: BNCodeDefaultsKey)
++            }
++        }
++    }
+ }
+diff --git a/Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift b/Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift
+index 2fc4d39..75fe808 100644
+--- a/Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift
++++ b/Demo/Demo/SwiftUIComponents/CommonComponents/CoreConfigManager.swift
+@@ -18,7 +18,8 @@ class CoreConfigManager {
+         return CoreConfig(
+             clientID: clientID,
+             environment: DemoSettings.environment.paypalSDKEnvironment,
+-            merchantID: DemoSettings.merchantIntegration.merchantID
++            merchantID: DemoSettings.merchantIntegration.merchantID,
++            bnCode: DemoSettings.bnCode
+         )
+     }
+ }
+diff --git a/PayPal.podspec b/PayPal.podspec
+index 5723295..00199f7 100644
+--- a/PayPal.podspec
++++ b/PayPal.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name             = "PayPal"
+-  s.version          = "3.1.0"
++  s.version          = "3.1.1"
+   s.summary          = "The PayPal iOS SDK: Helps you accept card, PayPal, and alternative payment methods in your iOS app."
+   s.homepage         = "https://developer.paypal.com/home"
+   s.license          = "MIT"
+diff --git a/Sources/CardPayments/CardClient.swift b/Sources/CardPayments/CardClient.swift
+index 9095266..0ab4573 100644
+--- a/Sources/CardPayments/CardClient.swift
++++ b/Sources/CardPayments/CardClient.swift
+@@ -67,7 +67,11 @@ public class CardClient: NSObject {
+                     analyticsService?.sendEvent("card-payments:vault-wo-purchase:auth-challenge-required")
+                     startVaultThreeDSecureChallenge(url: url, setupTokenID: vaultRequest.setupTokenID, completion: completion)
+                 } else {
+-                    let vaultResult = CardVaultResult(setupTokenID: result.id, status: result.status, didAttemptThreeDSecureAuthentication: false)
++                    let vaultResult = CardVaultResult(
++                        setupTokenID: result.id,
++                        status: result.status,
++                        didAttemptThreeDSecureAuthentication: false
++                    )
+                     notifyVaultSuccess(for: vaultResult, completion: completion)
+                 }
+             } catch let error as CoreSDKError {
+diff --git a/Sources/CorePayments/PayPalCoreConstants.swift b/Sources/CorePayments/PayPalCoreConstants.swift
+index 5f3487a..0f96769 100644
+--- a/Sources/CorePayments/PayPalCoreConstants.swift
++++ b/Sources/CorePayments/PayPalCoreConstants.swift
+@@ -6,7 +6,7 @@ public enum PayPalCoreConstants {
+     // TODO: - Update release script to update this version #
+     /// This property is exposed for internal PayPal use only. Do not use.
+     /// It is not covered by Semantic Versioning and may change or be removed at any time.
+-    public static let payPalSDKVersion: String = "3.1.0"
++    public static let payPalSDKVersion: String = "3.1.1"
+     
+     public static let callbackURLScheme: String = "sdk.ios.paypal"
+     
+diff --git a/Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift b/Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift
+index 9018ecd..aa1e681 100644
+--- a/Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift
++++ b/Sources/PayPalPayments/APIRequests/CreateShopperSessionAPI.swift
+@@ -90,7 +90,8 @@ public class CreateShopperSessionAPI {
+         
+         let experimentationContext = ShopperSessionExperimentationContext(
+             paymentType: userAction.externalPaymentType,
+-            merchantAccountId: coreConfig.merchantID
++            merchantAccountId: coreConfig.merchantID,
++            bnCode: coreConfig.bnCode
+         )
+         /// we can no longer determine if paypalNativeAppInstalled
+         /// sending true so flow attempts App Switch in the future
+@@ -141,7 +142,7 @@ public class CreateShopperSessionAPI {
+         guard let result = parsed.shopperSession else {
+             throw NetworkingError.noGraphQLDataKey
+         }
+-        
++
+         analyticsData?.update(with: result)
+         if let timing = httpResponse.timing {
+             analyticsService.sendEvent(
+diff --git a/Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift b/Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift
+index bba756c..c2078af 100644
+--- a/Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift
++++ b/Sources/PayPalPayments/APIRequests/CreateShopperSessionVariables.swift
+@@ -34,6 +34,7 @@ struct ShopperSessionExperimentationContext: Encodable {
+     let paymentType: String
+     let buyerGUID: String?
+     let merchantAccountId: String?
++    let bnCode: String?
+ 
+     init(
+         appSwitchSupported: Bool = true,
+@@ -43,7 +44,8 @@ struct ShopperSessionExperimentationContext: Encodable {
+         isWebView: Bool = false,
+         paymentType: String,
+         buyerGUID: String? = nil,
+-        merchantAccountId: String
++        merchantAccountId: String,
++        bnCode: String? = nil
+     ) {
+         self.appSwitchSupported = appSwitchSupported
+         self.merchantCountry = merchantCountry
+@@ -53,11 +55,12 @@ struct ShopperSessionExperimentationContext: Encodable {
+         self.paymentType = paymentType
+         self.buyerGUID = buyerGUID
+         self.merchantAccountId = merchantAccountId
++        self.bnCode = bnCode
+     }
+ 
+     enum CodingKeys: String, CodingKey {
+         case appSwitchSupported, merchantCountry, integrationChannel
+-        case isWebLLSEligible, isWebView, paymentType, buyerGUID, merchantAccountId
++        case isWebLLSEligible, isWebView, paymentType, buyerGUID, merchantAccountId, bnCode
+     }
+ 
+     func encode(to encoder: Encoder) throws {
+@@ -71,6 +74,7 @@ struct ShopperSessionExperimentationContext: Encodable {
+         // Encode as explicit JSON `null` when nil (matches Android) instead of omitting the key.
+         try container.encode(buyerGUID, forKey: .buyerGUID)
+         try container.encode(merchantAccountId, forKey: .merchantAccountId)
++        try container.encode(bnCode, forKey: .bnCode)
+     }
+ }
+ 

@@ -336,13 +336,17 @@ priority="tier1"
 track="releases-and-default-branch"
 version_strategy="semver-tags"
 [[repos.version_tracks]]
-# v3 is detected by the major guard; review renamed source and demo module paths.
-# See tracking/github/major-track-audit-2026-10-16.md before adding the v3 track.
+# Historical v2 evidence is preserved; the active capsule follows reviewed v3 paths.
 selector="package:paypal-ios@2"
 backfill="latest-stable"
 future="all-stable"
 include_prerelease=false
 pinned_versions=["2.0.1"]
+[[repos.version_tracks]]
+selector="package:paypal-ios@3"
+backfill="all-stable"
+future="all-stable"
+include_prerelease=false
 [[repos.capsules]]
 id="paypal-ios-public-source"
 adapter="tagged-tree-v1"
@@ -352,7 +356,7 @@ changed_path_policy="policy-bounded"
 default_required_roots=[
   "Sources/CorePayments",
   "Sources/CardPayments",
-  "Sources/PayPalWebPayments",
+  "Sources/PayPalPayments",
   "Sources/FraudProtection",
   "Demo/Demo/Card",
   "Demo/Demo/CardPayments",
@@ -362,7 +366,7 @@ default_required_roots=[
   "Demo/Demo/Models",
   "Demo/Demo/Networking",
   "Demo/Demo/PayPalVault",
-  "Demo/Demo/PayPalWebPayments",
+  "Demo/Demo/PayPalPayments",
   "Demo/Demo/SwiftUIComponents",
   "Demo/Demo/Vault",
 ]
@@ -374,6 +378,7 @@ include_paths=[
   "LICENSE",
   "Package.swift",
   "PayPal.podspec",
+  "v3_MIGRATION_GUIDE.md",
   "Sources/PaymentButtons/PrivacyInfo.xcprivacy",
   "Sources/PaymentButtons/Coordinator.swift",
   "Sources/PaymentButtons/PayPalButton.swift",
@@ -395,6 +400,7 @@ max_capsule_files=300
 max_capsule_utf8_bytes=2000000
 max_packet_files=350
 max_packet_utf8_bytes=2500000
+historical_policy_hashes=["83c96e9b6452b55a6036f327ebe0f35ceae4ba08d63de33e56680ef556b93d21"]
 [[repos]]
 id="paypal/postman-collections"
 collection_frequency="monthly"

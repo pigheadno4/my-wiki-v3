@@ -709,6 +709,31 @@
   To SHA: `7f7240ab2d9417a55bf9c68355bf33bf64b1665c`
   Comparison: Not applicable
 
+## `github-28bbeeaf63ba759b78ef`
+
+- Repository: `paypal/paypal-ios`
+- SHA: `fc69f404fa68b2c7336a684296543a67e0e809d5`
+- Collection date: `2026-10-16`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-ios/ingest-packets/github-28bbeeaf63ba759b78ef/packet.md)
+- Review priority: `high`
+- Required reading: `105` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-ios@3.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/3.0.0/2026-10-16/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-ios/comparisons/paypal-ios/2.0.1--3.0.0/comparison.json)
+
 ## `github-294704633f9b426cbd53`
 
 - Repository: `paypal/paypal-js`
@@ -1628,6 +1653,31 @@
 - `paypal-ios@2.0.1` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/2.0.1/2026-07-31/manifest.json)
   Comparison: Not applicable
+
+## `github-5cce6532a34ea07a94ef`
+
+- Repository: `paypal/paypal-ios`
+- SHA: `67e4a9635f8e3ff829221c6d64573590937d1a2f`
+- Collection date: `2026-10-16`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-ios/snapshots/2026-10-16-67e4a96/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-ios/ingest-packets/github-5cce6532a34ea07a94ef/packet.md)
+- Review priority: `high`
+- Required reading: `20` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-ios@3.1.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/3.1.0/2026-10-16/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-ios/comparisons/paypal-ios/3.0.0--3.1.0/comparison.json)
 
 ## `github-5f21519e3eed9f164ede`
 
@@ -2594,6 +2644,31 @@
 - `paypal-messages-ios@2.0.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/2.0.0/2026-10-07/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/paypal-messages-ios/1.2.0--2.0.0/comparison.json)
+
+## `github-85652bd08413a3ffc568`
+
+- Repository: `paypal/paypal-ios`
+- SHA: `de98414f5cf74dc3db2239a4828b4760ef391d20`
+- Collection date: `2026-10-16`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-ios/snapshots/2026-10-16-de98414/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-ios/ingest-packets/github-85652bd08413a3ffc568/packet.md)
+- Review priority: `normal`
+- Required reading: `18` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-ios@3.1.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/3.1.1/2026-10-16/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-ios/comparisons/paypal-ios/3.1.0--3.1.1/comparison.json)
 
 ## `github-86090f84b479de0419dc`
 

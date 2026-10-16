@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-10-16] ingest | PayPal iOS `3.1.1`
+
+- Delta after full `3.0.0` and full `3.1.0`: BN session forwarding/demo settings and later unsupported-3.0.0 notice. Nine changed files read; original release histories preserved. Details [[paypal-log]], [[source-github-paypal-ios]], [[changelog-github-paypal-ios]]. No commit/push.
+
+## [2026-10-16] ingest | PayPal iOS `3.1.0`
+
+- Full compatibility baseline: iOS 16+, external risk dependency, corrected session action and revised installed-app routing. All 162 source files read; old history retained. Details [[paypal-log]], [[source-github-paypal-ios]], [[changelog-github-paypal-ios]]. No commit/push.
+
+## [2026-10-16] ingest | PayPal iOS `3.0.0`
+
+- Full additive baseline: session-first PayPalClient, app-switch/return routing, migration and implementation cautions. All 162 retained files read; generated files mechanically verified under approval. V1/v2 preserved. Details [[paypal-log]], [[source-github-paypal-ios]], [[changelog-github-paypal-ios]]. No commit/push.
+
 ## [2026-10-16] ingest | Adyen website C15
 
 - Fifty independently approved Platforms foundation/onboarding/verification/account-management documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 2 concepts touched (1 new); source_count 764 = 750 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-15/`; details [[adyen-log]]. No commit/push.
