@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-send-funds-transfer-routes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts transfer routes\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/send-funds/transfer-routes\"\nraw_files:\n  - \"adyen/docs/business-accounts/send-funds/transfer-routes/2026-09-15.md\"\ntags: [adyen, business-accounts, transfer-routes, bank-transfers]\n---\n\n## Overview\n\nThis Adyen Business Accounts route-calculation guide (last modified 2023-03-13; captured 2026-09-15) describes a pre-transfer check for sending funds to a third-party bank account. Banks or regulators can constrain priorities or amounts, so Adyen recommends calculating routes for a new recipient before requesting a transfer. The result lists routes and conditions for the supplied query; it is not a transfer request, live eligibility guarantee or proof of beneficiary-bank receipt. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The stated integration prerequisite is Adyen for Platforms with Business Accounts support. The Configuration API credential needs **Balance Platform BCL role**. These are documented requirements, not evidence that a particular credential is enabled.\n- Call `POST /transferRoutes/calculate` with `balancePlatform`, `currency` and `category: bank`. In **country/region mode**, supply the counterparty's two-character country code. In **counterparty mode**, supply recipient bank-account details or a transfer instrument; `balanceAccountId` is conditionally required when `counterparty` contains `transferInstrumentId`. The request tables mark `priorities` optional.\n- The `transferRoutes` response identifies supported currency and priority plus requirements for each returned route; the counterparty variant also identifies country. Example requirements cover amount minimum/maximum, address fields, bank-account identification type and payment-instrument type/issuing country. These must be evaluated for the actual returned route.\n- The TEST examples use USD for an NL country query with `regular`, `crossBorder` and `wire` routes, and EUR for a named NL counterparty query with `instant` and `wire` routes. Those example combinations and numeric limits are not a current country/currency coverage table. The parent send-funds guide separately uses both cross-border and wire wording for cross-border requests; this route example alone does not resolve which priority to submit for a live transfer.\n\n## Detail locators\n\n- Purpose, bank/regulator constraints, recommendation and credential/integration requirements: pinned raw lines 15\u201330.\n- Country/region request field table, including optional priorities: raw lines 36\u201350; TEST requests and SDK versions: lines 52\u2013299; response and sample conditions: lines 301\u2013357.\n- Counterparty request table and conditional `balanceAccountId`: raw lines 359\u2013374; TEST requests and SDK versions: lines 376\u2013714; response and sample conditions: lines 716\u2013780.\n- The parent [[source-adyen-docs-business-accounts-send-funds]] contains historical destination and priority tables, with separate cross-border/wire wording and timing conflicts. Use a route response and current provider guidance for a concrete transfer; neither historical example proves availability now.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product and account context.\n- [[source-adyen-docs-business-accounts-send-funds-make-transfer-request]] \u2014 separate third-party bank transfer request flow.\n- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] \u2014 similar Configuration API route calculation under the distinct Platforms custom-payout scope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/send-funds/transfer-routes/2026-09-15|Adyen Docs: Business Accounts transfer routes (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Sending funds to third-party bank accounts can have additional requirements or limitations.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "we recommend that you calculate the available transfer routes before sending funds to a new recipient.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model) integration that supports business accounts.",
+      "location": "raw line 29, Requirements table"
+    },
+    {
+      "text": "Required if `counterparty` contains a **transferInstrumentId**.",
+      "location": "raw line 372, counterparty request table"
+    },
+    {
+      "text": "Any additional requirements you must fulfill when using the transfer route.",
+      "location": "raw line 721, counterparty response description"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-business-accounts-transfer-routes-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-send-funds-transfer-routes]] \u2014 2023-modified, 2026-09-15-captured Business Accounts Configuration API pre-transfer route calculation by country or counterparty, with returned priority/currency/requirements; sample routes and limits are not live availability or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/send-funds/transfer-routes/2026-09-15.md",
+  "raw_sha256": "8cd0b14518544da6ce189dbe848c2371502301a74b2ec21de10362490b9daafb",
+  "status": "candidate_ready"
+}

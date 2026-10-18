@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-send-funds-make-transfer-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Make a third-party bank transfer request\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/send-funds/make-transfer-request\"\nraw_files:\n  - \"adyen/docs/business-accounts/send-funds/make-transfer-request/2026-09-15.md\"\ntags: [adyen, business-accounts, transfers, send-funds]\n---\n\n## Overview\n\nThis 2026-09-15 capture of Adyen's Business Accounts guide explains how a platform submits a Transfers API request to send funds from a source balance account to a third-party bank account. The transfer request and its returned ID are distinct from the later transfer status conveyed by outgoing bank-transfer webhooks. This is a dated guide, not evidence of current eligibility, a completed transfer, or receipt by the bank.\n\n## Key takeaways\n\n- Scope is Adyen Business Accounts sending to third-party **bank accounts**. The captured limitation does not include third-party wallets or cards. The API credential needs Transfers API roles; the user needs `sendToThirdParty` allowed and enabled; transfer and transaction webhooks are listed; and Adyen says to arrange source-balance-account transfer enablement with its contact. The guide recommends route lookup and account validation before a new counterparty transfer.\n- A POST `/transfers` starts the bank transfer request. Its table specifies amount/currency, source `balanceAccountId`, `category: bank`, counterparty `bankAccount` and transfer priority. The recipient account holder's full name and account identification are required; cross-border transfers additionally require the holder's address. Bank identification fields vary by type. The source balance account, counterparty bank account and returned transfer-request ID are different resources.\n- An HTTP 200 response with an `id` signals a successful **request**; follow outgoing bank-transfer webhooks for status. The guide also documents an optional `review.numberOfApprovalsRequired: 1` path that requires team approval before Adyen continues processing. The review prose contains dropped words, so consult the raw and the linked approval guide before implementing that path.\n\n## Detail locators\n\n- `## Requirements` (raw lines 21\u201338): roles, `sendToThirdParty`, webhook subscriptions, third-party-bank limitation, account enablement and recommended route/validation checks. `## Get transfer routes` (40\u201342) and `## Validate a third-party bank account` (44\u2013158): `POST /validateBankAccountIdentification`, IBAN/US/AU examples, 200 success and illustrative 422 `33_01` invalid-field errors. Validation is a preflight check, not a delivery guarantee.\n- `## Make a transfer` (160\u2013174): request field table, cross-border address condition, internal `reference` versus recipient `referenceForBeneficiary`, and priority's speed/fee relevance. Example tabs at 178\u20131557 show local IBAN, US-local and cross-border number-and-BIC requests in TEST with dated SDK versions; do not generalize example values into eligibility or route guarantees.\n- Raw line 1559 gives request response and webhook status route. `### Trigger additional reviews` (1563\u20132120) includes the one-approval option, example SDK idempotency keys and 2XX review response. The idempotency keys are examples here, not a stated retry/duplicate-processing contract. Several review sentences have missing nouns; the review workflow cannot be fully derived from this snapshot alone.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and resource context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/send-funds/make-transfer-request/2026-09-15|Make a transfer request (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Learn how to send funds to third parties using an Adyen business account.",
+      "location": "raw line 17, under # Make a transfer request"
+    },
+    {
+      "text": "Make sure that the user has the following capability allowed and enabled:- **sendToThirdParty**",
+      "location": "raw line 29, Requirements table"
+    },
+    {
+      "text": "Currently, Adyen only supports sending funds to third-party bank accounts.",
+      "location": "raw line 30, Requirements table"
+    },
+    {
+      "text": "To start a transfer to a third party bank account, make a POST [/transfers](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers) request specifying:",
+      "location": "raw line 162, ## Make a transfer"
+    },
+    {
+      "text": "If the transfer request is successful, you receive an **HTTP 200 OK** response containing an `id` of the transfer request.",
+      "location": "raw line 1559, after transfer examples"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-make-transfer-request-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-send-funds-make-transfer-request]] \u2014 2026-09-15-captured Business Accounts third-party bank transfer request guide for requirements, optional validation/review, request fields and webhook status; successful submission does not prove settlement or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured review prose drops several nouns; treat approval mechanics beyond the stated one-approval field and team approval as requiring the linked guide."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/send-funds/make-transfer-request/2026-09-15.md",
+  "raw_sha256": "4205dea3073ba357af3014c1f44ce931161525291a7e60726afc15df39059c4c",
+  "status": "candidate_ready"
+}

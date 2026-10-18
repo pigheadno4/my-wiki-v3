@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Adyen website C20
+
+- Fifty independently approved Business Accounts funds/SCA/open-banking/transactions/compliance and Issuing foundations documentation sources; first full-review approvals 42/50 and 9 targeted correction reviews. 3 concepts touched (1 new); source_count 1014 = 1000 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-20/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-18] ingest | Stripe PHP `22.0.0`
 
 - Approved focused-reading full Endive/PHP7.4 baseline: callback context/singletons, scoped request/Billing changes and preserved subscription-status conflict. All v21 history/counts retained; fifth serial update after 21.2.1/21.3.0/21.3.1/21.3.2. Details [[stripe-log]] and [[source-github-stripe-php]]. No SDK execution, commit or push.

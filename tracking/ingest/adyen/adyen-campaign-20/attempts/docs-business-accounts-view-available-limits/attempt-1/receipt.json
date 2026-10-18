@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-business-accounts-view-available-limits",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"View available limits | Adyen Business Accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/view-available-limits\"\nraw_files:\n  - \"adyen/docs/business-accounts/view-available-limits/2026-09-15.md\"\ntags: [adyen, business-accounts, transaction-rules, transfer-limits, available-limits]\n---\n\n## Overview\n\nThis Business Accounts guide (last modified 2025-01-07; captured 2026-09-15) describes GET /balanceAccounts/{id}/limits for reading amount and count limits regulating outgoing transfers from a user's balance account. It introduces limits from transaction rules or transfer limits, but its stated setup and supported-rule restrictions center on transaction rules. Returned figures are calculated at a response timestamp for the selected balance account; the example is not a current account balance, live entitlement, transfer approval or bank receipt. See [[adyen]], [[adyen-business-accounts]], [[source-adyen-docs-business-accounts-transaction-rules]] and [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]].\n\n## Key takeaways\n\n- **Access and supported limit:** The page requires an Adyen for Platforms integration with Business Accounts and Configuration API access with Bank Manage TransactionRules role. Its setup row calls for a transaction rule with totalAmount or matchingTransactions. Available-limit calculation is documented only for those restrictions, with balance-account-level aggregation. A matchingValues plus matchingTransactions combination is excluded, higher-level aggregation is omitted, and blockList has no limits to report. These exclusions mean an empty or incomplete response cannot prove that no other rule or transfer control exists.\n- **Read request and result:** GET /balanceAccounts/{id}/limits takes the balance-account ID; optional transactionRuleId selects a rule. Without it, the page says the limit applying to the balance account is returned according to a transaction-rule hierarchy, but links to an Issuing hierarchy from this Business Accounts guide. The response has calculatedAt, amountLimits and countLimits arrays. Each returned limit includes total limit, spent, remaining, source and interval; source identifies the rule or transfer limit. The timestamp makes it a read-time calculation, not a guarantee for a later transfer.\n- **Accounting and interval boundary:** The guide says authorized amount/count consumes available limit and canceled or expired authorizations restore it, regardless of capture. This authorization/capture language is the same card-style wording seen in the related outgoing-transfer transaction-rules overview; do not infer settlement or bank receipt. The response interval table enumerates perTransaction, daily, weekly, monthly, lifetime, rolling and sliding forms plus conditional duration/start fields. Its fixed-interval descriptions use CET while the timezone field says default UTC; preserve the response's explicit interval data rather than assuming a universal reset timezone.\n- **Scope tension:** The introduction and source field mention transfer limits as well as transaction rules, while the requirements/limitations and optional query selector are framed around transaction rules. The page does not establish that every configured transfer limit is returned. The sample amount and count values, currencies and timezone are illustrative.\n\n## Detail locators\n\n- Purpose, two limit types and readout fields: pinned raw lines 15\u201338.\n- Integration, API role, supported restrictions and exclusions: pinned raw lines 40\u201349.\n- Authorized-limit accounting: pinned raw lines 51\u201358.\n- GET path/query semantics, hierarchy link and response fields: pinned raw lines 60\u2013100.\n- Interval types, conditional fields, timezone and example response: pinned raw lines 102\u2013188.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 main Business Accounts concept and reciprocal source route.\n- [[source-adyen-docs-business-accounts-transaction-rules]] \u2014 rule evaluation and hardBlock context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 separately configured balance-account transfer limits.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/view-available-limits/2026-09-15|View available limits guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "These limits can be configured using [transaction rules](/business-accounts/transaction-rules) or [transfer limits](/business-accounts/use-transfer-limits).",
+      "location": "raw line 19, View available limits"
+    },
+    {
+      "text": "**Bank Manage TransactionRules role**",
+      "location": "raw line 45, Requirements / API credential roles"
+    },
+    {
+      "text": "Limits that are aggregated at higher levels are not returned in the response.",
+      "location": "raw line 47, Requirements / Limitations"
+    },
+    {
+      "text": "All authorizations are deducted from the available limit, regardless of whether they have been captured or not.",
+      "location": "raw line 58, Calculating limits"
+    },
+    {
+      "text": "If not provided, we return the limit that applies to the balance account based on the [transaction rule hierarchy](/issuing/authorisation/transaction-rules#hierarchy-for-transaction-rules).",
+      "location": "raw line 69, View available limits / transactionRuleId query parameter"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-view-available-limits-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-view-available-limits]] \u2014 2025-modified, 2026-09-15-captured balance-account amount/count available-limit readout; its rule-restriction and aggregation exclusions, Issuing hierarchy link and authorization/capture wording limit inference about effective transfer controls or settlement.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/view-available-limits/2026-09-15.md",
+  "raw_sha256": "a447efa92a26e918446b5d10cd9fa8bd0cc60e206b4c736b7b43f3f685010e9a",
+  "status": "candidate_ready"
+}

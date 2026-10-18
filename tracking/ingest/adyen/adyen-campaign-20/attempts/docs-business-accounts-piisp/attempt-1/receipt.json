@@ -1,0 +1,47 @@
+{
+  "job_id": "docs-business-accounts-piisp",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts PIISP funds confirmation\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/piisp\"\nraw_files:\n  - \"adyen/docs/business-accounts/piisp/2026-09-15.md\"\ntags: [adyen, business-accounts, open-banking, piisp, funds-confirmation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Open Banking page addresses a third-party Payment Initiation Service Provider (PIISP) that checks whether an account holder who gave consent has enough available funds for a specified amount. It shows one `POST /funds-confirmations` request and its `fundsAvailable` response. This is an informational funds check, not a reservation, payment instruction, completed transfer, or beneficiary-bank receipt. See [[adyen]], [[adyen-business-accounts]] and [[source-adyen-docs-business-accounts-oauth-flow]] for the separate third-party token/consent route.\n\n## Key takeaways\n\n- The page is for third-party providers. It names prior Adyen onboarding and an access token for the Adyen business account as setup conditions; the introduction qualifies the service by account-holder consent. The sample sends a Bearer token, `X-Request-ID`, and an `IPv4` header, while the text permits an IPv4 or IPv6 address. It does not show a `Consent_Id` header or establish that token issuance alone proves current consent.\n- The request body specifies `instructedAmount` (currency and amount) and `account` (the account number to check). Its TEST example asks about EUR 10.50 for a sample IBAN; the sample identity and `fundsAvailable: true` are illustrative, not evidence of any specific live account balance.\n- `fundsAvailable` answers whether the **specified amount** is available at that check; `false` means insufficient funds for that amount. The response shown carries only that boolean. The guide does not describe a balance amount, hold, debit, guarantee of later availability, payment initiation or settlement. Follow the separate PISP route for payment initiation; do not infer it from this PIISP response.\n\n## Detail locators\n\n- Third-party PIISP purpose, account-holder consent and setup: raw lines 15\u201331.\n- POST path, body fields, address/header example and TEST amount/account: lines 33\u201363.\n- Boolean response and explicit false meaning: lines 65\u201373.\n- AISP and PISP links are navigation to different services (lines 75\u201378).\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts context.\n- [[source-adyen-docs-business-accounts-oauth-flow]] \u2014 third-party token and consent setup.\n- [[source-adyen-docs-business-accounts-aisp]] \u2014 distinct account-information access.\n- [[source-adyen-docs-business-accounts-pisp]] \u2014 distinct payment-initiation flow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/piisp/2026-09-15|Adyen Docs: Confirm funds availability (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "As part of the open banking framework for Payment Initiation Service Providers (PIISPs), Adyen provides an endpoint to confirm available funds on behalf of account holders who have given their consent.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Not applicable; this documentation is intended for third-party providers.",
+      "location": "raw line 29, Requirements table"
+    },
+    {
+      "text": "Make a POST `/funds-confirmations` request with the following parameters in the request body.",
+      "location": "raw line 37, Confirm funds"
+    },
+    {
+      "text": "The response contains `fundsAvailable` that indicates whether the instructed amount is available. A value of `false` indicates insufficient funds for the specified amount.",
+      "location": "raw line 65, Confirm funds"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-piisp-business-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-piisp]] \u2014 2026-09-15 third-party PIISP Open Banking funds-confirmation guide for a consented Business Account holder; the amount-specific boolean is not a funds reservation, payment instruction or settlement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/piisp/2026-09-15.md",
+  "raw_sha256": "3c3cc5fd96bf57026015761df834e5ecfc27ac224b719fba760b1524dceef53d",
+  "status": "candidate_ready"
+}

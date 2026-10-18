@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-oauth-flow",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Open banking account-holder consent OAuth flow\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/oauth-flow\"\nraw_files:\n  - \"adyen/docs/business-accounts/oauth-flow/2026-09-15.md\"\ntags: [adyen, business-accounts, open-banking, oauth, consent]\n---\n\n## Overview\n\nThis 2026-09-15-captured guide addresses a **third-party provider** seeking an Adyen Business Account holder's explicit consent to access open-banking account data and, depending on scope, initiate payments. It describes authorization-code OAuth with PKCE, access and rotating refresh tokens, then a separate `POST /consents` step to obtain a consent ID. It is distinct from Adyen Partner OAuth for merchant-account resources and from the separate open-banking route for verifying an unregistered external individual's bank account. The procedure does not prove that a holder approved consent, an account is open, or a payment occurred. [[adyen-business-accounts]] [[adyen]]\n\n## Key takeaways\n\n- The page says this integration-type entry is **not applicable** because it is intended for third-party providers, and requires prior Adyen open-banking onboarding (raw lines 21\u201326). The holder is redirected to Adyen's authentication/consent interface; the client receives an authorization code at its `redirect_uri`, and the **server** exchanges it for tokens (raw lines 28\u201345, 79\u201385).\n- The unauthenticated GET `/bankoauth/authorize` request carries `client_id`, `response_type=code`, `redirect_uri`, requested `scope`, PKCE `code_challenge_method=S256` and `code_challenge`, and anti-CSRF `state`. The page lists `bank.aisp:read`, `bank.pisp:write` and `bank.cof:read` as possible scopes and says the returned authorization code expires in **five minutes** (raw lines 51\u201385). The TEST URL and HTML-embedding example are captured integration guidance, not a successful redirect or grant.\n- Server-side POST `/token` uses `grant_type=authorization_code`, the code, `code_verifier`, the matching redirect URI and HTTP Basic `client_id:client_secret`. The returned bearer access token defaults to a 24-hour lifetime; the refresh token is one-time-use and a replacement must be saved. If it is lost, the guide says the holder must authenticate again (raw lines 96\u2013148). Refresh uses `grant_type=refresh_token` and the current refresh token (raw lines 207\u2013246).\n- Access token alone is not the consent ID. The guide then calls `POST /consents` with bearer access and a Base64 eIDAS QSEAL certificate in `TPP-Signature-Certificate`. It requests account access, recurrence, validity, frequency and combined-service settings; the table states maximum **90 days** and **10 uses/day**. Its response includes `consentStatus`, `consentId` and SCA-status links, and the text says holder approval is still needed. The illustrated `consentStatus: received` is not approval (raw lines 150\u2013205).\n- The refresh-token descriptions differ: the first says it expires as soon as used; the refresh section says it expires with a short grace period, while both call it one-time-use (raw lines 125\u2013131, 230\u2013237). Preserve that discrepancy rather than assuming a retry window. The page describes possible account-detail, balance or payment initiation access **depending on actual consent and scope**; neither requested scope nor token issuance alone proves payment permission (raw lines 32\u201345, 63\u201367).\n\n## Detail locators\n\n- Third-party-provider identity, onboarding and actor/data-access sequence: raw lines 19\u201345.\n- Authorization redirect, PKCE/state fields and five-minute code: raw lines 47\u201394.\n- Server token exchange, token lifetimes, refresh-token rotation and loss boundary: raw lines 96\u2013148, 207\u2013246.\n- Separate consent request, QSEAL header, validity/frequency fields, received-status example and authorization tracking: raw lines 150\u2013205.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product context.\n- [[adyen-partner-oauth]] \u2014 distinct partner application OAuth for merchant-account resources.\n- [[source-adyen-docs-business-accounts-verify-account-holder]] \u2014 distinct external-individual bank-account verification route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/oauth-flow/2026-09-15|Captured account-holder consent OAuth guide]]\n",
+  "quotes": [
+    {
+      "text": "Adyen uses [OAuth 2.0](https://oauth.net/2/), an open standard for authorization, to allow third-party applications to get an account holder's explicit consent to access their account data.",
+      "location": "raw/adyen/docs/business-accounts/oauth-flow/2026-09-15.md:19"
+    },
+    {
+      "text": "Not applicable; this documentation is intended for third-party providers.",
+      "location": "raw/adyen/docs/business-accounts/oauth-flow/2026-09-15.md:25"
+    },
+    {
+      "text": "The `code` is short-lived and expires in five minutes.",
+      "location": "raw/adyen/docs/business-accounts/oauth-flow/2026-09-15.md:85"
+    },
+    {
+      "text": "A refresh token is one-time-use.",
+      "location": "raw/adyen/docs/business-accounts/oauth-flow/2026-09-15.md:131"
+    },
+    {
+      "text": "This consent needs to be approved by the account holder to continue.",
+      "location": "raw/adyen/docs/business-accounts/oauth-flow/2026-09-15.md:152"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-oauth-flow-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-oauth-flow]] \u2014 2026-09-15 third-party-provider open-banking OAuth and separate account-holder consent-ID flow for Business Accounts, with five-minute code, rotating refresh token and approval boundary; distinct from Partner OAuth and external-individual account verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured refresh-token prose says both immediate expiry on use and expiry with a short grace period; consentStatus received is not holder approval."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/oauth-flow/2026-09-15.md",
+  "raw_sha256": "e7045596931b24d86d6fe2b03a94085f5490013960d7e96f837637c631cbbec6",
+  "status": "candidate_ready"
+}

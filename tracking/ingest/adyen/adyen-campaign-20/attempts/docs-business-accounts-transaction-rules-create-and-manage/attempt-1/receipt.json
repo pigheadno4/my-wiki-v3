@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-transaction-rules-create-and-manage",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Create and manage transaction rules\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/transaction-rules/create-and-manage\"\nraw_files:\n  - \"adyen/docs/business-accounts/transaction-rules/create-and-manage/2026-09-15.md\"\ntags: [adyen, business-accounts, transaction-rules, bank-transfers, risk-controls]\n---\n\n## Overview\n\nThis Business Accounts procedure page (last modified 2021-05-31; captured 2026-09-15) shows Configuration API creation, lookup, override, bypass and update of transaction rules for outgoing external bank transfers. Rules can hard-block matching transfers, so changes to scope, restrictions, activation or bypass affect payout controls. It supplies test examples rather than evidence of a live rule or transfer. See [[adyen]], [[adyen-business-accounts]] and [[source-adyen-docs-business-accounts-transaction-rules]] for the separately documented evaluation hierarchy and pilot availability boundary.\n\n## Key takeaways\n\n- The stated setup calls for Adyen Payouts, Configuration API access with the **Bank Manage TransactionRules** role, Transfer and Transaction webhook subscriptions, and familiarity with the transaction-rules overview. These rules are expressly unsupported for internal transfers.\n- Create a rule with POST `/transactionRules`. The create table specifies `entityKey`, `interval`, `outcomeType: hardBlock`, `requestType: bankTransfer`, `ruleRestrictions`, `type`, description and reference; `aggregationLevel` can only be `balanceAccount` for velocity rules. A returned `transactionRule.id` identifies the configuration resource. The EUR 500K daily velocity limit is an illustration, not an asserted default.\n- Status and dates control evaluation: `active` starts evaluation and automatically sets `startDate` to current time; the guide also describes a future `startDate` on a rule whose status is `active`. An optional future `endDate` stops evaluation; without one, evaluation continues until status becomes `inactive`. Do not equate an `active` field alone with a rule already evaluated.\n- An override is a **new** rule for a specified entity with `overridesRule` pointing to an existing rule. The example raises one balance account's daily maximum from EUR 500K to EUR 800K. A bypass is likewise a new entity-specific rule with `type: bypass`, empty `ruleRestrictions` and `overridesRule`; it skips the named rule entirely for that entity. Removing a hard-block this way changes protection, so the example is not merely a display or readback operation.\n- Read one rule by ID or list rules for a balance account, account holder or balance platform. PATCH `/transactionRules/{id}` updates named parameters and restrictions, including `status: active|inactive`. The PATCH example puts `totalAmount` at the body root while its response nests it under `ruleRestrictions`; treat the example as a documentation inconsistency and verify the intended request shape against the relevant API reference before using it.\n\n## Detail locators\n\n- Requirements, role, webhooks and internal-transfer exclusion: raw lines 26\u201335.\n- POST creation field table, dates/status and EUR 500K test example: raw lines 37\u2013141. The table's general required fields and the shorter bypass payload (lines 250\u2013307) should not be merged into an unverified schema claim.\n- GET scope/list endpoints: raw lines 143\u2013152.\n- Override by new rule and `overridesRule`: raw lines 154\u2013248; bypass with `type: bypass` and empty restrictions: lines 250\u2013307.\n- PATCH and active/inactive values: raw lines 310\u2013374; compare request lines 327\u2013340 with response lines 360\u2013367 for the `ruleRestrictions` nesting mismatch.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product context.\n- [[source-adyen-docs-business-accounts-transaction-rules]] \u2014 evaluation criteria, rule hierarchy and pilot qualification.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 separate balance-account transfer-limit control.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/transaction-rules/create-and-manage/2026-09-15|Adyen Docs: Create and manage rules (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Use transaction rules to automatically approve or decline an outgoing transfer from business accounts.",
+      "location": "raw line 17, introduction"
+    },
+    {
+      "text": "Transaction rules are not supported for [internal transfers](/payouts/payout-service/internal-fund-transfers/).",
+      "location": "raw line 34, Requirements table"
+    },
+    {
+      "text": "When you have multiple transaction rules, Adyen applies these rules based on the existing [rule hierarchy](/business-accounts/transaction-rules#hierarchy-for-transaction-rules).",
+      "location": "raw line 156, Override an existing transaction rule"
+    },
+    {
+      "text": "You can override a rule by skipping it entirely for specific entities. This means that the rule no longer applies to that entity.",
+      "location": "raw line 252, Skip a transaction rule"
+    },
+    {
+      "text": "To update a transaction rule:",
+      "location": "raw line 312, Update a transaction rule"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-create-manage-transaction-rules-business-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-transaction-rules-create-and-manage]] \u2014 2021-modified, 2026-09-15-captured Configuration API guide for outgoing Business Accounts external-transfer rule creation, readback, entity-specific override/bypass and activation; internal transfers excluded, and the PATCH example has a restriction-nesting mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/transaction-rules/create-and-manage/2026-09-15.md",
+  "raw_sha256": "2fe3ecb5654420b10361564e2ee73208595393709c41c76a74f944420a580761",
+  "status": "candidate_ready"
+}

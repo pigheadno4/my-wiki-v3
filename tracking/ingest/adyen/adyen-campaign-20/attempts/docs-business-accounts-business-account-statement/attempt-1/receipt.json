@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-business-accounts-business-account-statement",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Account statements for business accounts | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/business-account-statement\"\nraw_files:\n  - \"adyen/docs/business-accounts/business-account-statement/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, statements, camt053, reconciliation]\n---\n\n## Overview\n\nThis [[adyen]] Business Accounts guide, last modified and captured 2026-09-15, describes automatically generated ISO 20022 CAMT.053 account statements for a business account over a reporting period. Platforms can download them to reconcile balances and report transactions to users. Card transactions appear when an Adyen-issued card shares the balance account. See [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The prerequisites are an Adyen for Platforms integration supporting business accounts, a balance-platform Report user API key with the Merchant Report Download role, a server subscribed to `balancePlatform.report.created`, and Adyen-contact enablement plus statement settings. This is a configured reporting flow, not evidence that a particular account is open, funded or producing statements. [Raw: lines 23\u201345]\n- The settings cover daily, monthly or both frequencies; value versus booking date; optional BAI classification; transaction summary; and an optional extra daily summarized CAMT.053 file. The settings row calls the summary included by default, while the later comparison says a standard statement includes `TxsSummry` when configured. Preserve that configuration wording discrepancy rather than assuming universal presence. [Raw: lines 35\u201345, 473\u2013484]\n- When a statement is ready, `balancePlatform.report.created` provides the balance-account object, filename and `downloadUrl`; download the file with an authenticated GET request using the report-user API key. The live webhook and test URL in examples illustrate different environments and do not prove a successful download in either one. [Raw: lines 47\u201390]\n- CAMT.053 has a group header and one or more statement blocks; each `Stmt` represents one account and currency. It describes account identity, booked or available balance according to configuration, booked debit/credit entries, optional summary totals and transfer references. Use the element tables and mapping tables for exact XML tags and ISO 20022/optional BAI codes. [Raw: lines 95\u2013263, 318\u2013469]\n- The optional daily summarized file groups transactions sharing a BAI code into one `Ntry` with aggregated amounts; it does not preserve one entry per underlying transaction. Its `TxsSummry` is always included according to this page, and `ElctrncSeqNb` can cross-reference the detailed file. [Raw: lines 473\u2013537]\n\n## Detail locators\n\n- Setup and settings: raw lines 23\u201345. Webhook/download flow and environment-specific examples: lines 47\u201390.\n- CAMT.053 hierarchy, account identifiers, balances, entries, summaries and transfer references: lines 95\u2013263.\n- ISO 20022 code hierarchy, Transfers API mapping, optional BAI mappings and linked Issuing card activity: lines 318\u2013469.\n- Standard versus optional summarized file, aggregation and fields: lines 473\u2013537.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 business-account product and evidence boundary.\n- [[source-adyen-docs-platforms-compliance-financial-products-account-statements]] \u2014 separate user-facing statement compliance guidance for Business Accounts and Issuing; the CAMT.053 download flow does not establish that a user-facing template was approved or delivered.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/business-account-statement/2026-09-15|Adyen account statements for business accounts \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Account statements summarize the financial activity in a business account for a specific period, such as a day or a month.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "You must have an Adyen for Platforms integration that supports [business accounts](/business-accounts/).",
+      "location": "raw line 29, Requirements > Integration type"
+    },
+    {
+      "text": "Generate an API key for **Report user** for the balance platform. Your API credential must have the following role:- **Merchant Report Download**",
+      "location": "raw line 30, Requirements > API credentials"
+    },
+    {
+      "text": "Adyen automatically generates account statements. When a statement is ready:",
+      "location": "raw line 49, Download an account statement"
+    },
+    {
+      "text": "Adyen groups transactions that share a BAI code into one `<Ntry>` and totals their amounts.",
+      "location": "raw line 486, (Optional) Summarized account statement"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-business-account-statement-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-business-account-statement]] \u2014 2026-09-15 CAMT.053 Business Account statement setup, webhook download, XML/code mapping and optional summarized-file reference; statements support reconciliation but do not prove a specific account's funds or user-facing statement delivery.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/business-account-statement/2026-09-15.md",
+  "raw_sha256": "3d484e946f69e70644dfb68040d095169941059dfcc895aea0e3c27e878ac2ed",
+  "status": "candidate_ready"
+}

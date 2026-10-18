@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-business-accounts-manage-sca-devices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage devices registered for SCA | Adyen Business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/manage-sca-devices\"\nraw_files:\n  - \"adyen/docs/business-accounts/manage-sca-devices/2026-09-15.md\"\ntags: [adyen, business-accounts, sca, registered-devices, payment-instruments]\n---\n\n## Overview\n\nThis 2022-11-30-modified Business Accounts guide, captured 2026-09-15, explains how to list registered SCA devices, associate further payment instruments with a device, and deregister a device from a particular business account. It assumes prior device registration and requires the Bank SCA Webservice Role on the API credential. It describes Configuration API and Authentication SDK steps, not current eligibility or a completed authentication for any user. See [[adyen]], [[adyen-business-accounts]] and [[source-adyen-docs-business-accounts-manage-access]].\n\n## Key takeaways\n\n- **List:** GET /registeredDevices uses a required paymentInstrumentId to list SCA devices for the specified business account, with pageSize and zero-based pageNumber options. The response identifies the registered device, name, associated payment instrument ID and type; the table includes ios, android and browser, despite the page's mobile-device description.\n- **Associate:** After registration, the server POSTs /registeredDevices/{deviceId}/associations with up to five payment instrument IDs in one request. A payment instrument can be linked to only one device. Pass the returned sdkInput to the client Authentication SDK; after a user challenge, send its sdkOutput to the server and PATCH the same device ID with the same instrument IDs and type PaymentInstrument. A successful PATCH returns instrument IDs; the guide directs a subsequent GET for each instrument to verify association.\n- **Failures and lifecycle:** The documented 422 'Device limit reached' case means at least one requested payment instrument is already linked to a device; the guide says to inspect and deregister existing links before retrying. A 422 'Challenge not found' usually indicates a client-device/challenge versus PATCH device-ID mismatch or sdkOutput from the wrong device. Client authenticate() cancellation can yield NotAllowedError; the guide allows retry with the same sdkInput in the same session.\n- **Deregister:** DELETE /registeredDevices/{id} takes the device ID and required paymentInstrumentId to remove that device's association with the specified business account. For a device associated with multiple business accounts, the guide requires a separate request per account; a 204 empty response indicates success. This is a consequential removal of an authentication association, so confirm the intended account/device pairing before invoking it.\n\n## Detail locators\n\n- Scope, prerequisite role and list parameters: pinned raw lines 15\u201345; list response fields and sample: lines 222\u2013258. The GET section's language-specific SDK snippets at lines 58\u2013220 instead invoke initiateRegistrationOfScaDevice, so use its GET prose/curl rather than those snippets for this operation.\n- Association limit and POST initiation: pinned raw lines 260\u2013287; sdkInput/client authentication and server PATCH: lines 474\u2013579; PATCH success and verification: lines 817\u2013833.\n- Association errors and retry guidance: pinned raw lines 835\u2013902.\n- Deregistration purpose, account-by-account scope, required path/query parameters and 204 response: pinned raw lines 904\u20131075. The curl header at lines 930\u2013932 appears malformed; it is not a safe copy/paste template.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts concept and reciprocal source route.\n- [[source-adyen-docs-business-accounts-manage-access]] \u2014 API credential role context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/manage-sca-devices/2026-09-15|Manage SCA devices guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "**Bank SCA Webservice Role**",
+      "location": "raw line 31, Requirements"
+    },
+    {
+      "text": "You can associate up to five payment instruments to a device per",
+      "location": "raw line 262, Associate business accounts to a registered device"
+    },
+    {
+      "text": "These IDs must be the same that you sent in the POST request in step 1.",
+      "location": "raw line 569, Associate business accounts to a registered device, PATCH parameter table"
+    },
+    {
+      "text": "The \"Device limit reached, please delete a device and try again\" error detail means that one or more of the payment instrument IDs",
+      "location": "raw line 856, Troubleshooting device association / Device limit reached"
+    },
+    {
+      "text": "If the SCA device is associated with multiple business accounts, you must make a request for each business account.",
+      "location": "raw line 911, Deregister a device from a business account"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-manage-sca-devices-business-accounts-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-manage-sca-devices]] \u2014 2022-modified, 2026-09-15-captured Business Accounts SCA device list, challenge-based payment-instrument association and per-business-account deregistration guide; requires Bank SCA Webservice Role and does not prove a user authenticated.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/manage-sca-devices/2026-09-15.md",
+  "raw_sha256": "28123c6d9dca2c90314e685ed9b2c08106a894a829632707dc5a1e5f043504ea",
+  "status": "candidate_ready"
+}

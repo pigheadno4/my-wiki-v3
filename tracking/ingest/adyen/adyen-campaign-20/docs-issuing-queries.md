@@ -1,0 +1,9 @@
+# docs-issuing query probes
+
+## Q1 — What is Adyen Issuing for, and what resources and integration prerequisites does this overview identify?
+
+Adyen Issuing is a platform-facing virtual/physical card program. The 2023-modified, 2026-09-15-captured page names Mastercard and Visa cards, authorization decisions sent to the platform's servers or optional automatic transaction rules, and a shared funding pool or per-card balances (raw lines 23–34). For each user and card, it names an `accountHolder`, a funds-holding `balanceAccount`, and a card `paymentInstrument`; creating the instrument issues a card (raw lines 50–60). A company liable balance account holds funds for loading cards and transfers (line 66). The integration must accept and handle webhooks for asynchronous events (lines 77–81). PCI scope depends on card type and use case; consult the Adyen contact (lines 83–85). Forward route: [[index]] → [[adyen-index]] → proposed [[adyen-issuing]] → [[source-adyen-docs-issuing]] → [[raw/adyen/docs/issuing/2026-09-15]].
+
+## Q2 — Does creating a payment instrument or receiving an authorization request prove a live, completed card payment or current eligibility?
+
+No. The page calls creation of a `paymentInstrument` issuance of a card (raw line 60) and says the platform can approve or decline authorization requests or use transaction rules (lines 27–30, 64). It separately says payment, capture and refund events are asynchronous and require webhook handling (lines 77–81). The page's EEA/UK/US support list is a 2026-09-15 snapshot of a 2023-modified page (frontmatter lines 1–11; raw lines 36–48), not a current eligibility determination. PCI scope is conditional (lines 83–85). Forward route: [[index]] → [[adyen-index]] → proposed [[adyen-issuing]] → [[source-adyen-docs-issuing]] → [[raw/adyen/docs/issuing/2026-09-15]]. The get-started and integration-checklist targets in raw lines 87–99 are navigation only; their contents were not used as evidence.

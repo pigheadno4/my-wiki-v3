@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-send-funds-approve-cancel-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Approve or cancel transfer requests\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/send-funds/approve-cancel-transfers\"\nraw_files:\n  - \"adyen/docs/business-accounts/send-funds/approve-cancel-transfers/2026-09-15.md\"\ntags: [adyen, business-accounts, transfers, approvals, sca]\n---\n\n## Overview\n\nThis 2026-09-15 capture of an Adyen Business Accounts guide (page metadata last modified 2020-09-11) covers an optional additional review of an initiated balance-platform transfer. A reviewer with the stated API role approves or cancels the pending transfer. Approval authorizes Adyen to continue processing; cancellation or 30 days without action causes the pending transfer to fail. None of these review results establishes completed transfer or bank receipt.\n\n## Key takeaways\n\n- The flow begins when the initiating POST `/transfers` request includes a `review` object. The page requires the web-service API key to have the **TransferService Approval role** and a Transfer Webhooks subscription for the approval workflow.\n- POST `/transfers/approve` or POST `/transfers/cancel` takes a body `transferIds` array of one to 500 transfer IDs. These identify transfers, not balance accounts or recipient bank accounts. A reviewer can act on multiple pending transfers in one request. Cancellation and 30-day inaction prevent further processing of that transfer request; approval resumes processing.\n- If SCA applies, the guide says to authenticate either the initiating user or the approving reviewer. To perform SCA during approval, set `review.scaOnApproval: true` in the initial POST `/transfers` request. The page links to the separate SCA workflow for its implementation.\n- HTTP 200 on an approve/cancel API call is a request response, not final settlement proof. Transfer webhooks communicate review state: a created event for `status: received`, `reason: pending`, `review.numberOfApprovalsRequired: 1`; updated events for approved `authorised/approved` or canceled `cancelled/unknown`. The guide describes expiry after 30 days but does not provide an expiry payload example.\n\n## Detail locators\n\n- `## Requirements` and `## How it works` (raw lines 23\u201350): credential role, webhook prerequisite, review initiation, decision consequences and 30-day deadline.\n- `## Approve transfers` (52\u2013259) and `## Cancel transfers` (272\u2013479): endpoints, batch size, TEST examples and HTTP 200 responses. Versioned SDK examples include idempotency keys; this page does not state replay or duplicate-processing semantics.\n- `### Strong Customer Authentication (SCA) for approving transfers` (261\u2013270): conditional SCA choice and `scaOnApproval` placement on the initiating request. `## Get status updates on transfer reviews` (481\u2013748): created/updated webhook routes and example status/reason pairs. The introductory event list omits approval, although the later approved tab explicitly documents it; use the approved tab for that path.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product context.\n- [[adyen]] \u2014 provider context.\n- [[source-adyen-docs-business-accounts-send-funds-make-transfer-request]] \u2014 the initiating request and optional review field.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/send-funds/approve-cancel-transfers/2026-09-15|Approve or cancel transfers (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To complete the review, the reviewer must either approve or cancel the transfer. If the transfer is approved, then Adyen continues processing the transfer.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "Make sure that your web service API key has the following role:- **TransferService Approval role**",
+      "location": "raw line 29, ## Requirements table"
+    },
+    {
+      "text": "If the reviewer takes no action within 30 days after initiating the transfer request, then the transfer fails and Adyen can no longer processes the request.",
+      "location": "raw line 48, ## How it works"
+    },
+    {
+      "text": "You can include one or more `transferIds` in the request, up to a maximum of 500.",
+      "location": "raw line 58, ## Approve transfers table"
+    },
+    {
+      "text": "To [trigger SCA during approval](/business-accounts/send-funds/make-transfer-request#trigger-additional-reviews), you must set [scaOnApproval](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers#request-review-scaOnApproval) to **true** in the POST\u00a0 [/transfers](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers) request.",
+      "location": "raw line 270, ### Strong Customer Authentication (SCA) for approving transfers"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-approve-cancel-transfers-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-send-funds-approve-cancel-transfers]] \u2014 2020-modified, 2026-09-15-captured Business Accounts guide to additional transfer-review approval/cancellation, SCA choice and webhook review states; approval continues processing rather than proving settlement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's initial webhook event list omits approval, while its later approved tab explicitly describes an approved update."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/send-funds/approve-cancel-transfers/2026-09-15.md",
+  "raw_sha256": "e06020f0272d70dca5837c9ea39277db4280db5558fc9b866994c1d1007a113c",
+  "status": "candidate_ready"
+}

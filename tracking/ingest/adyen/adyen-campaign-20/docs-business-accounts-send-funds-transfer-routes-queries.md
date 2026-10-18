@@ -1,0 +1,9 @@
+# Worker retrieval checks
+
+Q1. What is this guide's purpose and what must be in place to calculate routes?
+
+A1. It recommends a pre-transfer route calculation for a new third-party bank recipient because banks and regulators may limit amounts or priorities (raw lines 15–21). The guide names an Adyen for Platforms integration supporting Business Accounts and a Configuration API credential with Balance Platform BCL role (raw lines 23–30). `POST /transferRoutes/calculate` takes `balancePlatform`, currency and `category: bank`, then either destination country or counterparty details; a transfer-instrument counterparty additionally requires source `balanceAccountId` (raw lines 36–49, 359–372). Route: [[index]] → [[adyen-index]] → [[adyen-business-accounts]] → [[source-adyen-docs-business-accounts-send-funds-transfer-routes]] → [[raw/adyen/docs/business-accounts/send-funds/transfer-routes/2026-09-15]].
+
+Q2. What scope or conflict prevents an example route from proving that a live transfer will succeed?
+
+A2. The two modes return routes for the supplied country or counterparty and list supported currency/priority plus requirements; the response examples illustrate amount, address, identifier and payment-instrument conditions (raw lines 301–357, 716–780). The NL/USD and NL/EUR TEST examples use different priorities and limits (raw lines 57–71, 309–357, 380–402, 725–779), so their values are request-specific illustrations, not a current coverage or settlement guarantee. The parent send-funds page uses both cross-border and wire terminology for cross-border transfer requests, a priority choice this route sample does not resolve. Route: [[index]] → [[adyen-index]] → [[adyen-business-accounts]] → [[source-adyen-docs-business-accounts-send-funds-transfer-routes]] → [[raw/adyen/docs/business-accounts/send-funds/transfer-routes/2026-09-15]].

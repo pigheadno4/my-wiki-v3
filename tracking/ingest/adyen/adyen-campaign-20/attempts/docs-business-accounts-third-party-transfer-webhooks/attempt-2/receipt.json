@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-business-accounts-third-party-transfer-webhooks",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Business Accounts third-party transfer webhooks\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/third-party-transfer-webhooks\"\nraw_files:\n  - \"adyen/docs/business-accounts/third-party-transfer-webhooks/2026-09-15.md\"\ntags: [adyen, business-accounts, bank-transfers, direct-debit, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Business Accounts guide illustrates Transfer webhooks for a user's business account and its associated balance account when a third-party bank account sends funds, initiates a direct debit request, or receives an outgoing bank transfer. `balancePlatform.transfer.created` reports a request; `balancePlatform.transfer.updated` reports later changes. The document's test payloads illustrate states and fields, not a specific live transfer or beneficiary-bank receipt. See [[adyen]], [[adyen-business-accounts]] and [[source-adyen-docs-platforms-payout-webhooks]].\n\n## Key takeaways\n\n- The stated preparation is a payout service integration, a server able to receive and accept webhooks, and subscriptions to both Transfer and Transaction webhooks. The latter is a separate webhook family; this page's examples are Transfer webhooks.\n- Identify these bank events by `category: bank`, `type: bankTransfer` or `bankDirectDebit`, and `direction` relative to the balance account. An incoming direct debit request is an incoming request that debits the user's associated balance account; incoming funds credit it. Outgoing bank transfers debit it.\n- The illustrated accounting progression is received \u2192 authorised (reserved) \u2192 booked. Outgoing `booked` means the user's balance account was debited, not that the beneficiary bank credited the recipient; external rejection can subsequently produce `failed` or `returned`. Insufficient balance instead produces `refused` with `notEnoughBalance` and requires a new transfer request after funding.\n- Keep transfer `status`, nested accounting `events`, and `tracking` separate. An internal-review example retains top-level `status: booked` while `tracking.status` is `pending` or `failed` (`refusedForRegulatoryReasons`). The instant-priority credited example likewise retains top-level `booked` and uses `tracking.status: credited`. A tracing event carries network identifiers, not proof that funds reached the beneficiary bank.\n- `estimatedArrivalTime` is an estimate that can differ from actual arrival. The snapshot describes it for local payouts with regular, fast, or wire priority, excluding instant and cross-border payouts. Return reasons can be temporary or permanent; a permanent blocked transfer instrument causes subsequent requests to fail with 422. The reason-code table also recommends retrying for some blocked/closed-account codes, so do not treat its generic retry wording as overriding the permanent-block warning.\n\n## Detail locators\n\n- Requirements and classification: raw lines 30\u201350.\n- Incoming funds and direct debit request examples: \u201cReceiving funds\u201d (lines 54\u2013379) and \u201cReceiving direct debit requests\u201d (lines 380\u2013746). The direct debit samples contain trailing commas, so treat them as illustrative payloads rather than valid JSON fixtures.\n- Outgoing request, state and failure examples: \u201cSending funds\u201d (lines 747\u20132700), especially refused (1430), booked (1534), pending/internal review (1657\u20131967), failed (1970), ETA (2115), tracing (2262), credited (2425), and returned (2558).\n- Return blocking, network reasons and reason-code table: lines 2699\u20132898. The page's prose for incoming booked `counterparty` says the user's business account, while its example shows the third-party sender's bank account (lines 261\u2013315); verify payload identity against the actual event rather than assuming that prose label describes the example.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and resource context.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 related platform payout Transfer webhook states.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/third-party-transfer-webhooks/2026-09-15|Adyen Docs: Third-party transfer webhooks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When you receive or initiate a transfer request involving a third-party bank account, Adyen sends two kinds of webhooks for the balance account involved in the bank transfer:",
+      "location": "raw lines 23\u201326, introduction"
+    },
+    {
+      "text": "The funds are debited from the associated balance account.",
+      "location": "raw line 388, Receiving direct debit requests"
+    },
+    {
+      "text": "This status is not final. The transfer may still [fail](#outgoing-bank-transfer-failed) if, for example, the transfer is rejected by the external banking system.",
+      "location": "raw line 1543, Outgoing bank transfer booked"
+    },
+    {
+      "text": "Estimated Time of Arrival is currently available for all local payouts. It is *not* available for instant or cross-border payouts.",
+      "location": "raw line 2121, Outgoing bank transfer tracking"
+    },
+    {
+      "text": "Adyen blocks subsequent transfer attempts when a reason code indicates a permanent issue.",
+      "location": "raw line 2703, Return reason"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-third-party-transfer-webhooks-business-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-third-party-transfer-webhooks]] \u2014 2026-09-15 Business Accounts Transfer-webhook examples for third-party incoming funds, direct debit requests and outgoing bank transfers, including accounting versus tracking states, ETA/tracing, refusal, failure and return boundaries.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/third-party-transfer-webhooks/2026-09-15.md",
+  "raw_sha256": "686fc25a364a760fa70235480eb3d8b59f00cb5dd812c571a0aae4c08ff527e8",
+  "status": "candidate_ready"
+}

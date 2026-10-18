@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-how-sca-works",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: How API SCA works\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/how-sca-works\"\nraw_files:\n  - \"adyen/docs/business-accounts/how-sca-works/2026-09-15.md\"\ntags: [adyen, business-accounts, sca, authentication, api]\n---\n\n## Overview\n\nThis 2022-modified overview, captured 2026-09-15, describes an Authentication SDK challenge around Business Accounts API procedures that require strong customer authentication (SCA). It names third-party funds transfers, transaction-history consultation and transfer-limit creation as examples, while expressly saying it is not a use-case-specific procedure guide. For a qualifying request, the client SDK supplies `sdkOutput`, the server exchanges it with Adyen, the user completes a challenge, and the server submits a new `sdkOutput`. A successful endpoint response is an API result, not proof that a transfer settled or a beneficiary received funds.\n\n## Key takeaways\n\n- The stated setup is an Adyen for Platforms integration including Business Accounts, a web-service API credential with roles depending on the requested endpoint, an installed Authentication SDK, and extra Adyen configuration for the eligibility-check functionality. The app must check device eligibility before a procedure requiring SCA. The captured SDK tabs cover Android/Kotlin, iOS/Swift and web/JavaScript; web availability may throw `SCA_UNAVAILABLE`.\n- On initiation, the server places the eligibility `sdkOutput` in a `WWW-Authenticate` header, with an `SCA realm` identifying the procedure and base64 `auth-param1`. The guide treats a successful initiation as HTTP 401 containing a new blob, passed to the SDK as `sdkInput`. After challenge completion, the server sends a second `WWW-Authenticate` header with the same realm and new `sdkOutput`; successful finalization returns endpoint-dependent HTTP 2xx.\n- The `Authenticate your user` section says to authenticate the user with two factors, then illustrates SDK `register(...)` calls for device registration. That wording blends a procedure challenge with device registration. Treat device eligibility/registration and authentication of a specific later API action as distinct evidence; this overview alone does not specify a complete repeat-authentication implementation or prove that a user completed a challenge.\n- These are historical product-integration instructions, not current legal advice on when SCA is mandatory or evidence of live permissions, account opening, authorization, transfer booking or bank receipt. The next-step registration and device-management guides are navigation from this page.\n\n## Detail locators\n\n- Opening, examples and `Requirements` \u2014 overview-only scope, SCA-dependent procedures, SDK output, Platforms/Business Accounts integration, role and installation conditions (raw lines 15\u201339).\n- `How it works` \u2014 eligibility, first server request, HTTP 401 challenge, second request and endpoint-dependent HTTP 2xx (raw lines 41\u201375).\n- `Check SCA eligibility` \u2014 extra Adyen configuration and Android/iOS/web SDK examples, including web unsupported error (raw lines 77\u2013173).\n- `Initiate the procedure` \u2014 `WWW-Authenticate` realm and `auth-param1`, HTTP 401 and `sdkInput` handoff (raw lines 175\u2013199).\n- `Authenticate your user` \u2014 2FA statement and registration examples whose terminology needs care (raw lines 201\u2013256).\n- `Finalize the procedure` \u2014 second header and endpoint-specific HTTP 2xx (raw lines 258\u2013270).\n- `Next steps` \u2014 device-registration and management navigation (raw lines 272\u2013282).\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-business-accounts]]\n- Platform context: [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/how-sca-works/2026-09-15|2026-09-15 Business Accounts API SCA overview]]\n",
+  "quotes": [
+    {
+      "text": "The purpose of this page is to provide an overview of the SCA process and *not* to provide examples for specific use cases.",
+      "location": "raw/adyen/docs/business-accounts/how-sca-works/2026-09-15.md:19"
+    },
+    {
+      "text": "After verifying the identity of your user, the Authentication SDK produces an output that you must include in your API request.",
+      "location": "raw/adyen/docs/business-accounts/how-sca-works/2026-09-15.md:27"
+    },
+    {
+      "text": "This functionality requires additional configuration from Adyen.",
+      "location": "raw/adyen/docs/business-accounts/how-sca-works/2026-09-15.md:83"
+    },
+    {
+      "text": "If the request is successful, Adyen returns an **HTTP 401** response that includes an `sdkInput`.",
+      "location": "raw/adyen/docs/business-accounts/how-sca-works/2026-09-15.md:60"
+    },
+    {
+      "text": "To register the device with the Authentication SDK:",
+      "location": "raw/adyen/docs/business-accounts/how-sca-works/2026-09-15.md:203"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-business-accounts-how-sca-works-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-how-sca-works]] \u2014 2022-modified, 2026-09-15-captured Business Accounts API SCA overview for SDK eligibility, HTTP 401 challenge exchange and endpoint-specific HTTP 2xx finalization; its authenticate-user section uses device-registration calls, so setup is not proof of per-action authentication or funds movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw Authenticate your user section uses register(...) device-registration methods; avoid treating registration as successful authentication of a later API procedure."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/how-sca-works/2026-09-15.md",
+  "raw_sha256": "559406228e93148c82164f67639771d3ad2a1226977867263e49074b245283f7",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-use-transfer-limits-balance-platform",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts balance-platform transfer limits\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/use-transfer-limits/balance-platform\"\nraw_files:\n  - \"adyen/docs/business-accounts/use-transfer-limits/balance-platform/2026-09-15.md\"\ntags: [adyen, business-accounts, balance-platform, transfer-limits, configuration-api]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Business Accounts guide describes creating, viewing and deleting balance-platform-level limits for outgoing external transfers. An active platform limit regulates covered transfers from all balance accounts on that platform, subject to a more specific balance-account limit. This is Configuration API setup and readback, not evidence that any specific limit was installed, enforced on a live transfer, or produced a bank receipt. See [[adyen-business-accounts]].\n\n## Key takeaways\n\n- The stated prerequisites are an Adyen for Platforms integration with Business Accounts, Configuration API access with **Balance platform base role**, and subscriptions to Transfer and Transaction webhooks. The guide excludes internal transfers and incoming external transfers from transfer-limit support.\n- `POST /balancePlatforms/{id}/transferLimits` creates a limit with an amount in minor units and currency. `scope` is `perTransaction` (maximum per covered transfer) or `perDay` (maximum aggregate over a day); `transferType` is `instant` or `all`. The request table requires `scaInformation.exemption: setByPlatform`. These values describe configuration conditions, not blanket approval of a transfer.\n- The guide describes `scheduled` before the start date, `active` from the start date, and `inactive` after the end date. An omitted/null `startsAt` defaults to request time; a future start schedules the limit, with no more than one future limit according to this page. Without `endsAt`, the limit stays active until overridden. Its step-by-step text says creation is scheduled, while the field table and response text allow immediate active creation; use actual returned status and dates.\n- `GET /balancePlatforms/{id}/transferLimits` lists limits with optional scope/type/status filters, and `GET /balancePlatforms/{id}/transferLimits/{transferLimitId}` retrieves one. The delete route accepts only pending or scheduled limits; an active platform limit must instead be overridden by a new limit. The documented successful delete response is HTTP 204.\n- The parent transfer-limits guide describes a platform limit as the default where no balance-account limit is configured; the balance-account guide says its matching `scope`/`transferType` limit overrides the platform limit. The platform-level page itself does not supply an effective-limit readback or actual transfer outcome. Its create curl body has missing JSON punctuation and its sample response is active despite the earlier blanket scheduled step; treat samples as illustrations rather than executable or outcome proof.\n\n## Detail locators\n\n- Scope, prerequisites and unsupported transfer directions: pinned raw lines 15\u201332.\n- POST lifecycle and field table, including minor units, condition types, dates and exemption: raw lines 34\u201361.\n- Malformed TEST create request and illustrative response: raw lines 63\u2013113. The example is not valid JSON as printed; use the field table and API reference for implementation.\n- List/filter GET and specific-limit GET, with sample readbacks: raw lines 115\u2013244. The list example uses `-d` with GET and a `transfer` wrapper; verify the actual API response shape before consuming it.\n- Delete eligibility, override instruction and HTTP 204 example: raw lines 246\u2013268.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and account context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 user balance-account limits, SCA and matching-scope override.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/use-transfer-limits/balance-platform/2026-09-15|Adyen Docs: Balance-platform transfer limits (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When a transfer limit is configured for your balance platform, it regulates the amount of funds that can be transferred externally from all the balance accounts in your platform.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Transfer limits are not supported for [internal transfers](/business-accounts/transfer-funds-internally), or [incoming external transfers](/business-accounts/receive-funds).",
+      "location": "raw line 31, Requirements table"
+    },
+    {
+      "text": "The transfer limit is created with a **scheduled** status.",
+      "location": "raw line 37, How it works"
+    },
+    {
+      "text": "The `status` must be either **active** or **scheduled** depending on the start date of the limit.",
+      "location": "raw line 89, Create transfer limits response instruction"
+    },
+    {
+      "text": "After a transfer limit becomes **active**, it cannot be deleted.",
+      "location": "raw line 248, Delete a transfer limit"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-business-accounts-platform-limits-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform]] \u2014 2026-09-15 Business Accounts Configuration API guide for platform-wide outgoing-external transfer limits, condition/date lifecycle, readback and deletion/override; setup examples do not prove live enforcement or fund delivery.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/use-transfer-limits/balance-platform/2026-09-15.md",
+  "raw_sha256": "dd9dec0753ad4e66f7384c13fcd3167c40e078b0aaac607112239950b0f08a70",
+  "status": "candidate_ready"
+}

@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-18] ingest | Adyen website C20
+
+- All 50 exact-manifest Business Accounts funds/SCA/open-banking/transactions/compliance and Issuing foundations General Docs sources independently approved and promoted. First full-review approvals 42/50; 9 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 3 concepts, including 1 new concept(s). Business Accounts resources, roles/capabilities/verification/consent, SCA and open-banking roles, transfer/transaction states and limits, dated country/product compliance qualifications, Issuing setup versus live card operation, and configuration or sample events versus actual account/funding/bank outcomes remain distinct. Original reviews, attempts and bounded correction evidence retained. Platform guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 1014 = 1000 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-20/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-18] ingest | Adyen website C19
 
 - All 50 exact-manifest Capital detailed grants/offers/components/compliance and Business Accounts foundations General Docs sources independently approved and promoted. First full-review approvals 48/50; 2 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

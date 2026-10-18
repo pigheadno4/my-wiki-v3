@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-business-accounts-sca-for-funds-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: SCA for funds transfers\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/sca-for-funds-transfers\"\nraw_files:\n  - \"adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md\"\ntags: [adyen, business-accounts, sca, funds-transfers, authentication]\n---\n\n## Overview\n\nAdyen's 2022-modified, 2026-09-15-captured Business Accounts guide describes using its Authentication SDK to authenticate EEA users for funds transfers. It has two routes: authenticate the initiating user on `POST /transfers`, or authenticate a reviewer on `POST /transfers/approve` for one or more pending transfers. This is an SCA procedure for a balance-platform transfer, not evidence of account opening, completed settlement, or recipient bank receipt. [[adyen-business-accounts]] [[adyen]]\n\n## Key takeaways\n\n- Prerequisites in this captured guide are an installed Authentication SDK, a user device registered for SCA, and an API credential with the **TransferService Webservice Initiate role** (raw lines 26\u201331). Check device or browser availability first and pass its `sdkOutput` from the client to the server; the web example throws `SCA_UNAVAILABLE` if unsupported (raw lines 33\u2013127).\n- For authentication during initiation, the first `POST /transfers` uses a `WWW-Authenticate` header with realm `Transfer` and availability `sdkOutput` as `auth-param1`; the illustrated bank transfer identifies a source `balanceAccountId`, `amount`, and target `counterparty.bankAccount` (raw lines 140\u2013155). The documented 401 challenge carries `auth-param1`; pass that to the SDK as `sdkInput`, then repeat `POST /transfers` with the authenticated `sdkOutput` and matching body parameters (raw lines 575\u2013626, 1435\u20131452).\n- For authentication during approval, create the transfer with `review.numberOfApprovalsRequired` and `review.scaOnApproval=true`, retain its returned `id`, and challenge `POST /transfers/approve` with realm `ApproveTransfers` and eligible `transferIds` (raw lines 628\u2013644, 1110\u20131122). The documented 401 challenge provides SDK input; after authentication, repeat the approval request with the authenticated `sdkOutput` and matching body parameters. The page calls for HTTP 200 with authorised header and an authorised `balancePlatform.transfer.updated` webhook (raw lines 1321\u20131349, 1906\u20131917, 2117\u20132119).\n- The page says the authentication and finalization window is **10 minutes**. It says the user must see amount and payee when authenticating; a push notification is recommended as one way to present them (raw lines 1351\u20131358). The SDK returns authenticated `sdkOutput` to send to the server (raw lines 1362\u20131424).\n- Treat the examples cautiously: the initiation finalization table names `counterparty.balanceAccountId` while the initial request and final response use `counterparty.bankAccount` (raw lines 152, 1452, 1885\u20131895); several finalization code samples use category `internal` while the table and response say `bank` (raw lines 1447, 1740\u20131741, 1885). The prose says an authorised response header means request/authentication success, but its example response body remains `status: received` and `reason: pending` (raw lines 1872\u20131903). Do not infer settlement or bank receipt from that example.\n\n## Detail locators\n\n- Device and browser SDK availability examples: raw lines 39\u2013127; authentication examples and cancellation/error branches: raw lines 1362\u20131424.\n- Initiation route request and challenge: raw lines 140\u2013155 and 575\u2013626; approval route review fields, transfer ID, challenge: raw lines 628\u2013644, 1110\u20131122, 1321\u20131349.\n- Finalization request and response examples: raw lines 1435\u20131904 and 1906\u20132119. The captured snippets use TEST hosts and dated client-library versions; they do not establish current API or account eligibility.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product and resource scope.\n- [[source-adyen-docs-business-accounts-manage-access]] \u2014 API credential roles.\n- [[source-adyen-docs-business-accounts-create-business-accounts]] \u2014 separate business-account creation flow.\n- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] \u2014 transfer lifecycle tracking beyond authentication.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15|Captured SCA for funds transfers guide]]\n",
+  "quotes": [
+    {
+      "text": "Each time a user in the European Economic Area (EEA) wants to transfer funds, you must authenticate them using SCA.",
+      "location": "raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md:19"
+    },
+    {
+      "text": "* **TransferService Webservice Initiate role**",
+      "location": "raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md:31"
+    },
+    {
+      "text": "Because a reviewer can approve multiple transfers at the same time, performing SCA during approval allows you to satisfy the authentication requirements for multiple transfers with a single SCA process.",
+      "location": "raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md:136"
+    },
+    {
+      "text": "After [initiating a transfer](#initiate-transfer) request, you have 10 minutes to complete the authentication process and [finalize the transfer request](#finalize-transfer).",
+      "location": "raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md:1353"
+    },
+    {
+      "text": "3. Verify that you receive a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **authorised**. This means that the authentication and transfer approval were successful.",
+      "location": "raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md:2119"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-sca-transfers-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-sca-for-funds-transfers]] \u2014 2022-modified, 2026-09-15-captured Authentication SDK SCA guide for EEA Business Accounts transfers, with initiation and reviewer-approval routes, 10-minute window and example inconsistencies; authentication evidence is not settlement proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured guide's finalization examples mix bank/internal category and target bankAccount/balanceAccountId; authorised header wording coexists with a received/pending example body."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/sca-for-funds-transfers/2026-09-15.md",
+  "raw_sha256": "fa9e0f3d6c5df652cf5325d47943442a2a13aa1bcfab867c5d13f04b27ce67aa",
+  "status": "candidate_ready"
+}

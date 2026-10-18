@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-accept-direct-debits-uk",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Accept UK direct debits\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/accept-direct-debits-uk\"\nraw_files:\n  - \"adyen/docs/business-accounts/accept-direct-debits-uk/2026-09-15.md\"\ntags: [adyen, business-accounts, direct-debit, bacs, uk, mandates]\n---\n\n## Overview\n\nThis UK Business Accounts guide was last modified in 2019 and captured on 2026-09-15. It describes a **limited-availability pilot** for a user's single or recurring direct debit, in which an authorized counterparty collects funds from the user's business account through Bacs. The platform must have Adyen for Platforms with Business Accounts, enable the user's `sendFundsToThirdParty` capability and contact Adyen to enable UK direct debits. These dated instructions do not establish present eligibility, a live approved mandate, a collected payment or beneficiary receipt. See [[adyen]] and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- A mandate is the user's authorization for a counterparty to debit the user's business account. The user supplies mandate information to the counterparty, whose payment service provider forwards it through Bacs to Adyen. Adyen checks that the business account is active and has the required capability before approving the mandate and notifying the platform. Mandate approval is a separate step from any later collection.\n- For a collection, the counterparty requests funds through its payment service provider and Bacs. Adyen checks that the business account is active, has the direct-debit capability, has an approved linked mandate and has enough available balance. The page says Adyen approves the collection only if those checks pass; otherwise it rejects it. It then describes Adyen notifying the platform, sending confirmation and funds to Bacs, and Bacs forwarding funds to the counterparty's provider. This described flow is not evidence that any specific debit or downstream receipt occurred.\n- The guide says users can amend a mandate to use a different business account or cancel it to stop future direct debits. The depicted process extends beyond the platform API request: Adyen sends the change to Bacs, the counterparty's provider validates and applies it, and a confirmation returns through Bacs to Adyen before Adyen notifies the platform. A user action or submitted request alone does not prove the external mandate update completed.\n- This UK Bacs pilot and its `sendFundsToThirdParty` requirement are distinct from the separately documented SEPA direct-debit route in [[source-adyen-docs-business-accounts-receive-funds]]. The page is a historical product guide, not current regional coverage or legal advice.\n\n## Detail locators\n\n- Pilot warning and UK-only prerequisites: raw lines 15\u201335.\n- Bacs collection actors, validation and notification/funds path: lines 37\u201365.\n- Mandate definition and user authorization fields: lines 67\u201373; creation/approval path: lines 75\u201391.\n- Amendment/cancellation intent and external confirmation path: lines 93\u2013113.\n- The linked mandate-management child is navigation for API details (lines 115\u2013119); this page does not provide those request schemas.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and capability context.\n- [[source-adyen-docs-business-accounts-receive-funds]] \u2014 separate SEPA direct-debit scope.\n- [[source-adyen-docs-business-accounts-third-party-transfer-webhooks]] \u2014 Transfer webhook examples for incoming direct-debit requests.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/accept-direct-debits-uk/2026-09-15|Adyen Docs: Accept direct debits in the UK (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Direct debits in the UK are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "Make sure that you enabled the following capability for your user: - **sendFundsToThirdParty**",
+      "location": "raw line 33, Requirements table"
+    },
+    {
+      "text": "A direct debit is an instruction from your user authorizing a counterparty to collect funds from their business account.",
+      "location": "raw line 39, Direct debits in the UK"
+    },
+    {
+      "text": "If these requirements are fulfilled, Adyen approves the collection request. Otherwise, Adyen rejects the direct debit.",
+      "location": "raw line 59, Direct debits in the UK"
+    },
+    {
+      "text": "The payment service provider validates the information and amends or cancels the mandate.",
+      "location": "raw line 109, Amending or canceling a mandate"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-uk-direct-debits-business-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-accept-direct-debits-uk]] \u2014 2019-modified, 2026-09-15-captured limited-availability UK Bacs direct-debit and mandate guide for Business Accounts, covering capability/account/balance checks and externally confirmed mandate changes; distinct from the SEPA route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/accept-direct-debits-uk/2026-09-15.md",
+  "raw_sha256": "a19b15fe363c52efe8c25378509205c757670b926d8d705180001865993ada6e",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-consent",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Manage third-party consent\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/consent\"\nraw_files:\n  - \"adyen/docs/business-accounts/consent/2026-09-15.md\"\ntags: [adyen, business-accounts, open-banking, consent, tpp]\n---\n\n## Overview\n\nThis [[adyen]] Business Accounts Open Banking page tells a third-party provider (TPP) how to inspect or revoke a previously granted account-holder consent through `/consents`. The account holder grants or withdraws permission; the TPP checks status, authorization progress, permitted scope and validity, and can call DELETE to revoke on the holder's behalf. The 2026-09-15 capture is marked modified that day. The examples use TEST endpoints and old sample dates; they do not demonstrate current consent, account access, payment initiation, or funds movement.\n\n## Key takeaways\n\n- This is a TPP guide, not a platform-integration setup guide. It presumes Adyen onboarding and the separate account-holder consent flow. The GET and DELETE examples use a consent ID, `X-Request-ID` UUID and bearer access token; the raw page gives the exact TEST paths and prerequisites.\n- GET `/consents/{consent_id}/status` returns `consentStatus`: `received` requires another check before use, `valid` means accepted/valid, and the table also lists `rejected` (final), `revokedByPsu`, `expired`, and `terminatedByTpp`. A valid status alone does not describe every allowed action.\n- GET `/consents/{consentId}/authorisations/{authorization-id-consent}` returns separate `scaStatus` for the holder's authentication/authorization flow (`scaMethodSelected`, `started`, `finalised`, `failed`); the last two are final authorization-resource states. GET `/consents/{consent_id}` returns consent status, `validUntil`, permitted `access` (the example lists account, balance and transaction IBAN scopes), frequency/recurrence fields and resource links. Inspect current status, expiry and scope together before treating a consent as usable. The example's `validUntil: 2023-10-12` is sample data, not a current authorization.\n- DELETE `/consents/{consent_id}` is described as withdrawing authorization to access information or initiate payments, depending on the consented action. The page says a successful deactivation returns HTTP 200 and future status checks show `revokedByPsu`, even though it describes a TPP making the call and separately lists `terminatedByTpp` for TPP termination. Preserve that status-name tension; this page does not establish which code applies in every revocation scenario.\n\n## Detail locators\n\n- Opening and `Requirements` (raw lines 15\u201332): account-holder/TPP roles and prerequisites.\n- `Check if the account holder granted consent` (raw lines 34\u201367): status endpoint, headers and `consentStatus` values.\n- `Check the authorization status` (raw lines 69\u2013100): separate SCA authorization resource and `scaStatus`.\n- `Check consent details` (raw lines 102\u2013150): allowed access, `validUntil`, frequency and links, illustrated by a TEST example.\n- `Delete a consent` (raw lines 152\u2013166): revocation request, HTTP 200 and future-status wording; `Next steps` (168\u2013180) routes to AISP/PISP/PIISP.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts and Open Banking context.\n- [[source-adyen-docs-business-accounts-oauth-flow]] \u2014 earlier account-holder consent grant and token flow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/consent/2026-09-15|Adyen manage consent, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how you, as a third-party provider, use the `/consents` endpoint to:",
+      "location": "raw/adyen/docs/business-accounts/consent/2026-09-15.md:21, Manage consent"
+    },
+    {
+      "text": "The request will need to be repeated to check if its status updates to \"valid\" for use.",
+      "location": "raw/adyen/docs/business-accounts/consent/2026-09-15.md:52, Check if the account holder granted consent, received status"
+    },
+    {
+      "text": "The SCA routine has been finalized successfully (including a potential confirmation command). This is a final status of the authorization resource.",
+      "location": "raw/adyen/docs/business-accounts/consent/2026-09-15.md:91, Check the authorization status, finalised status"
+    },
+    {
+      "text": "To retrieve the details of a previously granted consent, such as the consent status, expiration date, scope, and other related information:",
+      "location": "raw/adyen/docs/business-accounts/consent/2026-09-15.md:104, Check consent details"
+    },
+    {
+      "text": "The `revokedByPsu` status will appear in future calls when you [check if the account holder granted consent](#check-if-the-account-holder-granted-consent).",
+      "location": "raw/adyen/docs/business-accounts/consent/2026-09-15.md:166, Delete a consent"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-business-accounts-consent-source-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-consent]] \u2014 2026-09-15 TPP guide to Business Accounts Open Banking consent status, separate SCA authorization status, scoped/expiring access and revocation; TPP DELETE wording conflicts with the listed termination/revocation status labels.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page lists terminatedByTpp for TPP termination but says future checks after the TPP's DELETE on a holder's behalf show revokedByPsu; do not collapse these states or infer universal DELETE mapping."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/consent/2026-09-15.md",
+  "raw_sha256": "c7ae3952d96c1dda955cfafed83e1c1524a446d2742beff2e28d34d938297636",
+  "status": "candidate_ready"
+}

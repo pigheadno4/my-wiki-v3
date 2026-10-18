@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-business-accounts-send-funds-ideal-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: iDEAL account-to-account payments\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/send-funds-ideal-integration\"\nraw_files:\n  - \"adyen/docs/business-accounts/send-funds-ideal-integration/2026-09-15.md\"\ntags: [adyen, business-accounts, ideal, a2a, sca]\n---\n\n## Overview\n\nThis page, last modified 2025-08-22 and captured 2026-09-15, describes the iDEAL account-to-account issuer flow in which a user pays an online checkout from an Adyen Business Account in the Netherlands. The user selects Adyen and the platform, signs in on the platform, views the payment and source balance account, and authorizes with Strong Customer Authentication (SCA). The payee is the counterparty shown in the payment details. This is a platform or marketplace integration guide, not a general Issuing card-payment guide or proof of account opening, live eligibility, completed funds movement or recipient-bank receipt.\n\n## Key takeaways\n\n- Scope and prerequisites: the captured guide applies to Netherlands-operating platforms or marketplaces with an Adyen for Platforms integration supporting Business Accounts, an Adyen Business Account, and an API user with **Role for A2A Issuer payments - API**. Payments use the iDEAL network only. The platform must implement SCA and either redirect or QR capture; QR requires an in-app reader that sends raw QR information to the endpoint. The guide also requires specified HTTPS redirect URLs, transaction-context query handling, iDEAL-compliant screens, and a platform logo supplied to the Adyen contact. These dated requirements do not establish current availability for a particular account.\n- The platform supplies `payment_redirect_url` for sign-in, the incoming `payload` query parameter and payment-detail display, plus `authenticate_redirect_url` for iDEAL profile authentication. After redirect sign-in or scanning, its server calls `POST /payments/details` with `method: ideal`, `source: redirect` or `qr`, and the iDEAL payload. The response's short-lived `token` (around 15 minutes in this guide) is used for confirm or cancel; details include amount, payee/counterparty and expiry.\n- Confirmation has an SCA challenge boundary: device/browser eligibility supplies `sdkOutput`; the first `POST /payments/confirm` sends that output in the `WWW-Authenticate` header with the token and source `balanceAccountId`. The documented 401 response contains the challenge `sdkInput`; after the user authenticates, the second confirm sends the resulting `sdkOutput` within 10 minutes of the first request. The guide describes a `links.success.href` return URL for the success path. A challenge, SDK result or return link alone is not independent evidence of settlement or bank receipt.\n- The guide says `POST /payments/cancel` can cancel a still-pending, unexpired, unconfirmed payment, but says cancellation occurs when the returned `links.cancel.href` is opened. For desktop QR flows, the mobile app shows confirmation and does not redirect the user to checkout; the desktop browser handles that transition.\n- Payment, profile and authentication screens have iDEAL UX requirements including logo, amount/currency, payee, description, balance-account switch where needed and result details. The platform must share wireframes with Adyen before go-live. iDEAL profile register, management-link and authentication endpoints are optional for standard payment processing; their redirect URLs are short-lived.\n\n## Detail locators\n\n- **Requirements; iDEAL for A2A payments; How it works** \u2014 integration scope, API role, Netherlands/iDEAL limitation, setup, platform-directed user flow and source balance account.\n- **Configure required redirect URLs; Retrieve payment information** \u2014 HTTPS URLs, payload acquisition, server-side `/payments/details`, short-lived token and payment fields.\n- **Check SCA eligibility; Initiate SCA payment confirmation; Authenticate user; Complete SCA payment confirmation** \u2014 Android/iOS/web SDK examples, the 401 challenge, two confirm requests, 10-minute authentication interval and success-path link. The completion prose calls for a `success` object, while its response example shows only `links.success.href`; verify actual API response structure against the relevant API reference before implementing that check.\n- **Cancel a payment; Payment screen requirements; iDEAL profile endpoints; Error codes and messages** \u2014 cancellation/open-link boundary, screen/wireframe requirements, optional profile flow and invalid/expired/locked payment or payload errors. In particular, `1069_005` can indicate a payment locked by a confirm, cancel or concurrent request; do not infer retry safety from this table.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and account-resource context.\n- [[adyen-platforms]] \u2014 platform integration context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/send-funds-ideal-integration/2026-09-15|iDEAL A2A integration guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen supports making account-to-account (A2A) payments in the Netherlands through [iDEAL](https://ideal.nl/en). This feature allows your users to make online payments using their Adyen business account.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "This documentation is only for platforms or marketplaces operating in the Netherlands.",
+      "location": "raw line 34, Requirements > Limitations"
+    },
+    {
+      "text": "You must complete the second [/payments/confirm](https://docs.adyen.com/api-explorer/a2aissuer-api/latest/post/payments/confirm) request within 10 minutes of the initial request in order to complete authentication.",
+      "location": "raw line 322, Initiate SCA payment confirmation"
+    },
+    {
+      "text": "A payment is considered canceled when the `links.cancel.href` in the API response is opened.",
+      "location": "raw line 486, Cancel a payment"
+    },
+    {
+      "text": "Verify that the response contains a `success` object indicating the transaction was successful, which contains the related links.",
+      "location": "raw line 460, Complete SCA payment confirmation; contrast response example at lines 470-475 showing links.success.href"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-ideal-a2a-business-accounts-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-send-funds-ideal-integration]] \u2014 2025-08-22-modified, 2026-09-15-captured Netherlands iDEAL A2A issuer integration guide for paying from Business Accounts, with SCA, redirect/QR and confirm/cancel boundaries; integration examples and return links do not prove live funds movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The source's completion prose names a success object, but its example shows links.success.href; source entry flags the discrepancy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/send-funds-ideal-integration/2026-09-15.md",
+  "raw_sha256": "af23d178867953a6519fd9249d1025b0e6aae476d8cafb8eb89b4fd9f33e6eb2",
+  "status": "candidate_ready"
+}

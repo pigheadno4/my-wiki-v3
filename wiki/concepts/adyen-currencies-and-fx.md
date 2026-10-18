@@ -16,6 +16,9 @@ Where Adyen converts a transaction amount between currencies, it describes an FX
 
 ## Sources
 
+- [[source-adyen-docs-business-accounts-compliance-guidelines-foreign-exchange-fees]] — 2026-09-15-captured cross-region FX rate/fee disclosure guideline and variable, fixed and intermediary-fee examples; no-legal-advice boundary and inconsistent fixed-fee table.
+
+
 - [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds]] — 2023-modified, 2026-09-15-captured limited-availability Platforms FX-refund overview for processing/settlement currencies, rate-plus-markup remainder, user/platform booking choice and liable-account default.
 
 

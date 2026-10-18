@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-pisp",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: PISP payment initiation\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/pisp\"\nraw_files:\n  - \"adyen/docs/business-accounts/pisp/2026-09-15.md\"\ntags: [adyen, business-accounts, open-banking, pisp, payment-initiation, sca]\n---\n\n## Overview\n\nThis 2026-09-15-captured open-banking guide is for a **third-party Payment Initiation Service Provider (PISP)** initiating a payment on behalf of a consenting Adyen Business Account holder. It separates creation of a payment resource, lookup of the payment's `transactionStatus`, and lookup of a specific authorization's `scaStatus`. A submitted payment, accepted technical/customer stage, or finalized SCA authorization does not by itself show completed settlement or creditor-bank receipt. [[adyen-business-accounts]] [[adyen]]\n\n## Key takeaways\n\n- The page identifies the actor as a third-party PISP and requires Adyen open-banking onboarding plus an access token for the Business Account (raw lines 19\u201333). Holder consent is the basis for the service, but this page does not itself document a new consent grant or show a particular holder's approved consent; see the separate OAuth/consent route.\n- To initiate a **single payment**, POST `/payments/target-2-payments` with `instructedAmount`, `creditorAccount`, `debtorAccount`, `creditorName`, and `creditorAddress`. The sample uses a bearer access token, request ID and IP-address header (raw lines 35\u201379). The creditor is the payee; the debtor is the account to be charged. The sample EUR 0.50 and IBANs are TEST examples, not live payment instructions.\n- The creation response carries `paymentId` and a `transactionStatus`, plus links for resource status and SCA status. Its example is `PDNG` (pending). The status catalog distinguishes received `RCVD`, rejected `RJCT`, cancellation `CANC`, several acceptance stages, and creditor/debtor settlement-completed statuses `ACCC`/`ACSC`; the catalog defines possible status meanings, not a guaranteed progression for the example (raw lines 81\u2013119).\n- GET `/payments/target-2-payments/{paymentId}` queries payment state; the guide recommends polling at five-second intervals. GET `/payments/target-2-payments/{paymentId}/authorisations/{authorizationId}` queries the **authorization resource** instead. Its `scaStatus` can be selected/started, `finalised` (SCA routine completed), or `failed` (raw lines 121\u2013179). Do not equate `scaStatus: finalised` with `transactionStatus: ACCC` or actual bank receipt.\n- The payment-status example returns `RCVD` and `instructedAmount.amount: \"-0.50\"`, while the initiation request uses `\"0.50\"` and its immediate response shows `PDNG` (raw lines 49\u201379, 101\u2013119, 135\u2013148). Treat these as separate illustrative payloads; they do not prove a PDNG-to-RCVD transition or explain the amount sign. The authorization-status curl sample uses `Authorization: Basic {access_token}` although the payment calls use bearer tokens (raw lines 53\u201358, 129\u2013132, 158\u2013162). Verify the current endpoint authentication contract rather than copying that inconsistent header.\n\n## Detail locators\n\n- Third-party PISP scope, setup and access-token prerequisite: raw lines 19\u201333.\n- Payment creation fields, TEST example and status catalog: raw lines 35\u2013119.\n- Payment status polling and example: raw lines 121\u2013148.\n- Separate authorization ID, SCA status values and inconsistent authentication-header example: raw lines 150\u2013179.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts context.\n- [[source-adyen-docs-business-accounts-oauth-flow]] \u2014 separate account-holder OAuth and consent-ID flow.\n- [[adyen-partner-oauth]] \u2014 distinct merchant-account partner OAuth scope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/pisp/2026-09-15|Captured PISP endpoint guide]]\n",
+  "quotes": [
+    {
+      "text": "As part of the open banking framework for Payment Initiation Service Providers (PISPs), Adyen provides endpoints to initiate payment transactions on behalf of account holders who have given their consent.",
+      "location": "raw/adyen/docs/business-accounts/pisp/2026-09-15.md:19"
+    },
+    {
+      "text": "The response contains the details of the initiated payment, including the `transactionStatus` and the `paymentId`.",
+      "location": "raw/adyen/docs/business-accounts/pisp/2026-09-15.md:81"
+    },
+    {
+      "text": "Keep polling the endpoint for status updates (recommended every 5 seconds).",
+      "location": "raw/adyen/docs/business-accounts/pisp/2026-09-15.md:125"
+    },
+    {
+      "text": "`paymentId` represents a unique identifier for a payment transaction and `authorizationId` is a unique identifier for a specific payment authorization.",
+      "location": "raw/adyen/docs/business-accounts/pisp/2026-09-15.md:154"
+    },
+    {
+      "text": "**finalised**: The SCA routine has been finalized successfully (including a potential confirmation command). This is a final status of the authorization resource.",
+      "location": "raw/adyen/docs/business-accounts/pisp/2026-09-15.md:170"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-pisp-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-pisp]] \u2014 2026-09-15 open-banking PISP guide for third-party payment initiation, separate payment-status and SCA-authorization lookups; consent, finalised SCA and submitted payment do not establish creditor settlement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured authorization-status curl uses Basic {access_token} while payment calls use Bearer; illustrative PDNG/RCVD and opposite-signed amount examples do not establish a lifecycle transition."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/pisp/2026-09-15.md",
+  "raw_sha256": "834ec88b3443fae463a2f6958562276a9b65b6a5f28184a3631e8f179549bd27",
+  "status": "candidate_ready"
+}

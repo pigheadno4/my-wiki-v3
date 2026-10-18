@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-aisp",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts AISP account information\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/aisp\"\nraw_files:\n  - \"adyen/docs/business-accounts/aisp/2026-09-15.md\"\ntags: [adyen, business-accounts, open-banking, aisp, account-information]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Open Banking/AISP page addresses a **third-party Account Information Service Provider**, not the platform creating a Business Account. It shows consented read access to an account holder's Adyen business-account list, details, balances and transactions through dedicated `/accounts` endpoints. Onboarding, an access token and that holder's consent ID are prerequisites. The examples show account information retrieval, not account opening, consent creation, payment initiation, available funds for a particular live user or bank receipt. See [[adyen]], [[adyen-business-accounts]] and [[source-adyen-docs-business-accounts-oauth-flow]].\n\n## Key takeaways\n\n- The requirements call for Adyen onboarding, an access token for the Adyen business account and the ID of the holder's consent. Requests add a `Consent_Id` header, a Bearer access token and `X-Request-ID` in the test examples. Having credentials or a listed account is not proof of authorization to move funds.\n- GET `/accounts` lists accounts associated with the consented holder; returned `resourceId` identifies an account for GET `/accounts/{resourceId}`, `/balances` and `/transactions`. The account-list prose calls the response \u201can array of accounts,\u201d while its JSON example wraps the array in an `accounts` object; do not derive a parser contract from the prose alone. Example `ownerName` values also differ between list and detail responses, so they are illustrative identities.\n- Balances have distinct `balanceType` labels such as `authorised`, `expected`, `interimAvailable` and `interimBooked`; the example includes amounts but does not demonstrate a particular real account's available balance. Transaction lookup uses `bookingStatus`, `dateFrom` and `dateTo` filters, with optional `pageSize` (1\u201350; default 1); the response may include balances only if consent includes balances, and pagination links point to more records.\n- The transaction section and response links use `/obeu/aisp/v1/accounts/...`, while the transaction curl example uses `/obeu/v1/accounts/...` without `aisp`. Treat this as an unresolved documentation-path mismatch, not two confirmed routes. The sample `booked` transaction and balance records describe account-information state, not independent confirmation that a third-party beneficiary bank received a payment.\n- This AISP account-information flow is separate from the Business Accounts page on open-banking verification of an **unregistered external individual's** bank-account ownership. The two have different actors and objectives; neither establishes a live financial operation.\n\n## Detail locators\n\n- AISP actor, purpose and prerequisites: raw lines 15\u201335.\n- Account list and sample response shape: lines 38\u201386; account-detail request and sample owner mismatch: lines 88\u2013122.\n- Balance types and example: lines 124\u2013176.\n- Transaction filters, pagination, conditional balances and response: lines 178\u2013268. Compare the transaction example URL at line 197 with the `aisp` endpoints and response links at lines 47, 97, 133 and 261\u2013264.\n- Links to payment initiation and funds confirmation are navigational only (lines 270\u2013273), not evidence of a payment-instruction capability in this AISP guide.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product context.\n- [[source-adyen-docs-business-accounts-oauth-flow]] \u2014 linked third-party provider token and holder-consent setup.\n- [[source-adyen-docs-business-accounts-verify-account-holder]] \u2014 distinct external-individual bank-account verification use case.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/aisp/2026-09-15|Adyen Docs: Get account holder information (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "As part of the open banking framework for Account Information Service Providers (AISPs), Adyen provides endpoints to retrieve the account information on behalf of account holders who have given their consent.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Not applicable; this documentation is intended for third-party providers.",
+      "location": "raw line 32, Requirements table"
+    },
+    {
+      "text": "In the request header, make sure to add the `consent_id` related to the account.",
+      "location": "raw line 42, Get all accounts of an account holder"
+    },
+    {
+      "text": "The response is an array of accounts, where each array item contains the following fields:",
+      "location": "raw line 53, Get all accounts of an account holder"
+    },
+    {
+      "text": "If consent has been granted for balances, you will also see an array of balances with details.",
+      "location": "raw line 203, Get account transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-aisp-business-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-aisp]] \u2014 2026-09-15 third-party AISP guide to consented Business Account information reads (accounts, balances and transactions), with account-list shape and transaction-path example mismatches; access is not payment initiation or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/aisp/2026-09-15.md",
+  "raw_sha256": "3e2575cc86286de3022f8b74323ba25f7a8870b4864f64b180bc78d4eadcb7ce",
+  "status": "candidate_ready"
+}

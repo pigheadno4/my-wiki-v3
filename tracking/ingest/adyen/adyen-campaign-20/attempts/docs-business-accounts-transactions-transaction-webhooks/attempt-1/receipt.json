@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-transactions-transaction-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Transaction webhooks\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/transactions/transaction-webhooks\"\nraw_files:\n  - \"adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md\"\ntags: [adyen, business-accounts, transaction-webhooks, transfers]\n---\n\n## Overview\n\nThis [[adyen]] guide explains `balancePlatform.transaction.created` webhooks for balance-account debits or credits related to external bank and internal balance-account transfers. The page sits under Business Accounts but lists Adyen for Platforms, Issuing, or Payouts integration as its prerequisite scope; its examples illustrate Business Accounts transfer patterns. A transaction webhook records balance-account movement and can complement Transfer webhooks, which report transfer status changes. The 2026-09-15 capture is marked modified that day, and payload examples are in TEST. It does not establish counterparty-bank receipt or a live transfer.\n\n## Key takeaways\n\n- Subscribe to Transaction webhooks and make the server able to receive and accept webhooks; the requirements table also lists Standard webhooks and treats Transfer webhooks as optional. Transfer webhooks can provide status progression; transaction webhooks are sent only when transfer funds are credited or debited from the balance account.\n- The page divides transaction events by outgoing/incoming balance-account movement and external/internal transfer. It gives a booked outgoing external bank transfer, a booked outgoing internal debit, a booked incoming external bank transfer, and a booked incoming internal credit. In the example payloads, `data.id` identifies the transaction event and `data.transfer.id` identifies the related transfer; amount signs are negative for outgoing and positive for incoming. Follow the raw sections for fields and TEST payloads.\n- Do not copy the examples as a consistent request/response contract. The outgoing external prose says EUR 100.00 but its request example has `value: 150000` and the transaction webhook has `value: -10000`. For the internal direct debit, the explanatory outgoing table calls `balanceAccount` the request-receiving/debited account, but its negative-amount payload names the request's initiating `balanceAccountId`; the incoming table calls `balanceAccount` the initiating/credited account, but its positive-amount payload names the request's counterparty account. The source does not resolve these account-role conflicts. Use the current API reference and actual webhook data to validate mapping.\n- A `booked` transaction webhook supports the documented balance-account debit/credit, not full transfer history, bank settlement, beneficiary receipt, or user-facing statement delivery.\n\n## Detail locators\n\n- Opening and `Requirements` (raw lines 15\u201331): applicability, transaction-versus-transfer webhooks, subscription/setup.\n- `Types of transaction webhooks` and `Sending funds (outgoing)` (raw lines 33\u201345): internal/external and outgoing taxonomy.\n- `Outgoing external transactions` (raw lines 47\u2013139): request and transaction sample, including EUR amount mismatch at 49, 61 and 104.\n- `Outgoing internal transactions` (raw lines 141\u2013220): direct-debit request, field descriptions and negative TEST event, including balance-account conflict at 157\u2013160, 175 and 211\u2013213.\n- `Receiving funds (incoming)` (raw lines 222\u2013339): external and internal booked events, including internal balance-account conflict at 288\u2013296 and 330\u2013332.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product route.\n- [[adyen-platform-internal-transfers]] \u2014 internal balance-account transfer context.\n- [[adyen-webhooks]] \u2014 general webhook integration context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15|Adyen transaction webhooks, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a funds transfer takes place between one of your user's balance accounts and a counterparty bank account, balance account, or card, Adyen sends a transaction webhook to your server.",
+      "location": "raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md:19, Transaction webhooks"
+    },
+    {
+      "text": "While a transfer webhook is sent for every status change, transaction webhooks are only sent when the funds from the transfer are credited or debited from the balance account.",
+      "location": "raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md:21, Transaction webhooks"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model/), [Issuing](/issuing/account-structure-resources/issuing-enterprise/), or [Payouts](/payouts/payout-service/) integration.",
+      "location": "raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md:27, Requirements, Integration type row"
+    },
+    {
+      "text": "The balance account that receives the direct debit request and from which the funds are debited.",
+      "location": "raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md:175, Outgoing internal transactions, balanceAccount row"
+    },
+    {
+      "text": "The balance account that sends the direct debit request and to which the funds are credited.",
+      "location": "raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md:294, Incoming internal transactions, balanceAccount row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-business-accounts-transaction-webhooks-source-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-transactions-transaction-webhooks]] \u2014 2026-09-15 transaction-webhook guide for booked balance-account debit/credit events across external/internal transfers, with broader Platforms/Issuing/Payouts prerequisite scope and unresolved example amount/account-role conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Outgoing external example states EUR 100.00, request value 150000 and transaction value -10000; internal direct-debit balanceAccount field explanations conflict with their account-ID payloads. Do not derive a universal mapping from examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/transactions/transaction-webhooks/2026-09-15.md",
+  "raw_sha256": "12307bad8794f97300620fc801bff0f6f0beaf36908382d25c717460a55b34d7",
+  "status": "candidate_ready"
+}

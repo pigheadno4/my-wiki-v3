@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-sca-for-transaction-history",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"SCA for transaction history | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/sca-for-transaction-history\"\nraw_files:\n  - \"adyen/docs/business-accounts/sca-for-transaction-history/2026-09-15.md\"\ntags: [adyen, business-accounts, transaction-history, sca, transfers-api]\n---\n\n## Overview\n\nThis Adyen guide, last modified 2022-11-30 and captured 2026-09-15, describes Authentication SDK SCA when a user retrieves balance-account transaction history with the Transfers API. It says EEA users must authenticate each time they check history, while listing both Adyen for Platforms and Classic integration support. Treat the legal wording as dated documentation, not a current legal determination for a specific user. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- Prerequisites are an API key (recommended) or basic authentication, the **TransferService Webservice Retrieve** credential role assigned through an Adyen contact, an installed Authentication SDK and a registered user device. The page gives Android, iOS and web eligibility/authentication examples; a web `checkAvailability()` call can throw `SCA_UNAVAILABLE`. See raw lines 23-32 and 43-143.\n- The server initiates `GET /transactions` for a `balanceAccountId` and time range using the device-eligibility `sdkOutput` in a `WWW-Authenticate` header with SCA realm `Transaction`. The guide's table marks `balanceAccountId`, `createdSince`, and `createdUntil` required. The first response is documented as HTTP 401 with an `auth-param1` challenge, which the client passes to the SDK as `sdkInput`. See raw lines 145-161 and 335-352.\n- After user authentication, the SDK returns a new `sdkOutput` to the server. The guide gives 10 minutes from initiating the request to complete authentication and send the second `GET /transactions`; its returned `data` array is used to present history. SDK success alone does not establish that the history request succeeded or that any listed transfer reached its recipient. See raw lines 354-422 and 424-667.\n- The examples are dated and illustrative: curl uses an unquoted URL with `&` query separators, Java snippets contain malformed syntax, and SDK samples name particular library versions. Verify runnable calls and current API/SDK behavior against the relevant versioned references. See raw lines 165-333 and 436-604.\n\n## Detail locators\n\n- Android Kotlin, iOS Swift and web JavaScript eligibility examples: raw lines 43-143. Authentication examples and cancellation/error paths: raw lines 354-422.\n- `GET /transactions` SCA header, balance-account/time-window query and initial 401 challenge: raw lines 145-352. Final request and example `data` response: raw lines 424-667.\n- The sample response shows booked transaction rows, transfer references and a pagination `next` link; these are response illustrations, not evidence of a live account or bank receipt. See raw lines 606-667.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-business-accounts]] \u2014 Business Accounts product scope and source map.\n- [[source-adyen-docs-business-accounts-sca-for-funds-transfers]] \u2014 separate SCA flow for making funds transfers.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/sca-for-transaction-history/2026-09-15|2026-09-15 captured transaction-history SCA guide]]\n",
+  "quotes": [
+    {
+      "text": "Each time a user in the European Economic Area (EEA) wants to check their transaction history, you must authenticate them using SCA.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "This feature is supported with an [Adyen for Platforms](/platforms) or a [Classic integration](/point-of-sale/classic-library-deprecation).",
+      "location": "raw line 29, Requirements > Integration type"
+    },
+    {
+      "text": "TransferService Webservice Retrieve role",
+      "location": "raw line 30, Requirements > API credentials"
+    },
+    {
+      "text": "If SCA is not supported, the method throws an `SCA_UNAVAILABLE` error.",
+      "location": "raw line 139, Check SCA eligibility > Web (JavaScript)"
+    },
+    {
+      "text": "After [initiating the request](#initiate-request-transactions), you have 10 minutes to complete the authentication process and [finalize the request](#get-transactions).",
+      "location": "raw line 356, Authenticate your user"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-business-accounts-transaction-history-sca-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-sca-for-transaction-history]] \u2014 2022-modified, 2026-09-15-captured Transfers API transaction-history SCA guide for Platforms or Classic, covering SDK challenge, 10-minute completion and dated example limits; authentication is not transaction or bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's EEA PSD2 wording is dated and does not establish current legal requirements; the example requests contain runnable-code defects."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/sca-for-transaction-history/2026-09-15.md",
+  "raw_sha256": "a8364e9b5ba861920cc64c7ea9d80ec953943f7e91a127648e509645a6e7712d",
+  "status": "candidate_ready"
+}

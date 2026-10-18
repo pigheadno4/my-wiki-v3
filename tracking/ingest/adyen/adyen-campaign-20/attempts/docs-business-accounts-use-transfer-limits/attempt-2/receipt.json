@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-use-transfer-limits",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Use transfer limits\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/use-transfer-limits\"\nraw_files:\n  - \"adyen/docs/business-accounts/use-transfer-limits/2026-09-15.md\"\ntags: [adyen, business-accounts, transfer-limits, balance-accounts]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Business Accounts guide describes configured amount limits on outgoing external-bank transfers from users' balance accounts. A limit may be configured at balance-platform level as a default or at an individual balance-account level when that balance account is linked to an Adyen business account. A configured limit, its status, and an API response do not prove account opening, transfer execution or beneficiary bank receipt. The guide attributes an EU requirement to offer users a choice to configure limits on outgoing instant transfers; this dated statement is not a current legal determination.\n\n## Key takeaways\n\n- The balance-platform limit is described as the default for all balance accounts. A balance-account limit is specific to one account, requires linkage to an Adyen business account and user SCA when configured for that user. The overview says it overrides **any** platform default; the detailed account guide narrows precedence to the same `scope` and `transferType`, leaving other applicable platform limits. Consult that guide and effective-limit readback before assuming all defaults disappear.\n- `scope` selects per-transfer versus daily total; `transferType` selects instant-priority only versus all transfers. After creation, the limit becomes `active` at its start, is checked on an outgoing request to an external bank account, and causes failure if the amount exceeds it. It becomes `inactive` after its end. With no start date it defaults to request time; with no end date it remains valid until overridden.\n- Limit statuses are `pendingSCA`, `scheduled`, `active` and `inactive`. This overview allows only one scheduled or pendingSCA limit for each `scope`/`transferType` combination at a time, while describing multiple limits with different combinations; after a limit becomes active, a new scheduled limit with the same combination can override it when active. The detailed balance-account guide's `startsAt` row instead says, without that qualification, \u201cYou cannot schedule more than one limit in the future\u201d (its raw line 134). The concurrent-future-limit rule therefore remains unresolved across these pages. The overview example also mistakenly compares TRLI_1 with itself where it evidently contrasts TRLI_1 and TRLI_2.\n- For declines, the page routes to Transfer webhooks or Customer Area. It names `transactionRulesResult`, `reason: declinedByTransactionRule`, the limit reference and a description containing `transferLimitId`. Its calculation section instead speaks of balance-account **authorizations**, capture and release when an authorization expires or is canceled. That wording is not reconciled with the outgoing-transfer amount check; do not infer a complete transfer counter or bank settlement model from it.\n\n## Detail locators\n\n- Raw lines 15\u201326: purpose, validity/scope/type framing and dated EU statement. `## How it works` (28\u201340): platform/account hierarchy, Business Account linkage, SCA and active-period failure check.\n- `## Transfer limit validity`, `## Transfer limit status`, and `## Transfer limit conditions` (42\u201389): date defaults, four statuses, scope/type combinations, one pending/scheduled rule, later override and example typo.\n- `## Transfer limit calculation` (91\u201397): authorized amounts, uncaptured authorizations and release wording. `## Get updates when a limit is triggered` (99\u2013110): webhook fields and Customer Area decline path. `## Next steps` (112\u2013126): child configuration and effective-limit guides.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and resource context.\n- [[adyen]] \u2014 provider context.\n- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 detailed account-level precedence, SCA and effective-limit readback.\n- [[source-adyen-docs-business-accounts-view-available-limits]] \u2014 available-limit lookup.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/use-transfer-limits/2026-09-15|Use transfer limits (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "According to regulations in the EU, you must always provide your users with the option to configure transfer limits on their outgoing, instant transfers. Your users can choose whether to use this feature.",
+      "location": "raw line 26, introduction"
+    },
+    {
+      "text": "This overrides any default transfer limits you configured for your balance platform.",
+      "location": "raw line 33, ## How it works / Balance account level"
+    },
+    {
+      "text": "Adyen checks if the amount of the transfer exceeds the transfer limit you set. If it does, the transfer fails.",
+      "location": "raw line 39, ## How it works step 3"
+    },
+    {
+      "text": "At any given moment, there can only be one **scheduled** or **pendingSCA** transfer limit with the same combination of `scope` and `transferType`.",
+      "location": "raw line 67, ## Transfer limit conditions"
+    },
+    {
+      "text": "All authorizations are deducted from the available limit, regardless of whether they have been captured or not.",
+      "location": "raw line 95, ## Transfer limit calculation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-use-transfer-limits-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-use-transfer-limits]] \u2014 2026-09-15-captured Business Accounts overview of platform/account-level outgoing transfer-limit configuration, status, conditions and decline signals; detailed account guidance narrows default override to matching scope/type.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Overview says an account-level limit overrides any platform default; detailed account guide limits that override to matching scope and transfer type.",
+          "The overview's transfer-limit calculation uses authorization/capture language that it does not reconcile with its outgoing-transfer amount check; do not treat this as a settlement model.",
+          "The page's EU regulatory statement is dated provider guidance, not independently verified current law."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/use-transfer-limits/2026-09-15.md",
+  "raw_sha256": "428519fd6531c408ea702cc60eac478997b696c920d73df3d4ffb9b5074cd712",
+  "status": "candidate_ready"
+}

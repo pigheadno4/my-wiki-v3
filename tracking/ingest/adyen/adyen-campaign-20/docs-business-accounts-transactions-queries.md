@@ -1,0 +1,9 @@
+# docs-business-accounts-transactions query probes
+
+## Q1 — How can a platform query transfer transactions and identify an incoming or outgoing balance-account entry?
+
+The guide uses Transfers API `GET /transactions` for a balance platform, account holder or balance account, and `GET /transactions/{id}` for one transaction (raw lines 19, 354). It requires at least one of the three scope identifiers and lists `createdSince`/`createdUntil` as required in its parameter table; `cursor` pages through `_links` results (lines 40–54, 226–229). Positive `amount.value` is incoming to the balance account; negative is outgoing. `pending` versus `booked` distinguish not-yet-added/reserved from added/deducted funds (lines 356–366). Forward route: [[index]] → [[adyen-index]] → [[adyen-business-accounts]] → [[source-adyen-docs-business-accounts-transactions]] → [[raw/adyen/docs/business-accounts/transactions/2026-09-15]].
+
+## Q2 — Does a booked outgoing transaction establish receipt at the recipient bank, and is the endpoint limited to Business Accounts third-party transfers?
+
+A `booked` outgoing entry means funds were deducted from the Adyen balance account; the guide says outgoing funds are deducted at the booked stage (raw lines 364–366, 549). It does not establish the external beneficiary's bank receipt. The page sits under Business Accounts but expressly names Platforms, Issuing and Payouts integration prerequisites and illustrates internal as well as external transfers (lines 21–27, 368–375, 457–462). `bookingDate` and `valueDate` have distinct reserved/available meanings in its after-cut-off example (lines 540–549). Forward route: [[index]] → [[adyen-index]] → [[adyen-business-accounts]] → [[source-adyen-docs-business-accounts-transactions]] → [[raw/adyen/docs/business-accounts/transactions/2026-09-15]]. Linked API and other product guides were navigation only, not factual evidence.

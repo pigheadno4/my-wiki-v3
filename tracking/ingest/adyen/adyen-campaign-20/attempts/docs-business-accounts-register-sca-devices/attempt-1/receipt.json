@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-register-sca-devices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Register a device for SCA | Adyen Business Accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/register-sca-devices\"\nraw_files:\n  - \"adyen/docs/business-accounts/register-sca-devices/2026-09-15.md\"\ntags: [adyen, business-accounts, sca, authentication-sdk, registered-devices]\n---\n\n## Overview\n\nThis [[adyen]] Business Accounts guide, last modified 2022-11-30 and captured 2026-09-15, describes registering a user's device for Strong Customer Authentication against a business-account payment instrument. It combines client Authentication SDK eligibility/registration with server Balance Platform `registeredDevices` initiation and finalization. The opening description names iOS and Android, while the procedure also includes a WebAuthn browser tab. See [[adyen-business-accounts]].\n\n## Key takeaways\n\n- Before registration, confirm the user's OS or browser supports SCA, install the Authentication SDK, give the API credential **Bank SCA Webservice Role**, and obtain the additional configuration from Adyen Support. The client eligibility check yields `sdkOutput`; the Web tab says unsupported browsers throw `SCA_UNAVAILABLE`. This dated guide does not establish current device or account eligibility. [Raw: lines 30\u201339, 41\u2013129]\n- Registration is a one-off procedure per device. The server POSTs `/registeredDevices` with the business account's `paymentInstrumentId` and client eligibility `strongCustomerAuthentication.sdkOutput`; the response supplies `sdkInput` and a device `id` beginning `BSDR` or `RD`. The optional device name is an identifying label. The page's sample API calls use TEST and are examples, not proof of registration. [Raw: lines 131\u2013145, 147\u2013162, 374\u2013390]\n- The platform performs two-factor authentication of the user, then the client SDK registers using the returned `sdkInput` and sends its resulting `sdkOutput` to the server. Android shows cancellation/error branches; iOS calls out Touch ID, Face ID or device passcode and the Face ID plist description; Web uses WebAuthn. The page does not define a separate consent or permission artifact. [Raw: lines 392\u2013449]\n- The server PATCHes `/registeredDevices/{id}` with the device ID, the same business-account `paymentInstrumentId` and SDK output, then checks for response `success: true`. Only after that response does the guide say registration is complete and the device ID connected to the payment instrument; the user can then authenticate for future operations involving it. The guide says a device cannot be registered more than once, but additional payment instruments can later be associated through the separate management flow. [Raw: lines 451\u2013461, 690\u2013694]\n\n## Detail locators\n\n- Purpose, sequence and requirements: pinned raw lines 15\u201339. Android, iOS and Web eligibility checks: lines 41\u2013129.\n- POST input and `sdkInput`/device-ID response: lines 131\u2013145 and 374\u2013390. Language-specific TEST examples: lines 147\u2013372.\n- 2FA and client SDK registration including cancellation/error branches: lines 392\u2013449. Server PATCH and final success check: lines 451\u2013461 and 690\u2013694.\n- Linked device management, transfer SCA and transaction-history SCA routes: lines 696\u2013716.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product and evidence boundary.\n- [[source-adyen-docs-business-accounts-manage-sca-devices]] \u2014 subsequent device listing, payment-instrument association and deregistration.\n- [[source-adyen-docs-business-accounts-sca-for-funds-transfers]] \u2014 separate operation authentication; registering a device does not authorize or settle a transfer.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/register-sca-devices/2026-09-15|Register a device for SCA \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To enable Strong Customer Authentication (SCA) for your users, you must register their device as an SCA device.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "This functionality requires additional configuration from Adyen.",
+      "location": "raw line 39, Check SCA eligibility"
+    },
+    {
+      "text": "Registering the device is a one-off procedure for each device. If your user has multiple devices, you need to register each of their devices separately.",
+      "location": "raw line 133, Initiate device registration"
+    },
+    {
+      "text": "1. Authenticate the user by performing [two-factor authentication](https://en.wikipedia.org/wiki/Multi-factor_authentication) (2FA).",
+      "location": "raw line 396, Register the device"
+    },
+    {
+      "text": "2. Verify that the response contains `success` **true**.",
+      "location": "raw line 690, Finalize registration"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-register-sca-device-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-register-sca-devices]] \u2014 2022-modified, 2026-09-15-captured Business Accounts SCA device eligibility and registration guide for client SDK/server initiation, two-factor user step and server finalization; device setup is not proof of later user authentication or financial operation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/register-sca-devices/2026-09-15.md",
+  "raw_sha256": "fee6e5d5baa8ce6d262a7e7393781594ecacbfb42bc687c5a99659f4f810ab6c",
+  "status": "candidate_ready"
+}

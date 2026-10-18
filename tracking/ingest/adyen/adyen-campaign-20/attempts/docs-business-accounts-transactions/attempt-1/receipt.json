@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Query third-party transfer transactions\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/transactions\"\nraw_files:\n  - \"adyen/docs/business-accounts/transactions/2026-09-15.md\"\ntags: [adyen, business-accounts, transfers, transactions, reconciliation]\n---\n\n## Overview\n\nThis 2023-modified page, captured 2026-09-15 under Business Accounts, explains on-demand transaction lookup through the Transfers API `GET /transactions` and `GET /transactions/{id}`. The list can be scoped to a balance platform, account holder or balance account. Despite the page title's third-party-transfer focus, the guide's requirements also name Adyen for Platforms, Issuing or Payouts integrations, and its examples cover internal and external transfers. A query response is transaction/accounting evidence within its stated status, not proof of a recipient bank's receipt.\n\n## Key takeaways\n\n- The page requires an eligible integration, a Transfers API credential with the TransferService Webservice Retrieve role assigned through an Adyen contact, and transfers enabled for the source balance account. Its rendered requirements row is malformed; these are the legible conditions in raw lines 21\u201327, not proof that any credential or account has them.\n- For the list request, the guide marks at least one of `balancePlatform`, `accountHolderId` or `balanceAccountId`, plus `createdSince` and `createdUntil`, as required query parameters. It describes `limit`, `sortOrder`, `cursor` and `paymentInstrumentId` as additional filters/pagination inputs. The response uses `data` and conditional `_links`; the next page uses the returned cursor. A specific transaction can be requested by `transactionId` at `GET /transactions/{id}`. The sample curl contains an unexplained `accountHolder` fragment and some generated SDK snippets are malformed or version-specific, so use the parameter table and current API reference for implementation rather than copying them unexamined.\n- In this guide, positive `amount.value` means incoming funds added to the balance account; negative means outgoing funds deducted. `pending` incoming is not yet added and `pending` outgoing is reserved for deduction; `booked` means added or deducted, respectively. These statuses concern the Adyen balance account and must not be read as confirmation of an external beneficiary's bank receipt.\n- `bookingDate` records when funds are reserved/pending in the balance account in the after-cut-off example, while `valueDate` indicates when they are deducted or made available. The page says outgoing funds are deducted at the booked stage. Example JSON shows references and identifiers for transfers, account holders and balance accounts, plus external/internal category data; treat those sample values and field presence as illustrations.\n\n## Detail locators\n\n- Opening and `Requirements` \u2014 Transfers API purpose, query scopes and integration/role/source-account conditions (raw lines 15\u201327).\n- `Use cases` and `Get a list of transactions` \u2014 internal/external examples, required and optional query parameters (raw lines 29\u201354).\n- Request/response examples \u2014 test-environment curl and version-labeled SDK snippets, `data`/`_links` pagination and transaction-ID lookup (raw lines 56\u2013354).\n- `Identify incoming and outgoing funds` \u2014 sign, reference and `pending`/`booked` meanings (raw lines 356\u2013368).\n- `External transactions` and `Internal transactions` \u2014 illustrative outgoing/incoming transaction objects and transfer category examples (raw lines 370\u2013538).\n- `Booking and value dates` \u2014 after-cut-off reserved-versus-deducted distinction (raw lines 540\u2013549).\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-business-accounts]]\n- Platform context: [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/transactions/2026-09-15|2026-09-15 Business Accounts transaction-query guide]]\n",
+  "quotes": [
+    {
+      "text": "You can query transactions for your whole balance platform, a particular account holder, or balance account.",
+      "location": "raw/adyen/docs/business-accounts/transactions/2026-09-15.md:19"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model/), [Issuing](/issuing/account-structure-resources/issuing-enterprise/), or [Payouts](/payouts/payout-service/) integration.",
+      "location": "raw/adyen/docs/business-accounts/transactions/2026-09-15.md:25"
+    },
+    {
+      "text": "You must include at least one of the following in your request:",
+      "location": "raw/adyen/docs/business-accounts/transactions/2026-09-15.md:46"
+    },
+    {
+      "text": "* `_links`: an object containing links to the next or previous page when applicable.",
+      "location": "raw/adyen/docs/business-accounts/transactions/2026-09-15.md:229"
+    },
+    {
+      "text": "Funds are always deducted at the booked stage for outgoing transfers.",
+      "location": "raw/adyen/docs/business-accounts/transactions/2026-09-15.md:549"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-business-accounts-transactions-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-transactions]] \u2014 2023-modified, 2026-09-15-captured Transfers API transaction-query guide for scope/filter/pagination, signed amounts, pending/booked status and booking/value dates; endpoint also covers Platforms, Issuing and Payouts contexts, and booked is not beneficiary bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/transactions/2026-09-15.md",
+  "raw_sha256": "b082d9464f3f3f834e7c185b4e512a6eda175f6ef22f3b80f7f53ad905dd775f",
+  "status": "candidate_ready"
+}

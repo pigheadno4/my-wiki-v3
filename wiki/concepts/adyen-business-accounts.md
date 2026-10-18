@@ -15,6 +15,147 @@ The captured overview conditions eligibility on user entity type, supported oper
 
 ## Sources
 
+- [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — 2026-09-15-captured Business Accounts brand-specific IC/MCC classification and conditional approval-contact reference; the captured page omits its promised accepted-value list.
+
+
+- [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products-industry-codes]] — 2026-09-15-captured Business Accounts IC/MCC selection and prior-approval reference; the captured page lacks its promised accepted-code list and leaves footnotes unanchored.
+
+
+- [[source-adyen-docs-business-accounts-piisp]] — 2026-09-15 third-party PIISP Open Banking funds-confirmation guide for a consented Business Account holder; the amount-specific boolean is not a funds reservation, payment instruction or settlement proof.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-keeping-records]] — 2024-modified, 2026-09-15-captured Business Accounts service-record guide with at-least-five-year retention after offering termination, example categories and UK/Ireland-only vulnerability recording; not legal advice or retention/delivery proof.
+
+
+- [[source-adyen-docs-business-accounts-implement-sca]] — 2022-modified, 2026-09-15-captured Business Accounts SCA overview of selected actions, Authentication SDK/device route and unresolved EEA-or-UK opening versus EEA-only install callout.
+
+
+- [[source-adyen-docs-business-accounts-install-auth-sdk]] — 2022-11-30-modified, 2026-09-15-captured Platforms Authentication SDK installation guide for Android, iOS and web, including dated versions and LIVE iOS build restriction; installation is not device binding, SCA completion or a financial operation.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-reporting-to-adyen]] — 2024-modified, 2026-09-15-captured Business Accounts event notification, daily Accounts/Issuing fraud and quarterly complaints guidance, with UK/Ireland vulnerable-user totals; not legal advice or proof of reporting.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-eu-depositor-info-sheet]] — 2026-09-15 Adyen N.V. EU depositor sheet on Dutch guarantee limits, aggregation, exceptions, joint-group treatment and dated euro reimbursement; it does not establish coverage or payment for a specific account.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines]] — 2022-10-26-modified, 2026-09-15-captured Business Accounts compliance-guidelines overview linking UI, communication, support, complaints, pricing, reporting and record topics, with conditional material pre-approval and France requirements; expressly not legal advice.
+
+
+- [[source-adyen-docs-business-accounts-pisp]] — 2026-09-15 open-banking PISP guide for third-party payment initiation, separate payment-status and SCA-authorization lookups; consent, finalised SCA and submitted payment do not establish creditor settlement.
+
+
+- [[source-adyen-docs-business-accounts-consent]] — 2026-09-15 TPP guide to Business Accounts Open Banking consent status, separate SCA authorization status, scoped/expiring access and revocation; TPP DELETE wording conflicts with the listed termination/revocation status labels.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-french-intermediary]] — 2026-09-15 France-qualified Business Accounts ORIAS intermediary-registration guideline for France-registered platforms serving French users, with director capacity, mandate, approval-dependent disclaimer and annual renewal; opening Capital wording conflicts with the Business Accounts body, and this is not legal advice or registration proof.
+
+
+- [[source-adyen-docs-business-accounts-use-transfer-limits]] — 2026-09-15-captured Business Accounts overview of platform/account-level outgoing transfer-limit configuration, status, conditions and decline signals; detailed account guidance narrows default override to matching scope/type.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-customer-complaints]] — 2024-modified, 2026-09-15-captured Business Accounts path for Adyen's financial-products complaints guideline, including identification, escalation and UK/Ireland additions; body mirrors the Platforms path and expressly is not legal advice.
+
+
+- [[source-adyen-docs-business-accounts-accept-direct-debits-uk]] — 2019-modified, 2026-09-15-captured limited-availability UK Bacs direct-debit and mandate guide for Business Accounts, covering capability/account/balance checks and externally confirmed mandate changes; distinct from the SEPA route.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-pricing-and-eligibility]] — 2024-modified, 2026-09-15-captured pricing/eligibility compliance guide with Business Accounts/Issuing, EU/US/UK and UK-questionnaire scopes; Capital opening-copy mismatch and no-legal-advice boundary.
+
+
+- [[source-adyen-docs-business-accounts-open-banking]] — 2026-09-15-captured TPP open-banking overview for Business Account information, payment initiation and funds checks, with licensing/QWAC onboarding and holder-consent boundary; its EU-only prose conflicts with UK API/availability rows.
+
+
+- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-platform]] — 2026-09-15 Business Accounts Configuration API guide for platform-wide outgoing-external transfer limits, condition/date lifecycle, readback and deletion/override; setup examples do not prove live enforcement or fund delivery.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-customer-service-support]] — 2024-modified, 2026-09-15-captured first/second-line support guide with critical-query intake, qualified retention trigger and UK/Ireland vulnerable-customer measures; not legal advice or proof of actual service performance.
+
+
+- [[source-adyen-docs-business-accounts-receive-funds]] — 2022-modified, 2026-09-15-captured third-party incoming-credit and separate SEPA direct-debit guide, requiring receiveFromThirdParty allowed and enabled; priority/account-detail tables contain dated and inconsistent labels.
+
+
+- [[source-adyen-docs-business-accounts-aisp]] — 2026-09-15 third-party AISP guide to consented Business Account information reads (accounts, balances and transactions), with account-list shape and transaction-path example mismatches; access is not payment initiation or bank receipt.
+
+
+- [[source-adyen-docs-business-accounts-transactions-transaction-webhooks]] — 2026-09-15 transaction-webhook guide for booked balance-account debit/credit events across external/internal transfers, with broader Platforms/Issuing/Payouts prerequisite scope and unresolved example amount/account-role conflicts.
+
+
+- [[source-adyen-docs-business-accounts-how-sca-works]] — 2022-modified, 2026-09-15-captured Business Accounts API SCA overview for SDK eligibility, HTTP 401 challenge exchange and endpoint-specific HTTP 2xx finalization; its authenticate-user section uses device-registration calls, so setup is not proof of per-action authentication or funds movement.
+
+
+- [[source-adyen-docs-business-accounts-view-available-limits]] — 2025-modified, 2026-09-15-captured balance-account amount/count available-limit readout; its rule-restriction and aggregation exclusions, Issuing hierarchy link and authorization/capture wording limit inference about effective transfer controls or settlement.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-marketing-user-communication]] — 2023-modified, 2026-09-15-captured collateral review and EU/UK/US Business Accounts disclosure matrix; opening copy mislabels Capital, and the dated guidance is not legal advice or approval for specific material.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-user-interface]] — 2023-modified, 2026-09-15-captured financial-products UI compliance guide with general consent/provider disclosure, Business Accounts fields and conditional EU, UK and US rows; expressly not legal advice or current eligibility proof.
+
+
+- [[source-adyen-docs-business-accounts-oauth-flow]] — 2026-09-15 third-party-provider open-banking OAuth and separate account-holder consent-ID flow for Business Accounts, with five-minute code, rotating refresh token and approval boundary; distinct from Partner OAuth and external-individual account verification.
+
+
+- [[source-adyen-docs-business-accounts-transaction-rules-create-and-manage]] — 2021-modified, 2026-09-15-captured Configuration API guide for outgoing Business Accounts external-transfer rule creation, readback, entity-specific override/bypass and activation; internal transfers excluded, and the PATCH example has a restriction-nesting mismatch.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-vulnerable-users]] — 2026-09-15 UK/Ireland Adyen partner staff guide for recognizing and supporting potentially vulnerable Business Accounts users, including staff coverage, support methods, consent and factual recordkeeping; it is not legal advice.
+
+
+- [[source-adyen-docs-business-accounts-transfer-funds-internally]] — 2026-09-15-captured Business Accounts internal-direct-debit guide for prerequisites, source/target balance-account roles, request fields and two-sided received-to-booked webhooks; TEST examples do not prove live movement.
+
+
+- [[source-adyen-docs-business-accounts-compliance-guidelines-account-statements]] — 2023-modified, 2026-09-15-captured EU/US bank-account, UK Business Account and Issuing statement-template guidelines, with unchanged API data, Adyen approval, regional conditions and branch-wording conflict; not legal advice.
+
+
+- [[source-adyen-docs-business-accounts-send-funds-transfer-routes]] — 2023-modified, 2026-09-15-captured Business Accounts Configuration API pre-transfer route calculation by country or counterparty, with returned priority/currency/requirements; sample routes and limits are not live availability or bank-receipt proof.
+
+
+- [[source-adyen-docs-business-accounts-transactions]] — 2023-modified, 2026-09-15-captured Transfers API transaction-query guide for scope/filter/pagination, signed amounts, pending/booked status and booking/value dates; endpoint also covers Platforms, Issuing and Payouts contexts, and booked is not beneficiary bank receipt.
+
+
+- [[source-adyen-docs-business-accounts-transaction-rules]] — 2022-modified, 2026-09-15-captured pilot overview of outgoing third-party transfer rule criteria, blocklist/velocity/bypass scope and hardBlock decline; its authorization/capture limit wording does not establish transfer settlement behavior.
+
+
+- [[source-adyen-docs-business-accounts-register-sca-devices]] — 2022-modified, 2026-09-15-captured Business Accounts SCA device eligibility and registration guide for client SDK/server initiation, two-factor user step and server finalization; device setup is not proof of later user authentication or financial operation.
+
+
+- [[source-adyen-docs-business-accounts-sca-for-transaction-history]] — 2022-modified, 2026-09-15-captured Transfers API transaction-history SCA guide for Platforms or Classic, covering SDK challenge, 10-minute completion and dated example limits; authentication is not transaction or bank-receipt proof.
+
+
+- [[source-adyen-docs-business-accounts-send-funds-approve-cancel-transfers]] — 2020-modified, 2026-09-15-captured Business Accounts guide to additional transfer-review approval/cancellation, SCA choice and webhook review states; approval continues processing rather than proving settlement.
+
+
+- [[source-adyen-docs-business-accounts-view-transfers-details]] — 2019-modified, 2026-09-15-captured Customer Area/Transfers API guide to list and inspect Business Accounts transfer states and download instruction-confirmation letters; list examples conflict with stated query constraints, and a letter is not bank-receipt proof.
+
+
+- [[source-adyen-docs-business-accounts-send-funds]] — 2022-modified, 2026-09-15-captured outbound third-party bank-transfer guide for priorities, location/currency/format limits and cut-offs, with conflicting SEPA/US timing and cross-border priority wording; no beneficiary-receipt proof.
+
+
+- [[source-adyen-docs-business-accounts-third-party-transfer-webhooks]] — 2026-09-15 Business Accounts Transfer-webhook examples for third-party incoming funds, direct debit requests and outgoing bank transfers, including accounting versus tracking states, ETA/tracing, refusal, failure and return boundaries.
+
+
+- [[source-adyen-docs-business-accounts-send-funds-verify-counterparty]] — 2026-09-15 Business Accounts EU/UK domestic outgoing-transfer recipient name-check guide; API role, response/user-confirmation flow and test simulation are distinct from transfer execution or bank receipt.
+
+
+- [[source-adyen-docs-business-accounts-manage-sca-devices]] — 2022-modified, 2026-09-15-captured Business Accounts SCA device list, challenge-based payment-instrument association and per-business-account deregistration guide; requires Bank SCA Webservice Role and does not prove a user authenticated.
+
+
+- [[source-adyen-docs-business-accounts-business-account-statement]] — 2026-09-15 CAMT.053 Business Account statement setup, webhook download, XML/code mapping and optional summarized-file reference; statements support reconciliation but do not prove a specific account's funds or user-facing statement delivery.
+
+
+- [[source-adyen-docs-business-accounts-send-funds-ideal-integration]] — 2025-08-22-modified, 2026-09-15-captured Netherlands iDEAL A2A issuer integration guide for paying from Business Accounts, with SCA, redirect/QR and confirm/cancel boundaries; integration examples and return links do not prove live funds movement.
+
+
+- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] — 2026-09-15-captured Configuration API guide for outgoing external transfer limits on Business Account linked balance accounts, with SCA, lifecycle, override, readback and example conflicts.
+
+
+- [[source-adyen-docs-business-accounts-send-funds-make-transfer-request]] — 2026-09-15-captured Business Accounts third-party bank transfer request guide for requirements, optional validation/review, request fields and webhook status; successful submission does not prove settlement or bank receipt.
+
+
+- [[source-adyen-docs-business-accounts-sca-for-funds-transfers]] — 2022-modified, 2026-09-15-captured Authentication SDK SCA guide for EEA Business Accounts transfers, with initiation and reviewer-approval routes, 10-minute window and example inconsistencies; authentication evidence is not settlement proof.
+
+
 - [[source-adyen-docs-business-accounts-account-structure-resources-platform-account-structure]] — 2026-09-15 platform-versus-user resource map and distinct liable/user/instrument-linked balance-account roles; its multiple-Business-Accounts-per-balance-account statement conflicts with the captured one-number/one-bankAccount-instrument creation guides.
 
 

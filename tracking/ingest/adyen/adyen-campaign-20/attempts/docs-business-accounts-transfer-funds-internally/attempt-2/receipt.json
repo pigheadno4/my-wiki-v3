@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-transfer-funds-internally",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Transfer funds internally\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/transfer-funds-internally\"\nraw_files:\n  - \"adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md\"\ntags: [adyen, business-accounts, internal-transfers, direct-debit]\n---\n\n## Overview\n\nThis [[adyen]] Business Accounts guide describes an internal direct debit between balance accounts on the same balance platform. The initiating *source* balance account requests a debit from the *target* counterparty balance account: for example, a platform's liable account pulling a user's fee, or a debit between two users' balance accounts. This is an internal balance-account movement, not an external bank debit or payout. The 2026-09-15 capture is marked modified the same day; examples use the TEST environment.\n\n## Key takeaways\n\n- Before initiating, the server must receive and accept Transfer webhooks, the Customer Area subscription must be in place, and Adyen Support must enable transfers for the account that debits funds. The initiating account holder needs `sendToBalanceAccount`; the account holder receiving the debit request needs `receiveFromBalanceAccount`. Keep these named roles distinct from the later credit/debit effect.\n- Initiate with `POST /transfers`. The page's request table marks `amount`, source `balanceAccountId`, target `counterparty.balanceAccountId`, and `category: internal` as required; it says to set `type: internalDirectDebit` for a counterparty debit, although its Required cell for `type` is blank. Optional references/description aid webhook matching. The page says `referenceForBeneficiary` supports only a-z, A-Z and 0-9 (raw line 47), yet its request examples use hyphens (for example, lines 71, 103 and 225). Do not infer that the sample value is accepted by the API; verify the current API reference before implementing it. See the raw table and examples for the other request fields.\n- The response gives transfer `id`, `status`, and `reason`; inspect `reason` when status is not `authorised` (the page offers `refused`/`notEnoughBalance` as an example). Do not treat an authorised response as booked funds. Transfer webhooks separately cover the initiating source as an outgoing request and target as an incoming request. `balancePlatform.transfer.created` reports `received`; `balancePlatform.transfer.updated` tracks `authorised` reservation and `booked` movement, or failure. The Customer Area displays two transfer entries, one per balance account.\n- The page uses collecting monthly/subscription fees without SCA or payment fees as an example of this internal debit, not as a blanket claim about other payment or bank-transfer flows. Its JSON examples illustrate TEST records; the target booked example omits a comma before `sequenceNumber`, and examples are not proof of a live booked transfer.\n\n## Detail locators\n\n- `Before you begin` (raw lines 21\u201330): webhook subscription, Support enablement and account-holder capabilities.\n- `Initiate an internal direct debit` (raw lines 32\u201349): Transfers API fields, account roles and `type` table marking; code examples at lines 51\u2013371.\n- Response notes (raw lines 373\u2013415): `id`, `status`, `reason` and an authorised example.\n- `Get status updates` (raw lines 417\u2013447): two account-side webhook series and the received/authorised/booked distinction; detailed TEST examples at lines 453\u2013953.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product and verification context.\n- [[adyen-platform-internal-transfers]] \u2014 broader platform internal-funds context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15|Adyen Business Accounts internal direct debits, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "An **internal direct debit** moves funds between balance accounts within your balance platform.",
+      "location": "raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md:19, Transfer funds internally"
+    },
+    {
+      "text": "Ask our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable transfers for the balance account that debits funds.",
+      "location": "raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md:25, Before you begin"
+    },
+    {
+      "text": "The account holder of the balance account that initiates the direct debit must have the **sendToBalanceAccount** capability.",
+      "location": "raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md:29, Before you begin"
+    },
+    {
+      "text": "Using these webhooks, you can track the status of the transfer: **received**, then **authorised**, and finally **booked**. The webhooks also inform you if the transfer failed.",
+      "location": "raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md:421, Get status updates"
+    },
+    {
+      "text": "When the scheduled or on-demand internal pull transfer is booked, Adyen sends [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhooks with `status` **booked**, to inform your server that the funds have been pulled from the target balance account to the source balance account.",
+      "location": "raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md:760, 3. Internal direct debit booked"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-business-accounts-transfer-funds-internally-source-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-transfer-funds-internally]] \u2014 2026-09-15-captured Business Accounts internal-direct-debit guide for prerequisites, source/target balance-account roles, request fields and two-sided received-to-booked webhooks; TEST examples do not prove live movement.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/transfer-funds-internally/2026-09-15.md",
+  "raw_sha256": "ca1a591fe7772ab966652b8585b38de7642947fcdcda16726a799d60f082a08b",
+  "status": "candidate_ready"
+}

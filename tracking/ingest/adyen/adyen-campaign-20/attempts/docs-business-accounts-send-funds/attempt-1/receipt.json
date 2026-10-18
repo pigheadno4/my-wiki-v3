@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-send-funds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Send funds to third parties\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/send-funds\"\nraw_files:\n  - \"adyen/docs/business-accounts/send-funds/2026-09-15.md\"\ntags: [adyen, business-accounts, bank-transfers, third-party-payments]\n---\n\n## Overview\n\nThis 2022-modified guide, captured 2026-09-15, describes sending business-related funds from a user's Adyen business account to a third-party bank account, such as a supplier's account. It expressly distinguishes the recipient account from a transfer instrument connected to the user's legal entity: the third party owns that account. The user's business account is debited, the business account number is shown on the recipient's statement, and Adyen describes outgoing bank-transfer webhooks to the platform server. These are documented flow descriptions, not proof of a particular transfer's booking or beneficiary receipt.\n\n## Key takeaways\n\n- Transfer priority depends on currency, account region and destination. The captured guide describes Regular, Instant, Fast, Wire, Cross-border and Internal options. Higher priority may incur higher fees; cross-border transfers may face intermediary-bank delays and charges that reduce the beneficiary's received amount. Its introductory priority sentence incorrectly says funds arrive to the user's account, although the surrounding page describes outgoing transfers to third parties (raw lines 19\u201343).\n- The USD/EUR/GBP account-region matrices, cut-off/settlement/amount table, and destination-bank format/description tables are historical reference data, not current availability or receipt guarantees. Cut-off prose says transfers initiated after a cut-off are processed the next day within the specified settlement delay, but the examples and table disagree in places: the SEPA wire example uses 16:30 CET while the table lists 16:55 CET, and the US example alternates next-day framing with same-day receipt. Do not select a cut-off from those conflicting passages as authoritative for a live transfer.\n- The request needs `accountIdentification.type`, chosen from destination bank location and transfer currency, with type-specific bank details. The guide says cross-border transfers must be sent as wire transfers and include the bank-account owner's address, while its priority list/table separately label `Cross-border`/`crossBorder`; consult the current transfer API and Adyen for the applicable request priority rather than collapsing these labels. The detailed table distinguishes required IBAN versus optional IBAN and `numberAndBic` cases.\n- The page says collection from third-party bank accounts by direct debit was being worked on, so its statement is not evidence that this receiving flow was available in the captured snapshot. The page ends with navigation to webhook and transaction-query guides; their contents are not evidence here.\n\n## Detail locators\n\n- Opening \u2014 outbound third-party ownership, debit, recipient-statement number, webhook reference, and planned direct debit (raw lines 15\u201323).\n- `Supported currencies, locations, and priorities` \u2014 priority descriptions and cross-border intermediary-bank warning (raw lines 25\u201343); USD/EUR/GBP source-account matrices (lines 45\u201376).\n- `Transfer cut-off times` \u2014 general timing explanation, contradictory SEPA/US examples, and country/currency/priority cut-off, delay and amount table (raw lines 78\u2013145).\n- `Bank account identification types and supported priorities` \u2014 request selector and cross-border address/wire wording (raw lines 147\u2013162).\n- `Supported countries, currencies, and priorities` \u2014 destination currency, priority, description-character and account-format tables, including cross-border identification variants (raw lines 164\u2013205).\n- `Next steps` \u2014 navigation to outgoing-transfer webhooks and bank-transaction queries (raw lines 207\u2013219).\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-business-accounts]]\n- Platform context: [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/send-funds/2026-09-15|2026-09-15 Business Accounts send-funds guide]]\n",
+  "quotes": [
+    {
+      "text": "Third-party accounts are *not owned* by your user and therefore *not connected* to their legal entity as a",
+      "location": "raw/adyen/docs/business-accounts/send-funds/2026-09-15.md:19"
+    },
+    {
+      "text": "When your user makes a payment to a third-party bank account, their business accounts are debited",
+      "location": "raw/adyen/docs/business-accounts/send-funds/2026-09-15.md:21"
+    },
+    {
+      "text": "When using Cross-border priority, delays and additional fees may occur due to intermediary banks.",
+      "location": "raw/adyen/docs/business-accounts/send-funds/2026-09-15.md:39"
+    },
+    {
+      "text": "Bank transfers initiated before the cut-off time are typically processed within the specified **settlement delay**",
+      "location": "raw/adyen/docs/business-accounts/send-funds/2026-09-15.md:80"
+    },
+    {
+      "text": "Cross-border transfers must be sent as wire transfers, and you must include the address of the bank account owner.",
+      "location": "raw/adyen/docs/business-accounts/send-funds/2026-09-15.md:158"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-business-accounts-send-funds-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-send-funds]] \u2014 2022-modified, 2026-09-15-captured outbound third-party bank-transfer guide for priorities, location/currency/format limits and cut-offs, with conflicting SEPA/US timing and cross-border priority wording; no beneficiary-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw SEPA wire example cut-off 16:30 CET conflicts with table 16:55 CET; US example timing wording also conflicts. Preserve warning in source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/send-funds/2026-09-15.md",
+  "raw_sha256": "62269e1f3ca84f33e788e549ace16044de36f4de1c6a3a0bf9a6d62a5d5dae38",
+  "status": "candidate_ready"
+}

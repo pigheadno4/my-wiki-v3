@@ -1,0 +1,9 @@
+# Worker retrieval checks
+
+Q1. What is this guide's central purpose and what prerequisites and scope does it name?
+
+A1. This page gives Configuration API procedures to create, read, override, bypass and update Business Accounts transaction rules that evaluate outgoing external bank-transfer requests (raw lines 15–24, 37–57, 143–160, 250–321). The requirements name Adyen Payouts, Configuration API access with the Bank Manage TransactionRules role, Transfer plus Transaction webhook subscriptions, and the linked rule-overview preparation; internal transfers are expressly unsupported (raw lines 26–35). The older overview supplies pilot-availability and evaluation context; this captured test example is not live enablement. Route: [[index]] → [[adyen-index]] → [[adyen-business-accounts]] → [[source-adyen-docs-business-accounts-transaction-rules-create-and-manage]] → [[raw/adyen/docs/business-accounts/transaction-rules/create-and-manage/2026-09-15]].
+
+Q2. What consequential override or procedure boundary must a control-change answer preserve?
+
+A2. An override creates a new entity-specific rule whose `overridesRule` names the prior rule; its example raises one balance account's limit from EUR 500K to EUR 800K (raw lines 154–168, 170–210). A bypass creates a new `type: bypass` rule with empty `ruleRestrictions` and the prior rule ID, so that named rule stops applying to the entity (raw lines 250–285). PATCH can activate or deactivate a rule, but its sample request has root `totalAmount` while the response nests that property under `ruleRestrictions`; use the actual API reference to resolve payload shape (raw lines 310–321, 327–340, 360–367). Route: [[index]] → [[adyen-index]] → [[adyen-business-accounts]] → [[source-adyen-docs-business-accounts-transaction-rules-create-and-manage]] → [[raw/adyen/docs/business-accounts/transaction-rules/create-and-manage/2026-09-15]].

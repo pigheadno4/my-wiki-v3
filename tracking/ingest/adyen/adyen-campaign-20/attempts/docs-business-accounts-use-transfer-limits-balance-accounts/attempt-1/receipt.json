@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-use-transfer-limits-balance-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create and manage transfer limits for balance accounts | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/use-transfer-limits/balance-accounts\"\nraw_files:\n  - \"adyen/docs/business-accounts/use-transfer-limits/balance-accounts/2026-09-15.md\"\ntags: [adyen, business-accounts, transfer-limits, balance-accounts, sca]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen for Platforms Business Accounts guide describes Configuration API transfer limits on outgoing external transfers from a user's balance account. The balance account must be linked to a `bankAccount` payment instrument (an Adyen business account). It is a limit-configuration guide, not evidence that a particular account was opened, a live transfer was approved, or funds reached a bank. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- The guide requires a Business Accounts integration, the Balance platform base API role, transfer and transaction webhook subscriptions, an Adyen business account linked to the balance account, and an installed Authentication SDK with registered SCA devices. The limits do not cover internal transfers or incoming external transfers. See raw lines 21-36.\n- A limit's amount is in minor units. `scope` is `perTransaction` or `perDay`; `transferType` is `instant` or `all`. `startsAt` and `endsAt` control validity; the guide says only one future limit can be scheduled and an omitted end date remains active until override. See raw lines 126-139.\n- The user can authenticate each creation on initiation or authenticate one or more `pendingSCA` limits on approval. The initiation and approval walkthroughs use a 401 SCA challenge, Authentication SDK exchange and a second POST with matching body within 10 minutes; documented exemptions are `lowerLimit`, `notRegulated`, `setByPlatform`, `initialLimit`, and `alreadyPerformed`. The guide says platform-set limits need no user SCA; exemption type must be specified. See raw lines 38-66, 72-98, 116-220, 267-461. These are documented flows, not a determination of legal exemption for a user.\n- A successful limit is described as `scheduled` before its start, `active` while regulating covered transfers, then `inactive` after its end. Pending SCA approval precedes that sequence. Only pending or scheduled limits can be deleted; an active limit must be overridden with a new limit. See raw lines 72-98 and 723-745.\n- The guide says a balance-account limit overrides a balance-platform limit for the same `scope` and `transferType`; otherwise an applicable platform limit remains. Its next sentence mistakenly says that when no platform limit is set, the platform limit applies. Treat that sentence as internally contradictory, and verify effective limits with the documented `/balanceAccounts/{id}/transferLimits/current` route rather than inferring an absent limit. See raw lines 616-627.\n\n## Detail locators\n\n- `POST /balanceAccounts/{id}/transferLimits` and `POST /balanceAccounts/{id}/transferLimits/approve`: creation, SCA headers, pending approval, exemptions, parameters and sample responses, raw lines 100-529.\n- `GET /balanceAccounts/{id}/transferLimits`, `/current`, and `/{transferLimitId}`: configured, effective and specific readback, raw lines 530-721. The `/current` prose names the `/current` route, while its sample curl uses the non-current route; use the prose route as a locator and verify implementation against the API reference.\n- `DELETE /balanceAccounts/{id}/transferLimits/{transferLimitId}`: pending/scheduled deletion and HTTP 204 example, raw lines 723-745. Several request examples have malformed JSON; the approval and current-limit example URLs conflict with their prose endpoint paths. Treat examples as illustrations, not executable requests.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-business-accounts]] \u2014 Business Accounts product scope and source map.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/use-transfer-limits/balance-accounts/2026-09-15|2026-09-15 captured transfer-limit guide]]\n",
+  "quotes": [
+    {
+      "text": "Transfer limits create conditional logic that automatically approves or declines a transfer based on its amount. When a transfer limit is configured for a balance account in your platform, it regulates the amount of funds that can be transferred externally from that balance account.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "To set transfer limits at the balance account level, the balance account must be linked to a payment instrument with `type` **bankAccount** (Adyen business account).",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "These transfer limits end up in a pending state, because your user has not yet authenticated their identity.",
+      "location": "raw line 50, Strong Customer Authentication (SCA) for transfer limits > SCA on approval"
+    },
+    {
+      "text": "Transfer limits that you set for your balance account override transfer limits that are set for your balance platform when they concern the same combination of `scope` and `transferType`.",
+      "location": "raw line 620, View transfer limits > View all current limits"
+    },
+    {
+      "text": "You can only delete **pending** or **scheduled** transfer limits. After a transfer limit becomes **active**, it cannot be deleted. If you no longer want to apply an **active** limit to your balance account, you must override it by creating a new transfer limit.",
+      "location": "raw line 725, Delete a transfer limit"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c20-business-accounts-transfer-limits-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-use-transfer-limits-balance-accounts]] \u2014 2026-09-15-captured Configuration API guide for outgoing external transfer limits on Business Account linked balance accounts, with SCA, lifecycle, override, readback and example conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw guide contradicts itself about an absent platform limit and has endpoint/JSON defects in examples; retain those qualifications in the source entry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/use-transfer-limits/balance-accounts/2026-09-15.md",
+  "raw_sha256": "36824c4ea91b5e534e8c8c4b6cdab4ff274451cdd16bba7bceffe9bb36edd81e",
+  "status": "candidate_ready"
+}

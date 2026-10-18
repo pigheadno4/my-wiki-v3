@@ -1,0 +1,38 @@
+---
+title: "User application and interface compliance guidelines | Adyen"
+type: source
+date_ingested: 2026-10-18
+original_format: webpage
+canonical_url: "https://docs.adyen.com/business-accounts/compliance-guidelines/user-interface"
+raw_files:
+  - "adyen/docs/business-accounts/compliance-guidelines/user-interface/2026-09-15.md"
+tags: [adyen, business-accounts, compliance, user-interface, consent]
+---
+
+## Overview
+
+This Adyen financial-products and Adyen for Platforms UI compliance-guidelines page was last modified 2023-12-12 and captured 2026-09-15. It expressly says it is not legal advice. It combines general platform UI duties with product- and jurisdiction-specific rows; the Business Accounts row is only part of its scope. Use it as a dated design/disclosure source and confirm current obligations with the applicable Adyen and legal review. [[adyen-business-accounts]]
+
+## Key takeaways
+
+- The general list calls for a route to request agreed financial services, required KYC information, agreements/terms including disclosures and fees, affirmative user consent, continuing access to accepted terms and free continuing product/account access for transaction and fee information provided through Adyen APIs. Hosted onboarding puts KYC fields, agreements and terms on Adyen's hosted surface; Adyen UI components may embed some requirements. See raw lines 21-35.
+- Do not preselect a confirmation that the user read or understood financial-service information. The platform must not present itself as a bank and should identify Adyen as financial-services provider. An Ireland-only all-products disclosure gives prescribed wording. See raw lines 37-43.
+- The Business Accounts terms row names the Adyen Business Bank Account Agreement - User Terms (regional versions where applicable) and Adyen Privacy Statement. Its UI row names balance overview, individual transaction information, sender/receiver reference and region-specific account identifiers (IBAN/BIC for EU, bank account number for US). See raw lines 45-67.
+- Conditional Business Accounts rows: EU users receive a Depositor Information Sheet before offer and annually as a same-language PDF, with user confirmation; EU/UK payee verification or confirmation requires distinct match, partial-match, no-match and unsupported-service notices; UK BACS Direct Debit functionality is specified only if the platform offers enabled Business Accounts; US rows call for FDIC wording at first UI introduction and a pre-terms internet-gambling certification with a `Yes` response unable to proceed. See raw lines 69-118. These dated statements do not establish current regional eligibility or legal sufficiency.
+- The embedded Customer Disclosure and Consent Procedure distinguishes disclosure from freely given, informed, specific consent; it says only a natural-person Authorized Signatory can consent to Adyen and all remotely obtained consent evidence must be retained. It says the procedure does not encompass every disclosure or consent Adyen may require under agreements. See raw lines 120-154.
+
+## Detail locators
+
+- General platform UI and Ireland-only disclosure: raw lines 19-43. Product-specific terms and Business Accounts UI fields: raw lines 45-67.
+- EU Depositor Information Sheet and EU/UK verification-of-payee notices: raw lines 69-78. Conditional UK BACS mandate management, debit view and refund-claim timing/details: raw lines 80-111. US FDIC and Regulation GG rows: raw lines 113-118.
+- Consent-procedure scope, exclusions, authorized signatory and evidence retention: raw lines 120-154. The page is guidance, not proof that a user accepted terms, passed KYC, opened an account or completed a payment.
+
+## Related
+
+- [[adyen]] — provider context.
+- [[adyen-business-accounts]] — Business Accounts product scope and source map.
+- [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] — separate onboarding terms-acceptance workflow.
+
+## Raw Sources
+
+- [[raw/adyen/docs/business-accounts/compliance-guidelines/user-interface/2026-09-15|2026-09-15 captured UI compliance guideline]]
