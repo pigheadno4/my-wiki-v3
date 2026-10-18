@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-capital-grant-lifecycle-and-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capital grant lifecycle and status | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/grant-lifecycle-and-status\"\nraw_files:\n  - \"adyen/docs/capital/grant-lifecycle-and-status/2026-09-15.md\"\ntags: [adyen, capital, grants, lifecycle, statuses, webhooks]\n---\n\n## Overview\n\nThis [[adyen]] Capital status reference, captured 2026-09-15, separates **grant initiation** from **grant management** and defines status meanings. A platform can inspect a grant's `status.code` through the Capital API or subscribe to Capital webhooks; grant management also produces transfer and transaction webhook types. The page defines status semantics, not the observed state of any particular grant. See [[adyen-capital]].\n\n## Key takeaways\n\n- Grant initiation prepares a requested offer while the user applies. Its status updates trigger Capital webhooks only, with **no transfers or transactions** during that stage. Grant management concerns funds disbursed to the user and can trigger Capital, transfer and transaction webhooks. An `Approved` grant is automatically activated by background processing that initiates disbursement, but approval alone is not proof of a booked transfer or beneficiary receipt. [Raw: lines 19\u201332]\n- Initiation statuses are `Requested` (formal request submitted), `Reviewing` (offer accepted and secondary Adyen review), `Approved` (Adyen final approval), `Rejected` (declined) and `Cancelled` (user withdrew the request). In `Reviewing`, changed finances/eligibility may require more business information; the page cites a typical EUR 25,000 total-exposure threshold and says required information for a higher grant must arrive before offer expiry. Do not treat offer acceptance or a typical threshold as guaranteed approval. [Raw: lines 36\u201344]\n- The page describes `Pending` as an accepted offer awaiting required user actions, booking of the grant transaction to the user's balance account, and any security cooldown; signing Terms of Service is called out. A changed bank account has a **72-hour cooldown example**, not a universal timing promise. The `Cancelled` row says cancellation is possible until the grant transaction is booked and transitions to `Pending`, whereas the `Pending` row says the grant remains pending until booking. That booking/status boundary is inconsistent within this captured page; verify the observed API/webhook state and current provider guidance before using it as a transition rule. [Raw: lines 44, 46\u201352]\n- `Failed` means unsuccessful disbursement, including missed required actions before offer expiry or technical/administrative issues; the page says it does not affect future eligibility. `Active` means Adyen says the grant has been disbursed to the user. `Repaid` means repayment obligations were met. `Revoked` is a user-requested, region-rule-dependent legal revocation within a specified post-acceptance window, with principal paid off and fees waived; the page says future eligibility is unaffected. `Written Off` denotes a low-likelihood-of-recovery classification and a period of ineligibility based on risk appetite. These are provider status definitions, not legal advice, current eligibility or evidence of a specific user's final financing/debt outcome or bank receipt. [Raw: lines 53\u201357]\n\n## Detail locators\n\n- API/webhook observation route and initiation versus management event classes: raw lines 19\u201334.\n- Initiation status table, secondary review, information threshold/expiry and cancellation: raw lines 36\u201344.\n- Management status table, Terms of Service/cooldown, failure, disbursement, repayment, revocation and write-off: raw lines 46\u201357.\n- Related webhook and reconciliation guides: raw lines 59\u201362.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital product and financing evidence boundary\n- [Capital webhook types](https://docs.adyen.com/capital/webhook-types) \u2014 linked event structures\n- [Capital reporting and reconciliation](https://docs.adyen.com/capital/reporting-and-reconciliation) \u2014 linked booked-repayment evidence\n- [Collect user data](https://docs.adyen.com/capital/collect-user-data) \u2014 linked secondary-review information route\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/grant-lifecycle-and-status/2026-09-15|Adyen Capital grant lifecycle and status \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Status updates at this stage trigger only capital webhook types. No transfers or transactions occur during grant initiation.",
+      "location": "raw line 28, lifecycle stages"
+    },
+    {
+      "text": "This status indicates that the user has accepted the offer, and Adyen conducts a thorough secondary review of the grant request.",
+      "location": "raw line 41, initiation statuses"
+    },
+    {
+      "text": "This action can occur at any point during the grant initiation stage, up until the grant transaction is formally booked and the grant transitions to the **Pending** status.",
+      "location": "raw line 44, initiation statuses"
+    },
+    {
+      "text": "The grant remains pending until:- All required actions are completed on the user's side.",
+      "location": "raw line 50, management statuses"
+    },
+    {
+      "text": "Depending on regional regulations, a grant may be legally revoked within a specified timeframe after offer acceptance.",
+      "location": "raw line 56, management statuses"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-capital-grant-status-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-grant-lifecycle-and-status]] \u2014 2026-09-15 Capital grant-initiation/management status reference and API/webhook observation route; its Cancelled/Pending booking boundary conflicts internally, and status definitions do not prove any specific grant or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured source conflicts on whether the grant transaction is booked before transition to Pending or while Pending; source entry records both locators without resolving the transition."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/grant-lifecycle-and-status/2026-09-15.md",
+  "raw_sha256": "8b6c65cd0240a5aab3244fae4db8d9dea1059cd7e65326aa9f39ca843c196ae1",
+  "status": "candidate_ready"
+}

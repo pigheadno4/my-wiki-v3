@@ -1,0 +1,13 @@
+# Fixed retrieval checks — US tax forms
+
+Q1. What is this source's purpose and scope, and what must not be inferred?
+- Expected: A 2026-09-15 Adyen for Platforms US 1099-K filing-scope and platform retrieval/PDF-delivery guide for US-based users paid out directly by Adyen. Its title/description mention 1099-NEC, but the body only gives 1099-K details. Raw line 24 states a 2025 USD 20,000 AND 200-transaction threshold, but line 34 says generation at a volume OR transaction threshold; this unresolved conflict and the January availability example are historical, not a basis for choosing a current filing trigger; the page does not prove actual filing, generated-form availability for a user, consent or delivery.
+- Raw locators: `raw/adyen/docs/platforms/us-tax-forms/2026-09-15.md:15-34`, `:97-99`.
+- Canonical URL: `https://docs.adyen.com/platforms/us-tax-forms`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-platforms]]` → `wiki/sources/adyen/source-adyen-docs-platforms-us-tax-forms.md` → `[[raw/adyen/docs/platforms/us-tax-forms/2026-09-15]]`.
+
+Q2. How do filing basis, account/entity scope, Customer Area versus API access and platform delivery differ?
+- Expected: Adyen describes IRS 1099-K filing for US-based directly paid-out users, with some state filing; raw line 24 uses a 2025 federal USD 20,000 AND 200-transaction threshold, with gross processed volume before fees/chargebacks/refunds and `TopUp` splits excluded. Raw line 34 instead uses volume OR transaction threshold for generation; the source does not resolve which condition controls. It says prior-year forms become available in the third week of January and no form is available below its stated generation threshold; do not make a filing decision from this conflict. Customer Area requires `Download tax form` plus platform admin or base role under the processing merchant account/account-holder overview. The API route for 2022+ years uses a Balance Platform API key, `Download Tax Form via Tax Api`, account-holder ID, required `formType=US1099k` and year, optional shown `legalEntity`; its Base64 PDF content is decoded and provided by the platform to the user. The linked e-delivery-consent page is separate. Access/retrieval is not proof of filing or user delivery.
+- Raw locators: `raw/adyen/docs/platforms/us-tax-forms/2026-09-15.md:21-34`, `:36-61`, `:63-95`, `:97-99`.
+- Canonical URL: `https://docs.adyen.com/platforms/us-tax-forms`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-platforms]]` → `wiki/sources/adyen/source-adyen-docs-platforms-us-tax-forms.md` → `[[raw/adyen/docs/platforms/us-tax-forms/2026-09-15]]`.

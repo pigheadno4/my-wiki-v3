@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-reconciliation-use-cases-first-year-focus-platform-level-reporting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms platform-level reporting use cases\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reconciliation-use-cases/first-year-focus/platform-level-reporting\"\nraw_files:\n  - \"adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-level-reporting/2026-09-15.md\"\ntags: [adyen, platforms, reporting, reconciliation, profitability, invoices]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide proposes four reporting use cases for a platform's product and finance teams: monthly embedded-payments profitability, transaction-level profitability, user-level profitability, and monthly invoice reconciliation. It gives report selection and join/filter guidance, with illustrative tables. These are planning and reconciliation methods, not proof that a particular platform completed a cash reconciliation, received a bank payout, or signed off its accounts.\n\n## Key takeaways\n\n- For monthly profitability, the liable balance account receives commission and costs. Cash reconciliation also considers other liable-account adjustments, including internal transfers and invoice deductions. The guide calls payouts from that account to a third-party bank less invoice costs an **initial indication** of profitability. With scheduled payouts, it recommends filtering the Payout Report by liable account and initiated-period payouts; alternatively, filter Balance Platform Accounting Report liable-account events by value date. Payout initiation, costs, and bank arrival can fall on different days around a month boundary.\n- Transaction-level profitability in this section applies **only to blended pricing**; the guide distinguishes IC++ markup pricing. It joins Payment Accounting Report `Psp Reference` to Balance Platform Accounting Report `Payment Psp Reference`. On the liable account, `captured` rows distinguish a negative `Payment Fee for ...` fee entry from a positive commission entry. Processing Fees are absent from Balance Platform Accounting Report, so Payment Accounting Report must supply them; an alternative sums Scheme, Interchange, and Processing Fees after filtering lifecycle records to `SentForSettle` and `Received`. Multiple records per PSP reference and signed amounts make a naive one-row or unfiltered join misleading.\n- Monthly user profitability groups PSP payment references by account holder and combines user-account and liable-account credits, captured payments, refunded entries, and booked transfer/fee entries at their respective grains. The guide suggests a platform-created unique reference/prefix in the accounting description to identify user versus liable transfers. User costs come from Balance Platform Fee Report's Fee Amount by account holder, with optional fee-type exclusions; profit is collected commission less selected costs. Its sample user table is illustrative, and its effective-rate sentence is incomplete in the raw, so the page does not establish a precise rate denominator.\n- The transaction and user analyses expressly exclude costs not directly related to a transaction, such as nontransactional scheme, payout, and KYC fees. The raw also gives rough location/user cost recommendations with malformed currency abbreviations; treat them as dated illustrative planning guidance, not a tariff. It says the Balance Platform Accounting Report grows too large for scale without data warehousing.\n- Monthly invoice reconciliation starts with the Payment Processing Invoice for transaction costs, then includes KYC service, payout service, and nontransactional scheme fees separately. The guide points to invoice lines for KYC, `bankTransfer`/`booked` event counts in Balance Platform Accounting Report for payout-service costs, and an `InvoiceDeduction` Settlement details report row matching the monthly amount due. These report entries are reconciliation checks, not independent evidence of bank receipt or finalized accounting treatment; invoice period, report grain, and amount basis must be aligned.\n\n## Detail locators\n\n- `## Monthly profitability`: liable-account adjustments, payout timing, Payout Report versus Balance Platform Accounting Report period filters.\n- `## Transaction-level profitability`: blended-pricing scope, sample tables, PSP-reference join, signed fee/commission entries, fee-source and lifecycle filters.\n- `## User-level profitability`: account-holder grouping, captured/refunded/booked status, created reference prefixes, fee aggregation and incomplete effective-rate sentence.\n- `## Monthly invoice reconciliation`: Payment Processing Invoice, separate service/network fees, bankTransfer/booked count and InvoiceDeduction comparison.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main provider reporting and reconciliation concept.\n- [[adyen-platforms]] \u2014 parent Platforms context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-level-reporting/2026-09-15|Adyen platform-level reporting use cases (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "To be able to perform cash reconciliation, any other adjustments on the liable account should also be taken into account, such as internal transfers between other accounts or invoice deductions.",
+      "location": "line 36"
+    },
+    {
+      "text": "This section only applies for blended pricing models.",
+      "location": "line 55"
+    },
+    {
+      "text": "The **Psp Reference** in the Payment Accounting Report reconciles with the **Payment Psp Reference** in the Balance Platform Accounting Report.",
+      "location": "line 85"
+    },
+    {
+      "text": "Processing Fees are not included in the Balance Platform Accounting Report.",
+      "location": "line 89"
+    },
+    {
+      "text": "The amount in this line should correspond to the total amount due on your monthly invoice.",
+      "location": "line 172"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-platform-level-reporting-source-link",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-level-reporting]] \u2014 2026-09-15 Platforms first-year worked methods for monthly, transaction, user, and invoice profitability/reconciliation, with blended-pricing and report-grain limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Monthly payout-minus-invoice comparison is an initial indication and needs liable-account adjustments plus timing alignment; report rows do not prove bank receipt.",
+          "Transaction-level profitability method applies only to blended pricing and omits nontransactional costs.",
+          "Raw user effective-rate sentence is incomplete and sample cost-recommendation currency abbreviations are malformed; avoid deriving a rate formula or current price tariff from them."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-level-reporting/2026-09-15.md",
+  "raw_sha256": "5f04eae3f1d62cf5820820b711e1b6d79369273e3ba150a7ed56367b98a0e3c9",
+  "status": "candidate_ready"
+}

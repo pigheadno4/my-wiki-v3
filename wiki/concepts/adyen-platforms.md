@@ -15,6 +15,12 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-platforms-us-tax-forms]] — 2026-09-15 US direct-payout 1099-K filing-scope and platform retrieval/PDF-delivery guide with a 2025 AND-versus-OR threshold conflict and role gates; title also mentions 1099-NEC but body details only 1099-K, and instructions do not prove filing or delivery.
+
+
+- [[source-adyen-docs-platforms-us-tax-forms-edelivery-consent]] — 2026-09-15 US direct-payout 1099-K electronic-only consent guide for platform UI, LEM check/set calls, withdrawal route, registration deadline and platform delivery/access responsibility; no proof of current tax law or form delivery.
+
+
 - [[source-adyen-docs-platforms-transfer-transactions]] — 2026-09-15 balance-platform transaction tracking hub for transfer status meanings, webhook/API routes and failed/refused/returned handling; booked source debit is not bank receipt.
 
 
@@ -246,6 +252,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 
 - [[source-adyen-docs-platforms-kyc-verification-codes]] — 2021-modified, 2026-09-15-captured Platforms/Issuing verification-code taxonomy and account-holder capability problems retrieval route; actions are conditional suggestions, not verification outcomes.
+
+- [[source-adyen-docs-platforms-test-verification-errors]] — 2026-09-15 Platforms/Issuing test-only Legal Entity Management API guide to forcing verification suberrors and simulating remediation; examples do not prove live verification.
+
 
 
 - [[source-adyen-docs-platforms-quickstart-guide-customer-area]] — 2026-09-15 Platforms Customer Area quickstart for operational views, company/merchant-account access and user-role hygiene; UI visibility does not prove financial outcomes.

@@ -1,0 +1,7 @@
+# Platform-level reporting retrieval checks
+
+Q1. How does Adyen's first-year Platforms guide suggest estimating monthly and transaction-level embedded-payments profitability, and what scope limits apply?
+Expected forward route: [[adyen-index]] → [[adyen-reporting]] → ## Sources → [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-level-reporting]] → [[raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-level-reporting/2026-09-15]]. Inspect raw lines 28–46 for liable-account adjustments, payout timing and period basis; lines 50–55 for blended-only scope; lines 83–95 for PSP-reference joins, signed captured rows, Processing Fees, lifecycle filters and omitted nontransactional costs.
+
+Q2. Which account and report grains support user-level and monthly invoice reconciliation, and do the sample rows prove completed accounting or bank receipt?
+Expected forward route: [[adyen-index]] → [[adyen-reporting]] → ## Sources → [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-level-reporting]] → [[raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-level-reporting/2026-09-15]]. Inspect raw lines 97–141 for account-holder/PSP grouping, booked/refunded/captured statuses, user versus liable credits and fee report; lines 143–172 for invoice/service fee and InvoiceDeduction checks. Tables at lines 64–81 and 104–111 are examples; neither examples nor report rows establish completed bank receipt or accounting sign-off.

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-components-overview-before-payment-transfer-instrument-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms Transfer Instrument components\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/components-overview/before-payment/transfer-instrument-component\"\nraw_files:\n  - \"adyen/docs/platforms/components-overview/before-payment/transfer-instrument-component/2026-09-15.md\"\ntags: [adyen, platforms, onboarding, ui-components, transfer-instruments, verification]\n---\n\n## Overview\n\nThis 2026-09-15 Platforms component guide covers the Transfer Instrument Configuration and Management UI components for bank-account information in an API-only onboarding flow. Configuration allows permission-based instant verification or document upload for Adyen to validate a bank account. Management lists instruments with verification statuses and errors and supports add, edit, and remove user flows. This component path covers transfer instruments only; the rest of API-only onboarding still needs separate API integration. Its statements overlap the existing [[source-adyen-docs-platforms-onboard-users-components]] guide but retain this page's distinct canonical route and raw evidence.\n\n## Key takeaways\n\n- Onboarding components work only with legal entities created with **Legal Entity Management API v3 or v4**. The guide requires Adyen for Platforms, a Legal Entity Management API key to create authentication sessions, language/browser support, preceding API-only onboarding steps, and review of verification guidance. Feature guidance also varies by component-library version; the API entity version and library version are separate qualifications.\n- The platform server sends Session Authentication API `POST /sessions` with the LEM API key, an allowed origin (HTTPS on live), `product=onboarding`, and a `legalEntity` policy resource. Its `legalEntityId` is the entity with the platform contractual relationship that owns the bank account; for a sole proprietorship it is the individual owner's entity ID. Policy roles are `transferInstrumentConfiguration` and/or `transferInstrumentManagement` for the enabled components. The session response is passed to the frontend through a token-refresh callback; the sample URL is a test endpoint, not a live operation.\n- Configuration collects bank-account information and offers an instant-verification permission path or document upload for Adyen validation. Management displays the added accounts with statuses/errors and lets users add, edit, or delete. The guide says changes are applied immediately, but a component entry or displayed status alone does not prove verification approval, payout eligibility, a successful payout, or bank receipt.\n- Component properties specify `test` versus `live`, locale, root legal-entity ID, token callback, and component events. The configuration `complete` event means successful submission and UI completion; management `add`, `edit`, and `remove` events signal actions to the host application. The example completion payload includes bank account details and empty verification fields, so use the actual resource and verification status to establish outcomes.\n- The configuration `openBankingPartnerConfigId` row marks it required for US/CA and says Adyen can customize the brand identifier for open-banking verification. Optional settings concern intra-region cross-border payout-account selection and local versus IBAN format where applicable; they do not grant country-wide payout eligibility. This snapshot lists supported locales and links browser support to the general components page.\n\n## Detail locators\n\n- Opening through `## Requirements`: LEM v3/v4, API-only scope, version variance, prerequisites.\n- `## Transfer Instrument Configuration component` and `## Transfer Instrument Management component`: bank-data collection, validation paths, status/error list and changes.\n- `## 1. Create an authentication session from your server`: LEM credential, legal-entity scope, role, origin and onboarding product.\n- `## 3. Configure component properties`: environment, root entity, callbacks, US/CA identifier, optional settings.\n- `## User flow and events`: event semantics and illustrative data payload.\n- `## Supported languages`: locales.\n\n## Related\n\n- [[adyen-platform-components]] \u2014 main component-suite concept.\n- [[adyen-platforms]] \u2014 parent Platforms context.\n- [[source-adyen-docs-platforms-onboard-users-components]] \u2014 overlapping onboarding-components guide.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/components-overview/before-payment/transfer-instrument-component/2026-09-15|Adyen Transfer Instrument components guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The Onboarding components are only compatible with legal entities created with v3 or v4 of the [Legal Entity Management API](https://docs.adyen.com/api-explorer/legalentity/latest/overview).",
+      "location": "line 23"
+    },
+    {
+      "text": "the Transfer Instrument components only cover functionality related to transfer instruments, and you still need to implement API calls for other parts of your API-only onboarding flow.",
+      "location": "line 27"
+    },
+    {
+      "text": "Users can either give permission for the [instant verification](/platforms/onboard-users#instant-bank-account-verification) of their bank account, or upload documents which Adyen uses to validate the bank account.",
+      "location": "line 59"
+    },
+    {
+      "text": "For sole proprietorships, this is the legal entity ID of the individual owner.",
+      "location": "line 109"
+    },
+    {
+      "text": "The **Transfer Instrument Configuration** component dispatches a `complete` event.",
+      "location": "line 568"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-transfer-instrument-component-source-link",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-components-overview-before-payment-transfer-instrument-component]] \u2014 Transfer Instrument Configuration/Management, LEM v3/v4 and legal-entity-scoped onboarding session (2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This page overlaps [[source-adyen-docs-platforms-onboard-users-components]]; preserve distinct canonical URL without creating duplicate concept ownership.",
+          "Component submission or displayed verification status does not prove approval, payout execution, or bank receipt.",
+          "Library version varies independently of LEM entity version; requirements include LEM v3/v4 and legal-entity-scoped roles."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/components-overview/before-payment/transfer-instrument-component/2026-09-15.md",
+  "raw_sha256": "e972f6dd9b8650a2fdb31bfed924ede3e484e72c9626d96e81112a7350f520e3",
+  "status": "candidate_ready"
+}

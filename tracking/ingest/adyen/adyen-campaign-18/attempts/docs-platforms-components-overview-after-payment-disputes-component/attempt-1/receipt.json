@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-components-overview-after-payment-disputes-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Dispute components | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/components-overview/after-payment/disputes-component\"\nraw_files:\n  - \"adyen/docs/platforms/components-overview/after-payment/disputes-component/2026-09-15.md\"\ntags: [adyen, platforms, components, disputes, chargebacks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide covers the Disputes Overview and Dispute Management Platform Experience components for a platform's user portal. It describes viewing chargebacks, Requests for Information (RFIs), and fraud alerts, plus accepting or defending eligible chargebacks through a component UI. See [[adyen]], [[adyen-platforms]], and [[adyen-platform-components]].\n\n## Key takeaways\n\n- The Overview component lists disputes for a balance account and period, with Chargebacks, Fraud alerts, and Ongoing & closed tabs, filters, and a Management detail view. The Management component can accept a chargeback or submit a defense reason and evidence; the components make the needed Adyen API calls (raw lines 60\u201391, 132\u2013167). Displayed state or a successful component request does not by itself prove a final dispute outcome or funds recovery.\n- This requires an Adyen for Platforms integration, a Balance Platform API key with **Disputes Component: Manage**, a server-created Session authentication token scoped to the linked account holder and `product: platform`, and client initialization. From library v1.6.0, include that role in the session policy to enable processing disputes (raw lines 44\u201356, 245\u2013299, 355\u2013502).\n- Account holders can view disputes created in this component on or after May 22, 2025. Action or submitted-defense-document access requires both being the sole non-liable account holder in the original payment splits and receiving at least one `BalanceAccount` split in the payment or capture. The page limits document and image sizes/formats and says refunds are unsupported (raw lines 52\u201356). These are component access boundaries, not a redefinition of underlying dispute or split rules.\n- Accepting a chargeback confirms the disputed amount will not return to the balance account. Defending sends evidence to card schemes for review; Pending means issuer review, not a win. An RFI has no funds withdrawn at that stage, while a chargeback means funds have been or soon will be withdrawn. Some payment-method disputes are not defendable and start/end Lost (raw lines 148\u2013152, 193\u2013236).\n- Features and guidance depend on the library version; supported countries, browsers, languages, and customization belong to the relevant version/library context. The initialization table marks `availableTranslations` deprecated (raw lines 36\u201338, 55\u201356, 355\u2013399, 887\u2013907).\n\n## Detail locators\n\n- Balance-account, time-period, payment-method, and dispute-reason filters: raw lines 93\u2013130.\n- Undefended/Accepted/Pending/Won/Lost chargeback states and Unresponded/Responded/Expired RFI states: raw lines 193\u2013236.\n- Server Session authentication request and policy, installation, initializers, callbacks, and mounting: raw lines 245\u2013502. `onDisputeAccept` and `onDisputeDefend` indicate successful requests, not final scheme adjudication.\n- Optional localization, appearance, custom field data, and supported language list: raw lines 506\u2013907.\n\n## Related\n\n- [[adyen-platform-components]]\n- [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/components-overview/after-payment/disputes-component/2026-09-15|Pinned Adyen dispute components guide]]\n",
+  "quotes": [
+    {
+      "text": "The guidance and features available may differ based on the library version in use. We recommend using the latest library version to take advantage of the newest features and improvements.",
+      "location": "raw line 36, version qualification"
+    },
+    {
+      "text": "An account holder can perform an action or view submitted defense documents if and only if both of the following conditions are met:- They are the sole non-liable account holder referenced via splits in the original payment.",
+      "location": "raw line 52, Requirements/Limitations table"
+    },
+    {
+      "text": "- They receive at least one split of type `BalanceAccount` in the corresponding payment or capture.",
+      "location": "raw line 53, Requirements/Limitations table"
+    },
+    {
+      "text": "* Accept a chargeback. Accepting a chargeback confirms the disputed amount will not be returned to the balance account.",
+      "location": "raw line 151, Management capability"
+    },
+    {
+      "text": "Some disputes are not defendable due to the rules of the payment method, not because of a limitation in the component. These disputes begin and end in the \"Lost\" status, as no defense action is possible.",
+      "location": "raw line 210, status discussion"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platform-components-disputes-source-route",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-components-overview]] \u2014 2026-09-15 Platforms component-suite overview for the inventory, session integration, availability boundaries, and dated roadmap.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-components-overview-after-payment-disputes-component]] \u2014 2026-09-15 Platforms Disputes Overview/Management component guide for account-holder-scoped viewing and conditional chargeback actions, with version, access, evidence and refund limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Action and defense-document access depend on the source's sole non-liable account-holder and BalanceAccount split conditions; refunds are unsupported.",
+          "Component statuses and accepted requests do not prove final scheme adjudication or balance recovery."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/components-overview/after-payment/disputes-component/2026-09-15.md",
+  "raw_sha256": "10a52701971cbe5b2da396b3eb9b1bde4907a1e9c885d45287f5eac20d86af2d",
+  "status": "candidate_ready"
+}

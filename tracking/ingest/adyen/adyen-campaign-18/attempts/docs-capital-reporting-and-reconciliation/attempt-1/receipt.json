@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-capital-reporting-and-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capital reporting and reconciliation | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/reporting-and-reconciliation\"\nraw_files:\n  - \"adyen/docs/capital/reporting-and-reconciliation/2026-09-15.md\"\ntags: [adyen, capital, platforms, repayments, reconciliation, reports, webhooks]\n---\n\n## Overview\n\nThis [[adyen]] Capital guide describes how a Capital-enabled Adyen for Platforms integration can reconcile booked disbursements and repayments using balance-platform Transfer/Transaction webhooks or Balance Platform Accounting and Payout Reports. It explains the repayment's sales-date alignment, report identifiers and principal/fee split. See [[adyen-capital]]; [[adyen-reporting]] covers the wider report evidence boundary.\n\n## Key takeaways\n\n- A Capital-supporting Platforms integration is required. To configure Accounting Report columns, the guide lists Merchant admin, Merchant report, Merchant financial or Merchant POS Report roles; report generation/download require the respective Generate and Download Balance Platform reports roles. Webhook reconciliation requires subscribing to both Transfer and Transaction webhooks. These are guide prerequisites, not proof a particular account has Capital capability or report access. [Raw: lines 26\u201340]\n- For a user with an active grant, Adyen reserves a fixed percentage of net captured volume and books repayment approximately one hour after sales-day close, before payout, aligned to the sales date. It processes repayments daily as funds settle, independent of payout cadence. A payout scheduled at or near close may precede the repayment, leaving it out of that payout report; the guide advises at least an hour's gap. Over-reservation can be released at booking, while pre-close chargebacks and refunds may adjust reserved funds; a post-booking chargeback does not adjust that repayment, and a refund may arrive too late for the day's booking. A settlement-delay change during the sales day can yield two repayment bookings. [Raw: lines 38\u201362]\n- A scheduled repayment has one outgoing `repayment` transfer. An unscheduled repayment has an incoming `capitalFundsCollection` transfer followed by an outgoing `repayment` transfer, both on the user's balance account; reconcile both lines. The page says each new disbursement has dedicated bank-account details for unscheduled repayment, which must not be reused from an earlier disbursement. [Raw: lines 64\u201368]\n- In Transfer webhooks, identify a repayment by `category=grants`, `type=repayment`, outgoing direction, and grant-ID `reference`; `received` and `authorized` precede `booked`. Match `transfer.id` in a `balancePlatform.transaction.created` webhook to confirm balance-account booking; for the outgoing repayment, the transfer reference matches the related grant ID. The guide recommends triggering completed-repayment reconciliation from the transaction webhook, not a timer. [Raw: lines 70\u201393]\n- In the Balance Platform Accounting Report, use `Category=grants`, the relevant `Type` and `Booking Date`; verify sales-date alignment through `Value Date`. Match `Transfer Id`, `Transaction Id` and `Reference` to webhooks or other reports. Add `Capital Principal Amount` and `Capital Fee Amount` columns to see the proportional principal/fee split for each repayment. The Payout Report groups repayment transfer lines with related sales and payouts by payout date; its `grants/repayment` rows use Transfer Id and Reference. Webhook amounts use minor units, report amounts payment currency, and outgoing repayment amounts appear negative in reports. [Raw: lines 95\u2013143, 177\u2013187]\n- Report and webhook rows are individual repayment bookings. The page directs readers to `GET /grants/{grantId}` or a Capital grant webhook for outstanding principal, fee, total and status; its documented fully repaid condition is total zero **and** status `Repaid`. The worked USD 77.20 example and a `bankTransfer` payout row do not establish any actual user's debt, completed financing, or beneficiary bank receipt. [Raw: lines 144\u2013175]\n\n## Detail locators\n\n- Integration, roles, webhook subscriptions and payout-timing limitation: raw lines 26\u201340.\n- Repayment timing, reservation adjustments, settlement-delay split and scheduled/unscheduled transfers: raw lines 42\u201368.\n- Transfer/Transaction webhook identity, statuses and booking confirmation: raw lines 70\u201393.\n- Accounting and Payout Report grains, principal/fee columns and joins: raw lines 95\u2013143.\n- Illustrated dates/signs, outstanding-grant check and cross-report identifiers/units: raw lines 144\u2013187.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital product and grant lifecycle context\n- [[adyen-reporting]] \u2014 provider reporting evidence boundary\n- [[adyen-platforms]] \u2014 balance-platform context\n- [Repayment](https://docs.adyen.com/capital/repayment) \u2014 related Capital lifecycle guide\n- [Get grant details](https://docs.adyen.com/capital/get-grant-balances) \u2014 linked outstanding-balance guide\n- [Capital webhook types](https://docs.adyen.com/capital/webhook-types) \u2014 linked webhook structures\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/reporting-and-reconciliation/2026-09-15|Adyen Capital reporting and reconciliation \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Capital repayments and disbursements are booked as accounting events on your balance platform.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "If your payout is scheduled at or very close to the sales day closing time, Adyen cannot always book the repayment before the payout. As a result, the repayment does not always appear in the same payout report.",
+      "location": "raw line 40, Requirements limitation"
+    },
+    {
+      "text": "A [scheduled repayment](/capital/repayment#scheduled-repayments) creates a single outgoing transfer of type **repayment**. An [unscheduled repayment](/capital/repayment#unscheduled-repayments) creates two transfers on the user's balance account.",
+      "location": "raw line 66, Scheduled and unscheduled repayments"
+    },
+    {
+      "text": "The [Balance Platform Accounting Report](/platforms/reports-and-fees/balance-platform-accounting-report) contains all repayment bookings by **Booking Date**. To match a booking back to a webhook or another report, use the **Transfer Id**, **Transaction Id**, and **Reference** columns.",
+      "location": "raw line 99, Balance Platform Accounting Report"
+    },
+    {
+      "text": "The reports and webhooks show individual repayment bookings. To confirm the remaining balance or that a grant is fully repaid, check the grant balances instead of adding up the report lines.",
+      "location": "raw line 168, Confirm the outstanding balance"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-capital-reporting-reconciliation-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-reporting-and-reconciliation]] \u2014 2026-09-15 Capital guide for webhook and balance-platform-report repayment joins, sales-date timing, principal/fee columns and grant-balance confirmation; report rows alone do not establish final debt or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/reporting-and-reconciliation/2026-09-15.md",
+  "raw_sha256": "f559cf98030c8c3e133d3d5a96b9d4adf788d99669c83933b0c31e26ec34ca20",
+  "status": "candidate_ready"
+}

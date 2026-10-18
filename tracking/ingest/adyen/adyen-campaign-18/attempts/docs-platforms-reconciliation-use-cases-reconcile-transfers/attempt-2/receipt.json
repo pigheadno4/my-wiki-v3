@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-reconciliation-use-cases-reconcile-transfers",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Platforms reconcile fund transfers\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reconciliation-use-cases/reconcile-transfers\"\nraw_files:\n  - \"adyen/docs/platforms/reconciliation-use-cases/reconcile-transfers/2026-09-15.md\"\ntags: [adyen, platforms, reporting, reconciliation, transfers, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide uses the Balance Platform Accounting Report to track internal balance-account transfers and payouts to a user's external bank account or other transfer instrument. It identifies report categories, statuses, transfer and transaction identifiers, reference fields, and an illustrative two-leg internal transfer. Report booking is a balance-platform event, not independent proof that a beneficiary bank received a payout.\n\n## Key takeaways\n\n- The report distinguishes internal balance-account moves (`category=internal`, `type=internalTransfer`) from payouts (`category=bank`, `type=bankTransfer`). A payout is described as funds moving from an account holder's balance account toward an external bank account or other transfer instrument; the reporting method does not establish that external receipt occurred.\n- A **Transfer Id** links report events for a transfer leg, but its presence alone does not establish real money movement: the guide treats the pre-booked credit/debit as pending. A populated **Transaction Id** with **Status=booked** marks a balance or payment-instrument booking; if Transaction Id is absent, the guide says money movement has not yet taken place. Match the Transfer Id to relate pre-booked and booked events. Read the account, category/type, status and signed Balance (PC) together rather than equating any one identifier with settlement.\n- The internal-transfer example shows a negative EUR 15.00 source-account leg and a positive EUR 15.00 destination-account leg. Each account leg has its own Transfer Id; this report sample's two booked rows share a Transaction Id. The separate [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] guide instead shows different booked transactionIds on its outgoing and incoming example legs. Neither sample establishes a universal cross-leg Transaction Id join: reconcile actual legs using their observed balance-account IDs, directions/counterparties, transfer IDs, references, status and transaction evidence. Earlier `received` and `authorised` rows have empty Transaction Ids and zero Balance (PC), while booked rows carry signed balance changes. The 2022 CEST booking/value timestamps are example data, not a universal same-day rule; retain each report date and timezone when reconciling.\n- To identify a specific payout, the guide points to **Description**, **Reference**, or **Reference For Beneficiary**; for a specific internal transfer, **Reference For Beneficiary**. These optional fields should be populated in API requests or sweep configurations for reconciliation, then compared with transfer.created/updated webhooks or Customer Area; sweep configuration can be looked up separately. They are matching aids, not a guarantee of unique bank-side identification.\n- The Balance Platform Statement Report is an alternative payout-tracking view showing accounts with balance changes on a day and contributing events. It does not replace independent evidence of beneficiary receipt, nor does either report alone prove final bank settlement.\n\n## Detail locators\n\n- Opening and `## Track a transfer`: movement types, category/type/status and Transfer Id versus Transaction Id.\n- `## Track a transfer`, specific-transfer columns: request/sweep references and webhook/Customer Area cross-checks.\n- `### Balance Platform Accounting Report`: two-leg EUR 15.00 example, signed Balance (PC), distinct leg Transfer IDs, sample-shared booked Transaction ID, booking/value dates and timezone; compare the related webhook guide's distinct leg transactionIds.\n- `## Track payouts using the Statement report`: balance-change alternative.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main reporting/reconciliation concept.\n- [[adyen-platforms]] \u2014 parent Platforms context.\n- [[adyen]] \u2014 provider profile.\n- [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] \u2014 related internal-transfer event examples with distinct outgoing and incoming booked transactionIds.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-transfers/2026-09-15|Adyen reconcile fund transfers (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "**Transfer Id**: indicates that the credit or debit of the transfer is pending and no real money movement has taken place.",
+      "location": "line 28"
+    },
+    {
+      "text": "If a transfer doesn't have a Transaction Id, no money movement has taken place yet.",
+      "location": "line 29"
+    },
+    {
+      "text": "**Status**: *booked* in combination with a populated **Transaction Id** indicates the funds are booked to the destination balance account or payment instrument.",
+      "location": "line 32"
+    },
+    {
+      "text": "For reconciliation purposes, it is important that your integration populates the `description`, `reference`, and `referenceForBeneficiary` fields, even though these fields are optional.",
+      "location": "line 42"
+    },
+    {
+      "text": "This shows all accounts where a balance change happened on a given day, including the events that contributed to the balance change.",
+      "location": "line 59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-reconcile-transfers-source-link",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-transfers]] \u2014 2026-09-15 Platforms transfer/payout accounting-report guide for internal versus bank event types, Transfer/Transaction IDs, booked signed legs, references and Statement alternative; no bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Transfer Id alone is not booking; booked status plus populated Transaction Id is the guide's balance/payment-instrument booking signal.",
+          "The report's worked two-account example has distinct leg Transfer IDs and a shared booked Transaction ID, but the related internal-transfer webhook guide shows distinct booked transactionIds on outgoing and incoming example legs. Do not assume a universal cross-leg Transaction Id join; correlate actual account, direction/counterparty, transfer and reference evidence.",
+          "A bankTransfer or Statement report row does not independently prove beneficiary-bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-transfers/2026-09-15.md",
+  "raw_sha256": "c758a25ddeb1140724606e12c9737d6318c9e1215e21c7e2ce6162fdecdc44d8",
+  "status": "candidate_ready"
+}

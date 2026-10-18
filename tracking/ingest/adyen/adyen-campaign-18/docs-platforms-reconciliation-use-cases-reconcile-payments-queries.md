@@ -1,0 +1,13 @@
+# Fixed retrieval checks — reconcile payments
+
+Q1. What is the purpose and scope of this source, and what must not be inferred?
+- Expected: A 2026-09-15 capture of an Adyen for Platforms worked example joining daily Payment accounting report lifecycle entries to Balance Platform Accounting Report split account bookings for a EUR 100 payment. The report snippets show selected illustrative columns/rows; example references, fees and 2023 timestamps are not live account facts or a universal timeline. Report rows alone do not prove completed reconciliation, final settlement, payout or bank receipt.
+- Raw locators: `raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-payments/2026-09-15.md:17-19`, `:39-46`, `:88-92`.
+- Canonical URL: `https://docs.adyen.com/platforms/reconciliation-use-cases/reconcile-payments`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-reporting]]` → `wiki/sources/adyen/source-adyen-docs-platforms-reconciliation-use-cases-reconcile-payments.md` → `[[raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-payments/2026-09-15]]`.
+
+Q2. How should lifecycle, split-account, signed amount and date fields be matched, and what source conflict limits a field map?
+- Expected: Match the payment's PSP/Merchant references and the capture modification references across Payment accounting `Received`/`Authorised`/`SentForSettle` event rows and Balance Platform Accounting per-account `received`/`authorised`/`captured` capture rows. Do not sum state transitions as separate payments. The sample credits 97 EUR to user balance and 3 EUR to liable commission, and debits -2.57 EUR from fees balance; `Received`/`Reserved`/balance columns use offsetting signs. Booking Date is account booking, Value Date availability; the illustrated captured rows show Jan 18 booking and Jan 20 value date, called T+2, not a general service level. The prose says `Balance (BC)` but the displayed table has `Balance (PC)` at X and `Platform Payment Cost Currency` at BC; check actual report schema rather than assuming a column mapping. API responses/webhooks are recommended for individual status/ledger tracking and BPAR for daily funds reconciliation.
+- Raw locators: `raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-payments/2026-09-15.md:21-33`, `:44-60`, `:62-85`, `:88-92`.
+- Canonical URL: `https://docs.adyen.com/platforms/reconciliation-use-cases/reconcile-payments`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-reporting]]` → `wiki/sources/adyen/source-adyen-docs-platforms-reconciliation-use-cases-reconcile-payments.md` → `[[raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-payments/2026-09-15]]`.

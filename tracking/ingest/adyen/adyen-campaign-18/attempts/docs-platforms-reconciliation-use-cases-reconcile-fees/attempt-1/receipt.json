@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-reconciliation-use-cases-reconcile-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Reconcile fees | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reconciliation-use-cases/reconcile-fees\"\nraw_files:\n  - \"adyen/docs/platforms/reconciliation-use-cases/reconcile-fees/2026-09-15.md\"\ntags: [adyen, platforms, reconciliation, fees, reports]\n---\n\n## Overview\n\nThis [[adyen]] for Platforms example explains how to reconcile balance-platform fee bookings across the Payment accounting report, Settlement detail report and Balance Platform Accounting Report. It distinguishes per-transaction payment fees, daily aggregate Processing fees and monthly invoicing adjustments. See [[adyen-reporting]] for the reporting route and evidence boundary.\n\n## Key takeaways\n\n- Interchange, Scheme fees, Markup and Commission assessed per transaction are deducted when captured payment funds are booked to balance accounts. The fee may go to the platform's liable balance account or a user's balance account according to split instructions at payment or capture. Adyen-assessed Processing fees are totaled daily and booked to the liable balance account; other fees and volume adjustments are assessed at monthly invoicing, with the overall adjustment booked to the liable balance account. These are distinct grains and booking moments. [Raw: lines 21\u201325]\n- For full fee reconciliation, the page points to the Payment accounting report's event-level fee lines, including per-transaction fees confirmed at `SentForSettle` and Processing fees accumulated for instructions received on the same date. The later `Settled` event and Payable Batch help explain timing of the daily Processing fee booking. The example's EUR 100 payment uses PSP reference `F2FTV3THPB9Z2C33` and merchant reference `UUID1`; those values are illustrative. [Raw: lines 29\u201331, 36\u201354, 86]\n- The Settlement detail report example shows the aggregate daily Processing fee as `Type` `Fee`, and gives Creation Date, Modification Reference and Batch Number to align the aggregate with a balance-platform booking. It also records monthly adjustments as `InvoiceDeduction`. Its `Settled` line repeats transaction fee information already in Payment accounting, so summing both without accounting for that overlap would double-count. [Raw: lines 88\u2013107]\n- In the Balance Platform Accounting Report example, Platform Payment fee columns show per-transaction charges on a dedicated fee balance account. The total daily Processing fee is instead booked to the default liable BalanceAccount as `Type` `fee`, daily in arrears; inspect the PSP Modification Merchant Reference. The sample has distinct Booking Date and Value Date columns and status rows, so match report event, account, reference, currency and dates before treating a row as a booked fee. [Raw: lines 109\u2013132]\n- The report snippets show selected columns and rows for illustration. The guide and its example do not establish that a particular platform's reports were complete, that reconciliation executed, that a fee was owed by a specific user, that a payment finally settled, or that bank funds arrived. [Raw: line 42; example tables, lines 56\u2013132]\n\n## Detail locators\n\n- Fee assessment and report roles: raw lines 19\u201332.\n- Example identity and Payment accounting lifecycle, Processing fees and Payable Batch: raw lines 34\u201386.\n- Settlement detail `Fee` / `InvoiceDeduction` rows, Creation Date, Modification Reference and Batch Number: raw lines 88\u2013107.\n- Balance Platform Accounting fee columns, account allocation, status rows, Booking Date and Value Date: raw lines 109\u2013132.\n\n## Related\n\n- [[adyen-reporting]] \u2014 provider reporting and reconciliation evidence\n- [[adyen-platforms]] \u2014 balance-platform account context\n- [Reconciliation use cases](https://docs.adyen.com/platforms/reconciliation-use-cases) \u2014 parent guide\n- [Balance Platform Accounting Report](https://docs.adyen.com/platforms/reports-and-fees/balance-platform-accounting-report) \u2014 linked report reference\n- [Payment accounting report](https://docs.adyen.com/reporting/invoice-reconciliation/payment-accounting-report) \u2014 linked report reference\n- [Settlement detail report](https://docs.adyen.com/reporting/settlement-detail-report) \u2014 linked report reference\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-fees/2026-09-15|Adyen Platforms reconcile fees \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Payment fees that are assessed on a per-transaction basis (*Interchange, Scheme fees, Markup, Commission*) are deducted immediately when captured payment funds are booked to balance accounts.",
+      "location": "raw line 23, fee booking list"
+    },
+    {
+      "text": "*Processing fees* charged by Adyen are assessed as a total amount on a daily basis, and booked to your liable balance account.",
+      "location": "raw line 24, fee booking list"
+    },
+    {
+      "text": "All other types of fee, as well as any volume-related adjustments to the above types of fee, are assessed during invoicing on a monthly basis.",
+      "location": "raw line 25, fee booking list"
+    },
+    {
+      "text": "This line item breakdown of all Processing fees in this report data is why you should use the Payment accounting report for full fee reconciliation.",
+      "location": "raw line 86, Payment accounting report"
+    },
+    {
+      "text": "The total daily Processing fees are booked to the default liable **BalanceAccount** as **Type** *fee* as soon as they are assessed (daily in arrears). Note the **Psp Modification Merchant Reference**.",
+      "location": "raw line 115, Balance Platform Accounting Report"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-reconcile-fees-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-fees]] \u2014 2026-09-15 Platforms worked example joining event-level payment fees, daily aggregate Processing fee bookings and monthly invoice adjustments across Payment accounting, Settlement detail and Balance Platform Accounting reports; sample rows do not prove live reconciliation or bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reconciliation-use-cases/reconcile-fees/2026-09-15.md",
+  "raw_sha256": "81f147160c375093a32dac427c2f42ace5df36e16ed554769abae0e29cd8cb28",
+  "status": "candidate_ready"
+}

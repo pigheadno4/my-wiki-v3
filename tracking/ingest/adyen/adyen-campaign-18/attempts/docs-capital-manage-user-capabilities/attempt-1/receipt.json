@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-manage-user-capabilities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital user capability management\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/manage-user-capabilities\"\nraw_files:\n  - \"adyen/docs/capital/manage-user-capabilities/2026-09-15.md\"\ntags: [adyen, capital, platforms, capabilities, verification]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital guide explains how a platform requests, views, enables, and disables an account holder's Capital capabilities. The two named capabilities are `getGrantOffers` and `receiveGrants`. Capability states govern eligibility and access to later offer and grant steps; requesting, allowing, or enabling one is not itself an offer accepted, funds disbursed, or a grant repaid.\n\n## Key takeaways\n\n- Each user is represented by an account holder in the balance platform. The guide says Adyen usually configures Capital capabilities during integration design so new account holders are automatically requested, while the platform may request later or enable/disable for individuals. Prerequisites are Adyen for Platforms with Capital enabled, a supported user country/region, Adyen setup, and compliance/verification guidance. API management requires a Balance Platform API key with **Balance Platform BCL role**; Customer Area management requires **Manage account holder capabilities**.\n- `getGrantOffers` permits eligibility evaluation for financing offers based on payment-processing volume. Adyen generates offers when the user qualifies and the capability is **allowed**. `receiveGrants` relates to receiving financing; requesting it prompts Adyen to check whether the account holder signed Terms of Service. When terms have been signed and **both capabilities are allowed**, the guide says the platform can proceed to the separate disbursement request. An allowed flag does not itself establish an issued offer, accepted terms, or completed grant transfer.\n- A platform can request either capability in Customer Area or with Configuration API `PATCH /accountHolders/{id}` setting that capability's `requested=true`. Customer Area submission sends the request to Adyen for approval. The example API response shows `requested=true`, `allowed=false`, `verificationStatus=pending`: these states must not be collapsed into approval. The test API URL and sample account-holder ID are illustrative.\n- To inspect account-holder capabilities, use Customer Area or Configuration API `GET /accountHolders/{id}`. The response distinguishes `allowed` (whether Adyen allows it), `enabled` (whether the user can use it), `verificationStatus` (`invalid`, `pending`, `rejected`, or `valid`), and a `problems` array for errors to address. Those fields describe capability and checks at read time, not Capital offer terms or funding status.\n- The platform can enable or disable a capability in Customer Area or by `PATCH /accountHolders/{id}` with `enabled=true/false`. The disable example returns `enabled=false` while `allowed=true` and verification remains `valid`, demonstrating independent switches. A disable action should not be interpreted as revoking an existing grant or settling any financing obligation; those are separate lifecycles.\n\n## Detail locators\n\n- Opening and `## Requirements`: account-holder model, enabled Capital integration, roles, region and setup/compliance prerequisites.\n- `## Capital capabilities`: getGrantOffers versus receiveGrants and Terms of Service gate.\n- `## Request a capability`: Customer Area approval request and Configuration API requested=true with pending example.\n- `## View capabilities`: GET/Customer Area and allowed/enabled/verification/problems fields.\n- `## Enable or disable a capability`: user-facing and API control plus allowed-but-disabled example.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital product concept.\n- [[adyen-platforms]] \u2014 parent platform context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/manage-user-capabilities/2026-09-15|Adyen Capital manage user capabilities (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "When you request this capability for a user, Adyen evaluates their eligibility for business financing.",
+      "location": "line 43"
+    },
+    {
+      "text": "When they have and both `getGrantOffers` and `receiveGrants` capabilities are [allowed](/platforms/verification-overview/capabilities#capability-settings), you can proceed to [disburse the funds](/capital/make-grant-request) to your user.",
+      "location": "line 44"
+    },
+    {
+      "text": "The capability request is sent to Adyen for approval.",
+      "location": "line 70"
+    },
+    {
+      "text": "Boolean that indicates whether the user can use the capability.",
+      "location": "line 146"
+    },
+    {
+      "text": "Set this to **true** or **false** to enable or disable the capability, respectively.",
+      "location": "line 182"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-capital-capabilities-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-manage-user-capabilities]] \u2014 2026-09-15 account-holder getGrantOffers/receiveGrants requirements and requested, allowed, enabled and verification-state management before separate offer/grant steps.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requested, allowed, enabled, and verificationStatus are distinct; request submission is not approval or an offer.",
+          "Both capabilities allowed plus Terms of Service lets the platform proceed to a separate disbursement request, not proof of executed funding.",
+          "Dated supported regions and Capital enablement/roles must be checked for the account; capability state does not establish current offer/funding outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/manage-user-capabilities/2026-09-15.md",
+  "raw_sha256": "5c8c4231c947bffcd802962e8baf0357b75c8096b8fc97aa26c24e768d01cf3d",
+  "status": "candidate_ready"
+}

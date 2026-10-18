@@ -19,6 +19,33 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-transfers]] — 2026-09-15 Platforms transfer/payout accounting-report guide for internal versus bank event types, Transfer/Transaction IDs, booked signed legs, references and Statement alternative; no bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus]] — 2026-09-15 Platforms first-year planning guide separating platform and SMB-user reporting needs, early finance/product/engineering alignment and child use-case routes; no report grain or completed-reconciliation proof.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-verify-balances]] — 2026-09-15 Platforms worked guide to daily account-currency balance snapshots, value-dated Accounting Report Balance (PC) sums, and conditional negative-balance compensation evidence.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] — 2026-09-15 Platforms SMB-user transaction, payout, and dispute reporting options, separating UI components from accounting/payout-report grains and financial from non-financial events.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-liable-account-summary]] — 2026-09-15 role-gated liable-account dashboard for period/account/currency balance and category aggregates, with accounting-report detail and invoice mismatch boundaries.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-payments]] — 2026-09-15 Platforms worked example joining Payment accounting lifecycle events to split account bookings in Balance Platform Accounting, with separate booking/value dates and an illustrative table-label conflict; rows do not prove live reconciliation or bank receipt.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-level-reporting]] — 2026-09-15 Platforms first-year worked methods for monthly, transaction, user, and invoice profitability/reconciliation, with blended-pricing and report-grain limits.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-fees]] — 2026-09-15 Platforms worked example joining event-level payment fees, daily aggregate Processing fee bookings and monthly invoice adjustments across Payment accounting, Settlement detail and Balance Platform Accounting reports; sample rows do not prove live reconciliation or bank receipt.
+
+
+- [[source-adyen-docs-platforms-reconciliation-use-cases]] — 2026-09-15 Platforms navigation hub for reconciliation prerequisites and first-year, payment, transfer, fee and balance-verification child guides; detailed report grains remain in those guides.
+
+
 - [[source-adyen-docs-platforms-payout-reconciliation]] — 2026-09-15 Platforms routing guide for scheduled-payout breakdowns, on-demand/cashout ledger matching, amount-basis differences and payout status webhooks; no bank-receipt proof.
 
 

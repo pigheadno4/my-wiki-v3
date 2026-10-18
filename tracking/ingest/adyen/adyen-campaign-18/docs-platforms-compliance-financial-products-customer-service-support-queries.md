@@ -1,0 +1,13 @@
+# Fixed retrieval checks — customer service and support
+
+Q1. What is this source's purpose and scope, and what must not be inferred?
+- Expected: A 2024-modified, 2026-09-15-captured Adyen for Platforms financial-products compliance-guideline page about the platform's first/second-line customer support, channels and UK/Ireland vulnerable-customer assistance. It expressly disclaims legal advice. It does not certify current legal compliance, actual staffing, support performance, country eligibility or complaint resolution; the linked complaint guide owns complaint-specific deadlines.
+- Raw locators: `raw/adyen/docs/platforms/compliance-financial-products/customer-service-support/2026-09-15.md:15-25`, `:52-62`.
+- Canonical URL: `https://docs.adyen.com/platforms/compliance-financial-products/customer-service-support`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-financial-products]]` → `wiki/sources/adyen/source-adyen-docs-platforms-compliance-financial-products-customer-service-support.md` → `[[raw/adyen/docs/platforms/compliance-financial-products/customer-service-support/2026-09-15]]`.
+
+Q2. Which support duties and scope limits does the captured page assign?
+- Expected: The platform handles first/second-line support and customer communications with Adyen, with intake and more technical escalation, adequate resources, severity prioritization, relevant case numbers/status, delay notice and centrally accessible customer information. Channels must be clear, multiple, live-support capable, free and without barriers; chatbots need human touchpoints for complex needs or merchant request, and incident support remains reasonable. It requires 24/7 ability to **raise** suspected unauthorized-use/fraud/loss/theft notifications, not a 24/7 resolution promise. Training, monitoring and five-year records from service termination/user-account closure are stated. UK/Ireland vulnerable-customer measures include reasonable assistance, staff training, prominent contact notice, human touchpoints and assistive-technology compatibility; their scope is regional.
+- Raw locators: `raw/adyen/docs/platforms/compliance-financial-products/customer-service-support/2026-09-15.md:21-50`, `:52-62`.
+- Canonical URL: `https://docs.adyen.com/platforms/compliance-financial-products/customer-service-support`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-financial-products]]` → `wiki/sources/adyen/source-adyen-docs-platforms-compliance-financial-products-customer-service-support.md` → `[[raw/adyen/docs/platforms/compliance-financial-products/customer-service-support/2026-09-15]]`.

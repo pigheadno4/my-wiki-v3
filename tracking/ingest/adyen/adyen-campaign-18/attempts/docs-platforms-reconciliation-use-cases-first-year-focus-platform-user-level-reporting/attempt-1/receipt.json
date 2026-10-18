@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-reconciliation-use-cases-first-year-focus-platform-user-level-reporting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms user-level reporting use cases\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reconciliation-use-cases/first-year-focus/platform-user-level-reporting\"\nraw_files:\n  - \"adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-user-level-reporting/2026-09-15.md\"\ntags: [adyen, platforms, reporting, reconciliation, payouts, disputes]\n---\n\n## Overview\n\nThis 2026-09-15 first-year Adyen for Platforms guide suggests reports a platform can build for its SMB users: transaction overview, payout overview, and chargeback/dispute management. It compares ready-made UI components with custom dashboards fed by Balance Platform Accounting or Payout Report data. Its templates and example values illustrate desired user views, not verified transactions, actual bank deposits, or completed dispute outcomes.\n\n## Key takeaways\n\n- A user-facing **Transactions overview** should list sales, refunds, chargebacks, gross amounts, charged fees, and net payout context. For point-of-sale users it can contribute to a broader register view that also includes cash. The guide presents either the Transactions Overview Component or a custom dashboard built from automatically generated Balance Platform Accounting Report CSV and an ingestion pipeline. The report is described as a platform-day data source; a platform must still scope and transform records to the individual user and match the relevant statuses, dates, balance accounts, and references before asserting that user's sale or payout.\n- A **Payout overview** is a simplified set of transactions and fees that sum to a payout, with a daily example: payments, refunds, fees, and other movements. Options are the Payout Component or an ingested Payout Report, which the page says includes payouts and the transactions composing them. The example's `Other` footnote includes chargebacks, Capital-loan withholdings, and early/instant-settlement costs, so gross sales minus a single fee line is insufficient for a payout bridge. A report payout date or component view is not independent evidence that the beneficiary bank received funds.\n- A **Chargebacks and disputes** view should identify unanswered chargebacks/RFIs, fraud alerts, ongoing/closed items, deadlines, reasons, amounts and financial impact. The Disputes Component supports view, accept/defend, document upload and status tracking. The Balance Platform Accounting Report is an alternative for **financial** chargeback events but does not contain non-financial dispute events, so it cannot replace the dispute workflow or prove case resolution by itself.\n- In the accounting report's `platformPayment` category, `chargeback` debits the designated balance account and has negative Balance (BC), `chargebackReversal` credits it with positive Balance (BC) after a successful defense or repayment, and `secondChargeback` debits it again if the issuer rejects the defense. Chargeback and second-chargeback fees are separate report lines. These are event/report interpretations, not a guarantee that a dispute can still be defended or that a displayed reversal is final.\n- The transaction and payout tables are explicitly examples. A transaction template row shows a net-payout figure that cannot be derived from the values in that same row alone; do not use these sample figures as a reconciliation formula or live accounting proof. The daily payout example uses a 2025 date narrative only illustratively; actual account period, report date and funding evidence govern any real user's answer.\n\n## Detail locators\n\n- `## Transactions overview`: user sales/register purpose, sample fields and component versus Accounting Report build options.\n- `## Payout overview`: payout bridge, example amounts, Payout Component versus Payout Report, and `Other` footnote.\n- `## Chargebacks and disputes`: operational versus financial event scope, component workflow, Balance Platform Accounting report signs and separate fees.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main reporting/reconciliation concept.\n- [[adyen-platforms]] \u2014 parent Platforms context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-user-level-reporting/2026-09-15|Adyen Platforms user-level reporting use cases (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "These reports allow them to view and plan their business, using the data generated through their transactions.",
+      "location": "line 19"
+    },
+    {
+      "text": "Provide a list of all transactions on the account, including (but not limited to) sales, refunds, and chargebacks.",
+      "location": "line 34"
+    },
+    {
+      "text": "The [Payout Report](/platforms/reports-and-fees/payout-report) is a csv-file that includes all payouts processed on your platform on a given day, including the transactions that make up those payouts.",
+      "location": "line 76"
+    },
+    {
+      "text": "contains the financial chargeback-related events, but no non-financial dispute events.",
+      "location": "line 100"
+    },
+    {
+      "text": "the **Balance (BC)** column shows a negative value.",
+      "location": "line 104"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-platform-user-level-reporting-source-link",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] \u2014 2026-09-15 Platforms SMB-user transaction, payout, and dispute reporting options, separating UI components from accounting/payout-report grains and financial from non-financial events.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Tables are illustrative; a transaction row's net-payout figure is not derivable from that row alone and must not be used as a formula.",
+          "Balance Platform Accounting Report covers financial chargeback entries, not non-financial dispute events or workflow status.",
+          "A payout report row/date or component view does not prove bank receipt; user/account/date/reference scoping is needed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-user-level-reporting/2026-09-15.md",
+  "raw_sha256": "d1ef4123170e56ebda4c2fda36252f8f0b114623ea18d52652d8cb262ca33617",
+  "status": "candidate_ready"
+}

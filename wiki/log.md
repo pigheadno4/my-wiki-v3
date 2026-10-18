@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Adyen website C18
+
+- Fifty independently approved Platforms reconciliation/components/tax/compliance and Capital foundations documentation sources; first full-review approvals 40/50 and 11 targeted correction reviews. 6 concepts touched (2 new); source_count 914 = 900 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-18/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-18] ingest | Adyen website C17
 
 - Fifty independently approved Platforms payouts/transfers/top-ups/settlement/reporting documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 4 concepts touched (1 new); source_count 864 = 850 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-17/`; details [[adyen-log]]. No commit/push.

@@ -911,6 +911,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-platforms-transfer-transactions]] — Track Adyen Platforms balance-platform transactions and transfers (webpage, 2026-10-18)
 - [[source-adyen-docs-platforms-top-up-balance-account]] — Adyen for Platforms balance-account top-up overview (webpage, 2026-10-18)
 
+### Website documentation — Campaign 18
+
+- [[source-adyen-docs-platforms-components-overview]] — Adyen for Platforms UI component libraries overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases]] — Common reconciliation processes | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-capital]] — Adyen Capital overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-test-verification-errors]] — Test verification/KYC scenarios | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment-pay-by-link-component]] — Adyen Platform Experience Pay by Link components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment-disputes-component]] — Dispute components | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment-transactions-component]] — Adyen Platforms Transactions components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment-payouts-component]] — Adyen for Platforms payout components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-fees]] — Reconcile fees | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment-reports-component]] — Adyen Platform Experience Reports component (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-before-payment-transfer-instrument-component]] — Adyen Platforms Transfer Instrument components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-account-statements]] — Account statements for business accounts and Issuing | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-marketing-user-communication]] — Adyen financial-product marketing and user communication guidelines (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment-capital-component]] — Adyen for Platforms Capital components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-vulnerable-users]] — Vulnerable users (UK and Ireland only) | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-level-reporting]] — Adyen Platforms platform-level reporting use cases (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-us-tax-forms-edelivery-consent]] — Register consent for paperless delivery of tax forms (US only) | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-payments]] — Reconcile payments | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-user-interface]] — User application and interface | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-verify-balances]] — Adyen Platforms balance verification with reports (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-liable-account-summary]] — Adyen Platforms Liable account summary (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-reporting-and-reconciliation]] — Capital reporting and reconciliation | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-customer-complaints]] — Customer complaints and escalation | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-how-capital-works]] — Adyen Capital eligibility and financing lifecycle (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-webhook-types]] — Webhook structures and types for platforms | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-manage-user-capabilities]] — Adyen Capital user capability management (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] — Adyen Platforms user-level reporting use cases (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-integration-checklist]] — Capital integration checklist | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-pricing-and-eligibility]] — Pricing and eligibility | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-user-interface-capital-requirements]] — Additional user interface requirements for Capital | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-reporting-to-adyen]] — Adyen financial-product notification and reporting to Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-customer-service-support]] — Customer service and support | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products]] — Compliance guidelines for financial products | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-french-intermediary]] — Registration as an intermediary in France | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-transfers]] — Adyen Platforms reconcile fund transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-account-structure-resources]] — Adyen Capital account structure and resources (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-grant-lifecycle-and-status]] — Capital grant lifecycle and status | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-eu-depositor-info-sheet]] — EU depositor information sheet | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus]] — First year operational tasks | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-compliance-guidelines]] — Adyen Capital compliance guidelines overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-us-tax-forms]] — Provide tax forms (US only) | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-manage-access]] — Manage access for your Capital team | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-foreign-exchange-fees]] — Foreign exchange fees | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-get-started]] — Adyen Capital getting-started roadmap (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-repayment]] — Capital repayment | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-compliance-financial-products-keeping-records]] — Keeping records | Adyen for Platforms financial products (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-build-user-dashboards]] — Adyen Platform Experience user-dashboard components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-after-payment]] — Adyen Platform Experience after-payment components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-before-payment]] — Adyen Platforms before-payment components (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-components-overview-during-payment]] — During payment | Adyen Docs (webpage, 2026-10-18)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -943,6 +996,10 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-platform-components]] — Adyen for Platforms UI components
+
+- [[adyen-capital]] — Adyen Capital
 
 - [[adyen-platform-internal-transfers]] — Adyen for Platforms internal fund transfers
 

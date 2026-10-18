@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-webhook-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Webhook structures and types for platforms | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/webhook-types\"\nraw_files:\n  - \"adyen/docs/platforms/webhook-types/2026-09-15.md\"\ntags: [adyen, platforms, webhooks, transfers, balances]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms catalog maps webhook families, event `type` values, broad payload structure and object-specific meanings. It is a routing reference for asynchronous platform events, not evidence that a particular subscription was configured, an event was delivered, a payout reached a bank, or funds actually moved. See [[adyen]], [[adyen-platforms]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The catalog says webhooks may follow resource creation/update, request initiation, or funds movement. A general body has `data`, `environment` and `type`; `data` varies by type and some types include `data.status`. The listed initial groups are Configuration, onboarding on invite, payment method, Transfer, negative-balance warning and Report, while a separate Balance section also appears later (raw lines 19\u201346, 175\u2013181).\n- Configuration events cover account holders, balance accounts, managed payout schedules at balance-platform/balance-account/payout-execution grains, custom payout sweeps, payment instruments and an optionally enabled risk signal. A payout-schedule execution `succeeded` means a payout was initiated and its resulting `transferId` is in `resultDetails`; skipped/failed executions have distinct reasons. Schedule creation or an initiated payout does not prove booking or beneficiary-bank receipt (raw lines 80\u2013132).\n- Onboarding-on-invite `accountHolder.onboarded` concerns default resources; payment-method events concern request outcomes/removal; transfer `created` is a request and `updated` is a request status change. The table distinguishes payment/capture, refund, chargeback, payout, internal transfer and third-party bank transfer using category/type/counterparty fields. These are object/event distinctions, not one interchangeable payment status (raw lines 134\u2013173).\n- Balance `balanceAccount.balance.updated` reports a balance change. The negative-balance compensation warning reports a transfer scheduled after more than 20 days negative balance, and report-created means a report is ready for download. Legacy payment webhook types are explicitly deprecated in favor of transfer webhooks; their status examples must not be used as the current platform event path (raw lines 175\u2013210).\n- Some managed-payout schedule rows visibly include spaces after `balancePlatform.` in rendered link labels. Consult the linked API Explorer schema for exact event identifiers and payloads rather than copying those labels verbatim (raw lines 100\u2013111). The example `accountHolder.created` payload is a test illustration, not a delivered event for a real account (raw lines 48\u201378).\n\n## Detail locators\n\n- General structure/example: raw lines 34\u201378.\n- Configuration resource and payout-schedule event tables: raw lines 80\u2013132.\n- Onboarding, payment method, Transfer event distinctions and classification table: raw lines 134\u2013173.\n- Balance, negative-balance warning, report, and deprecated payment groups: raw lines 175\u2013210.\n\n## Related\n\n- [[adyen-webhooks]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-payout-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/webhook-types/2026-09-15|Pinned Adyen platform webhook types catalog]]\n",
+  "quotes": [
+    {
+      "text": "* A request was initiated (such as a payment authorisation request, a refund request, or a funds transfer request).",
+      "location": "raw line 22, triggers"
+    },
+    {
+      "text": "You can also differentiate the events based on the `type`. Some webhook types also include a `data.status` field that informs you of the outcome of the event.",
+      "location": "raw line 34, event differentiation"
+    },
+    {
+      "text": "The information contained in the `data` object varies and depends on the webhook type.",
+      "location": "raw line 46, webhook structure"
+    },
+    {
+      "text": "A transfer request was created to credit funds to or deduct funds from a balance account in your platform. The content informs you of the event that triggered the transfer request, such as a payment or refund.",
+      "location": "raw line 160, Transfer webhooks table"
+    },
+    {
+      "text": "Payment webhooks are deprecated. Use the [transfer webhooks](#transfer-webhooks) instead.",
+      "location": "raw line 201, deprecated group"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "webhooks-platform-types-source-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-development-resources-webhooks]] \u2014 unversioned documentation overview of webhook purpose, receiver actions, asynchronous flows, resource snapshots, and external-event examples",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-webhook-types]] \u2014 2026-09-15 Platforms webhook-family/type catalog across configuration, onboarding, payment methods, transfer, balance, warnings and reports, including deprecated payment types and object-grain distinctions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A transfer request, schedule event, warning or report-created event is not proof of booked funds, completed payout or beneficiary-bank receipt.",
+          "The initial group list omits the later Balance section, and some payout-schedule labels contain apparent spacing errors; verify exact event schema in API Explorer."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/webhook-types/2026-09-15.md",
+  "raw_sha256": "de699cc3571864f251c313b865277b91b79339af2abf55a62721f3a4294e5014",
+  "status": "candidate_ready"
+}

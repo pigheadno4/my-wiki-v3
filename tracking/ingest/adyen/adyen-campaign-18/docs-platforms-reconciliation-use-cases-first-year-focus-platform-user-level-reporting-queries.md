@@ -1,0 +1,7 @@
+# Platform user-level reporting retrieval checks
+
+Q1. What transaction and payout views does the guide recommend for an SMB user, and what differs between component and report-based builds?
+Expected forward route: [[adyen-index]] → [[adyen-reporting]] → ## Sources → [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] → [[raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-user-level-reporting/2026-09-15]]. Inspect raw lines 19–25 for the three use cases, 27–52 for transaction fields and component versus accounting-report pipeline, and 54–76 plus 111 for payout view, report, and `Other` movements. Tables at lines 38–43 and 66–69 are examples, not live financial records.
+
+Q2. Can the Balance Platform Accounting Report alone tell a user every dispute action and prove a payout reached a bank?
+Expected forward route: [[adyen-index]] → [[adyen-reporting]] → ## Sources → [[source-adyen-docs-platforms-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] → [[raw/adyen/docs/platforms/reconciliation-use-cases/first-year-focus/platform-user-level-reporting/2026-09-15]]. Inspect raw lines 78–100 for operational dispute requirements and financial-only accounting-report boundary; lines 102–107 for negative/positive chargeback event signs and separate fee rows; lines 54–76 for payout reporting. Neither report nor component display establishes bank receipt or final dispute resolution.

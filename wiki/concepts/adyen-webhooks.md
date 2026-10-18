@@ -58,3 +58,5 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 - [[source-adyen-docs-development-resources-webhooks-webhook-types]] - webpage catalog separating Payments and Platforms webhook structures, configured event scope, Standard default and optional events, and forward-compatible event-handling warnings
 
 - [[source-adyen-docs-development-resources-webhooks]] — unversioned documentation overview of webhook purpose, receiver actions, asynchronous flows, resource snapshots, and external-event examples
+
+- [[source-adyen-docs-platforms-webhook-types]] — 2026-09-15 Platforms webhook-family/type catalog across configuration, onboarding, payment methods, transfer, balance, warnings and reports, including deprecated payment types and object-grain distinctions.

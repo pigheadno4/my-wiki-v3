@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-components-overview-after-payment-transactions-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms Transactions components\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/components-overview/after-payment/transactions-component\"\nraw_files:\n  - \"adyen/docs/platforms/components-overview/after-payment/transactions-component/2026-09-15.md\"\ntags: [adyen, platforms, ui-components, transactions, refunds]\n---\n\n## Overview\n\nThis 2026-09-15 guide describes Transactions Overview and Transaction Details Platform Experience components for a platform's user portal. The overview lists and filters transactions for a selected balance account and period, shows balances and transaction insights, and exports CSV. Details opens by default as a modal or can be initialized on a separate page. A role-gated refund action can submit a refund request through Adyen's API. The page explains component integration and UI behavior, not a guarantee of final refund outcome or shopper receipt.\n\n## Key takeaways\n\n- Prerequisites are an Adyen for Platforms integration, Balance Platform API credential, and Adyen-assigned **Transactions Overview Component: View** role. **Transactions Overview Component: Manage Refunds** must be assigned to the credential and included in the authentication session to enable refunds. The server creates a Session Authentication API `POST /sessions` token for a specific `accountHolder` resource, with `product=platform`, allowed origin, and roles; the live origin must use HTTPS. The client initializes the library using the session response. The example URL is a test endpoint, not a live operation.\n- Transactions Overview displays a balance-account transaction list, available and reserved balances, and Insights for a selected period and currency. Period Result is net incoming less outgoing; incoming/outgoing totals are grouped by transaction type. Filters include balance account, time period (in the balance account's timezone; default last 180 days), transaction type, currency, and exact PSP reference. A PSP-reference search is still subject to the other active filters.\n- CSV export is limited to the first 100 matching transactions and CSV format. It is a filtered UI export, not a complete ledger or a reconciliation result. Transaction Details shows summary, references and associated refunds, and a timeline when available; user-defined display fields may be added.\n- When a user confirms a supported full or partial refund, the components call Adyen's API to process the request and then show a refund status message and label. Payment-method support controls availability. Multiple partial refunds are described as possible while their total does not exceed the original payment amount. A submitted request or displayed status must not be treated as proof of final settlement or shopper receipt; use refund-specific evidence for that lifecycle.\n- Available guidance and features depend on library version. Localization, appearance, and data customization are optional, and the guide lists 11 supported languages. The broader component-suite guide supplies country/region and browser boundaries. The `availableTranslations` property is deprecated; current locale files are fetched from CDN.\n\n## Detail locators\n\n- `## Requirements`: integration, credential roles, CSV limits, country/browser cross-reference.\n- `## Transactions Overview component` and `## Transaction Details component`: displayed data, filters, export, insights, detail tabs.\n- `## Processing refunds through components`: role, user action, API request, partial-refund condition, status display.\n- `## 1. Create an authentication session from your server`: account-holder scoped session, roles, product, origin, test example.\n- `## Supported languages`: language list.\n\n## Related\n\n- [[adyen-platform-components]] \u2014 main component-suite concept.\n- [[adyen-platforms]] \u2014 parent Platforms context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/components-overview/after-payment/transactions-component/2026-09-15|Adyen Transactions components guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The guidance and features available may differ based on the library version in use.",
+      "location": "line 36"
+    },
+    {
+      "text": "The maximum number of rows per transaction export is 100.",
+      "location": "line 54"
+    },
+    {
+      "text": "The refund feature requires the **Transactions Overview Component: Manage Refunds** role to be assigned to your API credential and included in the session request.",
+      "location": "line 179"
+    },
+    {
+      "text": "The transaction components support both full and partial refunds depending on the [payment method](/payment-methods).",
+      "location": "line 183"
+    },
+    {
+      "text": "On live, only the HTTPS protocol is supported.",
+      "location": "line 239"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c18-transactions-component-source-link",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-components-overview-after-payment-transactions-component]] \u2014 Transactions Overview/Details data, role-gated refunds, session setup, and CSV limits (2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "CSV is limited to first 100 matching rows, not complete reconciliation.",
+          "Refund action submits an API request and displays status; final refund outcome or shopper receipt requires separate evidence.",
+          "Credential and session roles both gate refund, and features vary by library version."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/components-overview/after-payment/transactions-component/2026-09-15.md",
+  "raw_sha256": "d27864604a2e2b5297f327f5f17ccddf37dc54ee70178f61886db1d0e1ce5f3c",
+  "status": "candidate_ready"
+}

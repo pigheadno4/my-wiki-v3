@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-18] ingest | Adyen website C18
+
+- All 50 exact-manifest Platforms reconciliation/components/tax/compliance and Capital foundations General Docs sources independently approved and promoted. First full-review approvals 40/50; 11 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 6 concepts, including 2 new concept(s). Account/report/reference/date/sign grains, component roles/sessions versus financial execution, country/product-specific dated compliance and tax duties, and grant/repayment states versus actual financing/debt/bank outcomes remain distinct. Original reviews, attempts and bounded correction evidence retained. Platform guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 914 = 900 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-18/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-18] ingest | Adyen website C17
 
 - All 50 exact-manifest Platforms payouts/transfers/top-ups/settlement/reporting General Docs sources independently approved and promoted. First full-review approvals 43/50; 7 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
