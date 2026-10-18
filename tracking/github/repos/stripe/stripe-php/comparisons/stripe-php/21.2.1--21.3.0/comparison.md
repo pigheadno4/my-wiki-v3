@@ -1,0 +1,99 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-php`
+- Package: `stripe-php`
+- From: `21.2.1` (`da798f6224c5ff6f89d8d78025044f418ee27db8`)
+- To: `21.3.0` (`fe99159b9ee0a74be3c12c0305e5338e0b9905c3`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `init.php`
+- `lib/AbstractEventNotificationHandler.php`
+- `lib/AccountSession.php`
+- `lib/BaseStripeClient.php`
+- `lib/Billing/FeedbackOption.php`
+- `lib/BillingPortal/Configuration.php`
+- `lib/BillingPortal/Session.php`
+- `lib/Charge.php`
+- `lib/Checkout/Session.php`
+- `lib/Climate/Order.php`
+- `lib/Climate/Product.php`
+- `lib/ConfirmationToken.php`
+- `lib/CustomerSession.php`
+- `lib/EphemeralKey.php`
+- `lib/ErrorObject.php`
+- `lib/FinancialConnections/Session.php`
+- `lib/Invoice.php`
+- `lib/InvoiceItem.php`
+- `lib/Issuing/Cardholder.php`
+- `lib/PaymentAttemptRecord.php`
+- `lib/PaymentLink.php`
+- `lib/PaymentRecord.php`
+- `lib/Service/AccountSessionService.php`
+- `lib/Service/Billing/BillingServiceFactory.php`
+- `lib/Service/Billing/FeedbackOptionService.php`
+- `lib/Service/BillingPortal/ConfigurationService.php`
+- `lib/Service/Checkout/SessionService.php`
+- `lib/Service/CustomerSessionService.php`
+- `lib/Service/InvoiceService.php`
+- `lib/Service/PaymentLinkService.php`
+- `lib/Service/SubscriptionService.php`
+- `lib/Service/Tax/RegistrationService.php`
+- `lib/Stripe.php`
+- `lib/StripeEventNotificationHandler.php`
+- `lib/StripeEventNotificationHandlerWithoutVerification.php`
+- `lib/Subscription.php`
+- `lib/Tax/Registration.php`
+- `lib/Treasury/FinancialAccount.php`
+- `lib/UnhandledNotificationDetails.php`
+- `lib/Util/ApiVersion.php`
+- `lib/Util/Int64.php`
+- `lib/Util/ObjectTypes.php`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `init.php`
+- `added`: `lib/AbstractEventNotificationHandler.php`
+- `modified`: `lib/AccountSession.php`
+- `modified`: `lib/BaseStripeClient.php`
+- `added`: `lib/Billing/FeedbackOption.php`
+- `modified`: `lib/BillingPortal/Configuration.php`
+- `modified`: `lib/BillingPortal/Session.php`
+- `modified`: `lib/Charge.php`
+- `modified`: `lib/Checkout/Session.php`
+- `modified`: `lib/Climate/Order.php`
+- `modified`: `lib/Climate/Product.php`
+- `modified`: `lib/ConfirmationToken.php`
+- `modified`: `lib/CustomerSession.php`
+- `modified`: `lib/EphemeralKey.php`
+- `modified`: `lib/ErrorObject.php`
+- `modified`: `lib/FinancialConnections/Session.php`
+- `modified`: `lib/Invoice.php`
+- `modified`: `lib/InvoiceItem.php`
+- `modified`: `lib/Issuing/Cardholder.php`
+- `modified`: `lib/PaymentAttemptRecord.php`
+- `modified`: `lib/PaymentLink.php`
+- `modified`: `lib/PaymentRecord.php`
+- `modified`: `lib/Service/AccountSessionService.php`
+- `modified`: `lib/Service/Billing/BillingServiceFactory.php`
+- `added`: `lib/Service/Billing/FeedbackOptionService.php`
+- `modified`: `lib/Service/BillingPortal/ConfigurationService.php`
+- `modified`: `lib/Service/Checkout/SessionService.php`
+- `modified`: `lib/Service/CustomerSessionService.php`
+- `modified`: `lib/Service/InvoiceService.php`
+- `modified`: `lib/Service/PaymentLinkService.php`
+- `modified`: `lib/Service/SubscriptionService.php`
+- `modified`: `lib/Service/Tax/RegistrationService.php`
+- `modified`: `lib/Stripe.php`
+- `added`: `lib/StripeEventNotificationHandler.php`
+- `added`: `lib/StripeEventNotificationHandlerWithoutVerification.php`
+- `modified`: `lib/Subscription.php`
+- `modified`: `lib/Tax/Registration.php`
+- `modified`: `lib/Treasury/FinancialAccount.php`
+- `added`: `lib/UnhandledNotificationDetails.php`
+- `modified`: `lib/Util/ApiVersion.php`
+- `modified`: `lib/Util/Int64.php`
+- `modified`: `lib/Util/ObjectTypes.php`

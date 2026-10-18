@@ -32,6 +32,17 @@ Update/resume `billing_cycle_anchor` becomes an object with `type: 'now' | 'unch
 > [!warning] Contradiction
 > The historical trial-only paused-status description above is not exhaustive for this SDK: the 23.0.0 generated status comment repeats it even though that same file implements explicit pause and exposes `pause_requested` reasons. Preserve the old guide/version evidence; consult the version-qualified endpoint and product prerequisites rather than treating that comment as a restriction. See [[stripe-node-sdk]] and [[source-github-stripe-node]].
 
+## PHP 22.0.0 Pause and Anchor Contracts
+
+PHP exposes `$stripe->subscriptions->pause($id, $params)`, POST `/v1/subscriptions/{id}/pause`, distinct from `pause_collection`. Its endpoint comment says paused subscriptions stop invoices/new periods and excludes subscriptions with attached schedules. `pause_schedules` on SubscriptionSchedule provides a separate schedule-managed surface. Update/resume `billing_cycle_anchor` now uses an array with `type`; invoice-preview anchors additionally allow `timestamp`. Resume adds `payment_behavior`; subscription items expose `current_trial`, and subscription/invoice responses add `status_details`. These are SDK contracts, not standalone product-eligibility guarantees. Source: [[source-github-stripe-php]].
+
+> [!warning] Contradiction
+> PHP22.0.0's `Subscription::$status` comment still says paused status is only entered after a trial ends without a payment method, but its service implements the new explicit pause endpoint. Preserve the earlier guide/version information and consult endpoint prerequisites; that comment is not an exhaustive rule. See [[source-github-stripe-php]].
+
+## PHP 21.3.0 Cancellation Feedback
+
+The PHP SDK adds `billing->feedbackOptions` create/list/retrieve/update/deactivate operations, portal cancellation `feedback_options`, and subscription cancellation/update `cancellation_details.feedback_option`. Deactivated feedback options cannot be used in portal configurations. These generated contracts extend custom cancellation reasons; they do not change the irreversible canceled-subscription boundary. Source: [[source-github-stripe-php]].
+
 ## Integration Paths
 
 | Path | Best for |

@@ -61,6 +61,14 @@ Stripe's no-code shareable payment URL product. Customers pay on a Stripe-hosted
 - **Override payment methods**: `payment_method_types: ['card', 'klarna']`
 - **Supported pricing models**: flat rate, tiered, package pricing (recurring + one-off)
 
+## PHP 21.3.0 Update Surface
+
+The PHP SDK's Payment Link update parameters add `application_fee_amount`, `application_fee_percent`, `on_behalf_of` and `transfer_data` (destination plus optional amount). This is version-qualified Connect request-contract evidence, not a statement that every merchant or payment flow is eligible. Source: [[source-github-stripe-php]].
+
+## PHP 22.0.0 Scope Boundary
+
+Payment Link create/update still accept `payment_method_types` in this version; selected Checkout/PaymentIntent/SetupIntent request removals must not be applied here. Create line-item inline product data adds `tax_details` with optional `performance_location`/`tax_code`. Method/tax contracts do not establish merchant eligibility. Source: [[source-github-stripe-php]].
+
 ## Checkout Customization
 
 | Feature | API param | Notes |

@@ -476,8 +476,8 @@ Operations history: [[stripe-log]]
 - [[changelog-github-sync-engine]] — commit-qualified Sync Engine baseline, operational boundaries, documentation drift, and comparison rule (github-repo, 2026-08-27)
 - [[source-github-stripe-apps]] — `default-branch@9b14b71`: Stripe App manifest schemas, Dashboard UI-extension architecture, full-page example, and mock-only data boundary (github-repo, 2026-08-28)
 - [[changelog-github-stripe-apps]] — commit-qualified Stripe Apps baseline, schema/example drift, SDK-history boundary, and future comparison rule (github-repo, 2026-08-28)
-- [[source-github-stripe-php]] — `stripe-php@21.2.0`: PHP server SDK services, v1/v2 encoding, retries/idempotency, webhook and thin-event handling, Checkout, subscriptions, and Terminal (github-repo, 2026-08-15)
-- [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event-notification and pre-verified parser changes (github-repo, 2026-08-15)
+- [[source-github-stripe-php]] — cumulative Stripe PHP through `22.0.0`: PHP7.4/Endive, event context, request/Billing migrations and retained v21 history (github-repo, updated 2026-10-18)
+- [[changelog-github-stripe-php]] — package-qualified Stripe PHP history through `22.0.0`, preserving every retained full/delta ingest (github-repo, updated 2026-10-18)
 - [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` history through v7.0.0: Payment Request Button removal, Stripe JS v10 peers, React 19 lifecycle guard and preserved v6 knowledge (github-repo, updated 2026-10-16)
 - [[changelog-github-react-stripe-js]] — package-qualified `stripe/react-stripe-js` history through v7.0.0 with migration, retained deprecated hook and runtime boundaries (github-repo, updated 2026-10-16)
 - [[stripe-financial-account-disclosures]] — React TreasuryDisclosure contract, error/lifecycle limits and eligibility boundary
@@ -722,7 +722,7 @@ Operations history: [[stripe-log]]
 - [[stripe-node-sdk]] — Stripe Node.js SDK through `22.6.2`: notification handlers/context limits, request/upload hardening, query coercion, retries/idempotency and checkout contracts
 - [[stripe-cli]] — Stripe CLI history from `1.50.0` through `1.53.0`; authentication, webhook/request tooling and checkout evidence boundaries
 - [[stripe-link-cli]] — Link CLI `0.13.0`: agent-facing Link wallet, approval-gated virtual cards, SPT/MPP, Link Pay Token, MCP, and financial-data access
-- [[stripe-php-sdk]] — Stripe PHP SDK `21.2.0`: client services, request modes, retries/idempotency, webhook verification, and checkout-focused server API surface
+- [[stripe-php-sdk]] — Stripe PHP SDK through `22.0.0`: PHP7.4/Endive migration, thin handlers/context, security guards and retained v21 contracts
 - [[stripe-currencies]] — Stripe Currencies: presentment/settlement/payment method, minor units, special cases (ISK/HUF/TWD/UGX), min/max charge amounts
 - [[stripe-declines]] — Stripe Declines: 3 failure types, outcome object fields, Radar block reasons, Adaptive Acceptance, allow list
 - [[stripe-3d-secure]] — Stripe 3D Secure: 3DS2 flow, manual trigger (any/challenge), web/iOS/Android/RN, liability shift, 6 web + 4 mobile test cards

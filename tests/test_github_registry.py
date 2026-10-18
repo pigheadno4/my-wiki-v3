@@ -1908,10 +1908,18 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
         self.assertEqual("text-secrets-v1", capsule.secret_detector)
         self.assertEqual(1000000, capsule.max_file_bytes)
-        self.assertEqual(492, capsule.max_capsule_files)
-        self.assertEqual(3100000, capsule.max_capsule_utf8_bytes)
-        self.assertEqual(512, capsule.max_packet_files)
-        self.assertEqual(3600000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(1000, capsule.max_capsule_files)
+        self.assertEqual(4000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(1200, capsule.max_packet_files)
+        self.assertEqual(8000000, capsule.max_packet_utf8_bytes)
+        self.assertIn(
+            "fe1e22118b6f335f28c9fdc5d12e452ebbeaf423bd02d3b429c23590b588b4e1",
+            capsule.historical_policy_hashes,
+        )
+        self.assertIn(
+            "8ec12e4ea949ea1d03e3bad14ace973b4e888228fe77b7fbd85dd30c0168f172",
+            capsule.historical_policy_hashes,
+        )
 
     def test_stripe_js_uses_the_root_npm_public_source_profile(self):
         repos = load_registry(ROOT / "tracking/github/repo-registry.toml")

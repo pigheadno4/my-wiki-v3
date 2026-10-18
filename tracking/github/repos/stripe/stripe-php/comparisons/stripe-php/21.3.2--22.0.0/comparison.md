@@ -1,0 +1,1243 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-php`
+- Package: `stripe-php`
+- From: `21.3.2` (`0d8b075e1a97d15c5324353a5277d0ea686ea525`)
+- To: `22.0.0` (`c4c1f658483e717519935222e47af224ef4a508b`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `README.md`
+- `composer.json`
+- `init.php`
+- `lib/AbstractEventNotificationHandler.php`
+- `lib/Account.php`
+- `lib/AccountSession.php`
+- `lib/ApiRequestor.php`
+- `lib/ApplicationFee.php`
+- `lib/Apps/Install.php`
+- `lib/Balance.php`
+- `lib/BalanceTransaction.php`
+- `lib/Billing/FeedbackOption.php`
+- `lib/Charge.php`
+- `lib/Checkout/Session.php`
+- `lib/ConfirmationToken.php`
+- `lib/Coupon.php`
+- `lib/CreditNote.php`
+- `lib/Customer.php`
+- `lib/Discount.php`
+- `lib/Dispute.php`
+- `lib/ErrorObject.php`
+- `lib/Event.php`
+- `lib/Events/V1AccountApplicationAuthorizedEvent.php`
+- `lib/Events/V1AccountApplicationAuthorizedEventNotification.php`
+- `lib/Events/V1AccountApplicationDeauthorizedEvent.php`
+- `lib/Events/V1AccountApplicationDeauthorizedEventNotification.php`
+- `lib/Events/V1AccountExternalAccountCreatedEvent.php`
+- `lib/Events/V1AccountExternalAccountCreatedEventNotification.php`
+- `lib/Events/V1AccountExternalAccountDeletedEvent.php`
+- `lib/Events/V1AccountExternalAccountDeletedEventNotification.php`
+- `lib/Events/V1AccountExternalAccountUpdatedEvent.php`
+- `lib/Events/V1AccountExternalAccountUpdatedEventNotification.php`
+- `lib/Events/V1AccountUpdatedEvent.php`
+- `lib/Events/V1AccountUpdatedEventNotification.php`
+- `lib/Events/V1ApplicationFeeCreatedEvent.php`
+- `lib/Events/V1ApplicationFeeCreatedEventNotification.php`
+- `lib/Events/V1ApplicationFeeRefundUpdatedEvent.php`
+- `lib/Events/V1ApplicationFeeRefundUpdatedEventNotification.php`
+- `lib/Events/V1ApplicationFeeRefundedEvent.php`
+- `lib/Events/V1ApplicationFeeRefundedEventNotification.php`
+- `lib/Events/V1BalanceAvailableEvent.php`
+- `lib/Events/V1BalanceAvailableEventNotification.php`
+- `lib/Events/V1BalanceSettingsUpdatedEvent.php`
+- `lib/Events/V1BalanceSettingsUpdatedEventNotification.php`
+- `lib/Events/V1BillingAlertTriggeredEvent.php`
+- `lib/Events/V1BillingAlertTriggeredEventNotification.php`
+- `lib/Events/V1BillingCreditBalanceTransactionCreatedEvent.php`
+- `lib/Events/V1BillingCreditBalanceTransactionCreatedEventNotification.php`
+- `lib/Events/V1BillingCreditGrantCreatedEvent.php`
+- `lib/Events/V1BillingCreditGrantCreatedEventNotification.php`
+- `lib/Events/V1BillingCreditGrantUpdatedEvent.php`
+- `lib/Events/V1BillingCreditGrantUpdatedEventNotification.php`
+- `lib/Events/V1BillingMeterCreatedEvent.php`
+- `lib/Events/V1BillingMeterCreatedEventNotification.php`
+- `lib/Events/V1BillingMeterDeactivatedEvent.php`
+- `lib/Events/V1BillingMeterDeactivatedEventNotification.php`
+- `lib/Events/V1BillingMeterReactivatedEvent.php`
+- `lib/Events/V1BillingMeterReactivatedEventNotification.php`
+- `lib/Events/V1BillingMeterUpdatedEvent.php`
+- `lib/Events/V1BillingMeterUpdatedEventNotification.php`
+- `lib/Events/V1BillingPortalConfigurationCreatedEvent.php`
+- `lib/Events/V1BillingPortalConfigurationCreatedEventNotification.php`
+- `lib/Events/V1BillingPortalConfigurationUpdatedEvent.php`
+- `lib/Events/V1BillingPortalConfigurationUpdatedEventNotification.php`
+- `lib/Events/V1BillingPortalSessionCreatedEvent.php`
+- `lib/Events/V1BillingPortalSessionCreatedEventNotification.php`
+- `lib/Events/V1CapabilityUpdatedEvent.php`
+- `lib/Events/V1CapabilityUpdatedEventNotification.php`
+- `lib/Events/V1CashBalanceFundsAvailableEvent.php`
+- `lib/Events/V1CashBalanceFundsAvailableEventNotification.php`
+- `lib/Events/V1ChargeCapturedEvent.php`
+- `lib/Events/V1ChargeCapturedEventNotification.php`
+- `lib/Events/V1ChargeDisputeClosedEvent.php`
+- `lib/Events/V1ChargeDisputeClosedEventNotification.php`
+- `lib/Events/V1ChargeDisputeCreatedEvent.php`
+- `lib/Events/V1ChargeDisputeCreatedEventNotification.php`
+- `lib/Events/V1ChargeDisputeFundsReinstatedEvent.php`
+- `lib/Events/V1ChargeDisputeFundsReinstatedEventNotification.php`
+- `lib/Events/V1ChargeDisputeFundsWithdrawnEvent.php`
+- `lib/Events/V1ChargeDisputeFundsWithdrawnEventNotification.php`
+- `lib/Events/V1ChargeDisputeUpdatedEvent.php`
+- `lib/Events/V1ChargeDisputeUpdatedEventNotification.php`
+- `lib/Events/V1ChargeExpiredEvent.php`
+- `lib/Events/V1ChargeExpiredEventNotification.php`
+- `lib/Events/V1ChargeFailedEvent.php`
+- `lib/Events/V1ChargeFailedEventNotification.php`
+- `lib/Events/V1ChargePendingEvent.php`
+- `lib/Events/V1ChargePendingEventNotification.php`
+- `lib/Events/V1ChargeRefundUpdatedEvent.php`
+- `lib/Events/V1ChargeRefundUpdatedEventNotification.php`
+- `lib/Events/V1ChargeRefundedEvent.php`
+- `lib/Events/V1ChargeRefundedEventNotification.php`
+- `lib/Events/V1ChargeSucceededEvent.php`
+- `lib/Events/V1ChargeSucceededEventNotification.php`
+- `lib/Events/V1ChargeUpdatedEvent.php`
+- `lib/Events/V1ChargeUpdatedEventNotification.php`
+- `lib/Events/V1CheckoutSessionAsyncPaymentFailedEvent.php`
+- `lib/Events/V1CheckoutSessionAsyncPaymentFailedEventNotification.php`
+- `lib/Events/V1CheckoutSessionAsyncPaymentSucceededEvent.php`
+- `lib/Events/V1CheckoutSessionAsyncPaymentSucceededEventNotification.php`
+- `lib/Events/V1CheckoutSessionCompletedEvent.php`
+- `lib/Events/V1CheckoutSessionCompletedEventNotification.php`
+- `lib/Events/V1CheckoutSessionExpiredEvent.php`
+- `lib/Events/V1CheckoutSessionExpiredEventNotification.php`
+- `lib/Events/V1ClimateOrderCanceledEvent.php`
+- `lib/Events/V1ClimateOrderCanceledEventNotification.php`
+- `lib/Events/V1ClimateOrderCreatedEvent.php`
+- `lib/Events/V1ClimateOrderCreatedEventNotification.php`
+- `lib/Events/V1ClimateOrderDelayedEvent.php`
+- `lib/Events/V1ClimateOrderDelayedEventNotification.php`
+- `lib/Events/V1ClimateOrderDeliveredEvent.php`
+- `lib/Events/V1ClimateOrderDeliveredEventNotification.php`
+- `lib/Events/V1ClimateOrderProductSubstitutedEvent.php`
+- `lib/Events/V1ClimateOrderProductSubstitutedEventNotification.php`
+- `lib/Events/V1ClimateProductCreatedEvent.php`
+- `lib/Events/V1ClimateProductCreatedEventNotification.php`
+- `lib/Events/V1ClimateProductPricingUpdatedEvent.php`
+- `lib/Events/V1ClimateProductPricingUpdatedEventNotification.php`
+- `lib/Events/V1CouponCreatedEvent.php`
+- `lib/Events/V1CouponCreatedEventNotification.php`
+- `lib/Events/V1CouponDeletedEvent.php`
+- `lib/Events/V1CouponDeletedEventNotification.php`
+- `lib/Events/V1CouponUpdatedEvent.php`
+- `lib/Events/V1CouponUpdatedEventNotification.php`
+- `lib/Events/V1CreditNoteCreatedEvent.php`
+- `lib/Events/V1CreditNoteCreatedEventNotification.php`
+- `lib/Events/V1CreditNoteUpdatedEvent.php`
+- `lib/Events/V1CreditNoteUpdatedEventNotification.php`
+- `lib/Events/V1CreditNoteVoidedEvent.php`
+- `lib/Events/V1CreditNoteVoidedEventNotification.php`
+- `lib/Events/V1CustomerCashBalanceTransactionCreatedEvent.php`
+- `lib/Events/V1CustomerCashBalanceTransactionCreatedEventNotification.php`
+- `lib/Events/V1CustomerCreatedEvent.php`
+- `lib/Events/V1CustomerCreatedEventNotification.php`
+- `lib/Events/V1CustomerDeletedEvent.php`
+- `lib/Events/V1CustomerDeletedEventNotification.php`
+- `lib/Events/V1CustomerDiscountCreatedEvent.php`
+- `lib/Events/V1CustomerDiscountCreatedEventNotification.php`
+- `lib/Events/V1CustomerDiscountDeletedEvent.php`
+- `lib/Events/V1CustomerDiscountDeletedEventNotification.php`
+- `lib/Events/V1CustomerDiscountUpdatedEvent.php`
+- `lib/Events/V1CustomerDiscountUpdatedEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionCreatedEvent.php`
+- `lib/Events/V1CustomerSubscriptionCreatedEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionDeletedEvent.php`
+- `lib/Events/V1CustomerSubscriptionDeletedEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionPausedEvent.php`
+- `lib/Events/V1CustomerSubscriptionPausedEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEvent.php`
+- `lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEvent.php`
+- `lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionResumedEvent.php`
+- `lib/Events/V1CustomerSubscriptionResumedEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionTrialWillEndEvent.php`
+- `lib/Events/V1CustomerSubscriptionTrialWillEndEventNotification.php`
+- `lib/Events/V1CustomerSubscriptionUpdatedEvent.php`
+- `lib/Events/V1CustomerSubscriptionUpdatedEventNotification.php`
+- `lib/Events/V1CustomerTaxIdCreatedEvent.php`
+- `lib/Events/V1CustomerTaxIdCreatedEventNotification.php`
+- `lib/Events/V1CustomerTaxIdDeletedEvent.php`
+- `lib/Events/V1CustomerTaxIdDeletedEventNotification.php`
+- `lib/Events/V1CustomerTaxIdUpdatedEvent.php`
+- `lib/Events/V1CustomerTaxIdUpdatedEventNotification.php`
+- `lib/Events/V1CustomerUpdatedEvent.php`
+- `lib/Events/V1CustomerUpdatedEventNotification.php`
+- `lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEvent.php`
+- `lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEventNotification.php`
+- `lib/Events/V1FileCreatedEvent.php`
+- `lib/Events/V1FileCreatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountCreatedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountCreatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountDeactivatedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountDeactivatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountDisconnectedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountDisconnectedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountReactivatedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountReactivatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEventNotification.php`
+- `lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEvent.php`
+- `lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEventNotification.php`
+- `lib/Events/V1IdentityVerificationSessionCanceledEvent.php`
+- `lib/Events/V1IdentityVerificationSessionCanceledEventNotification.php`
+- `lib/Events/V1IdentityVerificationSessionCreatedEvent.php`
+- `lib/Events/V1IdentityVerificationSessionCreatedEventNotification.php`
+- `lib/Events/V1IdentityVerificationSessionProcessingEvent.php`
+- `lib/Events/V1IdentityVerificationSessionProcessingEventNotification.php`
+- `lib/Events/V1IdentityVerificationSessionRedactedEvent.php`
+- `lib/Events/V1IdentityVerificationSessionRedactedEventNotification.php`
+- `lib/Events/V1IdentityVerificationSessionRequiresInputEvent.php`
+- `lib/Events/V1IdentityVerificationSessionRequiresInputEventNotification.php`
+- `lib/Events/V1IdentityVerificationSessionVerifiedEvent.php`
+- `lib/Events/V1IdentityVerificationSessionVerifiedEventNotification.php`
+- `lib/Events/V1InvoiceCreatedEvent.php`
+- `lib/Events/V1InvoiceCreatedEventNotification.php`
+- `lib/Events/V1InvoiceDeletedEvent.php`
+- `lib/Events/V1InvoiceDeletedEventNotification.php`
+- `lib/Events/V1InvoiceFinalizationFailedEvent.php`
+- `lib/Events/V1InvoiceFinalizationFailedEventNotification.php`
+- `lib/Events/V1InvoiceFinalizedEvent.php`
+- `lib/Events/V1InvoiceFinalizedEventNotification.php`
+- `lib/Events/V1InvoiceMarkedUncollectibleEvent.php`
+- `lib/Events/V1InvoiceMarkedUncollectibleEventNotification.php`
+- `lib/Events/V1InvoiceOverdueEvent.php`
+- `lib/Events/V1InvoiceOverdueEventNotification.php`
+- `lib/Events/V1InvoiceOverpaidEvent.php`
+- `lib/Events/V1InvoiceOverpaidEventNotification.php`
+- `lib/Events/V1InvoicePaidEvent.php`
+- `lib/Events/V1InvoicePaidEventNotification.php`
+- `lib/Events/V1InvoicePaymentActionRequiredEvent.php`
+- `lib/Events/V1InvoicePaymentActionRequiredEventNotification.php`
+- `lib/Events/V1InvoicePaymentAttemptRequiredEvent.php`
+- `lib/Events/V1InvoicePaymentAttemptRequiredEventNotification.php`
+- `lib/Events/V1InvoicePaymentFailedEvent.php`
+- `lib/Events/V1InvoicePaymentFailedEventNotification.php`
+- `lib/Events/V1InvoicePaymentPaidEvent.php`
+- `lib/Events/V1InvoicePaymentPaidEventNotification.php`
+- `lib/Events/V1InvoicePaymentSucceededEvent.php`
+- `lib/Events/V1InvoicePaymentSucceededEventNotification.php`
+- `lib/Events/V1InvoiceSentEvent.php`
+- `lib/Events/V1InvoiceSentEventNotification.php`
+- `lib/Events/V1InvoiceUpcomingEvent.php`
+- `lib/Events/V1InvoiceUpcomingEventNotification.php`
+- `lib/Events/V1InvoiceUpdatedEvent.php`
+- `lib/Events/V1InvoiceUpdatedEventNotification.php`
+- `lib/Events/V1InvoiceVoidedEvent.php`
+- `lib/Events/V1InvoiceVoidedEventNotification.php`
+- `lib/Events/V1InvoiceWillBeDueEvent.php`
+- `lib/Events/V1InvoiceWillBeDueEventNotification.php`
+- `lib/Events/V1InvoiceitemCreatedEvent.php`
+- `lib/Events/V1InvoiceitemCreatedEventNotification.php`
+- `lib/Events/V1InvoiceitemDeletedEvent.php`
+- `lib/Events/V1InvoiceitemDeletedEventNotification.php`
+- `lib/Events/V1IssuingAuthorizationCreatedEvent.php`
+- `lib/Events/V1IssuingAuthorizationCreatedEventNotification.php`
+- `lib/Events/V1IssuingAuthorizationRequestEvent.php`
+- `lib/Events/V1IssuingAuthorizationRequestEventNotification.php`
+- `lib/Events/V1IssuingAuthorizationUpdatedEvent.php`
+- `lib/Events/V1IssuingAuthorizationUpdatedEventNotification.php`
+- `lib/Events/V1IssuingCardCreatedEvent.php`
+- `lib/Events/V1IssuingCardCreatedEventNotification.php`
+- `lib/Events/V1IssuingCardUpdatedEvent.php`
+- `lib/Events/V1IssuingCardUpdatedEventNotification.php`
+- `lib/Events/V1IssuingCardholderCreatedEvent.php`
+- `lib/Events/V1IssuingCardholderCreatedEventNotification.php`
+- `lib/Events/V1IssuingCardholderUpdatedEvent.php`
+- `lib/Events/V1IssuingCardholderUpdatedEventNotification.php`
+- `lib/Events/V1IssuingDisputeClosedEvent.php`
+- `lib/Events/V1IssuingDisputeClosedEventNotification.php`
+- `lib/Events/V1IssuingDisputeCreatedEvent.php`
+- `lib/Events/V1IssuingDisputeCreatedEventNotification.php`
+- `lib/Events/V1IssuingDisputeFundsReinstatedEvent.php`
+- `lib/Events/V1IssuingDisputeFundsReinstatedEventNotification.php`
+- `lib/Events/V1IssuingDisputeFundsRescindedEvent.php`
+- `lib/Events/V1IssuingDisputeFundsRescindedEventNotification.php`
+- `lib/Events/V1IssuingDisputeSubmittedEvent.php`
+- `lib/Events/V1IssuingDisputeSubmittedEventNotification.php`
+- `lib/Events/V1IssuingDisputeUpdatedEvent.php`
+- `lib/Events/V1IssuingDisputeUpdatedEventNotification.php`
+- `lib/Events/V1IssuingPersonalizationDesignActivatedEvent.php`
+- `lib/Events/V1IssuingPersonalizationDesignActivatedEventNotification.php`
+- `lib/Events/V1IssuingPersonalizationDesignDeactivatedEvent.php`
+- `lib/Events/V1IssuingPersonalizationDesignDeactivatedEventNotification.php`
+- `lib/Events/V1IssuingPersonalizationDesignRejectedEvent.php`
+- `lib/Events/V1IssuingPersonalizationDesignRejectedEventNotification.php`
+- `lib/Events/V1IssuingPersonalizationDesignUpdatedEvent.php`
+- `lib/Events/V1IssuingPersonalizationDesignUpdatedEventNotification.php`
+- `lib/Events/V1IssuingTokenCreatedEvent.php`
+- `lib/Events/V1IssuingTokenCreatedEventNotification.php`
+- `lib/Events/V1IssuingTokenUpdatedEvent.php`
+- `lib/Events/V1IssuingTokenUpdatedEventNotification.php`
+- `lib/Events/V1IssuingTransactionCreatedEvent.php`
+- `lib/Events/V1IssuingTransactionCreatedEventNotification.php`
+- `lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEvent.php`
+- `lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEventNotification.php`
+- `lib/Events/V1IssuingTransactionUpdatedEvent.php`
+- `lib/Events/V1IssuingTransactionUpdatedEventNotification.php`
+- `lib/Events/V1MandateUpdatedEvent.php`
+- `lib/Events/V1MandateUpdatedEventNotification.php`
+- `lib/Events/V1PaymentIntentAmountCapturableUpdatedEvent.php`
+- `lib/Events/V1PaymentIntentAmountCapturableUpdatedEventNotification.php`
+- `lib/Events/V1PaymentIntentCanceledEvent.php`
+- `lib/Events/V1PaymentIntentCanceledEventNotification.php`
+- `lib/Events/V1PaymentIntentCreatedEvent.php`
+- `lib/Events/V1PaymentIntentCreatedEventNotification.php`
+- `lib/Events/V1PaymentIntentPartiallyFundedEvent.php`
+- `lib/Events/V1PaymentIntentPartiallyFundedEventNotification.php`
+- `lib/Events/V1PaymentIntentPaymentFailedEvent.php`
+- `lib/Events/V1PaymentIntentPaymentFailedEventNotification.php`
+- `lib/Events/V1PaymentIntentProcessingEvent.php`
+- `lib/Events/V1PaymentIntentProcessingEventNotification.php`
+- `lib/Events/V1PaymentIntentRequiresActionEvent.php`
+- `lib/Events/V1PaymentIntentRequiresActionEventNotification.php`
+- `lib/Events/V1PaymentIntentSucceededEvent.php`
+- `lib/Events/V1PaymentIntentSucceededEventNotification.php`
+- `lib/Events/V1PaymentLinkCreatedEvent.php`
+- `lib/Events/V1PaymentLinkCreatedEventNotification.php`
+- `lib/Events/V1PaymentLinkUpdatedEvent.php`
+- `lib/Events/V1PaymentLinkUpdatedEventNotification.php`
+- `lib/Events/V1PaymentMethodAttachedEvent.php`
+- `lib/Events/V1PaymentMethodAttachedEventNotification.php`
+- `lib/Events/V1PaymentMethodAutomaticallyUpdatedEvent.php`
+- `lib/Events/V1PaymentMethodAutomaticallyUpdatedEventNotification.php`
+- `lib/Events/V1PaymentMethodDetachedEvent.php`
+- `lib/Events/V1PaymentMethodDetachedEventNotification.php`
+- `lib/Events/V1PaymentMethodUpdatedEvent.php`
+- `lib/Events/V1PaymentMethodUpdatedEventNotification.php`
+- `lib/Events/V1PayoutCanceledEvent.php`
+- `lib/Events/V1PayoutCanceledEventNotification.php`
+- `lib/Events/V1PayoutCreatedEvent.php`
+- `lib/Events/V1PayoutCreatedEventNotification.php`
+- `lib/Events/V1PayoutFailedEvent.php`
+- `lib/Events/V1PayoutFailedEventNotification.php`
+- `lib/Events/V1PayoutPaidEvent.php`
+- `lib/Events/V1PayoutPaidEventNotification.php`
+- `lib/Events/V1PayoutReconciliationCompletedEvent.php`
+- `lib/Events/V1PayoutReconciliationCompletedEventNotification.php`
+- `lib/Events/V1PayoutUpdatedEvent.php`
+- `lib/Events/V1PayoutUpdatedEventNotification.php`
+- `lib/Events/V1PersonCreatedEvent.php`
+- `lib/Events/V1PersonCreatedEventNotification.php`
+- `lib/Events/V1PersonDeletedEvent.php`
+- `lib/Events/V1PersonDeletedEventNotification.php`
+- `lib/Events/V1PersonUpdatedEvent.php`
+- `lib/Events/V1PersonUpdatedEventNotification.php`
+- `lib/Events/V1PlanCreatedEvent.php`
+- `lib/Events/V1PlanCreatedEventNotification.php`
+- `lib/Events/V1PlanDeletedEvent.php`
+- `lib/Events/V1PlanDeletedEventNotification.php`
+- `lib/Events/V1PlanUpdatedEvent.php`
+- `lib/Events/V1PlanUpdatedEventNotification.php`
+- `lib/Events/V1PriceCreatedEvent.php`
+- `lib/Events/V1PriceCreatedEventNotification.php`
+- `lib/Events/V1PriceDeletedEvent.php`
+- `lib/Events/V1PriceDeletedEventNotification.php`
+- `lib/Events/V1PriceUpdatedEvent.php`
+- `lib/Events/V1PriceUpdatedEventNotification.php`
+- `lib/Events/V1ProductCreatedEvent.php`
+- `lib/Events/V1ProductCreatedEventNotification.php`
+- `lib/Events/V1ProductDeletedEvent.php`
+- `lib/Events/V1ProductDeletedEventNotification.php`
+- `lib/Events/V1ProductUpdatedEvent.php`
+- `lib/Events/V1ProductUpdatedEventNotification.php`
+- `lib/Events/V1PromotionCodeCreatedEvent.php`
+- `lib/Events/V1PromotionCodeCreatedEventNotification.php`
+- `lib/Events/V1PromotionCodeUpdatedEvent.php`
+- `lib/Events/V1PromotionCodeUpdatedEventNotification.php`
+- `lib/Events/V1QuoteAcceptedEvent.php`
+- `lib/Events/V1QuoteAcceptedEventNotification.php`
+- `lib/Events/V1QuoteCanceledEvent.php`
+- `lib/Events/V1QuoteCanceledEventNotification.php`
+- `lib/Events/V1QuoteCreatedEvent.php`
+- `lib/Events/V1QuoteCreatedEventNotification.php`
+- `lib/Events/V1QuoteFinalizedEvent.php`
+- `lib/Events/V1QuoteFinalizedEventNotification.php`
+- `lib/Events/V1RadarEarlyFraudWarningCreatedEvent.php`
+- `lib/Events/V1RadarEarlyFraudWarningCreatedEventNotification.php`
+- `lib/Events/V1RadarEarlyFraudWarningUpdatedEvent.php`
+- `lib/Events/V1RadarEarlyFraudWarningUpdatedEventNotification.php`
+- `lib/Events/V1RefundCreatedEvent.php`
+- `lib/Events/V1RefundCreatedEventNotification.php`
+- `lib/Events/V1RefundFailedEvent.php`
+- `lib/Events/V1RefundFailedEventNotification.php`
+- `lib/Events/V1RefundUpdatedEvent.php`
+- `lib/Events/V1RefundUpdatedEventNotification.php`
+- `lib/Events/V1ReviewClosedEvent.php`
+- `lib/Events/V1ReviewClosedEventNotification.php`
+- `lib/Events/V1ReviewOpenedEvent.php`
+- `lib/Events/V1ReviewOpenedEventNotification.php`
+- `lib/Events/V1SetupIntentCanceledEvent.php`
+- `lib/Events/V1SetupIntentCanceledEventNotification.php`
+- `lib/Events/V1SetupIntentCreatedEvent.php`
+- `lib/Events/V1SetupIntentCreatedEventNotification.php`
+- `lib/Events/V1SetupIntentRequiresActionEvent.php`
+- `lib/Events/V1SetupIntentRequiresActionEventNotification.php`
+- `lib/Events/V1SetupIntentSetupFailedEvent.php`
+- `lib/Events/V1SetupIntentSetupFailedEventNotification.php`
+- `lib/Events/V1SetupIntentSucceededEvent.php`
+- `lib/Events/V1SetupIntentSucceededEventNotification.php`
+- `lib/Events/V1SigmaScheduledQueryRunCreatedEvent.php`
+- `lib/Events/V1SigmaScheduledQueryRunCreatedEventNotification.php`
+- `lib/Events/V1SourceCanceledEvent.php`
+- `lib/Events/V1SourceCanceledEventNotification.php`
+- `lib/Events/V1SourceChargeableEvent.php`
+- `lib/Events/V1SourceChargeableEventNotification.php`
+- `lib/Events/V1SourceFailedEvent.php`
+- `lib/Events/V1SourceFailedEventNotification.php`
+- `lib/Events/V1SourceRefundAttributesRequiredEvent.php`
+- `lib/Events/V1SourceRefundAttributesRequiredEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleAbortedEvent.php`
+- `lib/Events/V1SubscriptionScheduleAbortedEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleCanceledEvent.php`
+- `lib/Events/V1SubscriptionScheduleCanceledEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleCompletedEvent.php`
+- `lib/Events/V1SubscriptionScheduleCompletedEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleCreatedEvent.php`
+- `lib/Events/V1SubscriptionScheduleCreatedEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleExpiringEvent.php`
+- `lib/Events/V1SubscriptionScheduleExpiringEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleReleasedEvent.php`
+- `lib/Events/V1SubscriptionScheduleReleasedEventNotification.php`
+- `lib/Events/V1SubscriptionScheduleUpdatedEvent.php`
+- `lib/Events/V1SubscriptionScheduleUpdatedEventNotification.php`
+- `lib/Events/V1TaxRateCreatedEvent.php`
+- `lib/Events/V1TaxRateCreatedEventNotification.php`
+- `lib/Events/V1TaxRateUpdatedEvent.php`
+- `lib/Events/V1TaxRateUpdatedEventNotification.php`
+- `lib/Events/V1TaxSettingsUpdatedEvent.php`
+- `lib/Events/V1TaxSettingsUpdatedEventNotification.php`
+- `lib/Events/V1TerminalReaderActionFailedEvent.php`
+- `lib/Events/V1TerminalReaderActionFailedEventNotification.php`
+- `lib/Events/V1TerminalReaderActionSucceededEvent.php`
+- `lib/Events/V1TerminalReaderActionSucceededEventNotification.php`
+- `lib/Events/V1TerminalReaderActionUpdatedEvent.php`
+- `lib/Events/V1TerminalReaderActionUpdatedEventNotification.php`
+- `lib/Events/V1TestHelpersTestClockAdvancingEvent.php`
+- `lib/Events/V1TestHelpersTestClockAdvancingEventNotification.php`
+- `lib/Events/V1TestHelpersTestClockCreatedEvent.php`
+- `lib/Events/V1TestHelpersTestClockCreatedEventNotification.php`
+- `lib/Events/V1TestHelpersTestClockDeletedEvent.php`
+- `lib/Events/V1TestHelpersTestClockDeletedEventNotification.php`
+- `lib/Events/V1TestHelpersTestClockInternalFailureEvent.php`
+- `lib/Events/V1TestHelpersTestClockInternalFailureEventNotification.php`
+- `lib/Events/V1TestHelpersTestClockReadyEvent.php`
+- `lib/Events/V1TestHelpersTestClockReadyEventNotification.php`
+- `lib/Events/V1TopupCanceledEvent.php`
+- `lib/Events/V1TopupCanceledEventNotification.php`
+- `lib/Events/V1TopupCreatedEvent.php`
+- `lib/Events/V1TopupCreatedEventNotification.php`
+- `lib/Events/V1TopupFailedEvent.php`
+- `lib/Events/V1TopupFailedEventNotification.php`
+- `lib/Events/V1TopupReversedEvent.php`
+- `lib/Events/V1TopupReversedEventNotification.php`
+- `lib/Events/V1TopupSucceededEvent.php`
+- `lib/Events/V1TopupSucceededEventNotification.php`
+- `lib/Events/V1TransferCreatedEvent.php`
+- `lib/Events/V1TransferCreatedEventNotification.php`
+- `lib/Events/V1TransferReversedEvent.php`
+- `lib/Events/V1TransferReversedEventNotification.php`
+- `lib/Events/V1TransferUpdatedEvent.php`
+- `lib/Events/V1TransferUpdatedEventNotification.php`
+- `lib/File.php`
+- `lib/FileLink.php`
+- `lib/FinancialConnections/Account.php`
+- `lib/FinancialConnections/Session.php`
+- `lib/FinancialConnections/Transaction.php`
+- `lib/Identity/VerificationReport.php`
+- `lib/Identity/VerificationSession.php`
+- `lib/Invoice.php`
+- `lib/InvoiceItem.php`
+- `lib/InvoiceLineItem.php`
+- `lib/InvoicePayment.php`
+- `lib/Issuing/Authorization.php`
+- `lib/Issuing/Card.php`
+- `lib/Issuing/Cardholder.php`
+- `lib/Issuing/Dispute.php`
+- `lib/Issuing/Token.php`
+- `lib/Issuing/Transaction.php`
+- `lib/Mandate.php`
+- `lib/PaymentAttemptRecord.php`
+- `lib/PaymentIntent.php`
+- `lib/PaymentLink.php`
+- `lib/PaymentMethod.php`
+- `lib/PaymentMethodConfiguration.php`
+- `lib/PaymentRecord.php`
+- `lib/Payout.php`
+- `lib/Plan.php`
+- `lib/Price.php`
+- `lib/Product.php`
+- `lib/ProductCatalog/TrialOffer.php`
+- `lib/PromotionCode.php`
+- `lib/Quote.php`
+- `lib/Radar/EarlyFraudWarning.php`
+- `lib/Radar/PaymentEvaluation.php`
+- `lib/Radar/ValueList.php`
+- `lib/Radar/ValueListItem.php`
+- `lib/Refund.php`
+- `lib/RelatedSingletonObject.php`
+- `lib/Reporting/ReportRun.php`
+- `lib/Reserve/Hold.php`
+- `lib/Reserve/Plan.php`
+- `lib/Reserve/Release.php`
+- `lib/Review.php`
+- `lib/Service/AccountService.php`
+- `lib/Service/AccountSessionService.php`
+- `lib/Service/ApplicationFeeService.php`
+- `lib/Service/Apps/AppsServiceFactory.php`
+- `lib/Service/Apps/InstallService.php`
+- `lib/Service/BalanceTransactionService.php`
+- `lib/Service/Billing/FeedbackOptionService.php`
+- `lib/Service/ChargeService.php`
+- `lib/Service/Checkout/SessionService.php`
+- `lib/Service/CoreServiceFactory.php`
+- `lib/Service/CouponService.php`
+- `lib/Service/CreditNoteService.php`
+- `lib/Service/CustomerService.php`
+- `lib/Service/DisputeService.php`
+- `lib/Service/EventService.php`
+- `lib/Service/FileLinkService.php`
+- `lib/Service/FileService.php`
+- `lib/Service/FinancialConnections/AccountService.php`
+- `lib/Service/FinancialConnections/SessionService.php`
+- `lib/Service/FinancialConnections/TransactionService.php`
+- `lib/Service/Identity/VerificationReportService.php`
+- `lib/Service/Identity/VerificationSessionService.php`
+- `lib/Service/InvoiceItemService.php`
+- `lib/Service/InvoicePaymentService.php`
+- `lib/Service/InvoiceService.php`
+- `lib/Service/Issuing/AuthorizationService.php`
+- `lib/Service/Issuing/CardService.php`
+- `lib/Service/Issuing/CardholderService.php`
+- `lib/Service/Issuing/DisputeService.php`
+- `lib/Service/Issuing/TokenService.php`
+- `lib/Service/Issuing/TransactionService.php`
+- `lib/Service/PaymentIntentService.php`
+- `lib/Service/PaymentLinkService.php`
+- `lib/Service/PaymentMethodConfigurationService.php`
+- `lib/Service/PaymentMethodService.php`
+- `lib/Service/PaymentRecordService.php`
+- `lib/Service/PayoutService.php`
+- `lib/Service/PlanService.php`
+- `lib/Service/PriceService.php`
+- `lib/Service/ProductCatalog/ProductCatalogServiceFactory.php`
+- `lib/Service/ProductCatalog/TrialOfferService.php`
+- `lib/Service/ProductService.php`
+- `lib/Service/PromotionCodeService.php`
+- `lib/Service/QuoteService.php`
+- `lib/Service/Radar/EarlyFraudWarningService.php`
+- `lib/Service/Radar/ValueListItemService.php`
+- `lib/Service/Radar/ValueListService.php`
+- `lib/Service/RefundService.php`
+- `lib/Service/Reporting/ReportRunService.php`
+- `lib/Service/ReviewService.php`
+- `lib/Service/SetupAttemptService.php`
+- `lib/Service/SetupIntentService.php`
+- `lib/Service/ShippingRateService.php`
+- `lib/Service/Sigma/ScheduledQueryRunService.php`
+- `lib/Service/SubscriptionItemService.php`
+- `lib/Service/SubscriptionScheduleService.php`
+- `lib/Service/SubscriptionService.php`
+- `lib/Service/Tax/CalculationService.php`
+- `lib/Service/Tax/LocationService.php`
+- `lib/Service/Tax/RegistrationService.php`
+- `lib/Service/Tax/SettingsService.php`
+- `lib/Service/Tax/TaxServiceFactory.php`
+- `lib/Service/TaxRateService.php`
+- `lib/Service/TestHelpers/ConfirmationTokenService.php`
+- `lib/Service/ThreeDSecure/AuthenticationService.php`
+- `lib/Service/ThreeDSecure/ThreeDSecureServiceFactory.php`
+- `lib/Service/TokenService.php`
+- `lib/Service/TopupService.php`
+- `lib/Service/TransferService.php`
+- `lib/Service/Treasury/FinancialAccountService.php`
+- `lib/Service/Treasury/OutboundPaymentService.php`
+- `lib/Service/Treasury/TransactionEntryService.php`
+- `lib/Service/Treasury/TransactionService.php`
+- `lib/Service/V2/Core/AccountLinkService.php`
+- `lib/Service/V2/Core/AccountService.php`
+- `lib/SetupAttempt.php`
+- `lib/SetupIntent.php`
+- `lib/ShippingRate.php`
+- `lib/Sigma/ScheduledQueryRun.php`
+- `lib/Stripe.php`
+- `lib/StripeClient.php`
+- `lib/Subscription.php`
+- `lib/SubscriptionItem.php`
+- `lib/SubscriptionSchedule.php`
+- `lib/Tax/Calculation.php`
+- `lib/Tax/CalculationLineItem.php`
+- `lib/Tax/Location.php`
+- `lib/Tax/Registration.php`
+- `lib/Tax/Settings.php`
+- `lib/Tax/TransactionLineItem.php`
+- `lib/TaxCode.php`
+- `lib/TaxRate.php`
+- `lib/Terminal/Reader.php`
+- `lib/ThreeDSecure/Authentication.php`
+- `lib/Token.php`
+- `lib/Topup.php`
+- `lib/Transfer.php`
+- `lib/Treasury/CreditReversal.php`
+- `lib/Treasury/DebitReversal.php`
+- `lib/Treasury/FinancialAccount.php`
+- `lib/Treasury/InboundTransfer.php`
+- `lib/Treasury/OutboundPayment.php`
+- `lib/Treasury/OutboundTransfer.php`
+- `lib/Treasury/ReceivedCredit.php`
+- `lib/Treasury/ReceivedDebit.php`
+- `lib/Treasury/Transaction.php`
+- `lib/Treasury/TransactionEntry.php`
+- `lib/Util/ApiVersion.php`
+- `lib/Util/EventNotificationTypes.php`
+- `lib/Util/EventTypes.php`
+- `lib/Util/ObjectTypes.php`
+- `lib/V2/Billing/MeterEventAdjustment.php`
+- `lib/V2/Core/Account.php`
+- `lib/V2/Core/AccountLink.php`
+- `lib/V2/Core/EventDestination.php`
+- `lib/V2/Core/EventNotification.php`
+- `lib/WebhookEndpoint.php`
+- `lib/version_check.php`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `README.md`
+- `modified`: `composer.json`
+- `modified`: `init.php`
+- `modified`: `lib/AbstractEventNotificationHandler.php`
+- `modified`: `lib/Account.php`
+- `modified`: `lib/AccountSession.php`
+- `modified`: `lib/ApiRequestor.php`
+- `modified`: `lib/ApplicationFee.php`
+- `added`: `lib/Apps/Install.php`
+- `modified`: `lib/Balance.php`
+- `modified`: `lib/BalanceTransaction.php`
+- `modified`: `lib/Billing/FeedbackOption.php`
+- `modified`: `lib/Charge.php`
+- `modified`: `lib/Checkout/Session.php`
+- `modified`: `lib/ConfirmationToken.php`
+- `modified`: `lib/Coupon.php`
+- `modified`: `lib/CreditNote.php`
+- `modified`: `lib/Customer.php`
+- `modified`: `lib/Discount.php`
+- `modified`: `lib/Dispute.php`
+- `modified`: `lib/ErrorObject.php`
+- `modified`: `lib/Event.php`
+- `added`: `lib/Events/V1AccountApplicationAuthorizedEvent.php`
+- `added`: `lib/Events/V1AccountApplicationAuthorizedEventNotification.php`
+- `added`: `lib/Events/V1AccountApplicationDeauthorizedEvent.php`
+- `added`: `lib/Events/V1AccountApplicationDeauthorizedEventNotification.php`
+- `added`: `lib/Events/V1AccountExternalAccountCreatedEvent.php`
+- `added`: `lib/Events/V1AccountExternalAccountCreatedEventNotification.php`
+- `added`: `lib/Events/V1AccountExternalAccountDeletedEvent.php`
+- `added`: `lib/Events/V1AccountExternalAccountDeletedEventNotification.php`
+- `added`: `lib/Events/V1AccountExternalAccountUpdatedEvent.php`
+- `added`: `lib/Events/V1AccountExternalAccountUpdatedEventNotification.php`
+- `added`: `lib/Events/V1AccountUpdatedEvent.php`
+- `added`: `lib/Events/V1AccountUpdatedEventNotification.php`
+- `added`: `lib/Events/V1ApplicationFeeCreatedEvent.php`
+- `added`: `lib/Events/V1ApplicationFeeCreatedEventNotification.php`
+- `added`: `lib/Events/V1ApplicationFeeRefundUpdatedEvent.php`
+- `added`: `lib/Events/V1ApplicationFeeRefundUpdatedEventNotification.php`
+- `added`: `lib/Events/V1ApplicationFeeRefundedEvent.php`
+- `added`: `lib/Events/V1ApplicationFeeRefundedEventNotification.php`
+- `added`: `lib/Events/V1BalanceAvailableEvent.php`
+- `added`: `lib/Events/V1BalanceAvailableEventNotification.php`
+- `added`: `lib/Events/V1BalanceSettingsUpdatedEvent.php`
+- `added`: `lib/Events/V1BalanceSettingsUpdatedEventNotification.php`
+- `added`: `lib/Events/V1BillingAlertTriggeredEvent.php`
+- `added`: `lib/Events/V1BillingAlertTriggeredEventNotification.php`
+- `added`: `lib/Events/V1BillingCreditBalanceTransactionCreatedEvent.php`
+- `added`: `lib/Events/V1BillingCreditBalanceTransactionCreatedEventNotification.php`
+- `added`: `lib/Events/V1BillingCreditGrantCreatedEvent.php`
+- `added`: `lib/Events/V1BillingCreditGrantCreatedEventNotification.php`
+- `added`: `lib/Events/V1BillingCreditGrantUpdatedEvent.php`
+- `added`: `lib/Events/V1BillingCreditGrantUpdatedEventNotification.php`
+- `added`: `lib/Events/V1BillingMeterCreatedEvent.php`
+- `added`: `lib/Events/V1BillingMeterCreatedEventNotification.php`
+- `added`: `lib/Events/V1BillingMeterDeactivatedEvent.php`
+- `added`: `lib/Events/V1BillingMeterDeactivatedEventNotification.php`
+- `added`: `lib/Events/V1BillingMeterReactivatedEvent.php`
+- `added`: `lib/Events/V1BillingMeterReactivatedEventNotification.php`
+- `added`: `lib/Events/V1BillingMeterUpdatedEvent.php`
+- `added`: `lib/Events/V1BillingMeterUpdatedEventNotification.php`
+- `added`: `lib/Events/V1BillingPortalConfigurationCreatedEvent.php`
+- `added`: `lib/Events/V1BillingPortalConfigurationCreatedEventNotification.php`
+- `added`: `lib/Events/V1BillingPortalConfigurationUpdatedEvent.php`
+- `added`: `lib/Events/V1BillingPortalConfigurationUpdatedEventNotification.php`
+- `added`: `lib/Events/V1BillingPortalSessionCreatedEvent.php`
+- `added`: `lib/Events/V1BillingPortalSessionCreatedEventNotification.php`
+- `added`: `lib/Events/V1CapabilityUpdatedEvent.php`
+- `added`: `lib/Events/V1CapabilityUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CashBalanceFundsAvailableEvent.php`
+- `added`: `lib/Events/V1CashBalanceFundsAvailableEventNotification.php`
+- `added`: `lib/Events/V1ChargeCapturedEvent.php`
+- `added`: `lib/Events/V1ChargeCapturedEventNotification.php`
+- `added`: `lib/Events/V1ChargeDisputeClosedEvent.php`
+- `added`: `lib/Events/V1ChargeDisputeClosedEventNotification.php`
+- `added`: `lib/Events/V1ChargeDisputeCreatedEvent.php`
+- `added`: `lib/Events/V1ChargeDisputeCreatedEventNotification.php`
+- `added`: `lib/Events/V1ChargeDisputeFundsReinstatedEvent.php`
+- `added`: `lib/Events/V1ChargeDisputeFundsReinstatedEventNotification.php`
+- `added`: `lib/Events/V1ChargeDisputeFundsWithdrawnEvent.php`
+- `added`: `lib/Events/V1ChargeDisputeFundsWithdrawnEventNotification.php`
+- `added`: `lib/Events/V1ChargeDisputeUpdatedEvent.php`
+- `added`: `lib/Events/V1ChargeDisputeUpdatedEventNotification.php`
+- `added`: `lib/Events/V1ChargeExpiredEvent.php`
+- `added`: `lib/Events/V1ChargeExpiredEventNotification.php`
+- `added`: `lib/Events/V1ChargeFailedEvent.php`
+- `added`: `lib/Events/V1ChargeFailedEventNotification.php`
+- `added`: `lib/Events/V1ChargePendingEvent.php`
+- `added`: `lib/Events/V1ChargePendingEventNotification.php`
+- `added`: `lib/Events/V1ChargeRefundUpdatedEvent.php`
+- `added`: `lib/Events/V1ChargeRefundUpdatedEventNotification.php`
+- `added`: `lib/Events/V1ChargeRefundedEvent.php`
+- `added`: `lib/Events/V1ChargeRefundedEventNotification.php`
+- `added`: `lib/Events/V1ChargeSucceededEvent.php`
+- `added`: `lib/Events/V1ChargeSucceededEventNotification.php`
+- `added`: `lib/Events/V1ChargeUpdatedEvent.php`
+- `added`: `lib/Events/V1ChargeUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CheckoutSessionAsyncPaymentFailedEvent.php`
+- `added`: `lib/Events/V1CheckoutSessionAsyncPaymentFailedEventNotification.php`
+- `added`: `lib/Events/V1CheckoutSessionAsyncPaymentSucceededEvent.php`
+- `added`: `lib/Events/V1CheckoutSessionAsyncPaymentSucceededEventNotification.php`
+- `added`: `lib/Events/V1CheckoutSessionCompletedEvent.php`
+- `added`: `lib/Events/V1CheckoutSessionCompletedEventNotification.php`
+- `added`: `lib/Events/V1CheckoutSessionExpiredEvent.php`
+- `added`: `lib/Events/V1CheckoutSessionExpiredEventNotification.php`
+- `added`: `lib/Events/V1ClimateOrderCanceledEvent.php`
+- `added`: `lib/Events/V1ClimateOrderCanceledEventNotification.php`
+- `added`: `lib/Events/V1ClimateOrderCreatedEvent.php`
+- `added`: `lib/Events/V1ClimateOrderCreatedEventNotification.php`
+- `added`: `lib/Events/V1ClimateOrderDelayedEvent.php`
+- `added`: `lib/Events/V1ClimateOrderDelayedEventNotification.php`
+- `added`: `lib/Events/V1ClimateOrderDeliveredEvent.php`
+- `added`: `lib/Events/V1ClimateOrderDeliveredEventNotification.php`
+- `added`: `lib/Events/V1ClimateOrderProductSubstitutedEvent.php`
+- `added`: `lib/Events/V1ClimateOrderProductSubstitutedEventNotification.php`
+- `added`: `lib/Events/V1ClimateProductCreatedEvent.php`
+- `added`: `lib/Events/V1ClimateProductCreatedEventNotification.php`
+- `added`: `lib/Events/V1ClimateProductPricingUpdatedEvent.php`
+- `added`: `lib/Events/V1ClimateProductPricingUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CouponCreatedEvent.php`
+- `added`: `lib/Events/V1CouponCreatedEventNotification.php`
+- `added`: `lib/Events/V1CouponDeletedEvent.php`
+- `added`: `lib/Events/V1CouponDeletedEventNotification.php`
+- `added`: `lib/Events/V1CouponUpdatedEvent.php`
+- `added`: `lib/Events/V1CouponUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CreditNoteCreatedEvent.php`
+- `added`: `lib/Events/V1CreditNoteCreatedEventNotification.php`
+- `added`: `lib/Events/V1CreditNoteUpdatedEvent.php`
+- `added`: `lib/Events/V1CreditNoteUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CreditNoteVoidedEvent.php`
+- `added`: `lib/Events/V1CreditNoteVoidedEventNotification.php`
+- `added`: `lib/Events/V1CustomerCashBalanceTransactionCreatedEvent.php`
+- `added`: `lib/Events/V1CustomerCashBalanceTransactionCreatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerCreatedEvent.php`
+- `added`: `lib/Events/V1CustomerCreatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerDeletedEvent.php`
+- `added`: `lib/Events/V1CustomerDeletedEventNotification.php`
+- `added`: `lib/Events/V1CustomerDiscountCreatedEvent.php`
+- `added`: `lib/Events/V1CustomerDiscountCreatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerDiscountDeletedEvent.php`
+- `added`: `lib/Events/V1CustomerDiscountDeletedEventNotification.php`
+- `added`: `lib/Events/V1CustomerDiscountUpdatedEvent.php`
+- `added`: `lib/Events/V1CustomerDiscountUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionCreatedEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionCreatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionDeletedEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionDeletedEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionPausedEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionPausedEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionResumedEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionResumedEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionTrialWillEndEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionTrialWillEndEventNotification.php`
+- `added`: `lib/Events/V1CustomerSubscriptionUpdatedEvent.php`
+- `added`: `lib/Events/V1CustomerSubscriptionUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerTaxIdCreatedEvent.php`
+- `added`: `lib/Events/V1CustomerTaxIdCreatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerTaxIdDeletedEvent.php`
+- `added`: `lib/Events/V1CustomerTaxIdDeletedEventNotification.php`
+- `added`: `lib/Events/V1CustomerTaxIdUpdatedEvent.php`
+- `added`: `lib/Events/V1CustomerTaxIdUpdatedEventNotification.php`
+- `added`: `lib/Events/V1CustomerUpdatedEvent.php`
+- `added`: `lib/Events/V1CustomerUpdatedEventNotification.php`
+- `added`: `lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEvent.php`
+- `added`: `lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEventNotification.php`
+- `added`: `lib/Events/V1FileCreatedEvent.php`
+- `added`: `lib/Events/V1FileCreatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountCreatedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountCreatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountDeactivatedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountDeactivatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountDisconnectedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountDisconnectedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountReactivatedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountReactivatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEventNotification.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEvent.php`
+- `added`: `lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEventNotification.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionCanceledEvent.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionCanceledEventNotification.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionCreatedEvent.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionCreatedEventNotification.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionProcessingEvent.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionProcessingEventNotification.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionRedactedEvent.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionRedactedEventNotification.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionRequiresInputEvent.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionRequiresInputEventNotification.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionVerifiedEvent.php`
+- `added`: `lib/Events/V1IdentityVerificationSessionVerifiedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceCreatedEvent.php`
+- `added`: `lib/Events/V1InvoiceCreatedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceDeletedEvent.php`
+- `added`: `lib/Events/V1InvoiceDeletedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceFinalizationFailedEvent.php`
+- `added`: `lib/Events/V1InvoiceFinalizationFailedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceFinalizedEvent.php`
+- `added`: `lib/Events/V1InvoiceFinalizedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceMarkedUncollectibleEvent.php`
+- `added`: `lib/Events/V1InvoiceMarkedUncollectibleEventNotification.php`
+- `added`: `lib/Events/V1InvoiceOverdueEvent.php`
+- `added`: `lib/Events/V1InvoiceOverdueEventNotification.php`
+- `added`: `lib/Events/V1InvoiceOverpaidEvent.php`
+- `added`: `lib/Events/V1InvoiceOverpaidEventNotification.php`
+- `added`: `lib/Events/V1InvoicePaidEvent.php`
+- `added`: `lib/Events/V1InvoicePaidEventNotification.php`
+- `added`: `lib/Events/V1InvoicePaymentActionRequiredEvent.php`
+- `added`: `lib/Events/V1InvoicePaymentActionRequiredEventNotification.php`
+- `added`: `lib/Events/V1InvoicePaymentAttemptRequiredEvent.php`
+- `added`: `lib/Events/V1InvoicePaymentAttemptRequiredEventNotification.php`
+- `added`: `lib/Events/V1InvoicePaymentFailedEvent.php`
+- `added`: `lib/Events/V1InvoicePaymentFailedEventNotification.php`
+- `added`: `lib/Events/V1InvoicePaymentPaidEvent.php`
+- `added`: `lib/Events/V1InvoicePaymentPaidEventNotification.php`
+- `added`: `lib/Events/V1InvoicePaymentSucceededEvent.php`
+- `added`: `lib/Events/V1InvoicePaymentSucceededEventNotification.php`
+- `added`: `lib/Events/V1InvoiceSentEvent.php`
+- `added`: `lib/Events/V1InvoiceSentEventNotification.php`
+- `added`: `lib/Events/V1InvoiceUpcomingEvent.php`
+- `added`: `lib/Events/V1InvoiceUpcomingEventNotification.php`
+- `added`: `lib/Events/V1InvoiceUpdatedEvent.php`
+- `added`: `lib/Events/V1InvoiceUpdatedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceVoidedEvent.php`
+- `added`: `lib/Events/V1InvoiceVoidedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceWillBeDueEvent.php`
+- `added`: `lib/Events/V1InvoiceWillBeDueEventNotification.php`
+- `added`: `lib/Events/V1InvoiceitemCreatedEvent.php`
+- `added`: `lib/Events/V1InvoiceitemCreatedEventNotification.php`
+- `added`: `lib/Events/V1InvoiceitemDeletedEvent.php`
+- `added`: `lib/Events/V1InvoiceitemDeletedEventNotification.php`
+- `added`: `lib/Events/V1IssuingAuthorizationCreatedEvent.php`
+- `added`: `lib/Events/V1IssuingAuthorizationCreatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingAuthorizationRequestEvent.php`
+- `added`: `lib/Events/V1IssuingAuthorizationRequestEventNotification.php`
+- `added`: `lib/Events/V1IssuingAuthorizationUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingAuthorizationUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingCardCreatedEvent.php`
+- `added`: `lib/Events/V1IssuingCardCreatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingCardUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingCardUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingCardholderCreatedEvent.php`
+- `added`: `lib/Events/V1IssuingCardholderCreatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingCardholderUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingCardholderUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingDisputeClosedEvent.php`
+- `added`: `lib/Events/V1IssuingDisputeClosedEventNotification.php`
+- `added`: `lib/Events/V1IssuingDisputeCreatedEvent.php`
+- `added`: `lib/Events/V1IssuingDisputeCreatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingDisputeFundsReinstatedEvent.php`
+- `added`: `lib/Events/V1IssuingDisputeFundsReinstatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingDisputeFundsRescindedEvent.php`
+- `added`: `lib/Events/V1IssuingDisputeFundsRescindedEventNotification.php`
+- `added`: `lib/Events/V1IssuingDisputeSubmittedEvent.php`
+- `added`: `lib/Events/V1IssuingDisputeSubmittedEventNotification.php`
+- `added`: `lib/Events/V1IssuingDisputeUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingDisputeUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignActivatedEvent.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignActivatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignDeactivatedEvent.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignDeactivatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignRejectedEvent.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignRejectedEventNotification.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingPersonalizationDesignUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingTokenCreatedEvent.php`
+- `added`: `lib/Events/V1IssuingTokenCreatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingTokenUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingTokenUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingTransactionCreatedEvent.php`
+- `added`: `lib/Events/V1IssuingTransactionCreatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEventNotification.php`
+- `added`: `lib/Events/V1IssuingTransactionUpdatedEvent.php`
+- `added`: `lib/Events/V1IssuingTransactionUpdatedEventNotification.php`
+- `added`: `lib/Events/V1MandateUpdatedEvent.php`
+- `added`: `lib/Events/V1MandateUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentAmountCapturableUpdatedEvent.php`
+- `added`: `lib/Events/V1PaymentIntentAmountCapturableUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentCanceledEvent.php`
+- `added`: `lib/Events/V1PaymentIntentCanceledEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentCreatedEvent.php`
+- `added`: `lib/Events/V1PaymentIntentCreatedEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentPartiallyFundedEvent.php`
+- `added`: `lib/Events/V1PaymentIntentPartiallyFundedEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentPaymentFailedEvent.php`
+- `added`: `lib/Events/V1PaymentIntentPaymentFailedEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentProcessingEvent.php`
+- `added`: `lib/Events/V1PaymentIntentProcessingEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentRequiresActionEvent.php`
+- `added`: `lib/Events/V1PaymentIntentRequiresActionEventNotification.php`
+- `added`: `lib/Events/V1PaymentIntentSucceededEvent.php`
+- `added`: `lib/Events/V1PaymentIntentSucceededEventNotification.php`
+- `added`: `lib/Events/V1PaymentLinkCreatedEvent.php`
+- `added`: `lib/Events/V1PaymentLinkCreatedEventNotification.php`
+- `added`: `lib/Events/V1PaymentLinkUpdatedEvent.php`
+- `added`: `lib/Events/V1PaymentLinkUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PaymentMethodAttachedEvent.php`
+- `added`: `lib/Events/V1PaymentMethodAttachedEventNotification.php`
+- `added`: `lib/Events/V1PaymentMethodAutomaticallyUpdatedEvent.php`
+- `added`: `lib/Events/V1PaymentMethodAutomaticallyUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PaymentMethodDetachedEvent.php`
+- `added`: `lib/Events/V1PaymentMethodDetachedEventNotification.php`
+- `added`: `lib/Events/V1PaymentMethodUpdatedEvent.php`
+- `added`: `lib/Events/V1PaymentMethodUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PayoutCanceledEvent.php`
+- `added`: `lib/Events/V1PayoutCanceledEventNotification.php`
+- `added`: `lib/Events/V1PayoutCreatedEvent.php`
+- `added`: `lib/Events/V1PayoutCreatedEventNotification.php`
+- `added`: `lib/Events/V1PayoutFailedEvent.php`
+- `added`: `lib/Events/V1PayoutFailedEventNotification.php`
+- `added`: `lib/Events/V1PayoutPaidEvent.php`
+- `added`: `lib/Events/V1PayoutPaidEventNotification.php`
+- `added`: `lib/Events/V1PayoutReconciliationCompletedEvent.php`
+- `added`: `lib/Events/V1PayoutReconciliationCompletedEventNotification.php`
+- `added`: `lib/Events/V1PayoutUpdatedEvent.php`
+- `added`: `lib/Events/V1PayoutUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PersonCreatedEvent.php`
+- `added`: `lib/Events/V1PersonCreatedEventNotification.php`
+- `added`: `lib/Events/V1PersonDeletedEvent.php`
+- `added`: `lib/Events/V1PersonDeletedEventNotification.php`
+- `added`: `lib/Events/V1PersonUpdatedEvent.php`
+- `added`: `lib/Events/V1PersonUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PlanCreatedEvent.php`
+- `added`: `lib/Events/V1PlanCreatedEventNotification.php`
+- `added`: `lib/Events/V1PlanDeletedEvent.php`
+- `added`: `lib/Events/V1PlanDeletedEventNotification.php`
+- `added`: `lib/Events/V1PlanUpdatedEvent.php`
+- `added`: `lib/Events/V1PlanUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PriceCreatedEvent.php`
+- `added`: `lib/Events/V1PriceCreatedEventNotification.php`
+- `added`: `lib/Events/V1PriceDeletedEvent.php`
+- `added`: `lib/Events/V1PriceDeletedEventNotification.php`
+- `added`: `lib/Events/V1PriceUpdatedEvent.php`
+- `added`: `lib/Events/V1PriceUpdatedEventNotification.php`
+- `added`: `lib/Events/V1ProductCreatedEvent.php`
+- `added`: `lib/Events/V1ProductCreatedEventNotification.php`
+- `added`: `lib/Events/V1ProductDeletedEvent.php`
+- `added`: `lib/Events/V1ProductDeletedEventNotification.php`
+- `added`: `lib/Events/V1ProductUpdatedEvent.php`
+- `added`: `lib/Events/V1ProductUpdatedEventNotification.php`
+- `added`: `lib/Events/V1PromotionCodeCreatedEvent.php`
+- `added`: `lib/Events/V1PromotionCodeCreatedEventNotification.php`
+- `added`: `lib/Events/V1PromotionCodeUpdatedEvent.php`
+- `added`: `lib/Events/V1PromotionCodeUpdatedEventNotification.php`
+- `added`: `lib/Events/V1QuoteAcceptedEvent.php`
+- `added`: `lib/Events/V1QuoteAcceptedEventNotification.php`
+- `added`: `lib/Events/V1QuoteCanceledEvent.php`
+- `added`: `lib/Events/V1QuoteCanceledEventNotification.php`
+- `added`: `lib/Events/V1QuoteCreatedEvent.php`
+- `added`: `lib/Events/V1QuoteCreatedEventNotification.php`
+- `added`: `lib/Events/V1QuoteFinalizedEvent.php`
+- `added`: `lib/Events/V1QuoteFinalizedEventNotification.php`
+- `added`: `lib/Events/V1RadarEarlyFraudWarningCreatedEvent.php`
+- `added`: `lib/Events/V1RadarEarlyFraudWarningCreatedEventNotification.php`
+- `added`: `lib/Events/V1RadarEarlyFraudWarningUpdatedEvent.php`
+- `added`: `lib/Events/V1RadarEarlyFraudWarningUpdatedEventNotification.php`
+- `added`: `lib/Events/V1RefundCreatedEvent.php`
+- `added`: `lib/Events/V1RefundCreatedEventNotification.php`
+- `added`: `lib/Events/V1RefundFailedEvent.php`
+- `added`: `lib/Events/V1RefundFailedEventNotification.php`
+- `added`: `lib/Events/V1RefundUpdatedEvent.php`
+- `added`: `lib/Events/V1RefundUpdatedEventNotification.php`
+- `added`: `lib/Events/V1ReviewClosedEvent.php`
+- `added`: `lib/Events/V1ReviewClosedEventNotification.php`
+- `added`: `lib/Events/V1ReviewOpenedEvent.php`
+- `added`: `lib/Events/V1ReviewOpenedEventNotification.php`
+- `added`: `lib/Events/V1SetupIntentCanceledEvent.php`
+- `added`: `lib/Events/V1SetupIntentCanceledEventNotification.php`
+- `added`: `lib/Events/V1SetupIntentCreatedEvent.php`
+- `added`: `lib/Events/V1SetupIntentCreatedEventNotification.php`
+- `added`: `lib/Events/V1SetupIntentRequiresActionEvent.php`
+- `added`: `lib/Events/V1SetupIntentRequiresActionEventNotification.php`
+- `added`: `lib/Events/V1SetupIntentSetupFailedEvent.php`
+- `added`: `lib/Events/V1SetupIntentSetupFailedEventNotification.php`
+- `added`: `lib/Events/V1SetupIntentSucceededEvent.php`
+- `added`: `lib/Events/V1SetupIntentSucceededEventNotification.php`
+- `added`: `lib/Events/V1SigmaScheduledQueryRunCreatedEvent.php`
+- `added`: `lib/Events/V1SigmaScheduledQueryRunCreatedEventNotification.php`
+- `added`: `lib/Events/V1SourceCanceledEvent.php`
+- `added`: `lib/Events/V1SourceCanceledEventNotification.php`
+- `added`: `lib/Events/V1SourceChargeableEvent.php`
+- `added`: `lib/Events/V1SourceChargeableEventNotification.php`
+- `added`: `lib/Events/V1SourceFailedEvent.php`
+- `added`: `lib/Events/V1SourceFailedEventNotification.php`
+- `added`: `lib/Events/V1SourceRefundAttributesRequiredEvent.php`
+- `added`: `lib/Events/V1SourceRefundAttributesRequiredEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleAbortedEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleAbortedEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleCanceledEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleCanceledEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleCompletedEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleCompletedEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleCreatedEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleCreatedEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleExpiringEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleExpiringEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleReleasedEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleReleasedEventNotification.php`
+- `added`: `lib/Events/V1SubscriptionScheduleUpdatedEvent.php`
+- `added`: `lib/Events/V1SubscriptionScheduleUpdatedEventNotification.php`
+- `added`: `lib/Events/V1TaxRateCreatedEvent.php`
+- `added`: `lib/Events/V1TaxRateCreatedEventNotification.php`
+- `added`: `lib/Events/V1TaxRateUpdatedEvent.php`
+- `added`: `lib/Events/V1TaxRateUpdatedEventNotification.php`
+- `added`: `lib/Events/V1TaxSettingsUpdatedEvent.php`
+- `added`: `lib/Events/V1TaxSettingsUpdatedEventNotification.php`
+- `added`: `lib/Events/V1TerminalReaderActionFailedEvent.php`
+- `added`: `lib/Events/V1TerminalReaderActionFailedEventNotification.php`
+- `added`: `lib/Events/V1TerminalReaderActionSucceededEvent.php`
+- `added`: `lib/Events/V1TerminalReaderActionSucceededEventNotification.php`
+- `added`: `lib/Events/V1TerminalReaderActionUpdatedEvent.php`
+- `added`: `lib/Events/V1TerminalReaderActionUpdatedEventNotification.php`
+- `added`: `lib/Events/V1TestHelpersTestClockAdvancingEvent.php`
+- `added`: `lib/Events/V1TestHelpersTestClockAdvancingEventNotification.php`
+- `added`: `lib/Events/V1TestHelpersTestClockCreatedEvent.php`
+- `added`: `lib/Events/V1TestHelpersTestClockCreatedEventNotification.php`
+- `added`: `lib/Events/V1TestHelpersTestClockDeletedEvent.php`
+- `added`: `lib/Events/V1TestHelpersTestClockDeletedEventNotification.php`
+- `added`: `lib/Events/V1TestHelpersTestClockInternalFailureEvent.php`
+- `added`: `lib/Events/V1TestHelpersTestClockInternalFailureEventNotification.php`
+- `added`: `lib/Events/V1TestHelpersTestClockReadyEvent.php`
+- `added`: `lib/Events/V1TestHelpersTestClockReadyEventNotification.php`
+- `added`: `lib/Events/V1TopupCanceledEvent.php`
+- `added`: `lib/Events/V1TopupCanceledEventNotification.php`
+- `added`: `lib/Events/V1TopupCreatedEvent.php`
+- `added`: `lib/Events/V1TopupCreatedEventNotification.php`
+- `added`: `lib/Events/V1TopupFailedEvent.php`
+- `added`: `lib/Events/V1TopupFailedEventNotification.php`
+- `added`: `lib/Events/V1TopupReversedEvent.php`
+- `added`: `lib/Events/V1TopupReversedEventNotification.php`
+- `added`: `lib/Events/V1TopupSucceededEvent.php`
+- `added`: `lib/Events/V1TopupSucceededEventNotification.php`
+- `added`: `lib/Events/V1TransferCreatedEvent.php`
+- `added`: `lib/Events/V1TransferCreatedEventNotification.php`
+- `added`: `lib/Events/V1TransferReversedEvent.php`
+- `added`: `lib/Events/V1TransferReversedEventNotification.php`
+- `added`: `lib/Events/V1TransferUpdatedEvent.php`
+- `added`: `lib/Events/V1TransferUpdatedEventNotification.php`
+- `modified`: `lib/File.php`
+- `modified`: `lib/FileLink.php`
+- `modified`: `lib/FinancialConnections/Account.php`
+- `modified`: `lib/FinancialConnections/Session.php`
+- `modified`: `lib/FinancialConnections/Transaction.php`
+- `modified`: `lib/Identity/VerificationReport.php`
+- `modified`: `lib/Identity/VerificationSession.php`
+- `modified`: `lib/Invoice.php`
+- `modified`: `lib/InvoiceItem.php`
+- `modified`: `lib/InvoiceLineItem.php`
+- `modified`: `lib/InvoicePayment.php`
+- `modified`: `lib/Issuing/Authorization.php`
+- `modified`: `lib/Issuing/Card.php`
+- `modified`: `lib/Issuing/Cardholder.php`
+- `modified`: `lib/Issuing/Dispute.php`
+- `modified`: `lib/Issuing/Token.php`
+- `modified`: `lib/Issuing/Transaction.php`
+- `modified`: `lib/Mandate.php`
+- `modified`: `lib/PaymentAttemptRecord.php`
+- `modified`: `lib/PaymentIntent.php`
+- `modified`: `lib/PaymentLink.php`
+- `modified`: `lib/PaymentMethod.php`
+- `modified`: `lib/PaymentMethodConfiguration.php`
+- `modified`: `lib/PaymentRecord.php`
+- `modified`: `lib/Payout.php`
+- `modified`: `lib/Plan.php`
+- `modified`: `lib/Price.php`
+- `modified`: `lib/Product.php`
+- `added`: `lib/ProductCatalog/TrialOffer.php`
+- `modified`: `lib/PromotionCode.php`
+- `modified`: `lib/Quote.php`
+- `modified`: `lib/Radar/EarlyFraudWarning.php`
+- `modified`: `lib/Radar/PaymentEvaluation.php`
+- `modified`: `lib/Radar/ValueList.php`
+- `modified`: `lib/Radar/ValueListItem.php`
+- `modified`: `lib/Refund.php`
+- `added`: `lib/RelatedSingletonObject.php`
+- `modified`: `lib/Reporting/ReportRun.php`
+- `modified`: `lib/Reserve/Hold.php`
+- `modified`: `lib/Reserve/Plan.php`
+- `modified`: `lib/Reserve/Release.php`
+- `modified`: `lib/Review.php`
+- `modified`: `lib/Service/AccountService.php`
+- `modified`: `lib/Service/AccountSessionService.php`
+- `modified`: `lib/Service/ApplicationFeeService.php`
+- `modified`: `lib/Service/Apps/AppsServiceFactory.php`
+- `added`: `lib/Service/Apps/InstallService.php`
+- `modified`: `lib/Service/BalanceTransactionService.php`
+- `modified`: `lib/Service/Billing/FeedbackOptionService.php`
+- `modified`: `lib/Service/ChargeService.php`
+- `modified`: `lib/Service/Checkout/SessionService.php`
+- `modified`: `lib/Service/CoreServiceFactory.php`
+- `modified`: `lib/Service/CouponService.php`
+- `modified`: `lib/Service/CreditNoteService.php`
+- `modified`: `lib/Service/CustomerService.php`
+- `modified`: `lib/Service/DisputeService.php`
+- `modified`: `lib/Service/EventService.php`
+- `modified`: `lib/Service/FileLinkService.php`
+- `modified`: `lib/Service/FileService.php`
+- `modified`: `lib/Service/FinancialConnections/AccountService.php`
+- `modified`: `lib/Service/FinancialConnections/SessionService.php`
+- `modified`: `lib/Service/FinancialConnections/TransactionService.php`
+- `modified`: `lib/Service/Identity/VerificationReportService.php`
+- `modified`: `lib/Service/Identity/VerificationSessionService.php`
+- `modified`: `lib/Service/InvoiceItemService.php`
+- `modified`: `lib/Service/InvoicePaymentService.php`
+- `modified`: `lib/Service/InvoiceService.php`
+- `modified`: `lib/Service/Issuing/AuthorizationService.php`
+- `modified`: `lib/Service/Issuing/CardService.php`
+- `modified`: `lib/Service/Issuing/CardholderService.php`
+- `modified`: `lib/Service/Issuing/DisputeService.php`
+- `modified`: `lib/Service/Issuing/TokenService.php`
+- `modified`: `lib/Service/Issuing/TransactionService.php`
+- `modified`: `lib/Service/PaymentIntentService.php`
+- `modified`: `lib/Service/PaymentLinkService.php`
+- `modified`: `lib/Service/PaymentMethodConfigurationService.php`
+- `modified`: `lib/Service/PaymentMethodService.php`
+- `modified`: `lib/Service/PaymentRecordService.php`
+- `modified`: `lib/Service/PayoutService.php`
+- `modified`: `lib/Service/PlanService.php`
+- `modified`: `lib/Service/PriceService.php`
+- `added`: `lib/Service/ProductCatalog/ProductCatalogServiceFactory.php`
+- `added`: `lib/Service/ProductCatalog/TrialOfferService.php`
+- `modified`: `lib/Service/ProductService.php`
+- `modified`: `lib/Service/PromotionCodeService.php`
+- `modified`: `lib/Service/QuoteService.php`
+- `modified`: `lib/Service/Radar/EarlyFraudWarningService.php`
+- `modified`: `lib/Service/Radar/ValueListItemService.php`
+- `modified`: `lib/Service/Radar/ValueListService.php`
+- `modified`: `lib/Service/RefundService.php`
+- `modified`: `lib/Service/Reporting/ReportRunService.php`
+- `modified`: `lib/Service/ReviewService.php`
+- `modified`: `lib/Service/SetupAttemptService.php`
+- `modified`: `lib/Service/SetupIntentService.php`
+- `modified`: `lib/Service/ShippingRateService.php`
+- `modified`: `lib/Service/Sigma/ScheduledQueryRunService.php`
+- `modified`: `lib/Service/SubscriptionItemService.php`
+- `modified`: `lib/Service/SubscriptionScheduleService.php`
+- `modified`: `lib/Service/SubscriptionService.php`
+- `modified`: `lib/Service/Tax/CalculationService.php`
+- `added`: `lib/Service/Tax/LocationService.php`
+- `modified`: `lib/Service/Tax/RegistrationService.php`
+- `modified`: `lib/Service/Tax/SettingsService.php`
+- `modified`: `lib/Service/Tax/TaxServiceFactory.php`
+- `modified`: `lib/Service/TaxRateService.php`
+- `modified`: `lib/Service/TestHelpers/ConfirmationTokenService.php`
+- `added`: `lib/Service/ThreeDSecure/AuthenticationService.php`
+- `added`: `lib/Service/ThreeDSecure/ThreeDSecureServiceFactory.php`
+- `modified`: `lib/Service/TokenService.php`
+- `modified`: `lib/Service/TopupService.php`
+- `modified`: `lib/Service/TransferService.php`
+- `modified`: `lib/Service/Treasury/FinancialAccountService.php`
+- `modified`: `lib/Service/Treasury/OutboundPaymentService.php`
+- `modified`: `lib/Service/Treasury/TransactionEntryService.php`
+- `modified`: `lib/Service/Treasury/TransactionService.php`
+- `modified`: `lib/Service/V2/Core/AccountLinkService.php`
+- `modified`: `lib/Service/V2/Core/AccountService.php`
+- `modified`: `lib/SetupAttempt.php`
+- `modified`: `lib/SetupIntent.php`
+- `modified`: `lib/ShippingRate.php`
+- `modified`: `lib/Sigma/ScheduledQueryRun.php`
+- `modified`: `lib/Stripe.php`
+- `modified`: `lib/StripeClient.php`
+- `modified`: `lib/Subscription.php`
+- `modified`: `lib/SubscriptionItem.php`
+- `modified`: `lib/SubscriptionSchedule.php`
+- `modified`: `lib/Tax/Calculation.php`
+- `modified`: `lib/Tax/CalculationLineItem.php`
+- `added`: `lib/Tax/Location.php`
+- `modified`: `lib/Tax/Registration.php`
+- `modified`: `lib/Tax/Settings.php`
+- `modified`: `lib/Tax/TransactionLineItem.php`
+- `modified`: `lib/TaxCode.php`
+- `modified`: `lib/TaxRate.php`
+- `modified`: `lib/Terminal/Reader.php`
+- `added`: `lib/ThreeDSecure/Authentication.php`
+- `modified`: `lib/Token.php`
+- `modified`: `lib/Topup.php`
+- `modified`: `lib/Transfer.php`
+- `modified`: `lib/Treasury/CreditReversal.php`
+- `modified`: `lib/Treasury/DebitReversal.php`
+- `modified`: `lib/Treasury/FinancialAccount.php`
+- `modified`: `lib/Treasury/InboundTransfer.php`
+- `modified`: `lib/Treasury/OutboundPayment.php`
+- `modified`: `lib/Treasury/OutboundTransfer.php`
+- `modified`: `lib/Treasury/ReceivedCredit.php`
+- `modified`: `lib/Treasury/ReceivedDebit.php`
+- `modified`: `lib/Treasury/Transaction.php`
+- `modified`: `lib/Treasury/TransactionEntry.php`
+- `modified`: `lib/Util/ApiVersion.php`
+- `modified`: `lib/Util/EventNotificationTypes.php`
+- `modified`: `lib/Util/EventTypes.php`
+- `modified`: `lib/Util/ObjectTypes.php`
+- `modified`: `lib/V2/Billing/MeterEventAdjustment.php`
+- `modified`: `lib/V2/Core/Account.php`
+- `modified`: `lib/V2/Core/AccountLink.php`
+- `modified`: `lib/V2/Core/EventDestination.php`
+- `modified`: `lib/V2/Core/EventNotification.php`
+- `modified`: `lib/WebhookEndpoint.php`
+- `modified`: `lib/version_check.php`

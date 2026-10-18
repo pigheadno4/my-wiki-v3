@@ -1,0 +1,2129 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-php`
+- Work item: `github-c5a513b45b0919c157c8`
+- Snapshot: `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/manifest.json`
+- Recommended mode: `full`
+- Review priority: `normal`
+
+## `stripe-php`
+
+- Version: `21.3.2` -> `22.0.0`
+- Recommendation: `full` / `normal`
+- Unchanged retained files: `301`
+
+### Required reading
+
+- `raw/github/stripe/stripe-php/releases/stripe-php/22.0.0/2026-10-18/manifest.json`
+- `raw/github/stripe/stripe-php/releases/stripe-php/22.0.0/2026-10-18/release-notes.md`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-0d8b075/manifest.json`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/README.md`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/composer.json`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/init.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/AbstractEventNotificationHandler.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Account.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/AccountSession.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ApiRequestor.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ApplicationFee.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Apps/Install.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Balance.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/BalanceTransaction.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Billing/FeedbackOption.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Charge.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Checkout/Session.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ConfirmationToken.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Coupon.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/CreditNote.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Customer.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Discount.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Dispute.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ErrorObject.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Event.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountApplicationAuthorizedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountApplicationAuthorizedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountApplicationDeauthorizedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountApplicationDeauthorizedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountExternalAccountCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountExternalAccountCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountExternalAccountDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountExternalAccountDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountExternalAccountUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountExternalAccountUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1AccountUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ApplicationFeeCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ApplicationFeeCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ApplicationFeeRefundUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ApplicationFeeRefundUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ApplicationFeeRefundedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ApplicationFeeRefundedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BalanceAvailableEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BalanceAvailableEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BalanceSettingsUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BalanceSettingsUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingAlertTriggeredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingAlertTriggeredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingCreditBalanceTransactionCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingCreditBalanceTransactionCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingCreditGrantCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingCreditGrantCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingCreditGrantUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingCreditGrantUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterDeactivatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterDeactivatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterReactivatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterReactivatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingMeterUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingPortalConfigurationCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingPortalConfigurationCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingPortalConfigurationUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingPortalConfigurationUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingPortalSessionCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1BillingPortalSessionCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CapabilityUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CapabilityUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CashBalanceFundsAvailableEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CashBalanceFundsAvailableEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeCapturedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeCapturedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeClosedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeClosedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeFundsReinstatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeFundsReinstatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeFundsWithdrawnEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeFundsWithdrawnEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeDisputeUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeExpiredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeExpiredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargePendingEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargePendingEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeRefundUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeRefundUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeRefundedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeRefundedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ChargeUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionAsyncPaymentFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionAsyncPaymentFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionAsyncPaymentSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionAsyncPaymentSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionCompletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionCompletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionExpiredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CheckoutSessionExpiredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderDelayedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderDelayedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderDeliveredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderDeliveredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderProductSubstitutedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateOrderProductSubstitutedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateProductCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateProductCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateProductPricingUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ClimateProductPricingUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CouponCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CouponCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CouponDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CouponDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CouponUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CouponUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CreditNoteCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CreditNoteCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CreditNoteUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CreditNoteUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CreditNoteVoidedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CreditNoteVoidedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerCashBalanceTransactionCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerCashBalanceTransactionCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDiscountCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDiscountCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDiscountDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDiscountDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDiscountUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerDiscountUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionPausedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionPausedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionResumedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionResumedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionTrialWillEndEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionTrialWillEndEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerSubscriptionUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerTaxIdCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerTaxIdCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerTaxIdDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerTaxIdDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerTaxIdUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerTaxIdUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1CustomerUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FileCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FileCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountDeactivatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountDeactivatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountDisconnectedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountDisconnectedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountReactivatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountReactivatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionProcessingEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionProcessingEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionRedactedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionRedactedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionRequiresInputEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionRequiresInputEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionVerifiedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IdentityVerificationSessionVerifiedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceFinalizationFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceFinalizationFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceFinalizedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceFinalizedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceMarkedUncollectibleEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceMarkedUncollectibleEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceOverdueEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceOverdueEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceOverpaidEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceOverpaidEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaidEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaidEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentActionRequiredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentActionRequiredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentAttemptRequiredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentAttemptRequiredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentPaidEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentPaidEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoicePaymentSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceSentEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceSentEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceUpcomingEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceUpcomingEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceVoidedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceVoidedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceWillBeDueEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceWillBeDueEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceitemCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceitemCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceitemDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1InvoiceitemDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingAuthorizationCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingAuthorizationCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingAuthorizationRequestEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingAuthorizationRequestEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingAuthorizationUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingAuthorizationUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardholderCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardholderCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardholderUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingCardholderUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeClosedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeClosedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeFundsReinstatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeFundsReinstatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeFundsRescindedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeFundsRescindedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeSubmittedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeSubmittedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingDisputeUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignActivatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignActivatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignDeactivatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignDeactivatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignRejectedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignRejectedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingPersonalizationDesignUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTokenCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTokenCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTokenUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTokenUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTransactionCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTransactionCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTransactionUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1IssuingTransactionUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1MandateUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1MandateUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentAmountCapturableUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentAmountCapturableUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentPartiallyFundedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentPartiallyFundedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentPaymentFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentPaymentFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentProcessingEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentProcessingEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentRequiresActionEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentRequiresActionEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentIntentSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentLinkCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentLinkCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentLinkUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentLinkUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodAttachedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodAttachedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodAutomaticallyUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodAutomaticallyUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodDetachedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodDetachedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PaymentMethodUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutPaidEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutPaidEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutReconciliationCompletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutReconciliationCompletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PayoutUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PersonCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PersonCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PersonDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PersonDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PersonUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PersonUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PlanCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PlanCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PlanDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PlanDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PlanUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PlanUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PriceCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PriceCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PriceDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PriceDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PriceUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PriceUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ProductCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ProductCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ProductDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ProductDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ProductUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ProductUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PromotionCodeCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PromotionCodeCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PromotionCodeUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1PromotionCodeUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteAcceptedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteAcceptedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteFinalizedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1QuoteFinalizedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RadarEarlyFraudWarningCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RadarEarlyFraudWarningCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RadarEarlyFraudWarningUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RadarEarlyFraudWarningUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RefundCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RefundCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RefundFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RefundFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RefundUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1RefundUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ReviewClosedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ReviewClosedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ReviewOpenedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1ReviewOpenedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentRequiresActionEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentRequiresActionEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentSetupFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentSetupFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SetupIntentSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SigmaScheduledQueryRunCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SigmaScheduledQueryRunCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceChargeableEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceChargeableEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceRefundAttributesRequiredEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SourceRefundAttributesRequiredEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleAbortedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleAbortedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleCompletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleCompletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleExpiringEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleExpiringEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleReleasedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleReleasedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1SubscriptionScheduleUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TaxRateCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TaxRateCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TaxRateUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TaxRateUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TaxSettingsUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TaxSettingsUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TerminalReaderActionFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TerminalReaderActionFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TerminalReaderActionSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TerminalReaderActionSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TerminalReaderActionUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TerminalReaderActionUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockAdvancingEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockAdvancingEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockDeletedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockDeletedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockInternalFailureEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockInternalFailureEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockReadyEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TestHelpersTestClockReadyEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupCanceledEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupCanceledEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupFailedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupFailedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupReversedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupReversedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupSucceededEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TopupSucceededEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TransferCreatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TransferCreatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TransferReversedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TransferReversedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TransferUpdatedEvent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Events/V1TransferUpdatedEventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/File.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/FileLink.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/FinancialConnections/Account.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/FinancialConnections/Session.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/FinancialConnections/Transaction.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Identity/VerificationReport.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Identity/VerificationSession.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Invoice.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/InvoiceItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/InvoiceLineItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/InvoicePayment.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Issuing/Authorization.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Issuing/Card.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Issuing/Cardholder.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Issuing/Dispute.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Issuing/Token.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Issuing/Transaction.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Mandate.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PaymentAttemptRecord.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PaymentIntent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PaymentLink.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PaymentMethod.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PaymentMethodConfiguration.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PaymentRecord.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Payout.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Plan.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Price.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Product.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ProductCatalog/TrialOffer.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/PromotionCode.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Quote.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Radar/EarlyFraudWarning.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Radar/PaymentEvaluation.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Radar/ValueList.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Radar/ValueListItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Refund.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/RelatedSingletonObject.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Reporting/ReportRun.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Reserve/Hold.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Reserve/Plan.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Reserve/Release.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Review.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/AccountService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/AccountSessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ApplicationFeeService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Apps/AppsServiceFactory.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Apps/InstallService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/BalanceTransactionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Billing/FeedbackOptionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ChargeService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Checkout/SessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/CoreServiceFactory.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/CouponService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/CreditNoteService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/CustomerService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/DisputeService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/EventService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/FileLinkService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/FileService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/FinancialConnections/AccountService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/FinancialConnections/SessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/FinancialConnections/TransactionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Identity/VerificationReportService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Identity/VerificationSessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/InvoiceItemService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/InvoicePaymentService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/InvoiceService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Issuing/AuthorizationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Issuing/CardService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Issuing/CardholderService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Issuing/DisputeService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Issuing/TokenService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Issuing/TransactionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PaymentIntentService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PaymentLinkService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PaymentMethodConfigurationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PaymentMethodService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PaymentRecordService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PayoutService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PlanService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PriceService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ProductCatalog/ProductCatalogServiceFactory.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ProductCatalog/TrialOfferService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ProductService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/PromotionCodeService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/QuoteService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Radar/EarlyFraudWarningService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Radar/ValueListItemService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Radar/ValueListService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/RefundService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Reporting/ReportRunService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ReviewService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/SetupAttemptService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/SetupIntentService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ShippingRateService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Sigma/ScheduledQueryRunService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/SubscriptionItemService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/SubscriptionScheduleService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/SubscriptionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Tax/CalculationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Tax/LocationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Tax/RegistrationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Tax/SettingsService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Tax/TaxServiceFactory.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/TaxRateService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/TestHelpers/ConfirmationTokenService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ThreeDSecure/AuthenticationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/ThreeDSecure/ThreeDSecureServiceFactory.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/TokenService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/TopupService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/TransferService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Treasury/FinancialAccountService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Treasury/OutboundPaymentService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Treasury/TransactionEntryService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/Treasury/TransactionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/V2/Core/AccountLinkService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Service/V2/Core/AccountService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/SetupAttempt.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/SetupIntent.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ShippingRate.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Sigma/ScheduledQueryRun.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Stripe.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/StripeClient.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Subscription.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/SubscriptionItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/SubscriptionSchedule.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Tax/Calculation.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Tax/CalculationLineItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Tax/Location.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Tax/Registration.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Tax/Settings.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Tax/TransactionLineItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/TaxCode.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/TaxRate.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Terminal/Reader.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/ThreeDSecure/Authentication.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Token.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Topup.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Transfer.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/CreditReversal.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/DebitReversal.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/FinancialAccount.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/InboundTransfer.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/OutboundPayment.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/OutboundTransfer.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/ReceivedCredit.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/ReceivedDebit.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/Transaction.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Treasury/TransactionEntry.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Util/ApiVersion.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Util/EventNotificationTypes.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Util/EventTypes.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/Util/ObjectTypes.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/V2/Billing/MeterEventAdjustment.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/V2/Core/Account.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/V2/Core/AccountLink.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/V2/Core/EventDestination.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/V2/Core/EventNotification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/WebhookEndpoint.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/files/lib/version_check.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/manifest.json`
+- `tracking/github/repos/stripe/stripe-php/comparisons/stripe-php/21.3.2--22.0.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-php/comparisons/stripe-php/21.3.2--22.0.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-php/comparisons/stripe-php/21.3.2--22.0.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `.gitattributes`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/pull_request_template.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/changelog.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/ci.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/zizmor.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-05-17_unknown_add-new-deletediscou.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-05-17_unknown_add-new-transfer.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-05-17_unknown_numerous-test-suite.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-05-17_unknown_support-composer-packagist.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-05-17_unknown_switch-using-http.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-05-24_unknown_add-missing-argument.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-06-26_unknown_make-clearer-you.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-08-17_unknown_add-new-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-08-21_unknown_bugfix-stripe-objects.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-08-23_unknown_change-internal-function.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-08-31_unknown_add-update-pay.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-09-14_unknown_get-all-various.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-10-30_unknown_add-support-creating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-10-30_unknown_add-support-new.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-10-30_unknown_add-support-new2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-11-08_unknown_add-support-updating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-11-08_unknown_fix-bug-preventing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-11-08_unknown_fix-usage-under.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2012-12-30_unknown_version-bump-cleanup.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-01-15_unknown_add-support-setting.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-02-04_unknown_add-support-passing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-02-20_unknown_don-t-re.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-02-20_unknown_ensure-all-input.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-02-21_unknown_add-id-list.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-06-22_unknown_add-new-recipient.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-06-22_unknown_allow-transfers-creatable.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-07-12_unknown_add-support-multiple.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-08-12_unknown_add-support-unsetting.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-08-20_unknown_add-new-balance.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-09-18_unknown_add-support-closing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-10-16_unknown_add-support-metadata.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-11-08_unknown_fix-bug-where.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2013-12-04_unknown_add-new-applicationf.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-01-29_unknown_add-support-multiple.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-04-01_unknown_add-striperateli-catching.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-04-01_unknown_update-zend-coding.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-04-10_unknown_add-support-certificate.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-04-10_unknown_drop-support-hhvm.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-04-10_unknown_update-ca-bundle.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-05-16_unknown_fix-bug-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-05-21_unknown_support-cards-recipients.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-05-28_unknown_support-canceling-transfers.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-06-17_unknown_add-metadata-refunds.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-07-29_unknown_application-fee-refunds.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-07-29_unknown_hhvm-now-works.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-07-29_unknown_small-bug-fixes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-07-29_unknown_tostring-now-returns.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-08-01_unknown_requests-now-send.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-09-23_unknown_coupons-now-backed.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-09-23_unknown_running-operations-create.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-11-06_unknown_better-handling-hhvm.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-12-15_unknown_added-methods-reporting.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-12-15_unknown_saving-objects-fetched.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2014-12-23_unknown_adding-support-creating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-01-21_unknown_support-making-bitcoin.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-15_unknown_added-opts-hash.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-15_unknown_added-support-retrieving.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-15_unknown_bumped-minimum-version.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-15_unknown_switched-stripe-namespace.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-15_unknown_switched-style-guide.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-15_unknown_switched-tests-phpunit.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-16_unknown_fix-fetching-endpoints.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-19_unknown_added-bitcoin-receiever.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-19_unknown_edited-tests-prefer.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-02-19_unknown_support-new-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-03-01_unknown_support-transfer-reversals.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-04-10_unknown_bug-fixes-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-04-10_unknown_remove-ssl-cert.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-05-12_unknown_fix-account-updating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-05-12_unknown_fix-transfer-reversal.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-05-12_unknown_network-requests-now.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-05-13_unknown_fix-ca-certificate.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-06-01_unknown_add-support-alipay.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-06-01_unknown_add-support-bank.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-06-01_unknown_add-support-bank2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-07-06_unknown_add-request-id.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-07-28_unknown_add-support-calling.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-07-28_unknown_rename-getcode-getparam.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-07-28_unknown_rename-stripe-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-07-28_unknown_start-supporting-testing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-08-03_unknown_add-dispute-listing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-08-03_unknown_add-support-manage.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-08-17_unknown_add-refund-listing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-09-11_unknown_add-support-429.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-09-14_unknown_products-skus-orders.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2015-12-01_unknown_add-verification-routine.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-01-05_unknown_allow-configuratio-http.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-01-27_unknown_support-deleting-relay.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-02-01_unknown_update-bundled-ca.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-02-08_unknown_add-countryspec-model.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-02-09_unknown_add-automatic-pagination.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-02-09_unknown_allow-global-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-02-24_unknown_fix-encoding-behavior.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-04_unknown_fix-error-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-15_unknown_add-reject-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-22_unknown_allow-curlclient-initialized.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-22_unknown_fix-bug-where.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-31_unknown_fix-bug-refreshfrom.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-31_unknown_fix-bug-where.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-31_unknown_fix-bug-where2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-03-31_unknown_update-ca-cert.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-04-07_unknown_additional-check-value.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-05-04_unknown_add-list-create.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-05-25_unknown_add-support-returning.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-05-27_unknown_fix-some-inconsistenc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-06-03_unknown_add-inventory-under.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-06-20_unknown_make-sure-curl.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-06-29_unknown_add-static-update.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-07-12_unknown_add-threedsecure-model.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-07-14_unknown_add-field-annotations.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-07-28_unknown_add-new-status.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-07-28_unknown_fix-auto-paging.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-07-29_unknown_opt-requests-directly.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-08-08_unknown_add-getdeclineco-card.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-08-25_unknown_add-source-model.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-09-13_unknown_add-stripe-setappinfo.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-09-15_unknown_add-support-apple.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-09-28_unknown_drop-attempt-force.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-09-28_unknown_support-subscription-items.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-10-17_unknown_fix-transfer-reversal.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-10-17_unknown_fixes-some-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-10-18_unknown_support-403-status.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-10-21_unknown_add-docblock-model.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-11-21_unknown_add-retrieve-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2016-11-30_unknown_add-support-verifying.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-01-18_unknown_add-support-updating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-02-24_unknown_correct-error-check.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-02-27_unknown_correct-handling-owner.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-03-20_unknown_support-detaching-sources.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-03-22_unknown_remove-hard-dependency.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-04-06_unknown_please-see-4.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-04-10_unknown_add-support-payouts.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-04-20_unknown_add-stripe-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-04-24_unknown_allow-nested-field.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-04-28_unknown_support-checking-webhook.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-05-10_unknown_fix-docs-include.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-05-25_unknown_add-support-login.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-06-05_unknown_clients-can-implement.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-06-05_unknown_implement-countable-attachedobje.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-06-19_unknown_add-support-ephemeral.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-06-27_unknown_pay-invoice-now.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-06-30_unknown_add-support-oauth.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-07-03_unknown_fix-order-returns.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-08-01_unknown_fix-documented-return.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-08-14_unknown_allow-addresskana-addresskanji.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-08-29_unknown_add-support-invalidclien.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-09-14_unknown_serialized-shipping-nested.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-09-20_unknown_fix-deserializat-mapping.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-09-27_unknown_add-phpdoc-card.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-10-11_brandur_rename-source-delete.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-10-25_brandur_add-static-methods.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-10-27_brandur_support-listing-source.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-10-30_brandur_allow-personaladdr-personaladdr.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-10-31_brandur_support-exchange-rates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-11-28_ob_alphabetize-list-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-11-28_ob_fix-expiry-date.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-11-28_ob_remove-some-unsupported.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2017-12-20_brandur_add-debuginfo-magic.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-04_ob_drop-support-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-04_ob_use-short-array.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-04_ob_use-traits-common.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-08_ob_fix-serializatio-logic.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-10_ob_remove-externalacco-class.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-11_ob_increase-test-coverage.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-17_brandur_escape-unsanitized-input.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-17_brandur_update-ca-bundle.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-17_brandur_updated-bundled-ca.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-18_ob_use-vendored-ca.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-01-29_brandur_add-update-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-07_ob_support-automatic-request.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-07_ob_update-phpdoc-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-07_unknown_attributes-used-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-07_unknown_minimum-php-version.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-07_unknown_stripe-attachedobje-longer.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-07_unknown_stripe-collection-now.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-12_ob_fix-header-persistence.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-12_ob_introduce-new-idempotency.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-16_brandur_fix-phpdoc-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-21_brandur_add-support-topups.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-23_ob_add-support-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-26_ob_add-event-types.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-28_brandur_add-constants-reason.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-02-28_brandur_add-phpdoc-amountpaid.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-03-02_ob_fix-namespaces-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-03-02_ob_fix-namespaces-some.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-03-17_ob_add-phpdoc-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-04-05_ob_don-t-zero.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-04-11_brandur_add-support-flexible.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-05-09_brandur_add-support-issuer.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-05-14_brandur_update-fields-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-05-28_ob_add-objectname-constant.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-05-28_ob_fix-unnecessary-traits.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-05-30_brandur_phpdoc-changes-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-06-13_brandur_added-phpdoc-apirequestor.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-06-13_ob_add-new-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-06-24_ob_make-account-deauthorize.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-06-28_ob_add-support-apppartnerid.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-06-28_ob_add-support-payment.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-10_ob_add-phpdoc-autoadvance.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-11_ob_enable-http-2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-16_ob_use-http-2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-19_ob_internal-improvements-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-26_ob_add-support-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-28_ob_add-support-scheduled.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-07-31_ob_add-isdeleted-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-08-02_brandur_add-support-file.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-08-03_ob_add-cancel-support.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-08-23_ob_add-support-usage.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-09-05_brandur_add-support-reporting.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-09-14_ob_integer-index-encode.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-09-18_ob_fix-warning-adding.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-09-24_brandur_add-support-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-09-24_ob_rename-stripe-fileupload.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-09-25_ob_ignore-null-values.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-10-08_ob_store-http-response.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-10-09_ob_add-constants-flow.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-10-11_ob_fix-psr-4.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-10-17_remi_fix-methods-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-10-30_remi_add-support-person.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-10-30_remi_add-support-webhookendpo.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-07_brandur_drop-files-composer.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-09_remi_add-new-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-12_brandur_don-t-mutate.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_brandur_add-support-client.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_ob_bump-dependencies.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_ob_drop-support-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_ob_drop-support-php2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_ob_remove-curlfile-check.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_ob_remove-fileupload-alias.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-15_ob_update-constant-definitions.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-20_brandur_add-cast-some.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-27_remi_add-support-valuelist.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-28_brandur_add-event-name.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-11-28_remi_add-support-review.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-12-11_ob_add-support-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-12-11_ob_enable-persistent-connections.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-12-11_ob_remove-curlreset-check.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2018-12-21_remi_add-support-checkoutsess.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-03_ob_add-support-iterating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-21_ob_properly-serialize-individual.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-23_remi_rename-checkoutsess-session.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-25_ob_don-t-overwrite.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-25_ob_fix-dangling-message.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-31_brandur_fix-phpdoc-nested.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-01-31_brandur_some-more-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-02-12_remi_add-support-subscription.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-02-16_remi_fix-phpdoc-subscription.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-02-25_remi_fix-phpdoc-across.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-02-26_remi_improve-phpdoc-source.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-02-27_remi_add-subscription-subscription.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-11_ob_correctly-handle-case.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-18_remi_add-support-deleting.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-18_remi_add-support-paymentmetho.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-18_remi_add-support-retrieving.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-22_ob_add-lot-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-22_ob_add-missing-subscription.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-03-25_ob_fix-phpdoc-return.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-02_ob_only-use-http.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-05_ob_fix-encoding-nested.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-12_ob_add-constants-person.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-12_ob_add-missing-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-18_remi_add-support-creditnote.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-19_brandur_correct-type-personid.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-22_remi_add-support-taxid.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-24_remi_add-support-taxrate.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-24_remi_fix-multiple-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-26_ob_fix-issue-where.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-04-26_remi_add-missing-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-01_ob_fix-constant-paymentinten.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-01_ob_update-return-type.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-06_remi_add-missing-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-07_ob_set-return-type.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-13_brandur_fix-typo-definition.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-14_ob_add-support-capability.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-20_ob_use-absolute-value.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-21_ob_add-constants-payment.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-21_ob_fix-phpdoc-various.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-21_ob_fix-various-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-21_ob_use-stripe-class.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-22_ob_add-constants-balancetrans.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-22_ob_add-constants-new.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-05-23_ob_add-support-radar.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-14_remi_add-new-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-17_remi_add-constants-submittype.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-17_remi_add-new-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-18_ob_add-support-customerbala.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-25_ob_enable-request-latency.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-25_remi_add-new-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-26_ob_fix-exception-message.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-06-27_remi_add-support-setupintent.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-01_remi_move-list-balance.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-02_ob_use-arraycolumn-flatten.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-09_ob_add-subscription-createusager.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-09_ob_remove-deprecated-methods.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-09_ob_remove-subscription.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-16_ob_remove-issuerfraudr.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_add-errorobject-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_fix-remaining-todos.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_rename-fake-magic.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_start-testing-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_start-using-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_update-constructors-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-22_ob_use-yield-autopaginati.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-23_ob_update-error-messages.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-23_ob_upgrade-retry-logic.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-26_ob_fix-comment.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-27_ob_add-typehint-apiresponse.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-27_ob_collection-improvements-fixes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-27_ob_modernize-exceptions.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-28_ob_add-constants-error.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-28_ob_add-pendingsetup-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-28_ob_retry-requests-429.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-28_ob_update-certificate-bundle.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-29_ob_fix-toarray-calls.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-29_ob_make-loggerinterf-error.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-08-30_ob_couple-fixes-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-05_ob_clean-up-collection.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-06_ob_fix-usage-signaturever.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-13_ob_make-caseinsensit-countable.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-16_remi_added-new-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-17_remi_added-missing-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-23_remi_added-new-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-24_remi_add-missing-decline.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-09-26_ob_call-toarray-objects.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-02_remi_add-paymentinten-canceled.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-07_rattrayalex_respect-stripe-should.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-16_ob_add-support-http.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-18_ob_redact-api-key.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-22_ob_add-missing-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-23_remi_add-capabilitytr-account.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-23_remi_add-support-typemxrfc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-24_ob_contributor-convenant.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-25_ob_fix-telemetry-header.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-30_ob_use-phpstan-travis.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-10-31_ob_early-codegen-fixes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-05_ob_add-phpdoc-apiresponse.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-05_ob_mark-nullable-fields.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-05_ob_use-single-quotes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-06_ob_add-support-reverse.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-06_remi_add-support-mandate.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-07_ob_argument-arraykeyexis-cannot.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-08_ob_removed-unwanted-got.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-09_rattrayalex_add-source-allsourcetra.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-19_remi_add-support-listing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-26_remi_add-support-creditnote.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-11-27_remi_fix-invalid-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2019-12-04_ob_disable-autoloader-checking.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-06_remi_add-constant-typesguen.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-07_ob_rename-remaining-options.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-07_ob_update-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-08_ob_improve-phpdoc-types.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-13_richardm_don-t-call.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-14_ob_fix-incorrect-unexpectedva.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-14_remi_add-support-creditnoteli.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-23_remi_add-new-type.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-28_remi_add-support-typeescif.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-29_ob_more-phpdoc-fixes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-29_remi_update-phpdocs-across.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-30_ob_even-more-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-31_ob_yet-more-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-01-31_remi_add-new-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-01_ob_upgrade-phpstan-fix.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-03_richardm_autogen-diff.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-03_richardm_phpdoc-stripeobject-errorobject.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-04_ob_update-phpdoc-nested.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-04_ob_use-nativefuncti-phpstan.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-06_ob_add-phpdoc-types.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-10_ob_better-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-10_ob_get-closer-phpcsfixer.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-12_ob_another-batch-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-12_ob_fix-few-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-12_ob_more-php-cs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-13_ob_add-support-phpdocumento.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-13_ob_enable-phpunitinter-rule.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-13_ob_last-set-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-14_ob_make-stripe-collection.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-24_ob_add-phpdoc-class.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-26_remi_add-support-listing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-02-28_remi_add-new-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-03-04_remi_update-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-03-13_remi_multiple-phpdocs-changes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-03-18_ob_convert-keys-strings.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-04-03_richardm_codegenerate-phpdoc-nested.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-04-03_richardm_preserve-backwards-compatibilit.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-04-03_richardm_update-docstrings-nested.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-04-10_remi_improve-phpdocs-many.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-04-22_remi_add-support-session.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-04-29_remi_add-support-price.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-01_ob_add-support-new.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-12_remi_add-support-lineitem.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-13_remi_fix-multiple-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-14_richardm_introduce-client-services.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-15_richardm_services-bugfix-convert.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-19_remi_add-support-issuingdispu.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-20_remi_add-anticipation-type.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-22_remi_add-support-aetrn.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-28_richardm_fix-autopaginati-service.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-05-28_richardm_remove-extra-arraykeys.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-06-03_remi_update-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-06-09_remi_add-support-idnpwp.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-06-11_remi_improve-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-06-23_remi_updated-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-06-25_remi_add-constants-paymentbehav.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-06-25_remi_add-multiple-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-06_richardm_add-oauthservice.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-14_cjavilla_adds-enum-values.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-15_remi_multiple-phpdoc-fixes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-16_remi_add-new-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-17_remi_add-support-politicalexp.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-20_richardm_add-first-last.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-07-29_remi_phpdoc-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-05_remi_add-support-promotioncod.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-07_remi_phpdoc-changes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-11_richardm_fix-invalid-return.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-13_richardm_nullable-balancetrans-issuing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-17_ctrudeau_fixing-telemetry.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-18_remi_phpdocs-updated.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-19_remi_phpdocs-updated.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-28_ctrudeau_updated-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-08-31_ianjabour_add-trim-getsignature.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-02_remi_multiple-api-changes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-08_remi_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-21_remi_updated-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-22_richardm_bugfix-don-t.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-23_remi_updated-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-24_ctrudeau_multiple-api-changes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-25_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-09-30_remi_add-support-setupattempt.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-10-14_remi_add-support-payout.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-10-15_vcheung_warn-opts-params.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-10-20_remi_add-support-jprn.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-09_remi_add-missing-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-09_remi_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-16_ob_force-ipv4-resolving.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-17_ctrudeau_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-18_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-19_richardm_added-constants-prorationbeh.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-11-24_remi_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-12-01_remi_improve-error-message.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-12-09_ob_bump-php-cs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-12-09_ob_upgrade-phpstan-0.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2020-12-09_remi_improve-phpdocs-discount.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-01-04_ob_bump-phpdocumento-3.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-01-15_richardm_multiple-api-changes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-01-22_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-03_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-04_richardm_update-ca-cert.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-05_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-09_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-17_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-17_richardm_update-phpdocs2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-02-20_richardm_add-support-billing.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-03-22_richardm_make-possibility-extend.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-03-22_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-04-02_remi_remove-duplicate-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-04-12_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-05-05_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-05-19_seang_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-05-26_dcr_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-04_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-04_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-07_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-16_richardm_update-phpdocs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-18_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-25_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-26_richardm_deprecate-travis.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-28_richardm_streaming-requests.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-06-30_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-07_richardm_add-mode-constants.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-09_richardm_add-streaming-methods.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-09_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-12_remi_improve-readme-old.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-14_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-15_dcr_remove-unused-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-21_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-22_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-07-28_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-08-11_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-08-11_richardm_fix-typo-docblock.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-08-19_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-09-01_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-09-15_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-09-16_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-10-07_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-10-11_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-10-11_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-11-16_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-11-17_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-11-19_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-01_richardm_phpstan-compatibilit-php8.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-01_richardm_phpunit-compatibilit-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-06_richardm_php-8-1.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-06_unknown_version-php-8.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-07_dcr_fix-namespaced-classes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-07_richardm_announce-php8-support.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-09_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-09_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-15_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-17_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-22_dcr_upgrade-php-cs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2021-12-23_dcr_update-docs-urls.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-01-12_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-01-13_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-01-20_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-01-25_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-02-03_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-02-11_richardm_add-generic-parameter.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-02-11_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-02-14_richardm_add-test.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-02-23_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-01_richardm_1247-api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-02_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-10_richardm_add-missing-constant.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-11_dcr_add-support-searchresult.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-18_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-23_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-25_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-28_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-03-29_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-01_kamil_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-08_kamil_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-08_richardm_add-phpdoc-return.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-08_richardm_fix-some-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-13_pakrym_add-support-updating.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-13_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-15_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-21_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-25_dcr_allow-users-pass.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-04-28_dcr_fix-phpdoc-discount.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-03_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-04_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-04_dcr_pin-setup-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-05_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-05_dcr_api-updates2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-09_richardm_major-version-release.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-11_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-19_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-23_dcr_fix-update-requestoptio.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-23_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-23_pakrym_api-updates2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-05-26_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-01_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-08_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-09_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-09_pakrym_api-updates2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-09_pakrym_api-updates3.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-09_pakrym_api-updates4.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-15_pakrym_support-updating-pre.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-15_pakrym_trigger-workflows-beta.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-17_kamil_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-28_dcr_updated-certificate-bundle.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-06-29_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-06_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-07_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-12_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-18_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-25_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-25_pakrym_add-some-phpdoc.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-07-26_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-01_dcr_next-major-release.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-alternatesta-authorizatio.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-new-error.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-params-parameter.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-previewlines-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-sourcetypefp-constant.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-support-shippingcost.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_add-transferdata-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-ability-list.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-all-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-alltransacti-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-associatedob-array.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-cancel-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-capabilityca-capabilityle.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-deprecated-alipayaccoun.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-deprecated-error.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-deprecated-event.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-details-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-failurereaso-constant.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-orderitem-resource.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-persons-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-recipient-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-recipient-resource.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-sources-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-sourcetransa-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-sourcetypeal-sourcetypefi.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-02_unknown_remove-usagerecords-method.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-05_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-11_anniel_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-15_dcr_allow-passing-psr.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-17_ramya_add-support-section.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-19_kamil_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-23_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-24_pakrym_add-beta-readme.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-25_anniel_add-test-coverage.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-25_dcr_fix-fix-type.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-26_dcr_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-08-31_dcr_chore-update-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-09-06_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-09-15_kamil_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-09-29_yejia_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-10_richardm_add-requestlogur-errorobject.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-12_anniel_removed-deprecated-orders.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-12_anniel_removed-deprecated-product.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-13_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-17_anniel_removed-deprecated-sku.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-17_richardm_fix-configure-finder.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-17_richardm_install-deps-install.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-20_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-24_anniel_do-run-coveralls.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-10-24_anniel_mark-resource-save.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-11-01_anniel_removed-deprecated-alipayaccoun.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-11-02_kamil_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-11-07_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-11-09_richardm_removed-charges-field.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-11-16_richardm_next-major-release.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-12-06_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-12-06_richardm_api-updates2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-12-08_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-12-15_anniel_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2022-12-22_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-01-04_anniel_switch-mbconvertenc-fix.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-01-19_pakrym_add-getservice-methods.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-01-19_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-01-19_pakrym_fix-stripe-setaccountid.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-01-19_pakrym_ignore-php-version.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-02_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-04_richardm_update-gitattribute.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-08_pakrym_enhancement-enable-configure.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-08_pakrym_enhancement-run-tests.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-08_pakrym_enhancement-update-actions.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-08_pakrym_fix-do-use.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-08_pakrym_fix-remove-parentheses.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-10_pakrym_subscription-always-presented.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-16_anniel_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-21_pakrym_remove-init-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-02-23_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-02_pakrym_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-04_pakrym_stripe-customers-retrievepaym.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-09_anniel_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-14_richardm_restore-stripeclient-getservice.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-17_richardm_api-updates.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-23_pakrym_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-23_pakrym_update-generated-code2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-24_pakrym_trigger-workflow-tags.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-03-30_anniel_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-04-04_richardm_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-04-06_richardm_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-04-13_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-04-20_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-04-27_richardm_increment-phpstan-strictness.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-04-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-05-11_anniel_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-05-16_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-05-23_pakrym_generate-error-codes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-05-23_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-05-25_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-06-08_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-06-13_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-06-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-06-29_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-06_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-13_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-18_richardm_phpdoc-use-union.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-18_richardm_phpdoc-use-union2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-19_richardm_add-constants-payment.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-19_richardm_add-constants-payment2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-20_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-20_stripe-openapi_update-generated-code2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-07-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-03_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-10_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-15_richardm_remove-deprecated-enum.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-16_stripe-openapi_phpdoc-changes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-24_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-29_richardm_nicer-apierrorexce-tostring.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-08-31_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-07_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-14_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-15_richardm_enhancement-reference-phpunit.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-15_richardm_enhancement-use-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-18_anniel_fix-remove-squizlabs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-21_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-25_pakrym_generate-discount-sourcetransa.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-28_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-09-29_anniel_fix-do-bother.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-10-05_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-10-11_pakrym_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-10-16_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-10-16_stripe-openapi_update-generated-code2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-10-16_unknown_please-read-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-10-26_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-11-02_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-11-06_richardm_fix-error-id.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-11-09_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-11-16_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-11-21_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-11-30_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-12-01_richardm_report-usage-save.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-12-07_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2023-12-21_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-01-04_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-01-12_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-01-16_helenye_add-paginated-requests.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-01-25_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-01_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-13_richardm_add-more-specific.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-13_richardm_fix-stripe-tax.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-15_anniel_remove-broken-methods.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-22_anniel_add-taxids-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-22_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-27_helenye_update-readme-use.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-02-29_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-03-14_ramya_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-03-21_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-03-28_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-04_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-09_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-10_ramya_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-11_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-16_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-18_prathmesh_added-throws-autopagingit.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-18_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-04-25_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-02_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-09_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-16_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-21_helenye_rename-section-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-23_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-29_helenye_add-optional-appinfo.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-30_prathmesh_added-phpdocs-create.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-05-30_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-06-13_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-06-24_stripe-openapi_please-read-api.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-07-05_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-07-11_prathmesh_update-changelog.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-07-11_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-07-18_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-07-25_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-08-01_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-08-08_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-08-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-08-29_ramya_generate-sdk-openapi.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-09-12_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-09-18_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-09-18_stripe-openapi_update-generated-code2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-01_ramya_support-apis-new.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-03_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-04_prathmesh_renamed-example-file.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-08_jar_clean-up-examples.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-18_helenye_deserialize-correct-v2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-18_xavdid_update-object-tags.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-10-29_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-11-20_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-12-18_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2024-12-19_jar_added-pull-request.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-09_xavdid_add-justfile-remove.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-09_xavdid_ensure-dependencies-installed.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-16_jar_added-contributing-md.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-16_xavdid_minor-justfile-fixes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-17_jar_restore-testcoreeven-generated.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-01-29_helenye_make-httpclient-public.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-02-05_xavdid_include-useful-error.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-02-13_xavdid_add-codeowners-file.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-02-24_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-03-31_prathmesh_better-type-hints.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-03-31_stripe-openapi_support-apis-new.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-04-02_prathmesh_add-null-type.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-04-04_prathmesh_remove-stdclass-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-04-11_prathmesh_faster-parallel-runner.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-04-15_prathmesh_include-new-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-04-24_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-05-02_jar_adds-contributing-md.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-05-16_prathmesh_fixed-type-map.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-05-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-06-12_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-07-01_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-07-08_jar_ensure-compatibilit-post.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-07-30_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-08-19_prathmesh_add-getter-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-08-27_ramya_add-section-private.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-08-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-08_xavdid_build-sdk-w.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-23_prathmesh_added-stripecontex-stripeaccoun.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-23_stripe-openapi_1912-update-generated.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-25_xavdid_add-strongly-typed.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-26_xavdid_add-stripecontex-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-29_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-29_stripe-openapi_update-generated-code2.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-29_xavdid_move-v2-event.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-09-30_xavdid_add-version-deprecation.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-10-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-10-28_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-11-05_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-11-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-11-17_mbroshi_update-v2-array.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-11-17_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-11-25_ramya_remove-deprecated-usage.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-12-08_prathmesh_updated-bundled-ca.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2025-12-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-01-05_prathmesh_improve-webhook-signature.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-01-15_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-01-19_ramya_add-guidance-undocumented.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-01-28_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-02-23_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-03_xavdid_add-agent-information.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-05_xavdid_add-stripe-request.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-18_mbroshi_add-runtime-support.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-18_xavdid_ensure-previousattr-always.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-19_xavdid_drop-support-php.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-23_xavdid_throw-error-using.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-24_jar_preserve-null-values.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-24_xavdid_avoid-using-funcgetargs.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-03-25_unknown_generated-changes-2046.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-04-01_jar_fix-2d-array.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-04-23_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-05-26_xavdid_emit-warning-stripe.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-05-27_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-06-05_xavdid_add-source-field.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-06-24_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-08_zacchua_add-tstripeobjec-iterator.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-10_xavdid_remove-unused-retry.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-13_xavdid_correctly-type-properties.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-16_xavdid_replace-source-hash.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-29_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-30_xavdid_suppress-warnings-can.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-07-31_xavdid_add-stripe-majorapivers.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-07_johno_emit-claude-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-07_xavdid_add-adjust-event.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-07_xavdid_surface-object-property.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-07_zacchua_fix-v2-timestamp.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-19_xavdid_add-new-eventnotific.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-20_xavdid_don-t-emit.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-25_jar_support-discriminate-unions.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-26_stripe-openapi_update-generated-code.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-08-31_xavdid_harden-api-requestor.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-09_xavdid_validate-webhook-secrets.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-11_xavdid_singleton-related-object.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-15_unknown_expand-phpdoc-union-shapes.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-15_zacchua_add-stripe-suppress-notices.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-16_zacchua_fix-event-handler-account-scoping.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-25_unknown_drop-support-php-7-2-7-3.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-30_stripe-openapi_3bd8c3a1.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/changes/2026-09-30_stripe-openapi_5155e3a7.change.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-10.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-11.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-12.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-18.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-20.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-21.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-6.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-7.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/intros/intro-9.0.0.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/migration-guides/v22.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.hark/releases.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `CODEGEN_VERSION`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `OPENAPI_VERSION`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `VERSION`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `composer.json`: `retained-evidence` (snapshot-file)
+- `modified` `init.php`: `retained-evidence` (snapshot-file)
+- `modified` `justfile`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `lib/AbstractEventNotificationHandler.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Account.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/AccountSession.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ApiRequestor.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ApplicationFee.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Apps/Install.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Balance.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/BalanceTransaction.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Billing/FeedbackOption.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Charge.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Checkout/Session.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ConfirmationToken.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Coupon.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/CreditNote.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Customer.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Discount.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Dispute.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ErrorObject.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Event.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountApplicationAuthorizedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountApplicationAuthorizedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountApplicationDeauthorizedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountApplicationDeauthorizedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountExternalAccountCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountExternalAccountCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountExternalAccountDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountExternalAccountDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountExternalAccountUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountExternalAccountUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1AccountUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ApplicationFeeCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ApplicationFeeCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ApplicationFeeRefundUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ApplicationFeeRefundUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ApplicationFeeRefundedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ApplicationFeeRefundedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BalanceAvailableEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BalanceAvailableEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BalanceSettingsUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BalanceSettingsUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingAlertTriggeredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingAlertTriggeredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingCreditBalanceTransactionCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingCreditBalanceTransactionCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingCreditGrantCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingCreditGrantCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingCreditGrantUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingCreditGrantUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterDeactivatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterDeactivatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterReactivatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterReactivatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingMeterUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingPortalConfigurationCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingPortalConfigurationCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingPortalConfigurationUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingPortalConfigurationUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingPortalSessionCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1BillingPortalSessionCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CapabilityUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CapabilityUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CashBalanceFundsAvailableEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CashBalanceFundsAvailableEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeCapturedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeCapturedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeClosedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeClosedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeFundsReinstatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeFundsReinstatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeFundsWithdrawnEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeFundsWithdrawnEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeDisputeUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeExpiredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeExpiredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargePendingEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargePendingEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeRefundUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeRefundUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeRefundedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeRefundedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ChargeUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionAsyncPaymentFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionAsyncPaymentFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionAsyncPaymentSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionAsyncPaymentSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionCompletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionCompletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionExpiredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CheckoutSessionExpiredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderDelayedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderDelayedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderDeliveredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderDeliveredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderProductSubstitutedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateOrderProductSubstitutedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateProductCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateProductCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateProductPricingUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ClimateProductPricingUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CouponCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CouponCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CouponDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CouponDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CouponUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CouponUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CreditNoteCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CreditNoteCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CreditNoteUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CreditNoteUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CreditNoteVoidedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CreditNoteVoidedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerCashBalanceTransactionCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerCashBalanceTransactionCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDiscountCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDiscountCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDiscountDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDiscountDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDiscountUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerDiscountUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionPausedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionPausedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionPendingUpdateAppliedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionPendingUpdateExpiredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionResumedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionResumedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionTrialWillEndEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionTrialWillEndEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerSubscriptionUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerTaxIdCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerTaxIdCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerTaxIdDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerTaxIdDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerTaxIdUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerTaxIdUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1CustomerUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1EntitlementsActiveEntitlementSummaryUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FileCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FileCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountAccountNumbersUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountDeactivatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountDeactivatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountDisconnectedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountDisconnectedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountExpectedDeactivationDateUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountReactivatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountReactivatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountRefreshedBalanceEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountRefreshedOwnershipEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountRefreshedTransactionsEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountSupportedPaymentMethodTypesUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountUpcomingAccountNumberExpiryEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1FinancialConnectionsAccountUpcomingDeactivationEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionProcessingEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionProcessingEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionRedactedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionRedactedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionRequiresInputEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionRequiresInputEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionVerifiedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IdentityVerificationSessionVerifiedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceFinalizationFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceFinalizationFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceFinalizedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceFinalizedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceMarkedUncollectibleEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceMarkedUncollectibleEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceOverdueEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceOverdueEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceOverpaidEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceOverpaidEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaidEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaidEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentActionRequiredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentActionRequiredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentAttemptRequiredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentAttemptRequiredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentPaidEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentPaidEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoicePaymentSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceSentEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceSentEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceUpcomingEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceUpcomingEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceVoidedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceVoidedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceWillBeDueEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceWillBeDueEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceitemCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceitemCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceitemDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1InvoiceitemDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingAuthorizationCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingAuthorizationCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingAuthorizationRequestEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingAuthorizationRequestEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingAuthorizationUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingAuthorizationUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardholderCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardholderCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardholderUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingCardholderUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeClosedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeClosedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeFundsReinstatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeFundsReinstatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeFundsRescindedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeFundsRescindedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeSubmittedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeSubmittedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingDisputeUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignActivatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignActivatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignDeactivatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignDeactivatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignRejectedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignRejectedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingPersonalizationDesignUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTokenCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTokenCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTokenUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTokenUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTransactionCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTransactionCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTransactionPurchaseDetailsReceiptUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTransactionUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1IssuingTransactionUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1MandateUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1MandateUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentAmountCapturableUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentAmountCapturableUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentPartiallyFundedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentPartiallyFundedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentPaymentFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentPaymentFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentProcessingEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentProcessingEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentRequiresActionEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentRequiresActionEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentIntentSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentLinkCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentLinkCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentLinkUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentLinkUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodAttachedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodAttachedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodAutomaticallyUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodAutomaticallyUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodDetachedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodDetachedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PaymentMethodUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutPaidEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutPaidEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutReconciliationCompletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutReconciliationCompletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PayoutUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PersonCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PersonCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PersonDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PersonDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PersonUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PersonUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PlanCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PlanCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PlanDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PlanDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PlanUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PlanUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PriceCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PriceCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PriceDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PriceDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PriceUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PriceUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ProductCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ProductCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ProductDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ProductDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ProductUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ProductUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PromotionCodeCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PromotionCodeCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PromotionCodeUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1PromotionCodeUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteAcceptedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteAcceptedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteFinalizedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1QuoteFinalizedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RadarEarlyFraudWarningCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RadarEarlyFraudWarningCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RadarEarlyFraudWarningUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RadarEarlyFraudWarningUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RefundCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RefundCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RefundFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RefundFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RefundUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1RefundUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ReviewClosedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ReviewClosedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ReviewOpenedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1ReviewOpenedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentRequiresActionEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentRequiresActionEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentSetupFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentSetupFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SetupIntentSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SigmaScheduledQueryRunCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SigmaScheduledQueryRunCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceChargeableEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceChargeableEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceRefundAttributesRequiredEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SourceRefundAttributesRequiredEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleAbortedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleAbortedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleCompletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleCompletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleExpiringEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleExpiringEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleReleasedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleReleasedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1SubscriptionScheduleUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TaxRateCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TaxRateCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TaxRateUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TaxRateUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TaxSettingsUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TaxSettingsUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TerminalReaderActionFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TerminalReaderActionFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TerminalReaderActionSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TerminalReaderActionSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TerminalReaderActionUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TerminalReaderActionUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockAdvancingEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockAdvancingEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockDeletedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockDeletedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockInternalFailureEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockInternalFailureEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockReadyEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TestHelpersTestClockReadyEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupCanceledEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupCanceledEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupFailedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupFailedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupReversedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupReversedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupSucceededEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TopupSucceededEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TransferCreatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TransferCreatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TransferReversedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TransferReversedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TransferUpdatedEvent.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Events/V1TransferUpdatedEventNotification.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/File.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/FileLink.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/FinancialConnections/Account.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/FinancialConnections/Session.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/FinancialConnections/Transaction.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Identity/VerificationReport.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Identity/VerificationSession.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Invoice.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/InvoiceItem.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/InvoiceLineItem.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/InvoicePayment.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Authorization.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Card.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Cardholder.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Dispute.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Token.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Transaction.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Mandate.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentAttemptRecord.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentIntent.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentLink.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentMethod.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentMethodConfiguration.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentRecord.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Payout.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Plan.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Price.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Product.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/ProductCatalog/TrialOffer.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PromotionCode.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Quote.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Radar/EarlyFraudWarning.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Radar/PaymentEvaluation.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Radar/ValueList.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Radar/ValueListItem.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Refund.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/RelatedSingletonObject.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Reporting/ReportRun.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Reserve/Hold.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Reserve/Plan.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Reserve/Release.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Review.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/AccountService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/AccountSessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/ApplicationFeeService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Apps/AppsServiceFactory.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/Apps/InstallService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/BalanceTransactionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Billing/FeedbackOptionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/ChargeService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Checkout/SessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/CoreServiceFactory.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/CouponService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/CreditNoteService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/CustomerService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/DisputeService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/EventService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/FileLinkService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/FileService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/FinancialConnections/AccountService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/FinancialConnections/SessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/FinancialConnections/TransactionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Identity/VerificationReportService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Identity/VerificationSessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/InvoiceItemService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/InvoicePaymentService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/InvoiceService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Issuing/AuthorizationService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Issuing/CardService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Issuing/CardholderService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Issuing/DisputeService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Issuing/TokenService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Issuing/TransactionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PaymentIntentService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PaymentLinkService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PaymentMethodConfigurationService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PaymentMethodService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PaymentRecordService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PayoutService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PlanService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PriceService.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/ProductCatalog/ProductCatalogServiceFactory.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/ProductCatalog/TrialOfferService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/ProductService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PromotionCodeService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/QuoteService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Radar/EarlyFraudWarningService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Radar/ValueListItemService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Radar/ValueListService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/RefundService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Reporting/ReportRunService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/ReviewService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/SetupAttemptService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/SetupIntentService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/ShippingRateService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Sigma/ScheduledQueryRunService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/SubscriptionItemService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/SubscriptionScheduleService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/SubscriptionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Tax/CalculationService.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/Tax/LocationService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Tax/RegistrationService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Tax/SettingsService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Tax/TaxServiceFactory.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/TaxRateService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/TestHelpers/ConfirmationTokenService.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/ThreeDSecure/AuthenticationService.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/ThreeDSecure/ThreeDSecureServiceFactory.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/TokenService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/TopupService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/TransferService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Treasury/FinancialAccountService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Treasury/OutboundPaymentService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Treasury/TransactionEntryService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Treasury/TransactionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/V2/Core/AccountLinkService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/V2/Core/AccountService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/SetupAttempt.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/SetupIntent.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ShippingRate.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Sigma/ScheduledQueryRun.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Stripe.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/StripeClient.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Subscription.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/SubscriptionItem.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/SubscriptionSchedule.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Tax/Calculation.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Tax/CalculationLineItem.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Tax/Location.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Tax/Registration.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Tax/Settings.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Tax/TransactionLineItem.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/TaxCode.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/TaxRate.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Terminal/Reader.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/ThreeDSecure/Authentication.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Token.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Topup.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Transfer.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/CreditReversal.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/DebitReversal.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/FinancialAccount.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/InboundTransfer.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/OutboundPayment.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/OutboundTransfer.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/ReceivedCredit.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/ReceivedDebit.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/Transaction.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/TransactionEntry.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/ApiVersion.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/EventNotificationTypes.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/EventTypes.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/ObjectTypes.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/V2/Billing/MeterEventAdjustment.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/V2/Core/Account.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/V2/Core/AccountLink.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/V2/Core/EventDestination.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/V2/Core/EventNotification.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/WebhookEndpoint.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/version_check.php`: `retained-evidence` (snapshot-file)
+- `modified` `tests/Stripe/AccountTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/Stripe/ApiRequestorTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/Stripe/BaseStripeClientTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/Stripe/GeneratedExamplesTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/Stripe/StripeEventNotificationHandlerTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)

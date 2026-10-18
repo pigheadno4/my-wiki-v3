@@ -888,6 +888,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.5.0/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-typescript-server-sdk/comparisons/paypal-server-sdk/2.4.0--2.5.0/comparison.json)
 
+## `github-2db801ab3c72e5743f4a`
+
+- Repository: `stripe/stripe-php`
+- SHA: `12986995cd5e229cc094d4b57de056f8e2e6e5a9`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-10-18-1298699/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-2db801ab3c72e5743f4a/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@21.3.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.3.1/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-php/comparisons/stripe-php/21.3.0--21.3.1/comparison.json)
+
 ## `github-30e591eb05618f8c9c5e`
 
 - Repository: `stripe/stripe-cli`
@@ -1345,6 +1370,31 @@
 - `@paypal/messaging-components@1.99.0` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.98.0--1.99.0/comparison.json)
+
+## `github-4ed83c5d7e9286fc1e5c`
+
+- Repository: `stripe/stripe-php`
+- SHA: `0d8b075e1a97d15c5324353a5277d0ea686ea525`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-10-18-0d8b075/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-4ed83c5d7e9286fc1e5c/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@21.3.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.3.2/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-php/comparisons/stripe-php/21.3.1--21.3.2/comparison.json)
 
 ## `github-4ef7ad96d01f40cfff58`
 
@@ -3161,6 +3211,31 @@
   To SHA: `a318bcf7cb8a458b180df553ab459db3a5a79586`
   Comparison: [manifest](repos/paypal/v6-web-sdk-sample-integration/comparisons/default-branch/bb23e7c--a318bcf/comparison.json)
 
+## `github-984415f5dd873d2f16b6`
+
+- Repository: `stripe/stripe-php`
+- SHA: `fe99159b9ee0a74be3c12c0305e5338e0b9905c3`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-984415f5dd873d2f16b6/packet.md)
+- Review priority: `high`
+- Required reading: `52` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@21.3.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.3.0/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-php/comparisons/stripe-php/21.2.1--21.3.0/comparison.json)
+
 ## `github-986685252a62505561c4`
 
 - Repository: `paypal/paypal-js`
@@ -3702,6 +3777,31 @@
 - `@paypal/checkout-components@5.0.432` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.432/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.431--5.0.432/comparison.json)
+
+## `github-ad4fcbca3a2e659553a7`
+
+- Repository: `stripe/stripe-php`
+- SHA: `da798f6224c5ff6f89d8d78025044f418ee27db8`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-10-18-da798f6/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-ad4fcbca3a2e659553a7/packet.md)
+- Review priority: `normal`
+- Required reading: `18` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@21.2.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/21.2.1/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-php/comparisons/stripe-php/21.2.0--21.2.1/comparison.json)
 
 ## `github-b11f1f62c66a78b84806`
 
@@ -4292,6 +4392,31 @@
 - `@paypal/checkout-components@5.0.434` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.434/2026-09-20/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.433--5.0.434/comparison.json)
+
+## `github-c5a513b45b0919c157c8`
+
+- Repository: `stripe/stripe-php`
+- SHA: `c4c1f658483e717519935222e47af224ef4a508b`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-php/snapshots/2026-10-18-c4c1f65/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-php/ingest-packets/github-c5a513b45b0919c157c8/packet.md)
+- Review priority: `normal`
+- Required reading: `624` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-php@22.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-php/releases/stripe-php/22.0.0/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-php/comparisons/stripe-php/21.3.2--22.0.0/comparison.json)
 
 ## `github-c5fa7a0352b6764a7481`
 

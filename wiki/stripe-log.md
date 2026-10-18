@@ -6,6 +6,27 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-18] ingest | Stripe PHP `22.0.0`
+
+- Approved serial full `github-c5a513b45b0919c157c8` with five-release focused-reading authorization. Runtime changes/affected prior code and changed API sections read; unchanged generated/history/inventories, repeated mappings and duplicated diff mechanically verified. Both snapshots hash/size checked; 916 files, 443 added/172 modified/301 unchanged; 1,488 upstream changes classified, no gaps.
+- PHP7.4/Endive, PHPDoc/static-analysis boundary, callback account-context fix, singleton/thin event expansion, exact notice suppression, scoped request removals and subscription pause/anchor contracts recorded. Reciprocal subscription-status contradiction retained. Concepts first, cumulative source/changelog/company/index/logs; all v21 knowledge and source_count 666 preserved. Non-checkout additions navigation-only. No SDK execution, commit or push. Details [[source-github-stripe-php]] and [[changelog-github-stripe-php]].
+
+## [2026-10-18] ingest | Stripe PHP `21.3.2`
+
+- Approved serial focused-reading delta `github-4ed83c5d7e9286fc1e5c`: PHP-empty secret rejection, prefix/whitespace and timestamp-tolerance boundaries. Both 473-file snapshots hash/size checked; three changed/470 unchanged, no gaps. PHP concept first, cumulative source/changelog/company/index/logs; history and source_count 666 retained. No SDK execution, commit or push. Details [[source-github-stripe-php]].
+
+## [2026-10-18] ingest | Stripe PHP `21.3.1`
+
+- Approved serial focused-reading delta `github-2db801ab3c72e5743f4a`: origin-relative paths, header injection checks and event-ID encoding. Both 473-file snapshots hash/size checked; four changed/469 unchanged, no gaps. PHP concept first, cumulative source/changelog/company/index/logs; history and source_count 666 preserved. No SDK execution, commit or push. Details [[source-github-stripe-php]].
+
+## [2026-10-18] ingest | Stripe PHP `21.3.0`
+
+- Approved serial full `github-984415f5dd873d2f16b6`, focused reading; typed thin-event handlers, pre-hook/fallback/verification, V2 discriminator and array encoding, checkout/Billing/Connect definitions. Both snapshots hash/size verified; 473 files/430 unchanged; no gaps. Concepts first, cumulative source/changelog/company/index/logs; all history and source_count 666 preserved. No SDK execution, commit or push. Details [[source-github-stripe-php]].
+
+## [2026-10-18] ingest | Stripe PHP `21.2.1`
+
+- Approved serial delta `github-ad4fcbca3a2e659553a7`, focused reading; changed runtime fully read, unchanged generated/history/inventories mechanically verified. Agent hint moves from load time to guarded initialization/request preparation; one-attempt flag boundary recorded. Original history/source_count 666 retained; concepts first, source/changelog/company/index/log updated. No SDK execution, commit or push. Details [[source-github-stripe-php]].
+
 ## [2026-10-18] ingest | Stripe Node `23.0.0`
 
 - Approved additive full ingest `github-fc2596c23efd4fe6756c`, from `stripe@22.6.2`, SHA `fe645f63d645011aca38dff9e245c1cf7b9ae60e`, with separate exact-SHA notification-handler supplement. Runtime/examples/supplement fully read; changed generated sections and affected prior code read. Unchanged schemas, generated inventories, old changelog and duplicated diff mechanically checked under explicit one-time focused-reading approval. Both 68-file snapshots hash/size/blob checked; 35 modified/33 unchanged; all 1,119 upstream changed paths classified.

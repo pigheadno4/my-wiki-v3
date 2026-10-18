@@ -1,0 +1,44 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index bb5f857..76e83e9 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,8 @@
+ # Changelog
+ 
++## 21.3.2 - 2026-09-09
++* [#2142](https://github.com/stripe/stripe-php/pull/2142) Validate that webhook secrets are non-empty
++
+ ## 21.3.1 - 2026-09-01
+ * [#2138](https://github.com/stripe/stripe-php/pull/2138) Harden API requestor code against malicious URLs
+ 
+diff --git a/lib/Stripe.php b/lib/Stripe.php
+index 2aa9f93..3224ca5 100644
+--- a/lib/Stripe.php
++++ b/lib/Stripe.php
+@@ -64,7 +64,7 @@ class Stripe
+     /** @var float Initial delay between retries, in seconds */
+     private static $initialNetworkRetryDelay = 0.5;
+ 
+-    const VERSION = '21.3.1';
++    const VERSION = '21.3.2';
+ 
+     /**
+      * @return string the API key used for requests
+diff --git a/lib/WebhookSignature.php b/lib/WebhookSignature.php
+index 18fda23..8b8887b 100644
+--- a/lib/WebhookSignature.php
++++ b/lib/WebhookSignature.php
+@@ -42,6 +42,13 @@ abstract class WebhookSignature
+                 $header
+             );
+         }
++        if (empty($secret)) {
++            throw Exception\SignatureVerificationException::factory(
++                'No webhook secret value was provided. It should start with `whsec_`',
++                $payload,
++                $header
++            );
++        }
+ 
+         // Check if expected signature is found in list of signatures from
+         // header

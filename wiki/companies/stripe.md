@@ -107,6 +107,8 @@ The additive `1.50.1` ingest adds exact OAuth access-service destination checks,
 
 ### Stripe PHP SDK
 
+Latest additive ingest: `stripe-php@22.0.0`; PHP7.4/API `2026-09-30.endive`, callback account-context fix, singleton/thin event expansion and request/Billing migration contracts. All 21.2.x/21.3.x history remains, including the original 21.2.0 paragraph below. See [[source-github-stripe-php]], [[changelog-github-stripe-php]] and [[stripe-php-sdk]].
+
 `stripe-php@21.2.0` is Stripe's retained server-side PHP SDK baseline, pinned to Stripe API `2026-07-29.dahlia` and requiring PHP 7.2+. It covers Checkout, PaymentIntents, SetupIntents, Payment Links, subscriptions, webhooks and event notifications, and Terminal server operations. Public webhooks still require signature verification; the v21.2.0 `WithoutVerification` helpers are only for previously verified or trusted payloads. See [[source-github-stripe-php]], [[changelog-github-stripe-php]], and [[stripe-php-sdk]].
 
 ### Stripe Node SDK
@@ -218,8 +220,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[changelog-github-sync-engine]] — commit-qualified Sync Engine baseline, documentation drift, trust boundaries, and future comparison rule
 - [[source-github-stripe-apps]] — `default-branch@9b14b71` Stripe Apps baseline: manifest schemas, Dashboard UI extensions, full-page example, and mock-data boundaries
 - [[changelog-github-stripe-apps]] — commit-qualified Stripe Apps baseline, schema/example drift, and future comparison rule
-- [[source-github-stripe-php]] — `stripe-php@21.2.0` server SDK baseline: client services, encoding, retries, webhooks, Checkout, subscriptions, and Terminal
-- [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event helper changes
+- [[source-github-stripe-php]] — cumulative Stripe PHP through `22.0.0`: PHP7.4/Endive, event context, Checkout/Billing migrations and all retained v21 history
+- [[changelog-github-stripe-php]] — package-qualified Stripe PHP release history through `22.0.0`, with exact-SHA evidence and separate full/delta entries
 - [[source-stripe-billing-benchmarks]] — billing benchmarking: k-NN peer matching, ≥5 subs access, peer eligibility ≥100 subs, 7 metrics benchmarked, percentile display
 - [[source-stripe-billing-analytics]] — billing analytics: MRR + 6 growth components, ARPU, LTV, cohort retention, configurable settings, 3 CSV reports
 - [[source-stripe-subscriptions-backdate]] — backdating: classic vs flexible line items, 3 patterns (charge/no-charge/anchor), coupon duration counts from backdate not API call

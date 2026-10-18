@@ -1,0 +1,1 @@
+See [the changelog](https://github.com/stripe/stripe-php/blob/master/CHANGELOG.md#22-0-0) for the full release notes.

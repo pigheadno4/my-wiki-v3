@@ -1,0 +1,171 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index b609afc..7813f16 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,8 @@
+ # Changelog
+ 
++## 21.2.1 - 2026-08-20
++* [#2126](https://github.com/stripe/stripe-php/pull/2126) Don't emit agent hint during tests. Fixes [#2125](https://github.com/stripe/stripe-php/issues/2125)
++
+ ## 21.2.0 - 2026-08-10
+ * [#2119](https://github.com/stripe/stripe-php/pull/2119) Surface `object` property on `EventNotification`
+ * [#2117](https://github.com/stripe/stripe-php/pull/2117) Emit Claude Code plugin hint at module load time
+diff --git a/composer.json b/composer.json
+index 47e260f..754d551 100644
+--- a/composer.json
++++ b/composer.json
+@@ -30,8 +30,7 @@
+       "Stripe\\": "lib/"
+     },
+     "files": [
+-      "lib/version_check.php",
+-      "lib/agent_plugin_hint.php"
++      "lib/version_check.php"
+     ]
+   },
+   "autoload-dev": {
+diff --git a/init.php b/init.php
+index f94a49c..7e15e15 100644
+--- a/init.php
++++ b/init.php
+@@ -1,7 +1,6 @@
+ <?php
+ 
+ require __DIR__ . '/lib/version_check.php';
+-require_once __DIR__ . '/lib/agent_plugin_hint.php';
+ 
+ require __DIR__ . '/lib/Util/ApiVersion.php';
+ 
+@@ -12,6 +11,7 @@ require __DIR__ . '/lib/Stripe.php';
+ require __DIR__ . '/lib/StripeContext.php';
+ 
+ // Utilities
++require __DIR__ . '/lib/Util/AgentPluginHint.php';
+ require __DIR__ . '/lib/Util/CaseInsensitiveArray.php';
+ require __DIR__ . '/lib/Util/LoggerInterface.php';
+ require __DIR__ . '/lib/Util/DefaultLogger.php';
+diff --git a/lib/ApiRequestor.php b/lib/ApiRequestor.php
+index f7d24b9..1fc7248 100644
+--- a/lib/ApiRequestor.php
++++ b/lib/ApiRequestor.php
+@@ -483,6 +483,8 @@ class ApiRequestor
+      */
+     private function _prepareRequest($method, $url, $params, $headers, $apiMode)
+     {
++        Util\AgentPluginHint::maybeEmit();
++
+         $myApiKey = $this->_apiKey;
+         if (!$myApiKey) {
+             $myApiKey = Stripe::$apiKey;
+diff --git a/lib/BaseStripeClient.php b/lib/BaseStripeClient.php
+index d5b7935..de30aff 100644
+--- a/lib/BaseStripeClient.php
++++ b/lib/BaseStripeClient.php
+@@ -100,6 +100,8 @@ class BaseStripeClient implements StripeClientInterface, StripeStreamingClientIn
+             'stripe_version' => $config['stripe_version'],
+             'max_network_retries' => $config['max_network_retries'],
+         ]);
++
++        \Stripe\Util\AgentPluginHint::maybeEmit();
+     }
+ 
+     /**
+diff --git a/lib/Stripe.php b/lib/Stripe.php
+index be8cb2b..207a022 100644
+--- a/lib/Stripe.php
++++ b/lib/Stripe.php
+@@ -64,7 +64,7 @@ class Stripe
+     /** @var float Initial delay between retries, in seconds */
+     private static $initialNetworkRetryDelay = 0.5;
+ 
+-    const VERSION = '21.2.0';
++    const VERSION = '21.2.1';
+ 
+     /**
+      * @return string the API key used for requests
+diff --git a/lib/Util/AgentPluginHint.php b/lib/Util/AgentPluginHint.php
+new file mode 100644
+index 0000000..ef6f8f1
+--- /dev/null
++++ b/lib/Util/AgentPluginHint.php
+@@ -0,0 +1,63 @@
++<?php
++
++namespace Stripe\Util;
++
++/**
++ * Emits a Claude Code plugin hint: https://code.claude.com/docs/en/plugin-hints.
++ *
++ * The hint goes to stderr, so it must never be emitted while the SDK is being loaded. Harnesses
++ * that parse a child process's output break on unexpected stderr; PHPUnit's process isolation,
++ * for instance, turns any stderr from the child into a test error.
++ */
++class AgentPluginHint
++{
++    const HINT = '<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />';
++
++    /** @var bool */
++    private static $emitted = false;
++
++    /**
++     * Writes the hint to stderr the first time it's called in a process, if the environment
++     * looks like a coding agent that can act on it.
++     */
++    public static function maybeEmit()
++    {
++        if (self::$emitted) {
++            return;
++        }
++        self::$emitted = true;
++
++        try {
++            if (!self::shouldEmit()) {
++                return;
++            }
++
++            $stderr = \defined('STDERR') ? \STDERR : \fopen('php://stderr', 'wb');
++            \fwrite($stderr, self::HINT . "\n");
++        } catch (\Throwable $e) {
++            // never let hint emission crash the SDK
++        }
++    }
++
++    /**
++     * @return bool
++     */
++    private static function shouldEmit()
++    {
++        // Claude Code sets this to "1" in every subprocess it spawns; treat an empty value as
++        // unset, so `CLAUDECODE= <command>` suppresses the hint.
++        if ('' === (string) \getenv('CLAUDECODE')) {
++            return false;
++        }
++
++        // Under a test runner, stderr is parsed rather than displayed. This covers Pest,
++        // ParaTest, and Codeception too, since they all run on PHPUnit.
++        if (\class_exists('PHPUnit\Framework\TestCase', false)) {
++            return false;
++        }
++
++        // Under fpm and other web SAPIs, stderr is the server's error log; nothing reads hints
++        // there, and writing would add a line per request.
++        return 'cli' === \PHP_SAPI;
++    }
++}
+diff --git a/lib/agent_plugin_hint.php b/lib/agent_plugin_hint.php
+deleted file mode 100644
+index fcb1b1a..0000000
+--- a/lib/agent_plugin_hint.php
++++ /dev/null
+@@ -1,10 +0,0 @@
+-<?php
+-
+-if (false !== getenv('CLAUDECODE') || false !== getenv('CLAUDE_CODE_CHILD_SESSION')) {
+-    try {
+-        $stderr = \defined('STDERR') ? STDERR : fopen('php://stderr', 'wb');
+-        fwrite($stderr, '<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />' . "\n");
+-    } catch (Throwable $e) {
+-        // never let hint emission crash the SDK
+-    }
+-}

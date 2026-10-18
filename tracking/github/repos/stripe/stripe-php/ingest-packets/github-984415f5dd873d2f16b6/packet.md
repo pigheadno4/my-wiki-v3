@@ -1,0 +1,120 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-php`
+- Work item: `github-984415f5dd873d2f16b6`
+- Snapshot: `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `stripe-php`
+
+- Version: `21.2.1` -> `21.3.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `430`
+
+### Required reading
+
+- `raw/github/stripe/stripe-php/releases/stripe-php/21.3.0/2026-10-18/manifest.json`
+- `raw/github/stripe/stripe-php/releases/stripe-php/21.3.0/2026-10-18/release-notes.md`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-da798f6/manifest.json`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/init.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/AbstractEventNotificationHandler.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/AccountSession.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/BaseStripeClient.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Billing/FeedbackOption.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/BillingPortal/Configuration.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/BillingPortal/Session.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Charge.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Checkout/Session.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Climate/Order.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Climate/Product.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/ConfirmationToken.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/CustomerSession.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/EphemeralKey.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/ErrorObject.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/FinancialConnections/Session.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Invoice.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/InvoiceItem.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Issuing/Cardholder.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/PaymentAttemptRecord.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/PaymentLink.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/PaymentRecord.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/AccountSessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/Billing/BillingServiceFactory.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/Billing/FeedbackOptionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/BillingPortal/ConfigurationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/Checkout/SessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/CustomerSessionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/InvoiceService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/PaymentLinkService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/SubscriptionService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Service/Tax/RegistrationService.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Stripe.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/StripeEventNotificationHandler.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/StripeEventNotificationHandlerWithoutVerification.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Subscription.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Tax/Registration.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Treasury/FinancialAccount.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/UnhandledNotificationDetails.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Util/ApiVersion.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Util/Int64.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/files/lib/Util/ObjectTypes.php`
+- `raw/github/stripe/stripe-php/snapshots/2026-10-18-fe99159/manifest.json`
+- `tracking/github/repos/stripe/stripe-php/comparisons/stripe-php/21.2.1--21.3.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-php/comparisons/stripe-php/21.2.1--21.3.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-php/comparisons/stripe-php/21.2.1--21.3.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `CODEGEN_VERSION`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `OPENAPI_VERSION`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `VERSION`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `examples/EventNotificationHandlerEndpoint.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `init.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/AbstractEventNotificationHandler.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/AccountSession.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/BaseStripeClient.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Billing/FeedbackOption.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/BillingPortal/Configuration.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/BillingPortal/Session.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Charge.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Checkout/Session.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Climate/Order.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Climate/Product.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ConfirmationToken.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/CustomerSession.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/EphemeralKey.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/ErrorObject.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/FinancialConnections/Session.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Invoice.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/InvoiceItem.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Issuing/Cardholder.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentAttemptRecord.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentLink.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/PaymentRecord.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/AccountSessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Billing/BillingServiceFactory.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/Service/Billing/FeedbackOptionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/BillingPortal/ConfigurationService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Checkout/SessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/CustomerSessionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/InvoiceService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/PaymentLinkService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/SubscriptionService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Service/Tax/RegistrationService.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Stripe.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/StripeEventNotificationHandler.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/StripeEventNotificationHandlerWithoutVerification.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Subscription.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Tax/Registration.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Treasury/FinancialAccount.php`: `retained-evidence` (snapshot-file)
+- `added` `lib/UnhandledNotificationDetails.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/ApiVersion.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/Int64.php`: `retained-evidence` (snapshot-file)
+- `modified` `lib/Util/ObjectTypes.php`: `retained-evidence` (snapshot-file)
+- `added` `tests/Stripe/DiscriminatedUnionTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/Stripe/GeneratedExamplesTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `tests/Stripe/StripeEventNotificationHandlerTest.php`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `tests/Stripe/Util/Int64Test.php`: `intentional-policy-exclusion` (outside-capsule-policy)

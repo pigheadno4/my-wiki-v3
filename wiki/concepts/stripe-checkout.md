@@ -165,6 +165,14 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 
 Checkout Session create removes `payment_method_types` and adds `allowed_payment_method_types`; the new field filters the dynamically eligible set, not an unconditional static selection. Session response typing adds a nullable allowlist. The same package adds line-item product `tax_details`, BLIK mandate/off-session options, SeQura capture options and PayPay/SeQura enum values. Custom-field label comments now allow 100 characters. This does not establish account enablement, web/native UI support or geographic eligibility. Earlier API examples remain versioned references. Source: [[source-github-stripe-node]].
 
+## PHP SDK 22.0.0 Endive Boundary
+
+PHP `stripe-php@22.0.0` removes request-side `payment_method_types` from Checkout Session create and adds `allowed_payment_method_types`. The response still has its version-qualified method fields; Payment Links are not part of this removal. Generated Checkout comments now scope `permissions.update_shipping_details` to `ui_mode=elements`, not the earlier `custom` label. Treat these as version-specific contracts, not proof of universal feature rollout. Source: [[source-github-stripe-php]].
+
+## PHP SDK 21.3.0 Additions
+
+PHP `stripe-php@21.3.0` exposes `payment_method_options.card.restrictions.funding_types_blocked` on Checkout Session create/response definitions. This parallels the independently retained Node contract but does not prove merchant eligibility or a hosted rollout. Source: [[source-github-stripe-php]].
+
 ## Server SDK 22.6.0 Additions
 
 `stripe@22.6.0` adds `payment_method_options.card.restrictions.funding_types_blocked` to Checkout Session create parameters and response typing, with documented values `credit`, `debit` and `prepaid`. Its generated `permissions.update_shipping_details` comments now limit that setting to `ui_mode=elements`, reinforcing the version boundary on the historical Embedded Checkout guidance above. SDK declaration availability does not establish merchant eligibility or hosted runtime rollout. Source: [[source-github-stripe-node]].

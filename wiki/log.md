@@ -1,5 +1,25 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Stripe PHP `22.0.0`
+
+- Approved focused-reading full Endive/PHP7.4 baseline: callback context/singletons, scoped request/Billing changes and preserved subscription-status conflict. All v21 history/counts retained; fifth serial update after 21.2.1/21.3.0/21.3.1/21.3.2. Details [[stripe-log]] and [[source-github-stripe-php]]. No SDK execution, commit or push.
+
+## [2026-10-18] ingest | Stripe PHP `21.3.2`
+
+- Approved focused-reading delta: empty webhook secret guard with exact PHP/prefix/tolerance limits. Preserved history/counts. Details [[stripe-log]] and [[source-github-stripe-php]]. No SDK execution, commit or push.
+
+## [2026-10-18] ingest | Stripe PHP `21.3.1`
+
+- Approved focused-reading delta: request paths, header injection guards and thin-event ID encoding. Preserved history/counts. Details [[stripe-log]] and [[source-github-stripe-php]]. No SDK execution, commit or push.
+
+## [2026-10-18] ingest | Stripe PHP `21.3.0`
+
+- Approved focused-reading full: typed thin handlers, V2 coercion and checkout/Billing contracts. Prior history/counts retained. Details [[stripe-log]] and [[source-github-stripe-php]]. No SDK execution, commit or push.
+
+## [2026-10-18] ingest | Stripe PHP `21.2.1`
+
+- Approved focused-reading delta: load-time hint removal, CLI/test/environment guards and one-attempt boundary. Preserved history/counts. Details [[stripe-log]] and [[source-github-stripe-php]]. No SDK execution, commit or push.
+
 ## [2026-10-18] ingest | Adyen website C19
 
 - Fifty independently approved Capital detailed grants/offers/components/compliance and Business Accounts foundations documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 2 concepts touched (1 new); source_count 964 = 950 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-19/`; details [[adyen-log]]. No commit/push.
