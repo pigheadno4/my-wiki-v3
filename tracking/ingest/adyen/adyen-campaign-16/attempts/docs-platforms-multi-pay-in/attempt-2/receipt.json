@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-platforms-multi-pay-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Multi pay-in overview | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/multi-pay-in\"\nraw_files:\n  - \"adyen/docs/platforms/multi-pay-in/2026-09-15.md\"\ntags: [adyen, platforms, multi-pay-in, third-party-payments, balance-accounts, refunds]\n---\n\n## Overview\n\nThis [[adyen]] for Platforms page introduces **multi pay-in**, a service that brings Adyen-acquired and third-party pay-in-partner volume into one Adyen balance-platform environment. Third-party payment proceeds first enter a dedicated multi pay-in account and are then allocated to user and platform liable balance accounts. The page describes a product flow, not proof that a particular partner, region, currency, account or payment is enabled, settled, booked or paid out. See [[adyen-multi-pay-in]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Prerequisites and limit.** The guide requires an Adyen for Platforms **online payments** integration, credentials for **Checkout API and Transfers API**, Transfer and/or Transaction webhook subscription, and account-holder `sendToBalanceAccount` and `receiveFromBalanceAccount` capabilities. Multi pay-in **does not support separate authorization and capture**. These are stated requirements, not evidence that any account currently has the capabilities or that a third-party provider supports a proposed flow. [Raw: Requirements, lines 21\u201334]\n- **Account identity and time boundary.** Adyen says it creates a multi pay-in account in the balance platform when the service is requested, one per pay-in partner, to receive that partner's payouts. It says this account is legally held by Adyen solely for the users' benefit while their funds await allocation. The platform must allocate funds received there to balance accounts within **24 hours** for the stated regulatory reason. This source does not specify a region/currency availability list or prove legal ownership, Merchant-of-Record status, or the destination of a particular transaction. [Raw: How it works and 1. Receive funds, lines 36\u201350]\n- **Allocate third-party payments.** After funds reach the source multi pay-in account, the platform makes Checkout POST `/payments` requests with split instructions to allocate each payment to a user's balance account and, where applicable, its own liable balance account. With no split instructions, the page says **all funds and fees book to the liable balance account**. The diagram illustrates a user sale credit, platform commission, partner-deducted processing fees and balance-platform payouts; it is an example, not a universal fee allocation or completed funds movement. The linked allocation guide supplies per-payment request and webhook details. [Raw: 2. Allocate payments, lines 52\u201377]\n- **Refund responsibility.** A partial or full third-party-payment refund can use multi pay-in, but the process varies by partner. The page's general sequence has the **pay-in partner transfer the refund amount to the user's customer** and withhold that amount from a later payout batch; the platform then requests an Adyen Checkout refund to debit specified balance accounts and move the offset to the multi pay-in account. An Adyen debit or internal offset alone does not prove the partner returned funds to the customer. The refund diagram mixes EUR 98/EUR 2 balance deductions with a **USD 100** full-refund transfer; do not infer a conversion rate or a validated currency-consistent refund from it. [Raw: 3. Refund payments, lines 79\u2013104]\n\n## Detail locators\n\n- Raw `Requirements` (lines 21\u201334): online-channel/API/webhook/capability prerequisites and separate-authorisation/capture limitation.\n- Raw `How it works` and `1. Receive funds` (lines 36\u201350): pay-in partner, source account, Adyen-held-for-user-benefit wording and 24-hour allocation.\n- Raw `2. Allocate payments` (lines 52\u201377): Checkout allocation, split fallback and illustrative diagram; deeper request and webhook behavior is in the linked allocation source.\n- Raw `3. Refund payments` (lines 79\u2013104): partner-owned customer return, Adyen debit/offset sequence and inconsistent example currencies.\n- Raw `Next steps` (lines 106\u2013126): separate receive-funds, top-up, allocation and refund navigation; these links do not by themselves prove behavior or outcomes.\n\n## Related\n\n- [[adyen-multi-pay-in]] \u2014 focused service concept\n- [[adyen-platforms]] \u2014 platform/user and balance-account context\n- [[source-adyen-docs-platforms-multi-pay-in-payments]] \u2014 detailed allocation route\n- [[source-adyen-docs-platforms-multi-pay-in-refunds]] \u2014 detailed refund route\n- [[source-adyen-docs-platforms-multi-pay-in-top-up-multi-pay-in]] \u2014 internal top-up route\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/multi-pay-in/2026-09-15|Adyen multi pay-in overview \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Multi pay-in is a service offered by Adyen that creates a single environment for all your processing volume. It consolidates all funds processed for your users within Adyen's infrastructure, making it possible for you to combine payments processed by Adyen with third-party acquired volume.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Multi pay-in does not support separate authorization and capture.",
+      "location": "raw line 34, Requirements > Limitations"
+    },
+    {
+      "text": "To comply with financial regulations, you must allocate the funds you receive in your multi pay-in account to the balance accounts in your balance platform within 24 hours.",
+      "location": "raw line 40, How it works"
+    },
+    {
+      "text": "The multi pay-in account is legally held by Adyen solely for your user's benefit to hold their funds before you allocate them to the balance accounts in your platform.",
+      "location": "raw line 48, 1. Receive funds"
+    },
+    {
+      "text": "If you do not send the split instructions in the request, all funds and fees are booked to your liable balance account.",
+      "location": "raw line 56, 2. Allocate payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-multi-pay-in-new-concept",
+        "target_path": "wiki/concepts/adyen-multi-pay-in.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept file",
+        "proposed_markdown": "---\ntitle: \"Adyen multi pay-in\"\ntype: concept\ncategory: technology\ntags: [adyen, platforms, multi-pay-in, third-party-payments, balance-accounts]\n---\n\n## Definition\n\nAdyen multi pay-in is an Adyen for Platforms online-payment service for consolidating Adyen-acquired and third-party pay-in-partner volume within a balance platform. Third-party partner payouts reach a distinct multi pay-in account, which the 2026-09-15 overview says Adyen legally holds solely for users' benefit until allocation to user and platform liable balance accounts. The platform must allocate received funds within 24 hours. This service does not support separate authorization and capture. [[source-adyen-docs-platforms-multi-pay-in]]\n\n## Evidence boundary\n\nThe overview requires Checkout/Transfers API credentials, transfer and/or transaction webhooks, and account-holder send/receive balance-account capabilities. It says a request without split instructions books all funds and fees to the platform liable balance account. The pay-in partner generally handles the customer's external refund while Adyen handles the balance-account debit and multi pay-in offset. The overview does not prove account or partner enablement, Merchant-of-Record status, exact legal ownership of a particular payment, regional/currency support, successful allocation, payout or customer receipt. Its refund diagram mixes EUR deductions with a USD transfer; treat example values as illustrative.\n\n## Sources\n\n- [[source-adyen-docs-platforms-multi-pay-in]] \u2014 2026-09-15 service overview, prerequisites, 24-hour allocation rule, account role and refund boundary.\n\n## Related\n\n- [[adyen-platforms]] \u2014 broader platform account and payment context.\n- [[source-adyen-docs-platforms-multi-pay-in-payments]] \u2014 allocation request and event detail.\n- [[source-adyen-docs-platforms-multi-pay-in-refunds]] \u2014 refund request and event detail.\n- [[source-adyen-docs-platforms-multi-pay-in-top-up-multi-pay-in]] \u2014 internal top-up route.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "New concept needs a provider-index route; coordinator owns index. Existing detailed multi-pay-in sources are navigation only here unless separately reviewed.",
+          "Refund diagram at raw lines 99\u2013102 mixes EUR deductions with a USD transfer; do not derive conversion or booked amounts."
+        ]
+      },
+      {
+        "update_id": "c16-multi-pay-in-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-multi-pay-in]] \u2014 2026-09-15 multi pay-in service overview for third-party partner proceeds, Adyen-held source account, 24-hour allocation, split default and partner-side customer refunds; no financial-outcome proof.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/multi-pay-in/2026-09-15.md",
+  "raw_sha256": "369d2dc3e22ea07822b8c2e6010f1fdde7d00ed6c7052feb2318126860f37efc",
+  "status": "candidate_ready"
+}

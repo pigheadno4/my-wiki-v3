@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-platforms-in-person-payments-dynamic-currency-conversion",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Dynamic Currency Conversion for Adyen for Platforms in-person payments | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/dynamic-currency-conversion\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/dynamic-currency-conversion/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, dynamic-currency-conversion, terminal-api]\n---\n\n## Overview\n\nAdyen's Adyen for Platforms in-person Dynamic Currency Conversion (DCC) guide describes a terminal choice for an eligible user's customer between local/settlement currency and the card's billing currency. If the customer accepts the billing-currency option, Adyen applies conversion and a markup; declining continues in local currency. This is a 2026-09-15 webpage snapshot whose metadata says last modified 2026-08-10. The Platforms feature is described as a pilot with limited availability and changing processes/documentation. [[adyen]] [[adyen-platforms]] [[adyen-currencies-and-fx]]\n\n## Key takeaways\n\n- The page requires an Adyen for Platforms in-person setup using Terminal API with payment terminals or standalone terminals. It calls for an account-manager-signed DCC addendum with an agreed markup rate, scheme-rule compliance, and enablement in Customer Area or via Management API terminal settings. For API enablement the credential needs the Management API\u2014Terminal settings read and write role; Customer Area and reporting each have specified POS roles. Check the Visa/Mastercard/Maestro configured currencies for `ANY`; Support enables DCC reporting per merchant account and optionally pre-authorization/authorization-adjustment DCC. The guide says DCC is certified for Visa, Mastercard and Maestro, while its later supported-card list also includes VPay; treat that discrepancy and its dated currency/region lists as eligibility requiring account-level confirmation.\n- The terminal must give the cardholder a real choice and disclose exchange rate and markup. Scheme requirements in the snapshot prohibit forcing DCC. An integration-defined receipt must show the rate, rate source, markup, billing-currency amount, local-currency amount and acceptance statement. For DCC with pre-authorization/authorization adjustment, the guide calls for standard webhooks and final `CAPTURE` details on receipt or invoice. It forbids combining surcharge and DCC on one transaction and does not support DCC for offline POS.\n- After Adyen's share of the markup, the remaining markup can be allocated between the platform's liable balance account and its user's balance account. A split profile rule or per-payment `platformDccLogic` instructions can determine this; per-payment instructions override the profile. `targetAccount` identifies the user's balance account and `accountHolderPercentage` gives the user's share in basis points. The guide's defaults book the remaining markup to the platform's liable balance account. Adyen books it as `DCCMarkup` with the balance account's default settlement delay. This is separate from the payment's ordinary amount/fee splits and from generic FX management fees.\n- In the Terminal API request, the payment split instructions and DCC markup instructions go in `SaleData.SaleToAcquirerData` as form-encoded key-value pairs or Base64-encoded JSON. Provide payment splits in settlement currency. The response's `AdditionalResponse` can report converted currency/amount, rate and markup. Funds settle in settlement currency: the original pre-DCC transaction amount is paid to the user's balance account, while the post-Adyen-share markup follows the DCC allocation. The example percentages and amounts are illustrative, not a merchant-specific return. DCC can change automated reconciliation; the `DCCMarkup` split type is described as visible in reports/webhooks but unavailable on the Customer Area Transfers page.\n- Standalone terminals cannot carry split instructions on individual authorization requests. The snapshot says enabling DCC for one platform store can make all standalone terminals support it regardless of linked store, except terminals on version 1.120 or 1.122 and later. The exact version and account behavior needs verification before rollout.\n\n## Detail locators\n\n- Pilot status, scope, Terminal API/role requirements, methods, surcharge/offline/standalone limits and addendum: pinned raw lines 15\u201347 (`## Requirements`).\n- Customer choice, disclosure and receipt content, authorization-adjustment webhook/CAPTURE path: pinned raw lines 49\u2013112 (`## How it works`; `## Complying with regulations`).\n- Markup shares, `DCCMarkup`, split-profile versus request precedence, default and settings steps: pinned raw lines 114\u2013177 (`## DCC markup`; `## Enable DCC for your platform`).\n- Settlement-currency split instructions, `platformDccLogic` fields/basis points, encoding formats, request/response examples: pinned raw lines 179\u2013370 (`## Make a payment with DCC`).\n- Settlement/reconciliation, report/webhook visibility, dated card/currency/region lists: pinned raw lines 372\u2013470 (`## Reconciling payments`; `## Availability`).\n\n## Related\n\n- [[adyen-currencies-and-fx]] \u2014 provider FX concept; this Platforms pilot has its own DCC markup and balance-account allocation rules.\n- [[adyen-platforms]] \u2014 platform/user and liable-account context.\n- [[source-adyen-docs-point-of-sale-currency-conversion]] \u2014 broader POS DCC guide; its dated no-extra-contract statement differs from this Platforms guide's addendum requirement, so do not transfer that contract claim across scopes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/dynamic-currency-conversion/2026-09-15|Adyen for Platforms in-person DCC \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Dynamic Currency Conversion (DCC) for platforms is currently in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "pinned raw line 20, Limited availability"
+    },
+    {
+      "text": "DCC gives your users' international customers the option to either pay in the local currency or their home currency.",
+      "location": "pinned raw line 24, introduction"
+    },
+    {
+      "text": "It is not allowed to apply a [surcharge and Dynamic Currency Conversion](/platforms/in-person-payments/surcharge#surcharge-or-dcc) to the same transaction.",
+      "location": "pinned raw line 42, Requirements > Limitations"
+    },
+    {
+      "text": "After you deduct the portion of the markup that Adyen keeps, you can choose if and how to split the remaining markup amount between your platform and your user.",
+      "location": "pinned raw line 118, DCC markup"
+    },
+    {
+      "text": "Funds are settled in your settlement currency. The amount that you start the transaction with (before DCC) will be paid to your user.",
+      "location": "pinned raw line 376, Reconciling payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-dcc-fx-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-point-of-sale-currency-conversion]]",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-dynamic-currency-conversion]] \u2014 2026-09-15 Adyen for Platforms in-person DCC pilot guide for terminal customer choice, DCC markup allocation between user and liable balance accounts, and dated eligibility/receipt constraints; separate from generic FX fees and the broader POS guide.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "The source's Requirements section certifies Visa/Mastercard/Maestro, while its Supported cards section also lists VPay.",
+          "This Platforms guide requires a DCC addendum, while the broader POS guide says no extra contract; preserve their scope and date distinction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/dynamic-currency-conversion/2026-09-15.md",
+  "raw_sha256": "ca57cfe51cdfa0b0f735a202112592a08236a12c1a2a3d5293ff4397897ad6ac",
+  "status": "candidate_ready"
+}

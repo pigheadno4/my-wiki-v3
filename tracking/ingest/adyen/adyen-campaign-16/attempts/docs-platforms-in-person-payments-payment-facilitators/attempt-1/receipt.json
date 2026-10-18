@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-platforms-in-person-payments-payment-facilitators",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"In-person payment-facilitator user data | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/payment-facilitators\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/payment-facilitators/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, payment-facilitator, sub-merchant, terminal-api, management-api]\n---\n\n## Overview\n\nThis dated [[adyen]] for Platforms guide explains the **additional user (sub-merchant) data** a payment facilitator supplies with facilitated **in-person** transactions. It says that, for a transaction facilitated by the platform, the user is considered Merchant of Record under card-scheme requirements; Adyen adds some user data automatically and the facilitator supplies the rest. That statement is scoped to these facilitated transactions. It does not establish a universal platform/seller arrangement, account eligibility, contractual liability, payee, split booking, payout, or bank receipt. See [[adyen-pos-payment-facilitators]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Channel and route.** The guide covers Terminal API with payment terminals or a Mobile solution, and standalone terminals. A standalone solution can supply the remaining user data **only through store configuration**. Integrated terminals can use store configuration, Terminal API request fields, or both. When both are used, the request fields override store data. This is data precedence, not payment authorization or financial split precedence. [Raw: Requirements and Methods to add user data, lines 23\u201344]\n- **Store configuration.** For a user's store, the facilitator can create or update `subMerchantData` through the Management API; update requires a credential with **Management API\u2014Stores read and write**. The store field table marks `email`, `id`, `mcc` and `name` required. Its `id` is the facilitator's unique identifier for the user, alphanumeric with a **15-character** maximum, distinct from the store ID used in `/stores/{storeId}`. The user name can overwrite part of the shopper's bank-statement transaction description under scheme rules. Store-configured data is added before requests go for authorization. The test-environment and language SDK snippets have stated library versions; several generated snippets are incomplete, so use the field table and versioned API contract when implementing. [Raw: lines 27\u201331, 46\u201366, 68\u2013276]\n- **Per-request data and lifecycle.** For integrated Terminal API requests, the `additionalData` JSON object can contain the user identifier, city, ISO alpha-3 country, name, postal code, street, tax ID and MCC. The table gives field descriptions but does **not** mark requiredness. Request `subMerchantId` is alphanumeric with a **19-character** maximum, different from store `subMerchantData.id`. Base64-encode the JSON and put it in `SaleData.SaleToAcquirerData`. Request fields are needed for Terminal API **payments** and **referenced or unreferenced refunds**; non-Terminal-API modifications such as manual capture and authorization adjustment use the initial payment's sub-merchant data. The payment response does not echo the submitted user data. [Raw: lines 42\u201344, 278\u2013355]\n- **User data together with splits.** If a Terminal API request carries both user data and split instructions, put **all** of that data in one `additionalData` JSON object and pass its Base64-encoded string in `SaleData.SaleToAcquirerData`; the guide says concatenated key-value pairs cannot pass on user data. Its combined example is illustrative and internally inconsistent on currency: the displayed JSON has `split.currencyCode` `USD`, while the Base64 example decodes to `EUR`; a separate payment-only example uses `BRL`. Do not treat those examples as a verified single transaction or completed booking. [Raw: Combining user data and split instructions, lines 357\u2013409]\n\n## Detail locators\n\n- Raw `Requirements` and `Methods to add user data` (lines 23\u201344): integration types, Management API role, standalone limit, request-over-store precedence and modifications.\n- Raw `Add to the store configuration` (lines 46\u2013276): create/update routes, required store fields, ID/name constraints and versioned test snippets.\n- Raw `Add to the Terminal API request` (lines 278\u2013355): request fields, encoding, payment example and non-echo response caveat.\n- Raw `Combining user data and split instructions` (lines 357\u2013409): same-JSON/Base64 requirement and illustrative split example.\n\n## Related\n\n- [[adyen-pos-payment-facilitators]] \u2014 provider POS facilitator model and scoped Merchant-of-Record statement\n- [[adyen-platforms]] \u2014 platform/user account context\n- [[adyen-terminal-api]] \u2014 message transport\n- [[source-adyen-docs-point-of-sale-payment-facilitators]] \u2014 separate general POS guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/payment-facilitators/2026-09-15|Adyen Platforms in-person payment facilitators \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you are a [payment facilitator](/get-started-with-adyen/adyen-glossary#payment-facilitator-payfac), card schemes require you to provide certain data about your user with each transaction. That is because your user is considered the Merchant of Record when a transaction is facilitated by your platform .",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "If your user has standalone terminals, you must use the store configuration method. For integrated terminals you can use either method or both. When using both methods, the Terminal API request overrides the store configuration.",
+      "location": "raw line 42, Methods to add user data"
+    },
+    {
+      "text": "When you add fields to requests, you only need to do this for Terminal API payment requests and Terminal API referenced and unreferenced refund requests. Adding fields is not necessary for payment modifications that are not Terminal API requests, such as manual captures and authorization adjustments. For those non-Terminal API requests, Adyen adds the sub-merchant data from the initial payment.",
+      "location": "raw line 44, Methods to add user data"
+    },
+    {
+      "text": "Your unique identifier of your user. Must be an alphanumerical string with a maximum length of 15 characters.",
+      "location": "raw line 64, Add to the store configuration > subMerchantData.id"
+    },
+    {
+      "text": "However, you must provide all the data in the same way: as a JSON object converted to a Base64-encoded string. The reason is that the Terminal API cannot pass on user data that is formatted as concatenated key-value pairs.",
+      "location": "raw line 361, Combining user data and split instructions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-payfac-pos-concept-route",
+        "target_path": "wiki/concepts/adyen-pos-payment-facilitators.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-payment-facilitators]] \u2014 2026-09-15 Platforms in-person facilitator guide for user Merchant-of-Record statement in facilitated transactions, store/request precedence and combined user-data/split Base64 formatting.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "Merchant-of-Record wording is scoped to transactions facilitated by the platform, not all platform integrations."
+        ]
+      },
+      {
+        "update_id": "c16-payfac-platforms-concept-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-payment-facilitators]] \u2014 2026-09-15 Platforms Terminal API/standalone guide for payment-facilitator user data, store versus request routes and combined split encoding; no account or funds-movement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/payment-facilitators/2026-09-15.md",
+  "raw_sha256": "126172a48ea196b8b7aad8210f9e8d30541ac67f93e67d9b1f4e35c87dc8b8c8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-online-payments-split-transactions-split-payments-at-capture",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms split payments at capture\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/split-transactions/split-payments-at-capture\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/split-transactions/split-payments-at-capture/2026-09-15.md\"\ntags: [adyen, platforms, split-payments, capture, balance-accounts]\n---\n\n## Overview\n\nThis 2023-modified guide, captured 2026-09-15, describes setting or changing **Adyen for Platforms online-payment** split instructions when a separately captured authorization is captured. It routes from [[adyen-platforms]] and relates to the general [[adyen-payment-capture]] lifecycle. Split instructions at capture can override payment-request instructions; Adyen still recommends including payment-time splits where possible because some payment methods do not support delayed capture (raw lines 19\u201325, 39\u201345, 1674\u20131678).\n\n## Key takeaways\n\n- Prerequisites in this guide are Checkout API credentials, a server able to receive standard webhooks and subscribed transfer or transaction webhooks, manual capture enabled, and a payment method supporting separate captures (raw lines 27\u201345). Use the authorization `pspReference` as `paymentPspReference` in POST `/payments/{paymentPspReference}/captures`; the capture's own `pspReference` is different (lines 51\u201359, 593\u2013644).\n- If the capture amount differs from the authorization amount, capture-time splits are required; omission books all funds to the platform's liable balance account. `Surcharge` and `Tip` are unsupported for capture-time splitting (lines 47\u201349). The page recommends payment-time splits even if later updated, and says capture-time instructions override the initial set (lines 25, 43, 1678).\n- Each split directs a part of the amount: `BalanceAccount` to a specified user balance account, `Commission` to the platform liable balance account, and fee types to selected accounts; `Remainder` concerns currency conversion and `TopUp` is separately qualified for `/sessions`. The field table makes `amount.currency` conditional for currency conversion and `reference` conditional for `BalanceAccount` (lines 61\u201372). The USD 80 sale/commission/fee allocation is an example, not a required fee policy (lines 74\u2013122).\n- A capture response with `status: received` only acknowledges the request; use the `CAPTURE` webhook for outcome, then transfer and transaction webhooks to track each split's status and booking (lines 593\u2013666). Request validation checks split **format**, not destination balance-account validity. If the account is nonexistent or attached to a closed account holder, the full transaction **and fees** go to the platform liable balance account despite a successful transaction (lines 646\u2013650).\n- Split references support reconciliation; without them the split amounts aggregate into one entry in reporting (lines 1674\u20131678). Additional fee, FX remainder, chargeback and top-up routes are described at lines 1641\u20131672.\n\n## Detail locators\n\n- Capture split request parameters, examples and versioned test snippets: raw lines 51\u2013591; curl uses Checkout test `v72`, while Java/PHP/.NET/Node/Go/Python/Ruby examples name their own library versions and note a live endpoint prefix where applicable.\n- Receipt and failure/liable-account warning: lines 593\u2013650.\n- Per-split transfer/transaction webhook stages and example identifiers: lines 652\u20131640; sample `received`, `authorised`, `captured` and `booked` events are test payloads, not live financial proof.\n- Extra fee, conversion, chargeback, top-up and reference guidance: lines 1641\u20131678.\n\n## Evidence boundary\n\nThis is a capture-time Platforms split guide, not a Classic capture API guide or a claim about in-person splitting. The example account IDs, USD amounts, fee allocation and webhook events do not establish any real platform's merchant of record, legal ownership, split execution, booked funds, payout or bank receipt. It does not establish current payment-method support or account eligibility.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform balance-account and user context.\n- [[adyen-payment-capture]] \u2014 general authorization/capture outcome boundary.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-capture/2026-09-15|Pinned Adyen capture-time split guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can also override the split instructions you provided in the payment request if you send different split instructions in your capture request.",
+      "location": "raw line 25, introduction"
+    },
+    {
+      "text": "* Splitting payments at capture is only possible for payment methods that support [separate captures](/online-payments/capture).",
+      "location": "raw line 45, Limitations"
+    },
+    {
+      "text": "* When the capture amount differs from the original authorization amount, you must provide split instructions in your capture request. If you do not provide split instructions for such captures, then all funds are booked to your liable balance account.",
+      "location": "raw line 47, Limitations"
+    },
+    {
+      "text": "* The split types **Surcharge** and **Tip** are not supported when you split a payment at capture.",
+      "location": "raw line 49, Limitations"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw line 648, Troubleshooting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-capture-splits-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-capture]] \u2014 2023-modified, 2026-09-15-captured Platforms guide to capture-time online-payment split override, partial-capture rules, liable-account fallback and per-split webhook tracking; test examples do not prove booked funds.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Capture-time splits require separate-capture method support and manual-capture setup; payment-time instructions remain recommended.",
+          "A received capture response is not the final outcome, and split-format validation does not verify the destination balance account."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-capture/2026-09-15.md",
+  "raw_sha256": "3364fec66855647dfd6411b35b70276d71905b43b62ba0bbe009f690246b6fae",
+  "status": "candidate_ready"
+}

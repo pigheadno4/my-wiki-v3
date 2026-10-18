@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-in-person-payments-transaction-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms in-person transaction fees\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/transaction-fees\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, transaction-fees]\n---\n\n## Overview\n\nThis 2023-02-10-modified Adyen for Platforms page, captured 2026-09-15, explains how a platform can allocate **in-person payment-related transaction fees** across a user's and its own liable balance accounts using Terminal API split instructions. The fee amounts are calculated after the payment request, so split types describe booking destinations rather than known fee values at payment time. This source does not decide the legal seller or merchant of record, establish a current fee schedule, prove a particular booking, or show payout or bank receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- For a platform already processing payments, the page lists no **additional** preparations. Payment-related **Interchange, Scheme Fees, Adyen Markup and Adyen Commission** can be assigned to a user balance account through split instructions; absent such instructions, these fees default to the platform's **liable balance account**. **Processing costs**, including those for refused/cancelled payments, other aggregated costs such as 3DS enrollment, and tiered-pricing discounts cannot be allocated to individual payment requests under this guide. A provider fee named **AdyenCommission** is distinct from the platform's own **Commission** sale split.\n- Split types form a hierarchy: `PaymentFee` aggregates all transaction fees; `AcquiringFees` aggregates interchange and scheme fees; `AdyenFees` aggregates Adyen commission and markup. Individual types override the corresponding aggregate portion, and aggregate types override that portion of `PaymentFee`. A more granular fee item moves only its own component to the specified account; the remaining components follow the aggregate instruction. If **no fee-type booking instruction** is sent in the payment or capture request, Adyen adds a `PaymentFee` split to the liable account. The page recommends explicit fee instructions even when allocating to liable, to aid reconciliation.\n- The illustrative Terminal API request encodes `split.api`, item count, total amount/currency and per-item types/accounts/references in `SaleToAcquirerData` as **ampersand-separated key-value pairs** or **Base64-encoded JSON**. Its example uses `split.totalAmount=8000` and `split.currencyCode=USD` while `AmountsReq.RequestedAmount` is **80.00 USD**; preserve those field-specific representations and consult the Terminal API schema before building requests. The example assigns a USD 75 sale and USD 5 platform commission separately from fee splits; these amounts and a V400m test payload are illustrative, not standard rates or live execution.\n- The example assigns `AcquiringFees` to the user balance account and `AdyenFees` to the liable account in its request. The later Adyen-fees introduction says **user** account, whereas its transfer prose/payload say **liable**, and its `transaction.created` sample names a **user** balance account with a different transfer ID/reference. The acquiring-fee captured-transfer payload also names a different balance-account ID from its received/booked examples. The fee webhook samples are in **EUR** while the payment request is **USD**, without a conversion explanation. Do not derive a clean account/sign/currency reconciliation rule from these examples; use actual transaction and accounting evidence for an account-specific answer.\n- Fee movement has separate `transfer.created` **received**, `transfer.updated` **authorised/captured**, and `transaction.created` **booked** stages per split item; a Terminal `PaymentResponse` **Success** alone is not a booked-fee or final payout record. The Balance Platform Accounting Report shows aggregated `PaymentFee`, `AcquiringFees` and `AdyenFees` rows with an Amount column, while four Platform Payment columns show granular interchange, scheme fee, markup and Adyen commission. Report rows and sample webhook times are records/examples, not bank settlement proof.\n- This page supplies no separate partial-capture algorithm or current country/role eligibility table. Linked fee-reconciliation guidance is a next-step route; do not import its behavior without reading it.\n\n## Detail locators\n\n- Scope, default liable allocation, non-pass-through costs and fee-type precedence: pinned raw lines 15\u201389.\n- USD 80 example and Terminal API `SaleToAcquirerData` formatting: pinned raw lines 91\u2013249.\n- Per-split fee transfer/transaction webhook stages and contradictory sample accounts/currency: pinned raw lines 250\u2013887.\n- Accounting Report aggregate/granular fields and default `PaymentFee` row: pinned raw lines 888\u2013898.\n\n## Related\n\n- [[adyen-platforms]] \u2014 provider concept for platform and user balance-account context.\n- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-payments-at-authorization]] \u2014 separate Terminal API sale/commission split guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15|Adyen in-person transaction fees, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Transaction fees refer to the costs you incur on a transaction in your platform that are not known at the time of payment.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:19"
+    },
+    {
+      "text": "Processing costs: These fees are aggregated and also applicable to refused and cancelled payments. Therefore, they cannot be allocated to individual payments.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:36"
+    },
+    {
+      "text": "The booking instructions sent for more granular fee types override the instructions for the aggregated fees.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:59"
+    },
+    {
+      "text": "passing the formatted string of split instructions in the `SaleToAcquirerData` field of the [PaymentRequest](https://docs.adyen.com/api-explorer/terminal-api/latest/post/payment) object.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:187"
+    },
+    {
+      "text": "If you do not send split instructions for any transaction fee type in your payment or capture request, Adyen automatically adds the `type` parameter with the **PaymentFee** value to the request, booking all transaction fees to your platform's liable balance account.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:892"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-pos-transaction-fees-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-transaction-fees]] \u2014 2023-modified, 2026-09-15-captured Terminal API fee-allocation guide for aggregate/granular split precedence, liable-account default and report/webhook tracking; illustrative fee-account payloads conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sample Adyen-fee and acquiring-fee webhook account IDs, references and currency do not consistently match their request/prose; source page preserves this qualification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md",
+  "raw_sha256": "9ded692565192c7cf416432a6f63a0a56f6f6e21d5152203e8b94bcbe04751a6",
+  "status": "candidate_ready"
+}

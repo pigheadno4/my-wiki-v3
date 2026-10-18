@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Adyen website C16
+
+- Fifty independently approved Platforms payments/splits/fees/FX/Giving/multi-pay-in documentation sources; first full-review approvals 41/50 and 9 targeted correction reviews. 7 concepts touched (2 new); source_count 814 = 800 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-16/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-16] ingest | React Stripe.js `7.0.0`
 
 - Full additive major baseline: Payment Request Button React wrapper removal, Stripe JS v10 peer requirement, React 19 lifecycle guard and retained deprecated hook despite its stale removal comment. All 57 retained source files and assigned prior files read; generated evidence mechanically verified under approval. V6 history and source count preserved. Details [[stripe-log]], [[source-github-react-stripe-js]], [[changelog-github-react-stripe-js]]. No commit/push.

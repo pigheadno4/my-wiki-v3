@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-online-payments-transaction-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Transaction fees | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/transaction-fees\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md\"\ntags: [adyen, platforms, transaction-fees, split-payments, reconciliation]\n---\n\n## Overview\n\nThis 2023-last-modified [[adyen]] for Platforms guide, captured 2026-09-15, explains how to allocate transaction fees that Adyen calculates after receiving a payment request. Despite the URL's online-payments path, it says the guidance applies to both online and in-person payments. The default destination is the platform's liable balance account; eligible payment-related fees can instead be booked to a user's balance account through fee-type split instructions. This is fee-booking guidance, not a determination of legal seller, merchant of record, final settlement or bank receipt. [[adyen-platforms]]\n\n## Fee scope and booking\n\n- The guide says a platform that already processes payments has no additional requirements for this feature. Individual fee types are `Interchange`, `SchemeFee`, `AdyenMarkup` and `AdyenCommission`. `AcquiringFees` aggregates interchange plus scheme fees, `AdyenFees` aggregates markup plus commission, and `PaymentFee` aggregates all transaction fees. Adyen Commission is associated with blended rates and Markup with Interchange++ pricing in the table; do not assume both apply to every payment.\n- Processing costs, including those on refused or cancelled payments, and other aggregated costs such as 3DS enrollment cannot be allocated to individual payments in the payment request. Tiered-pricing discounts also cannot be allocated to individual payments. Thus the page's fee-split types do not represent every possible cost or a universal invoice amount.\n- Fee split instructions can be sent in a payment or capture request; the worked flow names Checkout `/payments` or `/sessions` with fee items in `splits`. The field table marks `account`, `type` and unique `reference` required and `description` optional. Fees are unknown at payment time, so the examples route fee types to balance accounts rather than asserting a precomputed fee amount. If no transaction-fee split is supplied, Adyen automatically inserts `PaymentFee` and books all transaction fees to the platform's liable balance account; the page recommends specifying even liable-account fee splits for reconciliation.\n- Granular fee-type booking overrides the corresponding portion of an aggregate. For example, `AdyenMarkup` directed to liable balance overrides that part of a user-directed `PaymentFee`; interchange, scheme fee and Adyen commission remain on the user's balance in the example. The table at raw lines 63\u201371 gives the full `PaymentFee`/`AcquiringFees`/`AdyenFees` hierarchy and individual overrides. These destinations concern balance-account booking, not who legally owns the sale or who receives a payout.\n\n## Event and report evidence\n\n- The example response returns `resultCode: Authorised` with `merchantReference`; that is authorization evidence, not proof that fee transfers were captured or booked. The guide routes tracking through `balancePlatform.transfer.created`, `balancePlatform.transfer.updated` and `balancePlatform.transaction.created` for each split item. Its test webhook examples progress through `received`, `authorised`, `captured` with a `transactionId`, and a transaction marked `booked`. A received or authorised transfer is not a booked debit; sample booked balance-account data does not prove payout or bank credit.\n- The Balance Platform Accounting Report has separate rows and Amount values for aggregate `PaymentFee`, `AcquiringFees` and `AdyenFees`, while its four Platform Payment columns show Interchange, Scheme Fee, Markup and Commission at granular level. The automatically added liable-account `PaymentFee` also appears in the report. Match request reference, transfer and booked transaction/report records at the correct grain.\n- **Pinned-source contradictions:** raw line 1141 says the example's `AdyenFees` debit is from the user's balance, whereas raw lines 99\u2013104, 1147 and 1301 and the sample liable-account payload say it is from the platform's liable balance. The worked prose at line 99 says EUR 80 while the versioned payment sample and authorization response show USD 80; later webhook examples show EUR. The field table at line 113 describes `account` as a user's balance account even though the illustrated `AdyenFees` item targets the liable account. Treat those values and labels as inconsistent examples and verify the actual request/schema and account destination before implementation.\n- This page does not define partial-refund or chargeback fee reversal allocation. Those cases require their own flow-specific sources. The page's historical snapshot and illustrative test payloads do not establish current account eligibility, actual fee rate, completed booking or a financial outcome.\n\n## Detail locators\n\n- **Scope, default and requirements:** raw lines 15\u201325.\n- **Assignable and excluded costs; fee taxonomy and aggregate-over-atomic precedence:** raw lines 27\u201395.\n- **`/payments`/`/sessions` field table, split example and currency discrepancy:** raw lines 97\u2013782.\n- **Authorization response and per-split transfer/transaction tracking:** raw lines 782\u20131446; contradictory Adyen-fee destination at lines 1141 and 1147.\n- **Balance Platform Accounting Report grain and omitted-split default:** raw lines 1448\u20131454.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 separate refund allocation\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-chargebacks]] \u2014 separate chargeback allocation\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15|Adyen Platforms transaction-fee guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The information on this page applies to both online payments and in-person payments.",
+      "location": "raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md:19"
+    },
+    {
+      "text": "Processing costs: These fees are aggregated and also applicable to refused and cancelled payments. Therefore, they cannot be allocated to individual payments.",
+      "location": "raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md:38"
+    },
+    {
+      "text": "If you don't include booking instructions for any of the transaction fee types in your payment request, Adyen automatically updates the request to include the **PaymentFee** split type, deducting all transaction fees from your platform's liable balance account.",
+      "location": "raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md:55"
+    },
+    {
+      "text": "The booking instructions sent for more granular fee types override the instructions for the aggregated fees.",
+      "location": "raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md:61"
+    },
+    {
+      "text": "As specified in the payment request, the fees due to Adyen (the aggregated amount of Adyen's Commission and Markup) are deducted from your user's balance account.",
+      "location": "raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md:1141"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-transaction-fees-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-transaction-fees]] \u2014 2023-modified, 2026-09-15-captured online/POS platform fee split hierarchy, liable-account default and transfer/report reconciliation; worked examples contain account-destination and currency contradictions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's AdyenFees example conflicts on user versus platform liable balance destination (raw lines 1141 versus 99\u2013104, 1147 and 1301), and its EUR 80 prose conflicts with USD 80 payment/authorization code and EUR webhook examples; verify actual request and account route.",
+          "Processing costs, 3DS enrollment aggregates and tiered discounts cannot be passed as individual payment fee splits. More granular fee types override aggregates; omitted fee splits default to liable balance.",
+          "Authorization and transfer received/authorised states are not captured/booked fees or bank receipt. The page does not settle partial-refund or chargeback fee reversal allocation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/transaction-fees/2026-09-15.md",
+  "raw_sha256": "9c4ccd0694ebdca3b5e573bada4d2b5c57565863f34523a0e5578115158b4f20",
+  "status": "candidate_ready"
+}

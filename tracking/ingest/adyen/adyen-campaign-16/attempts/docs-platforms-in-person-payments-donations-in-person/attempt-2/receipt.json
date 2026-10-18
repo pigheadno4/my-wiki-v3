@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-platforms-in-person-payments-donations-in-person",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen for Platforms in-person donations using Giving\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/donations-in-person\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md\"\ntags: [adyen, platforms, giving, donations, in-person-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes how platform-model users can offer an in-store shopper a Giving donation to a nonprofit after a donation campaign is configured. A chosen donation is a separate transaction from the purchase. The guide says Adyen covers donation fees and transfers the full donation to the nonprofit; split amounts and fees may be specified on the original sale, not on the donation. This is a terminal or standalone in-person route, separate from the Platforms API-only online Giving flow. The described flow and sample outcomes do not establish current eligibility, a specific donation's success, settlement or nonprofit bank receipt.\n\n## Key takeaways\n\n- Scope is Adyen for Platforms merchants with a platform model using Terminal API payment terminals or a standalone solution. The terminal needs software v1.109 or later, with some terminals/features needing v1.110 or later. A configured account-holder donation campaign must be started for the selected nonprofit; after the next scheduled terminal reboot, eligible payment flows can show its donation options. The guide points to separate supported-terminal, method, region/currency and campaign-management pages; those linked lists must be checked for a concrete rollout. A terminal does not prompt for a donation after a gift-card payment. The page does not establish Tap to Pay Mobile support or a merchant-of-record identity.\n- Implement the Adyen Giving merchant webhook to obtain each donation's outcome. Its `DONATION` event has `success` and `originalReference`; the latter associates the donation with the original transaction. A webhook can support email or mobile notice if the platform or user has the shopper's contact details. The sample `success: true` notification is illustrative, not proof that a live donation or transfer completed.\n- A shopper donation receipt from the full donation transaction response is available only for the two-step Terminal API interaction flow. Send a `TransactionStatusRequest` with receipt reprint and `DocumentQualifier`; set `TransactionStatusRequest.MessageReference.SaleID` to `AdyenGiving` while the outer `MessageHeader.SaleID` is the POS system's ID; using the original response's `adyen_giving_service_id` identifies a specific donation, while omitting `ServiceID` retrieves the latest donation on that terminal. `TransactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.PaymentResponse.PaymentReceipt` supplies receipt data. A receipt-generation route is distinct from donation outcome confirmation; identify the intended donation before sending a shopper receipt.\n- The campaign logo is an optional terminal standby-screen customization with model-specific dimensions and file-size limits. The guide does not use it as an eligibility or outcome signal.\n\n## Detail locators\n\n- `Requirements` \u2014 platform model, Terminal API/standalone scope, v1.109 and possible v1.110 gate, Giving merchant webhook, supported terminal/method/region/currency navigation, gift-card exception and campaign prerequisite (raw lines 27\u201337).\n- `How it works` \u2014 nonprofit selection, account-holder campaign setup/start, optional logo, receipt or notification methods, and display after scheduled reboot (lines 39\u201355).\n- `(Optional) Configure a logo` \u2014 terminal standby logo settings and model-specific file dimensions/size table (lines 57\u201379).\n- `(Optional) Get the two-step donation response` \u2014 `TransactionStatusRequest` header, receipt-reprint qualifiers, `AdyenGiving` message reference, specific versus latest donation lookup, and `TransactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.PaymentResponse.PaymentReceipt` (lines 82\u2013120, 125\u2013149, 186, 201\u2013225).\n- `Giving webhook` \u2014 `DONATION`, `success`, `originalReference`, contact-detail condition and test-mode example (lines 266\u2013305).\n\n## Related\n\n- Company: [[adyen]]\n- Concepts: [[adyen-giving]], [[adyen-platforms]]\n- Related sources: [[source-adyen-docs-platforms-donations-create-manage-campaigns]], [[source-adyen-docs-platforms-online-payments-donations-online]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15|2026-09-15 Platforms in-person Giving guide]]\n",
+  "quotes": [
+    {
+      "text": "When a shopper chooses to donate, the donation is processed as a separate transaction. Adyen covers all fees and the donation amount is transferred to the nonprofit in full. This means you can split amounts and fees on the original transaction, but not on the donation transaction.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md:23"
+    },
+    {
+      "text": "Adyen for Platforms merchants with a platform model, using a Terminal API integration with payment terminals or a Standalone solution. The terminals must use terminal software version 1.109 or later. Some terminals or features require software version 1.110 or later.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md:33"
+    },
+    {
+      "text": "After the next scheduled reboot of the payment terminals, the terminals automatically show the donation options from the campaign after every payment, except when the payment method is not supported by Adyen Giving.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md:55"
+    },
+    {
+      "text": "It is only possible to retrieve the donation transaction response in the two-step flow.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md:88"
+    },
+    {
+      "text": "You can get the outcome of each donation in a webhook message. This enables you to inform shoppers by email or mobile messaging about their donation, provided you have the shopper's contact details.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md:268"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-giving-inperson-route",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-donations-in-person]] \u2014 2026-09-15 Platforms terminal/standalone Giving guide for a separate donation after an eligible sale, campaign and software prerequisites, two-step receipt lookup and merchant `DONATION` webhook outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "This Platforms guide does not establish a successful donation or nonprofit bank receipt; keep its in-person route separate from online Giving."
+        ]
+      },
+      {
+        "update_id": "c16-platforms-inperson-giving-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-donations-in-person]] \u2014 2026-09-15 Platforms in-person Giving implementation guide for user account-holder campaigns, distinct sale/donation transactions, terminal receipt lookup and donation-outcome webhook.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "No split instruction is allowed on the donation transaction; original-sale splits do not identify nonprofit funds receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/donations-in-person/2026-09-15.md",
+  "raw_sha256": "14ee06600f14e41f659e4d936e2a7100ff41290a8e003966afea8159e1532088",
+  "status": "candidate_ready"
+}

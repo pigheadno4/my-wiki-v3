@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-online-payments-currency-conversion-refunds-your-user",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms FX refunds: book the remainder to the user\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/currency-conversion/refunds/your-user\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/currency-conversion/refunds/your-user/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, refunds, foreign-exchange]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Platforms page describes a limited-availability pilot for currency-converted online-payment refunds where the platform chooses to book the FX remainder to its user's balance account. The shopper's refund is fixed in the processing currency originally paid, while the user's debit is in the settlement currency and may differ from the amount originally credited. This is an allocation and request guide, not evidence of current pilot access, an executed refund, shopper receipt or merchant-of-record identity. See [[adyen]], [[adyen-platforms]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- The page says currency conversion is in pilot and processes or documentation may change; contact Adyen about participation. Its scenario has the customer pay in processing currency (illustratively PLN) and the user's balance account credited in settlement currency (illustratively CZK). Booking the remainder to the user keeps the shopper-side refund at the original processing-currency amount, while the user bears the changed settlement-currency debit. The page's amounts and rate are examples, not a live quotation or guaranteed rate.\n- Prerequisites are an Adyen online-payments integration with checkout UI, Checkout API credentials, standard/transfer/transaction webhook handling, account-holder capabilities `receivePayments`, `receiveFromPlatformPayments` and `sendToTransferInstrument`, Support configuration of required merchant-account currencies, and a captured payment before initiating a refund. Option 2 additionally needs the Balance Platform Foreign Exchange API credential, **Read FX rates role**, and Support enablement of the FX API for the merchant account. Listed capability requirements do not prove an account holder has them enabled.\n- Option 1 reuses original payment values in the Checkout refund: `amount` holds the processing currency and original customer-paid value, while `splits.amount` holds the original settlement-currency value. Add a `Remainder` split specifying the user's balance account without a remainder amount. The guide says Adyen then books any conversion remainder to that account. The example uses PLN 201.74 at the top level and CZK 1000.00 in the user split; these are separate currency amounts, not interchangeable units.\n- Option 2 first calls `POST /rates/calculate` with `type=splitRefund`, processing-currency `sourceAmount` in minor units, settlement `targetCurrency`, and `exchangeSide=sell`. The returned settlement-currency `targetAmount.value` is the proposed user refund debit; `appliedExchangeRate` includes Adyen's Markup. Then send a Checkout refund with the original processing-currency amount and adjusted settlement-currency split amount. For multiple splits, their settlement-currency sum should equal that adjusted amount; the guide recommends a `Remainder` split to assign any mismatch or miscalculation to the specified balance account. The rate response is calculation guidance, not proof that the eventual refund settled at the example rate.\n- The guide's statement that the supplied splits are guaranteed must be read with its setup and account conditions; the separate [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] guide warns that Checkout validates split format rather than balance-account existence and may book an invalid or closed-holder target to the platform's liable balance. The page does not give a distinct partial-refund procedure or state that every payment method supports partial refunds. It shows test Checkout v72 and versioned SDK examples; `status: received` in its example response is not final refund or shopper-receipt proof.\n\n## Detail locators\n\n- Pilot warning, remainder example and processing-versus-settlement effects: raw lines 15\u201337. Requirements, distinct API credentials/role, capabilities, currency enablement and captured-payment condition: lines 39\u201357. Common flow: lines 59\u201367.\n- Option 1 original amounts and explicit no-amount `Remainder` split: lines 69\u201376; test request/SDK examples and response: lines 80\u2013545. Option 2 FX calculation request and response fields: lines 546\u2013581; illustrative calculation/rate: lines 585\u2013643; Checkout fields, split-sum and mismatch routing: lines 645\u2013661; test request/SDK examples and `received` response: lines 665\u20131129.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform user and balance-account context.\n- [[adyen-currencies-and-fx]] \u2014 provider FX and amount-unit context.\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 refund split-booking and invalid-account fallback; distinct from this FX pilot procedure.\n\n## Related raw API references\n\n- The raw page links to the Foreign Exchange API rate calculator, Checkout refund endpoint and Balance Platform Accounting Report. Consult those independently for current API schema, availability and reconciliation semantics.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/currency-conversion/refunds/your-user/2026-09-15|Adyen Docs: Book the remainder to your user (2026-09-15 snapshot; limited availability)]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase.",
+      "location": "raw line 20, # Book the remainder to your user, Limited availability"
+    },
+    {
+      "text": "The refund amount is fixed in the processing currency",
+      "location": "raw line 35, ## Booking options"
+    },
+    {
+      "text": "You do not need to specify the amount of the remainder.",
+      "location": "raw line 74, ## Option 1: Use the amounts from the original payment request"
+    },
+    {
+      "text": "The exchange rate to convert the processing currency to the settlement currency that includes Adyen's Markup.",
+      "location": "raw line 581, ### Calculate the refund amount in the settlement currency, appliedExchangeRate row"
+    },
+    {
+      "text": "Any mismatch or miscalculation is booked to the balance account you specify in the split item with type **Remainder**.",
+      "location": "raw line 661, ### Send a refund request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-refunds-user-fx-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] \u2014 2026-09-15 limited-availability Platforms FX-refund pilot guide for booking the processing-versus-settlement-currency remainder to the user's balance account through original or rate-adjusted splits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Pilot availability, credentials, capabilities and Support setup are conditional; example requests and received responses are not live refund or shopper-receipt proof.",
+          "The separate split-refunds guide warns that invalid or closed-holder balance-account targets may fall back to the platform liable balance; do not read this page's guaranteed-splits phrasing as overriding that caveat.",
+          "This page does not specify a separate partial-refund procedure or universal payment-method support."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/currency-conversion/refunds/your-user/2026-09-15.md",
+  "raw_sha256": "64d4004ae187fa5de3699e4cc108420b688bf35fb81d46a7941d210e610742c2",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-donations-create-manage-campaigns",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Create and manage Adyen Giving campaigns for platform account holders\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/donations/create-manage-campaigns\"\nraw_files:\n  - \"adyen/docs/platforms/donations/create-manage-campaigns/2026-09-15.md\"\ntags: [adyen, platforms, giving, donations, campaigns]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes how a platform sets up and manages Giving campaigns for its account holders in Customer Area or through the Management API, and how it may build its own UI for user self-service. A campaign links participating account holders and their channel-specific stores to an onboarded nonprofit cause, for online payments, in-person payments, or both. It covers campaign configuration and lifecycle; the linked online and in-person guides cover shopper payment and donation handling. See [[adyen-giving]] and [[adyen-platforms]]. A created or active campaign does not prove that any shopper donated or that funds settled.\n\n## Key takeaways\n\n- Scope is Adyen for Platforms with a platform model. The documented online route is API-only on Checkout API v67 or later; the in-person route is Terminal API or Standalone with terminal software v1.109 or later, with some terminals/features requiring v1.110 or later. Management API campaign requests need the \u201cManagement API - Campaign Management read and write\u201d API-credential role; Customer Area viewing uses \u201cDonation campaigns viewer\u201d and creating, starting, editing or ending uses \u201cDonation campaigns manager.\u201d An onboarded or pre-approved nonprofit, supported region/currency/payment method and applicable terminal model are prerequisites. The campaign is capped at 400 account holders; a store can be in only one active campaign at a time.\n- The platform selects an available nonprofit and cause for the account holders, then configures account-holder IDs and stores per sales channel. API creation uses the selected cause ID, campaign name and platform-required account-holder IDs; the channel objects identify eligible stores and donation type. Stores must match the channel and at least one included account holder. The pinned field tables specify required/conditional settings and minor-unit fixed amounts. Creation returns a campaign ID and initially `inactive` status; it does not activate the campaign.\n- Online campaigns can offer fixed amounts or round-up; pre-checkout donation presentation requires the API-only integration and is implemented in the online payment flow, not as a campaign setting. In-person campaigns can offer fixed amounts, round-up or a combination, and choose one-step or two-step card presentation. Both in-person choices remain separate payment and donation transactions. The terminal does not prompt after gift-card payment, and a donation cannot complete offline even when the underlying payment proceeds offline.\n- Management API listing is per account holder and may filter `inactive`, `active` or `ended` campaigns. Editing is allowed for inactive or active campaigns; adding an account holder requires compatibility with the nonprofit cause by legal-entity country and industry, and PATCH arrays must contain all entries to retain. Online edits take effect right away; in-person terminals receive them on their next maintenance call, usually overnight. Status cannot be patched directly.\n- Activating `inactive` to `active` and ending `active` to `ended` are one-way transitions: the guide does not allow reverting active to inactive or reactivating an ended campaign. Only an inactive, never-started campaign may be permanently deleted. A successful status response reports campaign state, not donation or payment outcome; the separate payment/donation guides and their outcome evidence are required for those claims.\n\n## Detail locators\n\n- Scope, integration/role/nonprofit prerequisites, eligibility, 400-account-holder and one-active-campaign-per-store limits: pinned raw lines 15\u201342.\n- Online and in-person interaction flows, terminal and offline behavior, and donation-type choices: pinned raw lines 44\u2013106.\n- Customer Area account-holder, nonprofit, channel, store, currency and initial-status sequence: pinned raw lines 114\u2013161.\n- API nonprofit/cause lookup and creation schema, field requirements, minor-unit amounts, test example and inactive result: pinned raw lines 163\u2013400; use field tables at lines 270\u2013295, not the sample response as a universal guarantee.\n- Customer Area lifecycle and terminal edit propagation: pinned raw lines 402\u2013419; account-holder list/status lookup: lines 430\u2013452.\n- Compatibility precheck, PATCH array replacement and status restriction: pinned raw lines 572\u2013586; status transitions, repeat-status response and 422 failures: lines 666\u2013691; irreversible deletion restriction: lines 693\u2013711.\n\n## Related\n\n- [[adyen]]\n- [[adyen-giving]]\n- [[adyen-platforms]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/donations/create-manage-campaigns/2026-09-15|Platform Giving campaign management snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "With Adyen Giving, your users can give shoppers the option to donate to a nonprofit organization when shoppers make a purchase, either online or at the point of sale.",
+      "location": "raw line 19, Create and manage donation campaigns"
+    },
+    {
+      "text": "Adyen for Platforms with a platform model, with an [API only](/online-payments/donations/api-only) online payments integration using Checkout API v67 or later",
+      "location": "raw line 29, Requirements table, Integration type"
+    },
+    {
+      "text": "The campaign is now set up, but not active yet.",
+      "location": "raw line 161, Customer Area setup"
+    },
+    {
+      "text": "If you update an array, this must include all array items that are needed, not just a new item that you want to add.",
+      "location": "raw line 586, Edit a campaign"
+    },
+    {
+      "text": "It is not possible to make an active campaign inactive again, or to re-activate a campaign that has ended.",
+      "location": "raw line 668, Start or stop a campaign"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platform-giving-campaigns-reciprocal",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-donations-create-manage-campaigns]] \u2014 2026-09-15 platform account-holder Giving campaign setup and lifecycle guide for Customer Area and Management API, channel-specific configuration, eligibility and one-way status transitions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The platform account-holder campaign route is distinct from the merchant-account campaign instructions in the POS and online Giving sources; do not merge their identity or version prerequisites.",
+          "Campaign creation or activation does not prove a shopper donation, payment outcome or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/donations/create-manage-campaigns/2026-09-15.md",
+  "raw_sha256": "a4e9c706a4625a5e0a98b0c47d928031afe055292d404a3db532ac4aaa434a80",
+  "status": "candidate_ready"
+}

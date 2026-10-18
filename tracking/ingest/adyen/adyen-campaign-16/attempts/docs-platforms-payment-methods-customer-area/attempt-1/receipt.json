@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-payment-methods-customer-area",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage payment methods in Customer Area | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/payment-methods/customer-area\"\nraw_files:\n  - \"adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md\"\ntags: [adyen, platforms, payment-methods, customer-area, account-holders]\n---\n\n## Overview\n\nThis 2026-09-15-last-modified [[adyen]] for Platforms guide explains how a platform requests and manages payment methods for users' stores through Customer Area under a merchant account. It distinguishes method request/addition and enabled configuration from the account holder's ability to use the method. After Adyen enables a method, the page says its variants are accepted by default, subject to method, currency, integration and account-holder conditions. This snapshot is not proof of a live method grant, authorized payment, legal seller or merchant-of-record role, or funds movement. [[adyen-platforms]]\n\n## Requirements and request state\n\n- The stated prerequisites are an Adyen online or point-of-sale integration, the Customer Area **Change payment methods** role, a payment-method webhook subscription, and an already-created business line and user store. A method must be supported for the currency and integration; some, such as SEPA Direct Debit, may only be available through the Management API. These conditions do not establish a given merchant/store's actual eligibility. See raw lines 29\u201343.\n- In test or live Customer Area, the operator switches to the merchant account, chooses **Payments > Payment methods**, filters and selects a method, applies it to a user's store, supplies prompted details and submits the request. Addition is asynchronous. The `paymentMethod.created` Management webhook follows when a method has been added to the store; the sample `SUCCESS` event is a test example, not evidence of the user's usable acceptance state. The guide says availability typically appears within a day and recommends requesting at least a day before opening, rather than promising activation by then. See raw lines 45\u201383 and 38\u201341.\n- If **Submit request** immediately shows an error, the page says to correct the information before resubmitting. In the rare case of a post-submission failure without webhook subscription, no automated failure alert arrives; in that case it instructs waiting **24 hours** before retrying. This is a conditional retry instruction, not a general request delay or a guarantee of success. See raw lines 85\u201389.\n\n## Usability, management and removal\n\n- A requested payment method is enabled for the user by default, but only verified account holders can use configured methods. For `receivePayments`, the page requires `verificationStatus: valid`, `enabled: true` and `allowed: true`; it also says a user cannot use a requested method when `allowed` is not true. A legal-entity or account-holder update after verification may disable methods until reverification. Check the account holder through GET `/accountHolders/{id}` or `balancePlatform.accountHolder.updated`; sample account-holder payloads are test examples. See raw lines 91\u2013201.\n- The Customer Area list is at merchant-account scope and supports filtering/table columns and a method detail panel. The operator can select methods and **Activate** or **Deactivate** them. Methods marked **Inactive** and unused for **90 days** are automatically deleted; methods linked to a closed store become Inactive and are deleted after 90 days. See raw lines 203\u2013220.\n- The page's introduction lists currency updates, but its detailed Customer Area edit steps only change **Country/Region**, including an **ANY** choice without a country restriction. Its requirements text says to contact Support when a nondefault currency is needed. Do not infer an in-page currency edit or universal country/method eligibility from the country selector. See raw lines 21\u201327, 38\u201343 and 221\u2013233.\n\n## Detail locators\n\n- **Variant default, page scope, role/webhook and store/business-line prerequisites:** raw lines 19\u201343.\n- **Merchant-account request steps, asynchronous addition and test `paymentMethod.created` example:** raw lines 45\u201383.\n- **Immediate error versus conditional 24-hour retry:** raw lines 85\u201389.\n- **Account-holder `receivePayments` states, reverification and GET/webhook status routes:** raw lines 91\u2013201.\n- **Merchant-scope listing, activation/deactivation, 90-day deletion and country/region edit:** raw lines 203\u2013233.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-payment-methods-api]] \u2014 separate Management API route with its own request/status rules\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15|Adyen Platforms Customer Area payment-method guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "After we enable a payment method, your users can start accepting all of the [payment method's variants](/development-resources/paymentmethodvariant/) by default.",
+      "location": "raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md:19"
+    },
+    {
+      "text": "If the account holder\u2019s **receivePayments** capability is not **allowed**, they cannot use the requested payment method.",
+      "location": "raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md:40"
+    },
+    {
+      "text": "Because adding a payment method to your user's store is an asynchronous process, we recommend that you subscribe to the [Management webhooks](https://docs.adyen.com/api-explorer/ManagementNotification/latest/overview) in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md:62"
+    },
+    {
+      "text": "If this happens, you must wait 24 hours before trying again.",
+      "location": "raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md:89"
+    },
+    {
+      "text": "Payment methods set to **Inactive** and unused for **90 days** are automatically deleted. Payment methods linked to a closed store are automatically set to **Inactive** and deleted after 90 days.",
+      "location": "raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md:219"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-payment-methods-customer-area-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-payment-methods-customer-area]] \u2014 2026-09-15 Platforms Customer Area guide for merchant/store payment-method requests, account-holder receivePayments gating, country edits and 90-day inactive deletion.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A submitted/added/default-enabled method is not necessarily usable; account-holder receivePayments requires valid verification, enabled=true and allowed=true, and legal-entity/account-holder changes can disable methods pending reverification.",
+          "Post-submission failure without webhook alert carries a conditional 24-hour retry wait; inactive unused methods and closed-store methods have 90-day deletion conditions.",
+          "Customer Area detail steps show country/region edits, while nondefault currency changes are directed to Support; method/currency/integration support still governs eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/payment-methods/customer-area/2026-09-15.md",
+  "raw_sha256": "494b43b0ce80eadf0529d41473f2d4c0c558b11ef5587c197d51eaeaa2a006f1",
+  "status": "candidate_ready"
+}

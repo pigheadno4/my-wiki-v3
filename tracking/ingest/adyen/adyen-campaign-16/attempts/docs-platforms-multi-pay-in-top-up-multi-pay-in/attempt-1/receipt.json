@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-multi-pay-in-top-up-multi-pay-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms top up a multi pay-in account\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/multi-pay-in/top-up-multi-pay-in\"\nraw_files:\n  - \"adyen/docs/platforms/multi-pay-in/top-up-multi-pay-in/2026-09-15.md\"\ntags: [adyen, platforms, multi-pay-in, internal-transfers, balance-accounts]\n---\n\n## Overview\n\nAdyen documents an **internal balance-platform transfer** from the platform's liable balance account to its multi pay-in balance account. It can cover a shortfall when a third-party pay-in partner withholds part of a user's payment or offsets bank payout costs, leaving less settled in the multi pay-in account than the platform intends to allocate. This is neither a bank deposit into the platform nor the subsequent allocation to user balance accounts. See [[adyen]] and [[adyen-platforms]]. The pinned guide describes the operation; it does not prove a particular transfer was authorised, booked, or available to allocate.\n\n## Key takeaways\n\n- The prerequisite is Transfers API credentials and subscription to any of the named Transfer or Transaction webhooks. For the top-up, POST `/transfers` with required `amount` (currency and value), `balanceAccountId` as the **source liable balance account**, `counterparty.balanceAccountId` as the **destination multi pay-in account**, and `category=internal`. `description` and `reference` are optional identifiers for webhooks/reports. See raw lines 21\u201346.\n- The USD 2.40 test request shows `value: 240`, source suffix `LIABLE`, destination suffix `00005`, and `internal` category; it is illustrative, not a permitted-currency list or minimum/maximum transfer limit. The page states no country list, transfer ceiling, or bank receipt condition. See raw lines 46\u201370.\n- The response section calls `status=authorised` a successful top-up request and says a non-authorised response should be investigated; `refused` with `notEnoughBalance` is an example. Authorised is distinct from the later booked debit and credit events. The sample response amount is `10000` although its preceding USD 2.40 request is `240`, so do not carry the response amount into reconciliation. See raw lines 352\u2013392.\n- The two account perspectives use `category=internal` and `type=internalTransfer`: the liable source reports `direction=outgoing`, the multi pay-in destination `direction=incoming`. Each has received, authorised, and booked transfer stages, with transaction webhooks for booked account changes. Match account ID, counterparty, transfer ID, transaction ID, currency, amount, status, and direction per leg. See raw lines 394\u2013427, 431\u2013711, and 713\u20131001.\n- The source debit and destination credit are separate account records. A received or authorised webhook alone does not show both booked changes. The liable-side sample's booked transaction has a positive `240` value despite the surrounding debit narrative and `-240` balance mutation, and several updated-stage sample payloads retain a `balancePlatform.transfer.created` type despite prose saying updated; treat those samples as illustrative and reconcile actual events. See raw lines 579\u2013709, 791\u2013864, 870\u20131001.\n\n## Detail locators\n\n- **Need and prerequisites:** raw lines 15\u201329; partner withholding creates the possible shortfall, while this guide's operation spends from platform liable balance.\n- **Request fields and pinned SDK/test examples:** raw lines 31\u2013350. The curl sample uses Transfers API v4 test endpoint; language-library versions vary and are only dated examples.\n- **Response and refusal:** raw lines 352\u2013392. A response status is not booked balance evidence.\n- **Liable debit:** raw lines 418\u2013711. Outgoing received \u2192 authorised/reserved \u2192 booked with transaction ID; then booked transaction notification.\n- **Multi pay-in credit:** raw lines 713\u20131001. Incoming received \u2192 authorised/reserved \u2192 booked with transaction ID; then booked transaction notification.\n- **Next step:** raw lines 1003\u20131015 routes to allocating third-party payments and refunding them; only the allocation page [[source-adyen-docs-platforms-multi-pay-in-payments]] is separately captured here. Top-up does not itself allocate to the user.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform account context.\n- [[source-adyen-docs-platforms-multi-pay-in-payments]] \u2014 separate per-payment third-party allocation after the multi pay-in account has funds.\n- [[source-adyen-docs-platforms-manage-liable-accounts]] \u2014 platform liable-account context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/multi-pay-in/top-up-multi-pay-in/2026-09-15|Adyen Top up multi pay-in account, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Top up the balance of your multi pay-in account with funds from your liable balance account.",
+      "location": "Top up multi pay-in account, raw line 17"
+    },
+    {
+      "text": "In this case, you can top up the balance of your multi pay-in account from your liable balance account by making an internal transfer.",
+      "location": "Top up multi pay-in account, raw line 19"
+    },
+    {
+      "text": "The unique identifier of your liable balance account.",
+      "location": "Top up your balance, balanceAccountId row, raw line 40"
+    },
+    {
+      "text": "The unique identifier of your multi pay-in account.",
+      "location": "Top up your balance, counterparty.balanceAccountId row, raw line 41"
+    },
+    {
+      "text": "When the funds are booked to your multi pay-in account, we send you a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **booked** and the `transactionId`.",
+      "location": "Multi pay-in account, Transfer booked, raw line 872"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-multi-pay-in-topup-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-multi-pay-in-top-up-multi-pay-in]] \u2014 2026-09-15 multi pay-in internal top-up guide from platform liable balance account to multi pay-in account, with Transfers API request fields and two-sided booked-event tracking; not a bank deposit or user allocation proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/multi-pay-in/top-up-multi-pay-in/2026-09-15.md",
+  "raw_sha256": "166bb18dc3c68b30a80be303a9d9fb96d9769ac09e15ee7c2d26ba678163a27f",
+  "status": "candidate_ready"
+}

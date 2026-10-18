@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-platforms-in-person-payments-surcharge-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms in-person configuration-based surcharge\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/surcharge/configuration\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, surcharge, terminal-api]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide explains automatic configuration-based surcharges for in-person payments and, separately, how a platform can request booking of the calculated surcharge to one of its user's balance accounts. Management API rules can be set for a company or merchant account, store, or terminal. A terminal or Mobile SDK calculates the surcharge after card presentation; the ordinary payment request needs no special surcharge trigger. A Terminal API payment request can carry a `Surcharge` split item for allocation. This is distinct from a merchant-calculated dynamic surcharge and the online API-only card surcharge pilot. The snapshot describes configuration and requests, not current legal permission, account enablement, completed booking or payout.\n\n## Key takeaways\n\n- The guide adds to the general Platforms in-person and surcharge requirements. It lists Terminal API with payment terminals or Tap to Pay Mobile, plus standalone solutions, while excluding SFO1 terminals and NYC1 Mobile readers. Configuration needs an API key with Management API Terminal settings read and read/write roles. For payment terminals, software v1.108 enables per-transaction caps, v1.112 commercial/consumer distinction, v1.115 tip exclusion, and v1.117 MOTO/MKE application. Live terminal-settings Management API endpoints are rate-limited. Tap to Pay surcharge use requires Adyen Support-enabled single tap. These snapshot prerequisites do not prove device, account, or live eligibility.\n- GET and PATCH `/terminalSettings` at company, merchant, store, or terminal level. Rules must account for applicable compliance requirements and brand, funding source, issuer country and currency. Each `configurations` item requires a brand and currency entry with `currencyCode` plus percentage and/or fixed amount; fixed amount and cap are in minor units. Optional `sources`, `country`, and `commercial` narrow a match. The first matching configuration executes, so order matters. The commercial-card check is unsupported on Mobile devices and on payment terminals when offline; a rule relying on it cannot be assumed to enforce a consumer-card prohibition in those conditions.\n- Rules can combine fixed and percentage surcharge, cap the amount, exclude tips, and ask for terminal confirmation. The confirmation screen depends on configuration and solution; Tap to Pay has no surcharge confirmation screen. In Mobile or when confirmation is skipped, the guide requires another form of disclosure. The configured surcharge is calculated after card presentation, and the payment response reports it in `TotalFeesAmount`; this field is not settlement evidence. Adyen recommends Standard webhooks with surcharge amount in AUTHORISATION messages.\n- For a Terminal API payment, the guide's booking route adds one `Surcharge` item, increments `split.nrOfItems`, and sets `split.item[...].account` to one of the user's balance account IDs; it says the surcharge cannot be divided among multiple balance accounts. Because the amount is calculated after card presentation, the split omits a surcharge item amount and excludes it from `split.totalAmount`. Send the form-encoded or Base64 JSON split instructions in `PaymentRequest.SaleData.SaleToAcquirerData`. The payment response describes `TotalFeesAmount`, `AuthorizedAmount`, `posAuthAmountValue` and `surchargeAmount`; request and response examples are illustrative, not proof of booking or payout. The printed Base64 example contains a currency value that differs from the adjacent USD JSON example, so do not treat that encoded blob as an authoritative payload.\n- From terminal software v1.117, configured surcharges also apply to MOTO and MKE payments. Existing custom MOTO/MKE surcharging may therefore charge twice. The guide says an opt-out can be set at company, merchant, store or terminal level through an Adyen account manager or technical contact. Configuration-based surcharge may be combined with dynamic surcharge depending on use case; this page does not specify their precedence.\n\n## Detail locators\n\n- `Requirements` \u2014 integration and device support, software gates, credential roles, webhook recommendation, live API rate limits and Tap to Pay single tap.\n- `How it works` \u2014 card-present calculation, conditional confirmation, alternative disclosure and response field.\n- `Configure surcharges` \u2014 GET/PATCH scope, rule dimensions, first-match precedence, currency and minor-unit fields, offline/Mobile commercial-card limit; the country table and request body are examples.\n- `Book the surcharge to your user` \u2014 one user balance account, `Surcharge` split item, amount omission, both encoding formats, `SaleToAcquirerData` and response locators. The Base64 string at line 328 encodes `split.currencyCode` as EUR while the adjacent JSON and prose use USD.\n- `Opting out for MOTO and MKE` \u2014 v1.117 coverage, double-surcharge risk and Adyen-contact opt-out route.\n\n## Related\n\n- Company: [[adyen]]\n- Concepts: [[adyen-platforms]], [[adyen-surcharging]]\n- Related source: [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-payments-at-authorization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15|2026-09-15 Platforms in-person surcharge configuration guide]]\n",
+  "quotes": [
+    {
+      "text": "Based on the rules you configured, surcharges are then automatically calculated and applied to your in-person payments. In your payment requests, you can use split instructions to define how to book the surcharge amount.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md:21"
+    },
+    {
+      "text": "The order of array items inside the `configurations` array impacts the order of execution. The condition that is met first is executed without checking the rest of the configuration.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md:97"
+    },
+    {
+      "text": "This check is not supported on mobile devices used in a Mobile solution. On payment terminals this check is not supported when the internet connection is down.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md:110"
+    },
+    {
+      "text": "The account that will receive the surcharge. This is the `balanceAccountID` of one of your user's balance accounts. You cannot split the surcharge between multiple balance accounts.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md:231"
+    },
+    {
+      "text": "If you have previously developed your own solution for surcharging MOTO and MKE payments, there is a risk of double surcharging: once through the surcharge configuration, and once through your own solution.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md:424"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-surcharge-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-surcharge-configuration]] \u2014 2026-09-15 Platforms in-person Management API configuration-based surcharge guide, with rule and device limits plus Terminal API instructions to book the calculated amount to one user balance account.\n",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Place as a single source route under ## Sources; do not infer that request instructions prove a booked transfer or payout."
+        ]
+      },
+      {
+        "update_id": "c16-surcharge-concept-route",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-surcharge-configuration]] \u2014 2026-09-15 Platforms guide to automatic in-person surcharge rules and a single user-balance-account `Surcharge` split item in a Terminal API payment request.\n",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": [
+          "Keep Platforms split booking distinct from generic POS setup, dynamic surcharge, and the online card pilot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/surcharge/configuration/2026-09-15.md",
+  "raw_sha256": "0d9031e91bfdaad7a6dfb1d057e79a2b5ea86a31ef1a31ab9f6b3e90b54d83ac",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-in-person-payments-tipping",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms in-person tip split\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/tipping\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/tipping/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, tipping, terminal-api, split-payments]\n---\n\n## Overview\n\nThis 2023-modified Adyen for Platforms guide, captured 2026-09-15, describes sending a **Tip** split item in a Terminal API payment request so the whole in-person gratuity is booked to one of a user's balance accounts. Without that split item, the tip is booked to the platform liable account by default. Its two routes are a tip proposed by the POS app and a tip chosen at the terminal. This is tip booking guidance, not evidence that a payment was authorized or a balance account received funds. [[adyen]] [[adyen-platforms]] [[adyen-terminal-api]]\n\n## Key takeaways\n\n- **Supported path and limits:** the guide requires a Terminal API integration with payment terminals or an Adyen Mobile solution, in addition to its linked general Platforms in-person requirements. Standalone cannot add split instructions to individual authorization requests. Booking the tip to a user's balance account is not supported with tipping on the receipt. The method-specific POS-app and terminal setup guides remain separate prerequisites/navigation.\n- **Tip allocation is distinct from sale, commission and fee allocation:** add a Tip item and increment `split.nrOfItems`; set its `account` to a user's `balanceAccountID`. The whole tip goes to one balance account; this page disallows dividing it among multiple balance accounts. Reference and description flow to the Balance Platform Accounting Report. Do not put a tip amount in that split item or include it in `split.totalAmount`. The example allocates the sale, platform commission and PaymentFee separately; those sample allocations do not define a required fee or commission policy.\n- **POS-app tip:** provide the formatted split instructions in `SaleData.SaleToAcquirerData`, plus transaction currency, original requested amount and `PaymentTransaction.AmountsReq.TipAmount` in the Terminal API `PaymentRequest`. Split instructions may be form-encoded key-value pairs or a Base64-encoded JSON object.\n- **Terminal-selected tip:** include `tenderOption=AskGratuity` with the split instructions in `SaleToAcquirerData`; the request supplies transaction currency and original requested amount while the tip is determined at the terminal. The response's `TipAmount` is absent when the shopper declines; `AuthorizedAmount` is original transaction amount plus tip. The response's additional fields report original amount, gratuity and total authorized amount in minor units.\n- **Example and evidence limits:** the page's POS-app JSON request omits a comma between `RequestedAmount` and `TipAmount`; its terminal JSON request says `split.nrOfItems=3` while showing four split items and differs from the preceding four-item example. Treat snippets and sample Success responses as illustrative, not copy-ready payloads or proof of funds booking. This page gives no separate capture, partial-capture, refund, chargeback, surcharge, card-method or region rules, and its example `ProtocolVersion: \"3.0\"` is a message header, not a claimed current SDK baseline.\n\n## Detail locators\n\n- Raw lines 15\u201334: default liable booking, supported tipping methods, Terminal API/Mobile requirement and receipt/standalone limits.\n- Raw lines 36\u201367: POS-app Tip split fields, single-account restriction, `split.totalAmount` exclusion and separate sale/commission/fee example.\n- Raw lines 69\u2013206: form-encoded/Base64 examples, Terminal API request/response fields and the missing-comma request snippet.\n- Raw lines 238\u2013269: terminal Tip split and amount handling; lines 271\u2013360 add `AskGratuity` and encoding.\n- Raw lines 363\u2013408: terminal request item-count mismatch and response field definitions; lines 410\u2013438 show an illustrative Success response.\n\n## Related\n\n- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-payments-at-authorization]] \u2014 general per-payment Terminal API split mechanics and failure/booking qualifications.\n- [[source-adyen-docs-point-of-sale-tipping]] \u2014 general choice among POS app, terminal, receipt and standalone tipping.\n- [[source-adyen-docs-point-of-sale-tipping-tipping-from-cash-register]] \u2014 POS-app gratuity request and shopper-choice details.\n- [[source-adyen-docs-point-of-sale-tipping-tipping-from-terminal]] \u2014 terminal gratuity request and shopper-choice details.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/tipping/2026-09-15|Adyen Platforms in-person tipping snapshot, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a customer adds a tip (gratuity) to their payment, it is booked to your liable account by default. However, you can book the entire tip amount directly to your user's balance account by providing an additional split item in the payment request.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "The standalone solution does not support adding split instructions to individual payment authorization requests.",
+      "location": "raw line 32, Requirements table, Integration type"
+    },
+    {
+      "text": "Booking the tip to your user's balance account is not supported with [tipping on the receipt](/point-of-sale/tipping/tipping-on-receipt).",
+      "location": "raw line 33, Requirements table, Limitations"
+    },
+    {
+      "text": "You cannot split the tip between multiple balance accounts.",
+      "location": "raw line 49, Tip from POS app and book to your user, tip account field; repeated at line 251"
+    },
+    {
+      "text": "Do not include the tip amount in the `split.totalAmount` field and do not add a `split.item[ITEM_NUMBER].amount` field for the tip.",
+      "location": "raw line 53, Tip from POS app and book to your user; repeated at line 255"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-in-person-tipping-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-tipping]] \u2014 2023-modified, 2026-09-15-captured Terminal API guide to whole-tip user-balance booking through a Tip split item, with liable default, receipt/standalone limits and illustrative payload inconsistencies.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw terminal JSON example uses split.nrOfItems=3 with four displayed items; POS-app JSON request omits a comma between RequestedAmount and TipAmount."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/tipping/2026-09-15.md",
+  "raw_sha256": "0ff18cf69d1148f91ede393f3d45ee6a2dc0c44ec01e28296acd73b80df7f97c",
+  "status": "candidate_ready"
+}

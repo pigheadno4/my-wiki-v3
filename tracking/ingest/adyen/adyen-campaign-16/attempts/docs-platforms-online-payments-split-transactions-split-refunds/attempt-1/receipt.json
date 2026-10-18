@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-online-payments-split-transactions-split-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms split refunds\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/split-transactions/split-refunds\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/split-transactions/split-refunds/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, refunds, split-booking]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms page explains how a platform can send split instructions with a Checkout API refund request to allocate refund debits among its user and platform balance accounts. It describes who bears those debits in balance-platform bookkeeping; it does not identify the merchant of record or prove that a shopper received funds. See [[adyen]] and [[adyen-platforms]] for provider and platform context.\n\n## Key takeaways\n\n- Use the original payment PSP reference in `POST /payments/{paymentPspReference}/refunds`. The body requires `amount` and `merchantAccount`; the refund value is at most the captured amount and its currency must match the payment authorization. A request-level `reference` is optional. Checkout API credentials and a server prepared for standard, transfer and transaction webhooks are prerequisites. The refund request outcome arrives asynchronously in a `REFUND` webhook, so request acceptance is not final refund success.\n- Refund split instructions can select user or platform balance accounts for deductions, but deductions are limited to balance accounts credited by the payment. The limitations section also says to use the same `pspReference` values as the original split. Some payment methods do not support partial or multiple partial refunds. `splits` is labelled recommended, not universally required; Adyen strongly recommends always specifying it for partial refunds.\n- For a full refund without `splits`, when the original authorization contained splits, Adyen uses the authorization split ratio, not any capture split. If the authorization had no split instructions, the whole refund is debited from the platform's liable balance account. The no-splits example explicitly assumes a full amount, authorization splits and a wish to preserve the original split. Do not extrapolate this fallback to an unspecified partial-refund allocation.\n- For explicit splits, the table lists `account` (user or platform balance-account ID), `amount.value`, and `type` as required for each split item; `reference` is conditionally required for `BalanceAccount`. Its listed types distinguish a balance-account refund debit, platform commission debit from the liable balance, Adyen markup/commission or aggregated fees, and currency-conversion remainder. Fees default to the platform's liable balance account. The top-level refund currency matches authorization, while split-item `amount.currency` is conditionally required if a different deduction currency is requested; the linked currency-conversion guide owns detailed FX behavior. The displayed Commission request example omits `account` despite the table's blanket required label, so the example does not resolve every type's field requirements.\n- Split-format validation does not validate the named balance accounts. Even a successful transaction may be booked elsewhere: if a specified balance account does not exist or its account holder is closed, Adyen says the full transaction and fees book to the platform's liable balance account. The page points to an internal transfer as a possible balance correction; it is a separate action, not an automatic reversal.\n- Track each refund split through balance-platform transfer and transaction webhooks. The examples distinguish outgoing refund amount, transaction-fee and platform-commission items using `platformPaymentType`, original payment PSP reference and refund modification PSP reference. Example transfer statuses progress `received` \u2192 `authorised` \u2192 `refunded` with a transaction ID, then a `booked` transaction event; the JSON examples are `environment: test` and illustrative USD values, not live or account-specific proof. This page concerns refunds after captured payments, not authorization/capture splitting or chargebacks.\n\n## Detail locators\n\n- Purpose, credentials, webhook prerequisites and refund limitations: raw lines 15\u201333. Checkout refund path, amount/currency and merchant-account fields, partial-split recommendation: lines 35\u201351. Explicit split fields/types and fee defaults: lines 53\u201370; test Checkout v72 and versioned SDK examples: lines 72\u2013510.\n- No-splits authorization-versus-capture rule and liable fallback: lines 511\u2013523; request examples: lines 525\u2013788. Asynchronous `REFUND` outcome, account validation fallback and possible correction: lines 789\u2013795. Tracking webhook types and per-split sequencing: lines 797\u2013811. Refund amount, fee and commission example payloads: lines 813\u20131767.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 Platforms user, balance and liable-account context.\n- [[adyen-refunds]] \u2014 general online-payment refund context; distinct from Platforms split booking.\n\n## Related raw API references\n\n- The raw page links to Checkout refund, payment-method support, internal fund transfers, transaction fees, and refund currency conversion. Read those routes separately for operation-specific eligibility, reversal and FX semantics.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/split-transactions/split-refunds/2026-09-15|Adyen Docs: Split refunds (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Refunds can only be deducted from the balance accounts to which the payment was credited.",
+      "location": "raw line 31, ## Requirements, Limitations row"
+    },
+    {
+      "text": "For partial refunds, we strongly recommend that you **always** provide split instructions in your request.",
+      "location": "raw line 49, ## Refund a payment, splits row"
+    },
+    {
+      "text": "The funds are deducted according the split instructions in the payment authorization, *not* the capture.",
+      "location": "raw line 513, ### Tab: Use split instructions from payment authorization"
+    },
+    {
+      "text": "If the payment authorization didn't contain split instructions, the full refund amount is debited from your liable balance account.",
+      "location": "raw line 519, ### Tab: Use split instructions from payment authorization"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw line 793, ### Troubleshooting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-split-refunds-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 2026-09-15 Platforms Checkout refund split-booking guide covering explicit debits, authorization-ratio fallback, liable-account fallback and asynchronous refund/transfer evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A refund request and test webhook examples do not prove shopper receipt or completed live money movement; this is not a merchant-of-record or chargeback guide.",
+          "The split-item table labels account required, while the Commission request example omits it; preserve this unresolved example/schema tension rather than generalizing the omission.",
+          "A successful-format request can still book the transaction and fees to the liable balance if an account is absent or its holder is closed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/split-transactions/split-refunds/2026-09-15.md",
+  "raw_sha256": "8b9a58eb339852140a47db04510b65e689ff2b6d53bb20c4fb065a3e1415a330",
+  "status": "candidate_ready"
+}

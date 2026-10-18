@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-online-payments-split-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Split transactions between balance accounts | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/split-transactions\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, split-transactions, balance-accounts]\n---\n\n## Overview\n\nThis 2024-last-modified [[adyen]] for Platforms overview, captured 2026-09-15, maps how online transaction amounts and fees are assigned to users' balance accounts and the platform's liable balance account. A store-linked automatic split configuration can supply instructions, while split instructions in an API request override that profile. If neither supplies instructions, the whole transaction amount and fees book to the liable balance account. These are booking rules; the page does not determine a legal seller, merchant of record, payee, payment outcome or bank payout. [[adyen-platforms]]\n\n## Request timing and booking scope\n\n- The overview routes per-transaction instructions to Checkout `/payments` or `/sessions` at authorization, `/payments/{paymentPspReference}/amountUpdates` for an authorization amount update, `/payments/{paymentPspReference}/captures` at capture, and `/payments/{paymentPspReference}/refunds` for refunds. Capture-time splitting is possible only for payment methods supporting separate captures. Potential chargeback booking logic is placed in `platformChargebackLogic` on an authorization or capture request, rather than in the payment/refund `splits` array. See raw lines 39\u201353 and 105\u2013116.\n- For payments, the page lists sale amount, platform commission, payment fees, currency-conversion remainder and user top-up as possible booking subjects; for refunds it lists returned sale amount, refunded commission, refund fees and conversion remainder; for chargebacks it lists disputed amount and chargeback fees. This is orientation to split subjects, not a promise that each product, payment method, fee or lifecycle operation is eligible in every account. See raw lines 55\u201381.\n- Payment and refund requests use a `splits` array with one object per part of the full transaction amount. `type` identifies a split's purpose; the table at raw lines 118\u2013140 distinguishes `BalanceAccount`, `Commission`, fee aggregates and granular fees, `VAT`, `Remainder`, `Surcharge` and `TopUp`, with type-specific required or recommended `account`, `amount` and `reference` fields. For a `BalanceAccount` split the table lists `account`, `amount` and `reference` as required. The page says an unspecified `account` routes a split to the liable balance account, but that general statement should not be read as making a required `BalanceAccount.account` optional or defining invalid-account behavior.\n\n## Evidence and source boundaries\n\n- This overview provides no webhook trace or executed transaction. Request instructions, profile settings and split-type tables do not prove authorization, capture, refund, chargeback, balance booking, payout or bank receipt. Specific authorization, capture, refund, chargeback, fee and automatic-configuration guides supply their own conditions and outcome evidence; do not infer invalid-account fallbacks, capability status, partial-operation behavior or fee allocation from this overview alone.\n- **Pinned wording/navigation caveats:** the refund list calls the returned commission a \u201cmarketplace's commission\u201d at raw line 72 even though the page frames the integration as a platform; that word does not establish a marketplace or merchant-of-record model. The payment/refund related-links list points \u201cSplit a payment at capture\u201d to an in-person URL at raw line 102, while this page's Next steps link points to the online capture route at lines 148\u2013150. Use the route appropriate to the online flow rather than treating the first link as online behavior evidence.\n\n## Detail locators\n\n- **Store profile, request override and liable-account default:** raw lines 19\u201330.\n- **Authorization/amount-update/capture/refund endpoints and separate-capture condition:** raw lines 39\u201353.\n- **Payment, refund and chargeback booking subjects:** raw lines 55\u201381.\n- **`splits` object scope, API links and chargeback-logic route:** raw lines 83\u2013116.\n- **Split-type field table, account wording and remaining online-capture link:** raw lines 118\u2013154.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-automatic-split-configuration]] \u2014 store-linked profile context\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-authorization]] \u2014 authorization-time conditions\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-capture]] \u2014 online capture conditions\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 refund conditions\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-chargebacks]] \u2014 chargeback conditions\n- [[source-adyen-docs-platforms-online-payments-transaction-fees]] \u2014 fee allocation detail\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15|Adyen Platforms online split-transactions overview \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The instructions you provide in your API requests override the instructions you defined in your split configuration profiles.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md:24"
+    },
+    {
+      "text": "If you do not provide any split instructions in a split configuration profile or through an API request, the whole transaction amount and fees are booked to your liable balance account.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md:26"
+    },
+    {
+      "text": "Splitting payments at capture is only possible for payment methods that support [separate captures](/online-payments/capture).",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md:47"
+    },
+    {
+      "text": "Each object in the `splits` array represents one set of split instructions, and defines how to book a specific part of the transaction.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md:89"
+    },
+    {
+      "text": "If you do not specify an `account` in your split instructions, the split amount is booked to your liable balance account.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md:124"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-online-split-transactions-overview-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-split-transactions]] \u2014 2024-modified, 2026-09-15-captured Platforms online split-transaction overview for store-profile versus API-request precedence, liable-account default, lifecycle request routes and split-type field navigation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This overview does not establish payment-method/capability eligibility, invalid-account fallback, executed booking, payout or bank receipt; consult the specific authorization, capture, refund, chargeback and fee guides.",
+          "The raw refund list says marketplace's commission within a Platforms page, and a capture detail link at raw line 102 points to an in-person page despite the online route at lines 148\u2013150."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/split-transactions/2026-09-15.md",
+  "raw_sha256": "e286e5668683bbacce1961d1e294cf1ef15facc17c66780d5275033f6f40b83c",
+  "status": "candidate_ready"
+}

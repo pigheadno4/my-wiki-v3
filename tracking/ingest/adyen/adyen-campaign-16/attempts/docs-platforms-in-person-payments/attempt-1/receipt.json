@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-in-person-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms in-person payments\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, terminal-api, split-payments, balance-accounts]\n---\n\n## Overview\n\nThis 2023-last-modified [[adyen]] for Platforms page, captured 2026-09-15, explains processing point-of-sale payments on behalf of platform users and booking each payment's funds, commission and fees between the users' balance accounts and the platform's liable balance account. It is a Platforms in-person channel guide, not a merchant-of-record ruling, current country/product eligibility decision, or evidence that a particular terminal payment, settlement or payout completed. [[adyen-platforms]]\n\n## Requirements and split behavior\n\n- The stated integration path uses a POS app integrated with **Terminal API**, then payment terminals or a Mobile solution; a **standalone solution** can serve as fallback. The page requires Transfers API credentials, with additional credentials dependent on the chosen integration. It calls for a server that receives/accepts Standard webhooks and subscription to Transfer or Transaction webhooks, and account-holder capabilities **receivePayments** and **receiveFromPlatformPayments**. Listed POS design/checklist requirements differ for terminals, Android Mobile, iOS Mobile and standalone. The guide does not show that any account holder currently has those capabilities.\n- Funds and fees must be booked to the correct user and platform liable balance accounts. The platform can set automatic split-configuration profiles on a user's store or supply transaction-specific split instructions in API requests; request instructions **override** profile instructions. If neither exists, the page says the **whole transaction amount and fees** book to the platform liable balance account. This default is financially material and is not an automatic user payout or commission split.\n- Terminal API integrations with payment terminals or a Mobile solution can use profile or per-request splits. The standalone solution supports **profiles only** and cannot split individual payment or refund requests. Do not infer standalone request-level split support from the general POS/Terminal API statement.\n- The USD 620 flow of funds is an **example**: USD 600 to a user's balance account, USD 20 commission to the liable balance account, USD 5 fees deducted there, then illustrated settlement and USD 600/USD 15 payouts to separate transfer instruments. Those values, currency and depicted lifecycle are not merchant-specific configuration, proof of an authorized/captured payment, actual settlement, or bank receipt. The page provides no country-specific availability rule or API version for this Platforms scenario; follow the linked channel guides for implementation details.\n\n## Detail locators\n\n- **Platforms/user in-person scope and distinct balance-account destinations:** raw lines 15\u201319.\n- **Terminal/Mobile/standalone, credential, webhook and capability prerequisites:** raw lines 21\u201337.\n- **Profile/request split precedence and no-instructions liable-account default:** raw lines 39\u201350.\n- **Standalone-only profile limitation:** raw lines 52\u201356.\n- **Illustrative USD pay-in, book, settle and payout diagram:** raw lines 58\u201379.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-terminal-api]] \u2014 POS message/integration context\n- [[adyen-payouts]] \u2014 separate payout outcome\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/2026-09-15|Adyen Platforms in-person payments \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For each transaction you process, you can split the funds between your users' balance accounts and your liable balance account, and deduct fees and costs as needed.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that your account holders have the following capabilities:",
+      "location": "raw/adyen/docs/platforms/in-person-payments/2026-09-15.md:31"
+    },
+    {
+      "text": "The standalone solution supports split configuration profiles, but does not support splitting individual payment or refund requests.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/2026-09-15.md:33"
+    },
+    {
+      "text": "If you do not provide any split instructions in a split configuration profile or through an API request, the whole transaction amount and fees are booked to your liable balance account.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/2026-09-15.md:48"
+    },
+    {
+      "text": "The instructions you provide in your API requests override the instructions you defined in your split configuration profiles.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/2026-09-15.md:46"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-in-person-payments-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments]] \u2014 2023-modified, 2026-09-15-captured Platforms POS/Terminal API and Mobile prerequisites, split precedence, liable-account default and standalone profile-only limit; diagram values are illustrative, not financial outcomes.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Terminal/Mobile route, Transfers API credentials, webhook acceptance and account-holder receivePayments/receiveFromPlatformPayments capabilities are documented prerequisites, not evidence of live enablement or current country eligibility.",
+          "With no profile or API split instructions, full amount and fees book to the platform liable balance account; per-request instructions override profiles, but standalone supports profiles only.",
+          "The USD 620 split/settlement/payout diagram is an example and does not establish a merchant's legal seller, authorized payment, completed settlement or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/2026-09-15.md",
+  "raw_sha256": "5f475a3e76bfbf2c1e0c89b2a5f8a8df3b602f15c0e9f27e5a164ecc68b22e4c",
+  "status": "candidate_ready"
+}

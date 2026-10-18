@@ -1,0 +1,70 @@
+{
+  "job_id": "docs-platforms-online-payments-donations-online",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms online donations using Giving\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/donations-online\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/donations-online/2026-09-15.md\"\ntags: [adyen, platforms, giving, donations, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes an **API-only online** Giving integration in which platform users offer shoppers a donation to a nonprofit alongside an original purchase. The donation is a **separate transaction**: Adyen says it covers donation fees and transfers the donation in full to the nonprofit, while splits and fees may be set on the original purchase but **not** the donation (raw lines 15\u201325). [[adyen-giving]] is the main product route; [[adyen-platforms]] supplies the platform/user context.\n\n## Key takeaways\n\n- The guide requires a platform-model Adyen for Platforms integration with API-only online payments on Checkout API v67 or later; an Adyen Giving merchant webhook; supported method, region and currency; and a configured, active account-holder donation campaign (raw lines 27\u201350). The supported lists and campaign-management steps are linked to other pages, so this snapshot alone does not establish eligibility.\n- The platform can show fixed amounts or a round-up option before or after checkout. Query POST `/donationCampaigns` from the server with merchant account, currency and user-store reference; `locale` is optional. The response supplies campaign ID, donation type/amounts and nonprofit presentation data (raw lines 52\u2013114, 326\u2013341, 368\u2013377, 589\u2013604). The round-up formula excludes the donation from `commercialTxAmount` (lines 648\u2013659).\n- Even for a pre-checkout donation choice, the server first requests the original `/payments` transaction and sends `/donations` only when the payment is authorized and the response has `donationToken`. For post-checkout, the token comes from the original `/payments` or iDEAL `/payments/details` response (raw lines 56\u2013101, 669\u2013675). The donation request includes its own amount, campaign ID, original payment PSP reference, token, reference, merchant account and user-store reference; method type differs for card/wallet versus iDEAL (lines 676\u2013689, 721\u2013734).\n- The UI must identify and link to the nonprofit and its terms; fixed-amount UI also includes description, banner/logo and a decline option (raw lines 631\u2013667). iDEAL donation appearance and webhook delivery may take a day or more (lines 646, 667, 768).\n- The `/donations` response can report `completed`, `pending` or `refused` and a separate donation PSP reference, but the guide says the Giving merchant `DONATION` webhook is the donation-outcome route. Its `originalReference` associates the donation with the original purchase (raw lines 715\u2013719, 760\u2013775).\n\n## Detail locators\n\n- Fixed/round-up campaign request fields, response data and versioned test snippets: raw lines 96\u2013629. Curl examples use Checkout test v72, while library snippets identify their own versions; live setup needs its own endpoint configuration.\n- Donation form and round-up display rules: lines 631\u2013667.\n- Fixed/round-up POST `/donations` fields and example response statuses: lines 669\u2013765. The round-up curl example appears to omit a comma after its `reference` value (lines 752\u2013756); do not paste it unreviewed.\n- Donation webhook example and test route: lines 766\u2013809.\n\n## Evidence boundary\n\nCampaign setup, request construction, response fields and test webhook examples do not prove a particular shopper donated, the nonprofit received funds, or a platform or user is eligible in any current region. The sample charity account code is a test example, not a merchant-of-record or legal-ownership determination. This API-only platform route does not define Web Components, Sessions or in-person implementation.\n\n## Related\n\n- [[adyen-giving]] \u2014 Giving transaction and outcome model.\n- [[adyen-platforms]] \u2014 platform and user context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/donations-online/2026-09-15|Pinned Platforms Giving online guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With Adyen Giving, your users can give shoppers the option to donate to a nonprofit organization as part of their online purchase. When a shopper chooses to donate, the donation is processed as a separate transaction. Adyen covers all fees and the donation amount is transferred to the nonprofit in full. This means you can split amounts and fees on the original transaction, but not on the donation transaction.",
+      "location": "raw line 23, introduction"
+    },
+    {
+      "text": "Adyen for Platforms with a platform model, with an [API only](/online-payments/donations/api-only) online payments integration using Checkout API v67 or later.",
+      "location": "raw line 33, Requirements"
+    },
+    {
+      "text": "* Post-checkout: When a shopper completes their original transaction with a payment method that supports donations, and the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) or [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) (for iDEAL payments) response includes the [donationToken](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-donationToken) field.",
+      "location": "raw line 101, Get details of your active donation campaigns"
+    },
+    {
+      "text": "If the payment is authorized, and the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) or [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) (for iDEAL payments) response includes the [donationToken](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-donationToken) field, you make a donation request.",
+      "location": "raw line 673, Make a donation"
+    },
+    {
+      "text": "You get the outcome of each donation in a webhook message. For cards, you can show the shopper if their donation is successful after you get the webhook message. For iDEAL, you get the webhook event a day or more later.",
+      "location": "raw line 768, Get the donation outcome"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-online-donations-giving-source",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-donations-online]] \u2014 2026-09-15 Platforms API-only online Giving guide for account-holder campaigns, separate donation requests after original payment/token, nonprofit UI and merchant DONATION-webhook outcome; examples do not prove receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "This platform API-only flow is distinct from Web Components, Sessions and in-person Giving.",
+          "The donation is separate from the merchant purchase and does not accept purchase split instructions."
+        ]
+      },
+      {
+        "update_id": "c16-platforms-online-donations-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-donations-online]] \u2014 2026-09-15 Platforms API-only Giving route for user-store donation campaigns, original-payment token and separate nonprofit donation transaction with DONATION-webhook outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Supported methods, regions and currencies are conditional; this source does not prove current eligibility or completed transfer."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/donations-online/2026-09-15.md",
+  "raw_sha256": "db10fbc88ef006af6ea2dc35d970c511a659c8cbb9f6445431375067f46b83c3",
+  "status": "candidate_ready"
+}

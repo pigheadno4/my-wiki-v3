@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-online-payments-checkout-components",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen for Platforms: Checkout components\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/checkout-components\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/checkout-components/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, checkout, web-components]\n---\n\n## Overview\n\nAdyen's 2026-09-15 snapshot explains how a platform can build a web checkout page with payment-method-specific Adyen Web Components. It contrasts API-only, Hosted Checkout, Drop-in, and Components, and recommends Components for prebuilt UI with per-method customization. This guide's concrete flow creates a Checkout `/sessions` payment session on the server, then initializes `AdyenCheckout` and mounts available Components on the client. [[adyen]] [[adyen-platforms]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The integration separates a payment server, client website, and webhook server. The client presents the Component and current payment result; an asynchronous `AUTHORISATION` webhook provides the outcome used to update the order management system, matched by `merchantReference`. A UI callback or session-result display alone is not proof of capture, settlement, or payout.\n- This Components/Sessions guide does not specify platform split instructions or establish allocation to a user's balance account. For split instructions and platform liable-account booking conditions, see [[source-adyen-docs-platforms-online-payments]] and its pinned raw; neither checkout setup nor an `AUTHORISATION` event alone proves a user split was booked.\n- Session creation requires merchant account, amount with currency and minor-unit value, return URL, and unique reference. Shopper country and currency filter available methods. The return URL must exclude personally identifiable information; session expiry defaults to one hour and cannot exceed 24 hours when set.\n- `AdyenCheckout` represents one payment and its session/environment/amount; individual Components present payment-method-specific UI. The page introduces Web v6, while server API libraries and Checkout API versions are separate version surfaces. Payment-method-specific configuration and eligibility still depend on the relevant method and account setup.\n- Customer Area merchant-admin and API-credential-management roles, an API credential, API key, client key, payment API roles, and a Standard webhook are stated prerequisites. The page also flags iframe/redirect, WebView, client-side SSR initialization, and strict-CSP/3DS2 constraints.\n- For redirects, the return URL may carry `sessionId` and `redirectResult`; if the shopper does not return, wait for the webhook. The server-side session-result `status` is a fixed response, not a polling route for later changes. Test each intended method, then complete live account/PCI/account/HTTPS/payment-method/endpoint setup. Keep one live endpoint region for the same session and match the Component environment to it.\n\n## Detail locators\n\n- Raw `How it works`, `Integration steps`, and `Payment flow` (lines 52\u201385): three integration parts and Sessions-flow sequence.\n- Raw `Requirements` (lines 111\u2013130): roles, credentials, webhook, browser/embedding/SSR/CSP limitations, and test-account preparation.\n- Raw `Install an API library` and `Create a session` (lines 134\u2013510): language-specific server libraries, request fields, minor units, country/method filtering, expiry, and example response.\n- Raw `Prepare your front end`, `Create the Component`, and `Localization` (lines 514\u2013869): npm/CDN/SRI delivery, initialization, amount/locale/event configuration, available-method check, and per-method Component mounting.\n- Raw `Handle the payment`, `Get the payment outcome`, and `Update your order management system` (lines 870\u20131063): redirect handling, client events, fixed session-result status, and asynchronous webhook.\n- Raw `Test and go live` (lines 1064\u20131105): test-to-live checklist, endpoint-region consistency, environment mapping, and update guidance.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform integration context.\n- [[source-adyen-docs-platforms-online-payments]] \u2014 platform split-instruction and liable-account booking route.\n- [[adyen-online-payments]] \u2014 general online-payment architecture and lifecycle.\n- [[source-adyen-docs-online-payments-build-your-integration]] \u2014 general Sessions and Advanced-flow selection; this page details the Sessions Components route.\n- [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-web-v6]] \u2014 separate Web v6 migration details.\n- [[source-adyen-docs-online-payments-go-live-checklist]] \u2014 broader live-readiness route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/checkout-components/2026-09-15|Adyen Checkout components webpage snapshot (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "We recommend using the Web Component integration as it provides the convenience of prebuilt UI and the flexibility of customizing each payment method.",
+      "location": "raw lines 19\u201328, Checkout components introduction (line 26)"
+    },
+    {
+      "text": "* **Your webhook server**: receives webhooks that include the outcome of each payment.",
+      "location": "raw line 60, How it works"
+    },
+    {
+      "text": "With the `AdyenCheckout` instance, you can create one or multiple Components.",
+      "location": "raw line 594, Create the Component"
+    },
+    {
+      "text": "The `status` included in the response doesn't get updated. Do not make the request again to check for payment status updates. Instead, check webhooks or the **Transactions** list in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw line 987, Optional: Get the result of the payment session on your server"
+    },
+    {
+      "text": "You get the outcome of each payment asynchronously, in an **AUTHORISATION** [webhook](/development-resources/webhooks). Use the `merchantReference` from the webhook to match it to your order reference.\\",
+      "location": "raw line 993, Update your order management system"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-checkout-components-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-checkout-components]] \u2014 2026-09-15 Platforms Web Components/Sessions checkout guide for payment-server, client and webhook roles, versioned UI setup and test-to-live conditions; UI events are not financial-outcome proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/checkout-components/2026-09-15.md",
+  "raw_sha256": "044bd0bd1e3dc81a2c43ee32b589585d75bfc1f443020950933cee27e0c8ee70",
+  "status": "candidate_ready"
+}

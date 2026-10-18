@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms: fix the cost of goods in the settlement currency\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/currency-conversion/payments/fix-settlement-currency\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/currency-conversion/payments/fix-settlement-currency/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, currency-conversion, fx, split-payments]\n---\n\n## Overview\n\nThis dated Adyen Platforms guide describes a pilot currency-conversion flow for an online payment whose cost of goods is fixed in the platform user's settlement currency. The customer pays a calculated amount in the processing currency, which varies with the prevailing exchange rate and Adyen conversion markup. The guide's CZK 1000.00/PLN 201.74 values and Checkout v72 request are examples, not a current quote, account entitlement, or proof of payment or payout.\n\n## Key takeaways\n\n- Adyen labels currency conversion limited availability and pilot phase and says the process and documentation may change. Contact Adyen for piloting; do not infer general availability from the example (raw lines 19\u201320).\n- Compute the customer-facing processing-currency amount from the fixed settlement-currency goods amount with either Foreign Exchange API `POST /rates/calculate` or the Exchange Rate Report. The FX API calculation uses `type=splitPayment`, settlement `sourceAmount` in minor units, processing `targetCurrency`, and `exchangeSide=buy`; its applied rate includes markup (raw lines 55\u201391). The report rate also includes markup, so do not add it again or assume reciprocal rates are interchangeable (raw lines 153\u2013205).\n- In the guide's payment flow, `amount` is the amount/currency the customer pays and `splits.amount` fixes the amount/currency for the user's settlement balance. For multiple splits their amounts must sum to the cost of goods in settlement currency. A `Remainder` split directs mismatches or miscalculations to its specified balance account; the guide recommends a `PaymentFee` split too (raw lines 216\u2013228, 892). This routing is material to who bears an amount discrepancy; the page does not quantify broader FX risk or establish a default liable account.\n- Prerequisites include online payments integration with checkout UI; Checkout API credentials; standard webhooks with transfer or transaction webhook subscription; account-holder `receivePayments`, `receiveFromPlatformPayments`, and `sendToTransferInstrument` capabilities; and merchant-account currency configuration. Foreign Exchange API credentials, Read FX rates role and support enablement apply when using `rates/calculate`; Exchange Rate Report access requires one of Merchant report, Merchant financial or Merchant admin roles (raw lines 26\u201345). These are documented setup conditions, not proof a particular account is configured.\n\n## Detail locators\n\n- Requirements, credentials, roles, webhooks, capabilities and merchant currency setup: raw lines 26\u201345.\n- FX API request/response field table and illustrative CZK-to-PLN response: raw lines 62\u2013151. The prose table says `exchangeSide=buy`, but the example response displays `sell` at line 136; verify behavior against the current API before relying on that response field.\n- Exchange Rate Report configuration, calculation and non-reciprocal markup rates: raw lines 153\u2013214.\n- Payment endpoint choices (`/payments`, `/sessions`, captures), required conversion field table, Checkout v72 example and language-library examples: raw lines 216\u2013870. The sample response at lines 871\u2013890 is illustrative.\n- Split booking and reconciliation locator: raw line 892.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-currencies-and-fx]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/currency-conversion/payments/fix-settlement-currency/2026-09-15|Pinned Adyen Docs snapshot, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "The amount the customer pays in the processing currency is not fixed and depends on the prevailing exchange rate and Adyen's conversion markup.",
+      "location": "raw line 24, introduction"
+    },
+    {
+      "text": "The rates found in this report already include the conversion markup, which does not need to be added separately.",
+      "location": "raw line 173, Exchange Rate Report"
+    },
+    {
+      "text": "Because these exchange rates include a conversion markup, they cannot be used interchangeably.",
+      "location": "raw line 204, Exchange Rate Report"
+    },
+    {
+      "text": "Any mismatch or miscalculation is booked to the balance account you specify in the split item with type **Remainder**.",
+      "location": "raw line 892, final split booking paragraph"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-fixed-settlement-fx-source-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] \u2014 2026-09-15 snapshot of pilot Platforms online-payment currency conversion fixing a user's settlement-currency goods amount while calculating the customer's marked-up processing-currency amount; prerequisites and remainder split booking are in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The guide's FX API table states exchangeSide=buy but its illustrative response shows sell; do not resolve the inconsistency from this snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/currency-conversion/payments/fix-settlement-currency/2026-09-15.md",
+  "raw_sha256": "37cfffc403f08f074ccb9a763172bd33ef6532d05aa6dce4a63bbc569fe9f298",
+  "status": "candidate_ready"
+}

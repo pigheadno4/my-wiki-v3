@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-multi-pay-in-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms multi pay-in allocation of third-party payments\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/multi-pay-in/payments\"\nraw_files:\n  - \"adyen/docs/platforms/multi-pay-in/payments/2026-09-15.md\"\ntags: [adyen, platforms, multi-pay-in, payments, split-payments, reconciliation]\n---\n\n## Overview\n\nAdyen's multi pay-in guide describes allocating payments **processed by a third-party pay-in partner** after their funds are collected in a multi pay-in account, using separate split instructions to credit user and platform balance accounts. It is a distinct allocation route from an ordinary Adyen-acquired pay-in; the guide does not establish the external PSP's payment result, seller/merchant-of-record identity, legal ownership of funds, or a completed transfer. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Prerequisites are Checkout API credentials and subscription to Transfer and/or Transaction webhooks. Adyen says each individual payment must be allocated to balance accounts within 24 hours from settlement in the multi pay-in account; the page frames this as a regulatory-compliance limitation. The guide states no region list or partial-failure/atomicity rule, so do not infer either. See **Requirements**, raw lines 27\u201336.\n- Make one POST `/payments` for **each individual third-party payment**. Its required top-level fields include `amount`, `paymentMethod.type=multi_payin`, `additionalData.tokenDataType=MultiPayIn`, `additionalData.BalancePlatform.balanceAccount` identifying the multi pay-in account, `merchantAccount`, `reference`, and `splits`. The request `reference` returns as `merchantReference`; `resultCode: Authorised` in the test example is not proof of downstream balance booking or bank receipt. See raw lines 38\u201352, 79\u2013128, and 407\u2013425.\n- Each split specifies a target and amount according to its `type`. `BalanceAccount` allocates to a user's or platform's chosen balance account; `Commission` books platform commission to the liable balance account and does not require an `account` field. `AdyenMarkup`, `AdyenCommission`, `PaymentFee`, and `AdyenFees` are fee-booking types. The split `reference` is required for `BalanceAccount` and needed for refund/reconciliation. Distinguish the source multi pay-in BA from destination user BA and platform liable BA. See raw lines 54\u201367.\n- Adyen recommends explicit transaction-fee splits. If no fee-booking instructions are supplied, it says **all transaction fees default to the platform liable balance account**. The USD 400 example allocates USD 396 to the user, USD 4 commission to the liable account, and fee deduction from liable; these are example amounts, not universal fee rates or final balances. See raw lines 69\u201375, 79\u2013128, and 1361\u20131373.\n- Webhooks and accounting report rows represent separate legs: outgoing `internal/internalTransfer` from multi pay-in, incoming `platformPayment/capture/BalanceAccount` to the user, incoming `Commission` to liable, and outgoing fee capture from the selected or default liable account. Transfer `received`, `authorised`, and `booked`/`captured` stages and a later Transaction webhook should be checked for the relevant leg; an authorization response or one leg does not prove every leg completed. See raw lines 427\u2013450, 454\u20131036, 1038\u20131360, and 1361\u20131667.\n- The 2024 test examples contain internal inconsistencies: the user-credit captured transfer shows balance-account suffix `00002` although the request, preceding user-credit events, and booked transaction show `00001`; the commission \u201cTransaction booked\u201d sample shows `-400` despite the commission-credit narrative and transfer samples showing a positive 400. Preserve exact live event IDs, account IDs, signs, currencies, and timestamps in actual reconciliation; do not use these sample values as operational proof. See raw lines 108, 767\u2013769, 918\u2013920, 1026\u20131029, 1038\u20131051, and 1320\u20131334.\n\n## Detail locators\n\n- **Allocation request and sample response:** raw lines 38\u2013426. Language-library snippets use pinned versions and mostly test environments; live examples mention `liveEndpointUrlPrefix` (raw lines 130\u2013405). They are examples, not claims of tested integration or current API version.\n- **Fund movements:** raw lines 427\u20131667, with outgoing multi pay-in debit (438\u2013731), user credit (732\u20131036), platform commission (1038\u20131360), and fee debit (1361\u20131667). Match `category`, `direction`, `type`, `platformPaymentType`, references and transaction IDs to the leg before interpreting `received`, `authorised`, `booked`, or `captured`.\n- **Reports and reconciliation:** Balance Platform Accounting Report includes multi pay-in, liable, and user balance-account changes. Its excerpt has booking/value dates, time zones, currencies, amounts, statuses and separate reference fields; it is an illustrative report excerpt, not bank settlement evidence. See raw lines 1668\u20131688.\n- **Pay out:** after settlement into the user's balance account, the guide routes to the already configured payout schedule or an on-demand payout. It does not show payout initiation or bank arrival for a given payment. See raw lines 1689\u20131691.\n- **Refund navigation:** linked next-step guide is separate, unread behavioral authority. See raw lines 1693\u20131697.\n\n## Related\n\n- [[adyen-platforms]] \u2014 Adyen for Platforms context.\n- [[adyen-reporting]] \u2014 report navigation; the exact multi pay-in report excerpt remains in this raw.\n- [[source-adyen-docs-platforms-manage-liable-accounts]] \u2014 liable-balance account context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/multi-pay-in/payments/2026-09-15|Adyen Allocate third-party payments, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "With multi pay-in, you can collect the funds processed by all your payment service providers (pay-in partners), and split them between the balance accounts in your balance platform.",
+      "location": "Allocate third-party payments, raw line 19"
+    },
+    {
+      "text": "Make sure that you can allocate each individual payment to your balance accounts within 24 hours, counting from the time they settle in your multi pay-in account.",
+      "location": "Requirements table, raw line 36"
+    },
+    {
+      "text": "To transfer and allocate the funds held in your multi pay-in account to the balance accounts in your platform, make a POST [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request for *each individual payment*.",
+      "location": "Allocate funds, raw line 40"
+    },
+    {
+      "text": "If you do not include booking instructions for any of the transaction fee types in your payment request, Adyen automatically books all transaction fees to your liable balance account.",
+      "location": "Allocate funds, raw line 69"
+    },
+    {
+      "text": "After the funds are settled in your user's balance account, they are paid out according to your already configured [payout schedule](/platforms/custom-payouts/scheduled-payouts/).",
+      "location": "Pay out, raw line 1691"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-multi-pay-in-payments-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-multi-pay-in-payments]] \u2014 2026-09-15 third-party multi pay-in payment-allocation guide for per-payment Checkout requests, split destinations/fee default, transfer/transaction event legs, accounting-report reconciliation and later payout routing; examples do not prove funds movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/multi-pay-in/payments/2026-09-15.md",
+  "raw_sha256": "ffd569eb0d5a900f57470285c1df63e9610c1fed78b9e04a6082b4bc004e3f72",
+  "status": "candidate_ready"
+}

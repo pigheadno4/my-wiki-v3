@@ -28,6 +28,18 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-docs-platforms-donations]] — 2026-09-15 Platforms Giving overview for account-holder campaigns, separate online/POS donations, nonprofit settlement model, eligibility, lifecycle and terminal-version gates; no observed donation outcome.
+
+
+- [[source-adyen-docs-platforms-in-person-payments-donations-in-person]] — 2026-09-15 Platforms terminal/standalone Giving guide for a separate donation after an eligible sale, campaign and software prerequisites, two-step receipt lookup and merchant `DONATION` webhook outcome.
+
+
+- [[source-adyen-docs-platforms-online-payments-donations-online]] — 2026-09-15 Platforms API-only online Giving guide for account-holder campaigns, separate donation requests after original payment/token, nonprofit UI and merchant DONATION-webhook outcome; examples do not prove receipt.
+
+
+- [[source-adyen-docs-platforms-donations-create-manage-campaigns]] — 2026-09-15 platform account-holder Giving campaign setup and lifecycle guide for Customer Area and Management API, channel-specific configuration, eligibility and one-way status transitions.
+
+
 - [[source-adyen-docs-industries-peak-season-giving]] — 2026-09-15 peak-season Giving overview for nonprofit campaign selection, in-person terminal prompt versus online donation request, and channel-support navigation.
 
 

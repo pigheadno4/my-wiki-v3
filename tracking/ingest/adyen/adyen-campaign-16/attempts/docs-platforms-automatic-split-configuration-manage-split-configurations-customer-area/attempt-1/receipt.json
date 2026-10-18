@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-automatic-split-configuration-manage-split-configurations-customer-area",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage split configuration profiles in Customer Area | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/automatic-split-configuration/manage-split-configurations/customer-area\"\nraw_files:\n  - \"adyen/docs/platforms/automatic-split-configuration/manage-split-configurations/customer-area/2026-09-15.md\"\ntags: [adyen, platforms, automatic-splits, customer-area, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms guide shows how a platform-model integration can use Customer Area to view merchant-account split-configuration profiles, add or remove rules, edit rule conditions or split logic, and delete a profile. It is a 2026-09-15 snapshot of configuration guidance, not evidence that a particular profile was changed or a transaction booked. Its key operational warning is that profiles are re-evaluated at capture: an edit can affect a payment authorized before the edit and captured afterward. [[adyen]] [[adyen-platforms]] [[adyen-automatic-split-configuration]]\n\n## Key takeaways\n\n- The operator needs the Customer Area role **Manage new split configuration settings** and must switch to the relevant merchant account. Under **Platform > New split configuration**, the list shows profiles configured for that merchant account, including store-use count, last-update date and profile ID; opening a profile shows its rules and split instructions. This page does not describe obtaining the role or prove a particular user's access.\n- A rule can be added to an existing profile even after the profile has been applied to a store. Customer Area condition dimensions are shopper interaction/channel, payment method or variant, card funding source, and currency. The rule's split logic can specify a platform commission to the liable balance account, optional additional commission to a specified balance account, and account choices for payment fees, surcharge, potential chargeback and tips. Fixed fee amounts are stated in minor units; variable fees are percentages here. The page does not state the full priority algorithm for multiple matching rules; see the automatic-split overview for that hierarchy.\n- An operator can edit a rule's conditions or split logic with **Edit rule** or **Edit logic**, preview and save. New conditions evaluate subsequent transactions, and new split logic governs subsequent transactions and associated fees. The guide explicitly says profiles are re-evaluated at capture, so newly added rules and changed conditions or logic can apply to payments authorized before the change but captured afterward. Treat rule edits as financially consequential configuration changes, while keeping actual booking subject to transaction evidence.\n- A profile must retain at least one rule. The only rule cannot be removed; deleting the whole profile is the documented alternative. The page gives Customer Area steps to delete a profile but does not describe whether deletion unlinks stores, which fallback then applies, or the outcome for already authorized payments. Verify those effects before deleting a live profile.\n- Customer Area cannot update the profile description or card-region condition; this snapshot routes both updates to the Management API. The page identifies the profile ID in the list but does not provide rule or logic IDs for Customer Area edits. It covers profile management, not initial profile creation, store linking, request-level split precedence, or proof of capture/settlement/payout.\n\n## Detail locators\n\n- Purpose, role, platform-model scope, and Management API-only limitations: pinned raw lines 15\u201334 (`## Requirements`).\n- Merchant-account profile list, store count, last update, profile ID and rule details: pinned raw lines 36\u201360 (`## View all profiles`; `## View profile details`).\n- Adding a rule, condition values, split-logic choices and effect on earlier authorizations at capture: pinned raw lines 62\u2013120 (`## Add a rule`).\n- Changing conditions and capture-time effect: pinned raw lines 122\u2013161 (`## Change the conditions`).\n- Changing split logic, fee effects and capture-time re-evaluation: pinned raw lines 163\u2013201 (`## Change the split logic`).\n- At-least-one-rule limit and profile deletion UI steps: pinned raw lines 203\u2013222 (`## Remove a rule`; `## Delete a profile`).\n\n## Related\n\n- [[adyen-automatic-split-configuration]] \u2014 rule selection, request precedence and capture behavior for this Platforms configuration route.\n- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]] \u2014 profile creation, Support enablement, Management API schema and store association.\n- [[adyen-platforms]] \u2014 platform/user and liable-account context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/automatic-split-configuration/manage-split-configurations/customer-area/2026-09-15|Manage split configuration profiles in Customer Area \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "**Manage new split configuration settings**",
+      "location": "pinned raw line 33, Requirements > Customer Area roles"
+    },
+    {
+      "text": "You can only [update the card region condition](/platforms/automatic-split-configuration/manage-split-configurations/api/#update-condition) using the [Management API](/platforms/automatic-split-configuration/manage-split-configurations/api).",
+      "location": "pinned raw line 34, Requirements > Limitations"
+    },
+    {
+      "text": "You can define new rules to automatically split transactions, even after the split configuration profile has been created and applied to a store.",
+      "location": "pinned raw line 64, Add a rule"
+    },
+    {
+      "text": "Split configuration profiles are always re-evaluated at the time of capture. This means that the new rule also applies to transactions that were authorized before you added the rule, but captured after the update.",
+      "location": "pinned raw line 120, Add a rule"
+    },
+    {
+      "text": "All split configuration profiles must contain at least one rule. Therefore, deleting the only rule in the profile is not possible.",
+      "location": "pinned raw line 205, Remove a rule"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-manage-splits-ca-route",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]]",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations-customer-area]] \u2014 2026-09-15 Customer Area profile/rule management guide for role-gated edits and deletion, Management API-only fields, at-least-one-rule limit, and capture-time effect on earlier authorizations.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target concept is separately proposed in the C16 automatic-split overview worker; add this reciprocal link after that concept is promoted, without creating a duplicate concept.",
+          "The source gives profile-deletion steps but does not specify store unlinking, fallback booking, or already-authorized-payment outcomes after deletion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/automatic-split-configuration/manage-split-configurations/customer-area/2026-09-15.md",
+  "raw_sha256": "98ebff96f0762982545e8232662c6cb2b9815650b758d431dbe5208820f15f4a",
+  "status": "candidate_ready"
+}

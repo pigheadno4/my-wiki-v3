@@ -27,6 +27,12 @@ The guide says surcharges cannot be applied to authorization adjustments or over
 
 ## Sources
 
+- [[source-adyen-docs-platforms-in-person-payments-surcharge-configuration]] — 2026-09-15 Platforms guide to automatic in-person surcharge rules and a single user-balance-account `Surcharge` split item in a Terminal API payment request.
+
+
+- [[source-adyen-docs-platforms-in-person-payments-surcharge-dynamic]] — 2026-09-15 Platforms-specific dynamic POS surcharge guide for card-acquisition calculation, disclosure and single-user-balance-account booking; distinct from the online pilot.
+
+
 - [[source-adyen-docs-point-of-sale-surcharge]] — Adyen POS website overview of configuration-based and dynamic surcharge methods, device/region limits, disclosure, DCC exclusion, and optional reporting (2026-09-15 snapshot).
 
 

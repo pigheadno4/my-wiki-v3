@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-platforms-online-payments-currency-conversion-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms: convert the currency of an online payment\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/currency-conversion/payments\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/currency-conversion/payments/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, currency-conversion, foreign-exchange]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms overview describes a limited-availability pilot for an online payment in which the customer pays in a processing currency and the platform's user is credited in a different settlement currency. The platform fixes the goods or services price in one of those currencies, calculates the amount in the other, and sends both amounts in a `POST /payments` request. This overview routes to separate fixed-settlement and fixed-processing procedures; it does not itself specify rate-calculation fields, split instructions, fees, refund handling or actual booking evidence. See [[adyen]], [[adyen-platforms]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- **Pilot scope:** The page says currency conversion is in pilot, and its processes and documentation may change. It describes the processing currency as the one in which the customer pays and the settlement currency as the one in which the user wants to be paid. A dated description does not prove current availability, account eligibility, a specific currency pair, rate or completed funds movement.\n- **Choose which amount is fixed:** If the goods price is fixed in settlement currency, the user's amount stays fixed and the customer's processing-currency amount is calculated. If fixed in processing currency, the customer's amount stays fixed and the user's settlement-currency amount is calculated. The overview says to use the prevailing exchange rate of the day for the other amount, without supplying a quote, formula or markup terms.\n- **Common sequence:** The user sells goods or services to a customer; the platform determines the other currency amount and submits `POST /payments` specifying both currency amounts. The page describes Adyen debiting the customer and crediting the user in their respective currencies when it receives the request. It is not an observed authorization, capture, booking, payout or merchant-of-record determination.\n- **Detailed routes:** Consult [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] or [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-processing-currency]] for the chosen fixed-price path, including its own prerequisites and consequences. This overview does not establish those procedures for every account or payment method.\n\n## Detail locators\n\n- Pilot warning and processing-versus-settlement roles: raw lines 15\u201326. Common sale, calculation and `/payments` sequence: lines 28\u201333. Choice of fixed currency and prevailing-rate statement: lines 35\u201339. Links to the two detailed paths and which party's amount stays fixed: lines 41\u201351.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform and user context.\n- [[adyen-currencies-and-fx]] \u2014 provider currency and FX context.\n- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] \u2014 fixed user settlement amount procedure.\n- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-processing-currency]] \u2014 fixed customer processing amount procedure.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/currency-conversion/payments/2026-09-15|Adyen Docs: Convert the currency of a payment (2026-09-15 snapshot; pilot)]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw lines 19\u201320, Limited availability"
+    },
+    {
+      "text": "If the currency in which the customer pays (the processing currency) does not match the currency in which your user wants to be paid (the settlement currency), you can convert the currency by exchanging the processing currency for the settlement currency.",
+      "location": "raw line 26, introductory currency roles"
+    },
+    {
+      "text": "You make a POST `/payments` request, specifying the cost of the goods in both currencies.",
+      "location": "raw line 32, How it works step 3"
+    },
+    {
+      "text": "You can fix the cost of the goods in either the settlement currency (the currency your user receives), or the processing currency (the currency the customer pays).",
+      "location": "raw line 39, Fix the cost of the goods"
+    },
+    {
+      "text": "Depending on whether the cost of the goods is fixed in the settlement or the processing currency, the currency conversion process varies slightly.",
+      "location": "raw line 43, Next steps"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "fx-payments-hub-source-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] \u2014 2026-09-15 snapshot of pilot Platforms online-payment currency conversion fixing a user's settlement-currency goods amount while calculating the customer's marked-up processing-currency amount; prerequisites and remainder split booking are in the source.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments]] \u2014 2026-09-15 limited-availability Platforms overview of processing-versus-settlement currencies and the choice between fixed customer and fixed user amount paths.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "This overview does not specify detailed FX API, split, fee, refund or accounting rules; keep those claims with the separate child sources."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/currency-conversion/payments/2026-09-15.md",
+  "raw_sha256": "f24ef13d4f84c37b64f3f39dcd2117d5c0207ae9d2ad221391666a9e5179e0e4",
+  "status": "candidate_ready"
+}

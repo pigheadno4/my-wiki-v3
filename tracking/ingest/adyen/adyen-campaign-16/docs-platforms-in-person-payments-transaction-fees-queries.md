@@ -1,0 +1,11 @@
+# Fixed retrieval checks — in-person transaction fees
+
+Q1. What is the source's purpose and scope, and what must not be inferred?
+- Expected: A 2023-modified Adyen for Platforms Terminal API guide, captured 2026-09-15, to allocate payment-related fee types between user and platform liable balance accounts. Fee amounts are calculated after request receipt; the source does not set a current fee schedule, merchant-of-record/legal ownership, account-specific fee booking, partial-capture rule, payout or bank receipt. The sample USD 80 Terminal request and EUR fee webhooks are illustrative and not a coherent currency conversion proof.
+- Raw locators: `raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:15-38`, `:91-249`, `:250-268`, `:888-898`.
+- Canonical route: `wiki/sources/adyen/source-adyen-docs-platforms-in-person-payments-transaction-fees.md` → `[[adyen-platforms]]`.
+
+Q2. What fee allocation, format and state warnings govern interpretation?
+- Expected: Interchange/scheme/Adyen markup/Adyen commission are payment-related and can be routed by fee split type; processing/3DS aggregate costs and tiered discounts cannot be allocated per payment. PaymentFee aggregates all, AcquiringFees and AdyenFees aggregate subgroups, and granular items override their aggregate portions. Without fee instructions Adyen adds PaymentFee to liable. Terminal API carries key-value or Base64 JSON instructions in SaleToAcquirerData; the example's split.totalAmount 8000 and RequestedAmount 80.00 are field-specific formats. Received/authorised/captured/booked webhook stages differ. Request assigns AdyenFees to liable, yet line 581 says user; transfer and transaction samples disagree on account/transfer ID, acquiring sample changes account ID, and EUR sample webhooks differ from USD request. Do not infer exact booked account, sign or conversion from those examples.
+- Raw locators: `raw/adyen/docs/platforms/in-person-payments/transaction-fees/2026-09-15.md:25-89`, `:100-249`, `:270-278`, `:430-450`, `:579-587`, `:739-760`, `:841-885`, `:888-892`.
+- Canonical route: `wiki/sources/adyen/source-adyen-docs-platforms-in-person-payments-transaction-fees.md` → `[[adyen-platforms]]`.

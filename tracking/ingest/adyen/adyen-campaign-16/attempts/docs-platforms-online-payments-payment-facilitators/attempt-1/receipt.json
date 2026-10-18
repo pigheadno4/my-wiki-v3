@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-online-payments-payment-facilitators",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms online payment-facilitator transaction data\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/payment-facilitators\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/payment-facilitators/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, payment-facilitators, sub-merchants]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes the extra user or sub-merchant data a payment facilitator sends with online Checkout authorization. It says that, for a transaction facilitated by the platform, the user is considered Merchant of Record for the card-scheme data requirement. That statement is scoped to facilitated transactions in this guide; it does not by itself establish the legal seller, payee, funds owner, or settlement terms for another platform model or transaction.\n\n## Key takeaways\n\n- The stated prerequisites are an Adyen online payments integration with a checkout UI and Checkout API credentials. For each `/sessions` or `/payments` authorization, the card-scheme data identifies the user by a unique platform-assigned ID, an accurate name for the shopper statement (including a Mastercard aggregator prefix), and the user's transaction location. The page says Adyen repopulates user details from the initial payment for later cancellations, captures, and refunds.\n- Send `AdditionalDataSubMerchant` under `additionalData.subMerchant.subSeller1.[parameter]`; this page fixes `subSellerNr` and `subMerchant.numberOfSubSellers` to 1. Its required-parameters table covers ID, name, street, postal code, city, state where applicable, three-letter country code, email, and phone. Postal code is specified only for Canada and the United States. The displayed request examples omit email and phone despite their appearance in that table; use the relevant current Checkout contract and Adyen configuration guidance for an actual integration.\n- Before live use, confirm with an Adyen contact that `paymentFacilitatorIds`, `aggregatorPrefix`, and `amexCapnSubmitterId` are configured for the platform. The guide says most payment methods permit ecommerce facilitation under an aggregated MID, which does not imply every method or account is eligible.\n- The `/payments` split example routes an illustrated sale amount to a user balance account, commission to the platform, and `PaymentFee` to a named balance account. It is a request example, not authorization, booking, payout, or legal-ownership evidence. The curl sample uses Checkout v72 on the test endpoint; SDK samples name language-specific versions and test environments, with live endpoint prefix called out. The Node JavaScript sample uses EUR where the other displayed amount examples use USD, so do not treat the examples as one reconciled transaction.\n- For shopper statement recognition, the page recommends a recognizable platform brand or merchant name. If the platform does not use stores, it says to configure the transaction description; a transaction-specific `shopperStatement` may additionally be supplied depending on that configuration. This guide does not itself define the store configuration or prove a displayed descriptor.\n\n## Detail locators\n\n- `## Requirements` and `## Send user data points with a transaction`: integration and credential prerequisites, scoped Merchant-of-Record statement, authorization timing, required user identity/location.\n- `### Required parameters`: `AdditionalDataSubMerchant` names, `subSeller1` and one-sub-seller values, country-specific postal code, later-modification population, and pre-live account configuration.\n- `Here is an example of a split payment request facilitated on behalf of your user`: Checkout v72 test curl and versioned SDK request samples, split fields, sample omissions and currency discrepancy.\n- `## Shopper statement`: descriptor risk, recognizable-name guidance, no-store configuration, optional per-request `shopperStatement`.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept and source route.\n- [[adyen-pos-payment-facilitators]] \u2014 separate in-person facilitator guide with different store and Terminal API data paths.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/payment-facilitators/2026-09-15|Adyen payment facilitators (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Card schemes require you to send certain data points with each transaction. These data points must refer to your user, who is considered the Merchant of Record when a transaction is facilitated by your platform.",
+      "location": "line 19"
+    },
+    {
+      "text": "You must send `additionalData` parameters with the [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) or [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) authorization request. For cancellations, captures, and refunds, Adyen automatically populates your user's details from the initial payment.",
+      "location": "line 38"
+    },
+    {
+      "text": "The `[subSellerNr]` is always **1**. Submit all `additionalData` parameters as:\\",
+      "location": "line 42"
+    },
+    {
+      "text": "Before going live, confirm with your Adyen contact that the `paymentFacilitatorIds`, `aggregatorPrefix` and `amexCapnSubmitterId` are configured for your platform.",
+      "location": "line 59"
+    },
+    {
+      "text": "If you are not using stores in your platform, you must configure the transaction description that appears on the shopper statement.",
+      "location": "line 764"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-platforms-online-payments-payment-facilitators-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-payment-facilitators]] \u2014 2026-09-15 online Checkout facilitator guide for scheme-required sub-merchant data, scoped user Merchant-of-Record wording, pre-live IDs and shopper descriptors; examples do not prove eligibility or funds flow.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Merchant-of-Record wording concerns the facilitated online transaction and card-scheme data; it does not set universal legal seller, payee, or fund ownership.",
+          "Required-parameters table includes email and phone but displayed request examples omit them; resolve actual payload rules with current Checkout contract and Adyen guidance.",
+          "No-store descriptor configuration is a separate conditional requirement; aggregated MID is stated for most payment methods only."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/payment-facilitators/2026-09-15.md",
+  "raw_sha256": "577c47d3964c7d8cc87a481e12d7b5e2ac6f9d5f8def1f25867741328310410c",
+  "status": "candidate_ready"
+}

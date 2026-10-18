@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-in-person-payments-split-transactions-split-payments-at-capture",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Platforms in-person split at capture\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/split-transactions/split-payments-at-capture\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, capture, split-transactions]\n---\n\n## Overview\n\nThis Adyen for Platforms in-person guide (last modified 2023-03-27; captured 2026-09-15) describes adding or overriding balance-account split instructions in a Checkout API capture request for a previously authorized Terminal API payment when split amounts are decided later. It is not an online-payment capture rule or evidence that a capture, balance booking or payout succeeded. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Prerequisites and support:** The page assumes the general Platforms in-person requirements and a Terminal API integration with terminals or mobile solution, or a standalone solution. Manual capture must be enabled or capture delay configured; CAPTURE and CAPTURE_FAILED events must be monitored. Capture-time splitting works only for payment methods supporting separate capture. Most in-person wallets do not, and Alipay/WeChat Pay capture immediately. Adyen recommends putting splits in the original payment request even if capture will change them, because methods without delayed capture need correct initial booking.\n- **Capture instruction and precedence:** Take the authorization PSP reference from the payment-response transactionID, then POST /payments/{paymentPspReference}/captures with a splits array. Capture instructions can override earlier payment-request splits. If capture amount differs from authorization, the guide requires splits in the capture request; otherwise the full amount books to the platform liable balance account. This is distinct from the capture response's own PSP reference and its received status. CAPTURE webhook supplies the request outcome; received alone is not successful capture.\n- **Split fields:** BalanceAccount books sale amount to a user's balanceAccountId; Commission goes to the liable balance account without an account field. Transaction-fee types can be directed to balance accounts; PaymentFee books all transaction fees, whose amount is not known at payment time. The table makes split amount.value generally required except fees, amount.currency conditional for currency conversion, and reference conditional for BalanceAccount. The USD 80 example allocates USD 76 user sale, USD 4 commission and fee deduction from a user account; it is illustrative, not a fee quote.\n- **Unsupported types and source conflicts:** The limitations expressly exclude Surcharge and Tip split types at capture. A later general 'Additional split instructions' section links Surcharges, Chargebacks and Top-ups; that navigation does not override the capture-specific exclusion or establish capture support for those types. The test snippets conflict on currency (NodeJS JavaScript uses EUR amid USD examples). The fee transfer names a second user balance account while the fee transaction.created sample names the first; the commission prose and transfer describe an incoming liable-account credit, but its captured transfer changes liable-account ID and its transaction.created sample shows -400 on a user balance account. Do not infer an actual booked sign or balance account from these examples; check the current endpoint schema and observed transaction records.\n- **Booking check:** The capture API validates split format, not the named balance accounts. A nonexistent balance account or one linked to a closed account holder causes the full transaction and fees to book to the liable balance account even if the transaction is successful; the page points to internal transfer as a correction route. Track CAPTURE/CAPTURE_FAILED and per-split Transfer/Transaction webhooks: payment PSP and modification PSP references differ; received, authorised, captured and booked refer to separate stages. The example webhooks are test data, not proof of real booking or bank receipt.\n\n## Detail locators\n\n- Delayed split rationale, override, manual/delayed capture and method/type limits: pinned raw lines 19-48.\n- Capture reference, splits fields, conditional amount/currency/reference and USD fee example: pinned raw lines 50-110.\n- Dated test SDK examples and internally inconsistent currency: pinned raw lines 111-587.\n- Capture received response versus CAPTURE outcome, split-account validation and liable fallback: pinned raw lines 590-660.\n- Illustrative per-split payment/fee/commission transfer and transaction statuses: pinned raw lines 663-1635; additional-type navigation/conflict: lines 1636-1655.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform split-processing concept and reciprocal source route.\n- [[source-adyen-docs-platforms-process-payments]] \u2014 broad platform channel/split overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15|Adyen Split payments at capture, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can also override the split instructions you provided in the payment request if you send different split instructions in your capture request.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md:24"
+    },
+    {
+      "text": "* Splitting payments at capture is only possible for payment methods that support separate capture.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md:44"
+    },
+    {
+      "text": "* When the capture amount differs from the original authorization amount, you must provide split instructions in your capture request. If you do not provide split instructions for such captures, then all funds are booked to your liable balance account.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md:46"
+    },
+    {
+      "text": "* The split types **Surcharge** and **Tip** are not supported when you split a payment at capture.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md:48"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md:645"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-in-person-split-at-capture-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-payments-at-capture]] \u2014 2023-modified, 2026-09-15-captured Terminal API delayed/separate-capture split guide, including amount-change and invalid-balance liable-account fallbacks, unsupported split types and webhook stages.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's general Surcharges navigation conflicts with its explicit capture-time Surcharge prohibition; preserve the capture-specific limit. Test snippets also differ on currency and fee target account."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/split-transactions/split-payments-at-capture/2026-09-15.md",
+  "raw_sha256": "7f0a33682d80343608f2c0427294e6c7b9b4c5c54e925e2d02cb3b8c2bb4ec8f",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,17 @@
+{
+  "job_id": "docs-platforms-in-person-payments-split-transactions-split-refunds-refund-split-instructions",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The full 1282-line pinned raw was independently read in complete chunks and matches SHA-256 ae8bee550263717fe055f3587da84ec5b759ae97845de4a0c5ef83c0f9876edb; all five receipt quotes match their exact raw lines. The candidate and fixed Q1/Q2 correctly preserve referenced Terminal reversal scope, standalone and payment-method limits, original split references and credited-account restriction, partial major-unit amount/currency fields, full-refund omissions, and Success/REFUND REQUESTED versus asynchronous CANCEL_OR_REFUND outcome. A material tracking qualification remains: raw line 325 explicitly says the balance-platform webhook examples are based on an online refund request, while the candidate presents their stages in this Terminal procedure without that source boundary. Also, raw line 207 labels POIData.POITransactionID.TransactionID the refund PSP reference, but the response example has TF995R5G6L2GWR82 there and a different AdditionalResponse.pspReference KHLWK3Z3FZTQ7RT5 at line 237; the separate online-derived webhook examples use modificationPspReference QFQTPCQ8HXSKGK82. The statement that the response provides a refund PSP reference and the generic original/modification correlation language could imply these example IDs map to one Terminal reversal, which this page does not establish. The other tracking/example inconsistencies are already flagged. The reciprocal source link is accurate and fits the existing adyen-platforms Sources anchor.",
+  "required_changes": [
+    "In the source tracking takeaway and fixed Q2, state that the split transfer/transaction webhook payload examples are explicitly based on an online refund request (raw line 325), so their sequence and identifiers illustrate balance-platform booking rather than an observed Terminal reversal trace. Preserve the outgoing-debit versus credited-prose and commission-account example cautions.",
+    "Qualify refund-reference reconciliation: the terminal response table calls POIData.POITransactionID.TransactionID a refund PSP reference, but the displayed response has a different AdditionalResponse.pspReference (raw lines 207, 232, 237), and the online-derived webhook examples have a third modificationPspReference. Do not assert that these illustrative values identify one refund or select a definitive matching field from this source; use actual event payloads or the relevant current API/webhook contract."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "docs-platforms-in-person-payments-split-transactions-split-refunds-refund-split-instructions-platforms-route"
+  ],
+  "reviewer_identity": "c16-rdocs-platforms-in-person-payments-split-transactions-split-refunds-refund-split-instructions",
+  "reviewer_model": "gpt-6-sol"
+}

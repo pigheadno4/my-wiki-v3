@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-online-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Process online payments for Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, split-payments, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms online-payments overview, last modified 2023-04-28 and captured 2026-09-15, explains how a platform processes online transactions on behalf of users and directs payment amounts, commissions, fees and costs between user balance accounts and the platform's liable balance account. It gives prerequisites, split-instruction precedence and an illustrative flow from customer payment through booking, settlement and payout. It does not establish a specific merchant of record, legal fund owner, successful authorization, completed settlement or actual bank receipt.\n\n## Key takeaways\n\n- The stated prerequisites are an Adyen online-payments integration and checkout UI; Checkout API and Transfers API credentials; a server able to receive standard webhooks, with subscription to transfer and/or transaction webhooks; and account holders with `receivePayments`, `receiveFromPlatformPayments` and `sendToTransferInstrument` capabilities. If `receiveFromPlatformPayments` is not in a valid state, funds cannot be allocated to that account holder's balance account and the full amount is booked to the platform's liable balance account. Credential possession or a capability name alone does not prove a valid grant.\n- For the online-payments integration the page offers server-side Sessions flow (one Checkout API `/sessions` request) and Advanced flow (`/paymentMethods`, `/payments`, `/payments/details` requests). Sessions is the recommended default for most integrations; Advanced supports more use cases. The page does not set a specific Checkout API version or payment-method entitlement.\n- The platform must direct funds and fees to the intended balance accounts. It can define automatic instructions with a store split-configuration profile or include split instructions per API request. Request-level instructions override profile instructions. If neither is supplied, the whole transaction amount and fees are booked to the liable balance account. A split instruction is not itself evidence of final booking or payout.\n- The diagram's USD 400 payment, USD 396 user allocation, USD 4 platform commission, USD 2 fee deducted from the liable balance account and later USD 396/USD 2 payouts are one example. They are not universal fees, currencies, split ratios or guaranteed lifecycle outcomes. Booking, settlement and payout are separate stages. The page links detailed manual-split and automatic-profile guides; their behavior is not imported here.\n- The captured page does not prescribe test/live activation steps or describe authorization, capture, refund or chargeback state transitions. Later payment and webhook records must establish any particular outcome.\n\n## Detail locators\n\n- `## Requirements`: Checkout integration/UI, credentials, webhook, capability and Sessions/Advanced prerequisites.\n- `## Split transactions`: profile versus request-level instructions, precedence and missing-instruction fallback.\n- `## Flow of funds`: illustrative USD 400 booking, settlement and payout sequence.\n- `## Next steps`: manual and automatic split guide links.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform-specific integration and source route.\n- [[adyen-online-payments]] \u2014 general online checkout integration context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/2026-09-15|Adyen process online payments for Platforms (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "You must have an Adyen [online payments integration and a checkout UI](/online-payments/build-your-integration).",
+      "location": "line 27"
+    },
+    {
+      "text": "If an account holder does not have the **receiveFromPlatformPayments** capability in a **valid** state, the funds cannot be allocated to their balance account.",
+      "location": "line 35"
+    },
+    {
+      "text": "The instructions you provide in your API requests override the instructions you defined in your split configuration profiles.",
+      "location": "line 46"
+    },
+    {
+      "text": "If you do not provide any split instructions in a split configuration profile or through an API request, the whole transaction amount and fees are booked to your liable balance account.",
+      "location": "line 48"
+    },
+    {
+      "text": "Based on the split instructions included in the payment request, we book the following amounts to the balance accounts in your balance platform:",
+      "location": "line 62"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-platforms-online-payments-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments]] \u2014 2023-modified, 2026-09-15-captured Platforms online-payments overview for capability-gated user/liable balance allocation, split precedence and illustrative booking-to-payout flow; no transaction-outcome proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The USD 400 flow, fees, currency, settlement and payouts are illustrative, not actual account or bank outcomes.",
+          "Do not infer merchant of record or legal fund ownership from 'on behalf of' or balance-account labels."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/2026-09-15.md",
+  "raw_sha256": "61687b0a4bdd13a181d3db905c4c2ced69ed749b0c07512a8f179d9b035a0298",
+  "status": "candidate_ready"
+}

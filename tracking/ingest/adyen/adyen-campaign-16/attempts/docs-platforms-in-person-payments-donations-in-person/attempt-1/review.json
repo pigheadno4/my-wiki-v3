@@ -1,0 +1,18 @@
+{
+  "job_id": "docs-platforms-in-person-payments-donations-in-person",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Independently read the full 312-line pinned raw and matched SHA-256 14ee06600f14e41f659e4d936e2a7100ff41290a8e003966afea8159e1532088. All five quotes match their cited lines, and the accepted receipt, candidate and suggestions agree. The candidate correctly separates sale and donation transactions, campaign/terminal/method gates, gift-card no-prompt, two-step receipt lookup and merchant DONATION outcome, and its Giving and Platforms routes are relevant. One technical locator in the central receipt path is misleading: the page's prose at line 186 abbreviates `RepeatedMessageResponse.PaymentReceipt`, but its actual sample payload at lines 201-225 nests PaymentReceipt under `TransactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.PaymentResponse`. A reader following the literal candidate or Q2 path would look for a nonexistent direct PaymentReceipt child. Q2 also needs to distinguish `MessageReference.SaleID` from the outer request header's `SaleID`.",
+  "required_changes": [
+    "In the source's two-step receipt bullet, replace `RepeatedMessageResponse.PaymentReceipt` as a literal locator with the sample's actual `TransactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.PaymentResponse.PaymentReceipt` path, or say the returned repeated donation `PaymentResponse` contains `PaymentReceipt`; cite raw lines 186 and 201-225. Preserve the separate DONATION-webhook outcome boundary.",
+    "In fixed Q2, use the same nested receipt path or unambiguous prose, and specify that `AdyenGiving` belongs in `TransactionStatusRequest.MessageReference.SaleID`, while the outer `MessageHeader.SaleID` remains the POS system's ID (raw lines 98-120 and 125-149). Keep the specific-versus-latest ServiceID rule."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "c16-giving-inperson-route",
+    "c16-platforms-inperson-giving-route"
+  ],
+  "reviewer_identity": "c16-rdocs-platforms-in-person-payments-donations-in-person",
+  "reviewer_model": "gpt-6-sol"
+}

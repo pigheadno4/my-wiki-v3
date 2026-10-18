@@ -16,6 +16,26 @@ Where Adyen converts a transaction amount between currencies, it describes an FX
 
 ## Sources
 
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds]] — 2023-modified, 2026-09-15-captured limited-availability Platforms FX-refund overview for processing/settlement currencies, rate-plus-markup remainder, user/platform booking choice and liable-account default.
+
+
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] — 2026-09-15 snapshot of pilot Platforms online-payment currency conversion fixing a user's settlement-currency goods amount while calculating the customer's marked-up processing-currency amount; prerequisites and remainder split booking are in the source.
+
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments]] — 2026-09-15 limited-availability Platforms overview of processing-versus-settlement currencies and the choice between fixed customer and fixed user amount paths.
+
+- [[source-adyen-docs-platforms-online-payments-currency-conversion]] — 2026-09-15 capture of the limited-availability Platforms online conversion hub distinguishing accepted and settled currencies and routing to separate payment/refund guides; no implementation or current-eligibility proof.
+
+
+
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] — 2026-09-15 limited-availability Platforms FX-refund pilot guide for booking the processing-versus-settlement-currency remainder to the user's balance account through original or rate-adjusted splits.
+
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-platform]] — 2026-09-15 limited-availability Platforms FX-refund guide for reusing original processing/settlement amounts and routing the remainder to the platform's liable balance account.
+
+
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-processing-currency]] — 2026-09-15 limited-availability Platforms guide for a fixed processing-currency customer amount and FX-calculated settlement-currency user split, with explicit remainder booking.
+
+
+
 - [[source-adyen-docs-account-supported-currencies]] — 2023-modified, 2026-09-15-captured acquiring-connection, settlement-currency and local/SWIFT payout matrix with unresolved MXN/AED prose-versus-table conflict.
 
 
@@ -23,6 +43,8 @@ Where Adyen converts a transaction amount between currencies, it describes an FX
 
 
 - [[source-adyen-docs-point-of-sale-currency-conversion]] — 2026-09-15 Adyen POS DCC guide for the shopper's local-versus-card-billing-currency choice, terminal disclosure, merchant markup/reporting, and dated eligibility; separate from generic FX management fees.
+
+- [[source-adyen-docs-platforms-in-person-payments-dynamic-currency-conversion]] — 2026-09-15 Adyen for Platforms in-person DCC pilot guide for terminal customer choice, DCC markup allocation between user and liable balance accounts, and dated eligibility/receipt constraints; separate from generic FX fees and the broader POS guide.
 
 
 - [[source-adyen-docs-development-resources-currency-codes]] — Adyen currency-code and decimal table, Terminal API exception, four ISO differences, and contract-qualified FX fee structure (webpage snapshot, 2026-09-15).

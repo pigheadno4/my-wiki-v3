@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-multi-pay-in-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Refund third-party multi pay-in payments through Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/multi-pay-in/refunds\"\nraw_files:\n  - \"adyen/docs/platforms/multi-pay-in/refunds/2026-09-15.md\"\ntags: [adyen, platforms, multi-pay-in, refunds, split-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide covers refunds of payments processed by a third-party pay-in provider but settled in platform users' balance accounts. The platform initiates an Adyen Checkout API refund to deduct amounts from platform/user balances and return funds to its multi pay-in account. The pay-in partner, through a separately arranged process, is responsible for sending the refund amount to the user's customer. An Adyen request, balance-account deduction or multi pay-in credit is not proof that the partner returned money to that customer.\n\n## Key takeaways\n\n- Before initiating at Adyen, have a refund process in the pay-in partner's system. Use the original payment PSP reference in POST `/payments/{paymentPspReference}/refunds`. The request requires an `amount` and `merchantAccount`; the refund value equals the captured amount or is less for a partial refund, and its top-level currency matches the payment authorization currency. A merchant refund reference is optional for reconciliation. The refund-request outcome arrives asynchronously in a `REFUND` webhook; do not treat request submission as final success.\n- A `splits` array can allocate deductions across a user's balance account and the platform's liable balance account. For partial refunds, the page strongly recommends explicit split instructions. Split-item fields include destination `account`, `amount.value`, `type` and a `reference` conditionally required for `BalanceAccount`; split `amount.currency` is conditionally required when that portion is refunded in a currency different from the original payment. Listed types include `BalanceAccount`, `Commission`, Adyen fee variants and `Remainder`; by default all fees are deducted from the platform's liable balance account. The table marks split `account` required, while the page's `Commission` request example omits it, so this snapshot does not resolve that field's per-type requirement.\n- Omitting refund splits to reuse the original ratio is described for a full refund equal to the original payment amount when the *authorization* contained split instructions. The refund follows authorization splits, not capture splits. If the authorization had no split instructions, the full refund amount is debited from the platform's liable balance account. Do not generalize this no-split route to partial refunds.\n- The API validates split-instruction format, not whether referenced balance accounts exist or can receive the debit. An apparently successful transaction can therefore debit an unintended account; if an account is nonexistent or its holder is closed, the full transaction and fees book to the liable balance account. The guide points to internal transfers for correction, which is a separate action.\n- Use the `REFUND` webhook for the refund-request outcome and transfer/transaction webhooks for fund movements. The examples distinguish outgoing user-balance and liable-commission refund transfers, and an incoming internal transfer to the multi pay-in account. They show `received`, `authorised`, `refunded` or `booked` statuses, with transaction-created events for balance postings. Status on one leg is not proof of another leg or of the pay-in partner's customer refund. The JSON payloads, USD values, identifiers and library-version/test-environment calls are illustrative. Some example identity/amount fields differ across tabs; use these examples as locators, not an account-specific ledger.\n\n## Detail locators\n\n- Opening paragraphs and `## Refund a payment`: third-party processor versus Adyen/partner duties, original PSP reference, amount/currency and merchant-account fields, asynchronous `REFUND` outcome.\n- `### Tab: Refund with split instructions (recommended)`: split field matrix, fee/commission types and example API v72/test requests in several library versions.\n- `### Tab: Use split instructions from payment authorization`: full-refund conditions, authorization-versus-capture rule and liable fallback.\n- `### Troubleshooting`: format-only validation, invalid balance-account fallback and separate internal correction.\n- `## Track fund movements` and its three tabs: outgoing user/liable deductions, incoming multi pay-in credit, transfer and transaction webhook status examples.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform model and source route.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/multi-pay-in/refunds/2026-09-15|Adyen refund third-party payments guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Sending the refund amount to your user's customer is your pay-in partner's responsibility.",
+      "location": "line 21"
+    },
+    {
+      "text": "For partial refunds, we strongly recommend that you **always** provide split instructions in your request.",
+      "location": "line 39"
+    },
+    {
+      "text": "The funds are deducted according the split instructions in the payment authorization, *not* the capture.",
+      "location": "line 503"
+    },
+    {
+      "text": "If the payment authorization didn't contain split instructions, the full refund amount is debited from your liable balance account.",
+      "location": "line 509"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "line 783"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-platforms-multi-pay-in-refunds-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-multi-pay-in-refunds]] \u2014 2026-09-15 third-party multi pay-in refund guide for Adyen balance deductions, authorization-split fallback, asynchronous webhooks and partner-owned customer return; no shopper-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Adyen's return to the multi pay-in account and the pay-in partner's customer refund are distinct legs.",
+          "The raw split-field matrix marks account required while the Commission example omits it; do not infer a universal per-type field rule.",
+          "Illustrative webhook payloads have cross-tab identity/amount inconsistencies and do not prove account-specific ledger activity."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/multi-pay-in/refunds/2026-09-15.md",
+  "raw_sha256": "12ae2989a980e04cc1ef54a963d253cd04e5df74f343c8c9c1bd5d453c7e51f7",
+  "status": "candidate_ready"
+}

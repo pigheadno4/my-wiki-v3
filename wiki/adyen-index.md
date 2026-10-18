@@ -805,6 +805,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-platforms-verification-requirements-reference-additional-products-industry-codes]] — Adyen Platforms industry codes list (webpage, 2026-10-16)
 - [[source-adyen-docs-platforms-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — Brand-specific industry codes | Adyen for Platforms (webpage, 2026-10-16)
 
+### Website documentation — Campaign 16
+
+- [[source-adyen-docs-platforms-process-payments]] — Adyen Platforms process payments (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments]] — Process online payments for Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments]] — Adyen for Platforms in-person payments (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]] — Adyen for Platforms automatic split-configuration creation (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-split-transactions-split-chargebacks]] — Adyen for Platforms split chargeback booking (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-authorization]] — Adyen Platforms split online payments at authorization (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-multi-pay-in-payments]] — Adyen Platforms multi pay-in allocation of third-party payments (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-checkout-components]] — Adyen for Platforms: Checkout components (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-capture]] — Adyen Platforms split payments at capture (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] — Adyen for Platforms split refunds (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-payments-at-capture]] — Adyen Platforms in-person split at capture (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-multi-pay-in-refunds]] — Refund third-party multi pay-in payments through Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-surcharge]] — Online card surcharges | Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-payments-at-authorization]] — Adyen Platforms in-person split at authorization (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-transaction-fees]] — Transaction fees | Adyen for Platforms (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-refunds-refund-split-instructions]] — Split an in-person refund with Terminal API instructions (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-donations-create-manage-campaigns]] — Create and manage Adyen Giving campaigns for platform account holders (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-donations-online]] — Adyen Platforms online donations using Giving (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] — Adyen Platforms FX refunds: book the remainder to the user (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-payment-methods-api]] — Adyen for Platforms: Manage payment methods with API (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-refunds-refund-original-split]] — Adyen Platforms in-person refund original split (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments-transaction-fees]] — Adyen Platforms in-person transaction fees (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] — Adyen Platforms: fix the cost of goods in the settlement currency (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-multi-pay-in-top-up-multi-pay-in]] — Adyen Platforms top up a multi pay-in account (webpage, 2026-10-16)
+- [[source-adyen-docs-platforms-in-person-payments-dynamic-currency-conversion]] — Dynamic Currency Conversion for Adyen for Platforms in-person payments | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-automatic-split-configuration]] — Adyen for Platforms automatic split configuration (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-surcharge-dynamic]] — Dynamic in-person surcharge | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-processing-currency]] — Adyen Platforms FX payments: fix the processing-currency amount (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-surcharge-configuration]] — Adyen for Platforms in-person configuration-based surcharge (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-surcharge]] — In-person surcharge | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-payment-facilitators]] — Adyen Platforms online payment-facilitator transaction data (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-quickstart-guide-terminals]] — Adyen for Platforms terminals quickstart (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations-customer-area]] — Manage split configuration profiles in Customer Area | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-tipping]] — Adyen for Platforms in-person tip split (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-payment-facilitators]] — In-person payment-facilitator user data | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-platform]] — Adyen Platforms FX refunds: book the remainder to the platform (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-donations-in-person]] — Adyen for Platforms in-person donations using Giving (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-donations]] — Adyen for Platforms Giving donation campaigns (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-split-transactions]] — Split transactions between balance accounts | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payment-methods-customer-area]] — Manage payment methods in Customer Area | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-split-transactions]] — Split Adyen Platforms in-person transactions between balance accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-multi-pay-in-receive-funds]] — Adyen Platforms multi pay-in: receive partner funds (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payment-methods]] — Payment methods for Adyen for Platforms | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-multi-pay-in]] — Multi pay-in overview | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-quickstart-guide-payments]] — Adyen for Platforms payments quickstart (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments]] — Adyen Platforms: convert the currency of an online payment (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds]] — Convert the currency of a refund | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-refunds]] — Adyen Platforms in-person split-refund methods (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations]] — Adyen Platforms manage split configuration profiles (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-online-payments-currency-conversion]] — Currency conversion for Adyen for Platforms online payments | Adyen Docs (webpage, 2026-10-18)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -837,6 +890,10 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-multi-pay-in]] — Adyen multi pay-in
+
+- [[adyen-automatic-split-configuration]] — Adyen for Platforms automatic split configuration
 
 - [[adyen-platforms]] — Adyen for Platforms
 

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-online-payments-split-transactions-split-payments-at-authorization",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Platforms split online payments at authorization\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/split-transactions/split-payments-at-authorization\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, split-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes **split instructions in an online payment authorization request** to allocate a user's sale amount, platform commission, transaction fees and any currency-conversion remainder across platform balance accounts. It is about specifying and tracking a split for payments processed on behalf of platform users; it does not determine the legal seller or merchant of record, prove a particular balance-account booking, capture, payout or bank receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- Prerequisites listed are an online-payments integration and checkout UI, Checkout and Transfers API credentials, a server accepting standard plus transfer or transaction webhooks, and account-holder capabilities **receivePayments**, **receiveFromPlatformPayments** and **sendToTransferInstrument**. If **receiveFromPlatformPayments** is not **valid**, funds cannot be allocated to that user's balance account and the page says the **full amount** is booked to the platform's liable balance account. This is a consequential fall-back, not proof the holder is verified or funds arrived.\n- Add `splits` to POST `/payments` or `/sessions`. The guide lists a destination/charged **balanceAccountId** (a user's or the platform's liable account), type, amount and **store reference** for the normal store route. Its field table presents `store` among split-item fields while the example places `store` at the request top level; consult the linked Checkout API schema for exact placement rather than treating this page's layout as conclusive. `BalanceAccount` books the user's sale amount; `Commission` books platform commission to its liable account and need not specify `account`; `PaymentFee` can book total fees to a selected account. Unknown fees or an unspecified currency-conversion `Remainder` default to the liable account. `amount.currency` is specifically needed for conversion, `amount.value` is not needed for fees/remainder unknown at payment time, and `reference` is conditionally required for `BalanceAccount`. The `TopUp` type is **not supported in /sessions**.\n- The guide's USD 80 example allocates USD 75 sale to a user balance account, USD 5 commission to the liable balance account, and fees via a separate `PaymentFee` item. This is an illustrative **test** request, not a prescribed fee/commission rate, current API-version guarantee or observed booking. Registered payment facilitators **without configured stores** must send additional sub-merchant data instead of assuming the ordinary store-reference path covers them.\n- An `Authorised` payment response is not sufficient proof of correct split booking. The request validates split **format**, not destination balance-account existence or status. For a nonexistent balance account or one linked to a **closed** holder, the full transaction and fees are booked to the platform liable account; the guide points to later internal transfer for balance correction. Track each split using transfer-created/updated and transaction-created webhooks; their received, authorised, captured and booked stages are distinct. The prose and transfer examples describe a fee deduction from a user's balance account and a commission credit to the liable balance account, but the illustrative `transaction.created` payloads conflict on account or sign: the fee transaction names a different user balance account from its transfer example, and the commission transaction shows a negative amount on a user balance account. Do not infer the exact booked account or sign from these samples; reconcile an actual payment using its real webhook and accounting records.\n- The page recommends a unique split **reference** for reconciliation; without one, split amounts aggregate in a report entry. If amounts are unknown at payment time, **capture-time** splits can be provided, and they **override authorization-time splits**. Adyen recommends payment-time splits because some methods do not support delayed capture and can otherwise book incorrectly; capture-time instructions are suggested only to change amounts such as partial captures or overcaptures. This page links automatic split configuration but states no precedence rule for that separate route.\n- Additional links cover finer transaction-fee types, exchange-rate remainder, chargebacks and top-ups. A `Remainder` is a possible leftover after conversion, not a guaranteed gain or fee. Chargeback allocation and final fee/currency accounting belong to their linked guides; this source supplies navigation and the split-type orientation.\n\n## Detail locators\n\n- Scope, prerequisites, capability fall-back and split fields/types: pinned raw lines 15\u201358.\n- Standard platform example, test environment/API versions and payment-facilitator exception: pinned raw lines 60\u20131410.\n- Invalid/closed destination fall-back and per-split transfer/transaction webhook stages: pinned raw lines 1411\u20132399.\n- Additional fee, remainder, chargeback/top-up routes and authorization-vs-capture precedence: pinned raw lines 2401\u20132444.\n\n## Related\n\n- [[adyen-platforms]] \u2014 provider concept for platform/user and liable balance-account context.\n- [[source-adyen-docs-platforms-manage-stores]] \u2014 store reference/resource route, separate from successful split execution.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15|Adyen split payments at authorization, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you authorize an online payment on behalf of your user, you can split the payment amount between the balance accounts in your platform by including the split instructions in your authorization request.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md:19"
+    },
+    {
+      "text": "If an account holder does not have the **receiveFromPlatformPayments** capability in a **valid** state, the funds cannot be allocated to their balance account. The full amount is booked to your liable balance account.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md:35"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md:1413"
+    },
+    {
+      "text": "We strongly recommend sending a `reference` for all sets of split instructions in your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-splits) or [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-splits) request.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md:2436"
+    },
+    {
+      "text": "Split instructions provided at capture override any split instructions provided with the initial payment request.",
+      "location": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md:2438"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-auth-splits-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-authorization]] \u2014 2026-09-15 Platforms online authorization-time split guide for user/liable balance accounts, capability and destination fall-backs, per-split webhooks and capture-time override; instructions are not booking or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/split-transactions/split-payments-at-authorization/2026-09-15.md",
+  "raw_sha256": "513a40e6a95297a8797fa6367ebaeed72a7bbc86aef234ee8fc6091a7431c324",
+  "status": "candidate_ready"
+}

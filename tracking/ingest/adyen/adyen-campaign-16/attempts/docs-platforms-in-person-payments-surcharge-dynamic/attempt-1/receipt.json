@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-platforms-in-person-payments-surcharge-dynamic",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Dynamic in-person surcharge | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/in-person-payments/surcharge/dynamic\"\nraw_files:\n  - \"adyen/docs/platforms/in-person-payments/surcharge/dynamic/2026-09-15.md\"\ntags: [adyen, platforms, in-person-payments, surcharge, terminal-api, split-payments]\n---\n\n## Overview\n\nThis [[adyen]] for Platforms guide explains dynamic **in-person** surcharging: the platform or a third-party service calculates a surcharge from transaction and card details, then sends the amount in a Terminal API payment request with split instructions that book the surcharge to one of its user's balance accounts. It is a dated integration guide, not evidence of account enablement, compliant pricing, authorization, booking, payout, or bank receipt. See [[adyen-platforms]] and [[adyen-surcharging]]; the online card pilot and general point-of-sale guides are separate routes.\n\n## Key takeaways\n\n- **Scope and prerequisites.** The page requires a Terminal API integration with payment terminals on software **1.118 or later**, in addition to its linked Platforms in-person and surcharge requirements. Before starting, it says to enable issuer-country/region identifiers in API responses and webhooks and ask Adyen Support to enable single tap. It recommends Standard webhooks with surcharge data in `AUTHORISATION`; live Management API terminal-settings calls have rate limits. These requirements do not prove a specific account's support or eligibility. [Raw: Requirements, lines 23\u201335]\n- **Calculation and disclosure.** A Terminal API card-acquisition response supplies details such as brand, funding source, issuer country and transaction amount/currency for the platform's or third party's calculation. The guide recommends card acquisition, says an Australian flow can consider skipping it, and says Mobile solutions currently do not support card acquisition. Its worked payment path nevertheless requires a `PaymentData.CardAcquisitionReference`; it does not explain how to satisfy that reference when acquisition is skipped. The customer can accept the Adyen surcharge confirmation screen or cancel; when it is hidden or a Mobile solution is used, another form of disclosure is required. Check applicable country, scheme and legal requirements; this snapshot is not a current surcharge-permission determination. [Raw: How it works, lines 37\u201365; Show or hide the confirmation screen, lines 67\u201395; 1. Make a card acquisition request, lines 97\u2013234]\n- **Payment and booking.** `SaleData.SaleToAcquirerData` carries both split instructions and `surchargeFee`. Add a `Surcharge` split item directed to the `balanceAccountID` of **one** of the user's balance accounts; the page says the surcharge cannot be split across several balance accounts. `surchargeFee` is separate from the split fields and uses ordinary currency units, **not minor units**. The guide accepts an ampersand-separated key-value string or Base64-encoded JSON; the JSON example uses a string for the fee. `PaymentTransaction.AmountsReq.RequestedAmount` remains the goods/services amount before surcharge, gratuity or other adjustment. The worked request references the card-acquisition response's `POIData.POITransactionID`. [Raw: 2. Add a surcharge and book it to your user, lines 236\u2013261, 311\u2013343, 354\u2013378]\n- **Keep amounts and evidence distinct.** In the worked USD 620 goods/services plus USD 6 surcharge example, `split.totalAmount` is 62000 minor units and does not add the payment-fee or surcharge split; `surchargeFee` is `6.00`. The example books USD 600 sale and USD 6 surcharge to a user's balance account, USD 20 commission to the platform's liable account, and deducts the payment fee from the user sale. These are illustrative instructions, not observed bookings. For an accepted payment, the guide maps `TotalFeesAmount` to surcharge and `AuthorizedAmount` to original plus surcharge, while `AdditionalResponse.surchargeAmount` and `posAuthAmountValue` use minor units. The sample payment-request timestamp at raw line 410 starts `026-` while the acquisition response uses `2026-`; use the specified response timestamp/ID fields rather than copying that sample as a validated payload. [Raw: lines 263\u2013270, 419\u2013480]\n\n## Detail locators\n\n- Raw `Requirements` and `How it works` (lines 23\u201365): integration/version, identifiers, single tap, calculation, Mobile and disclosure boundaries.\n- Raw `Show or hide the confirmation screen` (lines 67\u201395): `surcharge.askConfirmation`, Management API scope and credential roles.\n- Raw `1. Make a card acquisition request` (lines 97\u2013234): Terminal API `CardAcquisitionRequest`, card details and response identifiers; missing identifiers route to the linked receive-identifiers guide.\n- Raw `2. Add a surcharge and book it to your user` (lines 236\u2013481): surcharge split destination, units/encodings, amount arithmetic, response fields and illustrative payloads.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform/user balance-account context\n- [[adyen-surcharging]] \u2014 surcharge methods and compliance boundary\n- [[adyen-terminal-api]] \u2014 Terminal API message architecture\n- [[source-adyen-docs-point-of-sale-surcharge-dynamic]] \u2014 separate general POS dynamic-surcharge guide\n- [[source-adyen-docs-platforms-online-payments-surcharge]] \u2014 separate Platforms online-card pilot\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/in-person-payments/surcharge/dynamic/2026-09-15|Adyen Platforms dynamic in-person surcharge \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you want to be in full control of surcharges, you can specify the surcharge amount in your in-person payment request. We refer to this as dynamic surcharge.",
+      "location": "raw line 19, introductory paragraph"
+    },
+    {
+      "text": "Dynamic surcharge is supported with a [Terminal API integration](/point-of-sale/design-your-integration/) with payment terminals on terminal software version **1.118** or later.",
+      "location": "raw line 29, Requirements > Integration type"
+    },
+    {
+      "text": "In a Mobile solution or if you configured to skip this Adyen-provided confirmation screen, you must provide another form of disclosure.",
+      "location": "raw line 63, How it works, step 6"
+    },
+    {
+      "text": "The account that will receive the surcharge. This is the `balanceAccountID` of one of your user's balance accounts. You cannot split the surcharge between multiple balance accounts.",
+      "location": "raw line 252, 2. Add a surcharge and book it to your user > split-item table"
+    },
+    {
+      "text": "Add a `surchargeFee` parameter with the calculated surcharge amount as the value. Note that this parameter is *not* a split parameter, and that you must *not* use minor units for the surcharge amount.",
+      "location": "raw line 256, 2. Add a surcharge and book it to your user"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-dynamic-surcharge-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-surcharge-dynamic]] \u2014 2026-09-15-captured Platforms Terminal API guide to calculated in-person surcharge, user balance-account split, disclosure and response fields; no payment or fund-movement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c16-dynamic-surcharge-concept-route",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-in-person-payments-surcharge-dynamic]] \u2014 2026-09-15 Platforms-specific dynamic POS surcharge guide for card-acquisition calculation, disclosure and single-user-balance-account booking; distinct from the online pilot.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "The raw allows considering skipped card acquisition in Australia but its worked payment fields require a CardAcquisitionReference; the source entry keeps that unresolved tension explicit."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/in-person-payments/surcharge/dynamic/2026-09-15.md",
+  "raw_sha256": "a576c5bf557a2e5efb8a7dba99d5ae2ae4ebcaaa087a0be9d29d98a80217dd6a",
+  "status": "candidate_ready"
+}

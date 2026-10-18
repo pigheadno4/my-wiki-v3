@@ -1,0 +1,69 @@
+{
+  "job_id": "docs-platforms-automatic-split-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms automatic split configuration\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/automatic-split-configuration\"\nraw_files:\n  - \"adyen/docs/platforms/automatic-split-configuration/2026-09-15.md\"\ntags: [adyen, platforms, automatic-splits, split-configuration, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms page explains automatic transaction splitting for a platform that processes its users' transactions through stores. A split-configuration profile contains rules with matching conditions and split logic; linking the profile to a user's store lets Adyen apply that logic to transactions processed through the store. The page describes configuration and expected booking behavior, not an executed payment, merchant-of-record assignment, settlement, or payout. [[adyen]] [[adyen-platforms]] [[adyen-automatic-split-configuration]]\n\n## Key takeaways\n\n- Create a profile with at least one rule in Customer Area or through the Management API, then link it to the user's store. A matching rule specifies amounts for the platform's liable balance account and the user's balance account. Currency, payment method, funding source, and shopper interaction are required condition dimensions in this page; card region is optional, while card usage type is described here as a pilot not available to all platforms.\n- All of a rule's conditions must match. If multiple rules match, Adyen selects by priority: currency, payment method or variant, card usage type, card region, funding source, then shopper interaction. Within a priority, the more specific rule prevails. The examples illustrate this selection; one scenario's explanatory wording calls the selected funding-source rule a payment-method comparison, so use the stated hierarchy rather than that wording as the rule.\n- Split logic can assign platform commission, transaction fees, and optional additional commission; it also includes refund and chargeback amounts/costs, post-conversion remainder, surcharge and tip. The in-person DCC markup allocation is explicitly pilot-only. Transaction fees can be booked to the liable or user balance account, together or separately. The page does not provide the detailed fee-type schema or prove any particular downstream booking.\n- A catch-all rule with all conditions set to ANY is recommended. If no specific rule matches without one, the transaction is booked to the platform's liable balance account by default. More broadly, absent profile or per-request split instructions, the page says transaction amounts and fees default to that liable account. Split instructions in an individual payment, capture, or refund request override the automatic split for that request.\n- Automatic split amounts use the transaction currency's maximum decimal precision and half-to-even rounding. Fixed commission is in minor units; variable commission is in basis points. By default, variable commission uses the total payment amount including tip and surcharge; Support can configure a choice to exclude either or both. That choice affects variable Commission and Additional commission in the profiles.\n- At capture, Adyen checks the profile again, recalculates splits if the captured amount differs from authorization, and uses a profile updated between authorization and capture. Capture-request split instructions override it. Configuration text and examples do not establish actual capture, balance transfer, or financial outcome.\n\n## Detail locators\n\n- Raw lines 15\u201333: store/profile setup, liable-account default and profile-rule concept.\n- Raw lines 35\u201375: condition and split-logic tables, card-usage and DCC pilots, catch-all fallback and request override.\n- Raw lines 77\u201396: matching-rule granularity and priority order; lines 98\u2013185 contain illustrative scenarios, with a wording inconsistency at lines 138\u2013146.\n- Raw lines 187\u2013224: currency precision and half-to-even rounding, including tie examples.\n- Raw lines 226\u2013256: commission basis, Support-configured tip/surcharge inclusion and illustrative calculation.\n- Raw lines 258\u2013262: capture amount recalculation, profile reevaluation and capture-request override.\n\n## Related\n\n- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]] \u2014 separate profile-creation and store-linking guide, with enablement, roles and API examples.\n- [[adyen-platforms]] \u2014 platform/user and balance-account context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/automatic-split-configuration/2026-09-15|Automatic split configuration, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "By configuring your stores to apply billing logic automatically, you eliminate the need to send split instructions for every transaction, capture, refund, or chargeback.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "By default, all transaction amounts and fees are booked to your platform's liable balance account",
+      "location": "raw line 27, introduction"
+    },
+    {
+      "text": "Without one, any transaction that doesn't match a specific rule will be booked to your liable balance account by default.",
+      "location": "raw line 73, Split logic"
+    },
+    {
+      "text": "The priority of rules is:",
+      "location": "raw lines 87\u201396, Rule hierarchy (priority list at lines 89\u201394)"
+    },
+    {
+      "text": "Adyen always checks the split configuration profile when we capture the payment.",
+      "location": "raw line 262, Captures"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-automatic-splits-new-concept",
+        "target_path": "wiki/concepts/adyen-automatic-split-configuration.md",
+        "update_kind": "durable_fact",
+        "anchor": "new concept file",
+        "proposed_markdown": "---\ntitle: \"Adyen for Platforms automatic split configuration\"\ntype: concept\ncategory: technology\ntags: [adyen, platforms, automatic-splits, balance-accounts]\n---\n\n## Definition\n\nAdyen for Platforms can apply split logic automatically to transactions processed through a user's store when a split-configuration profile is linked to that store. The profile contains one or more conditional rules specifying booking to the platform liable balance account and the user's balance account. This configuration route is distinct from supplying transaction-specific split instructions. [[source-adyen-docs-platforms-automatic-split-configuration]]\n\n## Selection and limits\n\nAll conditions of a rule must match. When several rules match, the documented priority is currency, payment method or variant, card usage type, card region, funding source, then shopper interaction; specificity breaks ties within a priority. A catch-all ANY rule is recommended because unmatched transactions otherwise default to the platform liable balance account. Payment, capture or refund request split instructions override the automatic split for that request. At capture, Adyen reevaluates the then-current profile and recalculates when the capture amount differs from the authorization. The source labels card usage type and in-person DCC markup allocation as pilots; those features are not generally available to every platform.\n\n## Evidence boundary\n\nThese are provider configuration and booking rules in a 2026-09-15 snapshot. They do not prove that a profile is enabled or linked on an account, that a transaction was split, or that capture, settlement or payout completed. They do not establish the legal seller or merchant of record.\n\n## Sources\n\n- [[source-adyen-docs-platforms-automatic-split-configuration]] \u2014 2026-09-15 automatic-split behavior, hierarchy, request precedence, fallback, rounding, commission and capture-time reevaluation.\n- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]] \u2014 2026-09-15 profile-creation, enablement, rule-field and store-association guide.\n\n## Related\n\n- [[adyen-platforms]] \u2014 parent platform context.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "New concept proposal for coordinator ownership; no existing automatic-split concept was found through root and Adyen provider indexes."
+        ]
+      },
+      {
+        "update_id": "c16-automatic-splits-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-automatic-split-configuration]] \u2014 2026-09-15 Platforms automatic-split overview for store-linked rule matching, hierarchy, liable-account fallback, per-request override and capture-time reevaluation; configuration is not financial-outcome proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/automatic-split-configuration/2026-09-15.md",
+  "raw_sha256": "0b64cefad5ed9929d8765f9c4625381370f5bb1176b76c012c77ba3535721bb6",
+  "status": "candidate_ready"
+}

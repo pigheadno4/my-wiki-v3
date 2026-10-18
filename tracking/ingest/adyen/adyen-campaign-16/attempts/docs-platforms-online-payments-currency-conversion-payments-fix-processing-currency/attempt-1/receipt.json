@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-platforms-online-payments-currency-conversion-payments-fix-processing-currency",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms FX payments: fix the processing-currency amount\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/currency-conversion/payments/fix-processing-currency\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/currency-conversion/payments/fix-processing-currency/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, currency-conversion, foreign-exchange]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes a pilot online-payment conversion path when the goods price is fixed in the customer's processing currency. The customer pays that fixed amount; the user's settlement-currency receipt varies with the exchange rate and Adyen conversion markup. The platform calculates a settlement amount with the Foreign Exchange API and supplies both currencies in a Checkout payment or capture request. The page describes a request path, not current account eligibility, actual booking, a guaranteed rate, or merchant-of-record identity. See [[adyen]], [[adyen-platforms]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- **Limited availability:** The raw page says currency conversion is in pilot, with processes and documentation subject to change; contact Adyen about piloting. Prerequisites include an online-payments integration and checkout UI; separate Checkout API and Balance Platform Foreign Exchange API credentials; the FX credential's **Read FX rates role**; standard webhooks plus transfer or transaction webhooks; account-holder capabilities `receivePayments`, `receiveFromPlatformPayments`, and `sendToTransferInstrument`; and Support enablement of the FX API and required merchant-account currencies. Listed prerequisites do not show that any particular account currently has them.\n- **Calculate the variable user amount:** Send `POST /rates/calculate` with an `exchangeCalculations` item: `type=splitPayment`, `sourceAmount` containing the fixed processing currency and value in minor units, `targetCurrency` as the user's settlement currency, and `exchangeSide=sell`. The response's `targetAmount.value` is the calculated user amount in settlement currency, and `appliedExchangeRate` includes Adyen's markup. Keep customer charge and user receipt distinct; the rate example is illustrative, not a current quote.\n- **Submit both currencies:** The guide names Checkout `POST /payments`, `POST /sessions`, or `POST /payments/{paymentPspReference}/captures`. Put the customer-paid processing amount and currency in top-level `amount`, and the calculated settlement amount and currency in `splits.amount`. For multiple splits, the page says the sum of settlement-currency split amounts must equal the calculated goods amount. It recommends explicit `Remainder` and `PaymentFee` split items.\n- **Remainder and booking risk:** The guide says mismatches or miscalculations are booked to the balance account specified in the `Remainder` split and can be reconciled per transaction in the Balance Platform Accounting Report. Its statement that supplied splits are guaranteed assumes valid split destinations; the separate [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-authorization]] guide warns that a nonexistent balance account or one tied to a closed holder can instead cause the full transaction and fees to book to the platform's liable balance account. Verify actual outcomes through the relevant records and webhooks.\n- **Example and version boundary:** The FX calculator example fixes PLN 200.00 and shows a CZK result. The subsequent Checkout field table cites PLN 200.00/CZK 1015.31, while the test `/v72/payments` and SDK examples use PLN 201.74/CZK 1000.00. Treat these as distinct illustrative numbers, not one arithmetically consistent live transaction. The response sample says `Authorised`; it alone does not prove final user credit or reconciliation. The page's code samples are versioned (Java 33.0.0, PHP 24.0.0, .NET 27.0.0, Node 23.3.0, Go 16.3.0, Python 13.3.0, Ruby 10.1.1) and mostly target test Checkout; the FX curl example names a live Balance Platform endpoint.\n\n## Detail locators\n\n- Pilot and fixed-processing versus variable-settlement premise: raw lines 15\u201324. Requirements, credential identities, role, webhooks, capabilities and Support setup: lines 26\u201342. Flow: lines 44\u201350.\n- `/rates/calculate` request fields and response semantics: lines 52\u201383; illustrative PLN/CZK rate calculation: lines 87\u2013142.\n- Checkout endpoints, amount/split fields, split-sum and remainder rule: lines 144\u2013156; test v72 curl and versioned SDK examples: lines 158\u2013797; illustrative `Authorised` response and accounting-report pointer: lines 799\u2013820.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform user and balance-account context.\n- [[adyen-currencies-and-fx]] \u2014 provider FX and currency context.\n- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-settlement-currency]] \u2014 opposite fixed-settlement-amount path; compare its separately pinned source.\n- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] \u2014 separate FX refund path.\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-payments-at-authorization]] \u2014 general split destination, liable-account fallback and webhook context.\n\n## Related raw API references\n\n- The raw page links to the Foreign Exchange API rate calculator, Checkout payment/session/capture endpoints, and Balance Platform Accounting Report. Consult those references independently for current schemas and operating conditions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/currency-conversion/payments/fix-processing-currency/2026-09-15|Adyen Docs: Fix the cost of goods in the processing currency (2026-09-15 snapshot; pilot)]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw lines 19\u201320, Limited availability"
+    },
+    {
+      "text": "The amount your user receives in the settlement currency is not fixed and depends on the prevailing exchange rate and Adyen's conversion markup.",
+      "location": "raw line 24, introductory premise"
+    },
+    {
+      "text": "The exchange rate to convert the processing currency to the settlement currency that includes Adyen's Markup.",
+      "location": "raw line 83, /rates/calculate response fields"
+    },
+    {
+      "text": "Any mismatch is booked to the balance account you specify in the split item with type **Remainder**.",
+      "location": "raw line 154, Checkout currency-conversion field table"
+    },
+    {
+      "text": "The splits are guaranteed, and the payment is booked according to the data you provide in the splits array.",
+      "location": "raw line 820, closing booking paragraph"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "fx-processing-fixed-source-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] \u2014 2026-09-15 limited-availability Platforms FX-refund pilot guide for booking the processing-versus-settlement-currency remainder to the user's balance account through original or rate-adjusted splits.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-payments-fix-processing-currency]] \u2014 2026-09-15 limited-availability Platforms guide for a fixed processing-currency customer amount and FX-calculated settlement-currency user split, with explicit remainder booking.",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": [
+          "The source's split-guarantee wording is qualified by the separate Platforms split-destination fallback; preserve that boundary in the source entry.",
+          "The source's FX and Checkout request examples use divergent illustrative amounts; do not combine them into a single calculated transaction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/currency-conversion/payments/fix-processing-currency/2026-09-15.md",
+  "raw_sha256": "70ea55945958140ad92f924491d60ebf94101a5cac6a5c812bd9b195b02a6a1c",
+  "status": "candidate_ready"
+}

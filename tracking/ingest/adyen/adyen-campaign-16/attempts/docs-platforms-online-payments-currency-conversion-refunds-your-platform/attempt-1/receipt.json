@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-platforms-online-payments-currency-conversion-refunds-your-platform",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms FX refunds: book the remainder to the platform\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/online-payments/currency-conversion/refunds/your-platform\"\nraw_files:\n  - \"adyen/docs/platforms/online-payments/currency-conversion/refunds/your-platform/2026-09-15.md\"\ntags: [adyen, platforms, online-payments, refunds, foreign-exchange]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes a limited-availability pilot for refunding a captured, currency-converted online payment while routing the FX remainder to the platform's liable balance account. In its scenario, the shopper originally paid in the processing currency and the user received settlement currency. The refund request reuses both original amounts: the shopper is credited the original processing-currency amount, the user is debited the original settlement-currency amount, and the remainder goes to the platform's liable account. This is a request and allocation guide, not proof of current pilot access, actual FX gain or loss, completed refund, or merchant-of-record identity. See [[adyen]], [[adyen-platforms]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- **Pilot and prerequisites:** The page says currency conversion remains in pilot, with processes and documentation subject to change. It lists an online-payments integration and checkout UI, a Checkout API credential, a server accepting standard webhooks plus transfer or transaction webhooks, account-holder capabilities `receivePayments`, `receiveFromPlatformPayments` and `sendToTransferInstrument`, Support configuration of required merchant-account currencies, and a captured payment before a refund. This original-amount path does not call the Foreign Exchange API in the documented steps; do not import an FX API credential or rate-calculation prerequisite from the separate user-remainder option.\n- **Refund split request:** Send Checkout `POST /payments/{paymentPspReference}/refunds` with the original payment's processing-currency amount in top-level `amount` and the original settlement-currency user amount in `splits.amount`. Add a `Remainder` split whose `account` is the platform's liable balance account ID; the guide says no remainder amount is needed. Its example uses shopper PLN 201.74 and user CZK 1000.00; those are different currency amounts, not a same-unit subtraction.\n- **Who bears the remainder:** The page says any currency-conversion remainder goes to the platform's liable balance account while the shopper and user retain their original respective currency amounts. It illustrates PLN 6.31, but does not establish that every refund creates that amount, that it is always a gain, or that a particular platform has realized it. A sentence says \u201cbook the remainder amount to the customer\u201d even though the title, following bullet about the liable account, procedure and split example all identify the platform; treat that sentence as an internal wording conflict, not an instruction to route the remainder to the shopper.\n- **Booking and outcome boundary:** The separate [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] guide warns that Checkout validates split format rather than balance-account existence; a nonexistent destination or closed account holder can cause the full transaction and fees to book to the platform's liable balance account. The raw sample response for this FX procedure is only `status: received`; it does not prove refund completion, shopper receipt or final split booking. Track the later outcome through the relevant webhooks and accounting records. The page does not describe a distinct partial-refund procedure.\n- **Version and environment:** The request example uses test Checkout v72. Its SDK samples are versioned (Java 40.0.0, PHP 28.3.0, .NET 32.2.1, Node 30.0.0, Go 21.1.0, Python 14.0.0 and Ruby 11.0.0). They show request shapes, not a current-version or live-account guarantee.\n\n## Detail locators\n\n- Pilot notice, original PLN/CZK scenario, remainder example and platform/customer wording conflict: raw lines 15\u201330. Requirements and captured-payment condition: lines 32\u201344. Common flow and booking claim: lines 46\u201351.\n- Checkout refund endpoint, original `amount`/`splits.amount` and no-amount platform `Remainder` split: raw lines 53\u201362. Test v72 and versioned SDK request examples: lines 64\u2013500. Illustrative `received` response: lines 502\u2013536.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform user and liable-balance-account context.\n- [[adyen-currencies-and-fx]] \u2014 provider FX and currency context.\n- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] \u2014 separate path that allocates the FX remainder to the user; its second option calculates a new settlement amount.\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 general refund split booking, invalid-account fallback and outcome context.\n\n## Related raw API references\n\n- The raw page links to the Checkout refund endpoint. Consult it independently for current schema and availability.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/online-payments/currency-conversion/refunds/your-platform/2026-09-15|Adyen Docs: Book the remainder to your platform (2026-09-15 snapshot; pilot)]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw lines 19\u201320, Limited availability"
+    },
+    {
+      "text": "The balance from the remainder is booked to your liable balance account.",
+      "location": "raw line 30, platform-remainder bullets"
+    },
+    {
+      "text": "When you book the remainder amount to the customer:",
+      "location": "raw line 26, conflicting introductory wording"
+    },
+    {
+      "text": "Your payment must be captured before you can initiate the refund.",
+      "location": "raw line 44, Requirements setup steps"
+    },
+    {
+      "text": "In the splits array, add another split item for the remainder, with type **Remainder**. Enter your liable balance account ID in the [account](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/\\(paymentPspReference\\)/refunds#request-splits-account) field of this split item. You do not need to specify the amount of the remainder.",
+      "location": "raw line 62, Send a refund request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "fx-refund-platform-remainder-route",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-user]] \u2014 2026-09-15 limited-availability Platforms FX-refund pilot guide for booking the processing-versus-settlement-currency remainder to the user's balance account through original or rate-adjusted splits.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-online-payments-currency-conversion-refunds-your-platform]] \u2014 2026-09-15 limited-availability Platforms FX-refund guide for reusing original processing/settlement amounts and routing the remainder to the platform's liable balance account.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "Raw line 26 says remainder booked to the customer, conflicting with title, line 30, procedure and example; source entry must preserve that wording conflict.",
+          "The illustrated PLN 6.31 remainder and status received do not prove a realized FX gain/loss or final refund booking."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/online-payments/currency-conversion/refunds/your-platform/2026-09-15.md",
+  "raw_sha256": "c804ff8b6e820f1663a11fbd2f5a742a78050c2059f21655b06418e0d4ba1a44",
+  "status": "candidate_ready"
+}

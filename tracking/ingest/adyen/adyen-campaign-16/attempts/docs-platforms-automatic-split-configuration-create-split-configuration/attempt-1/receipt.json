@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-automatic-split-configuration-create-split-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms automatic split-configuration creation\"\ntype: source\ndate_ingested: 2026-10-16\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/automatic-split-configuration/create-split-configuration\"\nraw_files:\n  - \"adyen/docs/platforms/automatic-split-configuration/create-split-configuration/2026-09-15.md\"\ntags: [adyen, platforms, automatic-splits, balance-accounts, management-api]\n---\n\n## Overview\n\nThis Adyen for Platforms guide describes creating a **split-configuration profile**, defining at least one conditional rule for transaction funds and fees, then **linking the profile to a user's store** with a selected user balance account. The profile can be shared by multiple stores, each association naming that store's user balance account. Once the store is successfully created or updated, Adyen evaluates its transactions and applies the rule with the **highest-priority matching condition**; this page links to a separate rule-hierarchy explanation rather than specifying the full priority algorithm. Without split instructions in either a profile or the Checkout/Terminal API payment request, Adyen says funds and fees are booked to the **platform liable balance account**. The page is configuration guidance and examples, not proof of an authorized payment, actual split booking, merchant-of-record allocation, settlement or payout.\n\n## Key takeaways\n\n- **Enablement, roles and association:** the guide requires an Adyen for Platforms **platform-model** integration and Support enablement of split-configuration profiles. API creation/management requires Management API credential role `Management API\u2014SplitConfiguration read and write`; Customer Area creation/management requires Support to enable `Manage new split configuration settings` for an admin who can grant it onward. Create a profile in Customer Area or Management API, but the general store-link step uses Management API `POST /stores` or `PATCH /stores/{storeId}` with `splitConfigurationId` and `balanceAccountId`. The introduction gives an **Onboarding on invite** exception for Customer Area store linking, while later requirements and linking instructions say Management API only; do not erase this source qualification.\n- **Rule selection:** the first rule is created with the profile. Customer Area conditions include shopper interaction/channel, method or variant, card funding source and currency. The Management API `POST /merchants/{merchantId}/splitConfigurations` body contains `description` and `rules`; its table marks currency, payment method, funding source, shopper interaction, split logic and platform commission as required. Optional card usage/region conditions are listed, but **card region is pilot-only** and API-defined if available. `ANY` broadens a condition; the exact priority among matching rules belongs to the separately linked hierarchy page.\n- **Funds, commission and fees:** a rule's platform commission goes to the liable balance account and can be fixed (minor units), variable (percentage), or both. An optional additional commission goes to its specified balance account. Fee booking can target liable or user balance accounts. The fee-type table allows **one aggregation level at a time**: `paymentFee` alone, paired `acquiringFees` and `adyenFees`, or the four detailed interchange/scheme/Adyen commission/markup fields. The raw prose misspells `acquiringFees` as `aquiringFees` in combination lines while examples use `acquiringFees`; use the current API schema for executable requests.\n- **Later lifecycle and currency:** optional refund/chargeback amounts and their fees may be assigned to liable/user balance accounts or follow the original payment split ratio. **Do not use `deductAccordingToSplitRatio` for refunds if the store processes multiple partial captures.** A `remainder` instruction books leftover value after currency conversion for **online** payments. DCC markup splitting is **in-person and pilot-only**; after Adyen's share, `dcc.accountHolderPercentage` is in basis points for the user balance account, with the rest for the liable balance account. Tip/surcharge booking is in-person; the page says surcharge configuration is available for payments initiated in Australia/New Zealand, with Canada/Europe/US pilots.\n- **Example and environment limits:** fixed amounts use minor units and percentage inputs use basis points in the composite example. The many curl/SDK snippets are **test-environment examples across differing library versions**, not a current SDK baseline or proof of a successful configuration. The composite example's narrative commission and curl values differ, and a fee response value differs from its request; use the verified Management API contract and returned configuration for implementation. No Checkout/Terminal request-versus-profile precedence beyond the stated no-instructions fallback is established here.\n\n## Detail locators\n\n- Raw lines 15\u201343: profile purpose, no-instruction liable fallback, create/link sequence, platform/role/Support prerequisites and invitation exception.\n- Raw lines 45\u2013107: Customer Area first-rule creation, channel/method/funding/currency conditions and commission/fee/chargeback/tip choices.\n- Raw lines 109\u2013157: Management API creation endpoint, required/optional rule fields, pilot card-region condition and optional booking categories.\n- Raw lines 161\u2013180 and 181\u2013566: fee aggregation restrictions, test SDK examples and returned profile/rule/logic IDs; inspect request/response discrepancies before reuse.\n- Raw lines 570\u2013993: refund/chargeback allocations and multi-partial-capture restriction, with type-specific examples.\n- Raw lines 997\u20131453: online conversion remainder and pilot in-person DCC markup.\n- Raw lines 1457\u20131853: regional/pilot surcharge qualification and tip/surcharge booking.\n- Raw lines 1855\u20132373: composite catch-all example, minor-unit/basis-point statement and versioned snippet inconsistencies.\n- Raw lines 2375\u20132649: store create/update association, selected balance account, highest-priority-rule statement and illustrative test store response.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform/user balance-account and payment-flow context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/automatic-split-configuration/create-split-configuration/2026-09-15|Automatic split configuration creation, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you don't include split instructions in a split configuration profile or in your [Checkout API](/platforms/online-payments/split-transactions) or [Terminal API](/platforms/in-person-payments/split-transactions) payment request, Adyen books the funds and fees to your platform's liable balance account.",
+      "location": "raw line 19, Create split configuration profiles"
+    },
+    {
+      "text": "It is not possible to link profiles to stores using the Customer Area, unless you onboarded your user through [Onboarding on invite](/platforms/onboard-users/#onboarding-on-invite).",
+      "location": "raw line 24, Create split configuration profiles"
+    },
+    {
+      "text": "When you associate a profile with your user's store, you must also specify which of your user's balance accounts to use for booking the splits.",
+      "location": "raw line 43, How it works"
+    },
+    {
+      "text": "If the associated store processes multiple partial captures, you must not set the refund logic to **deductAccordingToSplitRatio**.",
+      "location": "raw line 577, Book refunds and chargebacks"
+    },
+    {
+      "text": "After the store is successfully created or updated, Adyen starts evaluating every transaction processed through the store and applies the split instructions of the rule with the [highest priority condition](/platforms/automatic-split-configuration#rule-hierarchy).",
+      "location": "raw line 2387, Link the profile to a store"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c16-platforms-create-automatic-split-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-automatic-split-configuration-create-split-configuration]] \u2014 2026-09-15 Platforms guide to role-gated conditional split-profile creation and store/balance-account linking, fee/refund/DCC/tip booking and no-instructions liable fallback; examples are test-only and include discrepancies.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This page's introduction allows a Customer Area store-link exception for Onboarding on invite, while the later requirements/linking sections state Management API only; preserve the qualification and consult the current operation guide.",
+          "The page's composite commission narrative versus curl values and a fee request/response value differ; do not promote example amounts or enums as verified runtime behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/automatic-split-configuration/create-split-configuration/2026-09-15.md",
+  "raw_sha256": "b865386076a9137e6b44e54f832c30697efddc8b324aea822a25d6e8f52aff4b",
+  "status": "candidate_ready"
+}

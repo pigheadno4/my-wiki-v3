@@ -24,4 +24,7 @@ This dated guide does not establish current scheme/account eligibility, successf
 
 ## Sources
 
+- [[source-adyen-docs-platforms-in-person-payments-payment-facilitators]] — 2026-09-15 Platforms in-person facilitator guide for user Merchant-of-Record statement in facilitated transactions, store/request precedence and combined user-data/split Base64 formatting.
+
+
 - [[source-adyen-docs-point-of-sale-payment-facilitators]] — 2026-09-15 Adyen POS payment-facilitator guide for Merchant-of-Record statement, store versus request-supplied sub-merchant data, precedence and scope.
