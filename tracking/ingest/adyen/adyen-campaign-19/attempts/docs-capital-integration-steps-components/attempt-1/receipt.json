@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-capital-integration-steps-components",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Integration steps for UI components | Adyen Capital\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/integration-steps-components\"\nraw_files:\n  - \"adyen/docs/capital/integration-steps-components/2026-09-15.md\"\ntags: [adyen, capital, platforms, components, integration]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital integration guide describes embedding Capital Overview and Capital Offer Platform Experience components in a platform portal, including session authentication, client setup, optional localization/customization and alternate component flows. It is component setup guidance, not evidence of a user offer, verified eligibility, accepted financing terms, grant disbursement, repayment or bank receipt. See [[adyen]], [[adyen-capital]], and [[adyen-platform-components]].\n\n## Key takeaways\n\n- The page requires Adyen for Platforms integration, a Balance Platform API key with **Capital Component: Manage** for Session authentication, account-holder `getGrantOffers` capability, and Adyen configuration for Capital. In this component implementation, financing funds can be paid only to the user's balance account; transfer-instrument payout is unsupported, even though other Capital product routes may differ. Check language/country/browser availability in linked guides (raw lines 27\u201350).\n- The platform server creates a `POST /sessions` token using HTTPS origin, an account-holder-scoped policy, **Capital Component: Manage** role and `product: platform`; the front end receives the session object through its refresh callback. The guide then installs the Platform Experience library and mounts Overview or Offer (raw lines 72\u2013186, 190\u2013312). A token or mounted component proves neither capability allowed nor financed funds booked.\n- Overview embeds Offer by default; integrators may hide an unqualified state, interrupt the flow, or render Offer separately/screen-selectively. `getState` distinguishes `isUnqualified`, `isPreQualified`, `hasRequestedGrants` and `isInUnsupportedRegion` in this library snapshot. These are component state labels, not underwriting decisions or live grant lifecycle evidence (raw lines 54\u201370, 228\u2013241, 382\u2013503).\n- `onFundsRequest` is described as firing after a successful grant **request**; `onOfferSelect` after successful offer selection. Neither callback proves that a grant was approved or disbursed. The separate `onFundsRequest` signatures differ between Overview (requested grant data plus early-renewal grant ID) and Offer (requested grant data) (raw lines 209\u2013226).\n- Features depend on library version. `availableTranslations` is deprecated, `environment` defaults to test, and live origin requires HTTPS. The guide offers optional localization/appearance customization and version-specific SRI for embedded scripts/styles (raw lines 27\u201331, 98\u2013105, 166\u2013172, 198\u2013203, 314\u2013380, 505\u2013525).\n\n## Detail locators\n\n- Product/component prerequisites and balance-account-only disbursement path: raw lines 37\u201350.\n- Server session policy, client installation and initializer details: raw lines 72\u2013312.\n- State and callback semantics: raw lines 209\u2013235; alternative UI use cases: raw lines 382\u2013503.\n- Version/deprecation, locale, appearance and supported-language list: raw lines 27\u201331, 166\u2013172, 198\u2013203, 314\u2013380, 505\u2013525.\n\n## Related\n\n- [[adyen-capital]]\n- [[adyen-platform-components]]\n- [[source-adyen-docs-capital-manage-user-capabilities]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/integration-steps-components/2026-09-15|Pinned Adyen Capital component integration guide]]\n",
+  "quotes": [
+    {
+      "text": "The guidance and features available may differ based on the library version in use.",
+      "location": "raw line 29, version qualification"
+    },
+    {
+      "text": "With the capital components, you can only pay out the business financing funds to the user's balance account. Payouts to transfer instruments are not supported in this implementation.",
+      "location": "raw line 46, Requirements/Limitations"
+    },
+    {
+      "text": "By default, the **Capital Offer** component is embedded in the **Capital Overview** component",
+      "location": "raw line 56, component flow"
+    },
+    {
+      "text": "The callback function triggered after the user selects the **Request funds** button on the grant offer term sheet screen, and the grant request has been successful.",
+      "location": "raw line 214, Overview onFundsRequest"
+    },
+    {
+      "text": "The user is operating in a country/region where Adyen Capital is not yet supported.",
+      "location": "raw line 235, getState"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "capital-components-integration-source-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-components-overview-after-payment-capital-component]] \u2014 2026-09-15 Capital Overview/Offer component guide for dated disclosure and eligibility/term/status UI; application, signature and screen state are not grant/debt proof.",
+        "proposed_markdown": "- [[source-adyen-docs-capital-integration-steps-components]] \u2014 2026-09-15 Capital Overview/Offer component integration guide for account-holder-scoped session role, getGrantOffers prerequisite, versioned UI states/callbacks and balance-account-only component payout path.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This component integration limits payout to the user's balance account, while broader Capital documentation can describe other disbursement routes; do not generalize this implementation limit to all Capital paths.",
+          "A pre-qualified UI state, successful grant request callback, session token or mounted component does not prove underwriting approval, grant booking, repayment or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/integration-steps-components/2026-09-15.md",
+  "raw_sha256": "e8c9cf09215df3ddef0fc04151f7b881a0b3f60d190a385432c343dfdc0d19c6",
+  "status": "candidate_ready"
+}

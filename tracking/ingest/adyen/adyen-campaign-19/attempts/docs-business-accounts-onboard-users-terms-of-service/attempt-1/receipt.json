@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-onboard-users-terms-of-service",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts Terms of Service acceptance\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/onboard-users/terms-of-service\"\nraw_files:\n  - \"adyen/docs/business-accounts/onboard-users/terms-of-service/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, onboarding, terms-of-service, consent]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Business Accounts onboarding guide describes how a platform identifies required Adyen Terms of Service documents, generates and presents them, then records acceptance for a legal entity. Terms acceptance is a gate before particular balance-platform actions. Generating a document, configuring the flow, or seeing a sample acceptance response does not establish that a specific user accepted terms or that a Business Account opened.\n\n## Key takeaways\n\n- The platform **must** generate the required document, show it to the user, and ask for acceptance. Acceptance must come from an individual legal entity representing a physical person; for an organization, an authorized signatory accepts on its behalf. The guide requires an Adyen for Platforms integration, Legal Entity Management API credentials, a server that receives/accepts subscribed Configuration webhooks, and legal entities for the contracting user and individual signer.\n- When account-holder capabilities are requested, inspect `balancePlatform.accountHolder.updated` for `verificationErrors` showing a Terms-of-Service requirement. The example has `sendToTransferInstrument` requested/enabled but `allowed=false`, `verificationStatus=invalid`, and error `2_902` with an Accept TOS remedial action. That is a **test example**, not a live user's status or proof that acceptance alone will make a capability allowed.\n- For the **main legal entity** (the owner's individual legal entity for a sole proprietorship), GET `/legalEntities/{id}/termsOfServiceStatus` determines the required document **types**. A user may need more than one document. The guide says test returns only `adyenForPlatformsAdvanced` under default configuration regardless of actual integration, while live returns the actual required types. The sample response listing `adyenForPlatformsAdvanced`, `adyenCapital`, and `adyenAccount` is illustrative and must not override that stated test rule or imply every Business Accounts user needs all three.\n- POST `/legalEntities/{id}/termsOfService` generates a document for a requested `type` and `language` (English or conditionally French); optional format defaults to JSON, with PDF/TXT alternatives. The response supplies Base64 `document` and a unique `termsOfServiceDocumentId`. Present each decoded document in the UI. The page records document **type and ID**, not an explicit fixed Terms-of-Service version; use the actual generated document ID rather than assuming a static version or a library sample's LEM v3 endpoint/SDK version is universal.\n- After the actual user accepts, PATCH `/legalEntities/{id}/termsOfService/{termsOfServiceDocumentId}` for the main legal entity and generated document ID with required `acceptedBy`: the owner's individual legal entity ID for sole proprietorships or an authorized signatory's individual legal entity ID for organizations. `ipAddress` is optional. The acceptance response identifies signer, accepted document ID, type and language; optional GET `/legalEntities/{id}/termsOfServiceAcceptanceInfos` returns records including `acceptedBy`, `acceptedFor`, `createdAt`, ID and type. A generated document or submitted PATCH example is not proof of actual consent; correlate the correct signer, entity, document and real acceptance record. This page does not define an automatic account-opening or transfer-completion outcome after acceptance.\n\n## Detail locators\n\n- Opening and `## Requirements`: mandatory presentation/acceptance, authorized physical-person signer, Platforms/LEM/webhook/entity prerequisites.\n- `## 1. Confirm Terms of Service requirements`: capability webhook and verificationErrors example.\n- `## 2. Get the types of Terms of Service required`: main-entity scope, multiple types, test default versus live actual types.\n- `## 3. Generate the Terms of Service documents` / `## 4. Present the Terms of Service document to your user`: type/language/format, Base64 document ID and UI presentation.\n- `## 5. Accept the Terms of Service`: main legal entity and signer IDs, generated document ID, optional IP and acceptance response.\n- `## 6. (Optional): Get the Terms of Service information for a legal entity`: readback fields and example.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 main Business Accounts concept.\n- [[adyen-platforms]] \u2014 platform and legal-entity context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/onboard-users/terms-of-service/2026-09-15|Adyen Business Accounts Terms of Service guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "You must generate a Terms of Service document, show the document to your users, and ask them to accept it.",
+      "location": "line 19"
+    },
+    {
+      "text": "For organizations, the document must be accepted by an authorized signatory of the organization.",
+      "location": "line 21"
+    },
+    {
+      "text": "In your test environment, only the document type `adyenForPlatformsAdvanced` is returned regardless of your actual integration.",
+      "location": "line 111"
+    },
+    {
+      "text": "Your user may need to accept more than one Terms of Service document depending on your integration.",
+      "location": "line 357"
+    },
+    {
+      "text": "For organizations, this is the legal entity ID of an authorized signatory for the organization.",
+      "location": "line 389"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-tos-source-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] \u2014 2026-09-15 Business Accounts onboarding ToS flow for webhook requirement, test/live document types, generated document IDs, authorized individual signer and acceptance-record readback.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide says test returns only adyenForPlatformsAdvanced, despite a nearby illustrative response listing three types; do not treat that sample as the test rule.",
+          "Generated document type/ID and versioned LEM v3/SDK test examples do not establish a fixed current Terms-of-Service version or actual user consent.",
+          "A Terms acceptance record must be matched to the correct main entity, document and individual signer; setup alone does not prove account opening or financial operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/onboard-users/terms-of-service/2026-09-15.md",
+  "raw_sha256": "3b037dde62dfd5438ed9da0630f20a91e48426b2003547e6e575d880c2402136",
+  "status": "candidate_ready"
+}

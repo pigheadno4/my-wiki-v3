@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-account-structure-resources-platform-account-structure",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Platform account structure\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/account-structure-resources/platform-account-structure\"\nraw_files:\n  - \"adyen/docs/business-accounts/account-structure-resources/platform-account-structure/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, account-structure, balance-accounts]\n---\n\n## Overview\n\nThis 2026-09-15-modified [[adyen]] Business Accounts page maps platform-owned and user-owned resources in a food-delivery example. It distinguishes the platform's company/merchant/balance-platform/liable resources from each user's stores, account holders, balance accounts, legal entities, business lines, transfer instruments and Business Account payment instruments. The diagram and example describe configuration; they do not prove bank ownership, verified onboarding, an opened account, live balances or completed supplier payments. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- The page states that scheme-regulation compliance requires a balance platform and merchant account in each region where the platform is registered and wishes to process transactions (raw line 23). In its illustration, platform resources include a company account, merchant accounts organized by country/region, two balance platforms labelled EU and US, a liable account holder and liable balance account for platform funds, and a legal entity in each acquiring region (raw lines 29\u201346). The named examples do not establish universal resource counts or present regional eligibility.\n- User-side resources include stores tied to relevant merchant accounts; at least one account holder per country of operation to define transfer capabilities; at least one balance account per account holder with base currency to hold the user's funds; a transfer instrument described as a verified payout bank account for each balance account; and a legal entity and business line in each operating country for verification/business information (raw lines 48\u201366). These are model relationships, not evidence that verification, payout routing or a bank transfer succeeded.\n- The page separately describes one or more balance accounts per account holder to link to Business Account payment instruments and says that linked balance account must be separate from the balance account that holds the user's funds (raw line 60). It describes a Business Account payment instrument for each restaurant, with transactions processed using funds in a user's balance account (raw lines 68\u201370). Keep the page's own different balance-account roles explicit; do not collapse the liable platform account, user's funds account, linked instrument account, and external transfer instrument.\n- **Unresolved cardinality conflict:** This structure page says multiple Business Accounts can link to the same balance account (raw line 60). The separately captured Create business accounts guide says a balance account can have only one Business Account number and the API errors if one already exists (raw `business-accounts/create-business-accounts/2026-09-15.md` line 46); the integration checklist also says one `bankAccount` payment instrument per balance account (raw `business-accounts/integration-checklist/2026-09-15.md` line 48). Do not implement multi-number routing from this example without current product/API confirmation.\n\n## Detail locators\n\n- Regional platform/account requirement and illustrative use case: raw lines 21\u201327.\n- Platform-owned company, merchant, balance platform, liable and legal-entity resources: raw lines 29\u201346.\n- User-owned stores, account holders, distinct balance-account roles, transfer instruments, KYC and business lines: raw lines 48\u201370.\n- Diagram reference: raw lines 72\u201376.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[source-adyen-docs-business-accounts-account-structure-resources]] \u2014 parent resource map.\n- [[source-adyen-docs-business-accounts-create-business-accounts]] \u2014 conflicting one-number-per-balance-account creation guide.\n- [[source-adyen-docs-business-accounts-integration-checklist]] \u2014 conflicting one-bankAccount-instrument-per-balance-account checklist.\n- [[source-adyen-docs-business-accounts-manage-balance-accounts]] \u2014 balance-account operations.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/account-structure-resources/platform-account-structure/2026-09-15|Captured platform account-structure guide]]\n",
+  "quotes": [
+    {
+      "text": "you must have a balance platform and merchant account in [each region that you are registered and wish to process transactions](/platforms#acquiring-regions).",
+      "location": "raw line 23, Account structure"
+    },
+    {
+      "text": "A liable account holder for your platform, and a liable balance account to hold your platform's funds.",
+      "location": "raw line 44, Resources belonging to your platform"
+    },
+    {
+      "text": "At least one account holder for each country your user operates in, defining their transfer capabilities.",
+      "location": "raw line 56, Resources belonging to each user"
+    },
+    {
+      "text": "For each account holder, at least one balance account with a defined base currency, to hold your user's funds.",
+      "location": "raw line 58, Resources belonging to each user"
+    },
+    {
+      "text": "If your user has multiple business accounts, you can link them all to the same balance account. However, that balance account must be separate from the balance account that holds your user's funds.",
+      "location": "raw line 60, Resources belonging to each user"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-platform-structure-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-account-structure-resources-platform-account-structure]] \u2014 2026-09-15 platform-versus-user resource map and distinct liable/user/instrument-linked balance-account roles; its multiple-Business-Accounts-per-balance-account statement conflicts with the captured one-number/one-bankAccount-instrument creation guides.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 60 says multiple Business Accounts may link to one balance account, while captured Create business accounts raw line 46 and Integration checklist raw line 48 say one Business Account number or bankAccount payment instrument per balance account; preserve without resolution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/account-structure-resources/platform-account-structure/2026-09-15.md",
+  "raw_sha256": "497321fe7c56520efb6abacd7cea6add6c2e077eadddfad8550b28814370a71e",
+  "status": "candidate_ready"
+}

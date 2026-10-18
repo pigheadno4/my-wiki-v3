@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-renew-grant",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital grant renewal\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/renew-grant\"\nraw_files:\n  - \"adyen/docs/capital/renew-grant/2026-09-15.md\"\ntags: [adyen, capital, platforms, grant-renewal, financing]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital guide describes a **limited-availability pilot** for configuring a subsequent grant while a prior grant is partially repaid. Subject to separate renewal eligibility and offer conditions, Adyen says it disburses the full subsequent grant amount and reserves the prior grant's outstanding principal for repayment. The prior and subsequent grants remain distinct. This is a documented flow, not evidence that a particular user qualifies, that principal was settled, or that new funds were paid out.\n\n## Key takeaways\n\n- Pilot access requires contacting Adyen. Prerequisites include an Adyen for Platforms integration supporting Capital, Balance Platform API credentials with Capital Configuration and Grant Initiation roles, user `getGrantOffers` and `receiveGrants` capabilities, Capital/Transfer/Transaction webhooks, and Capital compliance and renewal-eligibility review. The page says only **one disbursement per grant** is supported at this snapshot.\n- Observe the prior grant's `balancePlatform.grants.updated` webhook or GET `/grants` for `renewal.eligible=true`, `renewal.minimumAmount`, and the prior-grant `id`. The page also points to separate eligibility requirements. These signals do not themselves supply a selected valid offer or prove that the user can receive new funds.\n- For the account holder, obtain dynamic or static financing offers and present offers meeting the webhook's `renewal.minimumAmount`. The guide separately says a renewal offer must be at least **150% of the prior grant's outstanding balance**; available offers are recalculated weekly and expire after seven days. Do not treat a previously viewed offer as still valid. After selection, `receiveGrants` is disallowed until the user accepts **new** Terms of Service. Underwriting can change repayment percentage, fee, maximum amount and terms from the prior grant.\n- Configure the subsequent grant by POST `/grants` with the selected `grantOfferId`, Adyen-provided `grantAccountId`, and `renewsGrantId` identifying the prior grant. The guide shows a recipient balance account or transfer instrument; omitted `counterparty.balanceAccountId` pays to the account holder's primary balance account according to its parameter table. A `Requested` API response is asynchronous acknowledgment, **not** final grant configuration or payout; wait for relevant webhook evidence.\n- Track `balancePlatform.grants.created` for configuration, transfer-created/updated events for received, authorised and booked transfer stages, and `balancePlatform.transaction.created` for the described payout to a balance account or payment instrument. A later `balancePlatform.grants.updated` can report full repayment, reconfiguration or write-off. These are distinct observations; a booked transfer or sample transaction is not bank-receipt proof, and the page does not show a separate accounting record that the prior principal was actually repaid from reserved funds.\n- The JSON snippets are **test examples**, not a single internally consistent live trace. The eligibility sample has `renewal.minimumAmount.value=9440625` while the illustrated transfer amount is `1850000`; grant-event outer and nested IDs also differ in ways that should not be normalized into a guaranteed join. Use actual grant, transfer, transaction, status and amount records for a real case.\n\n## Detail locators\n\n- Opening, `## Requirements`, and `## How it works`: pilot, prior/subsequent distinction, principal reservation, roles/capabilities/webhooks, one-disbursement limit and sequence.\n- `## 1. Get a notification of grant eligibility for grant renewal`: eligibility flag, minimum amount, prior-grant ID, GET alternative and test example.\n- `## 2. Get financing offers` and `## 3. Present the user with the new Terms of Service`: 150% rule, weekly recalculation, seven-day expiry, offer presentation and renewed consent.\n- `## 4. Configure a subsequent grant`: POST identifiers/counterparty, `Requested` response and asynchronous final-result warning.\n- `## 5. Get updates` and its five tabs: configured grant, received/authorised/booked transfer, payout transaction and subsequent-grant repayment examples.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept.\n- [[source-adyen-docs-capital-grant-lifecycle-and-status]] \u2014 grant-status reference.\n- [[adyen-platforms]] \u2014 platform/account-holder context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/renew-grant/2026-09-15|Adyen Capital renew-a-grant guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Grant renewal is currently in a pilot phase. To request access, reach out to your Adyen contact.",
+      "location": "line 20"
+    },
+    {
+      "text": "Adyen disburses the full subsequent grant amount and reserves the outstanding principal of the prior grant for repayment.",
+      "location": "line 24"
+    },
+    {
+      "text": "The renewal offer must be at least 150% of the outstanding balance of the prior grant. Available offers are recalculated weekly and expire after seven days.",
+      "location": "line 111"
+    },
+    {
+      "text": "The user must re-accept the Terms of Service before the subsequent grant can be disbursed.",
+      "location": "line 120"
+    },
+    {
+      "text": "You receive a response to your API request, but you must wait for the [webhook](/capital/make-grant-request?tab=grant_configured_0_1) to know the final result.",
+      "location": "line 197"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-renew-grant-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-renew-grant]] \u2014 2026-09-15 pilot guide for partially repaid grant renewal, minimum/offer and renewed-ToS gates, prior/subsequent IDs, asynchronous request and separate grant/transfer/payout observations.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Grant renewal is pilot-only in this snapshot and separately eligibility-gated; one disbursement per grant is documented.",
+          "The page says full new amount is disbursed and prior outstanding principal reserved for repayment, but this page does not prove actual settlement of a user's prior balance or actual new payout.",
+          "Test snippets are not an internally consistent single transaction: example minimumAmount.value 9440625 exceeds illustrated transfer amount 1850000, and outer/nested grant identifiers vary; do not infer a universal join or qualifying amount."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/renew-grant/2026-09-15.md",
+  "raw_sha256": "9fbb10a85f19845a541782339a092f689c3249f8eb476b3c690339e92aa3a213",
+  "status": "candidate_ready"
+}

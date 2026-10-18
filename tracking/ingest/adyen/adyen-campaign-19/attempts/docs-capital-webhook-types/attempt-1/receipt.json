@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-webhook-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital webhook structures and event types\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/webhook-types\"\nraw_files:\n  - \"adyen/docs/capital/webhook-types/2026-09-15.md\"\ntags: [adyen, capital, platforms, webhooks, grants, transfers]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital navigation/reference page maps business-financing events to **Capital offer/grant**, **Transfer** and **Transaction** webhook families. An offer or grant lifecycle notification has a different subject from a grant-related funds movement or booked balance-account transaction. The page identifies event names and correlation fields; it supplies no specific user's successful offer, funded grant, debt outcome or bank receipt.\n\n## Key takeaways\n\n- Capital webhooks include dynamic-offer `balancePlatform.capital.dynamicOffer.created`, static-offer `balancePlatform.balanceAccountHolder.capitalOffer.created`, and grant `balancePlatform.grants.created`/`balancePlatform.grants.updated`. Offer creation is for an account holder and does not mean an offer was accepted or a grant paid out. The page says **grant initiation status updates generate only Capital notifications**, not Transfer or Transaction notifications.\n- Grant-related movement uses `balancePlatform.transfer.created` and `balancePlatform.transfer.updated`. Identify relevant transfers with `category=grants`, then preserve the **transfer's** `type` and `direction`: grant disbursement is `grant`/incoming; regular repayment is `repayment`/outgoing; unscheduled repayment involves `capitalFundsCollection` **and** `repayment` with incoming and outgoing directions. The counterparty can identify a balance account or transfer instrument. The envelope event `type` and the nested transfer `type` answer different questions.\n- `balancePlatform.transaction.created` is described as a transaction notification after a transfer is **booked in a balance account**, used to confirm when grant funds are deposited into a user's balance or credited for repayment. The stated join is `transfer.id` to the grant-fund-movement transfer ID, and `transfer.reference` to the grant ID listed in the related transfer. A transaction event needs matching identifiers, account/direction and real event state before inferring its meaning; it is not evidence of an external bank's receipt.\n- The overview says the webhooks have a `type` and a `status` field to differentiate event and outcome, but this hub page does **not** enumerate status values or full payload schemas. Follow its child Capital/grant and fund-transfer pages or API references for stage semantics. It does not list a Configuration webhook or a deprecation/migration rule for any event name; do not infer either from this taxonomy.\n\n## Detail locators\n\n- Opening and `## Capital dynamic offer webhook` / `## Capital static offer webhook` / `## Capital grant webhook`: event families, offer/grant subjects and initiation-notification boundary.\n- `## Transfer webhook`: transfer-created/updated event names; grant-related category, subtype, direction and counterparty matrix.\n- `## Transaction webhook`: post-booking event and transfer-ID/grant-reference join fields.\n- `## Next steps`: detailed grant-lifecycle and fund-transfer webhook children.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept.\n- [[source-adyen-docs-capital-webhook-types-capital-webhooks]] \u2014 grant/offer child reference.\n- [[source-adyen-docs-capital-webhook-types-fund-transfers-webhooks]] \u2014 fund-transfer child reference.\n- [[adyen-platforms]] \u2014 platform webhook context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/webhook-types/2026-09-15|Adyen Capital webhook types guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "These notify your server of changes to grants at each stage of their lifecycle.",
+      "location": "line 21"
+    },
+    {
+      "text": "These notify your server when grant funds are deposited into a user's balance or credited for grant repayment.",
+      "location": "line 29"
+    },
+    {
+      "text": "Note that grant initiation status updates generate only capital notifications, not transfer or transaction notifications.",
+      "location": "line 33"
+    },
+    {
+      "text": "Unscheduled grant repayment: **capitalFundsCollection** and **repayment**",
+      "location": "line 78, transfer type matrix"
+    },
+    {
+      "text": "Must correspond to the grant ID listed in the related transfer.",
+      "location": "line 98, transfer.reference row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-webhook-types-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-webhook-types]] \u2014 2026-09-15 Capital webhook taxonomy for account-holder offers, grant lifecycle, grant-related transfer subtype/direction and booked transaction correlation; event families are distinct evidence grains.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Grant initiation can emit only Capital notifications; offer/grant webhook presence does not prove a transfer or payout.",
+          "For unscheduled repayment, retain both capitalFundsCollection and repayment transfer types and incoming/outgoing legs; event-envelope type differs from transfer subtype.",
+          "This hub supplies no exhaustive status values, Configuration webhook or event-name deprecation rule. Transaction-to-transfer/grant correlation is specified, but no actual debt outcome or external bank receipt is proven."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/webhook-types/2026-09-15.md",
+  "raw_sha256": "938a0cbb133f9ddff7ab0f6cf126ee2dfaebd42f7eddfc750f85dbb3dde03966",
+  "status": "candidate_ready"
+}

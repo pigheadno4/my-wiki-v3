@@ -1,0 +1,7 @@
+# Business Accounts Terms of Service retrieval checks
+
+Q1. How does the platform determine and present the correct Terms of Service documents, and what differs between test and live?
+Expected forward route: [[adyen-index]] → [[adyen-business-accounts]] → ## Sources → [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] → [[raw/adyen/docs/business-accounts/onboard-users/terms-of-service/2026-09-15]]. Inspect raw lines 19–49 for mandatory signer/presentation and prerequisites, 51–111 for account-holder webhook, required types and test-only default, and 125–133 plus 331–379 for generation, document IDs/formats and presentation. The three-type response at lines 113–123 is an example, not the stated test behavior.
+
+Q2. What evidence distinguishes actual acceptance by the correct person from merely generating a document or configuring the API?
+Expected forward route: [[adyen-index]] → [[adyen-business-accounts]] → ## Sources → [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] → [[raw/adyen/docs/business-accounts/onboard-users/terms-of-service/2026-09-15]]. Inspect raw lines 381–392 for PATCH main-entity/document ID and required individual acceptedBy (owner or authorized signatory); lines 594–613 for acceptance response; lines 616–618 and 762–783 for optional acceptance-info readback including acceptedBy/acceptedFor/type/time. The page does not prove a live user's consent or account opening from examples.

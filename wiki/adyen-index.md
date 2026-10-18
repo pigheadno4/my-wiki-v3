@@ -964,6 +964,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-platforms-components-overview-before-payment]] — Adyen Platforms before-payment components (webpage, 2026-10-18)
 - [[source-adyen-docs-platforms-components-overview-during-payment]] — During payment | Adyen Docs (webpage, 2026-10-18)
 
+### Website documentation — Campaign 19
+
+- [[source-adyen-docs-business-accounts]] — Adyen Business accounts overview (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-get-started]] — Get started with Business Accounts | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-account-structure-resources]] — Account structure | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-requirements-document-requirements]] — Requirements for document uploads | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-collect-user-data]] — Adyen Capital higher-amount user-data collection (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-kyc-verification-codes-sub-errors]] — Adyen verification suberror codes (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-manage-account-holders]] — Manage account holders for Business Accounts | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-manage-legal-entities]] — Manage legal entities | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-integration-steps-components]] — Integration steps for UI components | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-kyc-verification-codes-general-verification-errors]] — Adyen general verification error codes (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] — Adyen Business Accounts Terms of Service acceptance (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-get-grant-offers-dynamic-offers]] — Dynamic financing offers | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-kyc-verification-codes-remediating-actions]] — Remediating action codes | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-terms-of-service]] — Adyen Capital Terms of Service acceptance (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-capital-components]] — Integrate UI components | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-vulnerable-users]] — Vulnerable users (UK and Ireland only) | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verify-account-holder]] — Bank account verification with open banking | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-renew-grant]] — Adyen Capital grant renewal (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-webhook-types-fund-transfers-webhooks]] — Capital fund transfer-related webhooks | Adyen (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-user-interface]] — Adyen Capital user application and interface guidelines (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-overview-data-review-process]] — Periodic data reviews | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-webhook-types-capital-webhooks]] — Grant lifecycle-related events | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-overview]] — Adyen Business Accounts verification process (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-create-business-accounts]] — Adyen Business Accounts: Create business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-customer-complaints]] — Adyen Capital customer complaints and escalation guidance (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products]] — Reference for additional capabilities | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-make-grant-request]] — Adyen Capital grant request and disbursement updates (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-requirements-data-formats-per-country]] — Adyen Business Accounts verification data formats by country (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-manage-balance-accounts]] — Adyen Business Accounts: Manage balance accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-get-grant-offers-static-offers]] — Static financing offers | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-marketing-user-communication]] — Material for marketing and communication with users | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-onboard-users]] — Adyen Business accounts user onboarding and verification (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-manage-disbursements]] — Adyen Capital disbursement configuration management (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-get-grant-balances]] — Adyen Capital grant and grant-account details (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-overview-capabilities]] — Adyen Business Accounts: User capabilities (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-customer-service-support]] — Customer service and support | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-integration-checklist]] — Adyen Business Accounts: Integration and go-live checklist (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-french-intermediary]] — Registration as an intermediary in France | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-reporting-to-adyen]] — Notification and reporting to Adyen | Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-pricing-and-eligibility]] — Adyen Capital pricing and eligibility guidelines (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-additional-financing]] — Adyen Capital additional financing and grant renewal (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-download-offers]] — Adyen Capital: Download financing offers for eligible users (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-kyc-verification-codes]] — Verification codes | Adyen Business Accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-webhook-types]] — Adyen Capital webhook structures and event types (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-verification-requirements]] — Determine the verification requirements | Adyen Business accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-manage-access]] — Adyen Business accounts Customer Area and API access (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-account-structure-resources-platform-account-structure]] — Adyen Business Accounts: Platform account structure (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-get-grant-offers]] — Adyen Capital financing-offer options (webpage, 2026-10-18)
+- [[source-adyen-docs-capital-keeping-records]] — Keeping records | Adyen Capital (webpage, 2026-10-18)
+- [[source-adyen-docs-business-accounts-account-structure-resources-legal-entity-management]] — Legal entity management resources | Adyen Business Accounts (webpage, 2026-10-18)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -996,6 +1049,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-business-accounts]] — Adyen Business Accounts
 
 - [[adyen-platform-components]] — Adyen for Platforms UI components
 

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-verification-requirements-document-requirements",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Requirements for document uploads | Adyen Business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/verification-requirements/document-requirements\"\nraw_files:\n  - \"adyen/docs/business-accounts/verification-requirements/document-requirements/2026-09-15.md\"\ntags: [adyen, business-accounts, verification, documents, kyc]\n---\n\n## Overview\n\nThis 2023-11-29-modified Adyen Business accounts document-upload reference, captured 2026-09-15, explains evidence Adyen may request when automatic verification fails, organized by individual, organization, sole proprietorship and bank-account resource. It covers Legal Entity Management API `POST /documents` type values, content, age and file constraints, with onboarding-version and country exceptions. It is a dated requirements reference, not evidence that a given user was asked for a document, passed KYC, opened a Business account, or has current eligibility. See [[adyen]], [[adyen-financial-products]], and [[adyen-business-accounts]].\n\n## Key takeaways\n\n- Adyen may request additional documents after automatic verification cannot establish data; the page instructs original, unedited evidence and rejects AI-enhanced/altered documents. Its Requirements section says an Adyen for Platforms or Issuing integration adds no further page-level preparations, not that all document checks are waived (raw lines 19\u201329).\n- Bank-account proof uses `bankStatement` after failed automatic verification. It needs matching legal-entity holder name, account/IBAN, bank issuer and location. Raw lines 92\u201394 exempt RIBs, cheques, online-banking records and TAMIEYTHPIO from the general issuance-date requirement, while dated RIB/online records still must be under 12 months; raw line 106 separately rejects documents issued more than 12 months ago without those exceptions. This conflict is unresolved in the dated source: do not choose a precedence for older documents without current Adyen confirmation. It excludes bank-card photos and certain edited/third-party documents; US/CA cheque and AU cheque restrictions plus bank stamp/signature rules are document-specific (raw lines 64\u2013135).\n- A sole-proprietor constitutional document has a 12-month issuance or signed/current-state alternative and a larger 30 MB file ceiling than the usual 2 MB examples (raw lines 139\u2013170). Live selfie applies only with onboarding v4 to organization signatories and individual owners of sole proprietorships; Business accounts request pairs it with photo ID and the page specifies Onfido/Adyen notice and consent links before collection, direct capture as a recommendation, and a 24-hour limit if separately uploaded (raw lines 172\u2013261).\n- Photo ID must match the onboarded name, be physical, non-expired and signed if a signature field exists. Identity cards and driver's licenses require both sides, each in its own file, within one `POST /documents` request; the same section's generic file-format bullet says \u201cmaximum 1 file,\u201d an unresolved internal conflict that must be checked before implementation (raw lines 263\u2013315). France, Poland and Ukraine have dated ID-validity exceptions at lines 303\u2013309; the Poland date text is malformed.\n- Organization/individual evidence requirements diverge: tax/national ID and industry proof, ownership chart including all intermediate entities/UBOs and a signature no older than six months, three- versus twelve-month residential-address proof by document type, signatory authority with twelve-month dates, source-of-funds versus source-of-wealth evidence, minor/legal-representative relationship, registration and VAT records each have their own conditional checks (raw lines 319\u2013725). Source-of-wealth supporting-document examples are illustrative, not exhaustive (raw line 612). The country registration table at lines 657\u2013693 contains anomalous ISO-2 labels such as Ireland IR, Poland PO and Spain SP; do not use it as a machine-readable country-code authority.\n\n## Detail locators\n\n- Resource/document map and global original-document rule: raw lines 19\u201362.\n- Bank proof, country/age exceptions, cheque signatures and 2 MB sizes: raw lines 64\u2013135; constitutional-document 30 MB exception: lines 139\u2013170.\n- Onboarding-v4 selfie actors, consent and 24-hour upload condition: raw lines 172\u2013261. Photo-ID name, sides, validity, country exceptions and count conflict: lines 263\u2013315.\n- Tax, industry, national ID, ownership and residential address: raw lines 319\u2013480. Signatory, funds/wealth, minors, registration and VAT: lines 484\u2013725.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[adyen-financial-products]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/verification-requirements/document-requirements/2026-09-15|Pinned Adyen Business accounts document-upload requirements]]\n",
+  "quotes": [
+    {
+      "text": "Upload only original, unedited documents. Do not upload documents that have been enhanced or modified using AI tools or image-editing software.",
+      "location": "raw line 21, global document instruction"
+    },
+    {
+      "text": "The date of issuance needs to be visible and needs to be dated less than 12 months ago. This requirement applies to all types of documents except for RIBs, cheques, online banking environment or TAMIEYTHPIO.",
+      "location": "raw line 92, bank proof age exceptions"
+    },
+    {
+      "text": "Only applicable when using [onboarding v4](/platforms/onboard-users/onboarding-versions/onboarding-v4).",
+      "location": "raw line 174, live selfie scope"
+    },
+    {
+      "text": "You must include both the front and back of the identity card or driver's license in the same `POST` [/documents](https://docs.adyen.com/api-explorer/legalentity/latest/post/documents) request.",
+      "location": "raw line 273, photo ID upload"
+    },
+    {
+      "text": "A signature confirming the content of the organizational chart, the name and job title of the signing person, and the date of the signature (not older than 6 months from the current date).",
+      "location": "raw line 411, ownership chart"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "business-accounts-document-requirements-source-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-verification-requirements-document-requirements]] \u2014 2023-modified, 2026-09-15-captured Business accounts document-upload reference for conditional KYC evidence by person/entity/bank, onboarding-v4 selfie, country/age/format exceptions and unresolved photo-ID file-count conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Business accounts concept/forward index route is coordinator-owned and was not yet present at worker handoff; insert reciprocal under its Sources after creation.",
+          "Photo ID instructions require front and back in separate files in one POST, while the section's generic format line says maximum one file; verify before implementation.",
+          "Examples, uploaded documents and country tables do not prove an individual KYC result, Business account approval or current jurisdictional acceptance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/verification-requirements/document-requirements/2026-09-15.md",
+  "raw_sha256": "ee00eb04d9ea6637894e67d7480b81e919c44934c36f56bad7542342849d402c",
+  "status": "candidate_ready"
+}

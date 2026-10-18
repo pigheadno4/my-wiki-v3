@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-terms-of-service",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital Terms of Service acceptance\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/terms-of-service\"\nraw_files:\n  - \"adyen/docs/capital/terms-of-service/2026-09-15.md\"\ntags: [adyen, capital, platforms, terms-of-service, consent, grants]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital guide describes the legal-entity Terms of Service (ToS) document flow that precedes payout of a Capital grant: check the requirement, determine document types, generate and present the document, record acceptance by the correct individual, and optionally read back acceptance information. The page says accepting the required ToS enables the `receiveGrants` capability, but acceptance can occur before or after a grant offer and must precede grant payout. It does not itself evidence a particular offer, grant request, disbursement or receipt of funds.\n\n## Key takeaways\n\n- The guide's prerequisites include Adyen for Platforms with Capital enabled, Legal Entity Management API credentials, a requested `receiveGrants` capability, subscribed Configuration webhooks, a supported Capital region, Adyen configuration and compliance, and legal entities for the contracting user and individual signer. An individual legal entity representing a physical person must accept. For an organization that signer must be an authorized signatory.\n- A `balancePlatform.accountHolder.updated` webhook can expose ToS-related `verificationErrors`. Its sample is for `sendToTransferInstrument` with error `2_902 Accept TOS`; this generic example does **not** show a Capital user's actual `receiveGrants` state or prove a grant is ready.\n- GET `/legalEntities/{id}/termsOfServiceStatus` for the main legal entity (the owner's individual legal entity for a sole proprietorship) identifies required document types; more than one may be needed. The guide says the **test** environment returns only `adyenForPlatformsAdvanced` under a shared default configuration, while **live** returns actual types. A nearby response example lists three types including `adyenCapital`; treat it as illustrative, not as a guarantee about test or a universal required set.\n- To generate the Capital document, POST `/legalEntities/{id}/termsOfService` with `type=adyenCapital` and language `en` or, for some integrations/regions, `fr`. The optional format defaults to JSON, with PDF and TXT alternatives. The response carries a Base64 document and a unique `termsOfServiceDocumentId`; decode and present the generated document. The page gives a document **type and ID**, not a fixed ToS version; LEM v3 test endpoint and language-library versions are examples, not the document version.\n- After the user actually accepts, PATCH `/legalEntities/{id}/termsOfService/{termsOfServiceDocumentId}` for the main legal entity and that generated document ID with required `acceptedBy`: the owner's individual legal entity ID for a sole proprietorship or an authorized signatory's individual legal entity ID for an organization. `ipAddress` is optional. The response identifies the accepted document and signer; optional GET `/legalEntities/{id}/termsOfServiceAcceptanceInfos` returns records including `acceptedBy`, `acceptedFor`, `createdAt`, acceptance ID and type. A generated document or sample response does not establish real consent; correlate the actual entity, signer, document and acceptance record. The stated `receiveGrants` enablement is a prerequisite boundary, not proof of an offer, grant disbursement or bank receipt.\n\n## Detail locators\n\n- Opening and `## Requirements`: ToS prerequisite for grant payout, signer identity, Capital/Platforms/API/webhook/region prerequisites.\n- `## 1. Confirm Terms of Service requirements`: configuration webhook and generic capability-error example.\n- `## 2. Get the types of Terms of Service required`: main legal entity, multiple documents, test default versus live actual types.\n- `## 3. Generate the Terms of Service documents` and `## 4. Present the Terms of Service document to your user`: Capital type, language/format, Base64 document and generated ID.\n- `## 5. Accept the Terms of Service`: generated document ID, main legal entity, authorized individual signer, optional IP and acceptance response.\n- `## 6. (Optional): Get the Terms of Service information for a legal entity`: acceptance-record readback.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept.\n- [[adyen-platforms]] \u2014 platform and legal-entity context.\n- [[source-adyen-docs-capital-manage-user-capabilities]] \u2014 Capital capability context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/terms-of-service/2026-09-15|Adyen Capital Terms of Service guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Your user must accept the Terms of Service (ToS) before Adyen can pay out the grant.",
+      "location": "line 19"
+    },
+    {
+      "text": "For organizations, the document must be accepted by an authorized signatory of the organization.",
+      "location": "line 23"
+    },
+    {
+      "text": "In your test environment, only the document type `adyenForPlatformsAdvanced` is returned regardless of your actual integration.",
+      "location": "line 123"
+    },
+    {
+      "text": "Set this to **adyenCapital**.",
+      "location": "line 143, `type` parameter row"
+    },
+    {
+      "text": "For organizations, this is the legal entity ID of an authorized signatory for the organization.",
+      "location": "line 216, `acceptedBy` parameter row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-tos-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-terms-of-service]] \u2014 2026-09-15 Capital grant ToS guide covering required document types, `adyenCapital` generation, authorized signer acceptance and acceptance-record readback before grant payout.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide says test status returns only adyenForPlatformsAdvanced despite an illustrative three-type response; live types follow the actual integration.",
+          "The webhook example concerns sendToTransferInstrument, not an observed Capital receiveGrants state.",
+          "ToS acceptance is required before grant payout and the page says it enables receiveGrants; it does not prove an offer, disbursement, bank receipt or a particular user's actual consent."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/terms-of-service/2026-09-15.md",
+  "raw_sha256": "a422b195d2f978e76c98c00396dfe477d8f42856f71079928f3ac9929e1a29b4",
+  "status": "candidate_ready"
+}

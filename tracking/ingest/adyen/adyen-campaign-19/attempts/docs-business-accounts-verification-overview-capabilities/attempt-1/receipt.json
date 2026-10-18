@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-verification-overview-capabilities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: User capabilities\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/verification-overview/capabilities\"\nraw_files:\n  - \"adyen/docs/business-accounts/verification-overview/capabilities/2026-09-15.md\"\ntags: [adyen, business-accounts, capabilities, verification, kyc]\n---\n\n## Overview\n\nThis 2024-02-20-modified [[adyen]] Business Accounts guide explains the account-holder capability settings and verification states that govern actions on a balance platform. It identifies the Business Account capability set, how default and additional capabilities are requested, and how to observe changes. A requested capability, a favorable example flag or a verification-in-progress state does not prove a particular user passed KYC or obtained an open and usable Business Account. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- In most cases Adyen configures default capabilities during business design; those are automatically requested when account holders are created. A non-default capability needs a separate request and may prompt additional KYC checks (raw lines 19\u201323). The Business Account table names `issueBankAccount` to allow an Adyen business bank account, and `receiveFromThirdParty`/`sendToThirdParty` for third-party bank-account fund flows. The latter two are described as enabled by default when the user has `issueBankAccount` (raw lines 25\u201333). Other balance-platform actions may need general capabilities, some automatic and some separately requested (raw lines 35\u201337).\n- Capability verification status is observable through `balancePlatform.accountHolder.created`/`.updated` webhooks or `GET /accountHolders/{id}` (raw lines 39\u201345). First-time `pending` has `requested=true, allowed=false`; when previously allowed user data changes, `pending` can coexist with `allowed=true` while checks run. `valid` indicates passed capability checks and `allowed=true`, while `rejected` is final and `allowed=false` in this guide (raw lines 46\u201353).\n- `invalid` normally flags failed or missing evidence, returns a `problems` object with verification/error/action detail and `allowed=false` until resolved. The same row states an important exception: after previously successful verification, changed or missing user data can revert status to `invalid` yet preserve `allowed=true` during a specified deadline while the user provides information (raw line 52). Thus status alone is insufficient to infer present permission.\n- The API `capabilities` object separates `requested`, `allowed` and `enabled`. `requested` records whether the capability was requested, including automatic defaults; `allowed` is Adyen's permission state, with the pending/invalid deadline exceptions; `enabled` is a separately managed access setting that does not trigger KYC or prevent requesting. The capability can be used only when both `allowed` and `enabled` are true (raw lines 55\u201366). Even those flags describe capability availability, not completed account opening, funds movement or legal eligibility in a particular country.\n\n## Detail locators\n\n- Default/additional request and possible new KYC checks: raw lines 19\u201323.\n- Business Account and general capability names: raw lines 25\u201337.\n- Webhook/API observation and verification-state matrix, including changed-data exceptions: raw lines 39\u201353.\n- Requested/allowed/enabled setting matrix and deadline nuance: raw lines 55\u201366.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[source-adyen-docs-business-accounts-verification-overview]] \u2014 wider asynchronous KYC and deadline flow.\n- [[source-adyen-docs-business-accounts-manage-account-holders]] \u2014 capability request and account-holder operations.\n- [[source-adyen-docs-business-accounts-create-business-accounts]] \u2014 bankAccount instrument creation after prerequisite checks.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/verification-overview/capabilities/2026-09-15|Captured User capabilities guide]]\n",
+  "quotes": [
+    {
+      "text": "These capabilities are automatically requested for your users when you create account holders for them.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "This capability is enabled by default when they have an **issueBankAccount** capability.",
+      "location": "raw line 32, Business account capabilities table"
+    },
+    {
+      "text": "If the capability has already been allowed, but some [user data has changed](/business-accounts/verification-overview#when-users-change-their-data) and needs to be verified, you may see that the capability verification status is `pending` and the capability is [`allowed` ](#allowed): **true**.",
+      "location": "raw line 50, pending verification-status row"
+    },
+    {
+      "text": "During this period, the user can continue using the capability, and its setting remains as [`allowed` ](#allowed): **true**.",
+      "location": "raw line 52, invalid verification-status row"
+    },
+    {
+      "text": "The capability can only be used when it is both allowed and enabled.",
+      "location": "raw line 65, allowed setting row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-capabilities-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-verification-overview-capabilities]] \u2014 2024-modified, 2026-09-15-captured Business Accounts account-holder capability guide for issueBankAccount and third-party flow permissions, requested/allowed/enabled flags, and pending/invalid verification deadline exceptions; flags do not prove an opened account.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/verification-overview/capabilities/2026-09-15.md",
+  "raw_sha256": "0dd26634c3648badbbb55cc80f418161ab5f2cddc8dbb2486c33e7e6ffaf65fe",
+  "status": "candidate_ready"
+}

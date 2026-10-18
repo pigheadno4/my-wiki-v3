@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Adyen website C19
+
+- Fifty independently approved Capital detailed grants/offers/components/compliance and Business Accounts foundations documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 2 concepts touched (1 new); source_count 964 = 950 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-19/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-18] ingest | Stripe Node `23.0.0`
 
 - Approved full Endive baseline plus exact-SHA handler supplement; explicit focused reading, Node20/API migration, context fix, webhook tolerance nuance and checkout/Billing contracts. Concepts first; v22 history and source count retained. Details [[stripe-log]], [[source-github-stripe-node]], [[changelog-github-stripe-node]]. No SDK execution, commit or push.

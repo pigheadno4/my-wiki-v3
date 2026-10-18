@@ -1,0 +1,13 @@
+# Fixed retrieval checks — Business accounts verification requirements
+
+Q1. What is this guide's scope and what must not be inferred from the listed data?
+- Expected: A 2023-modified, 2026-09-15-captured Business accounts guide adding product-dependent verification data to country/legal-entity baseline. Capability assignment follows successful checks; supplying data or showing US copy does not prove KYC pass, capability enablement, account eligibility/opening or legal ownership. This page's organization FATCA/CRS classification bullet is qualified by the linked detailed reference's exemption for US-based legal entities applying for US business bank accounts.
+- Raw locators: `raw/adyen/docs/business-accounts/verification-requirements/2026-09-15.md:15-35`; related reference `raw/adyen/docs/business-accounts/verification-requirements/reference-additional-products/2026-09-15.md:21-30`.
+- Canonical URL: `https://docs.adyen.com/business-accounts/verification-requirements`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-business-accounts]]` → `wiki/sources/adyen/source-adyen-docs-business-accounts-verification-requirements.md` → `[[raw/adyen/docs/business-accounts/verification-requirements/2026-09-15]]`.
+
+Q2. Which fields and US onboarding steps have conditional subject, geography or timing?
+- Expected: Collect registered industry, website URL if online presence, source of funds, organization FATCA/CRS qualification (with linked US LE/US account exception), tax-residence country/ID for organizations and their associated individuals or a sole-proprietorship owner, source-of-wealth details if Adyen asks, and selfie/photo ID for each organization signatory or an individual LE owning a sole proprietorship. US-only: governmental organizations including SOEs are excluded; prescribed CIP disclosure precedes **any** personal data collection; every account holder accepts Adyen Business Account ToS with copy before opening; Regulation GG internet-gambling certification occurs with ToS acceptance. These are captured requirements, not proof that Adyen approved a user or current legal advice.
+- Raw locators: `raw/adyen/docs/business-accounts/verification-requirements/2026-09-15.md:25-47`; related reference `raw/adyen/docs/business-accounts/verification-requirements/reference-additional-products/2026-09-15.md:21-30`.
+- Canonical URL: `https://docs.adyen.com/business-accounts/verification-requirements`.
+- Forward route: `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-business-accounts]]` → `wiki/sources/adyen/source-adyen-docs-business-accounts-verification-requirements.md` → `[[raw/adyen/docs/business-accounts/verification-requirements/2026-09-15]]`.

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-capital-get-grant-offers-dynamic-offers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Dynamic financing offers | Adyen Capital\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/get-grant-offers/dynamic-offers\"\nraw_files:\n  - \"adyen/docs/capital/get-grant-offers/dynamic-offers/2026-09-15.md\"\ntags: [adyen, capital, dynamic-offers, grant-offers, financing]\n---\n\n## Overview\n\nThis [[adyen]] Capital guide, captured 2026-09-15, explains a three-step API flow from a **dynamic amount range** through an informational preliminary calculation to a **static formal offer** for a selected amount and repayment term. Variable 90/180/360-day terms are expressly in a **limited-availability pilot** requiring access through an Adyen contact. These offer states are distinct from Terms of Service acceptance, grant initiation, disbursement and repayment. See [[adyen-capital]].\n\n## Key takeaways\n\n- A Capital-supporting Adyen for Platforms integration, a Balance Platform API key with Capital Configuration and Grant Initiation roles, and the user's `getGrantOffers` capability are listed. The platform must follow Capital compliance guidance and build a UI for selecting an amount within the user's range. The page gives no country list or proof that any specific account holder qualifies or has pilot access. [Raw: lines 19\u201349]\n- `GET /dynamicOffers?accountHolderId=...` can return **up to three** dynamic offers based on processing history, each with its own range and repayment term; `financingType` currently supports `businessFinancing`. The response describes minimum/maximum amount, `startsAt`/`expiresAt`, contract type and estimated/maximum term days. Higher amounts are described as **typically** associated with longer terms, not guaranteed. The selected amount must remain in that user's returned range, though the UI may apply custom increments. A dynamic offer is described as valid for seven days; after expiry a new one is generated only **if the holder still qualifies**, possibly with a changed range. [Raw: lines 24\u201328, 40\u201347, 62\u2013101]\n- When the user selects an amount/term, `POST /dynamicOffers/{dynamicOfferId}/calculate` uses an amount in minor units and currency matching the dynamic offer. The UI must display preliminary selected amount, daily repayment basis points, 30-day threshold, fees, estimated/maximum term and validity period. This calculation is **informational only and cannot initiate a grant**. The captured rate limit is 120 requests/minute in Test and Live, counting failures. [Raw: lines 156\u2013210]\n- After user confirmation, `POST /dynamicOffers/{dynamicOfferId}/grantOffer` with in-range amount and matching currency creates a static offer with definitive terms for UI review; the page calls it a formal, legally binding offer. The returned **static offer ID**, separate from the dynamic-offer ID, is used in the later grant request. This endpoint's captured Test/Live limit is 30 requests/minute including failed requests. A created static offer, or a webhook announcing one, does not prove the user accepted terms, that a grant was approved or that money moved. [Raw: lines 246\u2013301, 338\u2013343, 395\u2013408, 455\u2013467]\n- Dynamic and static creation have distinct webhook types and payload grains. The examples are TEST illustrations, not a live user's offer: the static-offer request example submits `EUR 500000` minor units while the displayed response shows `EUR 250000`; do not use that pair as a verified request/response amount mapping. [Raw: lines 271\u2013335, 338\u2013453]\n\n## Detail locators\n\n- Pilot, prerequisites, rates, amount range and seven-day conditional replacement: raw lines 19\u201349.\n- Dynamic-offer GET fields and illustrative TEST range payload: raw lines 51\u2013154.\n- Preliminary calculation request/fields, informational boundary and rate: raw lines 156\u2013244.\n- Static offer request, definitive terms/ID, rate and inconsistent example amounts: raw lines 246\u2013335.\n- Dynamic versus static creation webhooks and separate Terms/grant next steps: raw lines 338\u2013467.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital offer and grant lifecycle context\n- [Manage user capabilities](https://docs.adyen.com/capital/manage-user-capabilities) \u2014 linked capability prerequisite\n- [Capital Terms of Service](https://docs.adyen.com/capital/terms-of-service) \u2014 subsequent acceptance route\n- [Make grant request](https://docs.adyen.com/capital/make-grant-request/) \u2014 subsequent grant/disbursement route\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/get-grant-offers/dynamic-offers/2026-09-15|Adyen Capital dynamic financing offers \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Variable repayment terms (90, 180, and 360 days) for financing offers are currently in a pilot phase. To request access, reach out to your Adyen contact.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "Rather than presenting a list of fixed amounts, dynamic offers allow users to choose a preferred amount from a specified range.",
+      "location": "raw line 24, introduction"
+    },
+    {
+      "text": "After this period, a new offer is generated for an account holder if they still meet the qualification criteria. The range may differ from one offer to another.",
+      "location": "raw line 47, Requirements limitation"
+    },
+    {
+      "text": "The preliminary offer is for informational purposes only and cannot be used to initiate a grant.",
+      "location": "raw line 160, Preliminary offer"
+    },
+    {
+      "text": "This is a formal, legally binding offer that must be provided for the user's review in your UI to comply with the [user interface requirements](/capital/user-interface) for Capital.",
+      "location": "raw line 250, Static offer"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-dynamic-offers-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-get-grant-offers-dynamic-offers]] \u2014 2026-09-15 pilot Capital API guide from holder-specific dynamic ranges through informational calculation to a static formal offer, with expiry, role/capability and rate limits; offer creation does not prove grant acceptance or funding.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Static-offer TEST example submits EUR 500000 minor units but displays EUR 250000 in response; source entry flags the mismatch without treating it as behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/get-grant-offers/dynamic-offers/2026-09-15.md",
+  "raw_sha256": "02e49302817e1de70a3b1f2d618d6feae9e77c9470c6682e5a28fea8f9a6f413",
+  "status": "candidate_ready"
+}

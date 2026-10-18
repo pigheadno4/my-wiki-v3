@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-integration-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Integration and go-live checklist\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/integration-checklist\"\nraw_files:\n  - \"adyen/docs/business-accounts/integration-checklist/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, integration, go-live]\n---\n\n## Overview\n\nThis 2023-03-06-modified [[adyen]] checklist sequences Business Accounts integration work on top of an Adyen for Platforms marketplace or platform model. It covers account structure, prerequisite integrations, API credentials, webhooks, additional verification, and separate live setup/tests. It is a dated implementation guide, not evidence that any specific user passed KYC, accepted terms, obtained a live Business Account, or completed a transfer. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- Before building, the guide says to design the implementation with an Adyen implementation manager. Its resource map separates company/merchant accounts, balance platform, account holder, balance account, legal entity, transfer instrument, business line and externally facing `bankAccount` payment instrument. It says a payment instrument generates an account number and one balance account can have one `bankAccount` instrument (raw lines 23\u201350). Resource names identify model roles; their presence alone does not establish an opened or funded account.\n- Complete the relevant Adyen for Platforms marketplace **or** platform integration checklist first (raw lines 52\u201354). The guide says Business Accounts API calls can use existing marketplace/platform API credentials or newly generated credentials with assigned roles in Customer Area. Its table distinguishes a Balance Platform credential for Configuration/Transfers APIs from a company-scoped credential for Legal Entity Management API (raw lines 56\u201365). This page does not list a complete current role/permission matrix or country eligibility; consult the linked access and product requirements before live use.\n- Configure server webhook endpoints and acknowledgments, configure them in Customer Area, and secure them with HMAC. The page names onboarding-information and account debit/credit events as examples of why webhooks matter (raw lines 67\u201373). Additional Business Accounts verification checks are required; authentication SDK and Open Banking integrations are marked optional. The linked send/receive and internal-direct-debit guides are separate flow instructions, not executed operations here (raw lines 75\u201383).\n- The test setup is **not automatically replicated** in the live account. The go-live sequence calls for live setup, code updates, live API credentials and endpoints, then end-to-end checks of live API requests, business-account creation with `issueBankAccount`, third-party send/receive with `sendToThirdParty`/`receiveFromThirdParty`, and live webhook receipt/acceptance (raw lines 85\u2013106). A checklist item or TEST configuration does not prove those live checks were performed or a transfer reached a bank.\n\n## Detail locators\n\n- Resource-role map and one bankAccount instrument per balance account: raw lines 36\u201350.\n- Marketplace/platform prerequisite and credential table: raw lines 52\u201365.\n- Webhook setup and optional-versus-required feature links: raw lines 67\u201383.\n- Separate live setup and explicit end-to-end test list: raw lines 85\u2013106.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[source-adyen-docs-business-accounts-get-started]] \u2014 design and onboarding route.\n- [[source-adyen-docs-business-accounts-account-structure-resources]] \u2014 account/resource identities.\n- [[source-adyen-docs-business-accounts-verification-overview-capabilities]] \u2014 capability-state distinctions.\n- [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] \u2014 separate consent process.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/integration-checklist/2026-09-15|Captured integration and go-live checklist]]\n",
+  "quotes": [
+    {
+      "text": "Before you start building your integration, make sure that you have [designed your implementation](/business-accounts/get-started#design-implementation) with your Adyen implementation manager.",
+      "location": "raw line 25, introduction"
+    },
+    {
+      "text": "Each balance account can have only one payment instrument of type **bankAccount**.",
+      "location": "raw line 48, Review your account structure"
+    },
+    {
+      "text": "Before integrating business accounts, you must complete the integration steps for either the [marketplace](/marketplaces/integration-checklist) or [platform](/platforms/integration-checklist) model of Adyen for Platforms.",
+      "location": "raw line 54, Complete the integration checklist for Adyen for Platforms"
+    },
+    {
+      "text": "Make sure that your users pass the [additional verification checks required for business accounts](/business-accounts/verification-requirements).",
+      "location": "raw line 79, Implement business account features"
+    },
+    {
+      "text": "The business account setup from your test account for Adyen for Platforms is *not* automatically replicated in your live account.",
+      "location": "raw line 90, Go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-integration-checklist-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-integration-checklist]] \u2014 2023-modified, 2026-09-15-captured Business Accounts integration/go-live checklist for platform prerequisites, resource/credential/webhook setup, added verification and separately replicated live configuration with end-to-end checks; checklist steps are not live-operation proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/integration-checklist/2026-09-15.md",
+  "raw_sha256": "1bb4aa3abaf593e8f45f7c1a468fc53c39200eafddfaeb484702b1c603ba3f8a",
+  "status": "candidate_ready"
+}

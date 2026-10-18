@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-business-accounts-verify-account-holder",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bank account verification with open banking | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/verify-account-holder\"\nraw_files:\n  - \"adyen/docs/business-accounts/verify-account-holder/2026-09-15.md\"\ntags: [adyen, business-accounts, open-banking, bank-account-verification, aisp]\n---\n\n## Overview\n\nDespite its `verify-account-holder` URL, this [[adyen]] page describes **open-banking verification of an unregistered third-party individual's bank-account ownership** through Adyen's gateway and an Account Information Service Provider (AISP), not verification of a registered balance-platform account holder's capabilities. The captured page names Adyen for Platforms, Marketplaces and Classic integrations. A successful route, callback or report is not an Adyen Business Account opening, platform KYC approval, fund transfer or bank receipt. See [[adyen-business-accounts]] for product context.\n\n## Key takeaways\n\n- The actor is an **external, unregistered third-party individual** who authorizes a bank to share a verification report, potentially for a platform/merchant's pre-contract identity and account-ownership check. The page cites AISPs such as Plaid or Tink. Its report data can inform that check, but the source does not make the individual a registered platform account holder or establish a completed regulatory KYC decision. [Raw: lines 15\u201323]\n- The documented integrations are Platforms, Marketplaces or Classic; the API requires an API key (recommended) or basic authentication and an Adyen-assigned **Role for OpenBanking account verification use case: EXTERNAL**. Optional widget customization collects company/application/legal-entity branding details. These are captured setup conditions, not proof of live access or currently supported banks/countries. [Raw: lines 25\u201333]\n- The merchant calls `POST /accountVerification/routes` with the bank account's registered **country**, UI locale and redirect URL; optional per-session `state` supports callback correlation/CSRF protection and should avoid sensitive plain text. Adyen dynamically returns AISP/provider metadata and links based on the **bank's location**; redirect URL does not choose the provider. A route does not guarantee a report code: the individual must complete bank authentication and authorization. [Raw: lines 35\u201350, 54\u2013102]\n- The redirect can return a success `code` or error details, plus `state` and a JWS `signature` described as protecting callback integrity/authenticity. Retrieve the report with `GET /accountVerification/reports/{code}` only after a successful flow, and confirm the response `x-state` matches the request state. Error examples include user cancellation, connection errors and provider errors. A callback code is a retrieval handle, not the verification report itself. [Raw: lines 105\u2013185]\n- The report has a separate `id`, generation `country` and an `accounts` list that may contain more than one verified account; examples show IBAN, ACH, EFT and BSB identifiers and holder-party identity fields. These TEST/sample country and bank payloads are **not** a current coverage matrix or evidence of any actual individual's account ownership. Do not infer an Adyen balance account, capability state or completed payout from them. [Raw: lines 185\u2013351]\n\n## Detail locators\n\n- Source identity and external-individual/AISP use case: raw lines 15\u201323.\n- Integration/credential role and optional widget customization: raw lines 25\u201333.\n- Route generation, bank-location selection, consent and code condition: raw lines 35\u2013102.\n- Redirect success/error, state/JWS fields and error codes: raw lines 105\u2013155.\n- Report retrieval, `x-state` check, response grain and illustrative TEST identifier types: raw lines 157\u2013351.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 product navigation; this page's verification actor is an unregistered external individual\n- [[adyen-platforms]] \u2014 one of the documented integration types\n- [Open Banking API account verification](https://docs.adyen.com/api-explorer/open-banking/latest/post/accountVerification/routes) \u2014 linked endpoint reference\n- [Open Banking](https://docs.adyen.com/business-accounts/) \u2014 page's related route\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/verify-account-holder/2026-09-15|Adyen open-banking bank-account verification \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Quickly verify unregistered third-party individuals using the Adyen open banking gateway.",
+      "location": "raw line 17, introduction"
+    },
+    {
+      "text": "The third-party individual can authorize their bank to share a bank account verification report with you",
+      "location": "raw line 23, introduction"
+    },
+    {
+      "text": "This feature is supported with an [Adyen for Platforms](/platforms), [Marketplaces](/marketplaces), or a [Classic integration](/point-of-sale/classic-library-deprecation).",
+      "location": "raw line 31, Requirements"
+    },
+    {
+      "text": "A report [code](https://docs.adyen.com/api-explorer/open-banking/latest/get/accountVerification/reports/\\(code\\)#path-code) is not guaranteed for every route.",
+      "location": "raw line 46, How it works"
+    },
+    {
+      "text": "Confirm that the `x-state` header matches the state provided in the [generate a list of routes](#generate-a-list-of-routes) request.",
+      "location": "raw line 177, report retrieval"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-external-verification-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-verify-account-holder]] \u2014 2026-09-15 Open Banking/AISP route and report guide for an unregistered external individual's bank-account verification across Platforms, Marketplaces or Classic; it is not registered account-holder capability verification or Business Account opening proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "URL label suggests account-holder verification, but the raw page's subject is an unregistered external third-party individual's bank-account report; keep this distinction in concept routing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/verify-account-holder/2026-09-15.md",
+  "raw_sha256": "9b526b0e2cb41d1cb206e6c5a2fc3c0f11846236c9d90a7e9eacc1aa0878999a",
+  "status": "candidate_ready"
+}

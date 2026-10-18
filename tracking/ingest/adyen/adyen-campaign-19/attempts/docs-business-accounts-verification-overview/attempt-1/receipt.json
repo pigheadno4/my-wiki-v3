@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-verification-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts verification process\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/verification-overview\"\nraw_files:\n  - \"adyen/docs/business-accounts/verification-overview/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, verification, kyc, capabilities]\n---\n\n## Overview\n\nThis Adyen Business Accounts verification overview (last modified 2023-12-29, captured 2026-09-15) describes KYC checks on balance-platform users and the resulting **per-capability** permission state. Adyen says it must verify users before processing payments, paying out funds or offering business accounts, and decides which actions a user can perform from verification results. An account holder, requested capability, pending check, active deadline or example API response does not alone prove successful KYC, account opening or a completed financial operation.\n\n## Key takeaways\n\n- Business-account capabilities configured during design are requested when a new user is onboarded and an account holder is created; a non-default additional capability must be requested separately and can trigger more verification. Checks also run after user-data changes and during Adyen-required or proactively requested periodic reviews. Reviews can include the legal entity/legal arrangement, UBOs and signatories.\n- Verification is asynchronous. While several checks are in progress, `verificationErrors` may appear even when overall capability verification remains `pending`; the guide recommends waiting until checks finish and status becomes `invalid` before contacting Adyen. A `rejected` capability verification status means the capability will not be allowed. Inspect the capability's settings and verification state rather than treating a requested flag or an account-holder creation as approval.\n- For already allowed capabilities, an active verification deadline can preserve use during re-verification or data review. The deadline is the **final date for required information/documents to be submitted and verified by Adyen**, not merely for user upload. Users must confirm reviewed data and resolve any verification errors for a review to finalize; missed deadlines or failed KYC lead to disallowed capabilities. An updated legal entity by itself does **not** trigger `balancePlatform.accountHolder.updated`; that webhook is for capability-related account-holder changes.\n- Deadlines are described as available only with Legal Entity Management API **v3 and v4**. The dated standard table gives 30 days for `issueBankAccount` and `sendToThirdParty`, and 60 days for `receiveFromThirdParty`; Adyen may shorten or remove a standard deadline after monitoring or additional checks. Inspect actual account-holder deadline data in Customer Area or GET `/accountHolders/{id}`, including affected capabilities and `expiresAt`.\n- The example response contains `sendToThirdParty.allowed=true`, `verificationStatus=invalid`, a deadline, and a `1_14` error whose message says that capability is not allowed for an individual. Treat this as a mixed illustrative example, not a universal allowed/invalid rule, a real user's outcome, or proof that `1_14` can be remediated. The page does not list supported countries or settle which legal-entity types qualify for a given Business Account; those need separate product/capability evidence.\n\n## Detail locators\n\n- Opening and `## When does Adyen verify users`: KYC purpose, capability settings, capability request, data-change and periodic-review triggers.\n- `### Verification deadlines`: LEM v3/v4 scope, final verification deadline, 30-/60-day standard table, shortening/removal, Customer Area/API observation and mixed example.\n- `## How the verification process works` / three tabs: asynchronous pending/invalid/rejected behavior, data-change re-verification, review confirmation and deadline loss of permission.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 main Business Accounts concept and dated product eligibility context.\n- [[adyen-platforms]] \u2014 balance-platform account-holder and legal-entity context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/verification-overview/2026-09-15|Adyen Business Accounts verification process (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen must verify the users in your balance platform before you can process payments, pay out their funds, and offer business accounts to them.",
+      "location": "line 19"
+    },
+    {
+      "text": "Data changes to the legal entity of the account holder do not trigger webhooks.",
+      "location": "line 52"
+    },
+    {
+      "text": "The review is only considered finalized when the user has both confirmed the data **and** resolved all verification errors.",
+      "location": "line 64"
+    },
+    {
+      "text": "Verification deadlines are only available in v3 and v4 of the [Legal Entity Management API](https://docs.adyen.com/api-explorer/legalentity/latest/overview).",
+      "location": "line 68"
+    },
+    {
+      "text": "a standard deadline could be shortened or removed in specific situations.",
+      "location": "line 82"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-verification-overview-source-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-verification-overview]] \u2014 2023-modified, 2026-09-15-captured Business Accounts KYC/capability process for asynchronous checks, data-review triggers, LEM-v3/v4 verification deadlines and permission loss.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The standard 30-/60-day deadlines are conditional and can be shortened or removed; an active deadline may preserve already allowed capabilities but is not KYC approval.",
+          "The illustrative account-holder response combines allowed=true, verificationStatus=invalid and a capability-not-allowed error; do not infer a universal state transition or actual user outcome.",
+          "This page gives no country-eligibility table or universal legal-entity permission; account-holder setup/capability requests do not prove Business Account opening or transfer success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/verification-overview/2026-09-15.md",
+  "raw_sha256": "0a8e61ab847fcce82248ab717ad852eb0ac4d9607f00a84e28b18e079be49df0",
+  "status": "candidate_ready"
+}

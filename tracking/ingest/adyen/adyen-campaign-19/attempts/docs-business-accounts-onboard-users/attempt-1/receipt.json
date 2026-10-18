@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-onboard-users",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business accounts user onboarding and verification\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/onboard-users\"\nraw_files:\n  - \"adyen/docs/business-accounts/onboard-users/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, onboarding, verification]\n---\n\n## Overview\n\nThis Business accounts guide (last modified 2024-03-04; captured 2026-09-15) describes API-only collection of additional user verification data. It says legal-entity type and operating country determine what to collect, and Adyen's verification begins automatically after submission. Building a UI, creating legal entities/account holders or starting verification does not establish an opened Business account, approved capability, live balance or successful transfer. See [[adyen]], [[adyen-business-accounts]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Integration path and account-holder state:** For API-only onboarding, the platform builds its own user UI and submits data through Legal Entity Management and Configuration APIs. The page says an existing Adyen for Platforms integration has no additional general preparations, but Business accounts still require the additional product verification information described here and in linked guides. A new account holder first follows Platforms or marketplace onboarding; an already verified account holder supplies the additional Business accounts information. Supported operating countries are referenced in the product overview rather than established for a particular user here.\n- **Onboarding-v4 source of funds:** The v4 subsection applies source-of-funds verification to Business accounts and card Issuing, with a POST businessLines service of banking for Business accounts or issuing for cards. If funds were Adyen processed, the prose sets sourceOfFunds.adyenProcessedFunds true; otherwise it says false plus sourceOfFunds.type and a description of origin. Adyen may ask for proof documents depending on funding source and document age. The table gives examples for business earnings, employment, cryptocurrency, investments, loans, grants, third-party funding and other origins; these are conditional document examples, not an instruction to upload every document for every user. The table's processed-funds row uses businessLines.adyenProcessedFunds, unlike the preceding sourceOfFunds.adyenProcessedFunds prose; verify the field against the applicable API schema rather than silently choosing one.\n- **Country-specific financial data:** For EU organizations the v4 section asks for annual turnover or annual balance sheet; for UK organizations it adds employee count and one of those financial figures in POST legalEntities. These are dated country/entity requirements in the guide, not global rules or current account eligibility.\n- **Verification and consent boundary:** The guide routes onward to verification requirements/process. Its submitting data triggers checks; it does not describe complete Business accounts Terms acceptance or prove a user's consent. Use the separate Terms of Service guide for signer and acceptance evidence, and verification/capability state for account readiness.\n\n## Detail locators\n\n- Type/country-dependent verification and API-only LEM/Configuration route: pinned raw lines 15\u201331.\n- Onboarding-v4 source-of-funds branch, banking/issuing service and conditional document table: pinned raw lines 33\u2013139.\n- EU/UK organization financial fields: pinned raw lines 141\u2013145.\n- New versus already-verified account-holder onboarding routes and next-step links: pinned raw lines 147\u2013163.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 main Business accounts concept and reciprocal source route.\n- [[adyen-platforms]] \u2014 parent Platforms integration.\n- [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] \u2014 separate consent/ToS route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/onboard-users/2026-09-15|Adyen Business accounts onboarding guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Your users' legal entity type and operating country determine the [required verification information](/business-accounts/verification-requirements) you need to collect from your users.",
+      "location": "raw/adyen/docs/business-accounts/onboard-users/2026-09-15.md:19"
+    },
+    {
+      "text": "If you have an [Adyen for Platforms](/adyen-for-platforms-model/) integration, there are no additional requirements, limitations, or preparations.",
+      "location": "raw/adyen/docs/business-accounts/onboard-users/2026-09-15.md:23"
+    },
+    {
+      "text": "If the source of funds was not processed through Adyen, set the `sourceOfFunds.adyenProcessedFunds` to **false**. You must then include the `sourceOfFunds.type` and `sourceOfFunds.description`.",
+      "location": "raw/adyen/docs/business-accounts/onboard-users/2026-09-15.md:46"
+    },
+    {
+      "text": "In the United Kingdom, organizations must provide their number of employees, and either their annual turnover or annual balance sheet.",
+      "location": "raw/adyen/docs/business-accounts/onboard-users/2026-09-15.md:145"
+    },
+    {
+      "text": "If you already have an existing, verified account holder, and want to request business accounts for them, you only need to provide the additional information required for business accounts using API-only onboarding.",
+      "location": "raw/adyen/docs/business-accounts/onboard-users/2026-09-15.md:153"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-onboard-users-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-onboard-users]] \u2014 2024-modified, 2026-09-15-captured Business accounts API-only onboarding and v4 source-of-funds/country-data guidance; submission starts verification, not account opening.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not read 'no additional requirements' for existing Platforms integration as waiver of Business accounts product verification, source-of-funds or country/entity conditions.",
+          "The source-of-funds prose names sourceOfFunds.adyenProcessedFunds while the processed-funds table row names businessLines.adyenProcessedFunds; confirm field in applicable API schema.",
+          "Provider index currently lacks adyen-business-accounts route; coordinator should add it for forward discovery."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/onboard-users/2026-09-15.md",
+  "raw_sha256": "cf0022bf468bdda23d7244ac5b2d6a137927514311ca60c73f106349e0644be8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+# Verification suberror code retrieval checks
+
+Q1. How should a platform identify a specific KYC verification cause and its candidate remediation?
+Expected forward route: [[adyen-index]] → [[adyen-business-accounts]] → ## Sources → [[source-adyen-docs-business-accounts-kyc-verification-codes-sub-errors]] → [[raw/adyen/docs/business-accounts/kyc-verification-codes/sub-errors/2026-09-15]]. Inspect raw lines 14–32 for purpose, Platforms/Issuing scope and code families; then inspect the exact matching table row in general (34–42), individual (44–136), organization (138–233), legal arrangement (235–289), bank (291–315), signatory (317–335) or business lines (338–354). Remediating-action links are separate code references, not an automatic fix or approval.
+
+Q2. Does any listed suberror always allow ordinary resubmission, and is the sample JSON proof of a live verification result?
+Expected forward route: [[adyen-index]] → [[adyen-business-accounts]] → ## Sources → [[source-adyen-docs-business-accounts-kyc-verification-codes-sub-errors]] → [[raw/adyen/docs/business-accounts/kyc-verification-codes/sub-errors/2026-09-15]]. Inspect raw line 194 for `1_5052` affiliation setup-stop wording and line 356–415 for the nested illustrative problems/verificationErrors/subErrors shape. The example has ellipses and hint markup, and the page does not establish a user's verified or account-open state.

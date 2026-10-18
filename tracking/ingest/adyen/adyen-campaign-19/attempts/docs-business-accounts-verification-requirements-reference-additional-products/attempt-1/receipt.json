@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-verification-requirements-reference-additional-products",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Reference for additional capabilities | Adyen Business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/verification-requirements/reference-additional-products\"\nraw_files:\n  - \"adyen/docs/business-accounts/verification-requirements/reference-additional-products/2026-09-15.md\"\ntags: [adyen, business-accounts, verification, fatca, industry-codes, source-of-funds]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] Business accounts reference identifies additional information associated with financial-account verification: FATCA/CRS self-certification, industry codes and source of funds (SOF). The SOF section also applies to card Issuing. See [[adyen-business-accounts]] for the product route. These are dated, conditional information/document routes, not tax advice, a universal field checklist, proof of classification approval, completed KYC or an opened Business account.\n\n## Key takeaways\n\n- The page says Adyen N.V. identifies and reports reportable financial-account holders under FATCA/CRS, requiring a self-certified qualification to determine reportability when opening a financial account. It says no further action is needed after self-certification **unless information changes**. It explicitly exempts **US-based legal entities applying for US business bank accounts** from FATCA/CRS self-certification; do not broaden that exception to every US person, product or account. [Raw: lines 21\u201330]\n- Its decision-tree examples include `nonFinancialActive`, `nonFinancialPassive`, `nonFinancialNonReportable`, and `financialNonReportable` with GIIN. The tree conditions distinguish operational versus passive income and entity categories; where classification is uncertain or disputed, the page directs contact with Adyen. These sample categories do not establish a particular user's tax classification or replace current legal/tax assessment. [Raw: lines 32\u201392]\n- Adyen requires an industry code when requesting Business accounts; the code should reflect the user's business activity and is submitted through a `POST /businessLines` route. Codes are mapped to MCCs and adapted under Adyen rules, and some industries require approval before onboarding. The actual industry/brand-specific code lists live in linked pages. Offering accounts in **new industries** outside a prior approval process requires contacting Adyen or Support; an industry code submission alone is not approval or capability enablement. [Raw: lines 94\u2013109]\n- SOF verification is stated for **Business accounts and card Issuing**. `POST /businessLines` uses `service=banking` for Business accounts or `service=issuing` for Issuing. The prose instructs `sourceOfFunds.adyenProcessedFunds=true` for Adyen-processed funds, or false plus `sourceOfFunds.type` and an origin description for other funds. Adyen **may** request supporting documents depending on fund type; the table gives condition-specific accepted categories, content and age windows, rather than a universal upload requirement. [Raw: lines 111\u2013126, 128\u2013217]\n- **Field-path inconsistency in the capture:** SOF prose names `sourceOfFunds.adyenProcessedFunds`, while the first table row says `businessLines.adyenProcessedFunds`. The `POST /businessLines` links also point to mixed `latest` and explicit LEM v4 references. Check the actual applicable API schema/version before implementation; do not silently merge the paths or treat the examples as successful verification. [Raw: lines 105, 119\u2013130]\n\n## Detail locators\n\n- FATCA/CRS purpose, self-certification and US legal-entity/US-account exception: raw lines 21\u201330.\n- Classification decision-tree values and contact route: raw lines 32\u201392.\n- Industry-code requirement, approval boundary, linked lists and business-line submission: raw lines 94\u2013109.\n- SOF product/service split, Adyen-processed versus external-funds fields, conditional document table and age/content requirements: raw lines 111\u2013217.\n- Field-path/version inconsistency: raw lines 105, 119\u2013130.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business accounts product and verification boundary\n- [Industry code list](https://docs.adyen.com/business-accounts/verification-requirements/reference-additional-products/industry-codes/) \u2014 linked codes\n- [Brand-specific industry codes](https://docs.adyen.com/business-accounts/verification-requirements/reference-additional-products/brand-specific-industry-codes/) \u2014 linked brand-specific codes\n- [Business accounts onboarding](https://docs.adyen.com/business-accounts/onboard-users) \u2014 linked onboarding context\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/verification-requirements/reference-additional-products/2026-09-15|Adyen Business accounts additional capabilities reference \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "FATCA/CRS self-certification is **not required** for US-based legal entities applying for US business bank accounts.",
+      "location": "raw line 30, exception"
+    },
+    {
+      "text": "You are required to provide industry codes for your users when requesting business accounts.",
+      "location": "raw line 96, industry codes"
+    },
+    {
+      "text": "To offer business accounts to users in *any new industries* that were not part of the previous approval process, you must reach out to your Adyen contact or our Support team.",
+      "location": "raw line 109, approval boundary"
+    },
+    {
+      "text": "Only applicable for [business accounts](/business-accounts/) and [card issuing](/issuing).",
+      "location": "raw line 113, SOF product scope"
+    },
+    {
+      "text": "Depending on the type of funds, we may request additional documents as proof.",
+      "location": "raw line 117, conditional documents"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-additional-capabilities-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products]] \u2014 2023-modified, 2026-09-15-captured FATCA/CRS, industry-code and SOF information guide for Business accounts (SOF also Issuing), with US exception, approval gates and field-path inconsistency; not KYC approval proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "SOF prose uses `sourceOfFunds.adyenProcessedFunds` but the first table row uses `businessLines.adyenProcessedFunds`; inspect the applicable API version/schema.",
+          "FATCA/CRS exception is specifically US-based legal entities applying for US business bank accounts; the tax/verification guidance is dated.",
+          "Some industries require pre-onboarding approval, and new industries outside a prior approval process require contacting Adyen/Support."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/verification-requirements/reference-additional-products/2026-09-15.md",
+  "raw_sha256": "2b12f2405e568f7b90cb449d033dfd0697f8d67a55b79845d586f4e2fd0622a3",
+  "status": "candidate_ready"
+}

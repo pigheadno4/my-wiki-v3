@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-business-accounts-kyc-verification-codes-remediating-actions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Remediating action codes | Adyen Business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/kyc-verification-codes/remediating-actions\"\nraw_files:\n  - \"adyen/docs/business-accounts/kyc-verification-codes/remediating-actions/2026-09-15.md\"\ntags: [adyen, business-accounts, verification, kyc, remediation]\n---\n\n## Overview\n\nThis 2021-modified, 2026-09-15-captured [[adyen]] Business accounts reference maps **remediating action codes** to suggested responses for verification problems. Adyen may send actions within a `verificationErrors` item when shared across its suberrors, and within individual `subErrors`; one error can have multiple actions. See [[adyen-business-accounts]] for the product route. An action code is not the verification error or suberror code, does not itself prove a failed or passed check for a user, and does not authorize an automatic retry or guarantee approval.\n\n## Key takeaways\n\n- The guide says remediating actions instruct how to resolve an error, possibly with multiple actions. Outer `verificationErrors[].remediatingActions` appears only when actions are common to its `subErrors`; suberrors may also carry their own actions. In the example, outer error `1_30`, suberrors `1_3001`/`1_3000`, and action codes `1_300`/`1_301` are different namespaces and object positions. Match the received action to its error/suberror, entity and message before deciding what information or document to provide. [Raw: lines 14\u201319, 298\u2013357]\n- For an existing Adyen for Platforms **or Adyen Issuing** integration, the page states no additional requirements, limitations or preparations for these remediation codes. That statement is scoped to using this reference and does not remove onboarding, verification, capability, document, consent or Business accounts eligibility requirements from other guides. [Raw: lines 21\u201323]\n- The catalog groups action codes by issue: general `1_1xx`; individual `1_3xx`; organization `1_5xx`; legal arrangement `1_6xx`; bank account `1_7xx`; signatory `1_8xx`; business line `1_9xx`; missing data `2_1xx\u20132_2xx`; missing contracts `2_9xx`; and data review `3_1xx`. Examples include `1_100` \u201cNo remediation possible,\u201d `1_101` contact Support, `2_902` accept TOS, and `3_100` a data-review confirmation endpoint. These are catalog messages, not proof any action was performed or accepted. [Raw: lines 25\u201346, 283\u2013296]\n- The missing-data section says its codes **may** be returned for error type `dataMissing` and names the target resource/field: legal entity individual/organization/tax/association fields, bank-account fields, business-line fields, documents and source-of-funds data. This is conditional, not a global required-field list; the exact code, affected entity and country/product verification context govern an actual remediation. [Raw: lines 147\u2013281]\n- **Catalog conflict:** code `2_198` is listed twice, once for `organization.registeredAddress.stateOrProvince` and once for `organization.principalPlaceOfBusiness.street`. Do not use this captured table alone to map `2_198` to one field; inspect the actual returned action message/current API reference or obtain provider clarification. Other listed actions, including a Japan-script formatting message and a US SSN example, are conditional code text, not universal requirements. [Raw: lines 62\u201368, 247\u2013250]\n\n## Detail locators\n\n- Action location and shared-versus-suberror scope: raw lines 14\u201319; example object path and codes: raw lines 298\u2013357.\n- Integration prerequisite statement and code-family navigation: raw lines 21\u201339.\n- General, individual, organization, legal arrangement, bank, signatory and business-line action tables: raw lines 40\u2013145.\n- Conditional missing-data table and duplicate `2_198`: raw lines 147\u2013281.\n- Missing-contract and data-review action tables: raw lines 283\u2013296.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business accounts product and verification context\n- [Business accounts verification overview](https://docs.adyen.com/business-accounts/verification-overview) \u2014 linked verification lifecycle\n- [Legal Entity Management API](https://docs.adyen.com/api-explorer/legalentity/latest/overview) \u2014 linked API family\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/kyc-verification-codes/remediating-actions/2026-09-15|Adyen Business accounts remediating actions \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "There can be multiple remediating actions to resolve an error.",
+      "location": "raw line 16, introduction"
+    },
+    {
+      "text": "The remediating actions are only sent in this array when there are common actions for the `subErrors`.",
+      "location": "raw line 18, verificationErrors location"
+    },
+    {
+      "text": "If you have an [Adyen for Platforms](/adyen-for-platforms-model/) or [Adyen Issuing](/issuing) integration, there are no additional requirements, limitations, or preparations.",
+      "location": "raw line 23, requirements"
+    },
+    {
+      "text": "The following remediation codes may be returned when the error type is **dataMissing**.",
+      "location": "raw line 149, missing data"
+    },
+    {
+      "text": "| []()2\\_198              | Add `organization.principalPlaceOfBusiness.street` to legal entity                  |",
+      "location": "raw line 249, duplicate code"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-remediation-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-kyc-verification-codes-remediating-actions]] \u2014 2021-modified, 2026-09-15-captured KYC remediating-action code catalog for verificationErrors/subErrors, with conditional entity/field messages and duplicate `2_198` mapping; action codes do not prove approval or authorize retries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The captured table assigns `2_198` to two distinct organization-address fields (raw lines 248\u2013249). Do not choose a field from the code alone.",
+          "Provider-index direct link to adyen-business-accounts was not yet present during this worker read; coordinator should add it at close."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/kyc-verification-codes/remediating-actions/2026-09-15.md",
+  "raw_sha256": "8ded037e5945be4eaf7e2259a8da668133f741c29c7543dfc3f2bb5d249a31e6",
+  "status": "candidate_ready"
+}

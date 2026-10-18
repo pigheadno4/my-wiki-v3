@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-business-accounts-manage-legal-entities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage legal entities | Adyen Business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/manage-legal-entities\"\nraw_files:\n  - \"adyen/docs/business-accounts/manage-legal-entities/2026-09-15.md\"\ntags: [adyen, business-accounts, legal-entities, onboarding, verification]\n---\n\n## Overview\n\nThis 2024-modified, 2026-09-15-captured [[adyen]] Business accounts guide describes Legal Entity Management API v3 and Customer Area/hosted-onboarding routes to create, view and update a user's legal-entity resource. A legal entity represents an individual or organization and its associations for Adyen verification; its generated `LE...` ID is used in later account-holder creation and entity reads/updates. See [[adyen-business-accounts]] for the product route. Creating or changing this resource is not proof of verified status, capability enablement, Business account opening, legal ownership or a live transfer.\n\n## Key takeaways\n\n- A legal entity contains identifying, address and tax information for an individual or organization, plus associations such as an organization's signatory. Adyen uses it for verification checks. This guide's operations sit inside a broader onboarding and verification process; minimum create information depends on the user's **location and entity type**. The US private-company request and TEST-host examples are illustrations, not a universal field checklist or live-resource evidence. [Raw: lines 19\u201335, 41\u201361]\n- The create route is Legal Entity Management API `POST /legalEntities` with `individual` or `organization` details. Its response contains a generated legal-entity ID to save for **creating an account holder**, viewing the entity and updating it. The legal entity, account holder, balance account and bank/payment instrument are distinct resources; creation of the first does not instantiate the others or complete verification. [Raw: lines 27\u201335, 365\u2013392]\n- For viewing, Customer Area, the API and hosted onboarding are listed. Customer Area shows the account holder's **main legal entity**, with transfer-instrument bank-account information and organization associations. Individual/sole-proprietorship PII is redacted unless the viewer has `View account holders PII data`. API `GET /legalEntities/{id}` returns the requested entity's `individual`/`organization` details; each associated entity requires its own GET by the returned `legalEntityId`. Do not confuse an association ID with the main legal entity or infer unredacted UI access from API examples. [Raw: lines 394\u2013427, 572\u2013607]\n- When details change, the guide says to update the legal entity. Customer Area update requires `Manage account holders and legal entities` and leads through hosted onboarding. API `PATCH /legalEntities/{id}` updates only parameters passed in the body; verification checks run again after detail updates. An API response or submitted change does not imply renewed verification has passed. [Raw: lines 609\u2013634, 955]\n- **Entity-type change is narrower than ordinary detail updates:** only the **main** legal entity's type can change directly, and direct switches are individual \u2194 organization. For an associated entity with the wrong type, create a new entity. All verification checks rerun after a type change. The page lists retained LE ID, transfer instruments, bank statement details, proof of industry, processed amounts and business lines; only specified name/country fields migrate between individual and organization, so a further PATCH may be needed for full details. Organization \u2192 sole proprietorship uses organization \u2192 individual, then an association PATCH. These are captured procedure rules, not a guarantee of continuing eligibility. [Raw: lines 957\u2013993, 1184\u20131204]\n\n## Detail locators\n\n- Legal-entity identity, LEM API version, onboarding/verification context and location/type-dependent create input: raw lines 19\u201335.\n- TEST code samples and generated ID use for account holder/view/update: raw lines 37\u2013392.\n- Customer Area visibility, PII role, API GET and associated-entity reads: raw lines 394\u2013607.\n- Customer Area update role, hosted flow, PATCH field scope and verification rerun: raw lines 609\u2013634, 955.\n- Main-versus-associated type-change limits, retained/migrated data, direct transitions and follow-up PATCH: raw lines 957\u20131204.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business accounts product route\n- [[adyen-platforms]] \u2014 broader platform context\n- [Verification overview](https://docs.adyen.com/business-accounts/verification-overview) \u2014 linked verification process\n- [Onboard users](https://docs.adyen.com/business-accounts/onboard-users) \u2014 linked broader onboarding\n- [Manage account holders](https://docs.adyen.com/business-accounts/manage-account-holders) \u2014 linked account-holder creation/capabilities\n- [Legal Entity Management API v3](https://docs.adyen.com/api-explorer/legalentity/3/overview) \u2014 linked API reference\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/manage-legal-entities/2026-09-15|Adyen Business accounts manage legal entities \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A legal entity is an API resource that describes an individual or an organization on your Balance Platform.",
+      "location": "raw line 19, definition"
+    },
+    {
+      "text": "The minimum required information for creating a legal entity depends on the location and entity type that you are onboarding.",
+      "location": "raw line 31, create qualification"
+    },
+    {
+      "text": "The response contains a generated legal entity `id`.",
+      "location": "raw line 365, create response"
+    },
+    {
+      "text": "Only parameters passed in the request body are updated.",
+      "location": "raw line 634, PATCH scope"
+    },
+    {
+      "text": "You can only change the type of the main legal entity.",
+      "location": "raw line 963, type-change limit"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-legal-entities-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-manage-legal-entities]] \u2014 2024-modified, 2026-09-15-captured LEM API v3/Customer Area guide to create, view, patch and type-change legal-entity resources for Business accounts onboarding, with PII role and verification-rerun limits; resource creation is not account-opening proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Target concept is owned by c16w02 and had not yet appeared during this worker read; coordinator must add reciprocal after concept promotion.",
+          "Type change directly applies only to the main legal entity and only individual\u2194organization; associated wrong-type entities require a new resource. Verification reruns after updates."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/manage-legal-entities/2026-09-15.md",
+  "raw_sha256": "e40a3c55f97bb45891f56fc565b549f1490faa5f5ac2bf096d3a595168bd1926",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-capital-webhook-types-capital-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Grant lifecycle-related events | Adyen Capital\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/webhook-types/capital-webhooks\"\nraw_files:\n  - \"adyen/docs/capital/webhook-types/capital-webhooks/2026-09-15.md\"\ntags: [adyen, capital, webhooks, grants, lifecycle]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital reference maps offer and grant-lifecycle events to Capital webhooks and sample payloads. It identifies account holder, dynamic/static offer, grant, grant account and balance account at different grains, and points to separate fund-transfer webhooks for money movement. It is a schema/event guide, not evidence that an event was delivered for a real user, grant funds were booked, a bank received money or a debt was finally settled. See [[adyen]], [[adyen-capital]], and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The event list spans dynamic/static offers, requested, assessed, reviewing, approved, rejected, canceled, pending, failed, active, renewal-eligible, repaid, revoked and written-off stages; detailed samples are given only for some of them. Do not infer an undocumented payload or event type for the unsampled stages (raw lines 19\u201347).\n- Dynamic offer creation uses `balancePlatform.capital.dynamicOffer.created` and includes account-holder/offer IDs, minor-unit minimum/maximum, terms and validity dates. Static offer creation uses `balancePlatform.balanceAccountHolder.capitalOffer.created` and adds fixed amount, fee, basis-point repayment and 30-day threshold fields. An offer-created event is not a grant request or approval (raw lines 49\u2013157).\n- Offer selection through component or API creates a `balancePlatform.grants.created` grant with `Requested`; `grantOfferId` identifies the selected offer, `counterparty.accountHolderId` identifies the user, and `grantAccountId` is distinct from grant `id` and, later, `counterparty.balanceAccountId`. Reviewing/Approved/Pending/Active/Repaid use `balancePlatform.grants.updated` with stage-specific `status.code` (raw lines 159\u2013383, 437\u2013480). The sample zero balances at Requested/Reviewing/Approved/Pending are test examples, not an account ledger.\n- Reviewing can require additional business data at a typical EUR 25,000 exposure threshold and shows an unresolved `AnaCreditCapabilityRule` action. Approved follows secondary review but is before payout. Pending still awaits required actions, grant transaction booking and any security cooldown; the page then points to separate fund-transfer webhooks at disbursement. Active is described after disbursement with principal plus fee total, but a grant-status event alone should be reconciled to the corresponding transfer/booking evidence rather than treated as a beneficiary-bank receipt (raw lines 199\u2013383).\n- Renewal eligibility is an `Active` grant update with `renewal.eligible` and minimum amount, not a new grant automatically funded (raw lines 386\u2013435). Repaid is described after the last repayment and corresponding transfer booking, with zero fee/principal/total in the grant event; test sample values do not prove final debt state for a named grant (raw lines 437\u2013480). The sample renewal minimum (9,440,625 minor units) exceeds the example active principal (629,375), so treat sample numbers as illustrative rather than a reusable threshold (raw lines 368\u2013377, 412\u2013427).\n\n## Detail locators\n\n- Event inventory and offer identifiers/amounts: raw lines 19\u2013157.\n- Requested/Reviewing/Approved grant status and identifiers: raw lines 159\u2013287.\n- Pending/Active and separate disbursement transfer route: raw lines 289\u2013384.\n- Renewal and Repaid semantics/samples: raw lines 386\u2013480.\n\n## Related\n\n- [[adyen-capital]]\n- [[source-adyen-docs-capital-grant-lifecycle-and-status]]\n- [[source-adyen-docs-capital-webhook-types-fund-transfers-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/webhook-types/capital-webhooks/2026-09-15|Pinned Adyen Capital grant lifecycle webhooks]]\n",
+  "quotes": [
+    {
+      "text": "When a new dynamic offer is created for an account holder, Adyen sends a [balancePlatform.capital.dynamicOffer.created](https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.capital.dynamicOffer.created) webhook to notify your server.",
+      "location": "raw line 51, Dynamic offer created"
+    },
+    {
+      "text": "When a user selects an offer using either the [UI components](/capital/capital-components) or your [API-only integration](/capital/make-grant-request), Adyen sends a [balancePlatform.grants.created](https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.created) webhook to your server.",
+      "location": "raw line 161, Grant requested"
+    },
+    {
+      "text": "The grant remains pending until:",
+      "location": "raw line 292, Grant pending"
+    },
+    {
+      "text": "After the user completes the required actions, Adyen disburses the grant amount to the specified balance account. At this point, Adyen also sends [webhooks about the corresponding fund transfer](/capital/webhook-types/fund-transfers-webhooks).",
+      "location": "raw line 338, transfer distinction"
+    },
+    {
+      "text": "After the user has made their last repayment towards the grant and the [corresponding transfer has been booked](/capital/webhook-types/fund-transfers-webhooks), Adyen sends a [balancePlatform.grants.updated](https://docs.adyen.com/api-explorer/capital-webhooks/latest/post/balancePlatform.grants.updated) webhook",
+      "location": "raw line 439, Repaid"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "capital-grant-webhooks-source-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-capital-grant-lifecycle-and-status]] \u2014 2026-09-15 Capital grant-initiation/management status reference and API/webhook observation route; its Cancelled/Pending booking boundary conflicts internally, and status definitions do not prove any specific grant or bank receipt.",
+        "proposed_markdown": "- [[source-adyen-docs-capital-webhook-types-capital-webhooks]] \u2014 2026-09-15 Capital dynamic/static-offer and grant-status webhook reference separating offer, grant, grant-account and balance-account identifiers from separate fund-transfer booking evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requested, Approved and Pending grant events do not by themselves prove disbursement; fund-transfer/booking evidence is separate, and Repaid samples are not a named user's final debt proof.",
+          "The renewal minimum and active principal in sample payloads are not a reusable eligibility threshold; only some listed stages have detailed samples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/webhook-types/capital-webhooks/2026-09-15.md",
+  "raw_sha256": "7d4cb7dd26f68b654c4ceb26fb83eedb3be4887649e49782f6ef6b5d4592d28d",
+  "status": "candidate_ready"
+}

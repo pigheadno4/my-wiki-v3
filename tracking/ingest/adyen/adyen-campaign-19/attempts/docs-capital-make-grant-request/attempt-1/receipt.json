@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-make-grant-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital grant request and disbursement updates\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/make-grant-request\"\nraw_files:\n  - \"adyen/docs/capital/make-grant-request/2026-09-15.md\"\ntags: [adyen, capital, platforms, grants, disbursement, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital guide describes submitting a grant request after a user selects an offer and signs the Terms of Service, then observing configuration and funds-transfer updates. A successful request prompts Adyen to initiate a transfer; the `Requested` response and the guide's sample webhooks are not proof that a particular grant was funded or that a bank received money. Renewal of an active grant is routed to a separate guide.\n\n## Key takeaways\n\n- Prerequisites are an Adyen for Platforms integration supporting Capital, Balance Platform Capital Configuration and Grant Initiation API roles, user `getGrantOffers` and `receiveGrants` capabilities, subscribed Capital and Transfer webhooks, operation in a supported Capital country/region, Capital compliance steps, a user-selected grant offer, and signed Terms of Service. The page states **one disbursement per grant** at this snapshot; it does not itself enumerate supported countries or establish a user's current eligibility.\n- POST `/grants` uses required `grantAccountId` (obtained from Adyen) and `grantOfferId` (selected by the user). The guide describes `counterparty.balanceAccountId` for the receiving account holder's balance account; if omitted, it says the account holder's `primaryBalanceAccount` is used. It separately describes `counterparty.transferInstrumentId` for a transfer instrument belonging to that account holder's legal entity. Do not conflate a balance-account settlement with external bank receipt or infer a universal combination of optional recipient fields from the example.\n- The example API response carries grant/counterparty IDs, a `Requested` status and zero balances. POST `/grants` is processed **asynchronously**: the response alone does not establish final configuration or payout; wait for actual webhook results.\n- The guide maps `balancePlatform.grants.created` to grant configuration; transfer-created and transfer-updated events to received, authorised and booked transfer stages; `balancePlatform.transaction.created` to the described payout to a balance account or payment instrument; and a later `balancePlatform.grants.updated` to repayment/reconfiguration/write-off updates. Keep these event subjects and stages distinct. Its configured-grant sample still has `Requested` status and zero balances, so neither that sample nor a booked-transfer example alone proves funds reached the user.\n- The webhook JSON blocks are **test illustrations**, not one coherent transaction trace. The incoming transfer examples show a positive 2025 amount, while the \u201cGrant paid out\u201d transaction example has a negative amount, 2023 booking/creation dates and a 2025 value date. Those differences prevent treating the snippets as an actual matched payout or a universal sign/date convention. Verify a real case with its own grant, transfer and transaction records; this page provides no bank-receipt proof.\n\n## Detail locators\n\n- Opening and `## Requirements`: offer/ToS order, roles, capabilities, webhooks, country gate and one-disbursement limit.\n- `## 1. Configure a grant`: POST recipient and required grant/offer IDs, test request/response and asynchronous `Requested` boundary.\n- `## 2. Get updates`: grant, transfer and transaction webhook event map and reception/acceptance requirement.\n- Five tab examples under `## 2`: configured grant, transfer received/authorised/booked, payout transaction and repaid grant; compare their subjects, signs and dates before joining.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept.\n- [[source-adyen-docs-capital-terms-of-service]] \u2014 separately documented acceptance prerequisite.\n- [[source-adyen-docs-capital-grant-lifecycle-and-status]] \u2014 grant-status reference.\n- [[adyen-platforms]] \u2014 platform and balance-account context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/make-grant-request/2026-09-15|Adyen Capital disburse-a-grant guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "After your user selects a grant offer and signs the Terms of Service, you can make an API request to configure the grant for the user.",
+      "location": "line 19"
+    },
+    {
+      "text": "Currently, only one disbursement per grant is allowed.",
+      "location": "line 35"
+    },
+    {
+      "text": "If `balanceAccountId` is not provided in the request, the grant is paid out to the account holder's [primaryBalanceAccount](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/\\(id\\)#responses-200-primaryBalanceAccount).",
+      "location": "line 49, counterparty.balanceAccountId row"
+    },
+    {
+      "text": "Requests using POST [/grants](https://docs.adyen.com/api-explorer/capital/latest/post/grants) are processed asynchronously.",
+      "location": "line 109"
+    },
+    {
+      "text": "After the funds have been paid out to the receiving balance account or payment instrument, you will receive a webhook message with the event type `balancePlatform.transaction.created`.",
+      "location": "line 399"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-make-grant-request-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-make-grant-request]] \u2014 2026-09-15 Capital POST /grants and disbursement-update guide for offer/ToS/capability gates, recipient selection, asynchronous Requested response and separate grant/transfer/transaction evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requested response and grants.created sample (itself still Requested/zero-balance) do not prove funding; transfer received/authorised/booked and transaction.created observations are distinct.",
+          "The test transaction illustration has negative amount and 2023 booking/creation dates while incoming positive transfer illustrations are dated 2025; do not present them as one coherent payout or infer universal sign/date mapping.",
+          "Balance-account/default-primary and transfer-instrument recipient descriptions must remain distinct; the page does not prove an external bank's receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/make-grant-request/2026-09-15.md",
+  "raw_sha256": "28dc76cc7598c4f050eed41a7e9b84676c65f68bfb3bdeb8a4932a23e0f8eabe",
+  "status": "candidate_ready"
+}

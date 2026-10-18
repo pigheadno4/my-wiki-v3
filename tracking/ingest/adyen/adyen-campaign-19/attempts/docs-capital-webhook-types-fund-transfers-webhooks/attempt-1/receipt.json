@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-capital-webhook-types-fund-transfers-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Capital fund transfer-related webhooks | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/webhook-types/fund-transfers-webhooks\"\nraw_files:\n  - \"adyen/docs/capital/webhook-types/fund-transfers-webhooks/2026-09-15.md\"\ntags: [adyen, capital, webhooks, transfers, transactions, disbursements, repayments]\n---\n\n## Overview\n\nThis [[adyen]] Capital page, captured 2026-09-15, illustrates balance-platform **transfer** events for grant disbursement and scheduled/unscheduled repayment, then a separate **transaction.created** event for recorded fund movement. Examples focus on successfully processed cases; the page directs readers to the Transfer webhook `status` reference for other outcomes. The samples show event structure and joins, not any live grant, final debt balance or bank receipt. See [[adyen-capital]].\n\n## Key takeaways\n\n- Grant disbursement transfer events use `category=grants`, `type=grant`, **incoming** direction and a `reference` holding the related grant ID. The illustrated sequence is `balancePlatform.transfer.created` at `received`, then `balancePlatform.transfer.updated` at authorised/booked stages. A `received` or authorised transfer is not a booked credit; a booked transfer is a balance-platform accounting state, not proof of an external beneficiary bank deposit. [Raw: lines 34\u201342, 104\u2013112, 188\u2013196]\n- Scheduled repayment transfer events use `category=grants`, `type=repayment`, **outgoing** direction and grant-ID `reference`. The guide shows received, authorised and booked stages, with example balance mutations moving from received through reserved to a negative booked balance change. The `description` prose shows grant/account/date material, but its JSON samples mask the date differently; use IDs and actual event fields rather than parsing the prose example as a guaranteed format. [Raw: lines 289\u2013298, 359\u2013368, 443\u2013536]\n- Unscheduled repayment has **two legs**: an incoming `capitalFundsCollection` transfer associated with Adyen's internal Capital collection account, then an outgoing `repayment` transfer that follows the scheduled repayment flow. The collection leg's `reference` is an internal Capital collection ID, not the grant ID; match the later repayment leg separately. The captured page illustrates received, authorised and booked stages for the collection leg. A booked collection leg alone is not final repayment of the grant. [Raw: lines 544\u2013554, 615\u2013625, 700\u2013710]\n- Once a grant disbursement or repayment transfer is recorded, the page describes a distinct `balancePlatform.transaction.created` carrying its own transaction `id`, `transferId`, grant `reference`, balance account, amount and booking/value dates. Use the transfer ID and grant ID to relate transaction and transfer events; the transaction is a booking-level record, not a grant-balance/status check or bank-receipt confirmation. [Raw: lines 802\u2013836]\n- **Sample conflicts:** the authorised-stage prose spells `authorized` while JSON status values spell `authorised`; scheduled-repayment booked prose says `transfer.updated` but its JSON envelope says `transfer.created`; the sample labelled a grant-disbursement transaction shows a **negative** amount on the balance account although the grant transfer is marked incoming, and its booking date is 2023 while its value date is 2025. Do not derive a universal status spelling, event type, disbursement sign or chronology from those conflicting examples; consult the current API schema and actual events. [Raw: lines 106\u2013123, 359\u2013379, 443\u2013463, 538\u2013540, 804\u2013836]\n\n## Detail locators\n\n- Event list and successful-example limitation: raw lines 15\u201332.\n- Grant disbursement transfer received/authorised/booked stages and IDs: raw lines 34\u2013287.\n- Scheduled repayment transfer stages, sign mutations and example-description conflict: raw lines 289\u2013542.\n- Unscheduled collection leg and its distinct reference: raw lines 544\u2013800.\n- Separate transaction event and conflicting illustrative amount/dates: raw lines 802\u2013836.\n\n## Related\n\n- [[adyen-capital]] \u2014 Capital grant/repayment context\n- [[adyen-reporting]] \u2014 booking and reconciliation evidence boundary\n- [Webhook structures and types for Capital](https://docs.adyen.com/capital/webhook-types) \u2014 broader event reference\n- [Grant lifecycle and status](https://docs.adyen.com/capital/grant-lifecycle-and-status) \u2014 grant-state meanings\n- [Capital reporting and reconciliation](https://docs.adyen.com/capital/reporting-and-reconciliation) \u2014 report/ID joins\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/webhook-types/fund-transfers-webhooks/2026-09-15|Adyen Capital fund transfer-related webhooks \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The following sections provide code samples for the specified events, focusing on cases where the transfer is successfully processed.",
+      "location": "raw line 32, introduction"
+    },
+    {
+      "text": "After the grant has been configured and the user has completed required actions, Adyen initiates grant disbursement and sends a [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created) webhook",
+      "location": "raw line 36, Grant disbursement initiated"
+    },
+    {
+      "text": "After the scheduled repayment request has been initiated, Adyen sends a [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created) webhook",
+      "location": "raw line 291, Scheduled repayment initiated"
+    },
+    {
+      "text": "An [unscheduled repayment](/capital/repayment#unscheduled-repayments) first triggers an **incoming** transfer to Adyen's internal Capital fund collection account. After this transfer is processed, an **outgoing** transfer completes the repayment on the grant according to the [scheduled repayment flow](#scheduled-repayment-initiated).",
+      "location": "raw line 546, Unscheduled repayment initiated"
+    },
+    {
+      "text": "When a grant is disbursed to a receiving balance account or a user makes a repayment, and the transfer is recorded, Adyen sends a [balancePlatform.transaction.created](https://docs.adyen.com/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created) webhook.",
+      "location": "raw line 804, Fund movement transaction"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-fund-transfer-webhooks-route",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-webhook-types-fund-transfers-webhooks]] \u2014 2026-09-15 Capital transfer/transaction webhook examples for grant credits, scheduled repayment and two-leg unscheduled collection/repayment; successful-only samples contain status/event-type/sign/date conflicts and are not bank-receipt or debt-completion proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured examples disagree on authorized/authorised spelling, scheduled booked transfer envelope type, and grant-disbursement transaction sign/date; source entry preserves these as sample conflicts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/webhook-types/fund-transfers-webhooks/2026-09-15.md",
+  "raw_sha256": "161ff7155ebb759024d4ef30116ac6b6a2694ed1f9421caa7202b8254ab557c2",
+  "status": "candidate_ready"
+}

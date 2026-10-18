@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-create-business-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Create business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/create-business-accounts\"\nraw_files:\n  - \"adyen/docs/business-accounts/create-business-accounts/2026-09-15.md\"\ntags: [adyen, business-accounts, balance-platform, payment-instruments]\n---\n\n## Overview\n\nAdyen's 2024-modified Business Accounts guide describes generating a business account number linked to a user's balance account so third parties can send business-related payments or fund transfers. The API operation creates a `bankAccount` payment instrument; the balance account remains the resource where financial transactions are processed. This captured guide describes a setup flow, not evidence that a particular user's live account was opened, usable, or funded. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- Before creation, the platform must meet Business Accounts requirements and have legal entities for the user and associated entities (such as UBOs), two business lines (one for receiving payments and one for Business Accounts), an account holder and balance account, completed Business Accounts verification checks, and the account holder's `issueBankAccount` capability both allowed and enabled. See raw lines 21\u201334 for the prerequisite sequence.\n- After that capability state, `POST /paymentInstruments` with `type=bankAccount`, `balanceAccountId`, and `issuingCountryCode` generates the business account number. `description` and `reference` are optional mappings; see raw lines 32\u201344. The guide's captured country list is NL and US, with the issuing country's currency required to match the balance account currency (raw line 41). Treat that list as dated documentation, not current eligibility.\n- A balance account can have only one business account number; the API returns an error if one already exists (raw line 46). The NL example returns a payment instrument `id` and IBAN (raw lines 268\u2013282); the US example returns a payment instrument `id` and account/routing details (raw lines 505\u2013521). Example `status: Active` and TEST requests do not establish any real account's approval or ability to receive funds.\n- To find an existing number associated with a balance account, the page points to `GET /balanceAccounts/{id}/paymentInstruments` with the balance account ID in the path (raw lines 524\u2013526).\n\n## Detail locators\n\n- Required request fields and optional reference fields: raw lines 36\u201346.\n- NL and US TEST code examples, including client library versions: raw lines 48\u2013282 and 285\u2013503.\n- Example response resource identities and bank details: raw lines 268\u2013282 and 505\u2013521.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[source-adyen-docs-business-accounts-account-structure-resources]] \u2014 resource relationship.\n- [[source-adyen-docs-business-accounts-manage-account-holders]] \u2014 account holder and capabilities.\n- [[source-adyen-docs-business-accounts-manage-legal-entities]] \u2014 legal entity prerequisite.\n- [[source-adyen-docs-business-accounts-onboard-users-terms-of-service]] \u2014 separate consent flow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/create-business-accounts/2026-09-15|Captured Create business accounts guide]]\n",
+  "quotes": [
+    {
+      "text": "When you create an Adyen business account for your users, you generate a business account number linked to their balance account.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Completed the [verification checks for business accounts](/business-accounts/verification-requirements) and have the **issueBankAccount** [capability](/business-accounts/verification-overview/capabilities) allowed and enabled.",
+      "location": "raw line 30, Requirements"
+    },
+    {
+      "text": "Creating a business account payment instrument generates a business account number, such as an IBAN.",
+      "location": "raw line 34, Create a payment instrument"
+    },
+    {
+      "text": "We currently support **NL** and **US**. The currency of the specified country must match the currency of the balance account.",
+      "location": "raw line 41, request-parameter table"
+    },
+    {
+      "text": "A balance account can only have one business account number. The API returns an error if a business account number already exists.",
+      "location": "raw line 46, Create a payment instrument"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-create-business-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-create-business-accounts]] \u2014 2024-modified, 2026-09-15-captured Business Accounts guide for the verified-account-holder bankAccount payment-instrument creation flow, dated NL/US currency constraints and one-number-per-balance-account limit; examples are not live account or funds proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/create-business-accounts/2026-09-15.md",
+  "raw_sha256": "e15df2576440457652131124dbcc2d17108e7657be3f9b7364593392366b1929",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-business-accounts-manage-account-holders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage account holders for Business Accounts | Adyen\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/manage-account-holders\"\nraw_files:\n  - \"adyen/docs/business-accounts/manage-account-holders/2026-09-15.md\"\ntags: [adyen, business-accounts, account-holders, capabilities, verification, kyc]\n---\n\n## Overview\n\nThis [[adyen]] Business Accounts guide, last modified 2023-03-28 and captured 2026-09-15, describes Configuration API and Customer Area operations for the **account holder** resource representing a balance-platform user. The resource links a legal entity and balance accounts and carries capability states. Account-holder creation and an `active` resource status do not themselves establish verification, allowed capabilities, an opened Business Account or a completed money movement. See [[adyen-business-accounts]].\n\n## Key takeaways\n\n- Create the legal entity first, then `POST /accountHolders` with its legal-entity ID; for a sole proprietorship, use the owner's individual legal-entity ID. Save the returned account-holder `id` for webhook matching, balance-account creation and later updates. The sample creation response has `status=active` while several capabilities show `requested=true`, `enabled=true`, `allowed=false` and `verificationStatus=pending`; do not equate resource status or a request with permitted use. Listen for `balancePlatform.accountHolder.updated` capability/verification changes. [Raw: lines 19\u201329, 238\u2013290]\n- Account holders **cannot be deleted**. The introduction mentions temporary suspension to disable payout capabilities, but this captured page has no matching `#suspend-account-holder` section or suspension procedure. For permanent closure, the guide requires zero-balance accounts, closure of non-primary balance accounts first, primary account only after the others, and then `status=Closed` on the account holder. Moving residual funds is a separate transfer step, not implied by closure. [Raw: lines 21\u201323, 750\u2013760]\n- View an account holder through Customer Area or `GET /accountHolders/{id}`; lists of holders and associated balance accounts are paginated. Customer Area detail includes status, balance accounts, linked legal entities, document identifiers and capabilities/deadlines. Searching an individual legal entity by name/email requires the `View account holders PII` role. `PATCH /accountHolders/{id}` can update properties such as `primaryBalanceAccount`. [Raw: lines 292\u2013340, 485\u2013545, 735\u2013748]\n- Capability observation separates `allowed` (Adyen allows), `enabled` (user can use), `verificationStatus` (`invalid`, `pending`, `rejected`, `valid`) and a nonempty `problems` array requiring attention. Some capabilities are requested automatically; additional capabilities, such as third-party send/receive, require a request. In Customer Area that request or an enabled-state edit requires the **Manage account holder capabilities** role. API request sets `requested=true`; the documented response can remain `allowed=false` and `pending`. A later `enabled=false` sample remains `allowed=true`/`valid`, so the flags are distinct. [Raw: lines 762\u2013826, 1069\u20131091, 1093\u20131129, 1370\u20131392]\n- The request-capability examples conflict: prose names `receivePayment`, most examples request `receivePayments`, Python/Ruby examples use `withdrawFromAtm`, and the response shows `sendToThirdParty`. Do not copy a capability key from this mixed example without the relevant current API schema and product-specific capability guide. The KYC section separately describes legal-entity statuses `Awaiting data`, `In review`, `Verified`, `Unsuccessful` (errors may be resolved) and `Rejected` (final in this guide). KYC document access is role-gated and privacy-sensitive. None of these sample screens or statuses proves a particular user's completed onboarding or opened account. [Raw: lines 824\u2013826, 837\u2013843, 1007\u20131042, 1077\u20131091, 1394\u20131448]\n\n## Detail locators\n\n- Account-holder identity, non-deletion and legal-entity-first creation: raw lines 19\u201329.\n- TEST-environment create examples, response identity/default capability flags and webhook: raw lines 31\u2013290.\n- Customer Area/API view, PII search, paginated lists, and primary-account update: raw lines 292\u2013748.\n- Ordered permanent closure; capability flags, request and enable/disable paths: raw lines 750\u20131392.\n- KYC legal-entity statuses and document-role/privacy rules: raw lines 1394\u20131448.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business Accounts product context\n- [[adyen-platforms]] \u2014 platform resource context\n- [Manage legal entities](https://docs.adyen.com/business-accounts/manage-legal-entities) \u2014 prerequisite legal-entity route\n- [Manage balance accounts](https://docs.adyen.com/business-accounts/manage-balance-accounts) \u2014 linked balance-account and closure route\n- [Business Accounts verification overview](https://docs.adyen.com/business-accounts/verification-overview) \u2014 capability and KYC context\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/manage-account-holders/2026-09-15|Adyen Business Accounts manage account holders \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Account holders are the main API resource that represent users of your balance platform integration.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Account holders cannot be deleted. You can temporarily [suspend them](#suspend-account-holder) to disable payout capabilities, or [close them permanently](#permanent-deactivation).",
+      "location": "raw line 23, introduction"
+    },
+    {
+      "text": "You can only close empty balance accounts, so if there are funds left, [transfer](/platforms/internal-fund-transfers/on-demand-fund-transfers/) any remaining balance.",
+      "location": "raw line 758, Deactivate account holders"
+    },
+    {
+      "text": "Boolean that indicates whether the user can use the capability. The possible values are **true** or **false**.",
+      "location": "raw line 788, View capabilities"
+    },
+    {
+      "text": "This status is final and any errors cannot be resolved by updating data or uploading documents.",
+      "location": "raw line 1426, KYC verification statuses"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-account-holders-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-manage-account-holders]] \u2014 2023-modified, 2026-09-15-captured Configuration API/Customer Area guide for legal-entity-linked account holders, capability/verification flags, zero-balance ordered closure and KYC roles; mixed capability examples and missing suspension section limit procedure inference.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The adyen-business-accounts concept is owned by another C19 worker and was absent at this audit; apply reciprocal after creation.",
+          "The raw request-capability examples disagree on receivePayment/receivePayments/withdrawFromAtm/sendToThirdParty; the source entry preserves this and defers exact API keys to current schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/manage-account-holders/2026-09-15.md",
+  "raw_sha256": "ea9eabb4f5a181cf821970f8d84125cb87c9919057f9abc4094818c6243ee9cf",
+  "status": "candidate_ready"
+}

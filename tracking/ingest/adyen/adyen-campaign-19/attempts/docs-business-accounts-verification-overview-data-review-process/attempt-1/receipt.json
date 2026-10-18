@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-business-accounts-verification-overview-data-review-process",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Periodic data reviews | Adyen Business accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/verification-overview/data-review-process\"\nraw_files:\n  - \"adyen/docs/business-accounts/verification-overview/data-review-process/2026-09-15.md\"\ntags: [adyen, business-accounts, verification, data-review, capabilities]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] Business accounts guide explains periodic review of a user's existing legal-entity and associated-entity data. Adyen can require a review; a platform using eligible onboarding versions can request one proactively. The flow links a legal-entity review to account-holder capability verification and deadline webhooks. See [[adyen-business-accounts]] for the product route. A request, confirmation timestamp or example webhook is not evidence that a specific user's KYC passed or that a Business account is open.\n\n## Key takeaways\n\n- On trigger, Adyen immediately checks existing main legal-entity/legal-arrangement and associated-entity data, including UBOs and signatories. If errors exist, the user must update data as needed, resolve errors and confirm; without errors, review and confirmation suffice. Updating data triggers re-verification. The review is finalized only after **both** user confirmation and resolution of every verification error. [Raw: lines 19\u201331]\n- The `balancePlatform.accountHolder.updated` review-required webhook uses capability `verificationStatus=invalid` while `allowed` remains `true` during the deadline for previously allowed capabilities; it includes verification error `3_10`, action `3_100`, and `verificationDeadlines` identifying the capability/disallow date. If data is not confirmed and errors resolved by the deadline, the capabilities are disallowed. Thus `invalid` does not always mean immediate loss of `allowed`, and an active account-holder status in an example does not override capability-level checks. [Raw: lines 31\u201345, 47\u2013101]\n- Optional proactive request is available **only for onboarding v3 or v4** via `POST /legalEntities/{id}/requestPeriodicReview`. A successful request returns `204`, then the review-required webhook supplies status/deadline. Adyen may require a review outside schedule for significant data/risk changes. The guide says ineligible requests are not activated, including a next review more than a year away, onboarding within 180 days or a review in the prior 180 days; troubleshooting shows `422` reasons. A `204` is request acceptance, not user confirmation or passed verification. [Raw: lines 104\u2013132, 191\u2013195]\n- The platform must tell the user to review by the deadline. Hosted onboarding can pre-read/patch submitted data, then the user confirms with checkbox and **Submit review**. API-only onboarding presents main/associated legal entities and supporting transfer-instrument, business-line and store data, patches changes if needed, then calls `POST /legalEntities/{id}/confirmDataReview` on user confirmation; `dataReviewedAt` is a confirmation time, not approval. [Raw: lines 197\u2013237]\n- After submission Adyen verifies and sends results by account-holder update webhook. A valid result has capability `verificationStatus=valid` and `allowed=true`; an invalid result may have `allowed=false` or temporary `allowed=true` with a deadline and problem arrays requiring remediation. Viewing problems on a transfer-instrument resource requires enabling that feature through an Adyen contact. The test flow's `x-requested-verification-code: 3_10` header is a simulated outstanding review for an already-allowed account holder, not a live remediation/retry instruction. [Raw: lines 239\u2013363]\n\n## Detail locators\n\n- Review trigger, entity scope, error/no-error conditions and deadline consequence: raw lines 19\u201331.\n- Required webhook fields, capability scope, `3_10` error versus `3_100` action and TEST example: raw lines 33\u2013101.\n- Onboarding-version gate, proactive request, `204` and `422` ineligibility: raw lines 104\u2013195.\n- Hosted/API-only review and user-confirmation routes: raw lines 197\u2013237.\n- Post-review valid/invalid webhook states and simulation-only flow: raw lines 239\u2013363.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 Business accounts eligibility and evidence boundary\n- [Onboard users](https://docs.adyen.com/business-accounts/onboard-users) \u2014 linked broader onboarding\n- [Remediating actions](https://docs.adyen.com/business-accounts/kyc-verification-codes/remediating-actions) \u2014 linked action-code reference\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/verification-overview/data-review-process/2026-09-15|Adyen Business accounts periodic data reviews \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The review is only considered finalized when the user has confirmed the data **and** resolved all verification errors.",
+      "location": "raw line 31, completion condition"
+    },
+    {
+      "text": "While the deadline is active, the user can continue using their capabilities that were allowed prior to the review request.",
+      "location": "raw line 31, deadline window"
+    },
+    {
+      "text": "This feature is only available if you are using onboarding v3 or v4.",
+      "location": "raw line 106, proactive request gate"
+    },
+    {
+      "text": "If the request is successful, you receive a **204** response.",
+      "location": "raw line 120, proactive request"
+    },
+    {
+      "text": "The response returns the time when the data review was confirmed in the [dataReviewedAt](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities/\\(id\\)/confirmDataReview#responses-200-dataReviewedAt) field.",
+      "location": "raw line 227, confirmation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-data-review-route",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-verification-overview-data-review-process]] \u2014 2023-modified, 2026-09-15-captured legal-entity periodic-review guide for deadline/capability webhooks, onboarding-v3/v4 proactive requests and user confirmation plus error resolution; request/confirmation is not KYC approval.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "During an active deadline, verificationStatus can be invalid while previously allowed capabilities remain allowed; disallow follows unresolved deadline.",
+          "A 204 proactive-request response and dataReviewedAt confirmation time do not prove review finalization or successful verification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/verification-overview/data-review-process/2026-09-15.md",
+  "raw_sha256": "e1c4919ac929597cb9483fca26417b09001ce71a62afbabc233bbde1799c319b",
+  "status": "candidate_ready"
+}

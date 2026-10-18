@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-additional-financing",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital additional financing and grant renewal\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/additional-financing\"\nraw_files:\n  - \"adyen/docs/capital/additional-financing/2026-09-15.md\"\ntags: [adyen, capital, platforms, additional-financing, grant-renewal]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Capital guide distinguishes a **new grant after full repayment** from a **subsequent grant after partial repayment** (renewal). The latter is described as a limited-availability pilot, subject to prior-grant eligibility, a renewal offer and new Terms of Service. It states how principal reservation, prior-fee waiver and new-fee application are intended to work; the page is a product/flow description, not proof of an individual's eligibility, accepted terms, settled prior balance or funded subsequent grant.\n\n## Key takeaways\n\n- After the prior grant is **100% repaid**, the user may receive a new grant through the first-time grant process. A **partially repaid** prior grant can instead be renewed only if it meets specific conditions; the guide says Adyen disburses the full subsequent grant amount and reserves prior outstanding principal for repayment. Renewal is a **pilot** requiring contact with Adyen for access. The page does not itself specify platform API roles or country availability; those must be checked in the relevant Capital integration and product guides.\n- Renewal eligibility requires a risk-assessed, balance-platform-varying minimum repayment percentage, no outstanding missed repayments, prior-grant age of at least **90 days**, same currency for prior grant and renewal offer, and a renewal offer of at least **150%** of prior outstanding balance. Eligibility is separate from an offer selected by the user and from actual funding.\n- Current underwriting determines the renewal's repayment percentage, fee and maximum amount, which may differ from the prior grant. Offers are recalculated weekly and expire after **seven days**. For each subsequent grant the user must accept new ToS; after selecting the renewal offer, `receiveGrants` is disallowed until that acceptance. A stale displayed offer or prior ToS acceptance does not establish permission to fund the renewal.\n- The guide describes full subsequent-grant disbursement and reservation of prior outstanding principal for repayment as a **single atomic action**. At renewal, any unpaid fee from the prior grant is fully waived, while the new fee percentage applies to the entire subsequent principal. It defines effectively available funds as new principal minus prior outstanding principal. These stated mechanics do not supply a transaction record proving a real reservation, fee waiver, repayment or receipt of funds.\n- The UI-component route shows a renewal notification, updated minimum, new ToS and automatic subsequent-grant creation after offer acceptance/signature. The API-only route obtains eligibility and minimum from a webhook or GET `/grants`, gets and presents qualifying offers, obtains new ToS acceptance, and configures the subsequent grant with prior ID `renewsGrantId`. The UI description says its minimum loan amount updates to outstanding balance plus **EUR 500** (or equivalent), while the eligibility table separately requires **150%** of outstanding balance; the page does not reconcile these thresholds. Preserve both statements and do not infer one universal minimum formula. UI creation/configuration is not disbursement proof.\n\n## Detail locators\n\n- Opening and `## Eligibility`: fully repaid new grant versus partially repaid renewal, pilot and five prior-grant/offer eligibility conditions.\n- `## Renewal conditions`: weekly/seven-day offer validity, new ToS/capability gate, atomic disbursement/reservation, prior fee waiver, new fee and effectively available-funds formula.\n- `## How renewal works` / `### Tab: UI components`: UI notification, outstanding-plus-EUR-500 statement, new ToS and automatic configuration path.\n- `### Tab: API-only`: eligibility webhook/GET, offer presentation, ToS and `renewsGrantId` handoff.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept.\n- [[source-adyen-docs-capital-renew-grant]] \u2014 separate step-by-step pilot API renewal flow.\n- [[source-adyen-docs-capital-grant-lifecycle-and-status]] \u2014 separate status evidence.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/additional-financing/2026-09-15|Adyen Capital additional-financing guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Grant renewal is currently in a pilot phase. To request access, reach out to your Adyen contact.",
+      "location": "line 20"
+    },
+    {
+      "text": "When the prior grant is only partially paid off but meets specific requirements, the user can receive a subsequent grant.",
+      "location": "line 27"
+    },
+    {
+      "text": "The renewal offer must be at least 150% of the outstanding balance of the prior grant.",
+      "location": "line 41"
+    },
+    {
+      "text": "Users must accept the Terms of Service for each subsequent grant.",
+      "location": "line 50"
+    },
+    {
+      "text": "The minimum loan amount updates to the outstanding balance plus EUR\u00a0500 (or equivalent in another supported currency) to fully cover the prior grant.",
+      "location": "line 64"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-additional-financing-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-additional-financing]] \u2014 2026-09-15 pilot Capital renewal conditions versus a new grant after full repayment, including age/repayment/currency/offer gates, renewed ToS, fee/principal mechanics and UI/API paths with divergent minimum wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Pilot scope and per-grant eligibility do not establish current country access, a formal accepted offer, actual repayment or funding.",
+          "The general eligibility table requires an offer at least 150% of prior outstanding balance, while the UI section says minimum loan amount is outstanding balance plus EUR 500/equivalent; the page does not reconcile these thresholds.",
+          "Atomic reservation, unpaid prior-fee waiver and effectively available funds are described mechanisms, not a real user's settled accounting or bank-receipt proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/additional-financing/2026-09-15.md",
+  "raw_sha256": "5dd4668b1feaf70c0af57bf96c387f35fee4e57fba2dbc2366b8a91639f4bb08",
+  "status": "candidate_ready"
+}

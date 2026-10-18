@@ -1,0 +1,13 @@
+# Fixed retrieval checks — manage legal entities
+
+Q1. What is the legal entity here, and what must not be inferred from creating one?
+- Expected: A 2024-modified, 2026-09-15-captured Business accounts Legal Entity Management v3 guide. Legal entity is an individual/organization information and association resource for Adyen verification, separate from an account holder, balance account and bank/payment instrument. Create inputs depend on location and entity type; the US TEST request and SDK versions are examples. A generated LE ID supports later account-holder creation and read/update, but is not proof of verification, capability, opened Business account, legal ownership, transfer or bank receipt.
+- Raw locators: `raw/adyen/docs/business-accounts/manage-legal-entities/2026-09-15.md:15-35`, `:37-61`, `:365-392`.
+- Canonical URL: `https://docs.adyen.com/business-accounts/manage-legal-entities`.
+- Forward route (after new concept/provider-index promotion): `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-business-accounts]]` → `wiki/sources/adyen/source-adyen-docs-business-accounts-manage-legal-entities.md` → `[[raw/adyen/docs/business-accounts/manage-legal-entities/2026-09-15]]`.
+
+Q2. How do main/associated entity reads, PII access, ordinary PATCH updates and type changes differ?
+- Expected: Customer Area presents the account holder's main entity, transfer-instrument details and associations; individual/sole-proprietorship PII stays redacted without `View account holders PII data`. API GET retrieves a requested LE ID, with separate GETs for each associated `legalEntityId`. Customer Area update requires `Manage account holders and legal entities` and hosted onboarding. API PATCH changes only supplied fields and triggers verification rerun. Type can be directly changed only for the main entity, individual↔organization; an associated wrong-type entity needs creation of a new resource. Type change reruns all checks; listed IDs/instruments/etc. are retained, only specified name/country data migrate, and another PATCH may be needed for full address. Sole proprietorship transition uses organization→individual then association PATCH. None of these requests proves checks passed.
+- Raw locators: `raw/adyen/docs/business-accounts/manage-legal-entities/2026-09-15.md:394-427`, `:572-634`, `:955-993`, `:1184-1204`.
+- Canonical URL: `https://docs.adyen.com/business-accounts/manage-legal-entities`.
+- Forward route (after new concept/provider-index promotion): `wiki/index.md` → `wiki/adyen-index.md` → `[[adyen-business-accounts]]` → `wiki/sources/adyen/source-adyen-docs-business-accounts-manage-legal-entities.md` → `[[raw/adyen/docs/business-accounts/manage-legal-entities/2026-09-15]]`.

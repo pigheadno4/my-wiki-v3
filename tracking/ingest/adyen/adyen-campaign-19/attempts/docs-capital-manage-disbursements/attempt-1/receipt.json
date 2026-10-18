@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-capital-manage-disbursements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital disbursement configuration management\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/manage-disbursements\"\nraw_files:\n  - \"adyen/docs/capital/manage-disbursements/2026-09-15.md\"\ntags: [adyen, capital, grants, disbursements, repayment]\n---\n\n## Overview\n\nThis 2026-09-15 Capital guide describes retrieving an existing grant's disbursement records, changing a particular disbursement's scheduled-repayment percentage, and retrieving bank-account details assigned for unscheduled repayment. It assumes a grant has already been disbursed; this page does not create a grant or disbursement. Its example GET/PATCH responses and TEST API URLs are documentation, not evidence of a particular user's funding, a booked repayment, an updated live configuration, a bank payout or final debt balance. See [[adyen]], [[adyen-capital]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Prerequisites and limit:** The guide requires a Platforms integration with Capital enabled, Balance Platform API credential with Capital Configuration and Grant Initiation roles, user account-holder getGrantOffers and receiveGrants capabilities, a supported region, prior offer selection/Terms signature and at least one disbursed grant. It says currently only one disbursement per grant is allowed, while multiple disbursements are future work. Unscheduled repayments are available only for users operating in Europe, the UK and the US in this snapshot. These stated prerequisites do not prove any real user has them.\n- **Read disbursement record:** GET /grants/{grantId}/disbursements uses the grant ID and returns disbursement records containing a distinct disbursement ID, account-holder ID, receiving balance-account ID, minor-unit amount, fee, balances, repayment basis points and fundsCollections. Keep the grant, disbursement, account holder and receiving balance account identifiers distinct. The illustrative response has negative principal/fee balances; it is a sample, not a live user debt calculation.\n- **Change repayment percentage:** PATCH /grants/{grantId}/disbursements/{disbursementId} changes the repayment configuration's basis points for the percentage of incoming net volume deducted toward the grant. The guide lists grantId and disbursementId as path parameters; the repayment request object is shown without a required marker in this page's table, although the example supplies it. Changing this setting affects future repayment configuration, not the original disbursement amount or a new bank transfer. Verify the accepted response and later state for a real user; the example does not prove a configuration was changed.\n- **Unscheduled-repayment account:** GET the specific grant/disbursement to inspect fundsCollections, where UnscheduledRepayment carries account identification such as an IBAN that can be shared with the user. This is an account for paying **back** a grant, not proof of where grant proceeds were paid or that an unscheduled repayment was sent or booked. Its availability is region-qualified above.\n\n## Detail locators\n\n- Page purpose, prerequisites, one-disbursement limit and region condition: pinned raw lines 15\u201338.\n- Grant-level disbursement GET, identifiers and sample amount/balances: pinned raw lines 40\u2013110.\n- Per-disbursement repayment-configuration PATCH, request table and illustrative response: pinned raw lines 112\u2013191.\n- Specific-disbursement GET and unscheduled fundsCollections bank details: pinned raw lines 193\u2013236.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept and reciprocal source route.\n- [[adyen-platforms]] \u2014 parent Platforms integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/manage-disbursements/2026-09-15|Adyen manage-disbursements guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "After the grant amount is disbursed to your user, you can retrieve information about a particular disbursement and update its configurations.",
+      "location": "raw/adyen/docs/capital/manage-disbursements/2026-09-15.md:19"
+    },
+    {
+      "text": "Currently, only one disbursement per grant is allowed. We are working on enabling multiple disbursements to different balance accounts.",
+      "location": "raw/adyen/docs/capital/manage-disbursements/2026-09-15.md:33"
+    },
+    {
+      "text": "Unscheduled repayments are only available for users operating in Europe, the United Kingdom, and the United States.",
+      "location": "raw/adyen/docs/capital/manage-disbursements/2026-09-15.md:34"
+    },
+    {
+      "text": "You can update the repayment configuration of a specific disbursement. Specifically, you can change the percentage of your user's incoming net volume that is deducted for repaying the grant.",
+      "location": "raw/adyen/docs/capital/manage-disbursements/2026-09-15.md:114"
+    },
+    {
+      "text": "Users can make unscheduled payments to repay their grant using the dedicated bank account details (for example, IBAN) assigned to each disbursement.",
+      "location": "raw/adyen/docs/capital/manage-disbursements/2026-09-15.md:195"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-manage-disbursements-reciprocal",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-manage-disbursements]] \u2014 2026-09-15 Capital post-disbursement GET/PATCH guide for distinct grant/disbursement IDs, repayment basis-points configuration and region-limited unscheduled-repayment account details; examples are not funding proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This page assumes an existing disbursed grant and currently one disbursement per grant; it does not describe creating a new disbursement or prove one occurred.",
+          "fundsCollections account identification is for unscheduled repayment into Adyen, not grant payout to a user's bank; Europe/UK/US condition applies."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/manage-disbursements/2026-09-15.md",
+  "raw_sha256": "a77f4b32bac85957b8a8a7b54c3fd070884ef93de543755f02f5a6082ecbcccb",
+  "status": "candidate_ready"
+}

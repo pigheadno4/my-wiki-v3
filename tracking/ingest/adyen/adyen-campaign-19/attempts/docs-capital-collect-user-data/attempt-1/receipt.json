@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-capital-collect-user-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital higher-amount user-data collection\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/collect-user-data\"\nraw_files:\n  - \"adyen/docs/capital/collect-user-data/2026-09-15.md\"\ntags: [adyen, capital, kyc, anacredit, financing]\n---\n\n## Overview\n\nThis 2026-09-15 Capital guide describes additional business KYC collection for certain legal entities when a selected financing offer or the new offer plus outstanding balance reaches a country-specific combined-financing threshold. It links the process to AnaCredit data collection. The instructions are for a Capital API integration; the page says UI components facilitate collection through Adyen-hosted onboarding. This dated guide does not prove a user's current country/entity eligibility, a verified capability, an approved offer or grant, legal compliance, disbursement or bank receipt. See [[adyen]], [[adyen-capital]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Trigger and country grain:** The introduction says the selected offer or new offer plus existing outstanding balance \u201cmeets\u201d a threshold, usually EUR 25,000 or equivalent; the later configuration-flow paragraph says Adyen requires data when total exposure \u201cexceeds\u201d the country/region threshold. Do not resolve that equality boundary from this page alone. Its table applies additional reporting to organizations from EUR 25,000 in Finland, France, Netherlands, Sweden, UK and US (local equivalent where shown), but lists Spain from EUR 3,000; Australia and Canada excluding Saskatchewan are marked not applicable. These are dated product/reporting conditions, not universal financing eligibility or current law.\n- **Prerequisites and durable consequence:** The API path calls for a Capital-supporting Adyen for Platforms integration; Balance Platform Capital configuration and grant-initiation roles, a Legal Entity Management API key, getGrantOffers and receiveGrants account-holder capabilities, and Capital/configuration webhooks. The feature supports legal entities created with LEM API v3 or later. The guide says requesting a higher amount automatically assigns an additional-KYC risk level that is currently irreversible, so data is required before future grants even below the threshold. Required data must arrive before the offer expires or a new grant request is needed.\n- **Collection routes:** After a selected offer and grant-configuration request, Adyen checks total exposure, signals an unresolved AnaCreditCapabilityRule and Reviewing grant status, and the platform gathers data. Hosted onboarding uses a one-time link for the main legal entity; the page gives four minutes to redirect, one click, one-hour access, and expiry on refresh. The hosted flow collects user submission, including separate parent-company legal entities where relevant. The API-only path reads account-holder capability problems, gathers required fields, PATCHes the main legal entity and, where relevant, creates and associates immediate/ultimate-parent legal entities. Its association PATCH replaces the whole array, so existing entries must be included. These are alternative integration paths, not proof of successful verification.\n- **Resolution and status:** The page's API-only example distinguishes capability verification errors and remediation codes from grant action state. It says account-holder verification errors and grant-related actions must be resolved before approval; check account-holder verificationStatus valid/allowed true separately from grant AnaCreditCapabilityRule resolved true/status Approved through the respective webhooks or GETs. The examples are TEST payloads and do not establish a real offer, grant disbursement, final debt or bank credit. The errors table includes a noPossibleRemediation code for CNAE_NUMBER; do not assume every error is fixed by submitting another field.\n\n## Detail locators\n\n- Scope, selected/new-plus-outstanding threshold wording and API/component split: pinned raw lines 15\u201330.\n- Roles, credentials, capabilities, webhooks, LEM version, irreversible risk level and link/offer expiry: pinned raw lines 32\u201361.\n- Configure-grant exposure check and Reviewing/AnaCredit status: pinned raw lines 63\u2013110 and 150\u2013175.\n- Hosted link and parent-company path: pinned raw lines 176\u2013365; API-only capability errors and legal-entity field conditions: pinned raw lines 366\u2013518.\n- Parent-company create/associate and whole-array PATCH warning: pinned raw lines 755\u20131052.\n- Verification-versus-grant status, country/organization thresholds and error/remediation table: pinned raw lines 1347\u20131513.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept and reciprocal source route.\n- [[adyen-platforms]] \u2014 platform account/capability context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/collect-user-data/2026-09-15|Adyen Capital higher-amount KYC guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A selected financing offer meets the threshold, usually EUR\u00a025,000 or the equivalent in another supported currency.",
+      "location": "raw/adyen/docs/capital/collect-user-data/2026-09-15.md:23"
+    },
+    {
+      "text": "If the total amount exceeds the threshold determined for a specific country or region, additional KYC data is required.",
+      "location": "raw/adyen/docs/capital/collect-user-data/2026-09-15.md:65"
+    },
+    {
+      "text": "Requesting a higher financing amount automatically assigns the user to a risk level that requires additional KYC information. This assignment is currently irreversible",
+      "location": "raw/adyen/docs/capital/collect-user-data/2026-09-15.md:51"
+    },
+    {
+      "text": "When updating the [entityAssociations](https://docs.adyen.com/api-explorer/legalentity/latest/patch/legalEntities/\\(id\\)#request-entityAssociations), note that a PATCH request replaces the whole array.",
+      "location": "raw/adyen/docs/capital/collect-user-data/2026-09-15.md:1047"
+    },
+    {
+      "text": "| Spain                                                          | Organizations From EUR\u00a03,000",
+      "location": "raw/adyen/docs/capital/collect-user-data/2026-09-15.md:1495"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-collect-user-data-reciprocal",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-collect-user-data]] \u2014 2026-09-15 Capital API guide for country/entity-dependent higher-amount KYC, hosted/API-only collection and separate capability/grant verification; threshold wording differs within the page.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introduction says threshold 'meets'; workflow says 'exceeds'. Preserve the equality-boundary conflict and country/organization thresholds, including Spain EUR 3,000.",
+          "Higher-amount request's additional-KYC risk level is described as currently irreversible, including future below-threshold grants; examples are not live verification or disbursement proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/collect-user-data/2026-09-15.md",
+  "raw_sha256": "30e20b2cefdd439d87a47374bfadec3451fef1772678c3852d141cf894ba4dcb",
+  "status": "candidate_ready"
+}

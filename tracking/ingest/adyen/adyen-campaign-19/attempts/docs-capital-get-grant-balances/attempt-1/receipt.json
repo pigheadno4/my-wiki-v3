@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-capital-get-grant-balances",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Capital grant and grant-account details\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/capital/get-grant-balances\"\nraw_files:\n  - \"adyen/docs/capital/get-grant-balances/2026-09-15.md\"\ntags: [adyen, capital, platforms, grants, balances, reporting]\n---\n\n## Overview\n\nThis Adyen Capital guide (last modified 2022-10-26, captured 2026-09-15) describes API reads for grant details after a grant has been created: list grants for an account holder, retrieve one grant, and retrieve the grant account that tracks platform grant balances and limits. The returned balance, renewal and status fields support display and repayment monitoring, but a dated documentation example is not a live debt amount, funding event, repayment completion or bank receipt.\n\n## Key takeaways\n\n- The stated prerequisites are a Capital-supporting Adyen for Platforms integration, Balance Platform API credentials with Capital Configuration and Grant Initiation roles, a user in a supported Capital country/region, Capital compliance preparation, a selected offer and signed ToS, and at least one disbursed grant. These are the guide's conditions for this read workflow, not evidence that any specific account has access or that a grant was actually disbursed.\n- GET `/grants?counterpartyAccountHolderId=...` returns a `grants` array for the receiving **account holder**. Each grant object can identify the grant reference `id`, receiving `counterparty`, `grantAccountId`, selected `grantOfferId`, `balances` (principal, fee, total, currency), `status`, and renewal fields. `renewal.minimumAmount` appears only if `renewal.eligible=true`; `renewsGrantId` appears only if the grant was configured to renew a prior grant. Keep grant ID, grant-account ID, offer ID, account-holder ID and receiving balance-account ID distinct.\n- GET `/grants/{grantId}` reads a particular grant with the same field families. The sample shows an `Active` grant with numeric principal/fee/total and a renewal minimum, but no as-of timestamp for its balance. Do not convert that sample into a current amount owed, derive an actual repayment transaction, or infer that renewal eligibility automatically gives a fresh offer. Its `status` is a string in the single-grant JSON whereas the list example uses a `status.code` object; retain that example discrepancy rather than normalizing an API schema from it.\n- GET `/grantAccounts/{id}` returns the **grant account** ID, aggregate `balances` by currency and `limits` for maximum allowed total grants on that grant account. The guide's prose calls the path `id` a \u201cquery parameter\u201d although its URL/curl place it in the path; use the route as written and avoid treating the example's negative limit values as a user-available cash balance or universal credit limit.\n- Examples are separate, illustrative responses rather than a coherent ledger. In the list, grant 2 `renewsGrantId` points to grant 1; in the single-grant example, grant 1 points back to grant 2. This cycle and the status-shape mismatch require actual response identifiers and source records before joining grants or asserting final debt/outcome.\n\n## Detail locators\n\n- Opening and `## Requirements`: post-creation purpose, integration/API roles, country, offer/ToS and prior-disbursement prerequisites.\n- `## Get all grants of an account holder`: account-holder query filter, grant/offer/account identities, balances/status and conditional renewal fields; list example.\n- `## Get details of a specific grant`: grant-ID path, per-grant fields and example status/renewal discrepancy.\n- `## Get details of your grant account`: grant-account route, aggregate balances and limits; \u201cquery parameter\u201d prose versus path URL.\n- `## See also`: navigation to lifecycle, disbursement and reconciliation guides.\n\n## Related\n\n- [[adyen-capital]] \u2014 main Capital concept.\n- [[source-adyen-docs-capital-grant-lifecycle-and-status]] \u2014 separate lifecycle/status reference.\n- [[source-adyen-docs-capital-reporting-and-reconciliation]] \u2014 separate repayment evidence and reconciliation route.\n- [[adyen-platforms]] \u2014 platform/account-holder context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/capital/get-grant-balances/2026-09-15|Adyen Capital get-grant-details guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "After you successfully create a grant, you can get the details of these grants by making API requests.",
+      "location": "line 19"
+    },
+    {
+      "text": "Make a GET [/grants](https://docs.adyen.com/api-explorer/capital/latest/get/grants) request with the receiving [counterpartyAccountHolderId](https://docs.adyen.com/api-explorer/capital/latest/get/grants#query-counterpartyAccountHolderId) as a query parameter.",
+      "location": "line 44"
+    },
+    {
+      "text": "This field appears only if `renewal.eligible` is **true**.",
+      "location": "line 67, renewal.minimumAmount row"
+    },
+    {
+      "text": "Make a GET [/grants/{grantId}](https://docs.adyen.com/api-explorer/capital/latest/get/grants/\\(grantId\\)) request with [grantId](https://docs.adyen.com/api-explorer/capital/latest/get/grants/\\(grantId\\)#path-grantId) as the path parameter.",
+      "location": "line 124"
+    },
+    {
+      "text": "The balances of all grants in your balance platform are tracked by your grant account.",
+      "location": "line 181"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-capital-get-grant-balances-source-link",
+        "target_path": "wiki/concepts/adyen-capital.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-capital-get-grant-balances]] \u2014 2022-modified, 2026-09-15-captured Capital GET routes for account-holder grant lists, individual grant balances/status/renewal fields and grant-account aggregate balances/limits; examples are not live debt or disbursement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "List and single-grant samples conflict: grant 2 renews grant 1 in the list, while grant 1 renews grant 2 in the single response; status is object versus string. Do not merge into a single actual ledger or infer universal response shape.",
+          "The grant-account section calls the id a query parameter, but route and curl put it in the path; preserve route identity.",
+          "Example balances lack as-of timing and do not prove current debt, actual repayment, disbursement or bank receipt; negative limits in the sample are not a user cash balance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/capital/get-grant-balances/2026-09-15.md",
+  "raw_sha256": "423adbe285fdc9ea1945819bf7c3461d33e6c927edf3b559361789dc1ecbae64",
+  "status": "candidate_ready"
+}

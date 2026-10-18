@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-business-accounts-kyc-verification-codes-sub-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen verification suberror codes\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/kyc-verification-codes/sub-errors\"\nraw_files:\n  - \"adyen/docs/business-accounts/kyc-verification-codes/sub-errors/2026-09-15.md\"\ntags: [adyen, business-accounts, platforms, issuing, kyc, verification]\n---\n\n## Overview\n\nThis Adyen verification suberror reference was last modified 2023-02-28 and captured 2026-09-15. It maps granular suberror codes to messages and, when applicable, separate remediating-action codes for verification problems. Despite its Business Accounts URL, the stated requirement scope covers existing Adyen for Platforms **or Adyen Issuing** integrations. A code explains a reported verification problem; it does not itself prove Business Account approval, current eligibility, a completed fix, or the result of a later verification check.\n\n## Key takeaways\n\n- The page groups suberrors by check: `1_1xxx` general, `1_3xxx` individual identity, `1_5xxx` organization, `1_6xxx` legal arrangement, `1_7xxx` bank account, `1_8xxx` proof of signatory, and `1_9xxx` business lines. Use the exact observed suberror and its table row, rather than treating a family prefix as a diagnosis. Table links give **remediating-action codes**, which are a separate code namespace and may contain more than one action for one suberror.\n- The requirement statement says no additional requirements, limitations or preparations **if** the reader already has an Adyen for Platforms or Issuing integration. It does not waive product onboarding, entity verification, Business Account eligibility, permissions or compliance obligations in other guides.\n- The tables distinguish data mismatch from missing/expired/unsupported/low-quality evidence across individuals, organizations, legal arrangements, bank documents, signatories and business lines. For example, individual identity rows include ID and residence/tax-ID issues; bank rows distinguish invalid routing/account data from document mismatch/age; business-line rows include industry/site and proof-of-funds issues. The specific code and matching action link control the next investigation; do not infer a universal retry or document request from a broad family.\n- A material organization row, `1_5052`, says the affiliation document verifies that the payout entity is **not 100% affiliated** with the company and that **setup cannot be continued**; its table points to action `1_100`. Preserve that stop condition rather than presenting every KYC suberror as an ordinary resubmission. Other entries also name sensitive documents or minimum-age failure, but their handling remains code-specific.\n- The example places `subErrors` inside an item of `problems[].verificationErrors[]`; it illustrates general error `1_30` and suberrors `1_3001`/`1_3000` with their own messages, remediating actions and `type=invalidInput`. It contains ellipses and literal hint markup, so it is an explanatory shape, not a complete parseable payload or evidence of a live user's verification result. Use observed API/webhook data and current schema for implementation.\n\n## Detail locators\n\n- Opening, `## Requirements`, `## Types of error codes`: purpose, conditional Platforms/Issuing scope and family map.\n- `## General issues` and `## Individual identity check`: generic and person/data/document/biometric examples.\n- `## Organization check`: registry, tax, affiliation, VAT, ownership and evidence errors; `1_5052` stop condition.\n- `## Legal arrangement check`: entity-type wording and constitutional/participant evidence rows.\n- `## Bank account check`, `## Proof of signatory check`, `## Business lines check`: respective problem/action-code mappings.\n- `## Suberrors array example`: nested problem/error/suberror illustration; not a full valid runtime envelope.\n\n## Related\n\n- [[adyen-business-accounts]] \u2014 main Business Accounts concept and verification context.\n- [[adyen-financial-products]] \u2014 product-family context.\n- [[adyen-platforms]] \u2014 Platforms integration context.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/kyc-verification-codes/sub-errors/2026-09-15|Adyen verification suberror code table (last modified 2023-02-28; fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Suberrors are more granular error codes that you can use to provide the specific cause of a verification error.",
+      "location": "line 16"
+    },
+    {
+      "text": "If you have an [Adyen for Platforms](/adyen-for-platforms-model/) or [Adyen Issuing](/issuing) integration, there are no additional requirements, limitations, or preparations.",
+      "location": "line 20"
+    },
+    {
+      "text": "* **1\\_7xxx**: [Issues with the bank account check](#bank-check)",
+      "location": "line 30"
+    },
+    {
+      "text": "The affiliation document verifies the payout entity is not 100% affiliated with the company. Setup cannot be continued",
+      "location": "line 194"
+    },
+    {
+      "text": "\"subErrors\": [",
+      "location": "line 376"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-suberrors-source-link",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-kyc-verification-codes-sub-errors]] \u2014 2023-modified, 2026-09-15-captured verification suberror family/table reference for Platforms or Issuing integrations, with code-specific remediating-action links and a setup-stop affiliation row.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The conditional no-additional-requirements statement applies to this error-reference page for an existing Platforms or Issuing integration, not Business Account onboarding/eligibility.",
+          "Code 1_5052 explicitly says setup cannot continue when payout entity is not 100% affiliated; do not turn it into generic retry guidance.",
+          "Example nested subErrors JSON contains ellipses/hint markup and is illustrative, not a valid complete API response or proof of verification outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/kyc-verification-codes/sub-errors/2026-09-15.md",
+  "raw_sha256": "fc3d1580f6dffeb82223b7b89a5ad6274c62ba2669243454fe7ee9a866b6e9c8",
+  "status": "candidate_ready"
+}

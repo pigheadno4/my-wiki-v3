@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-business-accounts-manage-balance-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Business Accounts: Manage balance accounts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/business-accounts/manage-balance-accounts\"\nraw_files:\n  - \"adyen/docs/business-accounts/manage-balance-accounts/2026-09-15.md\"\ntags: [adyen, business-accounts, balance-accounts, account-holders]\n---\n\n## Overview\n\nThis 2026-09-15-modified [[adyen]] Business Accounts guide describes Configuration API operations for a balance-account resource containing information about funds held by a user. A balance account is attached to an account holder and belongs to a wider verification and onboarding process. Resource creation or an example `status: active` does not establish that a particular Business Account is verified, usable or funded. [[adyen-business-accounts]]\n\n## Key takeaways\n\n- To create a balance account manually, `POST /balanceAccounts` with the account holder ID to which it should attach. Retain the returned balance account `id` for view, update and close operations (raw lines 23\u201327, 227\u2013253). The TEST example includes `defaultCurrencyCode: EUR`, zero-valued EUR balances and `status: active`; these are response example values, not universal currency, default/primary-account rules or live balance evidence.\n- For observation, Customer Area can show balance accounts and available balances for one selected balance platform at a time. The API lists an account holder's balance accounts through paginated `GET /accountHolders/{id}/balanceAccounts`, details and balances through `GET /balanceAccounts/{id}`, and associated payment instruments through `GET /balanceAccounts/{id}/paymentInstruments` (raw lines 256\u2013278). The latter is labeled \u201ccards\u201d in this page; do not broaden that parenthetical into a complete inventory rule for every product.\n- `PATCH /balanceAccounts/{id}` updates a balance account; the worked example changes `description` (raw lines 280\u2013295). The page does not state a special Customer Area role or a procedure for choosing a primary account; consult product-specific authorization and account-holder guidance rather than inferring those from the sample description \u201cPrimary Balance Account.\u201d\n- Closure is permanent in the guide. Check for zero balance; if funds remain, transfer them through the separately linked internal-transfer flow before setting each balance account's `status` to `Closed` through update. Discontinuing the platform relationship can involve separate permanent account-holder deactivation (raw lines 473\u2013482). This guide does not prove a transfer occurred or that closure completed.\n\n## Detail locators\n\n- Resource definition, onboarding and verification context: raw lines 17\u201321.\n- TEST create requests, SDK versions and illustrative response fields: raw lines 23\u2013254.\n- Customer Area and API view routes: raw lines 256\u2013278.\n- Description-only PATCH examples: raw lines 280\u2013471.\n- Zero-balance and permanent closure sequence: raw lines 473\u2013482.\n\n## Related\n\n- [[adyen-business-accounts]]\n- [[source-adyen-docs-business-accounts-manage-account-holders]] \u2014 account-holder resource and capability status.\n- [[source-adyen-docs-business-accounts-account-structure-resources]] \u2014 resource relationships.\n- [[source-adyen-docs-business-accounts-create-business-accounts]] \u2014 separate bankAccount payment instrument and business account number.\n\n## Raw Sources\n\n- [[raw/adyen/docs/business-accounts/manage-balance-accounts/2026-09-15|Captured Manage balance accounts guide]]\n",
+  "quotes": [
+    {
+      "text": "A [balance account](/business-accounts/account-structure-resources/) is an API resource that contains information about the funds held by your user.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Make a POST [/balanceAccounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts) request using the account holder ID you want to attach the balance account to.",
+      "location": "raw line 27, Create a balance account"
+    },
+    {
+      "text": "2. In the response, note the `id`. You need this ID to:",
+      "location": "raw line 227, Create a balance account"
+    },
+    {
+      "text": "get a list of the balance accounts of an account holder. This endpoint returns a paginated list of balance accounts.",
+      "location": "raw line 276, View balance accounts / API"
+    },
+    {
+      "text": "You can only close empty balance accounts, so if there are funds left, [transfer](/platforms/internal-fund-transfers/on-demand-fund-transfers/) any remaining balance.",
+      "location": "raw line 479, Close a balance account"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c19-business-accounts-manage-balance-accounts-reciprocal",
+        "target_path": "wiki/concepts/adyen-business-accounts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-business-accounts-manage-balance-accounts]] \u2014 2026-09-15-modified Configuration API guide to create, view, update and permanently close account-holder-linked balance accounts; zero balance gates closure, while TEST resource/status/currency examples are not funded or usable Business Account proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/business-accounts/manage-balance-accounts/2026-09-15.md",
+  "raw_sha256": "3d5307242236f8dbbda95194af78ca2d284681798843b300a4e80a46875f5b36",
+  "status": "candidate_ready"
+}
