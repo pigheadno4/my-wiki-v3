@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-transfer-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Track Adyen Platforms balance-platform transactions and transfers\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/transfer-transactions\"\nraw_files:\n  - \"adyen/docs/platforms/transfer-transactions/2026-09-15.md\"\ntags: [adyen, platforms, transfers, transactions, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms tracking hub routes readers to real-time webhook and on-demand API methods for following fund movements in a balance platform. It states that every fund movement results in a transaction and presents a *transfer lifecycle* status summary. These are balance-platform and transfer reconciliation signals; a source-account debit or report row alone does not establish that a beneficiary bank received funds.\n\n## Key takeaways\n\n- The hub's transfer-status table distinguishes `authorised` (valid request with funds reserved), `booked` (funds deducted from the source balance account), `failed` (transfer could not be initiated), `refused` (clearing system or recipient bank rejected it), and `returned` (sent funds came back from the receiving bank). The `booked` definition is a source-side balance event, not a universal finality or bank-credit guarantee.\n- The tracking choices are Transfers and Transactions webhooks for real-time updates and Transfers API requests on demand. This page links to separate method guides; it does not give endpoint parameters, webhook matching keys, or a complete transaction status schema. Treat its status table as transfer-lifecycle orientation, not a substitute for the event contracts.\n- For `failed` or `refused` transfers, the page says funds are not deducted from the balance account and advises notifying the user and checking bank-account details or balance. It does not prescribe an automatic retry. A recipient-bank return can occur several days after initiation; Adyen sends a `balancePlatform.transfer.updated` event with `returned`, credits funds back to the original balance account, and records the return separately in the Balance Platform Accounting Report. A prior `booked` debit therefore needs later status and return monitoring.\n- The hub links payout reconciliation and transfer-detail pages for further investigation. It does not define settlement timing, payout cutoff, bank receipt, or legal fund ownership for a particular payment or payout.\n\n## Detail locators\n\n- `# Track transactions`: balance-platform movement/transaction framing and API/webhook tracking purpose.\n- `## Transfer lifecycle`: five transfer statuses and their stated balance or network meanings.\n- `## Choose a tracking method`: webhook versus Transfers API child routes.\n- `## Handle exceptions`: failed/refused non-deduction, possible later bank return, original-account credit and separate accounting-report entry.\n- `## See also`: payout reconciliation and transfer-detail navigation.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept and source route.\n- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] \u2014 webhook method detail.\n- [[source-adyen-docs-platforms-transfer-transactions-track-api]] \u2014 Transfers API query detail.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/transfer-transactions/2026-09-15|Adyen track transactions (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Every fund movement in your balance platform results in a transaction.",
+      "location": "line 19"
+    },
+    {
+      "text": "The funds have been successfully deducted from the source balance account.",
+      "location": "line 28"
+    },
+    {
+      "text": "When a transfer has the status **failed** or **refused**, the funds are not deducted from the balance account.",
+      "location": "line 53"
+    },
+    {
+      "text": "A transfer can be returned by the recipient bank several days after it was initiated.",
+      "location": "line 57"
+    },
+    {
+      "text": "The funds are credited back to the original balance account.",
+      "location": "line 60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-platforms-transfer-transactions-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-transfer-transactions]] \u2014 2026-09-15 balance-platform transaction tracking hub for transfer status meanings, webhook/API routes and failed/refused/returned handling; booked source debit is not bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The status table describes transfer lifecycle; transaction webhook details and query schema live in linked child guides.",
+          "A booked source-account deduction does not prove beneficiary-bank receipt; bank returns can arrive days later with original-account credit and separate report entry.",
+          "The hub does not authorize retrying a failed/refused or returned transfer automatically."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/transfer-transactions/2026-09-15.md",
+  "raw_sha256": "c1bc424dff906b270552cf8449bcd1c1f8f0478a51da51634272e7defb737201",
+  "status": "candidate_ready"
+}

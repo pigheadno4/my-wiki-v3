@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 814
+source_count: 864
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-Eight hundred dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. C14 adds Mirakl, Salesforce OMS, Cegid and Dynamics connectors plus partner OAuth, Uplift, regional and seasonal references through [[adyen-mirakl]], [[adyen-salesforce-order-management-system]], [[adyen-cegid-retail-y2]], [[adyen-microsoft-dynamics]], [[adyen-partners]], [[adyen-partner-oauth]] and [[adyen-peak-season-readiness]]. C15 adds Adyen for Platforms foundations, account/resource management, onboarding and verification references through [[adyen-platforms]]. C16 adds Platforms online and in-person payment splits, capture/refund/chargeback allocation, transaction fees, surcharge/tipping/DCC, payment methods, Giving and third-party multi-pay-in references through [[adyen-platforms]], [[adyen-automatic-split-configuration]], [[adyen-currencies-and-fx]] and [[adyen-giving]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+Eight hundred fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. C14 adds Mirakl, Salesforce OMS, Cegid and Dynamics connectors plus partner OAuth, Uplift, regional and seasonal references through [[adyen-mirakl]], [[adyen-salesforce-order-management-system]], [[adyen-cegid-retail-y2]], [[adyen-microsoft-dynamics]], [[adyen-partners]], [[adyen-partner-oauth]] and [[adyen-peak-season-readiness]]. C15 adds Adyen for Platforms foundations, account/resource management, onboarding and verification references through [[adyen-platforms]]. C16 adds Platforms online and in-person payment splits, capture/refund/chargeback allocation, transaction fees, surcharge/tipping/DCC, payment methods, Giving and third-party multi-pay-in references through [[adyen-platforms]], [[adyen-automatic-split-configuration]], [[adyen-currencies-and-fx]] and [[adyen-giving]]. C17 adds Platforms managed/custom payouts, internal transfers, instant cash-out, balance top-ups, settlement and reporting references through [[adyen-platforms]], [[adyen-platform-internal-transfers]] and [[adyen-reporting]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -132,8 +132,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 - Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 800 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13 + C14 + C15 + C16).
-- Total source summaries: 814 (800 website + 14 GitHub).
+- Ingested website documentation sources: 850 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13 + C14 + C15 + C16 + C17).
+- Total source summaries: 864 (850 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
 - Ingested package releases: 22
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
@@ -991,6 +991,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-refunds]] — Adyen Platforms in-person split-refund methods (webpage, 2026-10-18)
 - [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations]] — Adyen Platforms manage split configuration profiles (webpage, 2026-10-18)
 - [[source-adyen-docs-platforms-online-payments-currency-conversion]] — Currency conversion for Adyen for Platforms online payments | Adyen Docs (webpage, 2026-10-18)
+
+### Website documentation — Campaign 17
+
+- [[source-adyen-docs-platforms-managed-payouts]] — Managed payouts | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts]] — Adyen Platforms custom payouts to user bank accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers]] — Adyen Platforms internal fund transfers overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] — Balance Platform Accounting Report | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts]] — Adyen for Platforms on-demand payouts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] — Use managed payout schedules | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-webhooks]] — Adyen Platforms payout transfer webhooks (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts]] — Adyen for Platforms custom scheduled payouts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-scheduled-fund-transfers]] — Adyen Platforms scheduled internal fund transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-webhooks]] — Adyen Platforms cashout webhooks (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]] — Top up a balance account on demand | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] — Webhooks for Adyen for Platforms internal fund transfers | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-on-demand-fund-transfers]] — Adyen Platforms on-demand internal fund transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-descriptions]] — Adyen for Platforms payout descriptions (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account-top-up-webhooks]] — Balance-account top-up webhooks | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-view-payout-transfers-details]] — Adyen Platforms: view payout transfer details (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-payout-report]] — Adyen Balance Platform Payout Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-approve-cancel-transfers]] — Adyen for Platforms transfer approval and cancellation (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] — Approve or cancel Adyen Platforms on-demand payouts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-view-transfers-details]] — Adyen Platforms: view transfer details (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] — Adyen Platforms custom payout transfer routes (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-amount]] — Adyen Platforms payout amount calculation (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-transfer-transactions-track-api]] — Adyen Transfers API transaction tracking (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-request]] — Make a cashout request for Adyen for Platforms | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]] — Scheduled balance-account top-ups | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-managed-payouts-view-payout-executions]] — View managed payout executions | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-quickstart-guide-reporting]] — Adyen for Platforms reporting quickstart (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees]] — Adyen for Platforms reports and fee types (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] — Adyen Platforms balance webhook configuration (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts-view-custom-payout-executions]] — View Adyen Platforms custom payout schedule executions (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] — Adyen balance-platform transaction webhooks (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-fee-report]] — Adyen Balance Platform Fee Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-settle-funds-configure-closing-time]] — Configure sales day closing time for Adyen for Platforms | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-prepare-reports]] — Adyen for Platforms prepare reports (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-configure-settlement-delay]] — Adyen Platforms balance-account settlement delay (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-return-transfers]] — Return transferred funds | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-settle-funds-pass-through-settlement]] — Pass-through settlement | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-quickstart-guide-payouts]] — Adyen for Platforms payouts quickstart (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-settle-funds]] — Adyen Platforms sales-day fund settlement (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] — Adyen Platforms manage balance webhook settings (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-cash-out-instantly]] — Adyen Platforms CashOut overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-balance-report]] — Adyen Balance Platform Balance Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-types]] — Adyen Platforms balance types (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates-use-cases]] — Adyen Platforms balance webhook use cases (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-statement-report]] — Adyen Balance Platform Statement Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-prepare-reports-generate-download-reports]] — Generate and download Adyen balance platform reports | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-reconciliation]] — Payout reconciliation methods | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates]] — Adyen Platforms: track balance updates (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-transfer-transactions]] — Track Adyen Platforms balance-platform transactions and transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account]] — Adyen for Platforms balance-account top-up overview (webpage, 2026-10-18)
 
 ### GitHub repository evidence
 

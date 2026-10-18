@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-settle-funds-configure-closing-time",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Configure sales day closing time for Adyen for Platforms | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/settle-funds/configure-closing-time\"\nraw_files:\n  - \"adyen/docs/platforms/settle-funds/configure-closing-time/2026-09-15.md\"\ntags: [adyen, platforms, sales-day, settlement, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms guide describes configuring the sales-day closing time on a new or existing balance account. The default is midnight in the balance account's local time zone; a later hourly cutoff can keep after-midnight business activity in the prior sales day. The page also identifies a separate business-day settlement-delay setting and payment-method exceptions. This 2026-09-15 webpage snapshot explains configuration and its webhook signal, not a completed settlement batch, available balance, payout, or beneficiary-bank receipt. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The page calls for a Configuration API credential with **Balance Platform BCL role** and subscription to Configuration webhooks. Configure `platformPaymentConfiguration` through POST `/balanceAccounts` for a new account or PATCH `/balanceAccounts/{id}` for an existing one. A successful API response includes the supplied configuration; after application, Adyen describes `balancePlatform.balanceAccount.created` or `.updated` webhook by account case. These are settings evidence, not proof that a transaction was captured or funds became available.\n- `salesDayClosingTime` uses `HH:MM`, with hours `00` through `07` and minutes `00`; default `00:00`. The introductory example places a restaurant's 03:00 closing in the balance account's local time zone and says its next sales day starts 03:01. The source does not define daylight-saving transitions or establish a cutoff for a particular account without its returned configuration and time zone.\n- `settlementDelayDays` is a separate conditional field: include it when different from the merchant account default; the table says allowed values are integers 1\u201320 business days or `null` for default. Moving the sales-day cutoff is not itself a promise of a specific availability date, payout initiation, or bank arrival.\n- The guide states that funds for **Affirm** and **maestro_USA** settle on the payment method's schedule instead of the configured sales-day closing time. Check the actual method/variant before applying a general cutoff rule.\n- The sample prose says a 01:00 closing with funds available after two business days, but the displayed PATCH body sets only `salesDayClosingTime`; it does not include `settlementDelayDays`. Its later webhook example displays 06:00 while the request/response example displays 01:00. Treat those as illustrative fragments, not proof that the sample request set a two-day delay or that the webhook followed that exact request. The SDK snippets and endpoints are test-environment, version-labeled examples.\n\n## Detail locators\n\n- Default local-time-zone sales day and after-midnight example: pinned raw lines 15\u201319.\n- BCL role, Configuration webhooks, 07:00 limit and Affirm/maestro_USA exceptions: pinned raw lines 21\u201331.\n- POST/PATCH account routes, `platformPaymentConfiguration`, exact closing-time format/default and conditional business-day delay: pinned raw lines 33\u201347.\n- Test PATCH and versioned SDK examples, including omitted delay despite the two-day prose: pinned raw lines 48\u2013284.\n- API response configuration and created/updated webhook descriptions; 01:00 versus 06:00 examples: pinned raw lines 286\u2013340.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main platform/balance-account concept route.\n- [[adyen-reporting]] \u2014 report timing and reconciliation context; this setting is not a reporting outcome.\n- [[source-adyen-docs-reporting-dynamic-sales-day]] \u2014 separate merchant-report sales-day guide with its own scope and timing rules.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/settle-funds/configure-closing-time/2026-09-15|Configure sales day closing time \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "By default, Adyen defines a sales day from midnight (00:00) to midnight of the next day (23:59) in the balance account's local timezone.",
+      "location": "pinned raw line 19, introduction"
+    },
+    {
+      "text": "**Balance Platform BCL role**",
+      "location": "pinned raw line 27, Requirements > API credential roles"
+    },
+    {
+      "text": "You can delay closing times until **7:00 AM**.",
+      "location": "pinned raw line 30, Requirements > Limitations"
+    },
+    {
+      "text": "Required if different from the default settlement delay applied to the merchant account.",
+      "location": "pinned raw line 46, Configure sales day closing time > settlementDelayDays"
+    },
+    {
+      "text": "After the new closing time is applied to the balance account, we send one of the following webhooks to your server:",
+      "location": "pinned raw line 314, Webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-sales-day-closing-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-quickstart-guide-payments]]",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-settle-funds-configure-closing-time]] \u2014 2026-09-15 Platforms balance-account sales-day closing-time configuration guide for local hourly 00:00\u201307:00 cutoffs, conditional business-day settlement delay and method-schedule exceptions; response/webhook is settings evidence, not payout proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The sample says two business days but omits `settlementDelayDays`; its webhook example shows 06:00 after a 01:00 request/response example, so do not treat them as one verified operation.",
+          "Affirm and maestro_USA are documented as following method schedules instead of sales-day closing time."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/settle-funds/configure-closing-time/2026-09-15.md",
+  "raw_sha256": "9fdd5e3523a7180831f6838a9ab872392d74b9394dcda6f64e4f6253b6c2fba9",
+  "status": "candidate_ready"
+}

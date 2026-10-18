@@ -19,7 +19,37 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-platforms-payout-reconciliation]] — 2026-09-15 Platforms routing guide for scheduled-payout breakdowns, on-demand/cashout ledger matching, amount-basis differences and payout status webhooks; no bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-reports-and-fees-statement-report]] — 2026-09-15 daily Balance Platform statement field guide for included balance accounts, starting/ending balances, pending versus completed IDs and booking/value dates; zero-to-zero accounts are omitted and rows do not prove bank receipt.
+
+
+- [[source-adyen-docs-platforms-reports-and-fees-balance-report]] — 2026-09-15 daily-window Balance Platform Balance Report for opening/closing account-currency snapshots, nonzero-or-movement row selection and CET/platform-timezone choices; not transaction or bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-prepare-reports]] — 2026-09-15 Platforms guide to time-zone/period alignment, role-gated report columns, payment/modification/split reference joins and complete test-report checks before live reconciliation.
+
+- [[source-adyen-docs-platforms-prepare-reports-generate-download-reports]] — 2026-09-15 Platforms report-generation/download guide for role-gated scheduled or one-time creation, report-created download URL and authenticated file retrieval; disabling automatic generation deletes its schedule, and a notification is not report-content proof.
+
+
+
+- [[source-adyen-docs-platforms-reports-and-fees-fee-report]] — 2026-09-15 monthly Balance Platform Fee Report for user/liable incurred-fee categories, optional account columns and invoice reconciliation; row location does not identify billing debit or transaction-level booking.
+
+
+- [[source-adyen-docs-platforms-reports-and-fees]] — 2023-modified, 2026-09-15-captured Platforms report/fee-selection hub for monthly account scopes, split-line matching and fee-location differences; linked reports own detailed grains and no bank-receipt proof follows from the catalog.
+
+
+- [[source-adyen-docs-platforms-quickstart-guide-reporting]] — 2026-09-15 Platforms reporting quickstart for user-dashboard versus custom-report selection, booking/value dates, BPPR scope limits and BPAR ledger filtering; report rows are not bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-reports-and-fees-payout-report]] — 2026-09-15 Balance Platform scheduled-payout report for account/currency and transaction rows, signed balance changes, rolling balance and distinct booking/value/payout dates; a booked row is not beneficiary-bank receipt.
+
+
 - [[source-adyen-docs-reporting-platform-reports]] — 2026-09-15 platform/marketplace reporting hub separating new Adyen for Platforms Balance Platform reports from classic Marketplace/Marketpay report routes.
+
+- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] — 2026-09-15 capture of the daily/interactive Balance Platform Accounting Report field and event reference for liable/user balance changes, pending-versus-booked IDs, CET booking window, value dates and signed register examples; bank-transfer rows are not independent bank-receipt proof.
+
 
 
 - [[source-adyen-docs-reporting-your-payment-terminals]] — 2022-modified, 2026-09-15-captured POS Terminal fleet Scheduled report field guide for one-row-per-terminal inventory, account/time-zone scope, last-online status and 14-day timestamp omission; not live device-state or payment-result proof.

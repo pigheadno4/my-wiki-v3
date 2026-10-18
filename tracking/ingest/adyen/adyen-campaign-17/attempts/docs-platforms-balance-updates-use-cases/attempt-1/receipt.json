@@ -1,0 +1,72 @@
+{
+  "job_id": "docs-platforms-balance-updates-use-cases",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms balance webhook use cases\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/balance-updates/use-cases\"\nraw_files:\n  - \"adyen/docs/platforms/balance-updates/use-cases/2026-09-15.md\"\ntags: [adyen, platforms, balance-accounts, webhooks, examples]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen for Platforms page provides **TEST examples** of Balance webhook settings and matching balance-update event payloads for three alert scopes. Balance webhooks are marked **limited availability / pilot**, with processes and documentation subject to change. The page illustrates configuration and event shape, not a live account balance, completed transfer, payout, or bank receipt. [[adyen]] \u00b7 [[adyen-platforms]] \u00b7 [[adyen-webhooks]]\n\n## Key takeaways\n\n- **Three target scopes:** To alert when any balance account's **current balance** drops below USD 5,000, the first example targets `balancePlatform`, sets `conditions.balanceType: balance`, and uses `lessThan`. To alert when any of a particular user's balance accounts reaches or drops below USD 5,000, the second targets that `accountHolder` and uses `lessThanOrEqual`. To monitor **available balance** for six separate users' foreign-currency balance accounts, the third instructs one `balanceAccount` setting per account, each with its own currency and threshold. These are alternative example scopes; the platform, account holder, and balance account are distinct resource identities.\n- **Event shape and evidence limit:** Each example's `balancePlatform.balanceAccount.balance.updated` event is marked `environment: test` and shows `settingIds`, platform, currency, and `balances` including `available`, `pending`, `reserved`, and `balance`. The user-target and individual-account examples include `accountHolderId`; the shown event data does **not** include a `balanceAccountId`, even for the individually targeted example. A sample `settingIds` value or account-holder ID is not by itself proof of which balance account changed in a real event. Use the actual payload and setting lookup rather than assuming identifiers not shown here.\n- **Threshold units need verification:** The first two examples label USD 5,000 and send `value: 500000`. The third labels a JPY 1,000 threshold but sends `value: 100000`, while its test event reports `available: 95000`. This page does not explain that scaling. The separate Adyen currency-code guide says JPY has no decimal minor units, so the JPY narrative/value pairing conflicts with that general convention if used as a minor-unit amount. Do not copy the JPY numeric value as a validated JPY 1,000 setting without checking the current Balance webhook API contract.\n- **Related configuration caveat:** The examples each use **one** condition and therefore do not resolve the related configuration guide's conflict between its active-status row (\u201cany\u201d condition) and its conditions row (\u201call\u201d conditions). The configuration guide owns subscription, roles, 20-setting/20-condition limits, and setup; this page is an example catalog only.\n\n## Detail locators\n\n- Pilot notice, scope and example intent: pinned raw lines 15\u201324.\n- Platform-wide current-balance example: pinned raw lines 26\u201395.\n- Account-holder current-balance example: pinned raw lines 97\u2013167.\n- Separate balance-account available-balance settings, JPY value and event payload: pinned raw lines 169\u2013239.\n- Related all-versus-any configuration conflict: [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]], pinned raw lines 88\u201390 there.\n- JPY no-decimal general convention: [[source-adyen-docs-development-resources-currency-codes]], pinned raw lines 164\u2013172 there.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms source route.\n- [[adyen-webhooks]] \u2014 general webhook handling and event scope.\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 initial subscription, settings fields, roles, and limits.\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] \u2014 later setting updates and deletion.\n- [[source-adyen-docs-development-resources-currency-codes]] \u2014 JPY minor-unit comparison.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/balance-updates/use-cases/2026-09-15|Adyen Balance webhook example use cases, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "pinned raw line 20, Limited availability notice"
+    },
+    {
+      "text": "I want to get notified if the balance drops below USD 5000 in any of the balance accounts in my balance platform.",
+      "location": "pinned raw line 30, Any current balance drops below a limit"
+    },
+    {
+      "text": "I want to be notified if the current balance reaches or drops below USD 5000 in any of my user's balance accounts.",
+      "location": "pinned raw line 101, Current balance of a specific user drops below a limit"
+    },
+    {
+      "text": "I want to get notified when the available balance on six of my users' balance accounts, which hold foreign currencies, drop below 1000 in their respective currencies.",
+      "location": "pinned raw line 173, Available balance of a specific balance account drops below a limit"
+    },
+    {
+      "text": "Using the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview), create a webhook setting for **each of the balance accounts**, specifying the following parameters and values:",
+      "location": "pinned raw line 177, Available balance of a specific balance account drops below a limit"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-balance-webhook-usecases-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-balance-updates-use-cases]] \u2014 2026-09-15 pilot Balance webhook TEST examples for platform-wide, account-holder and per-balance-account thresholds; JPY 1,000 prose versus 100000 example value needs verification, and sample events do not show balanceAccountId.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not copy the JPY threshold value as a validated minor-unit conversion; the separate Adyen currency guide says JPY has no decimals.",
+          "The examples each use one condition and do not resolve the configure guide's all-versus-any conflict."
+        ]
+      },
+      {
+        "update_id": "c17-balance-webhook-usecases-general-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-balance-updates-use-cases]] \u2014 pilot Platforms Balance webhook TEST setting and event examples for three target scopes, with threshold-unit and payload-identity limits (captured 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Example event payloads omit balanceAccountId even for the individual-account setting."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/balance-updates/use-cases/2026-09-15.md",
+  "raw_sha256": "c511aff53ab7c232048a16a4fc02006b537c2e007dc3238d4d96e6f811ed53ca",
+  "status": "candidate_ready"
+}

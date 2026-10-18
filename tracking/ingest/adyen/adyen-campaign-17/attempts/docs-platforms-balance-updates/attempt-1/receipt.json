@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-balance-updates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms: track balance updates\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/balance-updates\"\nraw_files:\n  - \"adyen/docs/platforms/balance-updates/2026-09-15.md\"\ntags: [adyen, platforms, balance-accounts, balance-webhooks, notifications]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms overview describes a limited-availability Balance webhook pilot for notifications when a configured balance-change rule matches. A rule may cover all balance accounts in a balance platform, all accounts of one account holder, or one balance account. The page explains subscription, settings creation and inheritance; it is not evidence that an account currently has the pilot, that a notification was delivered, or that a payment, payout or top-up completed. See [[adyen]], [[adyen-platforms]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- **Pilot and purpose:** The page says Balance webhooks are in pilot and the process/documentation may change. Balance changes can arise from payment lifecycle or financial products; it gives incoming payments, payouts, refunds and chargebacks as examples of events affecting Available. These are examples of possible changes, not a universal timing or amount rule for each operation.\n- **Configure notification scope:** Subscribe to the **Balance webhook** in Customer Area and obtain its webhook ID. Configure settings with `POST /balancePlatforms/{id}/webhooks/{id}/settings`, naming that ID and trigger criteria. A setting may target the entire balance platform, one account holder's balance accounts, or a single balance account. The overview does not specify detailed request fields, roles, quotas or security setup; use [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] for those details.\n- **Inheritance and override:** Platform-level settings apply broadly, account-holder settings inherit and override platform rules for that user's accounts, and balance-account settings inherit and override higher-level rules for that account. A more specific configuration can therefore change which account changes prompt an alert. The page says Adyen sends an event when all configured conditions are met, but the related configuration guide's `status=active` row says any condition can trigger; the captured sources leave compound-condition logic unresolved. Verify current behavior before relying on it for automatic control decisions.\n- **Action boundary:** An alert reports a matching balance change according to the configured rule. It does not itself cause or prove a transfer, top-up, refund, chargeback or beneficiary-bank receipt. Manage existing settings through the separate [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] route; disabling, deleting and clearing conditions have different implications there.\n\n## Detail locators\n\n- Pilot notice, example balance-change causes and target scopes: raw lines 15\u201332. Subscribe, obtain webhook ID, settings POST and matching event: lines 34\u201347. Platform/account-holder/balance-account inheritance and override table: lines 49\u201357. Links to configuration and management guides: lines 59\u201367.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 balance-platform, account-holder and balance-account context.\n- [[adyen-webhooks]] \u2014 general webhook handling context.\n- [[source-adyen-docs-platforms-balance-types]] \u2014 definitions of the per-currency balance types being monitored.\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 detailed pilot setup, roles, security, limits and unresolved all-versus-any condition wording.\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] \u2014 reading, changing, deactivating or deleting settings.\n\n## Related raw API references\n\n- The raw page links to Configuration API balance-webhook settings and the linked configuration/management procedures. Consult them separately for current schema and availability.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/balance-updates/2026-09-15|Adyen Docs: Track balance updates (2026-09-15 snapshot; pilot)]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw lines 19\u201320, Limited availability"
+    },
+    {
+      "text": "You can define the criteria for triggering the webhook based on your own requirements and preferences.",
+      "location": "raw line 32, target/criteria introduction"
+    },
+    {
+      "text": "You subscribe to the **Balance webhook** in your [Customer Area](https://ca-test.adyen.com/) and get the webhook ID.",
+      "location": "raw line 38, How it works step 1"
+    },
+    {
+      "text": "When a balance change in the specified balance account in your platform meets all the conditions you set, Adyen sends a balance webhook to your server.",
+      "location": "raw line 47, How it works step 3"
+    },
+    {
+      "text": "Settings you configure on a more granular level override the settings you configure on higher-level resources.",
+      "location": "raw line 51, Hierarchy of settings"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platforms-balance-updates-hub-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 2026-09-15-captured pilot Balance webhook setup for platform, account-holder or balance-account targets, role and 20-by-20 limits, and conflicting all-versus-any condition wording; alert configuration is not funds-movement proof.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-balance-updates]] \u2014 2026-09-15 pilot Balance webhook overview for scoped balance-change notifications and platform-to-account-holder-to-account inheritance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This overview says all configured conditions must match, while the detailed configuration guide's active-status row says any condition; preserve the unresolved cross-source conflict.",
+          "A configured or delivered balance notification is not proof of an automatic top-up, transfer, payout or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/balance-updates/2026-09-15.md",
+  "raw_sha256": "1696daa22ff260c421f77430ddab1e6033843ac88ab7393b448e91fb1d8b5769",
+  "status": "candidate_ready"
+}

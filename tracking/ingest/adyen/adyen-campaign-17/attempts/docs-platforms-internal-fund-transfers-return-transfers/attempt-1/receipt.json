@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-internal-fund-transfers-return-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Return transferred funds | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/internal-fund-transfers/return-transfers\"\nraw_files:\n  - \"adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md\"\ntags: [adyen, platforms, internal-transfers, returns, balance-accounts]\n---\n\n## Overview\n\nThis 2020-last-modified [[adyen]] for Platforms guide, captured 2026-09-15, explains how to return funds mistakenly sent between balance accounts **to the sender of the original internal push transfer**. The return is a modification of that original transfer, not a fresh internal transfer or an external bank payout. The request uses the original incoming transfer ID; the return request has its own ID. A response marked `authorised` is not proof that the return was booked to the source balance account. [[adyen-platform-internal-transfers]]\n\n## Conditions and request\n\n- The return path works only when the original internal transfer was a **push** transfer. The server must receive and accept webhooks and have Transfer webhooks configured; Support must enable transfers for the balance account **where the funds are returned from**. When the two balance accounts belong to different account holders, the holder of the returning account needs `sendToBalanceAccount` and the holder of the original source/return destination needs `receiveFromBalanceAccount`. The API credential needs Transfers API access and **TransferService Webservice Initiate** role. Do not generalize those conditional cross-holder capability checks to every same-holder return. See raw lines 17\u201337.\n- POST `/transfers/{transferId}/returns` uses the ID of the **original incoming transfer** from webhook evidence, not a new outbound transfer ID. The request table marks `amount` required and says its currency and value must match the original transfer; `reference` is an optional unique return reference. The EUR 100 example uses the test balance-platform v4 endpoint and versioned client snippets, so it does not prove current live access or completed movement. The page does not describe a partial-return route. See raw lines 39\u201352 and 58\u2013291.\n\n## Response and outcome evidence\n\n- The response's `id` identifies the **return request**, while `transferId` refers back to the original incoming transfer supplied in the URL. The page describes `status: authorised`; a `Declined` status **can** indicate a wrong URL transfer ID, not necessarily that it is the only possible cause. The sample JSON uses lowercase `authorised`. These fields identify an accepted request state, not the final two-sided balance movement. See raw lines 293\u2013308.\n- Track the return through Adyen's internal-transfer webhooks, which provide request status and failure updates, or view it in Customer Area. Use the actual outgoing and incoming booked legs when claiming funds returned to the source balance account. This guide provides no booked-event payload, bank statement, payout, retry rule or legal-fund ownership proof. See raw lines 310\u2013314 and the linked internal-transfer webhook route.\n\n## Detail locators\n\n- **Original push-only return and same-transfer modification:** raw lines 15\u201321.\n- **Webhook, Support, cross-holder capability and API-role prerequisites:** raw lines 23\u201337.\n- **Original incoming ID, equal amount/currency and test request examples:** raw lines 39\u2013291.\n- **Return-request ID, original transfer ID, Authorised/Declined qualification and tracking route:** raw lines 293\u2013314.\n\n## Related\n\n- [[adyen-platform-internal-transfers]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] \u2014 separate outcome-event detail\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15|Adyen Platforms internal-transfer return guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Returning the funds is then handled as a modification of that same internal transfer.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md:19"
+    },
+    {
+      "text": "Note that returning funds in this way only works if the original internal transfer was a push transfer.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md:21"
+    },
+    {
+      "text": "The account holder of the balance account where the funds are returned from must have the **sendToBalanceAccount** capability.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md:31"
+    },
+    {
+      "text": "Object containing the currency and value of the transfer. These must be the same as in the original transfer.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md:49"
+    },
+    {
+      "text": "`status`: **Authorised**. If **Declined**, this can indicate that you used the wrong transfer ID in the URL.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md:296"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platform-internal-return-transfers-source",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-internal-fund-transfers-return-transfers]] \u2014 2020-modified, 2026-09-15-captured Platforms Transfers API guide for returning an original internal push transfer by ID and equal amount, with conditional cross-holder capabilities and webhook outcome tracking.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Return modifies the original internal push transfer; the return request ID differs from the original incoming transfer ID, and amount currency/value must match the original.",
+          "Support enablement, TransferService initiate role and conditional cross-holder sendToBalanceAccount/receiveFromBalanceAccount capabilities gate the route.",
+          "Authorised is not booked return; Declined can indicate a wrong original transfer ID but is not a complete failure taxonomy. Track actual return/failure webhooks and two-sided booking before claiming funds movement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/internal-fund-transfers/return-transfers/2026-09-15.md",
+  "raw_sha256": "66612821be26984d96c8e67581a0f3db48229e05d13ef6178477b228409d8fb8",
+  "status": "candidate_ready"
+}

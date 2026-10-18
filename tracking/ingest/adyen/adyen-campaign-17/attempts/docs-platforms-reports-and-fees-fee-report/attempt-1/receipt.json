@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-reports-and-fees-fee-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform Fee Report\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reports-and-fees/fee-report\"\nraw_files:\n  - \"adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md\"\ntags: [adyen, platforms, reporting, fees, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide defines the monthly Balance Platform Fee Report for payment and processing fees incurred by balance-platform users. Its row grain in the documented sample is billing month, balance platform, account holder/balance account, fee type/name, currency and fee amount; the listed standard columns contain no transaction ID. The report helps compare user-level fees with invoice deductions and margins, but it reports where a fee was incurred rather than where it was billed or which account was debited. See [[adyen]], [[adyen-platforms]] and [[adyen-reporting]].\n\n## Key takeaways\n\n- **Scope and timing:** The report is available monthly on the first day of the month. It covers transactional costs such as processing, scheme, interchange, chargeback and refund fees. It can be generated on a Customer Area schedule or manually for a specific month, and the page gives a balanceplatform_fee_report_YYYY_MM.csv naming pattern. The guide's report description does not establish that a particular month's file was generated, delivered or complete.\n- **Incurred versus billed:** Fees that cannot be tied to a platform user are reported on the liable account. This identifies where the fee was incurred for reporting; the page explicitly says it does not identify where fees were billed. Do not read a row's AccountHolder or BalanceAccount as the actual fee-debit account, seller/payee identity, or a settled money movement.\n- **Reconciliation grain:** Use API responses and webhooks for the latest individual assessed-fee status and ledgers, then compare monthly fee totals against the report and monthly invoice. The report's sample is grouped by account and fee type/name, with positive and negative Fee Amount examples, but gives no transaction ID or universal sign interpretation. A report row or invoice comparison alone does not prove an actual balance debit, bank payout or accounting sign-off.\n- **Schema boundary:** Standard columns are Billing Month, BalancePlatform, AccountHolder, BalanceAccount, Fee Type, Fee Name, Currency Code and Fee Amount. Optional account-holder and balance-account descriptions/references can be added from Customer Area. The sample table labels its currency column Currency whereas the standard-column table says Currency Code; the page also says generated reports may have extra data/columns depending on platform settings. Use the actual report header for ingestion and reconciliation.\n\n## Detail locators\n\n- Monthly fee purpose, incurred-versus-billed boundary, generation and filename: pinned raw lines 15-31.\n- Reconciliation guidance and sample-file qualification: pinned raw lines 33-45.\n- Illustrative rows, including positive and negative fee amounts: pinned raw lines 47-73.\n- Standard and optional column definitions: pinned raw lines 75-105.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main reporting concept and reciprocal source route.\n- [[adyen-platforms]] \u2014 platform/user and liable-account context.\n- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] \u2014 related balance-change report at a different grain.\n- [[source-adyen-docs-platforms-reports-and-fees-payout-report]] \u2014 related payout reporting at a different grain.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15|Adyen Balance Platform Fee report, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The **Balance Platform Fee Report** is a monthly report available to balance platforms that shows all per-transaction payment fees and the processing fees related to the transactions of your balance platform users.",
+      "location": "raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md:19"
+    },
+    {
+      "text": "The fee report is available monthly on the first day of the month. You can easily combine multiple reports to add month-over-month breakdowns by platform user.",
+      "location": "raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md:23"
+    },
+    {
+      "text": "If a fee cannot be tied to a platform user, that fee is reported on the liable account. It is important to note that the fee report does not reflect where fees are billed, but where the fees were incurred.",
+      "location": "raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md:25"
+    },
+    {
+      "text": "We recommend that you use API responses and webhooks to track individual transaction fees, and update your ledgers accordingly.",
+      "location": "raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md:41"
+    },
+    {
+      "text": "Based on your balance platform settings, the report that you generate may contain additional data or columns that are not included in the sample report.",
+      "location": "raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md:45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-reporting-balance-platform-fee-report-reciprocal",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reports-and-fees-fee-report]] \u2014 2026-09-15 monthly Balance Platform Fee Report for user/liable incurred-fee categories, optional account columns and invoice reconciliation; row location does not identify billing debit or transaction-level booking.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The documented sample/standard schema has no transaction ID and differs on Currency versus Currency Code; generated columns may vary. The report states where fees were incurred, not where billed, and does not prove a balance debit, invoice payment or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reports-and-fees/fee-report/2026-09-15.md",
+  "raw_sha256": "10d019dcd1355c15f9bea9bc866e81ae117f8992080af31a462baa8f83ea9529",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-internal-fund-transfers-scheduled-fund-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms scheduled internal fund transfers\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/internal-fund-transfers/scheduled-fund-transfers\"\nraw_files:\n  - \"adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md\"\ntags: [adyen, platforms, internal-transfers, sweeps, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms guide (page last modified 2020-09-11; captured 2026-09-15) explains schedules for internal fund transfers between balance accounts within a platform. A sweep evaluates a push or pull on a schedule, using a configured amount and source or destination. The guide covers Customer Area and Balance Platform API setup, then separates schedule creation from the transfer requests and booking events that result. See [[adyen]], [[adyen-platforms]] and [[adyen-platform-internal-transfers]].\n\n## Key takeaways\n\n- **Prerequisites:** The page calls for an Adyen for Platforms integration; a Transfers API credential with TransferService Webservice Initiate role; Customer Area Initiate internal transfers and Balance platform base roles; a server accepting transfer webhooks; and Support enablement for transfers on the source balance account. When the two balance accounts belong to different account holders, the sending account holder needs sendToBalanceAccount and the receiving account holder needs receiveFromBalanceAccount capability. These are documented setup conditions, not proof of current permission or enablement.\n- **Schedule and amount:** Configure a sweep in Customer Area or POST /balanceAccounts/{balanceAccountId}/sweeps. In the API instructions, counterparty balance-account ID, currency and cron schedule define the route and evaluation time; cron uses the balance account's time zone, and push is the default type. The API walkthrough defaults to transferring all available balance. Optional triggerAmount gates evaluation, targetAmount keeps a minimum, and sweepAmount sets a fixed amount; the raw states triggerAmount must exceed targetAmount or be at least sweepAmount for those options. The source currency must match a balance currency. See the raw's Create a sweep and Optional sweep configuration sections for fields, examples and exact conditions.\n- **Creation versus execution:** The response shows a schedule ID and active status by default; the balancePlatform.balanceAccountSweep.created webhook is the guide's confirmation route for schedule creation. A resulting transfer request has outgoing and incoming webhook series, with received, authorised, booked or failure status. The Customer Area represents one between-account movement as debit and credit transfer entries. A schedule or an Events-tab Success entry (described here as transfer created) does not itself prove that a transfer booked.\n- **Failure and UI cautions:** For a failed internal transfer, the guide directs checking the source available balance, then topping up or making a separate liable-to-user internal transfer when insufficient; it directs contacting Support if sufficient funds still fail. Its Customer Area schedule details require Balance platform base role. The captured page also reuses payout and bank-recipient wording and includes a transfer-instrument counterparty in a later description example; those passages should not be used to redefine this guide's balance-account-to-balance-account scope. The Events status table repeats Success and only states that a transfer was created.\n\n## Detail locators\n\n- Purpose, push/pull examples, and Requirements matrix: pinned raw lines 15-42.\n- Customer Area setup, balance threshold, frequency and timing example: pinned raw lines 44-110.\n- API POST fields, account time zone and example: pinned raw lines 112-131; response/default active status and creation webhook: lines 415-448.\n- Optional trigger, target and fixed amount behavior: pinned raw lines 452-460; update example: lines 462-487.\n- Dynamic description section and mixed transfer-instrument/payout example: pinned raw lines 490-817.\n- Resulting transfer webhooks, troubleshooting, schedule details and Events status table: pinned raw lines 819-877.\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 internal balance-account transfer concept and reciprocal source route.\n- [[adyen-platforms]] \u2014 parent platform context.\n\n## Related raw API references\n\n- [[raw/adyen/docs/platforms/internal-fund-transfers/internal-transfer-webhooks/2026-09-15|Internal-transfer webhooks]] \u2014 separate event detail; navigation only.\n- [[raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15|Scheduled payouts]] \u2014 external payout sweep guide; navigation only.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15|Adyen Schedule internal funds transfers, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Create a schedule to automatically transfer funds between balance accounts within your platform.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:17"
+    },
+    {
+      "text": "If the balance accounts involved in the transfer *do not belong to the same account holder*, check the [capabilities](/platforms/verification-overview/capabilities#capabilities) of the account holders:- The account holder of the balance account that sends the the transfer request must have the **sendToBalanceAccount** capability.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:39"
+    },
+    {
+      "text": "The [cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression) for the schedule when the sweep is evaluated, using the time zone of the balance account.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:127"
+    },
+    {
+      "text": "By default, all the [available balance](/platforms/payout-amount) in the balance account is transferred according to the schedule that you specified. You can change this default behavior by providing additional objects in your API request.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:454"
+    },
+    {
+      "text": "Using these webhooks, you can track the status of the transfer: **received**, then **authorised**, and finally **booked**. The webhooks also inform you if the transfer failed.",
+      "location": "raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:823"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-scheduled-internal-transfers-reciprocal",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-internal-fund-transfers-scheduled-fund-transfers]] \u2014 2020-modified, 2026-09-15-captured Platforms guide for scheduled internal balance-account sweeps, account-time-zone cron, prerequisites, amount controls and separate creation versus booked-transfer evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Apply only after the pending C17 internal-transfer foundation concept from docs-platforms-internal-fund-transfers is created; do not create a duplicate."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md",
+  "raw_sha256": "b7cf8accb08c115f74e8ead9f9bab06cca3d4f2a5d69abacebb8ca9a83c506c7",
+  "status": "candidate_ready"
+}

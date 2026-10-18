@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-transfer-transactions-track-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Transfers API transaction tracking\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/transfer-transactions/track-api\"\nraw_files:\n  - \"adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md\"\ntags: [adyen, platforms, transfers-api, transactions, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes read-only Transfers API queries for balance-platform transactions. It applies to Adyen for Platforms, Issuing or Payouts integrations and covers both internal balance-account transfers and external payment/payout movements. List queries can scope to a balance platform, account holder or balance account; a transaction ID can retrieve one transaction. The returned transaction rows and dates support account-level tracking, not a new transfer request or proof of external bank receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Access and list selection:** The guide says the API credential needs the TransferService Webservice Retrieve role assigned by Adyen, and transfers enabled for the source balance account. GET /transactions requires at least one of balancePlatform, accountHolderId or balanceAccountId, plus createdSince and createdUntil in ISO 8601 date-time form. It lists optional limit, sortOrder, cursor and paymentInstrumentId. The response has data and _links; follow the previous response's cursor to page. GET /transactions/{id} targets one transaction by transactionId. These are guide-level query conditions, not proof a credential has access to a particular account or that a result set is complete without pagination.\n- **Account-relative movement:** A positive amount.value means incoming funds added to the specified balance account; negative means outgoing deduction. Pending incoming means not yet added and pending outgoing means reserved for deduction; booked marks the balance-account addition or deduction. The transfer reference can come from the sender on incoming rows or from the platform's /transfers request on outgoing rows. Internal and external flows can each yield incoming or outgoing transactions; transaction direction alone does not identify the underlying payment rail. Inspect transfer/category data and the actual account and transfer identifiers.\n- **Date and outcome boundary:** bookingDate records when funds are recorded as reserved or pending in the balance account; valueDate indicates when funds are deducted or made available. The guide uses an after-cutoff external payout as a reservation example and says outgoing funds are deducted at booked stage. A pending row, value date, or booked debit is not proof that an external beneficiary bank received a payout. A booked internal entry documents one account-side booking; use actual counterpart evidence to establish its other side.\n- **Sample caveats:** The examples use a TEST /btl/v4 endpoint and dated SDK snippets. The list response contains EUR-suffixed transaction IDs beside USD amounts, and the separate internal outgoing/incoming examples reuse illustrative IDs and the same account holder/balance-account descriptions with different transfer IDs. The sample curl includes an extra bare accountHolder query token and date-only values although the table asks for ISO 8601 date-time; its Java snippet also has malformed syntax. Do not infer currency from an ID suffix, a stable two-leg join, or production-ready request code from these samples. Use the documented field meaning and actual response records for reconciliation.\n\n## Detail locators\n\n- Scope, integration types and Retrieve role/source-account gate: pinned raw lines 15-36.\n- Required scope/date filters, optional pagination and TEST/SDK examples: pinned raw lines 38-225.\n- data/_links list response, mixed ID/currency samples and single-ID GET: pinned raw lines 226-354.\n- Signed amount, pending/booked meaning, reference and external/internal distinctions: pinned raw lines 356-377.\n- External and internal transaction examples, including reused identifiers: pinned raw lines 379-537.\n- bookingDate/valueDate meaning, cutoff example and booked debit boundary: pinned raw lines 539-548.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept and reciprocal source route.\n- [[adyen-platform-internal-transfers]] \u2014 related internal balance-account movement, one transaction category covered here.\n- [[source-adyen-docs-platforms-internal-fund-transfers]] \u2014 internal versus external transfer orientation.\n\n## Related raw API references\n\n- [[raw/adyen/docs/platforms/transfer-transactions/track-webhooks/2026-09-15|Track transactions with webhooks]] \u2014 separate event route; not evidence for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15|Adyen Track transactions with API requests, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use the [Transfers API](https://docs.adyen.com/api-explorer/transfers/latest/overview) to query the [/transactions](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions) endpoint and get transaction details on demand. You can query transactions for your whole balance platform, a particular account holder, or balance account.",
+      "location": "raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md:19"
+    },
+    {
+      "text": "You must include at least one of the following in your request:",
+      "location": "raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md:46"
+    },
+    {
+      "text": "If you only want to get details of a specific transaction, include the `transactionId` in your GET\u00a0 [/transactions/{id}](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions/\\(id\\)) request.",
+      "location": "raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md:354"
+    },
+    {
+      "text": "Both incoming and outgoing transactions can be a result of [external](#external-transactions) or [internal](#internal-transactions) transfers.",
+      "location": "raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md:368"
+    },
+    {
+      "text": "Funds are always deducted at the booked stage for outgoing transfers.",
+      "location": "raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md:548"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-platforms-transfer-transactions-track-api-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-transfer-transactions-track-api]] \u2014 2026-09-15 Transfers API transaction-query guide for platform/account-holder/balance-account scope, internal/external signed rows, pending/booked dates and pagination; sample identifiers conflict and rows are not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide also covers Issuing and Payouts integrations. Test response IDs/currencies and internal-leg identifiers are inconsistent, and example request code is not production-ready; use observed rows rather than sample joins. Booked payout debit does not prove beneficiary bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/transfer-transactions/track-api/2026-09-15.md",
+  "raw_sha256": "3a115c9b7ad7f335fbbac2b9ee35a68e04e508984f412e569c7d64789b42d717",
+  "status": "candidate_ready"
+}

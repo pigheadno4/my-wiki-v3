@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-top-up-balance-account-on-demand-top-ups",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Top up a balance account on demand | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/top-up-balance-account/on-demand-top-ups\"\nraw_files:\n  - \"adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md\"\ntags: [adyen, platforms, top-ups, checkout-api, direct-debit, balance-accounts]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] for Platforms guide describes a manual, one-off **user-funded payment** intended to increase that user's balance-account balance. The funding source is the user's verified bank-account transfer instrument through a supported direct-debit route, or another payment method; a `TopUp` split identifies the balance account to credit. This is neither a platform-liable-to-user internal transfer nor a payout from the balance account to a bank, and an authorized payment response alone is not proof that the balance account was credited. [[adyen-platforms]]\n\n## Eligibility and request route\n\n- The page calls for an Adyen for Platforms integration, Checkout API credentials, a server able to accept Standard webhooks plus Transfer and Transaction webhooks, and Support enablement of on-demand top-ups for the platform. For a verified bank transfer instrument, the user's `receiveFromPlatformPayments` and `receiveFromTransferInstrument` capabilities must be **allowed** with **valid** verification status; bank accounts are limited to the SEPA zone, UK or US. For another payment method, the user's `receiveFromPlatformPayments` capability must be allowed and verification-valid. These are route conditions, not evidence that any particular account or payment method is enabled. See raw lines 21\u201352.\n- The one-off top-up uses Checkout POST `/payments`; the page expressly excludes `/sessions` for initiation. For verified bank funding, the method values listed are US `ach` in USD, SEPA `sepadirectdebit` in EUR and UK `directdebit_GB` in GBP, with the user's verified `transferInstrumentId`. The request tables list merchant account, unique reference, return URL, payment method and amount value, with `amount.currency` marked conditionally required for currency conversion. The examples use Checkout test v72 and versioned client libraries; they are request shapes, not current provider acceptance or live booking. See raw lines 63\u201396 and 114\u2013722.\n- To identify the payment as a top-up and direct booking, the `splits` array carries a `TopUp` item with the top-up amount and target balance-account ID, plus fee-type item(s) for transaction fees; fee amounts need not be specified at payment time because they are then unknown. The tables mark `splits` required in the illustrated top-up route, yet also state that **without** `splits` the funds book to the platform liable account and are classified as a regular payment. Do not read the table as saying an omitted array still tops up the user. Defining top-ups separately supports report reconciliation and, for US users as the page states, excludes top-ups from 1099-K revenue filings. See raw lines 54\u201361, 95\u2013112 and 180\u2013209.\n\n## Outcome and direct-debit warnings\n\n- The illustrated `/payments` responses return `resultCode: Authorised`, but the guide directs readers to top-up webhooks for the incoming request's progression from received and authorized to funds added to the balance account, including failure. A request/authorization is not a booked credit; the page provides no proof of a particular live credit, payout or external bank receipt. See raw lines 155\u2013178, 724\u2013748.\n- Funding from the user's verified bank account requires regional direct-debit compliance. For SEPA, the user must first accept a debit mandate; the page says acceptance is needed once and offers recommended text. For each UK BACS top-up, the user must confirm that they authorize debiting their bank account to cover negative balances on their balance account, that the bank account is in their name, and that they are the only signatory required to authorize direct debit; an advance email notice must also give the amount, due date, recurring detail reference and platform contact details. The page says users may charge back without notice at least **10 days before a charge**, while it also describes a due date **2 business days after initiation**; these lines must be reconciled in the actual notice/initiation plan, not treated as permission to notify only when initiating. It does not state an equivalent US mandate procedure here. See raw lines 750\u2013795.\n\n## Detail locators\n\n- **User-funded purpose, credentials, webhooks, capabilities, geography and Support enablement:** raw lines 15\u201352.\n- **Top-up classification and US reporting statement:** raw lines 54\u201370.\n- **`/payments` versus `/sessions`, bank method/transfer-instrument fields and no-splits liable fallback:** raw lines 72\u2013112.\n- **SEPA direct-debit test request/authorization sample:** raw lines 114\u2013178.\n- **Other-method fields, split rules and versioned test examples:** raw lines 180\u2013722.\n- **Authorized response, top-up status-webhook route and SEPA/UK mandates and notice:** raw lines 724\u2013795.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-platform-internal-transfers]] \u2014 separate balance-account-to-balance-account route\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15|Adyen Platforms on-demand top-up guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In this case, you create a one-off payment funded by your user, that increases the balance in their balance account.",
+      "location": "raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:19"
+    },
+    {
+      "text": "You cannot fund a top-up with bank accounts from other regions.",
+      "location": "raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:48"
+    },
+    {
+      "text": "You cannot initiate a top-up using a [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) request.",
+      "location": "raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:76"
+    },
+    {
+      "text": "If you do not include a splits array, the funds are booked to your liable account, and classified as a regular payment.",
+      "location": "raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:95"
+    },
+    {
+      "text": "According to scheme rules, your users may file a chargeback when they do not receive a notification at least 10 days before a charge.",
+      "location": "raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:776"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "adyen-platforms-on-demand-top-ups-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]] \u2014 2026-09-15 Platforms user-funded Checkout `/payments` top-up guide for verified-bank or other-method funding, TopUp split booking, capability/direct-debit gates and asynchronous status tracking.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "No `splits` array books funds to the platform liable account as a regular payment, not a user top-up; `/sessions` cannot initiate this route.",
+          "Verified-bank funding requires both receiveFromPlatformPayments and receiveFromTransferInstrument allowed/valid plus a SEPA/UK/US bank; other methods require receiveFromPlatformPayments allowed/valid.",
+          "UK BACS text requires advance notice at least 10 days before charge but lists due date two business days after initiation; reconcile timing before execution. `Authorised` is not user balance credit, payout or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md",
+  "raw_sha256": "0583051bb43dbce66ab2d8c9388da04427054c90657761a178e149e434a76c23",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-custom-payouts-on-demand-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms on-demand payouts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/custom-payouts/on-demand-payouts\"\nraw_files:\n  - \"adyen/docs/platforms/custom-payouts/on-demand-payouts/2026-09-15.md\"\ntags: [adyen, platforms, custom-payouts, transfers-api, bank-transfers]\n---\n\n## Overview\n\nThis Adyen for Platforms guide explains an off-schedule payout from a user's source balance account to that user's verified bank-account transfer instrument, initiated in Customer Area or with Transfers API `POST /transfers`. It concerns a bank-category payout to the user's own instrument. The opening separately routes third-party bank transfers through Adyen business accounts and additional verification. A created, accepted, authorized or booked transfer in this guide is not proof that the beneficiary bank credited the account. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- **Prerequisites and identities:** the guide requires Adyen for Platforms, a Transfers API credential with `TransferService Webservice Initiate role` for API use, the Customer Area `Initiate payouts to transfer instruments` role for that route, accepted Transfer webhooks, and the user's allowed `sendToTransferInstrument` capability. From LEM API v3 the capability is verified per transfer instrument. Support must enable transfers for the source balance account and configure the platform's default transfer description. The target instrument must be linked to the account holder's legal entity.\n- **Request shape and route:** choose a source `balanceAccountId`, amount with currency, `category: bank`, target `counterparty.transferInstrumentId`, and transfer priority. The priority affects speed and fees; supported routes and regional cutoff times affect expected arrival. The page recommends calculating available routes first. Internal `reference`, bank-facing `description`, and `referenceForBeneficiary` serve distinct purposes. Character limits and statement visibility vary by counterparty location, currency and priority; inspect the raw tables before constructing a description.\n- **Stages and evidence:** Adyen checks capability and its reviews, with optional platform-team review, then authorizes and books the transfer. Booking deducts the user's balance account and sends funds to the transfer instrument. HTTP 2XX with a transfer ID confirms request creation, while the sample fallback response still has `status: received` and `reason: pending`. Transfer-created/updated and transaction-created webhooks, plus Customer Area, carry later status and debit evidence. Neither those stages nor the illustrative samples prove beneficiary-bank receipt.\n- **Priority fallback and approval:** a `priorities` list lets Adyen try the first route and automatically try the next available priority if unavailable; this is fallback within the request, not a general instruction to resubmit. An optional `review.numberOfApprovalsRequired` currently permits only `1`; a team member must approve before processing. Failed required reviews fail the payout.\n- **Future date and failure:** `executionDate.date` must be within 30 days and ISO `YYYY-MM-DD`; the optional timezone uses a tz identifier, with `Europe/Amsterdam` stated as its default. The page says a future-dated payout stays `received/pending` until execution, when funds and any team approval are checked. Adyen attempts processing once; insufficient funds or another error leaves it `failed` and produces a webhook. Cancellation is routed to a separate guide before execution. The described 00:00\u201303:00 processing window depends on the Balance Platform timezone by default.\n- **Returned-bank-account warning:** a previous bank return can block later transfers with error `1063_101`. Some return reasons are temporary while others are final; read the webhook return reason and do not retry a final one. The guide proposes updating bank details and then using the on-demand process again for this block. That guidance is conditional, not a blanket retry for a pending or failed payout.\n- **Snapshot/sample limits:** the curl/SDK samples target the test environment and cite different library versions; the Customer Area EUR 150 Instant example differs from the EUR 600 Fast API samples. The Customer Area text gives beneficiary-reference maxima of 35 characters for IBAN or 15 otherwise, whereas later currency/priority tables list an 80-character accepted maximum for many routes and separate statement visibility; consult the applicable current route/schema before use. No sample establishes live eligibility or bank receipt.\n\n## Detail locators\n\n- Raw lines 15\u201344: on-demand scope, third-party business-account distinction, cutoff, roles, capability, Support setup and route recommendation.\n- Raw lines 46\u201371: request, capability, review, authorization, booking and webhook stages.\n- Raw lines 73\u2013139: Customer Area and API fields, source/target identities, references and visible limit conflict; lines 141\u2013463 hold versioned test examples and HTTP response boundary.\n- Raw lines 467\u2013565: priority-list fallback and illustrative `received/pending` response.\n- Raw lines 569\u2013948: optional one-person additional review and versioned test examples.\n- Raw lines 952\u20131005: future execution date, timezone, one processing attempt, failure and cancellation route.\n- Raw lines 1007\u20131066: transfer/transaction status events and returned-bank-account block/retry qualifications.\n- Raw lines 1068\u20131245: country, currency and priority-specific description/reference character acceptance and statement visibility, including zero-visibility cases.\n\n## Related\n\n- [[source-adyen-docs-platforms-manage-transfer-instruments]] \u2014 user's bank-account instrument and verification context.\n- [[source-adyen-docs-platforms-verification-overview-capabilities]] \u2014 capability status context.\n- [[adyen-payouts]] \u2014 legacy Online Payout API concept; this page uses Transfers API.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/custom-payouts/on-demand-payouts/2026-09-15|On-demand payouts snapshot, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to pay out on-demand to your user's [transfer instruments](/platforms/account-structure-resources).",
+      "location": "raw line 27, introduction"
+    },
+    {
+      "text": "Make sure that the user is allowed to use the **sendToTransferInstrument** [capability](/platforms/verification-overview/capabilities#capabilities).",
+      "location": "raw line 41, Requirements table, Capabilities"
+    },
+    {
+      "text": "**Payout request booked**: The funds are deducted from the user's balance account and sent to the user's transfer instrument.",
+      "location": "raw line 69, How it works step 5"
+    },
+    {
+      "text": "Adyen attempts to process the payout only one time.",
+      "location": "raw line 963, Process a payout in a future date"
+    },
+    {
+      "text": "If the reason indicates a final status, do not retry the transfer. Only retry payouts that have return reason codes that are recommended to be retried.",
+      "location": "raw line 1060, Troubleshooting solution"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-on-demand-payouts-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts]] \u2014 2020-modified, 2026-09-15-captured Transfers API/Customer Area guide to off-schedule user bank payouts, capability/role gates, priority fallback, review/future-date failure and returned-bank-account limits; request or booking is not bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Platforms Transfers API source distinct from the existing adyen-payouts concept's legacy Online Payout API. Managed-payout overview worker may own a separate platform-payout foundation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/custom-payouts/on-demand-payouts/2026-09-15.md",
+  "raw_sha256": "5d10b8bb79a37e728f5c65090e1b41bba68d234dbac9e75fb9297e357905d96d",
+  "status": "candidate_ready"
+}

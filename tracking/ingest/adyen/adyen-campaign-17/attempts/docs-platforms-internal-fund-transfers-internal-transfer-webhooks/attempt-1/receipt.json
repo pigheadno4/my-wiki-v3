@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-internal-fund-transfers-internal-transfer-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Webhooks for Adyen for Platforms internal fund transfers | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/internal-fund-transfers/internal-transfer-webhooks\"\nraw_files:\n  - \"adyen/docs/platforms/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md\"\ntags: [adyen, platforms, internal-transfers, transfer-webhooks, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms guide describes Transfer webhooks for internal movement between two balance accounts in a platform. A subscribed server receives `balancePlatform.transfer.created` at initiation and `balancePlatform.transfer.updated` as the transfer is authorised and booked, with an outgoing source-account view and incoming target-account view for each stage. It also illustrates return modifications. The snapshot was fetched 2026-09-15 and its metadata says last modified that day; test-environment examples are not evidence of an actual transfer, user-bank payout, or beneficiary-bank receipt. [[adyen]] [[adyen-platforms]] [[adyen-platform-internal-transfers]]\n\n## Key takeaways\n\n- **Scope and prerequisites:** Internal-transfer webhooks use `category: internal` and `type: internalTransfer`; `direction` is outgoing for the source balance account and incoming for the target. The server must receive and accept webhooks, and the platform must subscribe to Transfer webhooks in the test Customer Area in the documented setup. A separate legacy payment-webhook route is explicitly labeled deprecated. The example initiates a Transfers API v4 test request between two balance-account IDs; its SDK snippets have distinct library versions and do not establish current roles, live eligibility or success.\n- **Three transfer stages:** On initiation, `balancePlatform.transfer.created` has `status: received` and the sample `balances.received` movement is negative on the outgoing leg and positive on the incoming leg. `balancePlatform.transfer.updated` with `status: authorised` means the amount is reserved, with negative `balances.reserved` on the source and positive on the target. A later `updated` with `status: booked` describes the internal push from source to target; the sample `balances.balance` is negative on source and positive on target, with booked accounting events and leg-specific `transactionId` values. Received and authorised are not booked movement.\n- **Identifiers and correlation:** Each side's example has its own top-level `data.id` and event IDs, and the booked outgoing and incoming legs carry different transaction IDs. `balanceAccountId`, `direction` and `counterparty.balanceAccountId` identify the account and the opposite account in each view; `reference` and `referenceForBeneficiary` carry the illustrative request references. Do not assume a single transfer ID or transaction ID is shared across the two legs, and do not derive a universal reconciliation join from sample values.\n- **Return is a modification:** The return-request example is followed by `balancePlatform.transfer.updated` events whose nested `events[].modification` has `type: return`, its own `received`, `authorised` and `booked` stages, direction and return reference. The top-level transfer can remain `status: booked` for the original movement while the return modification is only received or authorised. The guide says booked return webhooks arrive for both involved balance accounts; this is an internal reversal to the original source balance account, not an external bank refund or payout. The page does not describe failure, rejection, cancellation or retry handling for these flows.\n- **Example cautions:** The example request uses `amount.value: 10000`, while its transfer webhooks show `amount.value: 1000`; treat those amounts as inconsistent illustrations, not a tested request/response pair. Some displayed JSON lacks commas, the outgoing booked example spells `valuDate` differently from the incoming `valueDate`, and a return `modification.id` differs from the surrounding `data.id` in one booked payload. Use the current webhook schema and observed account IDs/events for implementation; this snapshot does not define a safe cross-leg ID invariant from those examples.\n\n## Detail locators\n\n- Webhook types, two account views, subscription and category/type/direction selectors: pinned raw lines 19\u201354.\n- Test Transfers API request and versioned SDK examples: pinned raw lines 56\u2013369; request amount versus later webhook amount conflict at lines 68\u201370 and 398\u2013400.\n- Received outgoing/incoming events, signs and separate `data.id` values: pinned raw lines 375\u2013511.\n- Authorised reservations, source/target signs and cumulative accounting events: pinned raw lines 515\u2013679.\n- Booked account movements, counterparties, transaction IDs and malformed/typo sample fields: pinned raw lines 683\u2013885.\n- Return request and modification received/authorised stages with unchanged top-level booked status: pinned raw lines 887\u20131170.\n- Booked return on both accounts and sample ID inconsistency: pinned raw lines 1174\u20131459.\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 canonical internal-versus-external transfer concept.\n- [[adyen-platforms]] \u2014 platform account context.\n- [[source-adyen-docs-platforms-internal-fund-transfers]] \u2014 overview of internal transfer relationships and process routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/internal-fund-transfers/internal-transfer-webhooks/2026-09-15|Internal-transfer webhooks \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When you initiate an internal transfer between balance accounts in your platform, Adyen sends two kinds of webhooks:",
+      "location": "pinned raw line 23, introduction"
+    },
+    {
+      "text": "Webhooks for the source balance account where you initiate the transfer as an **outgoing** request.",
+      "location": "pinned raw line 30, introduction"
+    },
+    {
+      "text": "The transfer is [authorized](#internal-push-transfer-authorized). This indicates that the funds are reserved.",
+      "location": "pinned raw line 51, Internal funds transfer"
+    },
+    {
+      "text": "When the scheduled or on-demand internal push transfer is booked, we send [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhooks with `status` **booked**, to inform your server that the funds have been pushed from the source balance account to the target balance account.",
+      "location": "pinned raw line 685, Internal transfer booked"
+    },
+    {
+      "text": "Expand the sections below to see the webhooks you would receive for the example return request. The webhooks show that the return is handled as a modification of the original transfer.",
+      "location": "pinned raw line 905, Returned internal transfer"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-internal-transfer-webhooks-route",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-internal-fund-transfers]]",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] \u2014 2026-09-15 Transfer-webhook guide for separate outgoing/incoming balance-account legs, received-to-authorised-to-booked internal movement and nested return modifications; test examples have amount and ID inconsistencies, and no bank payout is shown.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The canonical internal-transfer concept is separately proposed by the C17 overview worker; add this route after coordinator promotion without creating another concept.",
+          "The request example uses 10000 while the webhook examples use 1000; some JSON and return modification IDs are inconsistent, so no cross-leg join rule is inferred."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md",
+  "raw_sha256": "8131a77ff4b4324bdb88e376a726a5b7156111c8bd44e3d246ae075f99a8fca5",
+  "status": "candidate_ready"
+}

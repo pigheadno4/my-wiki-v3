@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Approve or cancel Adyen Platforms on-demand payouts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/custom-payouts/on-demand-payouts/approve-cancel-payouts\"\nraw_files:\n  - \"adyen/docs/platforms/custom-payouts/on-demand-payouts/approve-cancel-payouts/2026-09-15.md\"\ntags: [adyen, platforms, custom-payouts, payout-review, transfers]\n---\n\n## Overview\n\nThis Adyen for Platforms guide, last modified 2020-09-11 and captured 2026-09-15, explains an additional review for an initiated on-demand payout transfer before Adyen processes it. A platform includes a `review` object in a Transfers API `POST /transfers` request; a designated reviewer then approves or cancels the pending request. Approval authorizes that transfer request to continue processing. Cancellation or 30 days without action fails that request so Adyen no longer processes it. These are review transitions, not proof that the user's bank received funds.\n\n## Key takeaways\n\n- The review API key must have the `TransferService Approval role`, and the page requires Transfer Webhooks. The text describes assigning eligible team members the required role through Customer Area; it does not establish that a distinct person or a particular separation-of-duties policy is technically enforced. The linked on-demand payout guide describes how to trigger review with `review` at initiation.\n- Use `POST /transfers/approve` or `POST /transfers/cancel` with a body `transferIds` array. Each request can name one to 500 initiated payouts. The curl examples use the balance-platform test endpoint at `/btl/v4`; language SDK examples are versioned and run in TEST. A successful approval/cancellation API call returns HTTP 200, which is a response to the review action rather than bank-credit evidence.\n- Approval moves the pending transfer to `authorised` with reason `approved` in the illustrated `balancePlatform.transfer.updated` event and lets Adyen continue processing. Cancellation fails the request, and the illustrated update has status `cancelled` with reason `unknown`. If no reviewer acts within 30 days after initiation, that payout request fails and Adyen no longer processes it. This page does not describe retrying the same failed transfer or creating a replacement request.\n- Review state is tracked with Transfer Webhooks: `balancePlatform.transfer.created` identifies a review-required transfer as `received` with reason `pending` and an example `review.numberOfApprovalsRequired=1`; `balancePlatform.transfer.updated` communicates approval or cancellation. The displayed payloads are TEST examples, including outgoing bank-transfer balance mutations. The page lists expiry among webhook events but supplies no separate expiry payload. Neither `received` nor `authorised` establishes booked payout or beneficiary bank receipt.\n\n## Detail locators\n\n- `## Requirements` and `## How it works`: API approval role, Transfer Webhooks, initiation `review` object, pending decision and 30-day expiry.\n- `## Approve payouts` and `## Cancel payouts`: `transferIds` body, 500-ID bound, TEST v4 curl/versioned SDK examples and HTTP 200 response.\n- `## Get status updates on payout reviews`: created/updated webhook types and review transitions.\n- `### Tab: Additional review required`, `### Tab: Payout approved`, `### Tab: Payout canceled`: exact sample `status`, `reason`, approval-count fields and outgoing balance events.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept and source route.\n- [[source-adyen-docs-platforms-custom-payouts]] \u2014 custom-payout scope and prerequisite overview.\n- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts]] \u2014 initiation and review-trigger route.\n- [[adyen]] \u2014 provider profile.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/custom-payouts/on-demand-payouts/approve-cancel-payouts/2026-09-15|Adyen approve or cancel payouts (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "TransferService Approval role",
+      "location": "line 29"
+    },
+    {
+      "text": "You [trigger an additional review](/platforms/custom-payouts/on-demand-payouts?tab=API-1_2#trigger-additional-reviews) by including the [review](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers#request-review) object in a POST [/transfers](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers) request.",
+      "location": "line 40"
+    },
+    {
+      "text": "If the reviewer takes no action within 30 days after initiating the payout request, then the payout fails and Adyen can no longer processes the request.",
+      "location": "line 48"
+    },
+    {
+      "text": "You can include one or more `transferIds` in the request, up to a maximum of 500.",
+      "location": "line 58"
+    },
+    {
+      "text": "For every payout request, Adyen sends multiple [webhooks](/platforms/payout-webhooks) to your server. Webhooks inform you about any status change in the transfers, including the approval status.",
+      "location": "line 472"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] \u2014 2020-modified, 2026-09-15-captured Transfers API review guide for pending on-demand payout approval/cancellation, 30-day expiry, batch endpoints and webhook states; approval is not bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Approval authorizes continued processing; cancellation or 30-day inaction fails the pending request. HTTP 200 and authorised webhook state do not prove booked payout or bank receipt.",
+          "The source does not establish same-request retry or replacement-transfer rules after cancellation/expiry.",
+          "Examples are TEST v4 and show one approval required; this does not prove a universal review-count or independent-human-control policy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/custom-payouts/on-demand-payouts/approve-cancel-payouts/2026-09-15.md",
+  "raw_sha256": "31ba92c38a6baee872cf87eb643960e7cc9b1ae68610054e82eb62c9e963ca68",
+  "status": "candidate_ready"
+}

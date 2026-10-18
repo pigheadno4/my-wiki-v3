@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-top-up-balance-account-scheduled-top-ups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Scheduled balance-account top-ups | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/top-up-balance-account/scheduled-top-ups\"\nraw_files:\n  - \"adyen/docs/platforms/top-up-balance-account/scheduled-top-ups/2026-09-15.md\"\ntags: [adyen, platforms, top-ups, sweeps, direct-debit, balance-accounts]\n---\n\n## Overview\n\nThis [[adyen]] for Platforms guide describes a **pull sweep** configured on a user's balance account to trigger an incoming top-up request from a verified transfer instrument when sweep conditions are met. Its worked Configuration API example uses a **balance threshold**, although the introduction also mentions fixed timing as a possible condition. Sweep creation is a configuration event; later Transfer and Transaction webhooks track whether a triggered request adds funds. It is distinct from an on-demand Checkout top-up or an internal balance-account transfer. [[adyen-platforms]]\n\n## Key takeaways\n\n- **Eligibility and setup.** The guide requires Adyen for Platforms, Configuration API credentials, Configuration/Transfer/Transaction webhook subscriptions, and the user's `receiveFromTransferInstrument` capability. It says scheduled top-ups are supported only for account holders with **verified bank accounts in the EU, UK or US**, over corresponding **SEPA, BACS or ACH** standard debit rails. Support must enable scheduled top-ups for the platform. These snapshot requirements do not prove a specific account, bank, region, rail, currency or mandate is currently eligible; this page does not detail direct-debit mandates or return rights. [Raw: Requirements, lines 26\u201337]\n- **Pull sweep identity and conditions.** A sweep is a configuration on the **user's balance account**. For a scheduled top-up, `type: pull` draws from the specified source transfer instrument into that balance account when its condition is evaluated. The page describes pre-defined timing and/or available-balance thresholds conceptually; the worked request sets `schedule.type: balance` and a `triggerAmount`, not a cron schedule. Its EUR 5,000 threshold and EUR 1,000 sweep amount are illustrative. A trigger starts an incoming transfer request; it is not itself booked credit. [Raw: Sweeps and How it works, lines 39\u201359; Create a pull sweep, lines 63\u2013107]\n- **Configuration request.** POST `/balanceAccounts/{balanceAccountId}/sweeps` names the destination balance account in the path. The field table marks source `counterparty.transferInstrumentId`, `counterparty.merchantAccount`, currency, `schedule.type`, `type`, `triggerAmount` and `sweepAmount` required for this illustrated route. The transfer instrument must link to the account holder's legal entity. The table describes the merchant account as another source-of-funds identifier; do not infer exact external debit mechanics from those two field labels alone. The test snippets use versioned client libraries and are example payloads, not a validated live operation. [Raw: lines 61\u201374, 76\u2013461]\n- **Creation versus transfer.** The response returns a sweep ID and says new sweeps default to **active**; status can be updated with PATCH `/balanceAccounts/{balanceAccountId}/sweeps/{sweepId}`. The `balancePlatform.balanceAccountSweep.created` webhook reports successful sweep creation. Only when conditions are later met does Adyen initiate an incoming top-up transfer; the linked top-up-webhook route tracks received, authorized, funds-added and failure states. Neither an active sweep nor a creation webhook establishes a successful direct debit, booked user balance, payout or bank receipt. [Raw: lines 463\u2013500]\n\n## Detail locators\n\n- Raw `Requirements` (lines 26\u201337): API, webhook, capability, verified-bank geography/rails and Support-enable gates.\n- Raw `Sweeps` and `How it works` (lines 39\u201359): pull direction, timing/amount concepts and distinction between configuration and triggered transfer.\n- Raw `Create a pull sweep` (lines 61\u2013461): required fields and threshold-based test request; library versions are pinned in examples.\n- Raw response and webhook route (lines 463\u2013505): default active status, PATCH status, creation webhook and later top-up event navigation.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform/user balance-account context\n- [[source-adyen-docs-platforms-top-up-balance-account-top-up-webhooks]] \u2014 later scheduled top-up transfer and transaction states\n- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]] \u2014 separate one-off Checkout funding route\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/top-up-balance-account/scheduled-top-ups/2026-09-15|Adyen Platforms scheduled top-ups \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When any of these conditions are met, Adyen automatically triggers an incoming transfer that tops up your user's balance account.",
+      "location": "raw line 24, introduction"
+    },
+    {
+      "text": "Scheduled top-ups are only supported for account holders with verified bank accounts in the EU, the UK, and the US.",
+      "location": "raw line 36, Requirements > Limitations"
+    },
+    {
+      "text": "For scheduled top-ups, the direction is set to *pull*, in order to pull funds in to the balance account from a transfer instrument that you specify.",
+      "location": "raw line 45, Sweeps > Sweep type"
+    },
+    {
+      "text": "By default, sweeps are created with an **active** status. You can change it by sending an updated status in a PATCH [/balanceAccounts/{balanceAccountId}/sweeps/{sweepId}](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/\\(balanceAccountId\\)/sweeps/\\(sweepId\\)) request.",
+      "location": "raw line 465, Create a pull sweep > response"
+    },
+    {
+      "text": "These webhooks provide the status of the incoming transfer request, from the time when Adyen received the request and the transfer was authorised, up to when the funds were added to the balance account.",
+      "location": "raw line 498, Get updates when a sweep triggers a transfer request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-scheduled-topups-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]] \u2014 2026-09-15 Platforms Configuration API pull-sweep guide for verified-bank threshold top-ups, default-active creation and later transfer-webhook tracking; no booked-credit or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source mentions fixed timing generally but its worked request uses schedule.type balance; do not present the example as a cron schedule."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/top-up-balance-account/scheduled-top-ups/2026-09-15.md",
+  "raw_sha256": "50df15534c8511ac20de9c1c839d6e5462f38e5a86e22d7b2960f1ae29d35995",
+  "status": "candidate_ready"
+}

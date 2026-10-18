@@ -16,6 +16,18 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-docs-platforms-balance-updates-use-cases]] — pilot Platforms Balance webhook TEST setting and event examples for three target scopes, with threshold-unit and payload-identity limits (captured 2026-09-15).
+
+
+- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] — pilot Platforms Balance webhook settings lifecycle guide for read, condition-preserving PATCH, inactive status and DELETE, including the all-changes effect of clearing the last condition (captured 2026-09-15).
+
+
+- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] — pilot Platforms Balance webhook subscription and Configuration API settings guide, with target/condition limits and conflicting multi-condition language (captured 2026-09-15).
+
+
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-webhooks]] — 2026-09-15-captured Platforms balance-platform Transfer/Transaction webhook examples for cashout funding, fee, payout and repayment, with sample-only status and payout-tracking boundaries.
+
+
 - [[source-adyen-docs-development-resources-logs-resources-webhook-event-logs]] — 2026-09-15 test Customer Area guide to 30-day webhook event logs, required viewing roles, account placement, request/response details, and search/filter diagnostics.
 
 

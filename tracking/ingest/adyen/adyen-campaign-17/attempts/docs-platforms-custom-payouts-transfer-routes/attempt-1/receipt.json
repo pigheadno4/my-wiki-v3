@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-custom-payouts-transfer-routes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms custom payout transfer routes\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/custom-payouts/transfer-routes\"\nraw_files:\n  - \"adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md\"\ntags: [adyen, platforms, custom-payouts, transfer-routes, bank-transfers]\n---\n\n## Overview\n\nThis Adyen for Platforms Configuration API guide (last modified 2023-03-13; captured 2026-09-15) describes calculating available routes for bank payouts to transfer instruments before sending funds. Banks or regulators can limit priorities, transfer amounts or required recipient information. The route calculation is a pre-transfer check: its response lists routes and requirements, not a bank transfer request, an approved payout, or beneficiary receipt. See [[adyen]], [[adyen-platforms]] and the parent custom-payout guide [[source-adyen-docs-platforms-custom-payouts]].\n\n## Key takeaways\n\n- **Access and methods:** The guide requires an Adyen for Platforms integration and a Configuration API credential with Balance Platform BCL role. POST /transferRoutes/calculate can query by destination country/region or by a particular counterparty. Both variants specify a balance platform, currency and bank transfer category. Country/region mode supplies a two-character counterparty country code; counterparty mode supplies bank-account details or a transfer instrument. A source balanceAccountId is conditionally required when the counterparty contains transferInstrumentId. The priorities array is optional in the documented request tables.\n- **What comes back:** The transferRoutes response lists supported route currency and priority plus any additional requirements. The counterparty variant also lists country. Example responses show amount min/max, address, bank-account identification and payment-instrument requirements. Their numeric values and supported priorities are examples for the illustrated request, not universal limits or present-day eligibility.\n- **Decision boundary:** The page recommends checking available routes before sending funds to a new recipient to reduce failures from bank or regulatory limitations. A returned route still requires satisfying its listed conditions and following a separate scheduled or on-demand payout flow. It does not establish account-holder capability, current bank acceptance, cutoff timing, funds availability, payout initiation, booking, or bank receipt.\n\n## Detail locators\n\n- Purpose, bank/regulatory limitations, recommendation and requirements: pinned raw lines 15-30.\n- Country/region POST field table and test request: pinned raw lines 32-71; response shape and illustrative requirements: lines 301-357.\n- Counterparty POST field table, transferInstrumentId/source-balance-account condition and test request: pinned raw lines 359-402; response shape and illustrative requirements: lines 716-780.\n- Separate scheduled/on-demand payout routes: pinned raw lines 782-785.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept and reciprocal source route.\n- [[source-adyen-docs-platforms-custom-payouts]] \u2014 parent custom-payout overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15|Adyen Transfer routes, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Sending funds to transfer instruments can have additional requirements or limitations. For example, the bank that holds your user's transfer instrument may only support specific transfer priorities, or limit the amount of funds that you can send. These requirements or limitations are set by the bank or its regulating entities.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md:19"
+    },
+    {
+      "text": "To prevent transfer failures due to such limitations, we recommend that you calculate the available transfer routes before sending funds to a new recipient.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md:21"
+    },
+    {
+      "text": "Your API credential for the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview) must have the following role:- **Balance Platform BCL role**",
+      "location": "raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md:30"
+    },
+    {
+      "text": "The unique identifier of the source balance account. Required if `counterparty` contains a **transferInstrumentId**.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md:372"
+    },
+    {
+      "text": "2. In the response, note the `transferRoutes` object, which includes all transfer routes supported by a counterparty. Each transfer route specifies:",
+      "location": "raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md:716"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-custom-payout-transfer-routes-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] \u2014 2023-modified, 2026-09-15-captured Platforms Configuration API guide to calculate bank-payout route priorities and requirements by country or counterparty before a separate payout request.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this Platforms custom-payout route distinct from the legacy Payout API concept and from a completed bank transfer; illustrative response limits are not universal."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/custom-payouts/transfer-routes/2026-09-15.md",
+  "raw_sha256": "3e81832ced95eeb23a5d3974c71dc11aae5df2f1a10abfec9e9c1c1e3eda6e43",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-managed-payouts-use-managed-payouts",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Use managed payout schedules | Adyen for Platforms\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/managed-payouts/use-managed-payouts\"\nraw_files:\n  - \"adyen/docs/platforms/managed-payouts/use-managed-payouts/2026-09-15.md\"\ntags: [adyen, platforms, managed-payouts, payout-schedules, balance-accounts, configuration-api]\n---\n\n## Overview\n\nThis [[adyen]] for Platforms guide explains how to view, apply, inspect, update, deactivate and delete **managed payout schedules** after configuring them with an Adyen contact. Schedules are configured on a balance platform and applied to users' balance accounts through Customer Area or the Configuration API; automatic application to qualifying new accounts is a separate path. A configured schedule or successful configuration response is not proof that a payout ran or that a beneficiary bank received funds. See [[adyen-platforms]] and [[source-adyen-docs-platforms-managed-payouts]] for the product overview.\n\n## Key takeaways\n\n- **Access, eligibility and settlement boundary.** Configuration API credentials require the **Bank Scheduled Payouts Merchant Role**; Customer Area users need Balance platform base and Configure scheduled payouts roles. The page calls for Configuration and Scheduled payout webhooks, and the user needs `sendToTransferInstrument`. A balance account can have only **one payout schedule per currency**, and each schedule covers one location and currency. Managed payouts do not change settlement timing for pass-through payments or sales-day payouts with a **T+7-or-longer** settlement delay; those payments settle on their indicated timing and pay out once settled. These conditions do not prove current regional/currency/account availability. [Raw: Requirements, lines 27\u201347]\n- **Apply and verify a schedule.** GET `/balancePlatforms/{balancePlatformId}/payoutSchedules` lists configured schedules and IDs. Applying one to a user balance account can use Customer Area, POST `/balanceAccounts/{balanceAccountId}/payoutSchedules`, or Adyen-contact-enabled automatic application for qualifying **new** balance accounts. The API request requires `balancePlatformPayoutScheduleId` and `transferInstrumentId`; omitted optional fields inherit schedule defaults. Automatic application cannot be used for balance accounts associated with **existing legal entities**. Under **automatic application**, the account, schedule, transfer instrument, country, currency and verification prerequisite checks can leave application **pending**; Adyen retries that automatic application after balance-account or transfer-instrument updates. Manual Customer Area and Configuration API cutoff or rail validation instead follows the fallback-or-error behavior below. A created-schedule webhook or HTTP 200 indicates configuration, not payout initiation or bank credit. [Raw: lines 49\u201374, 193\u2013243, 333\u2013406]\n- **Cutoff and bank-rail outcomes are conditional.** Application is checked against the user's sales-day closing time and transfer-instrument reachability. Where another daily window or banking rail is available, Adyen describes a fallback that retains the same settlement delay; where no viable schedule meets it, configuration fails validation. Customer Area can also redirect a supported currency/country combination to a custom schedule. The US T+1 9:00-to-13:30 and Australia NPP examples are regional illustrations, not universal arrival guarantees. Automatic-application failure has a dedicated webhook. [Raw: lines 245\u2013257, 318\u2013331, 394\u2013406]\n- **Update and effects.** PATCH `/balanceAccounts/{balanceAccountId}/payoutSchedules/{id}` changes only supplied settings; allowed frequency values are constrained by the applied schedule. For a monthly date on a weekend, the page says initiation moves to the next business day; for a missing 29th\u201331st it moves to the month's last day. `minPayoutAmount`, `maxPayoutAmount` and `retainedAmount` constrain available payout behavior; higher transfer priority incurs higher fees in the Customer Area flow. The testing table says an active managed schedule blocks a balance-account `timeZone` change until the schedule is deleted, with an expected HTTP 422/error `30_021`. The page does not define refund, payout-return or retry outcome handling. [Raw: lines 290\u2013316, 499\u2013560, 651\u2013661]\n- **Deactivate/delete ambiguity.** The balance-account deactivation section says to make a **PATCH** request but its example uses **DELETE** on the same path shown under deletion; both examples say HTTP 204. Platform-level deactivation or deletion requires contacting Adyen. Because the raw does not resolve the balance-account endpoint/action distinction, verify the current Configuration API contract before using these examples. [Raw: lines 585\u2013649]\n\n## Detail locators\n\n- Raw `Requirements` (lines 27\u201347): roles, webhook/capability conditions, schedule count/location/currency and settlement timing exception.\n- Raw `View managed payout schedules for your balance platform` (lines 49\u2013191): GET IDs, filter fields and test-only examples; sample ETAs/defaults are not guarantees.\n- Raw `Apply a payout schedule to a balance account` (lines 193\u2013432): automatic, Customer Area and Configuration API routes, pending/retry conditions, fallback/validation behavior and configuration webhooks.\n- Raw `View` and `Update` (lines 434\u2013583): applied-schedule inspection, patchable fields, business-day rules and HTTP 200 response.\n- Raw `Deactivate`, `Delete` and `Testing` (lines 585\u2013691): action ambiguity, platform-contact route, timezone-change restriction and test-only bank data. The test-bank table is not a live availability list.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform/user balance-account context\n- [[source-adyen-docs-platforms-managed-payouts]] \u2014 managed-payout product schedule overview\n- [[source-adyen-docs-platforms-manage-transfer-instruments]] \u2014 transfer-instrument context\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/managed-payouts/use-managed-payouts/2026-09-15|Adyen use managed payouts \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "After you have configured managed payouts with your Adyen contact, you can manage them in your [Customer Area](https://ca-test.adyen.com/) or using the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview).",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "You can only apply one payout schedule per currency on each balance account.",
+      "location": "raw line 197, Apply a payout schedule to a balance account"
+    },
+    {
+      "text": "Managed payout schedules cannot be automatically applied to balance accounts associated with existing legal entities. In this case, you must use the Customer Area or the Configuration API to apply the payout schedule to these balance accounts.",
+      "location": "raw line 211, Automatic application"
+    },
+    {
+      "text": "If any of the previous conditions are not fulfilled, the application remains pending. Adyen automatically retries to apply the payout schedule when you update your balance account or transfer instrument details.",
+      "location": "raw line 243, Conditions for automatic application"
+    },
+    {
+      "text": "Managed payout schedules define the estimated payout arrival time, while custom schedules define when transfers are initiated.",
+      "location": "raw line 446, View the payout schedule on a balance account > Customer Area"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-use-managed-payouts-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] \u2014 2026-09-15 Platforms Configuration API/Customer Area guide to applying and managing managed payout schedules, conditional fallbacks and configuration evidence; not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw's deactivation instruction says PATCH but its example uses DELETE, matching the deletion path; source entry flags the unresolved action conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/managed-payouts/use-managed-payouts/2026-09-15.md",
+  "raw_sha256": "ee2daf9e5ae22e5a3e386a117519fbe379854fbcd4bf844413870402935a4b47",
+  "status": "candidate_ready"
+}

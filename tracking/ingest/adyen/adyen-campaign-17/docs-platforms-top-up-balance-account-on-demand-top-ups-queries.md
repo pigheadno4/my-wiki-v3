@@ -1,0 +1,17 @@
+# Fixed retrieval checks: docs-platforms-top-up-balance-account-on-demand-top-ups
+
+## Q1 — Purpose, funding and classification
+
+**Query:** What is an Adyen for Platforms on-demand balance-account top-up, which request creates it, and what happens if its split instructions are omitted?
+
+**Expected answer:** The 2026-09-15-captured guide describes a manual, one-off payment funded by the user to increase that user's balance-account balance. It is a Checkout POST `/payments` route; `/sessions` cannot initiate it. The funding source may be the user's verified bank-account transfer instrument through the supported direct-debit routes or another payment method. A `TopUp` split item specifies the intended user balance account and amount, with separate fee-type item(s) directing transaction-fee booking. Without `splits`, the page says funds book to the platform liable account and the transaction is classified as a regular payment. This is distinct from a platform-liable-to-user internal balance transfer and from a payout to a bank. Test `Authorised` responses do not prove user balance credit, payout, bank receipt or legal ownership.
+
+**Evidence locators:** `raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:15-20`, `:54-76`, `:82-112`, `:155-178`, `:724-748`. **Canonical route:** `[[adyen]]` → `[[adyen-platforms]]` → `[[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]]` → pinned raw.
+
+## Q2 — Prerequisites, direct debit and outcome warnings
+
+**Query:** Which platform, user capability, region and direct-debit conditions apply, and what evidence distinguishes authorization from a completed top-up?
+
+**Expected answer:** The guide calls for a Platforms integration, Checkout API credentials, Standard plus Transfer/Transaction webhook handling, and Support enablement. For funding from a verified user bank transfer instrument, both `receiveFromPlatformPayments` and `receiveFromTransferInstrument` must be allowed and verification-valid, and the bank must be in the SEPA zone, UK or US. Listed bank method/currency routes are SEPA Direct Debit/EUR, UK BACS/GBP and US ACH/USD. Other payment methods require `receiveFromPlatformPayments` allowed and valid. Regional direct-debit compliance is required: SEPA users first accept a mandate (the page says once); for each UK BACS top-up the user confirms that they authorize debiting their bank account to cover negative balances on their balance account, that the bank account is in their name, and that they are the only signatory required to authorize direct debit; advance email notice gives amount, due date, recurring reference and contact details. The UK text warns of chargeback risk without notice at least 10 days before charge while calling the due date two business days after initiation; reconcile this timing before any initiation. The illustrated `Authorised` result is not credited balance. Top-up webhooks carry incoming-request status through added funds or failure; actual events, not example responses, are needed to establish an outcome. No retry or bank-credit conclusion follows from this page.
+
+**Evidence locators:** `raw/adyen/docs/platforms/top-up-balance-account/on-demand-top-ups/2026-09-15.md:21-52`, `:65-70`, `:74-95`, `:155-178`, `:724-795`. **Canonical route:** `[[adyen]]` → `[[adyen-platforms]]` → `[[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]]` → pinned raw.

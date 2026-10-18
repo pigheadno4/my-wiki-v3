@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-payout-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms payout transfer webhooks\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/payout-webhooks\"\nraw_files:\n  - \"adyen/docs/platforms/payout-webhooks/2026-09-15.md\"\ntags: [adyen, platforms, payouts, transfer-webhooks, bank-transfers]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms guide describes Transfer webhook events for an outgoing bank payout from a user's balance account to a bank account. It covers the transfer's request, balance-account, bank-tracking, failure and return states. This is the balance-platform transfer route, separate from the legacy Online payouts/Payout API webhook path. It is webhook guidance, not evidence that a particular payout was accepted by a beneficiary bank or received by its customer. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Subscribe and identify the payout:** The page lists a payout service integration and a server that receives/accepts webhooks, subscribed in Customer Area to both Transfer and Transaction webhooks. For payout-related Transfer webhooks, it identifies `category=bank`, `direction=outgoing`, and `type=bankTransfer`. `balancePlatform.transfer.created` reports creation of an outgoing request; `balancePlatform.transfer.updated` reports later changes. The created event contains amount, reference, beneficiary reference, source user balance account, linked account holder and counterparty transfer instrument. Do not equate a created request with a bank payout.\n- **Separate balance and bank states:** `authorised` means the amount has been reserved on the user's balance account. Insufficient balance instead yields `refused` with `reason=notEnoughBalance`; the page says that request does not complete and calls for adding funds and sending a new transfer request. `booked` means the amount was deducted from the user's balance account and includes an accounting `events.transactionId`. The page explicitly says booked is not final: an instant transfer may later fail after bank rejection, while a regular or wire transfer may be returned. Do not interpret reserved or booked balance-account funds as beneficiary-bank receipt.\n- **Review and bank progress:** After booking, a transfer may enter `trackingData.status=pending` with `type=internalReview`; failure of that review has `reason=refusedForRegulatoryReasons` and tracking `status=failed`, for which the guide says to contact Support. Passing review can lead to instant-payout `tracking.status=credited` confirmation or, for other priorities, a tracking `estimatedArrivalTime`. The estimate may differ from actual arrival and the snapshot says it is available for local payouts, not instant or cross-border payouts. A later `tracing` event carries network-specific identifiers, such as UK FPS `fpid` or US ACH `traceNumber`, useful for bank investigations. A tracing identifier or arrival estimate is not itself a receipt.\n- **Failure and return consequences:** An external-bank rejection after unsuccessful automatic retries can produce transfer `status=failed`; a counterparty-bank return produces `status=returned`, both with a `reason` and `transactionId` in the guide's webhook description. Return `networkReason` can carry a network code, description and namespace, mapped to Adyen's reason. Some return reasons are temporary; permanent issues can block the transfer instrument so new requests to that bank account fail with HTTP 422. The raw reason table suggests different remediation by code. A retry is a new transfer decision after diagnosing reason and bank details, not a continuation of a completed payout.\n- **Identity and example limits:** Distinguish top-level transfer `data.id`, `events[].id`, accounting `events.transactionId`, merchant `reference`, `referenceForBeneficiary`, and tracing identifiers; they serve different purposes. The many test JSON examples reuse placeholder IDs across sections, and the failed-review sample changes the amount and `categoryData.type` compared with the common EUR 100 example. Treat each sample as illustration rather than a canonical event join, universal sequence or account-specific proof. No bank statement, actual user receipt, legal ownership or current route eligibility follows from this snapshot.\n\n## Detail locators\n\n- Purpose, created/updated webhook types, prerequisites and `bank/outgoing/bankTransfer` identifiers: raw lines 15\u201360. Created event fields and test sample: lines 62\u2013138. Authorised reservation and insufficient-balance refusal/new request: lines 140\u2013232.\n- Booked deduction, accounting transaction ID and explicit nonfinal warning: lines 327\u2013434. Internal-review pending/passed/failed and priority-specific tracking: lines 436\u2013706. External failure after retries: lines 708\u2013830.\n- Estimated arrival, availability limits and sample: lines 832\u2013950. Tracing networks/identifiers and sample: lines 952\u20131111. Instant credited confirmation: lines 1113\u20131227. Bank return, permanent block, network reason and code-specific remediation: lines 1229\u20131550. Related payout routes: lines 1551\u20131555.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform balance-account, user and transfer context.\n- [[source-adyen-docs-online-payments-online-payouts-payout-webhook]] \u2014 separate legacy Payout API webhook route; its event semantics must not be imported into this balance-platform transfer flow.\n\n## Related raw API references\n\n- The raw page links to the Transfer webhook API event definitions, transfer request schema, Customer Area webhook setup, scheduled/on-demand payouts and transfer routes. Consult them independently for current endpoint and route details.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/payout-webhooks/2026-09-15|Adyen Docs: Payout transfer webhooks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "When funds are transferred (paid out) from a balance account to your user's bank account, Adyen sends",
+      "location": "raw line 19, introductory purpose"
+    },
+    {
+      "text": "This status is not final. Instant payouts may be rejected by the counterparty's bank and thus [fail](#payout-failed), and regular and wire transfers may be [returned](#payout-returned) by the counterparty's bank.",
+      "location": "raw line 336, Payout transfer booked"
+    },
+    {
+      "text": "Add sufficient funds to the balance account and send a new transfer request.",
+      "location": "raw line 232, insufficient-balance refusal"
+    },
+    {
+      "text": "Estimated Time of Arrival is currently available for all local payouts. It is *not* available for instant or cross-border payouts.",
+      "location": "raw line 838, Payout transfer tracking"
+    },
+    {
+      "text": "Adyen blocks subsequent transfer attempts when a reason code indicates a permanent issue.",
+      "location": "raw line 1355, Return reason"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platforms-payout-transfer-webhook-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms]] \u2014 2026-09-15 current Adyen for Platforms landing page for platform/user model, verification, split-payments and payout routes, regional lists and separate optional financial products.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 2026-09-15 Platforms Transfer webhook guide distinguishing payout request, balance booking, bank tracking/credit, failure and return states.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Route this current balance-platform Transfer webhook source through adyen-platforms; adyen-payouts currently documents the separate legacy Payout API.",
+          "The raw JSON examples reuse IDs and contain sample inconsistencies; do not treat them as a canonical join or bank-receipt proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/payout-webhooks/2026-09-15.md",
+  "raw_sha256": "41a508b970271454fe806b5c921674e03ba008249ebc974dec95095f7104bf20",
+  "status": "candidate_ready"
+}

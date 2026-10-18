@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-platforms-quickstart-guide-reporting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms reporting quickstart\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/quickstart-guide/reporting\"\nraw_files:\n  - \"adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md\"\ntags: [adyen, platforms, reporting, reconciliation, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms quickstart orients a platform to user-facing dashboard components and custom reports for reconciling balance-platform accounts, payouts, invoices, and payment processing. It is a report-selection and data-consumption guide, not a report schema or proof of an individual payout. Customer Area reports are not directly available to platform users; the platform may need to filter data by balance account before sharing it.\n\n## Key takeaways\n\n- The guide presents Transactions Overview and Payouts Overview components for user dashboards. Its Report Overview/Reports Component wording is time-sensitive: the snapshot says a report-download component is planned or soon available, while also saying current availability is only for the Payout Report. Verify the actual component and report availability before promising it to users. A dashboard label saying a payout was received does not independently establish beneficiary bank receipt.\n- For custom reconciliation, distinguish **booking date**, when an event occurs, from **value date**, when a balance account is credited or debited and funds become available there. Settlement delay can put value date after the sales day; the source's Monday-to-Wednesday two-business-day case is an example, not a general SLA. A balance-account value date is not a bank-credit date.\n- The Balance Platform Payout Report (BPPR) is described as a daily report of scheduled payouts initiated that day and constituent transactions. Its reconciliation use is limited to managed or custom scheduled payouts, excludes on-demand payouts and cashouts, requires the sales-day settlement model, and can produce incorrect data when more than one scheduled payout occurs on a day. Do not apply its payout composition to unsupported routes or treat an initiated-report row as recipient receipt.\n- The Balance Platform Accounting Report (BPAR) tracks platform balance changes such as processed payments, internal transfers, payouts, fees and invoice deductions. Adyen recommends ingesting BPARs for a ledger and excluding status events without actual account money movement, including Received, Authorized, Canceled and Expired. Combine it with the Balance Platform Balance Report for balance reconciliation; preserve row status, account, currency, booking/value dates and report grain. A report row or calculated balance does not establish legal fund ownership or an external bank outcome.\n- The page also routes invoice fee checks to Interactive Payment Accounting Report status filters; identifies Fee, Statement, Payment Accounting and Settlement Detail reports for their own distinct purposes; and offers scheduled daily or manual report generation. The linked report specifications govern exact fields, access, cutoff and retention.\n\n## Detail locators\n\n- Opening and `Dashboard components for key use cases` \u2014 component versus custom-report options, Customer Area user-access/filtering boundary, Transactions/Payouts/Report Overview state and recommendations (raw lines 15\u201362).\n- `Adyen invoice reconciliation` \u2014 IPAR fee-status filters for processing, payment-method and RevenueProtect fees (lines 64\u201372).\n- `Key reporting concepts` \u2014 booking date versus value date and settlement-delay example (lines 80\u201398).\n- `Key reports` / `Balance Platform Payout Report` \u2014 scheduled-payout report grain, managed/custom-scheduled-only scope, same-day multiplicity warning and sales-day model (lines 99\u2013117).\n- `Balance Platform Accounting Report` and `Balances` \u2014 balance-change categories, ledger recommendation, nonmovement-status exclusion and Balance Report pairing (lines 119\u2013136).\n- Remaining report catalog and `Reporting cadence and consumption` \u2014 fee/statement/payment-accounting/settlement-detail roles and daily/manual generation routes (lines 138\u2013175).\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-reporting]]\n- Platform context: [[adyen-platforms]]\n- Related sources: [[source-adyen-docs-platforms-reports-and-fees-payout-report]], [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15|2026-09-15 Platforms reporting quickstart]]\n",
+  "quotes": [
+    {
+      "text": "Keep in mind that the reports in the Customer Area are not directly available to your users, and that you may need to filter the reports by balance account before sharing those reports.",
+      "location": "raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md:26"
+    },
+    {
+      "text": "Adyen has plans to launch a Report Overview component that allows users to filter and download available reports for a specific balance account. The report data is automatically generated every day, so users always have access to the most current data. Currently only available for the Payout Report, other reports will be added in the future.",
+      "location": "raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md:59"
+    },
+    {
+      "text": "When you reconcile your transactions, note the difference between the **booking date** and the **value date**.",
+      "location": "raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md:86"
+    },
+    {
+      "text": "No more than one scheduled payout can occur on the same day. Additional payouts result in incorrect data in this report.",
+      "location": "raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md:116"
+    },
+    {
+      "text": "This use case requires that you eliminate all events in the report where no real money movement has taken place. For example, where the status is Received, Authorized, Canceled, Expired, etc., as those events do not impact the balance of an account.",
+      "location": "raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md:127"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-reporting-quickstart-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-quickstart-guide-reporting]] \u2014 2026-09-15 Platforms reporting quickstart for user-dashboard versus custom-report selection, booking/value dates, BPPR scope limits and BPAR ledger filtering; report rows are not bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Preserve the report-component availability qualification and the BPPR one-scheduled-payout-per-day limitation in the source."
+        ]
+      },
+      {
+        "update_id": "c17-platforms-reporting-quickstart-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-quickstart-guide-reporting]] \u2014 2026-09-15 Platforms quickstart routing user-facing dashboard components, balance-account reports and payment-processing report reconciliation with BPPR/BPAR limitations.\n",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep balance-account and payment-processing report grains distinct; report availability and rows do not prove a recipient-bank credit."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/quickstart-guide/reporting/2026-09-15.md",
+  "raw_sha256": "a42e09c1734fafd006aa7174553b119d366796eab4386020f4de76d8ddbe1a03",
+  "status": "candidate_ready"
+}

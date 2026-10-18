@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-platforms-transfer-transactions-track-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen balance-platform transaction webhooks\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/transfer-transactions/track-webhooks\"\nraw_files:\n  - \"adyen/docs/platforms/transfer-transactions/track-webhooks/2026-09-15.md\"\ntags: [adyen, platforms, transactions, transfers, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen documentation explains `balancePlatform.transaction.created` webhooks as balance-account debit or credit notifications for transfers involving a bank account, another balance account or a card. It contrasts them with Transfer webhooks, which report transfer status changes. The page is under Platforms but lists Adyen for Platforms, Issuing or Payouts integrations as eligible integration types. It is event-shape guidance, not proof of a particular bank payout, card outcome, final settlement or legal ownership. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Distinct event grains:** A Transfer webhook can arrive for each transfer status change, while the Transaction webhook is sent only when transfer funds are credited to or debited from a balance account. The `data.id` in these examples identifies the transaction event; `data.transfer.id` identifies the related transfer. Do not treat the transaction ID, related transfer ID, webhook event, or example reference as interchangeable. A balance-account booking does not prove beneficiary-bank receipt.\n- **Setup:** The page lists Adyen for Platforms, Issuing or Payouts integration. It says to subscribe to Standard and Transaction webhooks, with Transfer webhooks optional, and to ensure the server can receive and accept webhooks. Transfer webhooks add status context when used together; optional here does not mean transaction events represent every status change.\n- **Outgoing debit:** For an external bank payout or an internal balance-account transfer, the page illustrates `POST /transfers` followed by `balancePlatform.transaction.created` after booking. The negative `amount.value` in the sample is a debit from the named source `balanceAccount`; `accountHolder` is the holder of that source account, and `transfer` describes the related transfer. The examples' EUR 100 and IDs are illustrative, not an executed payout or account balance proof.\n- **Incoming credit:** The page describes incoming external/top-up and internal-transfer cases where the target balance account is credited after booking. The positive `amount.value` and `balanceAccount` identify the receiving side in the examples. Its incoming-external prose says an incoming third-party transfer is booked, but that example's `transfer.categoryData.type` is `platformPayment` with payment PSP references. Do not generalize that payload as the canonical third-party bank-transfer schema without checking the appropriate raw/API source.\n- **Example and outcome boundary:** The outgoing external and internal examples reuse the same placeholder transaction `data.id` despite different related transfer IDs; incoming examples likewise reuse a placeholder transaction ID across distinct transfer categories. The examples are test payloads with `status=booked`, not a canonical cross-event join or proof that an external bank received funds. The page does not document payout failure/return or later bank acknowledgement; use the separate payout-transfer webhook guide for those states.\n\n## Detail locators\n\n- Definition, Transfer versus Transaction webhook frequency, requirements and internal/external direction: raw lines 15\u201339.\n- Outgoing external transfer request, transaction fields and test debit sample: lines 40\u2013127. Outgoing internal request and debit sample: lines 129\u2013207.\n- Incoming external prose and positive booked sample with `platformPayment` category data: lines 209\u2013272. Incoming internal credit sample: lines 274\u2013327. Related tracking and payout routes: lines 329\u2013338.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform and balance-account context.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 Transfer webhook payout status, bank-tracking, failure and return states.\n- [[source-adyen-docs-platforms-view-transfers-details]] \u2014 transfer record/event-history retrieval across payment, bank and internal categories.\n\n## Related raw API references\n\n- The raw page links to Transaction and Transfer webhook API definitions, Transfers API POST, internal fund transfers, third-party transfer webhooks and payout reconciliation. Read those separately for current schemas and lifecycle guarantees.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/transfer-transactions/track-webhooks/2026-09-15|Adyen Docs: Track transactions with webhooks (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "While a transfer webhook is sent for every status change, transaction webhooks are only sent when the funds from the transfer are credited or debited from the balance account.",
+      "location": "raw line 21, introductory event-grain distinction"
+    },
+    {
+      "text": "Whether you are **sending funds from (outgoing)**, or **receiving funds to (incoming)**, the balance account.",
+      "location": "raw line 37, transaction webhook variation"
+    },
+    {
+      "text": "After the transfer is [**booked** ](/platforms/payout-webhooks/#payout-transfer-booked), Adyen sends a [balancePlatform.transaction.created](https://docs.adyen.com/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created) webhook",
+      "location": "raw line 75, outgoing external transaction"
+    },
+    {
+      "text": "After an incoming third-party transfer is [**booked** ](/business-accounts/third-party-transfer-webhooks/#incoming-bank-transfer-booked)to your user's balance account",
+      "location": "raw line 218, incoming external prose"
+    },
+    {
+      "text": "The balance account that receives the funds.",
+      "location": "raw line 224, incoming external fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platforms-transaction-webhook-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-view-transfers-details]] \u2014 2026-09-15 Platforms Customer Area/Transfers API guide for listing and inspecting payment, bank and internal transfer records, with status and example limits.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] \u2014 2026-09-15 Transaction webhook guide for balance-account debit/credit events across external and internal transfers, distinct from Transfer webhook status changes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requirements also name Issuing and Payouts integrations; the page path alone does not limit applicability to Platforms.",
+          "Incoming-external prose says third-party transfer, while its sample transfer category is platformPayment; do not universalize that example.",
+          "Sample transaction IDs are reused across separate external/internal transfer IDs; do not join samples or infer bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/transfer-transactions/track-webhooks/2026-09-15.md",
+  "raw_sha256": "3ec93b612019e36211de7f3865cb3f6701c587853096b7bd5e33f829d554895b",
+  "status": "candidate_ready"
+}

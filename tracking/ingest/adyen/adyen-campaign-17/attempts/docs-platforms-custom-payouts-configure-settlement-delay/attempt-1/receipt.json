@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-custom-payouts-configure-settlement-delay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms balance-account settlement delay\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/custom-payouts/configure-settlement-delay\"\nraw_files:\n  - \"adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md\"\ntags: [adyen, platforms, custom-payouts, settlement-delay, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms Configuration API guide (last modified and captured 2026-09-15) explains overriding the merchant-account default settlement delay for a particular user's balance account when it is created or updated. The delay specifies the business days after a settlement batch before those funds become available in that balance account. It is an availability setting, not an instruction to initiate a bank payout or proof of bank receipt. See [[adyen]], [[adyen-platforms]] and [[source-adyen-docs-platforms-custom-payouts]].\n\n## Key takeaways\n\n- **Gates and incompatibility:** The Configuration API credential needs Balance Platform BCL role, and the platform must contact its Account Manager to enable custom sales-day settlement delay. A one-day settlement delay requires previous Adyen approval. The page says a custom settlement delay cannot be used on a balance account with a managed payout schedule. It directs subscribing to balance-account created/updated Configuration webhooks.\n- **Create or update:** Include platformPaymentConfiguration in POST /balanceAccounts for a new account or PATCH /balanceAccounts/{id} for an existing one. The page documents settlementDelayDays as integers 1\u201320 or null (default), counted in business days from the settlement batch until availability. Its three-day PATCH payload is an example, not a universal default. A successful response echoes the configuration; the balanceAccount.created or .updated webhook follows after the delay is applied.\n- **Sales-day closing time warning:** The optional salesDayClosingTime is conditionally required if that account previously had a specific closing time: include it on every account update, or it resets to 00:00. The page documents HH:MM with hours 00\u201307 and minutes 00. This condition matters when patching settlementDelayDays even if the example payload omits the closing-time field.\n- **Evidence boundary:** The example response and webhook show a balance-account configuration in TEST. They do not prove a settlement batch has completed, available funds have increased, a scheduled/on-demand payout was requested, or a beneficiary bank received money.\n\n## Detail locators\n\n- Merchant default and balance-account override: pinned raw lines 15-19.\n- API role, webhooks, approval, managed-schedule incompatibility and Account Manager setup: pinned raw lines 21-31.\n- POST/PATCH targets and field constraints, including closing-time reset: pinned raw lines 33-46.\n- Three-day PATCH example, response and TEST balance values: pinned raw lines 48-292.\n- Applied-configuration webhook route and test event: pinned raw lines 294-322; payout guide navigation: lines 324-327.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept and reciprocal source route.\n- [[source-adyen-docs-platforms-custom-payouts]] \u2014 parent custom-payout overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15|Adyen Configure settlement delay, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "By default, the settlement delay for transactions is configured for your entire merchant account. You can configure a different settlement delay for specific balance accounts when you create or update them using the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview).",
+      "location": "raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md:19"
+    },
+    {
+      "text": "You can only specify a settlement delay of **1** day with previous approval from Adyen. You cannot use custom settlement delay on a balance account with a [managed payout schedule](/platforms/managed-payouts).",
+      "location": "raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md:30"
+    },
+    {
+      "text": "You must contact your Account Manager to enable custom sales day settlement delay for your platform.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md:31"
+    },
+    {
+      "text": "Specifies after how many business days the funds in a settlement batch are made available. Possible values: integers from **1** to **20**, and **null** (default).",
+      "location": "raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md:44"
+    },
+    {
+      "text": "If you have previously configured a specific closing time, you must include this parameter whenever you update the balance account. Otherwise, the parameter is set back to the default value.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md:46"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-configure-settlement-delay-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-custom-payouts-configure-settlement-delay]] \u2014 2026-09-15 Platforms Configuration API guide to per-balance-account settlement-delay override, approval and managed-schedule limits, and conditional sales-day closing-time preservation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Settlement delay governs balance-account availability after a settlement batch; do not present it as bank-payout arrival timing or outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/custom-payouts/configure-settlement-delay/2026-09-15.md",
+  "raw_sha256": "c71878d218a98f4bab46421da2849ea3cdb687906167ef0d71134a7aab13b80e",
+  "status": "candidate_ready"
+}

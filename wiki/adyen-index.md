@@ -858,6 +858,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations]] — Adyen Platforms manage split configuration profiles (webpage, 2026-10-18)
 - [[source-adyen-docs-platforms-online-payments-currency-conversion]] — Currency conversion for Adyen for Platforms online payments | Adyen Docs (webpage, 2026-10-18)
 
+### Website documentation — Campaign 17
+
+- [[source-adyen-docs-platforms-managed-payouts]] — Managed payouts | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts]] — Adyen Platforms custom payouts to user bank accounts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers]] — Adyen Platforms internal fund transfers overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] — Balance Platform Accounting Report | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts]] — Adyen for Platforms on-demand payouts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] — Use managed payout schedules | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-webhooks]] — Adyen Platforms payout transfer webhooks (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts]] — Adyen for Platforms custom scheduled payouts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-scheduled-fund-transfers]] — Adyen Platforms scheduled internal fund transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-webhooks]] — Adyen Platforms cashout webhooks (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]] — Top up a balance account on demand | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] — Webhooks for Adyen for Platforms internal fund transfers | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-on-demand-fund-transfers]] — Adyen Platforms on-demand internal fund transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-descriptions]] — Adyen for Platforms payout descriptions (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account-top-up-webhooks]] — Balance-account top-up webhooks | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-view-payout-transfers-details]] — Adyen Platforms: view payout transfer details (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-payout-report]] — Adyen Balance Platform Payout Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-approve-cancel-transfers]] — Adyen for Platforms transfer approval and cancellation (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] — Approve or cancel Adyen Platforms on-demand payouts (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-view-transfers-details]] — Adyen Platforms: view transfer details (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] — Adyen Platforms custom payout transfer routes (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-amount]] — Adyen Platforms payout amount calculation (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-transfer-transactions-track-api]] — Adyen Transfers API transaction tracking (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-request]] — Make a cashout request for Adyen for Platforms | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]] — Scheduled balance-account top-ups | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-managed-payouts-view-payout-executions]] — View managed payout executions | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-quickstart-guide-reporting]] — Adyen for Platforms reporting quickstart (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees]] — Adyen for Platforms reports and fee types (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] — Adyen Platforms balance webhook configuration (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts-view-custom-payout-executions]] — View Adyen Platforms custom payout schedule executions (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] — Adyen balance-platform transaction webhooks (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-fee-report]] — Adyen Balance Platform Fee Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-settle-funds-configure-closing-time]] — Configure sales day closing time for Adyen for Platforms | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-prepare-reports]] — Adyen for Platforms prepare reports (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-custom-payouts-configure-settlement-delay]] — Adyen Platforms balance-account settlement delay (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-internal-fund-transfers-return-transfers]] — Return transferred funds | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-settle-funds-pass-through-settlement]] — Pass-through settlement | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-quickstart-guide-payouts]] — Adyen for Platforms payouts quickstart (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-settle-funds]] — Adyen Platforms sales-day fund settlement (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] — Adyen Platforms manage balance webhook settings (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-cash-out-instantly]] — Adyen Platforms CashOut overview (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-balance-report]] — Adyen Balance Platform Balance Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-types]] — Adyen Platforms balance types (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates-use-cases]] — Adyen Platforms balance webhook use cases (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-reports-and-fees-statement-report]] — Adyen Balance Platform Statement Report (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-prepare-reports-generate-download-reports]] — Generate and download Adyen balance platform reports | Adyen Docs (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-payout-reconciliation]] — Payout reconciliation methods | Adyen for Platforms (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-balance-updates]] — Adyen Platforms: track balance updates (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-transfer-transactions]] — Track Adyen Platforms balance-platform transactions and transfers (webpage, 2026-10-18)
+- [[source-adyen-docs-platforms-top-up-balance-account]] — Adyen for Platforms balance-account top-up overview (webpage, 2026-10-18)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -890,6 +943,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-platform-internal-transfers]] — Adyen for Platforms internal fund transfers
 
 - [[adyen-multi-pay-in]] — Adyen multi pay-in
 

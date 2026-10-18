@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Adyen website C17
+
+- Fifty independently approved Platforms payouts/transfers/top-ups/settlement/reporting documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 4 concepts touched (1 new); source_count 864 = 850 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-17/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-18] ingest | Stripe.js `10.1.0`
 
 - Serial delta after the 10.0.0 full baseline: shared loader cache fix, accordion trigger colors and WeChat mobile_web typing, with stale README snippet/availability limits. Changed source fully read; generated evidence mechanically verified under approval. Historical knowledge and counts retained. Details [[stripe-log]], [[source-github-stripe-js]], [[changelog-github-stripe-js]]. No commit/push.

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-custom-payouts-scheduled-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms custom scheduled payouts\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/custom-payouts/scheduled-payouts\"\nraw_files:\n  - \"adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md\"\ntags: [adyen, platforms, scheduled-payouts, sweeps, balance-accounts]\n---\n\n## Overview\n\nThis Adyen for Platforms guide, last modified 2022-04-20 and captured 2026-09-15, describes configuring an automatic custom payout schedule from a balance account to a user's verified bank account represented by a transfer instrument. A schedule evaluates timing and balance conditions, then triggers a transfer request when all conditions are met. Creating or updating a sweep configuration is distinct from executing a transfer and from beneficiary bank receipt. The page does not identify a merchant of record, legal owner of funds, current account eligibility, or a successful live payout.\n\n## Key takeaways\n\n- Prerequisites include a Platforms integration; a Transfers API credential with **TransferService Webservice Initiate role**; Customer Area **Balance platform base role** and **Configure scheduled payouts**; the user's **sendToTransferInstrument** capability; and an account holder and transfer instrument linked to the same legal entity. The guide recommends calculating available transfer routes before configuration. It does not establish that a particular user or bank route has been verified or enabled.\n- Create a schedule in Customer Area or with Configuration API POST `/balanceAccounts/{balanceAccountId}/sweeps`. The API guide names the destination transfer instrument, payout currency, `schedule.type: cron`, `schedule.cronExpression` evaluated in the balance account's time zone, and `type: push`. The response includes an ID and default `active` status; PATCH can update the schedule. `balancePlatform.balanceAccountSweep.created` and `.updated` webhooks concern schedule creation and updates, not money arriving at the bank. Examples use test endpoints and differ in their illustrated currencies, so each example must be read in its own context.\n- By default, the API schedule pays out the available balance at evaluation. Optional `triggerAmount` requires available balance at least that high; `targetAmount` keeps an amount on the balance account and requires `triggerAmount` higher than `targetAmount`; `sweepAmount` fixes the payout size and requires `triggerAmount` at least that amount. Customer Area also offers all-available, maintained-balance and specific-amount choices plus a minimum balance trigger. These conditions gate an initiated transfer request; they do not promise receipt at the scheduled time.\n- A bank-transfer priority or ordered list affects route speed and fees. When setting priorities, specify `category: bank`; the guide says all listed priorities must have valid routes at configuration, while execution uses the first priority yielding a valid route for the transfer amount. Some routes impose amount limits. The unspecified default priority differs by region. Regional method cutoffs affect expected bank receipt time, so scheduled evaluation time is not a delivery guarantee. The source gives no general business-day, approval, cancellation, insufficient-funds retry or returned-payout rule; consult the linked route and payout-execution guidance for those outcomes.\n- For movements, use Customer Area plus transfer-created/updated, `balanceAccountSweepExecution`, and transaction-created webhooks. They have different grains: scheduled sweep configuration, execution result, transfer status, and deduction from a balance account. The page says transfer updates include an event history and sequence number. None alone is beneficiary bank receipt proof.\n\n## Detail locators\n\n- `Requirements` and `How it works` \u2014 roles, capability, shared legal entity, route recommendation, schedule conditions and transfer-request trigger (raw lines 23\u201351).\n- `Create a custom payout schedule` / `Customer Area` \u2014 balance account, destination instrument, currency, trigger, amount mode, frequency, timing and priority controls (lines 53\u2013118).\n- `Create a custom payout schedule` / `API` \u2014 POST sweep fields, cron time zone, push direction, default status, PATCH route and creation webhook; test curl and library examples carry different sample currencies (lines 120\u2013458).\n- `Optional configuration` / `Sweep configuration` \u2014 available-balance default, trigger/target/sweep amount relationships and illustrative EUR balances (lines 460\u2013503).\n- `Dynamic transfer statement description` and `Priorities` \u2014 placeholder descriptions, reconciliation reference, bank category, ordered priorities and amount-dependent route limit (lines 507\u2013526, 830\u2013847).\n- `Track fund movements` and `View sweep details` \u2014 execution/transfer/transaction event distinctions and Customer Area schedule view (lines 1071\u20131140).\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15|2026-09-15 custom scheduled payouts guide]]\n",
+  "quotes": [
+    {
+      "text": "The schedule automatically initiates a payout from a balance account to your user's bank account based on a pre-defined frequency, trigger amount, and source or destination.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that your user has the following capability:- **sendToTransferInstrument**",
+      "location": "raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md:35"
+    },
+    {
+      "text": "When all the conditions of the payout schedule are met, a transfer request is triggered automatically.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md:51"
+    },
+    {
+      "text": "The [cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression) for the schedule when the payout is evaluated, using the time zone of the balance account.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md:135"
+    },
+    {
+      "text": "Some transfer routes have an amount limit. The payout is executed using the first priority that leads to a valid route given the transfer amount. All supplied priorities must lead to a valid route at the time of configuration.",
+      "location": "raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md:845"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-platforms-scheduled-payout-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts]] \u2014 2022-modified, 2026-09-15-captured Platforms balance-account sweep scheduling guide for user-bank transfer-instrument destinations, conditions, routes and distinct configuration/execution webhooks; no bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep Platforms scheduled bank payouts separate from the legacy Payout API and from internal transfers; a schedule-created webhook is not a transfer or receipt outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/custom-payouts/scheduled-payouts/2026-09-15.md",
+  "raw_sha256": "7aec3b6e983706280bcaa27d88d99d8be8e87abd25578db43585bd09a98ec384",
+  "status": "candidate_ready"
+}

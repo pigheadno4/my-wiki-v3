@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-prepare-reports",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen for Platforms prepare reports\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/prepare-reports\"\nraw_files:\n  - \"adyen/docs/platforms/prepare-reports/2026-09-15.md\"\ntags: [adyen, platforms, reporting, reconciliation, report-configuration]\n---\n\n## Overview\n\nThis Adyen for Platforms guide prepares a reconciliation workflow by selecting reports, aligning their reporting periods and time zones, configuring columns, retrieving files and matching references across Adyen-account and balance-platform reports. It advises trying the process with complete reports before live use. Configuration and a successful test do not themselves establish a complete reconciliation, settled payment or beneficiary-bank receipt. [[adyen]] [[adyen-platforms]] [[adyen-reporting]]\n\n## Key takeaways\n\n- **Prerequisites and time basis:** understand the balance-platform account structure and funds flow, choose relevant report types and fee categories, then configure reporting time zones and columns. Different report periods and time zones are identified as common reconciliation-mismatch causes. When combining reports, check that they cover the same period and use the same time zone.\n- **Column choices and impact:** reports have default columns; many Adyen-account reports permit additional columns. Extra columns increase file size, and column additions, removals or reordering can affect an automated consumer. For full financial reconciliation, the page recommends Payment accounting `Store` when stores are used, and `Split payment data` for comparing submitted splits with Accounting Report postings. `AMS Booking Date` helps align Payment accounting/Settlement details entries with an invoicing period that may straddle report boundaries. Settlement details `Funds Destination` is only relevant when upgrading from Classic for parallel reconciliation. These are recommendations, not universal required fields.\n- **Column role gate and retrieval:** Customer Area report-column configuration requires one of Merchant admin, Merchant report role, Merchant financial, or Merchant POS Report role. The guide routes Adyen-account report manual/automatic retrieval and balance-platform report retrieval to separate instructions; it does not specify a download permission or retention period here.\n- **Reference mapping:** use the Adyen-generated `Psp Reference` in Payment accounting/Settlement details against `Psp Payment Psp Reference` in the balance-platform Accounting Report. Payment `Merchant Reference` maps to `Psp Payment Merchant Reference`; modification references map to `Psp Modification Merchant Reference`; a split's `reference` maps to Accounting Report `Reference`. The page recommends unique values for payments, modifications and splits even where the API does not require them. Preserve payment, modification and split reference grains when joining.\n- **Test boundary:** the reconciliation-use-case guides show selected rows and columns, so the page recommends complete sample reports or test transactions followed by test-environment report downloads before live use. These sources help validate parsing and joins; they do not prove a particular live booking, payout or bank credit.\n\n## Detail locators\n\n- Raw lines 15\u201327: purpose and prerequisites for account structure, report types and fees.\n- Raw lines 29\u201352: period/time-zone setup and recommended Store, Split payment data, AMS Booking Date and Classic-only Funds Destination columns.\n- Raw lines 54\u201373: Customer Area column setup, automation impact and eligible roles.\n- Raw lines 75\u201382: manual/automatic download routes for Adyen-account versus balance-platform reports.\n- Raw lines 84\u2013107: multi-report combination, payment/modification/split reference mapping and matching period/time-zone checks.\n- Raw lines 109\u2013116: complete sample or test-environment report validation before live reconciliation.\n\n## Related\n\n- [[source-adyen-docs-platforms-reports-and-fees]] \u2014 report and fee selection hub.\n- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] \u2014 balance-platform accounting field definitions.\n- [[source-adyen-docs-reporting-invoice-reconciliation-payment-accounting-report]] \u2014 payment accounting field definitions.\n- [[source-adyen-docs-reporting-manually-get-reports]] \u2014 Adyen-account manual retrieval route.\n- [[source-adyen-docs-reporting-automatically-get-reports]] \u2014 Adyen-account automatic retrieval route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/prepare-reports/2026-09-15|Prepare reports snapshot, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your reports contain the information that you need for full reconciliation, and try out your reconciliation processes before going live.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Reports are generated for different periods and can be based on different time zones.",
+      "location": "raw line 33, Configure reports; repeated at line 107"
+    },
+    {
+      "text": "If you have an automated system that uses the report's data, configuring the report columns can affect your automated system.",
+      "location": "raw line 56, Instructions"
+    },
+    {
+      "text": "The `reference` that you provide for a payment split.",
+      "location": "raw line 98, Combine reports, split Reference mapping"
+    },
+    {
+      "text": "The reports are generated using the same time zone.",
+      "location": "raw line 105, Combine reports check"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-prepare-reports-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-prepare-reports]] \u2014 2026-09-15 Platforms guide to time-zone/period alignment, role-gated report columns, payment/modification/split reference joins and complete test-report checks before live reconciliation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/prepare-reports/2026-09-15.md",
+  "raw_sha256": "220137d33b9f558620c91f15836eb28429a2872417c3361160b0e7fe7bd87f34",
+  "status": "candidate_ready"
+}

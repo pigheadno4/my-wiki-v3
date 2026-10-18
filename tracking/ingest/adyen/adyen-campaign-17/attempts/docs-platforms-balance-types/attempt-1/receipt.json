@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-balance-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms balance types\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/balance-types\"\nraw_files:\n  - \"adyen/docs/platforms/balance-types/2026-09-15.md\"\ntags: [adyen, platforms, balance-accounts, balances, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen for Platforms snapshot defines five balance types for each currency held in a balance account: Balance/current, Available, Pending, Pending available and Reserved. It shows how future settlement and holds can change spendable funds, and where to view per-currency balances. These are account-balance categories, not proof that a particular payment settled, a payout reached a bank or an account holder owns funds legally. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Per-currency categories:** A balance account may contain one or several currencies, each with these balance types. `Balance` or current balance is the sum of already settled transactions. `Pending` is the sum of transactions expected to settle later and may be positive or negative. `Reserved` includes authorized outgoing-transfer funds not yet booked and blocked funds, with Capital repayments and collateral for paying out current balance given as examples. Do not equate pending or reserved with already settled, freely transferable funds.\n- **Available and pending available:** The page calls `Available` the amount available for transfers and gives a lower-of-current-balance versus current-balance-minus-pending-and-reserved formula. It calls `Pending available` the amount that will become available after pending settlement, with a lower-of-pending versus pending-plus-available formula. The stated Available formula conflicts with the page's worked tables: on January 1 in Example 1, current EUR 100, pending EUR 20 and reserved EUR 30 would yield EUR 50 if read literally, while the table shows Available EUR 70; in Example 2, current EUR 50 and pending EUR -70 would yield EUR 50, while the table shows Available EUR -20. Treat the illustrative balances as evidence of intended effects, not a reliable executable formula from this snapshot alone; verify the current Adyen definition before implementing calculations or payout controls.\n- **Consequential examples:** Example 1 shows an incoming payment settling while a EUR 30 refund reserve keeps Available below current balance, then the refund settlement clears the hold. Example 2 shows a positive current balance with negative Available because of a future refund. Example 3 distinguishes Pending EUR 50 from Pending available EUR 20 when current/available is EUR -30. These are illustrative account timelines, not account-specific ledger or authorization evidence.\n- **Observe and respond:** For all currencies in a balance account, the page points to `GET /balanceAccounts/{id}`, `balancePlatform.balanceAccount.balance.updated` webhooks, and Customer Area **Balance accounts > Balances**. It says configurable balance-change notifications can help a platform decide whether to top up or transfer funds to avoid negative balances. That is operational guidance, not an instruction to move funds automatically or proof that a top-up succeeded.\n\n## Detail locators\n\n- Per-currency premise and five balance definitions, including literal formulas and reserve components: raw lines 19\u201330. Configurable balance notifications and optional top-up/internal-transfer response: line 32. API/webhook/Customer Area viewing routes: lines 34\u201340.\n- Example 1 settlement/refund reserve timeline: lines 48\u201368. Example 2 negative Available despite positive current balance: lines 72\u201386. Example 3 Pending versus Pending available: lines 90\u2013104. Links to separate balance-update, top-up and internal-transfer guides: lines 106\u2013116.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 platform balance-account context.\n- [[source-adyen-docs-platforms-manage-balance-accounts]] \u2014 balance-account resource creation and management; distinct from balance-type calculations.\n\n## Related raw API references\n\n- The raw page links to Balance Platform API account retrieval, balance-update webhooks, balance notifications, top-ups and internal fund transfers. Consult those sources independently for current schema and movement conditions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/balance-types/2026-09-15|Adyen Docs: Balance types (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "These balance accounts may hold a single or multiple currencies.",
+      "location": "raw line 19, per-currency premise"
+    },
+    {
+      "text": "The sum of transactions that have already been [settled](/platforms/settle-funds).",
+      "location": "raw line 23, Balance definition"
+    },
+    {
+      "text": "The balance that is available for transfers.",
+      "location": "raw line 24, Available definition"
+    },
+    {
+      "text": "The pending balance can be positive or negative.",
+      "location": "raw line 26, Pending definition"
+    },
+    {
+      "text": "Although the current balance is positive, the available balance is negative because the future balance change (the refund) is already being considered.",
+      "location": "raw line 86, Example 2"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "platforms-balance-types-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-manage-balance-accounts]] \u2014 2026-09-15 Configuration API/Customer Area guide to account-holder-linked balance-account creation, viewing, description update and permanent zero-balance closure; examples do not prove funded state or payout.",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-balance-types]] \u2014 2026-09-15 Platforms per-currency balance-type definitions, viewing routes and examples, including an unresolved Available-formula versus example conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The literal Available formula at raw lines 24\u201325 conflicts with worked examples at lines 58\u201364 and 78\u201386; do not implement it as a settled calculation.",
+          "Balance display or notification alone does not prove a payment, transfer or payout completed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/balance-types/2026-09-15.md",
+  "raw_sha256": "c845dd778b70414bdaa302712db729a633a78ed0d0b3e82c62bce3df8e89506d",
+  "status": "candidate_ready"
+}

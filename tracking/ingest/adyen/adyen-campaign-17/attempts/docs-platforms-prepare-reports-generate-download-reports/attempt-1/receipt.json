@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-platforms-prepare-reports-generate-download-reports",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Generate and download Adyen balance platform reports | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/prepare-reports/generate-download-reports\"\nraw_files:\n  - \"adyen/docs/platforms/prepare-reports/generate-download-reports/2026-09-15.md\"\ntags: [adyen, platforms, reporting, customer-area, report-download]\n---\n\n## Overview\n\nThis Adyen for Platforms guide explains how to generate balance-platform reports on a schedule or manually in Customer Area, receive `balancePlatform.report.created` when a generated report is available, and download the file in Customer Area or with authenticated HTTP GET. It covers report retrieval rather than the event grain, accounting meaning, or completeness of any particular report. The 2026-09-15 snapshot does not establish that a current report exists, that its rows reconcile, or that a bank payout arrived. [[adyen]] [[adyen-reporting]] [[adyen-platforms]]\n\n## Key takeaways\n\n- **Access:** Customer Area requires the listed **Generate Balance Platform reports** and **Download Balance Platform reports** roles. Programmatic download calls for a **Report service user** API key with the **BalancePlatform Report Download role**; the HTTP GET section also directs the reader to obtain report credentials from an Adyen contact and authenticate with an API key or report basic-auth password. Role and credential descriptions do not prove a particular user's current grant.\n- **Generation:** In the correct merchant account's Reports page, automatic generation is selected per report type under **Manage report**. Deselecting **Automatic generation** deletes the generation schedule. The schedule depends on report type and balance-platform configuration; this page gives no universal delivery time. Manual generation is one-time; bulk, date/period, balance-account/account-holder and time-zone options are conditional on report type. Generation can take a few minutes.\n- **Availability and download:** `balancePlatform.report.created` signals that a generated report is available and carries a `downloadUrl`, file name, report type, balance platform and creation date. The webhook is a download pointer, not the report contents. Download from the generated-reports table or authenticated HTTP GET using the report name, credentials and webhook `downloadUrl`; sample URLs and commands use a test environment. Actual report contents and period must be checked after retrieval.\n- **Formats and reconciliation boundary:** Reports are CSV; the Accounting report may also be TSV. The page recommends loading files into a system or spreadsheet for reconciliation, but does not provide a method for matching split, payout or bank-receipt events or validate any report's totals. Follow the relevant report's field and period guide before financial conclusions.\n\n## Detail locators\n\n- Generation modes and access/webhook prerequisites: pinned raw lines 15\u201328.\n- Automatic schedule setup, destructive toggle and report-dependent schedule: pinned raw lines 30\u201350.\n- Manual generation, conditional filters/time zone and generation wait: pinned raw lines 52\u201375.\n- `balancePlatform.report.created` availability notification and `downloadUrl` example: pinned raw lines 77\u201396.\n- CSV/Accounting TSV formats, Customer Area download and authenticated HTTP GET with test examples: pinned raw lines 98\u2013144.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main report-discovery and evidence-boundary concept.\n- [[source-adyen-docs-platforms-prepare-reports]] \u2014 separate preparation guide for choosing fields and aligning report periods.\n- [[adyen-platforms]] \u2014 platform and account context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/prepare-reports/generate-download-reports/2026-09-15|Generate and download platform reports \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can generate balance platform reports automatically according to a specific schedule, or manually on-demand.",
+      "location": "pinned raw line 19, introduction"
+    },
+    {
+      "text": "**Report service user** API key with the **BalancePlatform Report Download role**",
+      "location": "pinned raw line 25, Requirements > API credential roles"
+    },
+    {
+      "text": "If you deselect this option, the schedule for generating reports is deleted.",
+      "location": "pinned raw line 46, Generate reports > Automatically"
+    },
+    {
+      "text": "The webhook contains the URL at which you can download the report.",
+      "location": "pinned raw line 79, Get updates when a report is available"
+    },
+    {
+      "text": "All reports are generated in CSV format. You can also generate the Accounting report in TSV format.",
+      "location": "pinned raw line 100, Download reports"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-report-download-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-prepare-reports]]",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-prepare-reports-generate-download-reports]] \u2014 2026-09-15 Platforms report-generation/download guide for role-gated scheduled or one-time creation, report-created download URL and authenticated file retrieval; disabling automatic generation deletes its schedule, and a notification is not report-content proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The report schedule depends on report type and balance-platform configuration; this source gives no universal delivery time or reconciliation algorithm.",
+          "A report-created webhook provides a download URL, not the downloaded file or evidence of settlement/bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/prepare-reports/generate-download-reports/2026-09-15.md",
+  "raw_sha256": "462ad869d9390e39174c0a9ae885f4e8712c777c9815dfa25c8c40bda9d88c01",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,16 @@
+{
+  "job_id": "docs-platforms-managed-payouts-use-managed-payouts",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Independently read the full 696-line pinned raw and matched SHA-256 ee2daf9e5ae22e5a3e386a117519fbe379854fbcd4bf844413870402935a4b47. All five quotes match their cited lines; accepted receipt, candidate and suggestions agree. The source preserves roles, sendToTransferInstrument, one schedule per currency/location, the existing-legal-entity automatic-application limit, T+7 settlement boundary, conditional rail/cutoff fallback, update/business-day and timeZone rules, configuration-versus-bank-outcome boundary, and the PATCH-versus-DELETE conflict. One material scope distinction remains ambiguous: its Apply bullet says failed account/schedule/instrument conditions can leave application pending with automatic retry without expressly limiting that behavior to automatic application. Raw lines 231-243 state pending/retry under automatic application; the Customer Area and Configuration API paths at lines 318-331 and 394-404 instead describe validation errors when no viable schedule exists. A reader asking whether a failed manual POST will wait and retry could get the wrong operational answer.",
+  "required_changes": [
+    "In the source Apply bullet, explicitly scope pending status and automatic retry to the automatic-application prerequisite checks (raw 231-243). Keep the later manual Customer Area/API cutoff or rail fallback and validation-error behavior distinct (raw 318-331, 394-404). In fixed Q2, make the same automatic-only qualifier explicit before 'failed prerequisites leave application pending'; preserve the other roles, fallback and lifecycle boundaries."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "c17-use-managed-payouts-platforms-route"
+  ],
+  "reviewer_identity": "c17-rdocs-platforms-managed-payouts-use-managed-payouts",
+  "reviewer_model": "gpt-6-sol"
+}

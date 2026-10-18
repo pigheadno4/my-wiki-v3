@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-platforms-reports-and-fees-payout-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform Payout Report\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reports-and-fees/payout-report\"\nraw_files:\n  - \"adyen/docs/platforms/reports-and-fees/payout-report/2026-09-15.md\"\ntags: [adyen, platforms, reporting, payouts, reconciliation]\n---\n\n## Overview\n\nThe Balance Platform Payout Report is an Adyen for Platforms report for platforms with scheduled daily, weekly or monthly payout sweeps. The page calls it a daily report, says data becomes available shortly after daily payout processing at approximately 2:00 AM CEST, and describes payouts processed from midnight to midnight CEST with their contributing debit and credit transactions. No payout day yields an empty report. A report line or payout initiation date does not independently prove beneficiary-bank receipt. [[adyen]] [[adyen-platforms]] [[adyen-reporting]]\n\n## Key takeaways\n\n- **Account and transaction scope:** filter by Account Holder, Balance Account and Currency to inspect a payout for a particular account. The prose says one record line per account and currency, yet the displayed sample has multiple captured-payment rows plus a negative booked `bankTransfer` row for each account/currency. Preserve the transaction-row view and treat the prose as a grain ambiguity rather than assuming a single aggregate line.\n- **Balances and timing:** available payout amount considers present balance and expected future debits/credits. Pending refunds or chargebacks can be withheld, leaving a non-zero rolling balance carried into the next report. To investigate it, the page directs readers to the Balance Platform Accounting Report, filtering transfers with booking date before and value date after the payout date. The sample's positive capture rows and negative booked bank-transfer row bring rolling balance to zero; these signs are examples, while `Balance (PC)` is defined as the amount debited or credited in payment currency.\n- **Identifiers and columns:** standard columns include Account Holder, Balance Account, Currency, Transfer Id for a pending debit/credit, Transaction Id for a completed debit/credit, Booking Date, Value Date, Category, Type, Status, Balance (PC), Rolling Balance (PC), Reference, Description, Counterparty Balance Account Id, PSP payment references and Payout Date. Optional columns include PSP modification references, Store, Payment Method, Managed Risk Blocked Amount and Platform Payment Split Type. Do not collapse pending transfer and completed transaction IDs or infer a matching bank credit from them.\n- **Date qualification:** the page describes the report's processing window and approximate availability in CEST, while the Payout Date column is defined as the date in CET when payout is initiated. Booking Date is the booking time and Value Date is when funds are available, with separate timezone columns. These are different clocks and meanings; the guide does not resolve daylight-saving interpretation across them.\n- **Retrieval and evidence:** Customer Area can generate reports automatically on a schedule or manually for a day; the page lists frequency as daily, weekly or monthly despite calling the report daily. Default and added columns can vary by report settings, and a generated report may contain columns absent from the sample. The CSV pattern is `balanceplatform_payout_report_YYYY_MM_DD.csv`. Report rows and a booked bank transfer support platform-ledger reconciliation, not a beneficiary statement, legal ownership conclusion or payout-success guarantee.\n\n## Detail locators\n\n- Raw lines 15\u201341: scheduled-sweep eligibility, CEST window and approximate availability, empty reports, Customer Area generation, account/currency filter and rolling-balance investigation.\n- Raw lines 43\u201368: sample row set with multiple capture rows and negative booked bankTransfer entries; compare against one-line prose at line 31.\n- Raw lines 70\u2013117: standard columns and definitions for transfer/transaction IDs, dates/time zones, category/type/status, signed Balance (PC), Rolling Balance and Payout Date.\n- Raw lines 119\u2013133: optional modification, Store, Payment Method, Managed Risk Blocked Amount and split-type columns.\n\n## Related\n\n- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] \u2014 transfer booking/value-date detail for withheld balances.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 separate transfer status events.\n- [[source-adyen-docs-platforms-managed-payouts]] \u2014 scheduled-payout context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reports-and-fees/payout-report/2026-09-15|Balance Platform Payout Report snapshot, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The **Balance Platform Payout Report** is a daily report available for platforms that have scheduled payouts (sweeps) configured on a daily, weekly, or monthly basis.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "If no payouts are processed on a given day, Adyen generates an empty report.",
+      "location": "raw line 27, introduction"
+    },
+    {
+      "text": "We generate one record line per account, per currency.",
+      "location": "raw line 31, introduction; compare multirow sample at lines 49\u201368"
+    },
+    {
+      "text": "The rolling balance is added to the balance of the next report, so you can use these reports to make a full reconciliation.",
+      "location": "raw line 35, introduction"
+    },
+    {
+      "text": "When the full balance is paid out, the Rolling Balance column is expected to show 0 at the row of the payout (category: bank, type: bankTransfer, status: booked).",
+      "location": "raw line 105, Standard columns, Rolling Balance (PC)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-platform-payout-report-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reports-and-fees-payout-report]] \u2014 2026-09-15 Balance Platform scheduled-payout report for account/currency and transaction rows, signed balance changes, rolling balance and distinct booking/value/payout dates; a booked row is not beneficiary-bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw prose says one record line per account/currency, but its sample has multiple transaction rows plus a payout row for each account/currency; source entry retains this grain ambiguity."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reports-and-fees/payout-report/2026-09-15.md",
+  "raw_sha256": "0af21b236c3c7543182347512b8b729e88bd97bf2075c64fb0ed6456673eba34",
+  "status": "candidate_ready"
+}

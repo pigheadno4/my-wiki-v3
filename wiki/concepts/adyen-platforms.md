@@ -15,6 +15,96 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-platforms-transfer-transactions]] — 2026-09-15 balance-platform transaction tracking hub for transfer status meanings, webhook/API routes and failed/refused/returned handling; booked source debit is not bank receipt.
+
+
+- [[source-adyen-docs-platforms-balance-updates-use-cases]] — 2026-09-15 pilot Balance webhook TEST examples for platform-wide, account-holder and per-balance-account thresholds; JPY 1,000 prose versus 100000 example value needs verification, and sample events do not show balanceAccountId.
+
+
+- [[source-adyen-docs-platforms-top-up-balance-account]] — 2026-09-15 Platforms overview defining user/liable balance-account top-ups as incoming external transfers and routing scheduled, on-demand and webhook detail; initiation is not booked-credit proof.
+
+
+- [[source-adyen-docs-platforms-payout-reconciliation]] — 2026-09-15 payout-reconciliation method and availability matrix across managed, custom scheduled, on-demand and cashout routes.
+
+
+- [[source-adyen-docs-platforms-cash-out-instantly]] — 2020-modified, 2026-09-15-captured Platforms CashOut overview for pending-balance funding, optional instant-payout/fee legs, settlement repayment, bank-return limits and reporting routes.
+
+
+- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] — 2026-09-15-captured pilot Configuration API guide for viewing, PATCHing, deactivating and deleting Balance webhook settings; a PATCH must retain wanted conditions, and removing the last one broadens alerts to all target balance changes.
+
+
+- [[source-adyen-docs-platforms-settle-funds]] — 2026-09-15 Platforms sales-day net-settlement guide for captured-batch timing, contract/custom delays, pass-through deprecation and 30-day reversal; settled balance is not bank receipt.
+
+
+- [[source-adyen-docs-platforms-settle-funds-pass-through-settlement]] — 2025-modified, 2026-09-15-captured deprecated Platforms settlement guide for scheme/method-dependent batches, weekday timing, adjustment dates and payment-level reconciliation; no payout or bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-quickstart-guide-payouts]] — 2026-09-15 Platforms quickstart for user balance-account settlement, verified-bank payout choices, fund-availability timing and missed-payout investigation; ETA and balance credit are not bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-custom-payouts-configure-settlement-delay]] — 2026-09-15 Platforms Configuration API guide to per-balance-account settlement-delay override, approval and managed-schedule limits, and conditional sales-day closing-time preservation.
+
+
+- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts-view-custom-payout-executions]] — 2026-09-15 Configuration API/Customer Area guide for custom-schedule execution records, success-to-transfer ID, skip/failure reasons and disabling; execution is not bank receipt.
+
+
+- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] — 2026-09-15-captured pilot Balance webhook setup for platform, account-holder or balance-account targets, role and 20-by-20 limits, and conflicting all-versus-any condition wording; alert configuration is not funds-movement proof.
+
+- [[source-adyen-docs-platforms-balance-updates]] — 2026-09-15 pilot Balance webhook overview for scoped balance-change notifications and platform-to-account-holder-to-account inheritance.
+
+
+
+- [[source-adyen-docs-platforms-quickstart-guide-reporting]] — 2026-09-15 Platforms quickstart routing user-facing dashboard components, balance-account reports and payment-processing report reconciliation with BPPR/BPAR limitations.
+
+
+- [[source-adyen-docs-platforms-managed-payouts-view-payout-executions]] — 2026-09-15 Platforms guide to scoped managed-schedule execution reads, Sent/Not sent/Failed and success/skipped/failed webhooks, then separate transfer lifecycle and bank-return tracking.
+
+
+- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]] — 2026-09-15 Platforms Configuration API pull-sweep guide for verified-bank threshold top-ups, default-active creation and later transfer-webhook tracking; no booked-credit or bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-transfer-transactions-track-api]] — 2026-09-15 Transfers API transaction-query guide for platform/account-holder/balance-account scope, internal/external signed rows, pending/booked dates and pagination; sample identifiers conflict and rows are not bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] — 2020-modified, 2026-09-15-captured Transfers API review guide for pending on-demand payout approval/cancellation, 30-day expiry, batch endpoints and webhook states; approval is not bank receipt.
+
+
+- [[source-adyen-docs-platforms-payout-amount]] — 2026-09-15-captured payout-cap guide for default available versus platform-wide current-balance configuration, reserve-collateral checks/failure and later release or 30-day transfer; calculations are not bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] — 2023-modified, 2026-09-15-captured Platforms Configuration API guide to calculate bank-payout route priorities and requirements by country or counterparty before a separate payout request.
+
+
+- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]] — 2026-09-15 Platforms user-funded Checkout `/payments` top-up guide for verified-bank or other-method funding, TopUp split booking, capability/direct-debit gates and asynchronous status tracking.
+
+
+- [[source-adyen-docs-platforms-top-up-balance-account-top-up-webhooks]] — 2026-09-15 Platforms scheduled/on-demand top-up webhook guide for separate incoming credit and outgoing fee legs, status stages and booked-event matching; no external debit finality or bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-webhooks]] — 2026-09-15-captured Platforms cashout webhook guide for four transfer legs, subscription and status tracking, optional instant bank payout, and test-example envelope conflicts; booked balance-account debit is separate from payout credited tracking and bank receipt.
+
+- [[source-adyen-docs-platforms-cash-out-instantly-cashout-request]] — 2026-09-15-captured Platforms `/cashouts` request guide for pending-balance cashout with optional transfer-instrument payout, capability/route/fee checks, asynchronous outcome and failure reversal; request success is not bank-receipt proof.
+
+
+
+- [[source-adyen-docs-platforms-payout-descriptions]] — 2026-09-15 Platforms descriptor guide for scheduled placeholders, static on-demand text, originator-name setup and rail-specific accepted versus visible characters; submitted text is not bank-display or payout proof.
+
+
+- [[source-adyen-docs-platforms-managed-payouts-use-managed-payouts]] — 2026-09-15 Platforms Configuration API/Customer Area guide to applying and managing managed payout schedules, conditional fallbacks and configuration evidence; not bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-custom-payouts]] — 2024-modified, 2026-09-15-captured Platforms custom-payout overview for scheduled/on-demand user-bank transfers, capability/role and route constraints, cutoffs and TEST scenarios; request or booking is not bank receipt.
+
+
+- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts]] — 2022-modified, 2026-09-15-captured Platforms balance-account sweep scheduling guide for user-bank transfer-instrument destinations, conditions, routes and distinct configuration/execution webhooks; no bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts]] — 2020-modified, 2026-09-15-captured Transfers API/Customer Area guide to off-schedule user bank payouts, capability/role gates, priority fallback, review/future-date failure and returned-bank-account limits; request or booking is not bank-receipt proof.
+
+
+- [[source-adyen-docs-platforms-managed-payouts]] — 2022-modified, 2026-09-15-captured Platforms managed-payout schedule overview for local same-location/currency balance-account payouts, Adyen-contact configuration, settlement-delay limits and estimated ETAs.
+
+
 - [[source-adyen-docs-platforms-in-person-payments-split-transactions-split-refunds]] — 2024-modified, 2026-09-15-captured POS referenced-refund method hub for explicit versus original split, partial-refund cap and child procedure routes; request choice is not outcome proof.
 
 
@@ -22,6 +112,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 
 - [[source-adyen-docs-platforms-quickstart-guide-payments]] — 2026-09-15 Platforms payments quickstart for online/POS store-to-balance flow, payment-method routes, request-over-profile split precedence and settlement batches; no completed funds movement is shown.
+
+- [[source-adyen-docs-platforms-settle-funds-configure-closing-time]] — 2026-09-15 Platforms balance-account sales-day closing-time configuration guide for local hourly 00:00–07:00 cutoffs, conditional business-day settlement delay and method-schedule exceptions; response/webhook is settings evidence, not payout proof.
+
 
 
 - [[source-adyen-docs-platforms-multi-pay-in-receive-funds]] — 2026-09-15 guide to allowlisted partner bank payouts into an Adyen-held multi pay-in account and incoming credit webhooks; account credit precedes separate user allocation.
@@ -190,6 +283,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 - [[source-adyen-docs-platforms-manage-balance-accounts]] — 2026-09-15 Configuration API/Customer Area guide to account-holder-linked balance-account creation, viewing, description update and permanent zero-balance closure; examples do not prove funded state or payout.
 
+- [[source-adyen-docs-platforms-balance-types]] — 2026-09-15 Platforms per-currency balance-type definitions, viewing routes and examples, including an unresolved Available and Pending available formula-versus-example conflicts.
+
+
 
 - [[source-adyen-docs-platforms-manage-access-api-credentials-web-service]] — 2023-modified, 2026-09-15-captured balance-platform web service/LEM credential, role, test/live, rotation and deactivation guide; possession does not prove permission or operation.
 
@@ -273,6 +369,18 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 
 - [[source-adyen-docs-platforms]] — 2026-09-15 current Adyen for Platforms landing page for platform/user model, verification, split-payments and payout routes, regional lists and separate optional financial products.
+
+- [[source-adyen-docs-platforms-payout-webhooks]] — 2026-09-15 Platforms Transfer webhook guide distinguishing payout request, balance booking, bank tracking/credit, failure and return states.
+
+- [[source-adyen-docs-platforms-view-transfers-details]] — 2026-09-15 Platforms Customer Area/Transfers API guide for listing and inspecting payment, bank and internal transfer records, with status and example limits.
+
+- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] — 2026-09-15 Transaction webhook guide for balance-account debit/credit events across external and internal transfers, distinct from Transfer webhook status changes.
+
+
+
+- [[source-adyen-docs-platforms-view-payout-transfers-details]] — 2026-09-15 Platforms Customer Area and Transfers API list/detail guide with role-gated confirmation letters that prove instruction sent, not beneficiary-bank receipt.
+
+
 
 ## Related
 

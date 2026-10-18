@@ -1,0 +1,9 @@
+# Fixed retrieval checks — Platforms internal fund transfers
+
+## Q1. What is an internal fund transfer here, and how does it differ from a payout?
+
+In this 2020-modified, 2026-09-15-captured Platforms overview, an internal transfer moves funds between balance accounts on the platform. The platform can initiate liable-to-user, same-user or different-user balance-account transfers. By contrast, a payout is an external movement from a balance account to the user's verified bank-account transfer instrument. This page describes a product route, not an observed balance movement or bank receipt. Raw: `raw/adyen/docs/platforms/internal-fund-transfers/2026-09-15.md:15-21`. Canonical route: `wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-platform-internal-transfers.md#Sources → wiki/sources/adyen/source-adyen-docs-platforms-internal-fund-transfers.md → raw/adyen/docs/platforms/internal-fund-transfers/2026-09-15.md`.
+
+## Q2. Which initiation and return paths exist, and what remains unspecified?
+
+The page routes to scheduled transfers triggered by timing and amount, and on-demand transfers between balance accounts. It gives bonuses, additional fees and user balance movement as examples. It also links a return route described as sending funds back to the sender without a new transfer, plus a webhook guide. This short overview does not specify API payloads, permissions, supported currencies, timing, failure or return conditions, webhook statuses, report grains or proof that any request booked. It names no reserve-account transfer path. Raw: `raw/adyen/docs/platforms/internal-fund-transfers/2026-09-15.md:23-54`. Canonical route: `wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-platform-internal-transfers.md#Sources → wiki/sources/adyen/source-adyen-docs-platforms-internal-fund-transfers.md → raw/adyen/docs/platforms/internal-fund-transfers/2026-09-15.md`.

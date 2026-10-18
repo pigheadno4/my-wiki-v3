@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-platforms-reports-and-fees-statement-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform Statement Report\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/reports-and-fees/statement-report\"\nraw_files:\n  - \"adyen/docs/platforms/reports-and-fees/statement-report/2026-09-15.md\"\ntags: [adyen, platforms, reporting, balance-accounts, reconciliation]\n---\n\n## Overview\n\nThe Balance Platform Statement Report is a daily Adyen for Platforms report showing starting balance, balance-changing transactions and ending balance by available currency for included balance accounts. The page positions it as an alternative for tracking daily balance changes to the Balance Platform Accounting Report and as a route to transactions included in scheduled and on-demand payouts. Crucially, a balance account with both opening and ending balance zero is omitted, so absence from this report alone cannot establish that no intraday activity occurred. [[adyen]] [[adyen-platforms]] [[adyen-reporting]]\n\n## Key takeaways\n\n- **Generation and scope:** Customer Area can generate this report automatically on a schedule or manually for a specific day. The linked sample CSV is illustrative; an account-generated report may include more data or columns based on balance-platform settings. The page does not state a report cutoff time, service role or retention period.\n- **Identifiers and event grain:** columns distinguish Account Holder and Balance Account IDs, Category/Type/Status, Transfer Id for a pending debit or credit, and Transaction Id for a completed debit or credit. PSP payment and modification merchant/PSP references are separate fields. The page's Reference and Description rows both call their content an identifier of a pending debit/credit; do not infer a unique join rule from that repeated wording alone.\n- **Amounts and dates:** `Amount` is listed as the amount of a transfer or transaction with data type Alpha text; separate starting/ending balance values and currencies define the daily balance frame. Booking Date is the booking time, while Value Date is when funds are available, each with its own time-zone column. The page does not define sign semantics for Amount or a numeric parsing contract; consult actual report data and the Accounting Report before interpreting debits and credits.\n- **Payout and proof boundary:** the report can help track transactions included in scheduled and on-demand payouts. It does not present a bank-credit status, payout-return field, successful payout example or beneficiary statement. A balance change or completed Transaction Id does not by itself prove a beneficiary bank received funds.\n\n## Detail locators\n\n- Raw lines 15\u201332: daily report purpose, zero-opening/ending omission, payout-tracking use, generation routes and sample variability.\n- Raw lines 34\u201358: account identifiers, Category/Type/Status, pending Transfer Id, completed Transaction Id and payment/modification references.\n- Raw lines 59\u201368: booking versus value date, currency and Amount, separate starting/ending balance fields.\n- Raw lines 69\u201378: reserved future columns without current defined behavior.\n\n## Related\n\n- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] \u2014 detailed balance-event and accounting fields.\n- [[source-adyen-docs-platforms-reports-and-fees-payout-report]] \u2014 scheduled-payout report and rolling balance.\n- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts]] \u2014 on-demand payout request and status route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/reports-and-fees/statement-report/2026-09-15|Balance Platform Statement Report snapshot, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Balance Platform Statement Report is a daily report that provides insights about the starting balance, all the transactions that changed the balance, and the ending balance for the available currencies.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "When a balance account has an opening and ending balance of zero, it is not included in the report.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Track transactions included in [scheduled payouts](/platforms/custom-payouts/scheduled-payouts) and [on-demand payouts](/platforms/custom-payouts/on-demand-payouts).",
+      "location": "raw line 24, use-case list"
+    },
+    {
+      "text": "The unique identifier of a pending debit or credit.",
+      "location": "raw line 51, Transfer Id field; repeated for Reference and Description at lines 57\u201358"
+    },
+    {
+      "text": "The unique identifier of a transaction, reflects a completed debit or credit.",
+      "location": "raw line 52, Transaction Id field"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-statement-report-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-reports-and-fees-statement-report]] \u2014 2026-09-15 daily Balance Platform statement field guide for included balance accounts, starting/ending balances, pending versus completed IDs and booking/value dates; zero-to-zero accounts are omitted and rows do not prove bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/reports-and-fees/statement-report/2026-09-15.md",
+  "raw_sha256": "b6ba200bb423ee26394d91fdbcddbd94710d2fcde3b05d3a71b81f23538b6d0e",
+  "status": "candidate_ready"
+}

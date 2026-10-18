@@ -1,0 +1,70 @@
+{
+  "job_id": "docs-platforms-balance-updates-configure-balance-webhook",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Platforms balance webhook configuration\"\ntype: source\ndate_ingested: 2026-10-18\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/platforms/balance-updates/configure-balance-webhook\"\nraw_files:\n  - \"adyen/docs/platforms/balance-updates/configure-balance-webhook/2026-09-15.md\"\ntags: [adyen, platforms, balance-accounts, webhooks, configuration]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen for Platforms guide describes how to subscribe to a Balance webhook in Customer Area and configure settings through the Configuration API so Adyen can notify a platform about balance changes. It is marked **limited availability / pilot**; process and documentation can change. The target can be the entire balance platform, all balance accounts of one account holder, or one balance account. This is alert configuration, not proof of a particular balance, transfer, payout, or bank receipt. [[adyen]] \u00b7 [[adyen-platforms]] \u00b7 [[adyen-webhooks]]\n\n## Key takeaways\n\n- **Two-step setup and access:** Subscribe to and enable the Balance webhook under the Customer Area Platforms tab, configure the receiver URL/security, and record the webhook ID. The page instructs setting Basic authentication and generating/storing an HMAC key, then accepting received events. A Configuration API credential needs the **Balance Platform BCL role**; the Customer Area user needs **Merchant technical integrator** or **Merchant admin**. Use the webhook ID and balance-platform ID in the settings request. These are setup instructions; the snapshot does not prove a subscription or delivered event in any account.\n- **Setting scope and limits:** The settings POST route is `/balancePlatforms/{id}/webhooks/{id}/settings`. The table marks `type=balance`, `target` and its type/id, `currency`, and `status` as required, while `conditions` is optional. Target types are `balancePlatform`, `accountHolder`, and `balanceAccount`; an account-holder target covers that user's balance accounts, whereas a balance-account target covers one account. The documented cap is 20 settings per Balance webhook and 20 condition sets per setting. Record the returned setting ID to view, modify, delete, or match an event to a setting.\n- **Condition semantics and conflict:** Optional conditions specify balance type (`available`, `balance`, `pending`, `reserved`), comparison (`greaterThan`, `greaterThanOrEqual`, `lessThan`, `lessThanOrEqual`), and value. The conditions row says **all** configured conditions must match and an empty array covers all changes in the target accounts. But the `status=active` row says a webhook arrives if **any** condition matches; the page does not reconcile this all-versus-any conflict. `inactive` suppresses notifications even when its conditions match. Do not infer reliable multi-condition Boolean behavior from this snapshot alone.\n- **Example and troubleshooting limits:** The USD 5,000 available-balance threshold on a liable balance account is a TEST example, not a default threshold or evidence of that account's state. The prose names the nested settings POST endpoint, but the example cURL points only to `/bcl/v2/balancePlatforms`; use the cited API route rather than treating that cURL as a complete settings request. The troubleshooting section illustrates duplicate conditions (`1047_002`), unknown target account (`1047_404`), and invalid currency (`1047_001`); its later \u201cresend POST\u201d text links PATCH-style settings URLs, another example-level inconsistency. These errors do not establish an actual webhook delivery outcome.\n\n## Detail locators\n\n- Pilot notice, notification purpose, subscription, and target scopes: pinned raw lines 15\u201330.\n- Credential/Customer Area roles and 20-by-20 limits: pinned raw lines 32\u201339.\n- Customer Area subscription, receiver security, and webhook ID: pinned raw lines 41\u201371.\n- Settings endpoint, required/optional fields, target/currency/status/condition rows and all-versus-any wording: pinned raw lines 73\u201396.\n- TEST USD 5,000 example, shortened cURL path, returned setting ID and event acceptance: pinned raw lines 98\u2013149.\n- Troubleshooting codes and inconsistent resend links: pinned raw lines 151\u2013244.\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform/account-holder/balance-account scope and reciprocal route.\n- [[adyen-webhooks]] \u2014 general webhook receiver and event-handling context.\n- [[source-adyen-docs-platforms-payout-amount]] \u2014 balance calculations for payout caps, separate from these alert rules.\n\n## Raw Sources\n\n- [[raw/adyen/docs/platforms/balance-updates/configure-balance-webhook/2026-09-15|Adyen Configure balance webhooks, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "pinned raw line 20, opening Limited availability notice"
+    },
+    {
+      "text": "To receive these webhooks, you must subscribe to the [Balance webhook](https://docs.adyen.com/api-explorer/balance-webhooks/latest/overview) in your [Customer Area](https://ca-test.adyen.com/). Use the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview) to set the conditions that a balance change must meet for Adyen to send a balance webhook:",
+      "location": "pinned raw line 26, opening configuration scope"
+    },
+    {
+      "text": "| **Limitations**                                                           | You can create maximum 20 webhook settings per balance webhook. In each webhook setting, you can configure maximum 20 sets of conditions in the `conditions` array.            |",
+      "location": "pinned raw line 39, Requirements table"
+    },
+    {
+      "text": "To trigger the webhook, the balance change must meet *all* the conditions you set.",
+      "location": "pinned raw line 90, settings parameter table, conditions row"
+    },
+    {
+      "text": "In the response, take note of the `id` of the balance webhook setting. You will need it later if you want to view, modify, or delete the webhook configuration settings, or want to match the webhook event you receive with the setting you're interested in.",
+      "location": "pinned raw line 125, settings response guidance"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c17-balance-webhook-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 2026-09-15-captured pilot Balance webhook setup for platform, account-holder or balance-account targets, role and 20-by-20 limits, and conflicting all-versus-any condition wording; alert configuration is not funds-movement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The active-status row says any condition; the conditions row says all conditions. Do not state a settled Boolean rule for multiple conditions."
+        ]
+      },
+      {
+        "update_id": "c17-balance-webhook-general-route",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 pilot Platforms Balance webhook subscription and Configuration API settings guide, with target/condition limits and conflicting multi-condition language (captured 2026-09-15).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Pilot availability and conflicting all-versus-any language limit behavioral inference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/platforms/balance-updates/configure-balance-webhook/2026-09-15.md",
+  "raw_sha256": "d321352025e6caf6b8b3f2fc61c278df93c57301c6a1229b6014c0aa09d08354",
+  "status": "candidate_ready"
+}
