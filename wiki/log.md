@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-18] ingest | Stripe.js `10.1.0`
+
+- Serial delta after the 10.0.0 full baseline: shared loader cache fix, accordion trigger colors and WeChat mobile_web typing, with stale README snippet/availability limits. Changed source fully read; generated evidence mechanically verified under approval. Historical knowledge and counts retained. Details [[stripe-log]], [[source-github-stripe-js]], [[changelog-github-stripe-js]]. No commit/push.
+
+## [2026-10-18] ingest | Stripe.js `10.0.0`
+
+- Full Endive baseline: button/Elements type removals, retained PaymentRequest, loader retry with shared-cache limitation, Pay by Bank/BLIK setup types and stale README warning. All 79 retained files read; generated evidence mechanically verified under approval. V8/v9 and counts retained. Details [[stripe-log]], [[source-github-stripe-js]], [[changelog-github-stripe-js]]. No commit/push.
+
 ## [2026-10-18] ingest | Adyen website C16
 
 - Fifty independently approved Platforms payments/splits/fees/FX/Giving/multi-pay-in documentation sources; first full-review approvals 41/50 and 9 targeted correction reviews. 7 concepts touched (2 new); source_count 814 = 800 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-16/`; details [[adyen-log]]. No commit/push.

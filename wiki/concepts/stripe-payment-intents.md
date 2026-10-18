@@ -118,6 +118,10 @@ stripe.paymentIntents.create({
 
 `stripe@22.6.0` changes PaymentIntent and SetupIntent **response** `allowed_payment_method_types` to required-but-nullable; create/update/confirm request parameters remain optional. The allowlist enums add `touch_n_go`. ConfirmationToken gains required-but-nullable `metadata` in the server response type. These are versioned SDK contracts, not evidence of universal method availability or a newly mandatory request field. See [[source-github-stripe-node]].
 
+## Stripe.js 10.0.0 Pay by Bank declaration
+
+`@stripe/stripe-js@10.0.0` adds `confirmPayByBankPayment(clientSecret, data?, options?)`, returning `Promise<PaymentIntentResult>`. Data permits an existing PaymentMethod ID or new Pay by Bank data, with optional `return_url`; `handleActions: false` opts into merchant-managed authorization redirection. The method is declared on Stripe, but the new `CreatePaymentMethodPayByBankData` is not added to the standalone `CreatePaymentMethodData` union. Do not infer that every `createPaymentMethod({type: 'pay_by_bank'})` overload is now supported. These are declaration findings, not a newly launched payment method, eligibility or executed redirect/payment proof. Source: [[source-github-stripe-js]].
+
 ## Related Concepts
 
 - [[stripe-elements]] — Stripe Elements (UI component library used with Payment Intents)

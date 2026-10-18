@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-27
+date_updated: 2026-10-18
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/manifest.json"
+  - "github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
@@ -18,6 +20,39 @@ tags: [stripe, stripe-js, javascript, typescript, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-js`. Cumulative implementation knowledge belongs in [[source-github-stripe-js]] and the linked immutable snapshots.
+
+## `@stripe/stripe-js@10.1.0` - Change Set `3de39c5` (2026-10-13)
+
+Delta-ingested 2026-10-18 from `@stripe/stripe-js@10.0.0` (`857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`) to `@stripe/stripe-js@10.1.0` (`3de39c594529799c58d589e9260559db1249a173`).
+
+**Changes:** restores the shared in-flight constructor-load promise, including one script-load retry; concurrent calls share loading, with cache cleared only on final failure. Public calls still construct separate Stripe instances. Adds optional string accordion trigger normal/selected/hover colors and WeChat Pay confirmation `client: 'mobile_web'` alongside `'web'`. Endive, entrypoints, engines and dependency ranges remain unchanged.
+
+**Impact:** fixes 10.0.0 shared-loader concurrency risk, not payment retry. WeChat `handleActions` remains a required boolean documented as false, requiring merchant next-action handling. New typing does not establish native SDK/Checkout support, account eligibility or hosted rollout. README train table now says Endive but its manual Dahlia URL remains stale; older web-only WeChat guidance is qualified in the source and Wallets concept. Lockfile bumps are development/example changes, not demonstrated merchant security fixes.
+
+**Evidence:** five changed retained files fully read with affected prior code and cumulative wiki context; 74 unchanged files and generated evidence mechanically verified under approval. All 11 upstream paths classified, no gaps. No SDK build/type tests, browser or payment execution. Updated Elements/Wallets concepts first, cumulative source, company, index and logs. Preserved the 10.0 full baseline and older history/source count.
+
+- [Snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/manifest.json)
+- [Release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.1.0/2026-10-18/manifest.json) and [notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.1.0/2026-10-18/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/10.0.0--10.1.0/comparison.json) and [patch](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/10.0.0--10.1.0/diff.patch)
+- [[source-github-stripe-js]] - exact-source grounding and historical evidence
+
+## `@stripe/stripe-js@10.0.0` - Change Set `857e6cd` (2026-10-01)
+
+Full additive ingest on 2026-10-18 from `@stripe/stripe-js@9.17.0` (`ad7bd52fd1d38edd60968874b1c9546c0134c798`) to `@stripe/stripe-js@10.0.0` (`857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`). All v8/v9 knowledge preserved.
+
+**Changes:** Endive train, Payment Request Button type/factory/lookup/union removal, and removed mode-based Elements creation/update `paymentMethodTypes` / `payment_method_types`. Lower-level PaymentRequest and separate server/Messaging/Express Checkout contracts remain. Adds one loader retry, Pay by Bank confirmation declarations and BLIK setup confirmation with a required code. Standalone Pay by Bank creation is not added to the `CreatePaymentMethodData` union.
+
+**Limits and contradictions:** the new loader fails to cache its shared in-flight promise; the standard entrypoint's own cache is separate, while pure/shared callers can overlap. Static risk only, not a reproduced failure. README still shows Dahlia despite Endive implementation; recognized scripts are reused and test-key mismatch only warns. Typed setup/confirmation does not establish method availability, recurring eligibility, payment completion or hosted implementation.
+
+**Migration:** audit removed imports/options, use the appropriate Express Checkout flow, align independently owned React 7/Stripe JS v10 packages and handle outcome/error contracts. All 79 retained current files, assigned prior removed type and cumulative wiki context fully read; generated evidence mechanically checked under approval. Ten modified/one removed/69 unchanged; all 20 upstream paths classified, no gaps. No SDK tests/build/browser/payment execution.
+
+**Updated:** Elements, Payment Intents, BLIK and Express Checkout concepts first; cumulative source architecture/status/full baseline, company, index and logs. No new source count or cross-company comparison.
+
+- [Snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/manifest.json)
+- [Release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.0.0/2026-10-18/manifest.json)
+- [Notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.0.0/2026-10-18/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.17.0--10.0.0/comparison.json)
+- [[source-github-stripe-js]] - exact-source grounding and historical evidence
 
 ## `@stripe/stripe-js@9.17.0` - Change Set `ad7bd52` (2026-09-21)
 

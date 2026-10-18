@@ -963,6 +963,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json)
   Comparison: Not applicable
 
+## `github-319e4a599168b0a79b55`
+
+- Repository: `stripe/stripe-js`
+- SHA: `857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-319e4a599168b0a79b55/packet.md)
+- Review priority: `high`
+- Required reading: `20` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@10.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/10.0.0/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/9.17.0--10.0.0/comparison.json)
+
 ## `github-3393b966354c2316a5fd`
 
 - Repository: `stripe/stripe-android`
@@ -5026,6 +5051,31 @@
 - `stripe-android@23.17.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.17.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.16.0--23.17.0/comparison.json)
+
+## `github-e8fa1374203d45d156e6`
+
+- Repository: `stripe/stripe-js`
+- SHA: `3de39c594529799c58d589e9260559db1249a173`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-js/ingest-packets/github-e8fa1374203d45d156e6/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-js@10.1.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-js/releases/stripe-js/10.1.0/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-js/comparisons/stripe-js/10.0.0--10.1.0/comparison.json)
 
 ## `github-e923ffd86b6fd634a620`
 

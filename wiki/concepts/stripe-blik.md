@@ -50,7 +50,13 @@ BLIK is Poland's dominant online payment method. Customers generate a 6-digit co
 
 **Sandbox failure simulation**: 10 email patterns covering immediate failures, declines (8s delay), and timeouts (60s delay).
 
+## Stripe.js 10.0.0 SetupIntent typing
+
+`@stripe/stripe-js@10.0.0` declares `confirmBlikSetup(clientSecret, data, options?)` returning `Promise<SetupIntentResult>`. The data requires `payment_method_options.blik.code: string` (documented as six digits), allows an existing PaymentMethod ID or BLIK creation data, and optionally disables automatic handling with `handleActions: false`. Comments describe waiting for mandate authorization in the banking app. This is typed setup support, not proof that all merchants/banks can use recurring BLIK, that a setup is a charge, or that authorization succeeded. Existing private-preview constraints remain. See [[source-github-stripe-js]].
+
 ## Sources
+
+- [[source-github-stripe-js]] - version-qualified BLIK setup confirmer and required code contract
 
 - [[source-stripe-blik]] — primary source: payment flow, disputes, refunds, Connect
 - [[source-stripe-blik-accept-payment]] — integration guide: Checkout + Direct API + iOS + Android, synchronous confirmBlikPayment, 10 failure patterns

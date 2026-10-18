@@ -1,0 +1,1542 @@
+diff --git a/examples/parcel/yarn.lock b/examples/parcel/yarn.lock
+index c9c5b87..deb9fca 100644
+--- a/examples/parcel/yarn.lock
++++ b/examples/parcel/yarn.lock
+@@ -1221,9 +1221,9 @@ base@^0.11.1:
+     pascalcase "^0.1.1"
+ 
+ baseline-browser-mapping@^2.10.38:
+-  version "2.10.38"
+-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.10.38.tgz#c84d093c4bf7325c5053c279d90f153c66526042"
+-  integrity sha512-31/02mVB4yuQU6adKk5SlY6m+mxDwUq5KZkyYgnLrrKl7TEm1+3PyDtDBz2kOv/wxZz41GHsvV1A/u6RmiyBvw==
++  version "2.11.22"
++  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.22.tgz#d8b612f54517d8b3a31734623779e5ab8c5ff0b9"
++  integrity sha512-pWc4w51fBFd7mav43/zKRC+RI6f4yfzQoVlfvE8dECePyfkn1bzLp01Fj0QACcyCZyFhiEMyD2qScfKRWgWibA==
+ 
+ bcrypt-pbkdf@^1.0.0:
+   version "1.0.2"
+@@ -3182,9 +3182,9 @@ isstream@~0.1.2:
+   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
+ 
+ js-yaml@^3.10.0, js-yaml@^3.13.1:
+-  version "3.15.0"
+-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.15.0.tgz#586e5214eafe3e893756a41e979b50d89d3e4a67"
+-  integrity sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==
++  version "3.15.2"
++  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.15.2.tgz#3f83823ac6be17f570f23b2ecdef3777ff5ea364"
++  integrity sha512-6EuL879VkRA+1Cz578mKMiKvjPNEuk6+r1JaFzoSWejZmtf7xWbIyw1e3KkxlkzTIt9Taw6JBhEppG7utc1P+w==
+   dependencies:
+     argparse "^1.0.7"
+     esprima "^4.0.0"
+diff --git a/package.json b/package.json
+index c26b6da..b761296 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "9.17.0",
++  "version": "10.0.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/scripts/publish b/scripts/publish
+index ac0be88..57d3b62 100755
+--- a/scripts/publish
++++ b/scripts/publish
+@@ -54,7 +54,30 @@ verify_prerequisites() {
+     echo "Please refresh your GitHub token and try again."
+     exit 1
+   fi
+-  
++
++  # `hub release create` requires an org-scoped token, confirm the token has access to prevent failures mid-publish
++  echo "Verifying GITHUB_TOKEN is authorized for stripe's SAML SSO..."
++  local sso_headers
++  sso_headers=$(curl -sS -o /dev/null -D - \
++    -H "Authorization: Bearer $GITHUB_TOKEN" \
++    -H "Accept: application/vnd.github+json" \
++    https://api.github.com/repos/stripe/stripe-js 2>&1) || true
++  local status_line
++  status_line=$(grep -iE '^HTTP/' <<< "$sso_headers" | tail -n 1 | tr -d '\r')
++  if grep -qiE '^x-github-sso: *required' <<< "$sso_headers"; then
++    local sso_url
++    sso_url=$(grep -iE '^x-github-sso:' <<< "$sso_headers" | sed -nE 's/.*url=([^;[:space:]]+).*/\1/p' | tr -d '\r')
++    echo "Error! GITHUB_TOKEN is not authorized for stripe's SAML SSO ($status_line)."
++    echo "Authorize this token for SSO, then re-export it and try again:"
++    echo "    ${sso_url:-https://github.com/settings/tokens}"
++    exit 1
++  fi
++  if ! grep -qiE '^HTTP/[0-9.]+ 2[0-9][0-9]' <<< "$sso_headers"; then
++    echo "Error! Could not verify GITHUB_TOKEN access to stripe/stripe-js ($status_line)."
++    echo "Check that the token is valid and has the 'repo' scope, then re-export it and try again."
++    exit 1
++  fi
++
+   # Check git signing configuration
+   if [ "$(git config --get gpg.format)" != "ssh" ]; then
+     echo "Error! Git is not configured to use SSH for commit signing."
+diff --git a/src/index.test.ts b/src/index.test.ts
+index f4d65d3..3ae4db5 100644
+--- a/src/index.test.ts
++++ b/src/index.test.ts
+@@ -110,6 +110,10 @@ describe('Stripe module loader', () => {
+       await Promise.resolve();
+       dispatchScriptEvent('error');
+ 
++      // Wait for the retry attempt to set up a new script element
++      await new Promise((resolve) => setTimeout(resolve));
++      dispatchScriptEvent('error');
++
+       await expect(stripePromise).rejects.toEqual(
+         new Error('Failed to load Stripe.js')
+       );
+@@ -124,20 +128,43 @@ describe('Stripe module loader', () => {
+       await Promise.resolve();
+       dispatchScriptEvent('load');
+ 
++      // Wait for the retry attempt to set up a new script element
++      await new Promise((resolve) => setTimeout(resolve));
++      dispatchScriptEvent('load');
++
+       return expect(stripePromise).rejects.toEqual(
+         new Error('Stripe.js not available')
+       );
+     });
+ 
++    it('resolves with Stripe object when a single load failure is followed by a load success', async () => {
++      const {loadStripe} = require(requirePath);
++      const stripePromise = loadStripe('pk_test_foo');
++
++      await Promise.resolve();
++      dispatchScriptEvent('error');
++
++      // Wait for the retry attempt to set up a new script element
++      await new Promise((resolve) => setTimeout(resolve));
++      window.Stripe = jest.fn((key) => ({key})) as any;
++      dispatchScriptEvent('load');
++
++      await expect(stripePromise).resolves.toEqual({key: 'pk_test_foo'});
++    });
++
+     it('rejects on first load, and succeeds on second load resolving with Stripe object', async () => {
+       const {loadStripe} = require(requirePath);
+ 
+-      // start of first load, expect load failure
++      // start of first load, expect load failure (both initial attempt and retry fail)
+       let stripePromise = loadStripe('pk_test_foo');
+ 
+       await Promise.resolve();
+       dispatchScriptEvent('error');
+ 
++      // Wait for the retry attempt to set up a new script element
++      await new Promise((resolve) => setTimeout(resolve));
++      dispatchScriptEvent('error');
++
+       await expect(stripePromise).rejects.toEqual(
+         new Error('Failed to load Stripe.js')
+       );
+@@ -157,24 +184,30 @@ describe('Stripe module loader', () => {
+     it('rejects on first load and second load but succeeds on third load resolving with Stripe object', async () => {
+       const {loadStripe} = require(requirePath);
+ 
+-      // start of first load, expect load failure
++      // start of first load, expect load failure (both initial attempt and retry fail)
+       let stripePromise = loadStripe('pk_test_foo');
+ 
+       await Promise.resolve();
+       dispatchScriptEvent('error');
+ 
++      await new Promise((resolve) => setTimeout(resolve));
++      dispatchScriptEvent('error');
++
+       await expect(stripePromise).rejects.toEqual(
+         new Error('Failed to load Stripe.js')
+       );
+ 
+       expect(console.warn).not.toHaveBeenCalled();
+ 
+-      // start of second load, expect load failure
++      // start of second load, expect load failure (both initial attempt and retry fail)
+       stripePromise = loadStripe('pk_test_foo');
+ 
+       await Promise.resolve();
+       dispatchScriptEvent('error');
+ 
++      await new Promise((resolve) => setTimeout(resolve));
++      dispatchScriptEvent('error');
++
+       await expect(stripePromise).rejects.toEqual(
+         new Error('Failed to load Stripe.js')
+       );
+@@ -193,12 +226,20 @@ describe('Stripe module loader', () => {
+   });
+ 
+   describe('loadStripe (index.ts)', () => {
++    beforeEach(() => {
++      jest.spyOn(console, 'warn').mockReturnValue();
++    });
++
+     it('does not cause unhandled rejects when the script fails', async () => {
+       require('./index');
+ 
+       await Promise.resolve();
+       dispatchScriptEvent('error');
+ 
++      // Wait for the retry attempt to set up a new script element
++      await new Promise((resolve) => setTimeout(resolve));
++      dispatchScriptEvent('error');
++
+       // Turn the task loop to make sure the internal promise handler has been invoked
+       await new Promise((resolve) => setImmediate(resolve));
+ 
+diff --git a/src/shared.ts b/src/shared.ts
+index 68d1dc7..2a570f4 100644
+--- a/src/shared.ts
++++ b/src/shared.ts
+@@ -12,7 +12,7 @@ export interface LoadParams {
+ // containing the package.json version
+ declare const _VERSION: string;
+ 
+-export const RELEASE_TRAIN: ReleaseTrain = 'dahlia';
++export const RELEASE_TRAIN: ReleaseTrain = 'endive';
+ 
+ const runtimeVersionToUrlVersion = (version: string | number) =>
+   version === 3 ? 'v3' : version;
+@@ -103,60 +103,65 @@ export const loadScript = (
+     return stripePromise;
+   }
+ 
+-  stripePromise = new Promise((resolve, reject) => {
+-    if (typeof window === 'undefined' || typeof document === 'undefined') {
+-      // Resolve to null when imported server side. This makes the module
+-      // safe to import in an isomorphic code base.
+-      resolve(null);
+-      return;
+-    }
+-
+-    if (window.Stripe && params) {
+-      console.warn(EXISTING_SCRIPT_MESSAGE);
+-    }
++  const load = () =>
++    new Promise<StripeConstructor | null>((resolve, reject) => {
++      if (typeof window === 'undefined' || typeof document === 'undefined') {
++        // Resolve to null when imported server side. This makes the module
++        // safe to import in an isomorphic code base.
++        resolve(null);
++        return;
++      }
+ 
+-    if (window.Stripe) {
+-      resolve(window.Stripe);
+-      return;
+-    }
++      if (window.Stripe && params) {
++        console.warn(EXISTING_SCRIPT_MESSAGE);
++      }
+ 
+-    try {
+-      let script = findScript();
++      if (window.Stripe) {
++        resolve(window.Stripe);
++        return;
++      }
+ 
+-      if (script && params) {
+-        console.warn(EXISTING_SCRIPT_MESSAGE);
+-      } else if (!script) {
+-        script = injectScript(params);
+-      } else if (
+-        script &&
+-        onLoadListener !== null &&
+-        onErrorListener !== null
+-      ) {
+-        // remove event listeners
+-        script.removeEventListener('load', onLoadListener);
+-        script.removeEventListener('error', onErrorListener);
+-
+-        // if script exists, but we are reloading due to an error,
+-        // reload script to trigger 'load' event
+-        script.parentNode?.removeChild(script);
+-        script = injectScript(params);
++      try {
++        let script = findScript();
++
++        if (script && params) {
++          console.warn(EXISTING_SCRIPT_MESSAGE);
++        } else if (!script) {
++          script = injectScript(params);
++        } else if (
++          script &&
++          onLoadListener !== null &&
++          onErrorListener !== null
++        ) {
++          // remove event listeners
++          script.removeEventListener('load', onLoadListener);
++          script.removeEventListener('error', onErrorListener);
++
++          // if script exists, but we are reloading due to an error,
++          // reload script to trigger 'load' event
++          script.parentNode?.removeChild(script);
++          script = injectScript(params);
++        }
++
++        onLoadListener = onLoad(resolve, reject);
++        onErrorListener = onError(reject);
++        script.addEventListener('load', onLoadListener);
++
++        script.addEventListener('error', onErrorListener);
++      } catch (error) {
++        reject(error);
++        return;
+       }
++    });
+ 
+-      onLoadListener = onLoad(resolve, reject);
+-      onErrorListener = onError(reject);
+-      script.addEventListener('load', onLoadListener);
++  const retryableLoad = () =>
++    load().catch((error) => {
++      stripePromise = null;
++      return Promise.reject(error);
++    });
+ 
+-      script.addEventListener('error', onErrorListener);
+-    } catch (error) {
+-      reject(error);
+-      return;
+-    }
+-  });
+   // Resets stripePromise on error
+-  return stripePromise.catch((error) => {
+-    stripePromise = null;
+-    return Promise.reject(error);
+-  });
++  return retryableLoad().catch(() => retryableLoad());
+ };
+ 
+ export const initStripe = (
+diff --git a/tests/types/scripts/test.mjs b/tests/types/scripts/test.mjs
+index ebdeaf9..b94a291 100644
+--- a/tests/types/scripts/test.mjs
++++ b/tests/types/scripts/test.mjs
+@@ -58,6 +58,13 @@ for (const {typescript, nodeTypes} of versionSnapshot) {
+ 
+   let flags = ['--strict', '--noEmit'];
+ 
++  // TS 6+ requires --ignoreConfig to allow running tsc with specific files
++  // when tsconfig.json exists
++  // See https://github.com/microsoft/TypeScript/issues/54500, related to `--ignore-config`
++  if (typescript.major >= 6) {
++    flags.unshift('--ignoreConfig');
++  }
++
+   try {
+     await runTsc('src/valid.ts', flags);
+     await runTsc('src/invalid.ts', flags);
+diff --git a/tests/types/scripts/ts-version-snapshot.json b/tests/types/scripts/ts-version-snapshot.json
+index 09f4b7d..9e1169b 100644
+--- a/tests/types/scripts/ts-version-snapshot.json
++++ b/tests/types/scripts/ts-version-snapshot.json
+@@ -1,4 +1,16 @@
+ [
++  {
++    "typescript": {
++      "major": 6,
++      "minor": 0,
++      "patch": 3
++    },
++    "nodeTypes": {
++      "major": 26,
++      "minor": 6,
++      "patch": 2
++    }
++  },
+   {
+     "typescript": {
+       "major": 5,
+@@ -6,9 +18,9 @@
+       "patch": 3
+     },
+     "nodeTypes": {
+-      "major": 25,
+-      "minor": 5,
+-      "patch": 0
++      "major": 26,
++      "minor": 6,
++      "patch": 2
+     }
+   },
+   {
+@@ -18,9 +30,9 @@
+       "patch": 3
+     },
+     "nodeTypes": {
+-      "major": 25,
+-      "minor": 5,
+-      "patch": 0
++      "major": 26,
++      "minor": 6,
++      "patch": 2
+     }
+   },
+   {
+@@ -30,9 +42,9 @@
+       "patch": 3
+     },
+     "nodeTypes": {
+-      "major": 25,
+-      "minor": 5,
+-      "patch": 0
++      "major": 26,
++      "minor": 6,
++      "patch": 2
+     }
+   },
+   {
+@@ -42,9 +54,9 @@
+       "patch": 3
+     },
+     "nodeTypes": {
+-      "major": 25,
+-      "minor": 5,
+-      "patch": 0
++      "major": 26,
++      "minor": 6,
++      "patch": 2
+     }
+   },
+   {
+@@ -55,8 +67,8 @@
+     },
+     "nodeTypes": {
+       "major": 25,
+-      "minor": 5,
+-      "patch": 0
++      "minor": 9,
++      "patch": 3
+     }
+   },
+   {
+@@ -67,8 +79,8 @@
+     },
+     "nodeTypes": {
+       "major": 25,
+-      "minor": 5,
+-      "patch": 0
++      "minor": 9,
++      "patch": 3
+     }
+   },
+   {
+@@ -79,44 +91,8 @@
+     },
+     "nodeTypes": {
+       "major": 25,
+-      "minor": 5,
+-      "patch": 0
+-    }
+-  },
+-  {
+-    "typescript": {
+-      "major": 5,
+-      "minor": 2,
+-      "patch": 2
+-    },
+-    "nodeTypes": {
+-      "major": 25,
+-      "minor": 5,
+-      "patch": 0
+-    }
+-  },
+-  {
+-    "typescript": {
+-      "major": 5,
+-      "minor": 1,
+-      "patch": 6
+-    },
+-    "nodeTypes": {
+-      "major": 24,
+-      "minor": 1,
+-      "patch": 0
+-    }
+-  },
+-  {
+-    "typescript": {
+-      "major": 5,
+-      "minor": 0,
+-      "patch": 4
+-    },
+-    "nodeTypes": {
+-      "major": 22,
+-      "minor": 13,
+-      "patch": 14
++      "minor": 9,
++      "patch": 3
+     }
+   }
+ ]
+\ No newline at end of file
+diff --git a/tests/types/scripts/update-ts-snapshot.mjs b/tests/types/scripts/update-ts-snapshot.mjs
+index bdc7ef6..5f86820 100644
+--- a/tests/types/scripts/update-ts-snapshot.mjs
++++ b/tests/types/scripts/update-ts-snapshot.mjs
+@@ -4,15 +4,28 @@ import 'zx/globals';
+ import fs from 'fs';
+ import path from 'path';
+ 
+-const allVersions = JSON.parse(await $`yarn info typescript versions --json`)
+-  .data;
+-const timestamps = JSON.parse(await $`yarn info typescript time --json`).data;
++const allVersions = JSON.parse(
++  (await $`yarn info typescript versions --json`).stdout
++).data;
++const timestamps = JSON.parse(
++  (await $`yarn info typescript time --json`).stdout
++).data;
+ const nodeTypesTags = JSON.parse(
+-  await $`yarn info @types/node dist-tags --json`
++  (await $`yarn info @types/node dist-tags --json`).stdout
+ ).data;
+ 
+ const threeYearsAgo = Date.now() - 3 * 365 * 24 * 60 * 60 * 1000;
+ 
++const filteredVersions = allVersions
++  .filter((el) => el.match(/^\d+\.\d+\.\d+$/))
++  .reverse()
++  .filter((version) => {
++    const releaseDate = new Date(timestamps[version]).getTime();
++    return releaseDate > threeYearsAgo;
++  });
++
++console.log({filteredVersions, nodeTypesTags});
++
+ const selectedVersions = allVersions
+   .filter((el) => el.match(/^\d+\.\d+\.\d+$/))
+   .reverse()
+@@ -33,6 +46,14 @@ const selectedVersions = allVersions
+     const typescript = parseVersion(tsVersion);
+ 
+     const nodeTypesTag = `ts${typescript.major}.${typescript.minor}`;
++
++    const nodeTypesVersion = nodeTypesTags[nodeTypesTag];
++
++    // return null if @types/node has not yet published a version for this TS version
++    if (!nodeTypesVersion) {
++      return null;
++    }
++
+     const nodeTypes = parseVersion(nodeTypesTags[nodeTypesTag]);
+ 
+     return {
+@@ -41,6 +62,10 @@ const selectedVersions = allVersions
+     };
+   })
+   .reduce((acc, release) => {
++    // skip releases where @types/node has not yet published a version for this TS version
++    if (!release) {
++      return acc;
++    }
+     const {typescript} = release;
+     const key = `${typescript.major}.${typescript.minor}`;
+     if (!acc.has(key) || acc.get(key).patch < typescript.patch) {
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index adfb14b..beafce8 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -6,6 +6,7 @@ import {
+   StripePaymentElement,
+   StripeExpressCheckoutElement,
+   StripeElementsOptions,
++  StripeElementsOptionsMode,
+   StripeCurrencySelectorElement,
+   StripeLinkSignupElement,
+   ReleaseTrain,
+@@ -32,9 +33,39 @@ const options: StripeElementsOptions = {
+ // @ts-expect-error: Passing `clientSecret` or `mode` implies different integration paths which cannot be combined
+ const elements = stripe.elements(options);
+ 
++// @ts-expect-error: `paymentRequestButton` is no longer a supported Element
++elements.create('paymentRequestButton', {
++  paymentRequest: stripe.paymentRequest({
++    country: 'US',
++    currency: 'usd',
++    total: {
++      label: 'Demo total',
++      amount: 1000,
++    },
++  }),
++});
++
+ // @ts-expect-error mode must be one of payment, setup, or subscription
+ stripe.elements({mode: 'test'});
+ 
++const removedPaymentMethodTypesOptions: StripeElementsOptionsMode = {
++  mode: 'payment',
++  currency: 'usd',
++  amount: 1000,
++  // @ts-expect-error: paymentMethodTypes is not supported for deferred-intent Elements options
++  paymentMethodTypes: ['card'],
++};
++stripe.elements(removedPaymentMethodTypesOptions);
++
++const removedPaymentMethodTypesAliasOptions: StripeElementsOptionsMode = {
++  mode: 'payment',
++  currency: 'usd',
++  amount: 1000,
++  // @ts-expect-error: payment_method_types is not supported for deferred-intent Elements options
++  payment_method_types: ['card'],
++};
++stripe.elements(removedPaymentMethodTypesAliasOptions);
++
+ // @ts-expect-error: currency is required when using mode='payment'
+ stripe.elements({mode: 'payment'});
+ 
+@@ -71,6 +102,16 @@ elements.update({
+   },
+ });
+ 
++elements.update({
++  // @ts-expect-error: `paymentMethodTypes` is not updatable
++  paymentMethodTypes: ['card'],
++});
++
++elements.update({
++  // @ts-expect-error: `payment_method_types` is not updatable
++  payment_method_types: ['card'],
++});
++
+ // invalid value for 'preferredNetwork'
+ // @ts-expect-error: No overload matches this call
+ elements.create('cardNumber', {preferredNetwork: ['invalid_network']});
+@@ -429,6 +470,20 @@ stripe.createSource({type: 'card'});
+ // @ts-expect-error: retrieveSource is not a method on Stripe
+ stripe.retrieveSource({id: 'src_123', client_secret: 'secret'});
+ 
++stripe.confirmPayByBankPayment('', {
++  payment_method: {
++    // @ts-expect-error: Inline Pay by Bank payment method data must not specify type
++    type: 'pay_by_bank',
++  },
++});
++
++stripe.confirmPayByBankPayment(
++  '',
++  {},
++  // @ts-expect-error: handleActions must be a boolean
++  {handleActions: 'false'}
++);
++
+ // @ts-expect-error at least one of elements or clientSecret is required
+ stripe.confirmPayment({confirmParams: {return_url: ''}});
+ 
+@@ -607,6 +662,9 @@ stripe.createPaymentMethod({
+   },
+ });
+ 
++// @ts-expect-error: pay_by_bank is not in CreatePaymentMethodData
++stripe.createPaymentMethod({type: 'pay_by_bank'});
++
+ stripe
+   .createConfirmationToken({
+     elements,
+@@ -861,7 +919,7 @@ checkoutFormSdk.loadActions().then((loadActionsResult) => {
+   }
+ });
+ 
+-// @ts-expect-error: Type '"clover"' is not assignable to type '"dahlia"'.
++// @ts-expect-error: Type '"clover"' is not assignable to type '"endive"'.
+ const releaseTrain: ReleaseTrain = 'clover';
+ 
+ // @ts-expect-error: consent is required
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index 5ee57dc..cc25d11 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -15,7 +15,6 @@ import {
+   StripeCardExpiryElement,
+   StripeCardCvcElement,
+   StripeCardElementChangeEvent,
+-  StripePaymentRequestButtonElementClickEvent,
+   PaymentIntent,
+   Token,
+   StripeError,
+@@ -27,7 +26,6 @@ import {
+   StripeIbanElement,
+   StripeAuBankAccountElement,
+   StripeAuBankAccountElementChangeEvent,
+-  StripePaymentRequestButtonElement,
+   StripePaymentElement,
+   StripePaymentMethodMessagingElement,
+   StripeLinkAuthenticationElementChangeEvent,
+@@ -119,7 +117,6 @@ const options: StripeElementsOptions = {
+   amount: 1099,
+   setupFutureUsage: 'off_session',
+   captureMethod: 'automatic',
+-  paymentMethodTypes: ['card'],
+   paymentMethodCreation: 'manual',
+   paymentMethodOptions: {
+     card: {require_cvc_recollection: true, setup_future_usage: 'none'},
+@@ -161,7 +158,6 @@ stripe.elements({
+   currency: 'usd',
+   setup_future_usage: 'off_session',
+   capture_method: 'automatic',
+-  payment_method_types: ['card'],
+   payment_method_options: {
+     us_bank_account: {financial_connections: {permissions: ['payment_method']}},
+   },
+@@ -172,7 +168,6 @@ stripe.elements({
+   mode: 'setup',
+   setup_future_usage: 'off_session',
+   capture_method: 'automatic',
+-  payment_method_types: ['card'],
+   payment_method_options: {
+     us_bank_account: {financial_connections: {permissions: ['payment_method']}},
+   },
+@@ -300,7 +295,6 @@ elements.update({
+   amount: 1099,
+   setupFutureUsage: 'off_session',
+   captureMethod: 'automatic_async',
+-  paymentMethodTypes: ['card'],
+   on_behalf_of: 'acct_id',
+ });
+ 
+@@ -310,7 +304,6 @@ elements.update({
+   amount: 1099,
+   setup_future_usage: 'off_session',
+   capture_method: 'automatic',
+-  payment_method_types: ['card'],
+   customPaymentMethods: [
+     {
+       id: 'cpmt_123',
+@@ -404,33 +397,6 @@ const retrievedIbanElement: StripeIbanElement | null = elements.getElement(
+   'iban'
+ );
+ 
+-const paymentRequestButtonElement = elements.create('paymentRequestButton', {
+-  style: {
+-    paymentRequestButton: {
+-      theme: 'light',
+-      height: '21px',
+-      type: 'donate',
+-      buttonSpacing: '8px',
+-    },
+-  },
+-  paymentRequest: stripe.paymentRequest({
+-    country: 'US',
+-    currency: 'usd',
+-    total: {label: 'Demo total', amount: 1000},
+-    requestPayerName: true,
+-    requestPayerEmail: true,
+-    disableWallets: ['googlePay', 'link'],
+-  }),
+-  disableMultipleButtons: false,
+-});
+-
+-const retrievedPaymentRequestButtonElement: StripePaymentRequestButtonElement | null = elements.getElement(
+-  'paymentRequestButton'
+-);
+-
+-// Make sure that `paymentRequest` is at least optional;
+-retrievedPaymentRequestButtonElement!.update({});
+-
+ const paymentMethodMessagingElement = elements.create(
+   'paymentMethodMessaging',
+   {
+@@ -725,18 +691,6 @@ const retrievedPaymentMethodMessagingElement: StripePaymentMethodMessagingElemen
+ 
+ retrievedPaymentMethodMessagingElement!.update({amount: 10000});
+ 
+-type StripePaymentRequestButtonElementUpdateOptions = Parameters<
+-  StripePaymentRequestButtonElement['update']
+->[0];
+-
+-// Check that giving `paymentRequest` options is not allowed
+-assert<
+-  Has<
+-    Required<StripePaymentRequestButtonElementUpdateOptions>,
+-    {paymentRequest: PaymentRequest}
+-  >
+->(false);
+-
+ const auBankElementType: StripeElementType = 'auBankAccount';
+ const cardElementType: StripeElementType = 'card';
+ const ibanElementType: StripeElementType = 'iban';
+@@ -797,13 +751,6 @@ ibanElement
+   .on('focus', (e: {elementType: 'iban'}) => {})
+   .on('blur', (e: {elementType: 'iban'}) => {});
+ 
+-paymentRequestButtonElement.on(
+-  'click',
+-  (e: StripePaymentRequestButtonElementClickEvent) => {
+-    e.preventDefault();
+-  }
+-);
+-
+ let linkAuthenticationElementDefaults: StripeLinkAuthenticationElement = elements.create(
+   'linkAuthentication'
+ );
+@@ -1484,7 +1431,6 @@ contactDetailsElement.destroy();
+ termsElement.destroy();
+ currencySelectorElement.destroy();
+ ibanElement.destroy();
+-paymentRequestButtonElement.destroy();
+ linkAuthenticationElement.destroy();
+ linkSignupElementDefaults.destroy();
+ linkSignupElement.destroy();
+@@ -2180,6 +2126,33 @@ stripe
+   })
+   .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
+ 
++stripe
++  .confirmPayByBankPayment('')
++  .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
++
++stripe
++  .confirmPayByBankPayment('', {
++    payment_method: '',
++    return_url: window.location.href,
++  })
++  .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
++
++stripe
++  .confirmPayByBankPayment(
++    '',
++    {
++      payment_method: {
++        billing_details: {
++          name: '',
++          email: '',
++        },
++      },
++      return_url: window.location.href,
++    },
++    {handleActions: false}
++  )
++  .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
++
+ stripe
+   .confirmPayNowPayment('', {})
+   .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
+@@ -2943,6 +2916,26 @@ stripe
+   )
+   .then((result: {setupIntent?: SetupIntent; error?: StripeError}) => null);
+ 
++stripe
++  .confirmBlikSetup(
++    '',
++    {
++      payment_method: {
++        blik: {},
++        billing_details: {
++          email: 'jenny@example.com',
++        },
++      },
++      payment_method_options: {
++        blik: {
++          code: '123456',
++        },
++      },
++    },
++    {handleActions: false}
++  )
++  .then((result: {setupIntent?: SetupIntent; error?: StripeError}) => null);
++
+ stripe
+   .confirmIdealSetup('', {payment_method: ''})
+   .then((result: {setupIntent?: SetupIntent; error?: StripeError}) => null);
+@@ -4074,4 +4067,4 @@ stripe.createEmbeddedCheckoutPage({
+ });
+ 
+ // ReleaseTrain type
+-const releaseTrain: ReleaseTrain = 'dahlia';
++const releaseTrain: ReleaseTrain = 'endive';
+diff --git a/types/shared.d.ts b/types/shared.d.ts
+index 619a338..9ef7f83 100644
+--- a/types/shared.d.ts
++++ b/types/shared.d.ts
+@@ -1,6 +1,6 @@
+ import {StripeConstructorOptions, Stripe} from './stripe-js';
+ 
+-export type ReleaseTrain = 'dahlia';
++export type ReleaseTrain = 'endive';
+ 
+ export const loadStripe: (
+   publishableKey: string,
+diff --git a/types/stripe-js/elements-group.d.ts b/types/stripe-js/elements-group.d.ts
+index 56f7100..f8e4775 100644
+--- a/types/stripe-js/elements-group.d.ts
++++ b/types/stripe-js/elements-group.d.ts
+@@ -5,8 +5,6 @@ import {
+   StripeCurrencySelectorElementOptions,
+   StripeShippingAddressElement,
+   StripeShippingAddressElementOptions,
+-  StripePaymentRequestButtonElement,
+-  StripePaymentRequestButtonElementOptions,
+   StripePaymentElement,
+   StripePaymentElementOptions,
+   StripeLinkAuthenticationElement,
+@@ -325,27 +323,6 @@ export interface StripeElements {
+    */
+   getElement(elementType: 'payment'): StripePaymentElement | null;
+ 
+-  /////////////////////////////
+-  /// paymentRequestButton
+-  /////////////////////////////
+-
+-  /**
+-   * Creates a `PaymentRequestButtonElement`.
+-   *
+-   * @docs https://stripe.com/docs/stripe-js/elements/payment-request-button
+-   */
+-  create(
+-    elementType: 'paymentRequestButton',
+-    options: StripePaymentRequestButtonElementOptions
+-  ): StripePaymentRequestButtonElement;
+-
+-  /**
+-   * Looks up a previously created `Element` by its type.
+-   */
+-  getElement(
+-    elementType: 'paymentRequestButton'
+-  ): StripePaymentRequestButtonElement | null;
+-
+   /////////////////////////////
+   /// shippingAddress
+   /////////////////////////////
+@@ -511,7 +488,6 @@ export type StripeElementType =
+   | 'payment'
+   | 'paymentForm'
+   | 'paymentMethodMessaging'
+-  | 'paymentRequestButton'
+   | 'linkAuthentication'
+   | 'linkSignup'
+   | 'shippingAddress'
+@@ -539,7 +515,6 @@ export type StripeElement =
+   | StripePaymentElement
+   | StripeCheckoutForm
+   | StripePaymentMethodMessagingElement
+-  | StripePaymentRequestButtonElement
+   | StripeIssuingCardNumberDisplayElement
+   | StripeIssuingCardCvcDisplayElement
+   | StripeIssuingCardExpiryDisplayElement
+@@ -895,20 +870,6 @@ interface StripeElementsOptionsModeBase extends BaseStripeElementsOptions {
+    */
+   on_behalf_of?: string;
+ 
+-  /**
+-   * Instead of using automatic payment methods, declare specific payment methods to enable.
+-   *
+-   * @docs https://stripe.com/docs/payments/payment-methods/overview
+-   */
+-  paymentMethodTypes?: string[];
+-
+-  /**
+-   * Instead of using automatic payment methods, declare specific payment methods to enable.
+-   *
+-   * @docs https://stripe.com/docs/payments/payment-methods/overview
+-   */
+-  payment_method_types?: string[];
+-
+   /**
+    * The list of payment method types to exclude from use with this payment.
+    *
+@@ -924,7 +885,7 @@ interface StripeElementsOptionsModeBase extends BaseStripeElementsOptions {
+   allowedPaymentMethodTypes?: string[];
+ 
+   /**
+-   * When using automatic payment methods (omitting paymentMethodTypes), provide a
++   * When using automatic payment methods, provide a
+    * payment method configuration ID for deriving payment methods.
+    *
+    * @docs https://stripe.com/docs/connect/payment-method-configurations
+@@ -932,7 +893,7 @@ interface StripeElementsOptionsModeBase extends BaseStripeElementsOptions {
+   paymentMethodConfiguration?: string;
+ 
+   /**
+-   * When using automatic payment methods (omitting payment_method_types), provide a
++   * When using automatic payment methods, provide a
+    * payment method configuration ID for deriving payment methods.
+    *
+    * @docs https://stripe.com/docs/connect/payment-method-configurations
+@@ -1085,20 +1046,6 @@ export interface StripeElementsUpdateOptions {
+    */
+   capture_method?: 'manual' | 'automatic' | 'automatic_async';
+ 
+-  /**
+-   * Instead of using automatic payment methods, declare specific payment methods to enable.
+-   *
+-   * @docs https://stripe.com/docs/payments/payment-methods/overview
+-   */
+-  payment_method_types?: string[];
+-
+-  /**
+-   * Instead of using automatic payment methods, declare specific payment methods to enable.
+-   *
+-   * @docs https://stripe.com/docs/payments/payment-methods/overview
+-   */
+-  paymentMethodTypes?: string[];
+-
+   /**
+    * The list of payment method types to exclude from use with this payment.
+    *
+@@ -1114,7 +1061,7 @@ export interface StripeElementsUpdateOptions {
+   allowedPaymentMethodTypes?: string[];
+ 
+   /**
+-   * When using automatic payment methods (omitting paymentMethodTypes), provide a
++   * When using automatic payment methods, provide a
+    * payment method configuration ID for deriving payment methods.
+    *
+    * @docs https://stripe.com/docs/connect/payment-method-configurations
+@@ -1122,7 +1069,7 @@ export interface StripeElementsUpdateOptions {
+   paymentMethodConfiguration?: string;
+ 
+   /**
+-   * When using automatic payment methods (omitting payment_method_types), provide a
++   * When using automatic payment methods, provide a
+    * payment method configuration ID for deriving payment methods.
+    *
+    * @docs https://stripe.com/docs/connect/payment-method-configurations
+diff --git a/types/stripe-js/elements/base.d.ts b/types/stripe-js/elements/base.d.ts
+index c21a03a..f0fbee1 100644
+--- a/types/stripe-js/elements/base.d.ts
++++ b/types/stripe-js/elements/base.d.ts
+@@ -82,9 +82,6 @@ export interface StripeElementStyleVariant extends StripeElementCSSProperties {
+ 
+   ':-webkit-autofill'?: StripeElementCSSProperties;
+ 
+-  /**
+-   * Available for all elements except the `paymentRequestButton` element
+-   */
+   ':disabled'?: StripeElementCSSProperties;
+ 
+   /**
+diff --git a/types/stripe-js/elements/index.d.ts b/types/stripe-js/elements/index.d.ts
+index 7679f64..64d6881 100644
+--- a/types/stripe-js/elements/index.d.ts
++++ b/types/stripe-js/elements/index.d.ts
+@@ -13,7 +13,6 @@ export * from './express-checkout';
+ export * from './iban';
+ export * from './link-authentication';
+ export * from './link-signup';
+-export * from './payment-request-button';
+ export * from './payment';
+ export * from './shipping-address';
+ export * from './issuing';
+diff --git a/types/stripe-js/elements/payment-request-button.d.ts b/types/stripe-js/elements/payment-request-button.d.ts
+deleted file mode 100644
+index b430bf6..0000000
+--- a/types/stripe-js/elements/payment-request-button.d.ts
++++ /dev/null
+@@ -1,151 +0,0 @@
+-import {StripeElementBase, StripeElementClasses} from './base';
+-import {PaymentRequest} from '../payment-request';
+-import {Omit} from '../../utils';
+-
+-export type StripePaymentRequestButtonElement = StripeElementBase & {
+-  /**
+-   * Triggered when the payment request button is clicked.
+-   */
+-  on(
+-    eventType: 'click',
+-    handler: (event: StripePaymentRequestButtonElementClickEvent) => any
+-  ): StripePaymentRequestButtonElement;
+-  once(
+-    eventType: 'click',
+-    handler: (event: StripePaymentRequestButtonElementClickEvent) => any
+-  ): StripePaymentRequestButtonElement;
+-  off(
+-    eventType: 'click',
+-    handler?: (event: StripePaymentRequestButtonElementClickEvent) => any
+-  ): StripePaymentRequestButtonElement;
+-
+-  /**
+-   * Triggered when the element is fully rendered and can accept `element.focus` calls.
+-   */
+-  on(
+-    eventType: 'ready',
+-    handler: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-  once(
+-    eventType: 'ready',
+-    handler: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-  off(
+-    eventType: 'ready',
+-    handler?: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-
+-  /**
+-   * Triggered when the element gains focus.
+-   */
+-  on(
+-    eventType: 'focus',
+-    handler: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-  once(
+-    eventType: 'focus',
+-    handler: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-  off(
+-    eventType: 'focus',
+-    handler?: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-
+-  /**
+-   * Triggered when the element loses focus.
+-   */
+-  on(
+-    eventType: 'blur',
+-    handler: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-  once(
+-    eventType: 'blur',
+-    handler: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-  off(
+-    eventType: 'blur',
+-    handler?: (event: {elementType: 'paymentRequestButton'}) => any
+-  ): StripePaymentRequestButtonElement;
+-
+-  /**
+-   * Updates the options the `PaymentRequestButtonElement` was initialized with.
+-   * Updates are merged into the existing configuration.
+-   *
+-   * The styles of an `PaymentRequestButtonElement` can be dynamically changed using `element.update`.
+-   * This method can be used to simulate CSS media queries that automatically adjust the size of elements when viewed on different devices.
+-   */
+-  update(
+-    options: Partial<
+-      Omit<StripePaymentRequestButtonElementOptions, 'paymentRequest'>
+-    >
+-  ): void;
+-};
+-
+-export interface StripePaymentRequestButtonElementOptions {
+-  classes?: StripeElementClasses;
+-
+-  /**
+-   * An object used to customize the appearance of the Payment Request Button.
+-   * The object must have a single `paymentRequestButton` field, containing any of the following sub-fields
+-   */
+-  style?: {
+-    paymentRequestButton: {
+-      /**
+-       * Preferred button type to display. Available types, by wallet:
+-       *
+-       * Browser card: default, book, buy, or donate.
+-       *
+-       * Google Pay: default, buy, or donate.
+-       *
+-       * Apple Pay: default, book, buy, donate, check-out, subscribe, reload, add-money, top-up, order, rent, support, contribute, tip
+-       *
+-       * When a wallet does not support the provided value, default is used as a fallback.
+-       */
+-      type?:
+-        | 'default'
+-        | 'book'
+-        | 'buy'
+-        | 'donate'
+-        | 'check-out'
+-        | 'subscribe'
+-        | 'reload'
+-        | 'add-money'
+-        | 'top-up'
+-        | 'order'
+-        | 'rent'
+-        | 'support'
+-        | 'contribute'
+-        | 'tip';
+-
+-      /**
+-       * One of dark, light, or light-outline. The default is dark.
+-       */
+-      theme?: 'dark' | 'light' | 'light-outline';
+-
+-      /**
+-       * The height of the Payment Request Button. Accepts px unit values.
+-       */
+-      height?: string;
+-
+-      /**
+-       * The gap between buttons when multile buttons are shown. Accepts px unit values.
+-       */
+-      buttonSpacing?: string;
+-    };
+-  };
+-
+-  /**
+-   * A `PaymentRequest` object used to configure the element.
+-   */
+-  paymentRequest: PaymentRequest;
+-
+-  /**
+-   * Disable showing multiple buttons.
+-   * Default is `false`.
+-   */
+-  disableMultipleButtons?: boolean;
+-}
+-
+-export interface StripePaymentRequestButtonElementClickEvent {
+-  preventDefault: () => void;
+-}
+diff --git a/types/stripe-js/payment-intents.d.ts b/types/stripe-js/payment-intents.d.ts
+index 122cb97..0fd9ec4 100644
+--- a/types/stripe-js/payment-intents.d.ts
++++ b/types/stripe-js/payment-intents.d.ts
+@@ -331,6 +331,11 @@ export interface CreatePaymentMethodP24Data extends PaymentMethodCreateParams {
+   };
+ }
+ 
++export interface CreatePaymentMethodPayByBankData
++  extends PaymentMethodCreateParams {
++  type: 'pay_by_bank';
++}
++
+ export interface CreatePaymentMethodPayNowData
+   extends PaymentMethodCreateParams {
+   type: 'paynow';
+@@ -771,7 +776,7 @@ export interface ConfirmCardPaymentData extends PaymentIntentConfirmParams {
+  */
+ export interface ConfirmCardPaymentOptions {
+   /**
+-   * Set this to `false` if you want to [handle next actions yourself](https://stripe.com/docs/payments/payment-intents/verifying-status#next-actions), or if you want to defer next action handling until later (e.g. for use in the [PaymentRequest API](https://stripe.com/docs/stripe-js/elements/payment-request-button#complete-payment-intents)).
++   * Set this to `false` if you want to [handle next actions yourself](https://stripe.com/docs/payments/payment-intents/verifying-status#next-actions), or if you want to defer next action handling until later (e.g. for use in the [PaymentRequest API](https://stripe.com/docs/js/payment_request)).
+    * Default is `true`.
+    */
+   handleActions?: boolean;
+@@ -1232,6 +1237,39 @@ export interface ConfirmP24PaymentData extends PaymentIntentConfirmParams {
+   return_url?: string;
+ }
+ 
++/**
++ * Data to be sent with a `stripe.confirmPayByBankPayment` request.
++ * Refer to the [Payment Intents API](https://stripe.com/docs/api/payment_intents/confirm) for a full list of parameters.
++ */
++export interface ConfirmPayByBankPaymentData
++  extends PaymentIntentConfirmParams {
++  /**
++   * Either the `id` of an existing [PaymentMethod](https://stripe.com/docs/api/payment_methods), or an object containing data to create a `PaymentMethod` with.
++   * This field is optional if a `PaymentMethod` has already been attached to this `PaymentIntent`.
++   *
++   * @recommended
++   */
++  payment_method?: string | Omit<CreatePaymentMethodPayByBankData, 'type'>;
++
++  /**
++   * The url your customer will be directed to after they complete authentication.
++   *
++   * @recommended
++   */
++  return_url?: string;
++}
++
++/**
++ * An options object to control the behavior of `stripe.confirmPayByBankPayment`.
++ */
++export interface ConfirmPayByBankPaymentOptions {
++  /**
++   * Set this to `false` if you want to manually handle the authorization redirect.
++   * Default is `true`.
++   */
++  handleActions?: boolean;
++}
++
+ /**
+  * Data to be sent with a `stripe.confirmPayNowPayment` request.
+  * Refer to the [Payment Intents API](https://stripe.com/docs/api/payment_intents/confirm) for a full list of parameters.
+diff --git a/types/stripe-js/payment-request.d.ts b/types/stripe-js/payment-request.d.ts
+index 7600f78..9795ec2 100644
+--- a/types/stripe-js/payment-request.d.ts
++++ b/types/stripe-js/payment-request.d.ts
+@@ -10,7 +10,6 @@ export interface PaymentRequest {
+ 
+   /**
+    * Shows the browser’s payment interface.
+-   * When using the `PaymentRequestButtonElement`, this is called for you automatically.
+    * This method must be called as the result of a user interaction (for example, in a click handler).
+    */
+   show(): void;
+@@ -22,7 +21,6 @@ export interface PaymentRequest {
+ 
+   /**
+    * `true` if the browser’s payment interface is showing.
+-   * When using the `PaymentRequestButtonElement`, this is called for you automatically.
+    */
+   isShowing: () => boolean;
+ 
+@@ -30,8 +28,7 @@ export interface PaymentRequest {
+    * `PaymentRequest` instances can be updated with an options object.
+    *
+    * `paymentRequest.update` can only be called when the browser payment interface is not showing.
+-   * Listen to the [click](https://stripe.com/docs/js/element/events) and [cancel](https://stripe.com/docs/js/element/events) events to detect if the payment interface has been initiated.
+-   * To update the `PaymentRequest` right before the payment interface is initiated, call `paymentRequest.update` in your click event handler.
++   * To update the `PaymentRequest` right before the payment interface is initiated, call `paymentRequest.update` in your user-interaction handler immediately before calling `paymentRequest.show`.
+    */
+   update(options: PaymentRequestUpdateOptions): void;
+ 
+diff --git a/types/stripe-js/setup-intents.d.ts b/types/stripe-js/setup-intents.d.ts
+index f7212e8..3c31be3 100644
+--- a/types/stripe-js/setup-intents.d.ts
++++ b/types/stripe-js/setup-intents.d.ts
+@@ -6,6 +6,7 @@ import {
+   CreatePaymentMethodAmazonPayData,
+   CreatePaymentMethodAuBecsDebitData,
+   CreatePaymentMethodBancontactData,
++  CreatePaymentMethodBlikData,
+   CreatePaymentMethodCardData,
+   CreatePaymentMethodCashappData,
+   CreatePaymentMethodIdealData,
+@@ -95,7 +96,7 @@ export interface ConfirmCardSetupData extends SetupIntentConfirmParams {
+  */
+ export interface ConfirmCardSetupOptions {
+   /*
+-   * Set this to `false` if you want to [handle next actions yourself](https://stripe.com/docs/payments/payment-intents/verifying-status#next-actions), or if you want to defer next action handling until later (e.g. for use in the [PaymentRequest API](https://stripe.com/docs/stripe-js/elements/payment-request-button#complete-payment-intents)).
++   * Set this to `false` if you want to [handle next actions yourself](https://stripe.com/docs/payments/payment-intents/verifying-status#next-actions), or if you want to defer next action handling until later (e.g. for use in the [PaymentRequest API](https://stripe.com/docs/js/payment_request)).
+    * Default is `true`.
+    */
+   handleActions?: boolean;
+@@ -127,6 +128,45 @@ export interface ConfirmCashappSetupOptions {
+   handleActions?: boolean;
+ }
+ 
++/**
++ * Data to be sent with a `stripe.confirmBlikSetup` request.
++ * Refer to the [Setup Intents API](https://stripe.com/docs/api/setup_intents/confirm) for a full list of parameters.
++ */
++export interface ConfirmBlikSetupData extends SetupIntentConfirmParams {
++  /**
++   * Either the `id` of an existing [PaymentMethod](https://stripe.com/docs/api/payment_methods), or an object containing data to create a `PaymentMethod` with.
++   * This field is optional if a `PaymentMethod` has already been attached to this `SetupIntent`.
++   *
++   * @recommended
++   */
++  payment_method?: string | Omit<CreatePaymentMethodBlikData, 'type'>;
++
++  /**
++   * An object containing payment-method-specific configuration to confirm the [SetupIntent](https://stripe.com/docs/api/setup_intents) with.
++   */
++  payment_method_options: {
++    /**
++     * A configuration for this BLIK setup.
++     */
++    blik: {
++      /**
++       * Your customer's 6-digit BLIK code.
++       */
++      code: string;
++    };
++  };
++}
++
++/**
++ * An options object to control the behavior of `stripe.confirmBlikSetup`.
++ */
++export interface ConfirmBlikSetupOptions {
++  /**
++   * Set this to `false` if you want to manually determine if the confirmation has succeeded or failed.
++   */
++  handleActions?: boolean;
++}
++
+ /**
+  * Data to be sent with a `stripe.confirmIdealSetup` request.
+  * Refer to the [Setup Intents API](https://stripe.com/docs/api/setup_intents/confirm) for a full list of parameters.
+diff --git a/types/stripe-js/stripe.d.ts b/types/stripe-js/stripe.d.ts
+index 1d8e068..aa551c8 100644
+--- a/types/stripe-js/stripe.d.ts
++++ b/types/stripe-js/stripe.d.ts
+@@ -496,6 +496,24 @@ export interface Stripe {
+     options?: paymentIntents.ConfirmP24PaymentOptions
+   ): Promise<PaymentIntentResult>;
+ 
++  /**
++   * Use `stripe.confirmPayByBankPayment` in the [Pay by Bank Payments](https://docs.stripe.com/payments/pay-by-bank) with Payment Methods flow when the customer submits your payment form.
++   * When called, it will confirm the `PaymentIntent` with `data` you provide, and it will automatically redirect the customer to authorize the transaction.
++   * Once authorization is complete, the customer will be redirected back to your specified `return_url`.
++   * Refer to our [integration guide](https://docs.stripe.com/payments/pay-by-bank) for more details.
++   *
++   * When you confirm a `PaymentIntent`, it needs to have an attached [PaymentMethod](https://stripe.com/docs/api/payment_methods).
++   * In addition to confirming the `PaymentIntent`, this method can automatically create and attach a new PaymentMethod for you.
++   * If you have already attached a `PaymentMethod` you can call this method without needing to provide any additional data.
++   *
++   * @docs https://stripe.com/docs/js/payment_intents/confirm_pay_by_bank_payment
++   */
++  confirmPayByBankPayment(
++    clientSecret: string,
++    data?: paymentIntents.ConfirmPayByBankPaymentData,
++    options?: paymentIntents.ConfirmPayByBankPaymentOptions
++  ): Promise<PaymentIntentResult>;
++
+   /**
+    * Requires beta access:
+    * Contact [Stripe support](https://support.stripe.com/) for more information.
+@@ -912,6 +930,18 @@ export interface Stripe {
+     data?: setupIntents.ConfirmBancontactSetupData
+   ): Promise<SetupIntentResult>;
+ 
++  /**
++   * Use `stripe.confirmBlikSetup` when the customer submits a custom BLIK setup form.
++   * When called, it confirms the [SetupIntent](https://stripe.com/docs/api/setup_intents) with the BLIK code and billing details in `data`, then waits for the customer to authorize the mandate in their banking app.
++   *
++   * @docs https://stripe.com/docs/js/setup_intents/confirm_blik_setup
++   */
++  confirmBlikSetup(
++    clientSecret: string,
++    data: setupIntents.ConfirmBlikSetupData,
++    options?: setupIntents.ConfirmBlikSetupOptions
++  ): Promise<SetupIntentResult>;
++
+   /**
+    * Use `stripe.confirmCardSetup` in the [Setup Intents API flow](https://stripe.com/docs/payments/save-and-reuse) when the customer submits your payment form.
+    * When called, it will confirm the [SetupIntent](https://stripe.com/docs/api/setup_intents) with `data` you provide and carry out 3DS or other next actions if they are required.
+diff --git a/yarn.lock b/yarn.lock
+index c0ae88c..136be09 100644
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -1626,6 +1626,11 @@ base@^0.11.1:
+     mixin-deep "^1.2.0"
+     pascalcase "^0.1.1"
+ 
++baseline-browser-mapping@^2.11.12:
++  version "2.11.21"
++  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.21.tgz#99af73cb8e54007e4f5345e132278e26c2662f2c"
++  integrity sha512-uh8vpY/1/YyFkunIDFH/12p7/7VdPKA1hejMVEbdkEaWnUz0Hesvx5EbiU6XxjyHZIOju+ZMbQJkRh+es3/spQ==
++
+ bcrypt-pbkdf@^1.0.0:
+   version "1.0.2"
+   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
+@@ -1684,15 +1689,15 @@ browser-resolve@^1.11.3:
+     resolve "1.1.7"
+ 
+ browserslist@^4.12.0, browserslist@^4.8.5:
+-  version "4.16.6"
+-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.6.tgz#d7901277a5a88e554ed305b183ec9b0c08f66fa2"
+-  integrity sha512-Wspk/PqO+4W9qp5iUTJsa1B/QrYn1keNCcEP5OvP7WBwT4KaDly0uONYmC6Xa3Z5IqnUgS0KcgLYu1l74x0ZXQ==
++  version "4.28.8"
++  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.28.8.tgz#a3c79ceb70028527e5da7dafc887f3200b5168c0"
++  integrity sha512-V2NpofLblG64mfOtSgDhOJESZEGogzDMBv/q+W6oc4LXWP/q75eOXoOaaOu1EOadB9U4Bwx/e0yzbvwKH8zalA==
+   dependencies:
+-    caniuse-lite "^1.0.30001219"
+-    colorette "^1.2.2"
+-    electron-to-chromium "^1.3.723"
+-    escalade "^3.1.1"
+-    node-releases "^1.1.71"
++    baseline-browser-mapping "^2.11.12"
++    caniuse-lite "^1.0.30001809"
++    electron-to-chromium "^1.5.402"
++    node-releases "^2.0.53"
++    update-browserslist-db "^1.3.0"
+ 
+ bs-logger@0.x:
+   version "0.2.6"
+@@ -1750,10 +1755,10 @@ camelcase@^5.0.0, camelcase@^5.3.1:
+   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
+   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
+ 
+-caniuse-lite@^1.0.30001219:
+-  version "1.0.30001230"
+-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001230.tgz#8135c57459854b2240b57a4a6786044bdc5a9f71"
+-  integrity sha512-5yBd5nWCBS+jWKTcHOzXwo5xzcj4ePE/yjtkZyUV1BTUmrBaA9MRGC+e7mxnqXSA90CmCA8L3eKLaSUkt099IQ==
++caniuse-lite@^1.0.30001809:
++  version "1.0.30001810"
++  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001810.tgz#4970b477dea3278374de9bc43aa8f5d39fc3cda2"
++  integrity sha512-TITQPUkaz+aVk5GL6NhOdwk1aEaNTSDPsGFWrTuhKGtjTF70jL/Oht2W4c6rXUe5fu7Ie19VIahAXHIIiWWNeg==
+ 
+ capture-exit@^2.0.0:
+   version "2.0.0"
+@@ -1910,11 +1915,6 @@ color-name@~1.1.4:
+   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
+   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
+ 
+-colorette@^1.2.2:
+-  version "1.2.2"
+-  resolved "https://registry.yarnpkg.com/colorette/-/colorette-1.2.2.tgz#cbcc79d5e99caea2dbf10eb3a26fd8b3e6acfa94"
+-  integrity sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w==
+-
+ combined-stream@^1.0.6, combined-stream@~1.0.6:
+   version "1.0.8"
+   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"
+@@ -2126,10 +2126,10 @@ ecc-jsbn@~0.1.1:
+     jsbn "~0.1.0"
+     safer-buffer "^2.1.0"
+ 
+-electron-to-chromium@^1.3.723:
+-  version "1.3.738"
+-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.738.tgz#aec24b091c82acbfabbdcce08076a703941d17ca"
+-  integrity sha512-vCMf4gDOpEylPSLPLSwAEsz+R3ShP02Y3cAKMZvTqule3XcPp7tgc/0ESI7IS6ZeyBlGClE50N53fIOkcIVnpw==
++electron-to-chromium@^1.5.402:
++  version "1.5.420"
++  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.420.tgz#fc66d26a722d6f227e2092acdf38dd55b198cb44"
++  integrity sha512-2yD6XreGusOfNV+dUcvipJEXc3n/n7fgr7996aszTG+YY5E4mqM4tOq/3uhP129cazL9YHbVWSpc79ePotWtPA==
+ 
+ emoji-regex@^7.0.1:
+   version "7.0.3"
+@@ -2191,6 +2191,11 @@ escalade@^3.1.1:
+   resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
+   integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
+ 
++escalade@^3.2.0:
++  version "3.2.0"
++  resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.2.0.tgz#011a3f69856ba189dffa7dc8fcce99d2a87903e5"
++  integrity sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==
++
+ escape-string-regexp@^1.0.5:
+   version "1.0.5"
+   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+@@ -3559,9 +3564,9 @@ jest@^24.9.0:
+   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
+ 
+ js-yaml@^3.13.1:
+-  version "3.15.1"
+-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.15.1.tgz#24bc95028f361cdaaa84745b06a109c4486773c0"
+-  integrity sha512-S99WuO3HlhO3XN41EtYUNl9zzXjoJx7QvmipxsJVxtCBT0YHEFy+iOJhjSvrmV12nYhWpZaM8lPHkJm0yUMbag==
++  version "3.15.2"
++  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.15.2.tgz#3f83823ac6be17f570f23b2ecdef3777ff5ea364"
++  integrity sha512-6EuL879VkRA+1Cz578mKMiKvjPNEuk6+r1JaFzoSWejZmtf7xWbIyw1e3KkxlkzTIt9Taw6JBhEppG7utc1P+w==
+   dependencies:
+     argparse "^1.0.7"
+     esprima "^4.0.0"
+@@ -4031,10 +4036,10 @@ node-notifier@^5.4.2:
+     shellwords "^0.1.1"
+     which "^1.3.0"
+ 
+-node-releases@^1.1.71:
+-  version "1.1.72"
+-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.72.tgz#14802ab6b1039a79a0c7d662b610a5bbd76eacbe"
+-  integrity sha512-LLUo+PpH3dU6XizX3iVoubUNheF/owjXCZZ5yACDxNnPtgFuludV1ZL3ayK1kVep42Rmm0+R9/Y60NQbZ2bifw==
++node-releases@^2.0.53:
++  version "2.0.54"
++  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.54.tgz#09af17d5647aa9f221ec5cf2becb95b68a981afe"
++  integrity sha512-YHs7BmmcsdAI5Ozuf8JZo6PT0mv2GIWC9vMfvUC3dp65M8hn7Ux8CPL+2oBI7juNuj9d0ndhTcznq2ODBps9cQ==
+ 
+ normalize-package-data@^2.3.2:
+   version "2.5.0"
+@@ -4327,6 +4332,11 @@ performance-now@^2.1.0:
+   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
+   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
+ 
++picocolors@^1.1.1:
++  version "1.1.1"
++  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.1.1.tgz#3d321af3eab939b083c8f929a1d12cda81c26b6b"
++  integrity sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==
++
+ picomatch@^2.0.5, picomatch@^2.2.1, picomatch@^2.2.2:
+   version "2.3.2"
+   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.2.tgz#5a942915e26b372dc0f0e6753149a16e6b1c5601"
+@@ -5437,6 +5447,14 @@ unset-value@^1.0.0:
+     has-value "^0.3.1"
+     isobject "^3.0.0"
+ 
++update-browserslist-db@^1.3.0:
++  version "1.3.2"
++  resolved "https://registry.yarnpkg.com/update-browserslist-db/-/update-browserslist-db-1.3.2.tgz#9d99fbff56c50bb11ba5fd35cece5916da595836"
++  integrity sha512-UQ+MSxlhRm1bzjhU+DcuXfjFO1FzNtqhK5+9Yvlp90ItDLk5vT932A0rFu619nf7RVS+Y/VeaUW1jaRDqZ8VJw==
++  dependencies:
++    escalade "^3.2.0"
++    picocolors "^1.1.1"
++
+ uri-js@^4.2.2:
+   version "4.2.2"
+   resolved "https://registry.yarnpkg.com/uri-js/-/uri-js-4.2.2.tgz#94c540e1ff772956e2299507c010aea6c8838eb0"

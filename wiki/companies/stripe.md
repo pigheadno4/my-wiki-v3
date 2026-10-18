@@ -168,6 +168,14 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 | Payment Links | Stripe (no-code) |
 | Subscriptions/Invoicing | Developer + Stripe |
 
+### Stripe.js 10.1.0 Loader and Typed Delta
+
+`@stripe/stripe-js@10.1.0` fixes 10.0.0 shared-loader concurrency by caching the in-flight constructor load including its single retry. Public calls still create separate Stripe instances; payment operations are not retried. Adds accordion trigger normal/selected/hover appearance colors and WeChat Pay direct-confirmation `mobile_web` typing. Endive and runtime/eligibility boundaries remain unchanged. README train table is corrected but its manual Dahlia URL remains stale. See [[source-github-stripe-js]], [[changelog-github-stripe-js]], [[stripe-elements]] and [[stripe-wallets]].
+
+### Stripe.js 10.0.0 Endive Baseline
+
+`@stripe/stripe-js@10.0.0` targets Endive, removes Payment Request Button declarations and explicit mode-based Elements payment-method-list fields, and adds Pay by Bank confirmation/BLIK setup typing. The lower-level PaymentRequest API remains. Its single script-load retry does not retry payment operations; a missing shared in-flight cache creates a version-specific concurrency risk, separate from the standard entrypoint cache. README train guidance is stale. Existing v8/v9 history, source count, eligibility and hosted-runtime boundaries remain. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
+
 ### Stripe.js 9.17.0 Consent Types
 
 `@stripe/stripe-js@9.17.0` adds optional beta pre-collected consent evidence to four Financial Connections/bank-account collection methods. It does not guarantee skipping the consent pane, establish an ACH mandate, or change the loader. See [[source-github-stripe-js]] and [[stripe-ach-direct-debit]].
@@ -184,7 +192,7 @@ React binding update: `@stripe/react-stripe-js@6.11.0` improves Checkout initial
 
 The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` for Financial Accounts, with unchanged checkout code and dependencies. Returned-error callbacks do not cover rejected promises, and the wrapper lacks post-await unmount/race guards. This is not eligibility or compliance proof. See [[stripe-financial-account-disclosures]] and [[source-github-react-stripe-js]].
 
-- [[source-github-stripe-js]] — cumulative `stripe/stripe-js` v8.11.0 through v9.16.0 loader, Elements, Checkout, and public TypeScript history
+- [[source-github-stripe-js]] — cumulative `stripe/stripe-js` v8.11.0 through v10.1.0: Endive full baseline, loader concurrency fix, versioned Elements/Checkout/payment contracts and historical evidence
 - [[changelog-github-stripe-js]] — package-qualified Stripe JS release history
 - [[source-metronome-integrations-tax-integrations-stripe-tax]] — Stripe Tax on Metronome-created Stripe invoices, including customer and product mapping
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit

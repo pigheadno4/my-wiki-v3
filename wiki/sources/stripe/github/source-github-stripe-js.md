@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-27
+date_updated: 2026-10-18
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/manifest.json"
+  - "github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-15-e03ec56/manifest.json"
   - "github/stripe/stripe-js/snapshots/2026-09-01-9c83132/manifest.json"
@@ -19,7 +21,7 @@ tags: [stripe, stripe-js, javascript, typescript, elements, checkout, github-rep
 
 `stripe/stripe-js` publishes `@stripe/stripe-js`, the CommonJS and ES module loader plus TypeScript declarations for Stripe.js. This cumulative page preserves the approved `@stripe/stripe-js@8.11.0` baseline, the full major-version transition to `@stripe/stripe-js@9.12.1`, and approved declaration deltas through `9.16.0` at commit `e03ec565455178cd2b236f6b495ddc952397c3f0`.
 
-The latest additive delta is `9.17.0` at `ad7bd52fd1d38edd60968874b1c9546c0134c798`; the preceding baseline and all earlier sections remain retained.
+The latest additive full baseline is `10.0.0` at `857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`, following `9.17.0` at `ad7bd52fd1d38edd60968874b1c9546c0134c798`. The subsequent `10.1.0` delta at `3de39c594529799c58d589e9260559db1249a173` fixes shared script-load concurrency and extends appearance/WeChat typing; all earlier sections remain retained.
 
 Repository: <https://github.com/stripe/stripe-js>
 
@@ -118,7 +120,7 @@ Repository: <https://github.com/stripe/stripe-js>
 
 | Package | Latest ingested release | Stripe.js train | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/stripe-js` | `9.17.0` | `dahlia` | Approved 9.17 consent declaration delta; prior v9 and v8 retained |
+| `@stripe/stripe-js` | `10.1.0` | `endive` | Approved delta after 10.0.0 full baseline; prior v9 and v8 retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
@@ -364,6 +366,66 @@ Grounding from [Financial Connections declarations](../../../../raw/github/strip
 
 The comparison also retains upstream type-test changes accepting this object on the four collection methods and rejecting it on `confirmPayment`, plus GitHub Actions SHA pinning. Tests and CI files remain intentional capsule exclusions; their patch was read, not executed. All eight upstream changed paths have dispositions. The package proves the typed contract, not hosted-runtime rollout or consent-object creation behavior. Full assigned evidence was read; no new contradiction or cross-company comparison was warranted.
 
+## Version 10
+
+### `@stripe/stripe-js@10.0.0` - additive full baseline
+
+Released 2026-10-01, full-ingested 2026-10-18 from `@stripe/stripe-js@9.17.0` (`ad7bd52fd1d38edd60968874b1c9546c0134c798`) to `@stripe/stripe-js@10.0.0` (`857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`). All 79 retained current files, assigned prior removed type, release notes and cumulative wiki context were fully read. Generated manifests/inventories and duplicated diff were mechanically checked under explicit approval. Ten retained files modified, one removed, 69 unchanged; all 20 upstream changes classified, no evidence gaps. This is not a claim to have read the entire upstream repository.
+
+**Package and runtime:** source and `ReleaseTrain` become `endive`; injected URL is `https://js.stripe.com/endive/stripe.js`. CommonJS/ESM, `lib` forwarding files, `/pure`, Node `>=12.16` and documented TypeScript `>=3.1` remain. Existing recognized scripts and `window.Stripe` are reused; test-key train mismatch only warns and still initializes. The npm package does not bundle the hosted implementation or prove account/method availability. Examples still create PaymentMethods, not charge/capture payments. Checkout Elements, beta Form, Embedded Checkout, consent, Link Signup, ConfirmationToken, wallet and legacy typed surfaces remain unless explicitly removed below.
+
+**Breaking Elements changes:** removes Payment Request Button declarations, barrel export, create/getElement overloads and union members. It does not remove `stripe.paymentRequest(options)`, `PaymentRequest.show()`, wallet readiness/events or lower-level confirmation APIs. `paymentMethodTypes` and `payment_method_types` disappear from mode-based Elements creation and group updates. `allowedPaymentMethodTypes`, `excludedPaymentMethodTypes` and payment-method configuration remain; they do not automatically reproduce the old explicit-method semantics. Server Intent parameters, Intent response `payment_method_types`, Express Checkout's `paymentMethods` and Messaging Element's `paymentMethodTypes` are separate contracts and remain. See [[stripe-elements]] and [[stripe-express-checkout-element]].
+
+**Loader retry and limitation:** `loadScript()` makes a second `load()` attempt after the first rejects. This retries loading Stripe.js, not creating or confirming payment. However, 10.0.0 no longer assigns the in-flight promise to shared `stripePromise`. That cache remains null and cannot coordinate concurrent direct shared-loader calls. `/pure` calls the shared loader directly; the standard entrypoint separately caches its own promise. Overlapping calls can remove earlier listeners/reinject the script and leave a caller unresolved. This is a static risk, not a reproduced browser failure; do not claim the v8/v9 shared-cache guarantee for this release. With non-null load parameters and an existing script, the warning branch can also reuse that script rather than entering reinjection. No universal network-recovery guarantee is implied.
+
+**Pay by Bank:** declares `confirmPayByBankPayment(clientSecret, data?, options?) -> Promise<PaymentIntentResult>`. Data accepts an existing method ID or `Omit<CreatePaymentMethodPayByBankData, 'type'>`, plus optional `return_url`; `handleActions` defaults true by comment and false delegates redirect handling. `CreatePaymentMethodPayByBankData` declares `type: 'pay_by_bank'`, but is not added to the standalone `CreatePaymentMethodData` union. Confirmation typing is not blanket standalone PaymentMethod-creation support or a payment-method launch. See [[stripe-payment-intents]].
+
+**BLIK setup:** declares `confirmBlikSetup(clientSecret, data, options?) -> Promise<SetupIntentResult>`. `data.payment_method_options.blik.code` is required (string, described as six digits); `payment_method` is optional for an already attached method or new BLIK data. Optional `handleActions: false` delegates success/failure determination. Comments describe banking-app mandate authorization. Setup does not charge funds or establish recurring eligibility for all banks/accounts; preview restrictions remain in [[stripe-blik]].
+
+> [!warning] Contradiction
+> The 10.0.0 code/type targets Endive while its README still omits v10 from the train table and embeds a manual Dahlia URL. Since an existing recognized script wins, following the stale snippet can load the wrong train; test-key mismatch is only a warning. The shared-loader comment also says loading occurs at most once, but its in-flight cache is not populated in this release. These dated conflicts are recorded in [[stripe-elements]] without changing immutable raw or older history.
+
+**Grounding** (paths beneath `raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/files/`):
+
+> `export const RELEASE_TRAIN: ReleaseTrain = 'endive';` - `src/shared.ts:15`.
+
+> `return retryableLoad().catch(() => retryableLoad());` - `src/shared.ts:164`.
+
+> `confirmPayByBankPayment(` - `types/stripe-js/stripe.d.ts:511`.
+
+> `confirmBlikSetup(` - `types/stripe-js/stripe.d.ts:939`.
+
+> `paymentRequest(options: PaymentRequestOptions): PaymentRequest;` - `types/stripe-js/stripe.d.ts:1177`.
+
+**Migration/evidence:** remove deleted button imports/types, adapt Express Checkout rather than renaming the Element, audit mode-based Elements configuration and keep React 7's independently verified Stripe JS v10 peer range aligned. Preserve existing v8/v9 integrations as versioned knowledge. No SDK build/type tests, browser, payment, account eligibility or hosted-runtime verification was run; generated empty public-API classifications do not negate observed removals/additions. See [[source-github-react-stripe-js]] for React-owned behavior and [[changelog-github-stripe-js]] for this release ledger.
+
+### `@stripe/stripe-js@10.1.0` - loader concurrency and typed additions
+
+Released 2026-10-13, delta-ingested 2026-10-18 from `@stripe/stripe-js@10.0.0` (`857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`) to `@stripe/stripe-js@10.1.0` (`3de39c594529799c58d589e9260559db1249a173`). Five retained files modified, 74 unchanged, no additions/removals; all 11 upstream changed paths classified with no gaps. Changed source, affected prior code and cumulative wiki context were fully read; generated manifests/inventories and duplicated diff mechanically verified under explicit approval. The prior full baseline and all v8/v9 history remain intact.
+
+**Shared loading fixed:** `loadScript()` now assigns `stripePromise = load().catch(() => load()).catch(...)` and returns that cached promise. Concurrent calls share the constructor load, including its one automatic retry. Only final failure clears the cache for a later call. This resolves the 10.0.0 missing-cache limitation; each public `loadStripe()` call still passes its own arguments to `initStripe()` and constructs its own Stripe instance. Sharing a script load does not share merchant credentials/instances or retry a payment. Existing script reuse, parameter precedence, server-side null, Endive train and warning-only test-key mismatch remain unchanged. Retained test patches cover concurrent standard/pure calls, but were not executed.
+
+**Accordion appearance:** `Appearance.variables` adds optional string `accordionItemTriggerColor`, `accordionItemTriggerSelectedColor` and `accordionItemTriggerHoverColor`. These are trigger controls distinct from the existing label colors. Appearance remains accepted at Elements creation and group update; no new React wrapper component or payment behavior follows from these declarations. See [[stripe-elements]].
+
+**WeChat Pay:** `ConfirmWechatPayPaymentData.payment_method_options.wechat_pay.client` expands from optional `'web'` to optional `'web' | 'mobile_web'`. This is direct confirmation data, not a Checkout Sessions or native SDK contract. `ConfirmWechatPayPaymentOptions.handleActions` remains required boolean; its comment instructs `false`, leaving the merchant responsible for `next_action`. Do not infer a specific mobile redirect payload or fulfillment success from the union. See [[stripe-wallets]].
+
+> [!warning] Contradiction
+> Older WeChat integration knowledge describes a web-only QR flow; 10.1.0 adds `mobile_web` typing. The guide remains historical evidence, not a universal restriction; availability and runtime behavior still require product/account verification. This distinction is recorded in [[stripe-wallets]]. The README corrects its train table to v10 = Endive but still embeds a manual Dahlia script URL; [[stripe-elements]] preserves this unresolved snippet mismatch separately from the fixed loader-cache issue.
+
+**Other changes and limits:** package version changes but entrypoints, engines, dependency ranges and Endive train do not. Release notes list brace-expansion and example proxy-addr lockfile bumps; these development/example changes do not establish a merchant runtime security fix. No SDK build/type tests, browser or payment execution was performed. Empty generated API classifications are not proof of no declaration changes.
+
+**Grounding** in the [10.1.0 exact snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/manifest.json):
+
+> `stripePromise = load()` - `src/shared.ts:160`.
+
+> `return stripePromise;` - `src/shared.ts:167`.
+
+> `accordionItemTriggerSelectedColor?: string;` - `types/stripe-js/elements-group.d.ts:1217`.
+
+> `client?: 'web' | 'mobile_web';` - `types/stripe-js/payment-intents.d.ts:1469`.
+
+> `| v10                   | endive        |` - `README.md:46`.
+
 ## Compatibility and Operational Notes
 
 - Stripe.js must be loaded from `js.stripe.com` for the documented PCI boundary.
@@ -386,6 +448,14 @@ The comparison also retains upstream type-test changes accepting this object on 
 
 ## Raw Sources
 
+- [10.1.0 snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/manifest.json)
+- [10.1.0 release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.1.0/2026-10-18/manifest.json) and [notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.1.0/2026-10-18/release-notes.md)
+- [10.0.0 to 10.1.0 comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/10.0.0--10.1.0/comparison.json) and [exact patch](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/10.0.0--10.1.0/diff.patch)
+- [10.1.0 loader](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/src/shared.ts), [Elements appearance](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/types/stripe-js/elements-group.d.ts), [confirmation data](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/types/stripe-js/payment-intents.d.ts) and [README](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/README.md)
+- [10.0.0 snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/manifest.json)
+- [10.0.0 release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.0.0/2026-10-18/manifest.json) and [notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/10.0.0/2026-10-18/release-notes.md)
+- [9.17.0 to 10.0.0 comparison](../../../../tracking/github/repos/stripe/stripe-js/comparisons/stripe-js/9.17.0--10.0.0/comparison.json)
+- [10.0.0 loader](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/files/src/shared.ts), [client types](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/files/types/stripe-js/stripe.d.ts), [Elements types](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/files/types/stripe-js/elements-group.d.ts) and [README](../../../../raw/github/stripe/stripe-js/snapshots/2026-10-18-857e6cd/files/README.md)
 - [9.17.0 snapshot](../../../../raw/github/stripe/stripe-js/snapshots/2026-09-27-ad7bd52/manifest.json)
 - [9.17.0 release identity](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/manifest.json)
 - [9.17.0 release notes](../../../../raw/github/stripe/stripe-js/releases/stripe-js/9.17.0/2026-09-27/release-notes.md)

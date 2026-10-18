@@ -481,8 +481,8 @@ Operations history: [[stripe-log]]
 - [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` history through v7.0.0: Payment Request Button removal, Stripe JS v10 peers, React 19 lifecycle guard and preserved v6 knowledge (github-repo, updated 2026-10-16)
 - [[changelog-github-react-stripe-js]] — package-qualified `stripe/react-stripe-js` history through v7.0.0 with migration, retained deprecated hook and runtime boundaries (github-repo, updated 2026-10-16)
 - [[stripe-financial-account-disclosures]] — React TreasuryDisclosure contract, error/lifecycle limits and eligibility boundary
-- [[source-github-stripe-js]] — cumulative `@stripe/stripe-js` v8.11.0 through v9.17.0: beta pre-collected consent types, loader boundary and preserved Checkout/Elements history (github-repo, updated 2026-09-27)
-- [[changelog-github-stripe-js]] — package-qualified `stripe/stripe-js` history through v9.17.0 with exact deltas separated from cumulative transitions (github-repo, updated 2026-09-27)
+- [[source-github-stripe-js]] — cumulative `@stripe/stripe-js` through v10.1.0: Endive full baseline, loader concurrency fix, accordion trigger colors, WeChat mobile_web typing and preserved v8/v9 (github-repo, updated 2026-10-18)
+- [[changelog-github-stripe-js]] — package-qualified `stripe/stripe-js` history through v10.1.0 with migration and exact evidence boundaries (github-repo, updated 2026-10-18)
 - [[source-stripe-declines-overview]] — Declines overview: 3 failure types (issuer/blocked/invalid), outcome object, Radar block reasons, Adaptive Acceptance, allow list (webpage, 2026-05-09)
 - [[source-stripe-card-declines]] — Card declines: network codes, advice_code retry table, max 8 retries, on/off-session handling, geographic + FSA/HSA restrictions (webpage, 2026-05-09)
 - [[source-stripe-decline-codes]] — Decline codes reference: 50 card codes + 19 LPM codes, fraud codes to mask, deprecated codes (webpage, 2026-05-09)

@@ -6,6 +6,16 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-18] ingest | Stripe.js `10.1.0`
+
+- Approved serial delta at `3de39c594529799c58d589e9260559db1249a173`, after completed 10.0.0 full ingest. Five changed retained files and affected prior code fully read; 74 unchanged files and generated manifests/inventories/duplicated diff mechanically verified under approval. All 11 upstream changes classified, no gaps.
+- Concepts first: shared loader cache/concurrency fix including single retry, three accordion trigger colors and WeChat direct-confirmation mobile_web typing; explicit next-action/availability limits. README table corrected but manual Dahlia snippet remains stale. Cumulative source/changelog/company/index/logs preserve v8/v9/10.0 and source count. No SDK build/tests/browser/payment execution, commit or push. Details [[source-github-stripe-js]], [[changelog-github-stripe-js]].
+
+## [2026-10-18] ingest | Stripe.js `10.0.0`
+
+- Approved full additive baseline `github-319e4a599168b0a79b55` at `857e6cd8e0f308e0f685fa1d3eb9c7e5fcb5b784`, after `9.17.0`. Fully read all 79 retained files, prior removed type, release notes and cumulative wiki context; generated inventories/diff mechanically verified under approval. Ten modified/one removed/69 unchanged; all 20 upstream paths classified, no gaps.
+- Concepts first, source/changelog/company/index/logs retain v8/v9 and source count. Endive, removed button/Elements list types, retained lower-level PaymentRequest, loader retry/cache limitation, Pay by Bank creation-union caveat and BLIK setup recorded. README train/comment contradictions versioned. No SDK build/tests/browser/payment execution, commit or push. Details [[source-github-stripe-js]], [[changelog-github-stripe-js]]. Next: validate/close, then approved serial `10.1.0` delta.
+
 ## [2026-10-16] ingest | React Stripe.js `7.0.0`
 
 - Approved additive full ingest, `github-e5ebdcfb6b9b67582191`, from `@stripe/react-stripe-js@6.12.0` to `@stripe/react-stripe-js@7.0.0` at `3b42f3d838c5f2279e719a4faac93b617c7e83af`. Fully read all 57 retained current files, four assigned deleted prior demos/stories, release notes and cumulative source/changelog; generated manifests/inventories and duplicated comparison diff mechanically verified under explicit approval. Current/prior 57/61 hashes/sizes verified; 18 modified/four removed/39 unchanged and all 35 upstream paths classified, no evidence gaps.

@@ -208,6 +208,10 @@ Full migration guide: [[source-stripe-express-checkout-element-migration]]
 
 ## Integration Notes
 
+### Stripe.js 10.0.0 declaration boundary
+
+The separately collected `@stripe/stripe-js@10.0.0` Endive baseline removes `StripePaymentRequestButtonElement`, its barrel export, group creation/lookup overloads and Element-union membership, while retaining `stripe.paymentRequest()` and its lower-level events. This complements the independently owned React 7.0.0 wrapper removal above. Express Checkout remains a separate integration, not a renamed Payment Request Button; no wallet availability or hosted behavior is established solely by the declaration change. See [[source-github-stripe-js]].
+
 - Domain must be registered in Stripe in both test and live mode
 - Reuses an existing Elements instance — compatible with Payment Element in the same group
 - New payment methods added from Dashboard activate without frontend changes

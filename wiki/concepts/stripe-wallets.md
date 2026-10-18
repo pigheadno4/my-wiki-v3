@@ -374,14 +374,22 @@ See [[stripe-link]] for full coverage (two integration paths, eligibility criter
 
 **Connect**: **partial** — Destination + Separate charges GA; Direct + `on_behalf_of` private preview. Capability: `wechat_pay_payments` (private preview for non-Dashboard accounts).
 
-**Integration** (Checkout + Direct API, web only):
+**Integration** (historically collected Checkout + Direct API web guide; later typed extension below):
 
 - **Checkout**: add `wechat_pay` to `payment_method_types`, set `payment_method_options.wechat_pay.client = 'web'`, all line items same currency. Supports 37 business locations (more than overview's 22 — adds BG, CY, CZ, EE, GR, HU, LV, LT, MT, PL, RO, SK, SI).
 - **Direct API**: `stripe.confirmWechatPayPayment()` → QR from `next_action.wechat_pay_display_qr_code.image_data_url` (or `.data`); stay on QR page until webhook confirms. Web only.
 - **Fulfillment**: `payment_intent.succeeded` / `payment_intent.payment_failed` webhooks.
 
+### Stripe.js 10.1.0 WeChat client typing
+
+`@stripe/stripe-js@10.1.0` expands `ConfirmWechatPayPaymentData.payment_method_options.wechat_pay.client` from optional `'web'` to optional `'web' | 'mobile_web'`. This is the direct `confirmWechatPayPayment()` data contract, not evidence of the same option for Checkout Sessions, native SDKs or Mobile Payment Element. `ConfirmWechatPayPaymentOptions.handleActions` remains a required boolean whose comment instructs `false`; the merchant remains responsible for handling `next_action` and verifying payment outcome. See [[source-github-stripe-js]].
+
+> [!warning] Contradiction
+> The older collected integration guide describes a web-only QR flow, while the 10.1.0 declaration explicitly accepts `mobile_web`. Preserve the guide as historical flow evidence, not a universal current restriction. The new union alone does not establish country/account eligibility, redirect details or hosted-runtime availability. No payment/browser test was run. See [[source-github-stripe-js]] for exact-version evidence.
+
 ## Sources
 
+- [[source-github-stripe-js]] - WeChat Pay `mobile_web` confirmation typing in 10.1.0, with explicit outcome/availability limits
 - [[source-stripe-wallets]] — hub page: 17 wallets, product/API matrices, subscription caveats, MoMo/GCash waitlist
 - [[source-stripe-apple-pay]] — Apple Pay: iOS/RN/Web, Stripe CSR required, domain registration, merchant tokens (iOS 16+), real card test
 - [[source-stripe-pmd-registration]] — Domain registration guide: 6 PMs requiring it (Apple Pay required, + Amazon Pay/Google Pay/Klarna/Link/PayPal), PaymentMethodDomain API, iframe origin rules, Connect charge-type routing

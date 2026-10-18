@@ -1,0 +1,226 @@
+diff --git a/README.md b/README.md
+index 85cf38b..a1569ce 100644
+--- a/README.md
++++ b/README.md
+@@ -43,6 +43,7 @@ pinned versions are as follows:
+ | v7                    | basil         |
+ | v8                    | clover        |
+ | v9                    | dahlia        |
++| v10                   | endive        |
+ 
+ ## Usage
+ 
+diff --git a/examples/parcel/yarn.lock b/examples/parcel/yarn.lock
+index deb9fca..f7e2443 100644
+--- a/examples/parcel/yarn.lock
++++ b/examples/parcel/yarn.lock
+@@ -1260,9 +1260,9 @@ boolbase@^1.0.0, boolbase@~1.0.0:
+   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
+ 
+ brace-expansion@^1.1.7:
+-  version "1.1.16"
+-  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.16.tgz#723d3a30c0558c225abc9fc479a73e14e26c3c2f"
+-  integrity sha512-IDw48K2/2kRkg9LdJxurvq3lV3aBgq0REY89duEqFRthjlPdXHKMj7EnQOXVckxzgisinf3nHfrcE2FufFLXMw==
++  version "1.1.21"
++  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.21.tgz#edf4fab5c64d051aea5a8def49aba1c7522279f3"
++  integrity sha512-9zeA+KLZNNzglF2TPKRQEDyx6Yby7daAkuy8MiPzpXPsYDWi/DRM8jmwUDxokQjYqBpv5DgPiwD4h4ZZSy1Ujw==
+   dependencies:
+     balanced-match "^1.0.0"
+     concat-map "0.0.1"
+diff --git a/examples/rollup/yarn.lock b/examples/rollup/yarn.lock
+index c8fd1fc..ee3b5ba 100644
+--- a/examples/rollup/yarn.lock
++++ b/examples/rollup/yarn.lock
+@@ -1648,9 +1648,9 @@ picomatch@^2.2.2:
+   integrity sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==
+ 
+ proxy-addr@~2.0.7:
+-  version "2.0.7"
+-  resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.7.tgz#f19fe69ceab311eeb94b42e70e8c2070f9ba1025"
+-  integrity sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==
++  version "2.0.8"
++  resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.8.tgz#624e760fd8ab06b1b8320c2f8506d4422cf8e932"
++  integrity sha512-5nnx0yGyVUcY6t9RnWcARWtwT9F1D8O9rt08htPvnd49W1IgZtmLkhu9WfMzQj1cFxjHIO6connUNVW5k7AVyQ==
+   dependencies:
+     forwarded "0.2.0"
+     ipaddr.js "1.9.1"
+diff --git a/package.json b/package.json
+index b761296..653a2db 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-js",
+-  "version": "10.0.0",
++  "version": "10.1.0",
+   "description": "Stripe.js loading utility",
+   "repository": "github:stripe/stripe-js",
+   "main": "lib/index.js",
+diff --git a/src/index.test.ts b/src/index.test.ts
+index 3ae4db5..22df48d 100644
+--- a/src/index.test.ts
++++ b/src/index.test.ts
+@@ -225,6 +225,32 @@ describe('Stripe module loader', () => {
+     });
+   });
+ 
++  describe.each(['./index', './pure'])(
++    'concurrent loadStripe calls (%s.ts)',
++    (requirePath) => {
++      beforeEach(() => {
++        jest.spyOn(console, 'warn').mockReturnValue();
++      });
++
++      it('resolves every call made while Stripe.js is loading', async () => {
++        const {loadStripe} = require(requirePath);
++        const first = loadStripe('pk_test_foo');
++        const second = loadStripe('pk_test_bar');
++
++        await new Promise((resolve) => setTimeout(resolve));
++        expect(
++          document.querySelectorAll(`script[src="${SCRIPT_SRC}"]`)
++        ).toHaveLength(1);
++
++        window.Stripe = jest.fn((key) => ({key})) as any;
++        dispatchScriptEvent('load');
++
++        await expect(second).resolves.toEqual({key: 'pk_test_bar'});
++        await expect(first).resolves.toEqual({key: 'pk_test_foo'});
++      });
++    }
++  );
++
+   describe('loadStripe (index.ts)', () => {
+     beforeEach(() => {
+       jest.spyOn(console, 'warn').mockReturnValue();
+diff --git a/src/shared.ts b/src/shared.ts
+index 2a570f4..c419f9b 100644
+--- a/src/shared.ts
++++ b/src/shared.ts
+@@ -154,14 +154,17 @@ export const loadScript = (
+       }
+     });
+ 
+-  const retryableLoad = () =>
+-    load().catch((error) => {
++  // Cache the in-flight load (including its single retry) so that concurrent
++  // calls share it, and only clear the cache once the load has finally failed
++  // so that a later call can try again.
++  stripePromise = load()
++    .catch(() => load())
++    .catch((error) => {
+       stripePromise = null;
+       return Promise.reject(error);
+     });
+ 
+-  // Resets stripePromise on error
+-  return retryableLoad().catch(() => retryableLoad());
++  return stripePromise;
+ };
+ 
+ export const initStripe = (
+diff --git a/tests/types/src/invalid.ts b/tests/types/src/invalid.ts
+index beafce8..751f81d 100644
+--- a/tests/types/src/invalid.ts
++++ b/tests/types/src/invalid.ts
+@@ -89,6 +89,19 @@ elements.update({
+   clientSecret: 'pk_foo_secret_bar',
+ });
+ 
++elements.update({
++  appearance: {
++    variables: {
++      // @ts-expect-error: accordionItemTriggerColor must be a string
++      accordionItemTriggerColor: 123,
++      // @ts-expect-error: accordionItemTriggerSelectedColor must be a string
++      accordionItemTriggerSelectedColor: true,
++      // @ts-expect-error: accordionItemTriggerHoverColor must be a string
++      accordionItemTriggerHoverColor: 123,
++    },
++  },
++});
++
+ elements.update({
+   // @ts-expect-error: `loader` is not updatable
+   loader: 'auto',
+diff --git a/tests/types/src/valid.ts b/tests/types/src/valid.ts
+index cc25d11..408f1af 100644
+--- a/tests/types/src/valid.ts
++++ b/tests/types/src/valid.ts
+@@ -127,6 +127,9 @@ const options: StripeElementsOptions = {
+     theme: 'night',
+     variables: {
+       iconColor: 'blue',
++      accordionItemTriggerColor: '#30313d',
++      accordionItemTriggerSelectedColor: '#0570de',
++      accordionItemTriggerHoverColor: '#0055a8',
+     },
+     rules: {
+       '.Tab--selected': {
+@@ -2375,6 +2378,20 @@ stripe
+   )
+   .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
+ 
++stripe
++  .confirmWechatPayPayment(
++    '',
++    {
++      payment_method_options: {
++        wechat_pay: {
++          client: 'mobile_web',
++        },
++      },
++    },
++    {handleActions: false}
++  )
++  .then((result: {paymentIntent?: PaymentIntent; error?: StripeError}) => null);
++
+ stripe
+   .confirmWechatPayPayment(
+     '',
+diff --git a/types/stripe-js/elements-group.d.ts b/types/stripe-js/elements-group.d.ts
+index f8e4775..08792fa 100644
+--- a/types/stripe-js/elements-group.d.ts
++++ b/types/stripe-js/elements-group.d.ts
+@@ -1212,6 +1212,11 @@ export interface Appearance {
+     accordionItemLabelSelectedColorText?: string;
+     accordionItemLabelSelectedFontWeight?: string;
+ 
++    // AccordionItem triggers
++    accordionItemTriggerColor?: string;
++    accordionItemTriggerSelectedColor?: string;
++    accordionItemTriggerHoverColor?: string;
++
+     // Colors
+     colorPrimary?: string;
+     colorBackground?: string;
+diff --git a/types/stripe-js/payment-intents.d.ts b/types/stripe-js/payment-intents.d.ts
+index 0fd9ec4..6448bc4 100644
+--- a/types/stripe-js/payment-intents.d.ts
++++ b/types/stripe-js/payment-intents.d.ts
+@@ -1466,7 +1466,7 @@ export interface ConfirmWechatPayPaymentData
+      * Configuration for this wechat payment.
+      */
+     wechat_pay: {
+-      client?: 'web';
++      client?: 'web' | 'mobile_web';
+     };
+   };
+ }
+diff --git a/yarn.lock b/yarn.lock
+index 136be09..df859cb 100644
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -1646,9 +1646,9 @@ bindings@^1.5.0:
+     file-uri-to-path "1.0.0"
+ 
+ brace-expansion@^1.1.7:
+-  version "1.1.11"
+-  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
+-  integrity sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==
++  version "1.1.21"
++  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.21.tgz#edf4fab5c64d051aea5a8def49aba1c7522279f3"
++  integrity sha512-9zeA+KLZNNzglF2TPKRQEDyx6Yby7daAkuy8MiPzpXPsYDWi/DRM8jmwUDxokQjYqBpv5DgPiwD4h4ZZSy1Ujw==
+   dependencies:
+     balanced-match "^1.0.0"
+     concat-map "0.0.1"

@@ -85,7 +85,25 @@ The `@stripe/stripe-js` npm package is a loader and TypeScript declaration packa
 
 - In v9.16.0, beta `linkSignup` creation and lookup accept default email/name/phone. The Element declares lifecycle/loading events but no `change`, `update`, or `getValue`. It is distinct from Link Authentication; see [[stripe-link]]. `StripeElementType` and `StripeElement` expand, so exhaustive consumer handling may need adjustment. This package does not establish matching React exports or beta eligibility.
 
-See [[source-github-stripe-js]] for package-qualified v8 and v9 implementation evidence.
+### Stripe.js 10.0.0 Endive baseline
+
+`@stripe/stripe-js@10.0.0` targets `endive`, retaining the standard/pure entrypoints, server-side null result and hosted-runtime boundary. It removes Payment Request Button creation/lookup/types and the `paymentMethodTypes` / `payment_method_types` fields from mode-based Elements creation and group updates. `allowedPaymentMethodTypes`, `excludedPaymentMethodTypes` and payment-method configuration remain; those controls are not automatic semantic replacements for the removed explicit-method options. This removal does not apply to server Intent parameters or Payment Method Messaging's separate `paymentMethodTypes` option. The lower-level `stripe.paymentRequest()` API remains declared. See [[source-github-stripe-js]] and [[stripe-express-checkout-element]].
+
+The 10.0.0 loader adds one automatic script-load retry, not a payment-confirmation retry. Its shared `stripePromise` is no longer assigned the in-flight load, so do not transfer the v8/v9 shared-load guarantee to v10.0.0, especially `/pure` and cross-entrypoint callers. The standard entrypoint has its own separate cache. This is static source evidence, not a reproduced browser failure.
+
+> [!warning] Contradiction
+> In 10.0.0, the loader and `ReleaseTrain` type target Endive, but the README still omits v10 from its version table and shows a manual Dahlia script URL. Existing recognized scripts are reused; the test-key mismatch warning does not force replacement. Use exact-version code evidence rather than copying that stale snippet. See [[source-github-stripe-js]].
+
+### Stripe.js 10.1.0 loader fix and appearance additions
+
+`@stripe/stripe-js@10.1.0` restores the shared in-flight constructor-load cache, including its single automatic retry. Concurrent calls share that load; the cache clears after final failure so a later call can try again. Each `loadStripe()` call still initializes its own Stripe instance with its own arguments. This fixes the 10.0.0 shared-cache limitation above, not payment-operation retry or a guarantee of network recovery.
+
+`Appearance.variables` adds three optional strings: `accordionItemTriggerColor`, `accordionItemTriggerSelectedColor` and `accordionItemTriggerHoverColor`. These configure accordion trigger colors, separate from the existing label variables. The package remains on Endive; no new React component is established by this repository.
+
+> [!warning] Contradiction
+> The 10.1.0 README now correctly maps v10 to Endive, but its manual script example still points to Dahlia. The recognized-existing-script behavior and warning-only test-key mismatch remain. The table correction does not fix that snippet. See [[source-github-stripe-js]] and [[changelog-github-stripe-js]].
+
+See [[source-github-stripe-js]] for package-qualified v8, v9 and v10 implementation evidence.
 
 ## Card Element (Legacy)
 
