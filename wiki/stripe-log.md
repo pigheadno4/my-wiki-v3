@@ -6,6 +6,11 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-18] ingest | Stripe Node `23.0.0`
+
+- Approved additive full ingest `github-fc2596c23efd4fe6756c`, from `stripe@22.6.2`, SHA `fe645f63d645011aca38dff9e245c1cf7b9ae60e`, with separate exact-SHA notification-handler supplement. Runtime/examples/supplement fully read; changed generated sections and affected prior code read. Unchanged schemas, generated inventories, old changelog and duplicated diff mechanically checked under explicit one-time focused-reading approval. Both 68-file snapshots hash/size/blob checked; 35 modified/33 unchanged; all 1,119 upstream changed paths classified.
+- Concepts first, then cumulative source/changelog/company/index/logs. Node20+, Endive, scoped API removals, callback-context fix, webhook zero-tolerance distinction, transport errors and subscription pause recorded. All v22 wiki history retained despite upstream historical changelog regeneration; source_count remains 666. No cross-company comparison, extra collection, SDK tests/build/payment execution, commit or push. Details [[source-github-stripe-node]] and [[changelog-github-stripe-node]]. Next: validation and scoped publication approval.
+
 ## [2026-10-18] ingest | Stripe.js `10.1.0`
 
 - Approved serial delta at `3de39c594529799c58d589e9260559db1249a173`, after completed 10.0.0 full ingest. Five changed retained files and affected prior code fully read; 74 unchanged files and generated manifests/inventories/duplicated diff mechanically verified under approval. All 11 upstream changes classified, no gaps.

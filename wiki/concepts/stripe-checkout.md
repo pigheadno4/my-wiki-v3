@@ -161,6 +161,10 @@ Both integrate with Elements + Appearance API. **Use Checkout Sessions for most 
 - **Payment method reuse agreement**: auto-shown in setup/subscription/payment+future_use; hide with `consent_collection.payment_method_reuse_agreement.position: 'hidden'`; replace with `custom_text.after_submit`
 - **Policies**: return/refund, contact info, ToS/privacy links — configured in Dashboard Checkout Settings, not per-session API
 
+## Server SDK 23.0.0 Endive Boundary
+
+Checkout Session create removes `payment_method_types` and adds `allowed_payment_method_types`; the new field filters the dynamically eligible set, not an unconditional static selection. Session response typing adds a nullable allowlist. The same package adds line-item product `tax_details`, BLIK mandate/off-session options, SeQura capture options and PayPay/SeQura enum values. Custom-field label comments now allow 100 characters. This does not establish account enablement, web/native UI support or geographic eligibility. Earlier API examples remain versioned references. Source: [[source-github-stripe-node]].
+
 ## Server SDK 22.6.0 Additions
 
 `stripe@22.6.0` adds `payment_method_options.card.restrictions.funding_types_blocked` to Checkout Session create parameters and response typing, with documented values `credit`, `debit` and `prepaid`. Its generated `permissions.update_shipping_details` comments now limit that setting to `ui_mode=elements`, reinforcing the version boundary on the historical Embedded Checkout guidance above. SDK declaration availability does not establish merchant eligibility or hosted runtime rollout. Source: [[source-github-stripe-node]].

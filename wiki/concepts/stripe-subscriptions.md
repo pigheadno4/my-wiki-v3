@@ -23,6 +23,15 @@ Stripe's recurring billing product. Manages subscription lifecycle — creation,
 
 **11 core billing objects**: Account (v2, customer-configured) or Customer (v1), Product, Price, Subscription, Invoice, PaymentIntent, PaymentMethod, Feature, ProductFeature, Entitlement.
 
+## Server SDK 23.0.0 Pause and Billing Contracts
+
+The retained Endive SDK adds `stripe.subscriptions.pause(id, params)`, a POST to `/v1/subscriptions/{id}/pause`. Its comment describes a true paused status: no invoices and no new billing periods, resumable via the resume endpoint, but no attached schedule. This is distinct from `pause_collection`. Schedule-managed pauses instead have `pause_schedules` on create/update (only one entry supported), optional resume timing/settings, and operation statuses; omit an update to preserve it or pass an empty string to clear it.
+
+Update/resume `billing_cycle_anchor` becomes an object with `type: 'now' | 'unchanged'`; invoice previews also permit a timestamp variant. Resume adds `payment_behavior` (direct endpoint default `resume_on_payment_attempt`; new schedule resume settings default `resume_on_payment_success`). Item `current_trial`, trial-end anchor settings and invoice/subscription `status_details` add typed lifecycle information. This is SDK contract evidence, not proof of universal Billing eligibility. Source: [[source-github-stripe-node]].
+
+> [!warning] Contradiction
+> The historical trial-only paused-status description above is not exhaustive for this SDK: the 23.0.0 generated status comment repeats it even though that same file implements explicit pause and exposes `pause_requested` reasons. Preserve the old guide/version evidence; consult the version-qualified endpoint and product prerequisites rather than treating that comment as a restriction. See [[stripe-node-sdk]] and [[source-github-stripe-node]].
+
 ## Integration Paths
 
 | Path | Best for |

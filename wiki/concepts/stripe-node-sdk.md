@@ -5,11 +5,27 @@ category: technology
 tags: [stripe, node-js, sdk, payment-intents, webhooks, pagination, error-handling, typescript, idempotency]
 ---
 
-## Definition
+## Historical v22 Definition
 
 The official Stripe Node.js library (`stripe` npm package) wraps the Stripe REST API for server-side JavaScript. The latest ingested release is `stripe@22.6.2` at SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f`, pinning Stripe API `2026-08-26.dahlia` and OpenAPI marker `v2442`. Earlier `22.1.1`, `22.4.0`, `22.5.0` and `22.6.0` knowledge remains version-qualified in the cumulative source. It supports Node.js 18+ and exports builds for Node, browser/worker, Bun, Deno, and workerd environments, plus an opt-in `extensibility` export condition introduced in 22.5.0. Collected but uningested versions are not this page's knowledge baseline.
 
 **Install**: `npm install stripe`
+
+## Version 23.0.0 Full Baseline
+
+The latest ingested baseline is now `stripe@23.0.0`, SHA `fe645f63d645011aca38dff9e245c1cf7b9ae60e`, API `2026-09-30.endive`, OpenAPI `v2526`, with Node.js **20+** and optional `@types/node >=20`. The definition and sections explicitly labeled 22.x below remain historical evidence, not v23 defaults.
+
+- Selected request-side `payment_method_types` fields disappear from Checkout Session create, PaymentIntent create/update/confirm and SetupIntent create/update. Response fields and Payment Links/Invoice/Subscription payment settings are not globally removed. Checkout's new `allowed_payment_method_types` filters dynamically eligible methods, rather than guaranteeing the old static-list semantics.
+- `withStripeContext(context)` constructs a new client with resources/request sender bound to it, preserving configuration, telemetry metrics and emitter but deliberately not inheriting `stripeAccount`. The exact-SHA notification-handler supplement uses this method for callback clients, addressing the v22 shallow-copy binding issue at source level. No executed routing test is claimed.
+- Low-level `signature.verifyHeader/Async` now default to a 300-second age limit. Explicit zero skips age checking in those helpers and `webhooks.constructEvent/Async`, not HMAC verification. **Thin** `parseEventNotification/Async` still uses `tolerance || DEFAULT_TOLERANCE`, so zero remains 300 there. The handler uses the sync thin parser.
+- Client-level `constructEventWithoutVerification` and the `ErrorType` namespace are removed; `webhooks.constructEventWithoutVerification` and `Stripe.errors` remain. `V2List<T>` drops `object`, `has_more` and `url`; V1 lists remain distinct.
+- Incomplete JSON response bodies now produce `StripeConnectionError` for all body-read errors; invalid complete JSON remains `StripeAPIError`. Body-read failure does not enter a new SDK retry loop. Node sends `write/end` without waiting for `connect`, fixing interceptor compatibility.
+- `subscriptions.pause()` and typed pause schedules, item-level trials and object-shaped update/resume billing anchors expand Billing contracts. PayPay/SeQura and BLIK off-session mandate types are declaration evidence, not merchant availability.
+
+> [!warning] Contradiction
+> The 23.0.0 source still documents a retry default of one in README/config comments while the base/Node platform returns two (extensibility returns zero). Explicitly configure retries. Its subscription status comment still says pause can only follow a trial without a payment method, despite the new explicit pause endpoint. Keep both conflicts version-qualified; neither stale comment overrides implementation. See [[source-github-stripe-node]] and [[stripe-subscriptions]].
+
+Source: [[source-github-stripe-node]] and [[changelog-github-stripe-node]]. Full ingest used the expressly approved focused-reading exception; no SDK build, upstream tests or payment execution.
 
 ## SDK Initialization
 
@@ -110,7 +126,7 @@ Source: [[source-github-stripe-node]]. Existing checkout resource files are unch
 
 Source: [[source-github-stripe-node]] and [[changelog-github-stripe-node]]. These are source-reviewed changes, not executed SDK or live payment tests.
 
-## Webhook Secret Guard in 22.6.2
+## Historical Webhook Secret Guard in 22.6.2
 
 The latest ingested patch is `stripe@22.6.2` (SHA `d9d092737b4a891f0beaf47c26c222972a4c7b0f`), superseding the 22.6.1 baseline above without changing its API pin. Sync/async signature verification now rejects an empty or nullish secret with `StripeSignatureVerificationError` before calculating HMAC, but after parsing the payload/signature header. The message mentions `whsec_`; the guard does not enforce that prefix or reject whitespace-only strings. WithoutVerification helpers remain unauthenticated and unchanged.
 

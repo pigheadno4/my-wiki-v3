@@ -111,7 +111,7 @@ The additive `1.50.1` ingest adds exact OAuth access-service destination checks,
 
 ### Stripe Node SDK
 
-The cumulative Node server SDK evidence now includes `stripe@22.6.2`, preserving `22.1.1`, `22.4.0`, `22.5.0` and `22.6.0`. The 22.5.0 additions cover trusted-event parsing, API-family metadata and the extensibility transport. Version 22.6.0 pins API `2026-08-26.dahlia` and adds thin-notification handlers, polymorphic coercion, response-body timeout handling, V1 POST idempotency at zero configured retries, and generated checkout/billing fields. Version 22.6.1 hardens multipart boundaries and request paths and fixes schema-coerced GET/DELETE query values; the API pin and generated checkout files are unchanged. Version 22.6.2 explicitly rejects missing webhook secrets in signature verification and updates configuration checks in examples. Public webhook authentication remains mandatory. The handler's shallow-client context risk and transport/type boundaries are recorded in [[source-github-stripe-node]], [[changelog-github-stripe-node]], and [[stripe-node-sdk]]; these are source findings, not live integration proof.
+The cumulative Node server SDK evidence preserves v22 through `stripe@22.6.2` and now adds a full `stripe@23.0.0` baseline: Node20+, Endive API `2026-09-30.endive`, selected request-field/API removals, callback-client context binding fix, explicit subscription pause and generated checkout/Billing contracts. V22 webhook guards, request/upload hardening, coercion and idempotency findings remain versioned history. The v23 exact-SHA handler supplement addresses the earlier shallow-copy issue; source tracing is not live routing proof. Webhook zero-tolerance behavior differs between snapshot and thin parsers, and stale retry/pause comments remain flagged. See [[source-github-stripe-node]], [[changelog-github-stripe-node]], [[stripe-node-sdk]] and [[stripe-subscriptions]]. No account or payment-method eligibility is inferred.
 
 ### Express Checkout Element
 
@@ -646,8 +646,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-stripe-sca-readiness]] — SCA readiness: EEA scope, grandfathering (EU Dec 2020/UK Sep 2021), off-session checklist, MIT mandate, Charges API not SCA-ready
 - [[source-stripe-currencies]] — Supported currencies: minor units formatting, ISK/HUF/TWD/UGX special rules, min/max charge amounts, EEA card definition
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider/useCheckoutElements + Elements/useStripe/useElements/ElementsConsumer
-- [[source-github-stripe-node]] — cumulative `stripe` Node SDK history through `22.6.2`: checkout resources, thin-event handlers, transport/coercion, request hardening and context boundaries
-- [[changelog-github-stripe-node]] — package-qualified stripe-node release history retaining `22.1.1`, `22.4.0`, `22.5.0`, `22.6.0` `22.6.1` and `22.6.2`
+- [[source-github-stripe-node]] — cumulative `stripe` Node SDK through `23.0.0`: Endive migration, context fix, webhook/transport and checkout/Billing contracts; v22 retained
+- [[changelog-github-stripe-node]] — package-qualified stripe-node release history through `23.0.0`, preserving all ingested v22 entries
 - [[source-github-react-stripe-js]] — cumulative react-stripe-js history through `@stripe/react-stripe-js@7.0.0`: wrapper removal, Stripe JS v10 peer contract, React 19 lifecycle guard and preserved v6 knowledge
 - [[changelog-github-react-stripe-js]] — package-qualified react-stripe-js release history
 - [[source-stripe-bizum]] — Bizum: Spain-only real-time, phone auth, 395-day refunds, 40-day evidence, onboarding required

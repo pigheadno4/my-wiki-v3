@@ -5405,6 +5405,32 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.14.0/2026-09-29/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.13.1--23.14.0/comparison.json)
 
+## `github-fc2596c23efd4fe6756c`
+
+- Repository: `stripe/stripe-node`
+- SHA: `fe645f63d645011aca38dff9e245c1cf7b9ae60e`
+- Collection date: `2026-10-18`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-node/ingest-packets/github-fc2596c23efd4fe6756c/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-node/evidence-attachments/github-fc2596c23efd4fe6756c/attachment.json)
+- Review priority: `normal`
+- Required reading: `47` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe@23.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-node/releases/stripe/23.0.0/2026-10-18/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-node/comparisons/stripe/22.6.2--23.0.0/comparison.json)
+
 ## `github-fc71679cce8b99ae9a10`
 
 - Repository: `paypal/paypal-js`

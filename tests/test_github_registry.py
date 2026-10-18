@@ -2395,6 +2395,19 @@ class RegistryTests(unittest.TestCase):
                 self.assertEqual(550, capsule.max_packet_files)
                 self.assertEqual(6000000, capsule.max_packet_utf8_bytes)
 
+    def test_stripe_node_major_comparison_budget_preserves_source_limits(self):
+        repo = next(r for r in load_registry(ROOT / "tracking/github/repo-registry.toml")
+                    if r.id == "stripe/stripe-node")
+        capsule = repo.capsules[0]
+        self.assertEqual(1200, capsule.max_packet_files)
+        self.assertEqual(8000000, capsule.max_packet_utf8_bytes)
+        self.assertEqual(100, capsule.max_capsule_files)
+        self.assertEqual(5000000, capsule.max_capsule_utf8_bytes)
+        self.assertEqual(1200000, capsule.max_file_bytes)
+        self.assertEqual(("fixtures", "tests"), capsule.excluded_categories)
+        self.assertIn("8f58ed82f826bdfe040fc81ab7e6c60d4033614aca21eeb5f0e66331b3787521",
+                      capsule.historical_policy_hashes)
+
     def test_paypal_android_v3_paths_preserve_the_historical_v2_policy(self):
         repo = next(r for r in load_registry(ROOT / "tracking/github/repo-registry.toml")
                     if r.id == "paypal/paypal-android")

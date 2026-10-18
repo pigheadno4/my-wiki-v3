@@ -1,0 +1,2251 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-node`
+- Package: `stripe`
+- From: `22.6.2` (`d9d092737b4a891f0beaf47c26c222972a4c7b0f`)
+- To: `23.0.0` (`fe645f63d645011aca38dff9e245c1cf7b9ae60e`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.github/pull_request_template.md`
+- `.github/workflows/changelog.yml`
+- `.github/workflows/main.yml`
+- `.github/zizmor.yml`
+- `.hark/changes/2011-09-28_unknown_initial-release-customers.change.md`
+- `.hark/changes/2011-10-05_unknown_add-charges-api.change.md`
+- `.hark/changes/2011-10-05_unknown_add-customers-list.change.md`
+- `.hark/changes/2011-11-26_unknown_add-invoices-api.change.md`
+- `.hark/changes/2011-11-26_unknown_add-subscription-api.change.md`
+- `.hark/changes/2011-11-26_unknown_amount-stripe-charges.change.md`
+- `.hark/changes/2011-11-26_unknown_bugfix-fix-bug.change.md`
+- `.hark/changes/2011-11-26_unknown_bugfix-fix-bug2.change.md`
+- `.hark/changes/2011-11-26_unknown_change-documentatio-links.change.md`
+- `.hark/changes/2011-11-26_unknown_make-tests-pass.change.md`
+- `.hark/changes/2011-11-26_unknown_only-require-node.change.md`
+- `.hark/changes/2011-11-26_unknown_various-documentatio-fixes.change.md`
+- `.hark/changes/2011-12-06_unknown_add-apis-tests.change.md`
+- `.hark/changes/2012-08-03_unknown_add-coupons-api.change.md`
+- `.hark/changes/2012-08-03_unknown_added-events-api.change.md`
+- `.hark/changes/2012-08-03_unknown_added-plans-update.change.md`
+- `.hark/changes/2012-08-03_unknown_fix-duplicate-callbacks.change.md`
+- `.hark/changes/2012-08-03_unknown_pass-more-robust.change.md`
+- `.hark/changes/2012-08-03_unknown_various-test-fixes.change.md`
+- `.hark/changes/2013-01-30_unknown_requests-return-javascript.change.md`
+- `.hark/changes/2013-10-18_unknown_api-overhaul-refactor.change.md`
+- `.hark/changes/2013-10-18_unknown_release-version-2.change.md`
+- `.hark/changes/2013-11-07_unknown_add-missing-stripe.change.md`
+- `.hark/changes/2013-11-07_unknown_bugfix-fix-windows.change.md`
+- `.hark/changes/2013-11-07_unknown_remove-global-resources.change.md`
+- `.hark/changes/2013-11-07_unknown_support-setting-authtoken.change.md`
+- `.hark/changes/2013-11-07_unknown_support-single-key.change.md`
+- `.hark/changes/2013-11-09_unknown_add-specs-invoice.change.md`
+- `.hark/changes/2013-11-09_unknown_add-support-settimeout.change.md`
+- `.hark/changes/2013-11-12_unknown_bugfix-fix-user.change.md`
+- `.hark/changes/2013-11-20_unknown_bugfix-fix-incorrect.change.md`
+- `.hark/changes/2013-12-04_unknown_add-application-fees.change.md`
+- `.hark/changes/2014-01-10_unknown_document-cancelsubscr-method.change.md`
+- `.hark/changes/2014-01-11_unknown_bugfix-fix-76.change.md`
+- `.hark/changes/2014-01-29_unknown_support-multiple-subscription.change.md`
+- `.hark/changes/2014-02-07_unknown_ensure-raw-error.change.md`
+- `.hark/changes/2014-02-20_unknown_add-binding-transfers.change.md`
+- `.hark/changes/2014-03-27_unknown_add-more-debug.change.md`
+- `.hark/changes/2014-03-27_unknown_bugfix-fix-url.change.md`
+- `.hark/changes/2014-04-08_unknown_add-better-checks.change.md`
+- `.hark/changes/2014-04-08_unknown_validate-connect-auth.change.md`
+- `.hark/changes/2014-04-09_unknown_ensure-prevent-requests.change.md`
+- `.hark/changes/2014-04-25_unknown_bugfix-fix-revoked.change.md`
+- `.hark/changes/2014-04-25_unknown_upgrade-js-3.change.md`
+- `.hark/changes/2014-04-28_unknown_bugfix-fix-js.change.md`
+- `.hark/changes/2014-05-16_unknown_allow-update-method.change.md`
+- `.hark/changes/2014-05-21_unknown_support-cards-recipients.change.md`
+- `.hark/changes/2014-06-17_unknown_add-metadata-disputes.change.md`
+- `.hark/changes/2014-07-17_unknown_add-support-optional.change.md`
+- `.hark/changes/2014-07-17_unknown_bugfix-fix-lack.change.md`
+- `.hark/changes/2014-07-29_unknown_make-application-fee.change.md`
+- `.hark/changes/2014-11-12_unknown_add-stack-traces.change.md`
+- `.hark/changes/2014-11-12_unknown_allow-setting-http.change.md`
+- `.hark/changes/2014-11-18_unknown_bugfix-fix-stringifyreq.change.md`
+- `.hark/changes/2014-11-18_unknown_bump-major-re.change.md`
+- `.hark/changes/2014-11-26_unknown_bugfix-fix-issue.change.md`
+- `.hark/changes/2014-11-26_unknown_version-skipped-due.change.md`
+- `.hark/changes/2014-12-23_unknown_adding-file-uploads.change.md`
+- `.hark/changes/2015-01-21_unknown_support-making-bitcoin.change.md`
+- `.hark/changes/2015-02-05_unknown_bugfix-fix-incorrect.change.md`
+- `.hark/changes/2015-02-05_unknown_switch-bluebird-promises.change.md`
+- `.hark/changes/2015-02-05_unknown_update-all-dependencies.change.md`
+- `.hark/changes/2015-02-19_unknown_account-resource-will.change.md`
+- `.hark/changes/2015-02-19_unknown_add-methods-manipulating.change.md`
+- `.hark/changes/2015-02-19_unknown_support-bitcoinrecei-update.change.md`
+- `.hark/changes/2015-02-21_unknown_bugfix-fix-passing.change.md`
+- `.hark/changes/2015-02-24_unknown_support-transfer-reversals.change.md`
+- `.hark/changes/2015-03-31_unknown_bugfix-fix-support.change.md`
+- `.hark/changes/2015-04-02_unknown_remove-ssl-revocation.change.md`
+- `.hark/changes/2015-06-10_unknown_added-support-bank.change.md`
+- `.hark/changes/2015-06-11_unknown_added-support-optional.change.md`
+- `.hark/changes/2015-06-30_unknown_bugfix-fixed-issue.change.md`
+- `.hark/changes/2015-06-30_unknown_bugfix-fixed-issue2.change.md`
+- `.hark/changes/2015-07-07_unknown_added-request-ids.change.md`
+- `.hark/changes/2015-08-03_unknown_added-dispute-listing.change.md`
+- `.hark/changes/2015-08-03_unknown_added-managed-account.change.md`
+- `.hark/changes/2015-08-17_unknown_added-refund-object.change.md`
+- `.hark/changes/2015-09-11_unknown_added-rate-limiting.change.md`
+- `.hark/changes/2015-09-14_unknown_add-relay-resources.change.md`
+- `.hark/changes/2015-09-17_unknown_remove-ability-api.change.md`
+- `.hark/changes/2015-09-17_unknown_rename-stripeinvali-stripeinvali.change.md`
+- `.hark/changes/2015-12-02_unknown_add-verification-routine.change.md`
+- `.hark/changes/2016-01-13_unknown_add-lastresponse-property.change.md`
+- `.hark/changes/2016-01-13_unknown_return-usage-errors.change.md`
+- `.hark/changes/2016-01-13_unknown_use-latest-year.change.md`
+- `.hark/changes/2016-01-26_unknown_add-support-deleting.change.md`
+- `.hark/changes/2016-02-08_unknown_add-countryspec-model.change.md`
+- `.hark/changes/2016-03-15_unknown_add-reject-account.change.md`
+- `.hark/changes/2016-05-04_unknown_add-update-create.change.md`
+- `.hark/changes/2016-05-25_unknown_add-support-returning.change.md`
+- `.hark/changes/2016-07-14_unknown_add-threedsecure-model.change.md`
+- `.hark/changes/2016-07-19_unknown_add-source-model.change.md`
+- `.hark/changes/2016-08-22_unknown_uri-encode-unames.change.md`
+- `.hark/changes/2016-08-29_unknown_refactor-deprecated-uses.change.md`
+- `.hark/changes/2016-09-16_unknown_add-support-apple.change.md`
+- `.hark/changes/2016-10-18_unknown_support-403-status.change.md`
+- `.hark/changes/2016-11-21_unknown_add-retrieve-method.change.md`
+- `.hark/changes/2016-12-01_unknown_add-support-verifying.change.md`
+- `.hark/changes/2017-01-18_unknown_add-support-updating.change.md`
+- `.hark/changes/2017-03-08_unknown_update-required-version.change.md`
+- `.hark/changes/2017-03-22_unknown_make-requestid-available.change.md`
+- `.hark/changes/2017-03-30_unknown_fix-bad-reference.change.md`
+- `.hark/changes/2017-03-31_unknown_add-support-payouts.change.md`
+- `.hark/changes/2017-04-05_unknown_fix-paths-error.change.md`
+- `.hark/changes/2017-04-12_unknown_reject-id-parameters.change.md`
+- `.hark/changes/2017-05-11_unknown_support-checking-webhook.change.md`
+- `.hark/changes/2017-05-18_unknown_tweak-class-initializati.change.md`
+- `.hark/changes/2017-05-24_unknown_add-stripe-setappinfo.change.md`
+- `.hark/changes/2017-05-25_unknown_add-support-account.change.md`
+- `.hark/changes/2017-05-25_unknown_make-response-headers.change.md`
+- `.hark/changes/2017-06-20_unknown_add-support-ephemeral.change.md`
+- `.hark/changes/2017-06-20_unknown_fix-usage-hasownproper.change.md`
+- `.hark/changes/2017-06-24_unknown_properly-encode-subscription.change.md`
+- `.hark/changes/2017-08-03_unknown_handle-buffer-incompatibil.change.md`
+- `.hark/changes/2017-08-10_unknown_support-informationa-events.change.md`
+- `.hark/changes/2017-08-25_unknown_specify-utf-8.change.md`
+- `.hark/changes/2017-09-05_unknown_switch-bearer-token.change.md`
+- `.hark/changes/2017-09-12_unknown_drop-support-node.change.md`
+- `.hark/changes/2017-09-25_unknown_add-check-options.change.md`
+- `.hark/changes/2017-09-25_unknown_bump-required-versions.change.md`
+- `.hark/changes/2017-09-25_unknown_remove-dependency-object.change.md`
+- `.hark/changes/2017-09-25_unknown_use-safe-buffer.change.md`
+- `.hark/changes/2017-10-04_brandur_fix-improper-warning.change.md`
+- `.hark/changes/2017-10-26_brandur_support-listing-source.change.md`
+- `.hark/changes/2017-10-31_brandur_support-exchange-rates.change.md`
+- `.hark/changes/2017-12-05_brandur_add-stripeidempo-type.change.md`
+- `.hark/changes/2018-02-21_brandur_add-support-topups.change.md`
+- `.hark/changes/2018-03-24_ob_drop-bluebird-dependency.change.md`
+- `.hark/changes/2018-03-25_ob_fix-error-message.change.md`
+- `.hark/changes/2018-04-02_brandur_write-directly-connection.change.md`
+- `.hark/changes/2018-04-04_brandur_introduce-flexible-billing.change.md`
+- `.hark/changes/2018-05-09_brandur_add-support-issuer.change.md`
+- `.hark/changes/2018-05-14_brandur_export-error-types.change.md`
+- `.hark/changes/2018-05-14_brandur_re-implement-usage.change.md`
+- `.hark/changes/2018-05-31_brandur_warn-unknown-options.change.md`
+- `.hark/changes/2018-06-07_brandur_add-npmignore-create.change.md`
+- `.hark/changes/2018-06-28_ob_add-support-payment.change.md`
+- `.hark/changes/2018-07-03_enugent_fixes-array-encoding.change.md`
+- `.hark/changes/2018-07-18_ob_add-support-streams.change.md`
+- `.hark/changes/2018-07-26_brandur_add-support-stripe.change.md`
+- `.hark/changes/2018-07-28_brandur_add-support-sigma.change.md`
+- `.hark/changes/2018-08-02_brandur_add-support-file.change.md`
+- `.hark/changes/2018-08-03_brandur_add-support-cancel.change.md`
+- `.hark/changes/2018-08-27_tomer_remove-support-bitcoinrecei.change.md`
+- `.hark/changes/2018-09-05_ob_add-support-reporting.change.md`
+- `.hark/changes/2018-09-05_ob_add-support-usage.change.md`
+- `.hark/changes/2018-09-18_rattrayalex_add-auto-pagination.change.md`
+- `.hark/changes/2018-09-24_ob_add-support-stripe.change.md`
+- `.hark/changes/2018-09-24_ob_fix-test-suite.change.md`
+- `.hark/changes/2018-09-24_ob_rename-fileuploads-files.change.md`
+- `.hark/changes/2018-10-30_remi_add-support-persons.change.md`
+- `.hark/changes/2018-10-30_remi_add-support-webhook.change.md`
+- `.hark/changes/2018-11-09_ob_add-support-new.change.md`
+- `.hark/changes/2018-11-12_remi_add-support-partnerid.change.md`
+- `.hark/changes/2018-11-23_ob_handle-buffer-instances.change.md`
+- `.hark/changes/2018-11-26_rattrayalex_fixes-accidental-mutation.change.md`
+- `.hark/changes/2018-11-27_ob_add-support-valuelists.change.md`
+- `.hark/changes/2018-11-28_remi_add-support-review.change.md`
+- `.hark/changes/2018-12-06_ob_export-errors-root.change.md`
+- `.hark/changes/2018-12-07_ob_fix-iterating-files.change.md`
+- `.hark/changes/2018-12-11_ob_add-support-account.change.md`
+- `.hark/changes/2018-12-21_remi_add-support-checkoutsess.change.md`
+- `.hark/changes/2019-01-17_ob_fix-buffer-deprecation.change.md`
+- `.hark/changes/2019-01-23_remi_rename-checkoutsess-session.change.md`
+- `.hark/changes/2019-01-25_robz_add-support-oauth.change.md`
+- `.hark/changes/2019-01-31_brandur_add-configurable-telemetry.change.md`
+- `.hark/changes/2019-02-04_ob_enable-persistent-connections.change.md`
+- `.hark/changes/2019-02-12_remi_add-support-subscription.change.md`
+- `.hark/changes/2019-02-14_ob_always-encode-arrays.change.md`
+- `.hark/changes/2019-02-14_rattrayalex_add-stripe-setmaxnetwor.change.md`
+- `.hark/changes/2019-03-11_ob_encode-dates-unix.change.md`
+- `.hark/changes/2019-03-14_ob_fix-support-https.change.md`
+- `.hark/changes/2019-03-16_remi_add-support-deleting.change.md`
+- `.hark/changes/2019-03-19_remi_add-support-paymentmetho.change.md`
+- `.hark/changes/2019-03-19_remi_add-support-retrieving.change.md`
+- `.hark/changes/2019-04-18_remi_add-support-creditnote.change.md`
+- `.hark/changes/2019-04-22_remi_add-support-taxid.change.md`
+- `.hark/changes/2019-04-22_remi_retrieveupco-invoice-can.change.md`
+- `.hark/changes/2019-04-24_remi_add-support-taxrate.change.md`
+- `.hark/changes/2019-04-26_ob_fix-encoding-nested.change.md`
+- `.hark/changes/2019-05-02_rattrayalex_handle-errors-oauth.change.md`
+- `.hark/changes/2019-05-06_irace_prettier-formatting.change.md`
+- `.hark/changes/2019-05-07_irace_alphabetize-basic-methods.change.md`
+- `.hark/changes/2019-05-07_irace_use-id-single.change.md`
+- `.hark/changes/2019-05-07_ob_add-balancetrans-resource.change.md`
+- `.hark/changes/2019-05-08_ob_remove-deprecated-methods.change.md`
+- `.hark/changes/2019-05-08_paulasjes_add-generatewebh-make.change.md`
+- `.hark/changes/2019-05-08_rattrayalex_modernize-es5-es6.change.md`
+- `.hark/changes/2019-05-08_rattrayalex_move-generatetest-stripe.change.md`
+- `.hark/changes/2019-05-09_irace_misc-manual-formatting.change.md`
+- `.hark/changes/2019-05-09_ob_add-vscode-editorconfig.change.md`
+- `.hark/changes/2019-05-09_ob_drop-support-node.change.md`
+- `.hark/changes/2019-05-09_ob_remove-legacy-parameter.change.md`
+- `.hark/changes/2019-05-10_rattrayalex_remove-curried-urldata.change.md`
+- `.hark/changes/2019-05-14_irace_extract-resources-file.change.md`
+- `.hark/changes/2019-05-14_ob_add-listlineitem-listupcoming.change.md`
+- `.hark/changes/2019-05-14_ob_add-support-capability.change.md`
+- `.hark/changes/2019-05-14_rattrayalex_drop-support-node.change.md`
+- `.hark/changes/2019-05-22_ob_make-autopaginati-functions.change.md`
+- `.hark/changes/2019-05-23_ob_add-support-radar.change.md`
+- `.hark/changes/2019-06-18_ob_add-support-customerbala.change.md`
+- `.hark/changes/2019-06-25_ob_enable-request-latency.change.md`
+- `.hark/changes/2019-06-28_remi_add-support-setupintent.change.md`
+- `.hark/changes/2019-07-05_rattrayalex_reorder-customer-methods.change.md`
+- `.hark/changes/2019-07-12_brandur_update-readme-retry.change.md`
+- `.hark/changes/2019-07-24_rattrayalex_interpret-any-string.change.md`
+- `.hark/changes/2019-07-25_rattrayalex_remove-safe-buffer.change.md`
+- `.hark/changes/2019-07-29_brandur_bump-lodash-4.change.md`
+- `.hark/changes/2019-07-30_rattrayalex_expose-use-once.change.md`
+- `.hark/changes/2019-07-30_rattrayalex_move-balance-history.change.md`
+- `.hark/changes/2019-07-31_rattrayalex_refactor-request-headers.change.md`
+- `.hark/changes/2019-08-01_rattrayalex_include-prefix-generated.change.md`
+- `.hark/changes/2019-08-02_rattrayalex_refactor-errors-es6.change.md`
+- `.hark/changes/2019-08-02_rattrayalex_refinements-error-es6.change.md`
+- `.hark/changes/2019-08-02_rattrayalex_remove-lodash-isplainobjec.change.md`
+- `.hark/changes/2019-08-08_rattrayalex_add-request-start.change.md`
+- `.hark/changes/2019-08-09_rattrayalex_refactor-requestdatap-file.change.md`
+- `.hark/changes/2019-08-09_rattrayalex_remove-subscription-schedule.change.md`
+- `.hark/changes/2019-08-13_ob_add-subscription-createusager.change.md`
+- `.hark/changes/2019-08-27_ob_bump-eslint-utils.change.md`
+- `.hark/changes/2019-09-09_richardm_get-delete-requests.change.md`
+- `.hark/changes/2019-09-18_rattrayalex_retry-based-stripe.change.md`
+- `.hark/changes/2019-10-08_richardm_add-request-specific.change.md`
+- `.hark/changes/2019-10-24_ob_contributor-convenant.change.md`
+- `.hark/changes/2019-10-28_brandur_readme-imply-context.change.md`
+- `.hark/changes/2019-10-30_richardm_define-type-property.change.md`
+- `.hark/changes/2019-11-06_remi_add-support-mandate.change.md`
+- `.hark/changes/2019-11-07_rattrayalex_new-config-object.change.md`
+- `.hark/changes/2019-11-22_rattrayalex_remove-duplicate-export.change.md`
+- `.hark/changes/2019-11-26_remi_add-support-creditnote.change.md`
+- `.hark/changes/2019-12-06_rattrayalex_fix-flows-test.change.md`
+- `.hark/changes/2019-12-24_rattrayalex_add-typescript-definitions.change.md`
+- `.hark/changes/2019-12-26_rattrayalex_remove-deprecated-resources.change.md`
+- `.hark/changes/2019-12-31_ob_bump-handlebars-4.change.md`
+- `.hark/changes/2020-01-09_rattrayalex_deprecate-many-library.change.md`
+- `.hark/changes/2020-01-10_rattrayalex_bugfix-add-types.change.md`
+- `.hark/changes/2020-01-13_ob_improve-docs-core.change.md`
+- `.hark/changes/2020-01-14_remi_add-support-listing.change.md`
+- `.hark/changes/2020-01-15_remi_add-support-pendingupdat.change.md`
+- `.hark/changes/2020-01-15_remi_adding-missing-events.change.md`
+- `.hark/changes/2020-01-16_rattrayalex_added-typescript-webhook.change.md`
+- `.hark/changes/2020-01-17_remi_add-metadata-checkout.change.md`
+- `.hark/changes/2020-01-21_remi_improve-docstrings-many.change.md`
+- `.hark/changes/2020-01-23_brandur_gracefully-handle-missing.change.md`
+- `.hark/changes/2020-01-23_remi_add-support-new.change.md`
+- `.hark/changes/2020-01-24_remi_add-support-shipping.change.md`
+- `.hark/changes/2020-01-28_remi_add-new-type.change.md`
+- `.hark/changes/2020-01-30_brandur_fix-file-uploads.change.md`
+- `.hark/changes/2020-01-30_rattrayalex_allow-types-node.change.md`
+- `.hark/changes/2020-01-30_remi_add-support-fpx.change.md`
+- `.hark/changes/2020-01-30_richardm_fix-typescript-definition.change.md`
+- `.hark/changes/2020-01-31_rattrayalex_make-typescript-param.change.md`
+- `.hark/changes/2020-01-31_remi_add-new-type.change.md`
+- `.hark/changes/2020-01-31_remi_add-support-company.change.md`
+- `.hark/changes/2020-02-04_ob_rename-sortcode-sendersortco.change.md`
+- `.hark/changes/2020-02-04_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-02-10_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-02-12_remi_add-support-paymentinten.change.md`
+- `.hark/changes/2020-02-12_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-02-14_richardm_ts-fixes.change.md`
+- `.hark/changes/2020-02-18_brandur_change-timeout-default.change.md`
+- `.hark/changes/2020-02-21_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-02-24_remi_add-support-listing.change.md`
+- `.hark/changes/2020-02-25_remi_add-new-enum.change.md`
+- `.hark/changes/2020-02-27_remi_make-type-accountlink.change.md`
+- `.hark/changes/2020-02-28_remi_add-mysst-valid.change.md`
+- `.hark/changes/2020-03-02_rattrayalex_update-type-stripeerror.change.md`
+- `.hark/changes/2020-03-03_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-03-04_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-03-04_remi_multiple-api-changes2.change.md`
+- `.hark/changes/2020-03-05_remi_add-support-metadata.change.md`
+- `.hark/changes/2020-03-06_rattrayalex_allow-null-undefined.change.md`
+- `.hark/changes/2020-03-06_remi_make-metadata-nullable.change.md`
+- `.hark/changes/2020-03-12_remi_add-support-shipping.change.md`
+- `.hark/changes/2020-03-12_remi_add-support-threedsecure.change.md`
+- `.hark/changes/2020-03-13_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-03-20_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-03-24_remi_add-new-capabilities.change.md`
+- `.hark/changes/2020-03-24_remi_add-support-pausecollect.change.md`
+- `.hark/changes/2020-03-25_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-03-26_remi_add-support-spendingcont.change.md`
+- `.hark/changes/2020-03-27_rattrayalex_improve-stripeerror-generate.change.md`
+- `.hark/changes/2020-04-03_remi_add-support-calculatedst.change.md`
+- `.hark/changes/2020-04-08_richardm_fix-ts-return.change.md`
+- `.hark/changes/2020-04-10_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-04-14_remi_add-support-description.change.md`
+- `.hark/changes/2020-04-14_remi_add-support-settings.change.md`
+- `.hark/changes/2020-04-15_remi_clean-up-deprecated.change.md`
+- `.hark/changes/2020-04-16_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-04-18_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-04-22_remi_add-support-billingporta.change.md`
+- `.hark/changes/2020-04-22_remi_add-support-coupon.change.md`
+- `.hark/changes/2020-04-24_remi_add-support-jcbpayments.change.md`
+- `.hark/changes/2020-04-28_ob_make-displayitems-checkout.change.md`
+- `.hark/changes/2020-04-29_remi_add-support-price.change.md`
+- `.hark/changes/2020-05-01_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-05-07_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-05-12_remi_add-support-lineitem.change.md`
+- `.hark/changes/2020-05-13_remi_add-support-purchasedeta.change.md`
+- `.hark/changes/2020-05-19_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-05-20_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-05-22_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-05-28_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-05-29_remi_add-support-bacs.change.md`
+- `.hark/changes/2020-06-03_remi_add-support-bancontact.change.md`
+- `.hark/changes/2020-06-03_remi_add-support-paymentinten.change.md`
+- `.hark/changes/2020-06-03_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-06-03_remi_multiple-api-changes2.change.md`
+- `.hark/changes/2020-06-09_remi_add-support-idnpwp.change.md`
+- `.hark/changes/2020-06-11_remi_add-support-cartes.change.md`
+- `.hark/changes/2020-06-11_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-06-18_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-06-23_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-06-24_remi_add-support-paymentmetho.change.md`
+- `.hark/changes/2020-06-25_remi_add-support-invoice.change.md`
+- `.hark/changes/2020-06-28_remi_fix-tests-plan.change.md`
+- `.hark/changes/2020-07-01_richardm_document-discourage-protocol.change.md`
+- `.hark/changes/2020-07-06_richardm_expose-striperesour-instance.change.md`
+- `.hark/changes/2020-07-06_richardm_fix-assertcapabi-type.change.md`
+- `.hark/changes/2020-07-13_cjavilla_multiple-api-changes.change.md`
+- `.hark/changes/2020-07-14_cjavilla_change-string-enum.change.md`
+- `.hark/changes/2020-07-15_remi_add-support-amounttotal.change.md`
+- `.hark/changes/2020-07-16_remi_bump-lodash-4.change.md`
+- `.hark/changes/2020-07-16_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-07-16_richardm_add-new-fields.change.md`
+- `.hark/changes/2020-07-16_richardm_refactor-remaining-var.change.md`
+- `.hark/changes/2020-07-16_richardm_use-strict-equality.change.md`
+- `.hark/changes/2020-07-17_remi_add-support-accountonboa.change.md`
+- `.hark/changes/2020-07-17_remi_add-support-politicalexp.change.md`
+- `.hark/changes/2020-07-20_remi_add-support-capabilities.change.md`
+- `.hark/changes/2020-07-22_remi_add-support-cartesbancai.change.md`
+- `.hark/changes/2020-07-25_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-07-29_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-07-30_remi_improve-types-customer.change.md`
+- `.hark/changes/2020-08-04_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-08-05_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-08-07_remi_add-support-alipay.change.md`
+- `.hark/changes/2020-08-13_richardm_codegen-multiple-api.change.md`
+- `.hark/changes/2020-08-14_remi_add-support-alipay.change.md`
+- `.hark/changes/2020-08-17_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-08-18_remi_add-support-amountdetail.change.md`
+- `.hark/changes/2020-08-19_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-08-27_richardm_typescript-add-lastresponse.change.md`
+- `.hark/changes/2020-08-28_richardm_multiple-api-changes.change.md`
+- `.hark/changes/2020-08-31_remi_add-support-paymentmetho.change.md`
+- `.hark/changes/2020-09-02_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-09-08_remi_add-support-sofort.change.md`
+- `.hark/changes/2020-09-09_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-09-10_remi_add-support-sepa.change.md`
+- `.hark/changes/2020-09-13_remi_add-support-promotioncod.change.md`
+- `.hark/changes/2020-09-21_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-09-23_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-09-24_ctrudeau_multiple-api-changes.change.md`
+- `.hark/changes/2020-09-24_richardm_add-type-definition.change.md`
+- `.hark/changes/2020-09-25_remi_add-support-oxxo.change.md`
+- `.hark/changes/2020-09-25_richardm_more-idiomatic-types.change.md`
+- `.hark/changes/2020-09-29_remi_add-support-contribution.change.md`
+- `.hark/changes/2020-09-29_remi_add-support-oxxopayments.change.md`
+- `.hark/changes/2020-09-29_richardm_add-version-constant.change.md`
+- `.hark/changes/2020-09-30_remi_add-support-setupattempt.change.md`
+- `.hark/changes/2020-10-02_remi_add-support-new.change.md`
+- `.hark/changes/2020-10-02_remi_add-support-tosacceptanc.change.md`
+- `.hark/changes/2020-10-09_richardm_add-support-bancontact.change.md`
+- `.hark/changes/2020-10-09_richardm_add-support-internal.change.md`
+- `.hark/changes/2020-10-12_remi_add-support-setupintent.change.md`
+- `.hark/changes/2020-10-13_remi_add-support-description.change.md`
+- `.hark/changes/2020-10-14_remi_add-support-payout.change.md`
+- `.hark/changes/2020-10-14_richardm_add-support-discounts.change.md`
+- `.hark/changes/2020-10-14_richardm_do-mutate-user.change.md`
+- `.hark/changes/2020-10-15_remi_make-originalpayo-reversedby.change.md`
+- `.hark/changes/2020-10-20_remi_add-support-jprn.change.md`
+- `.hark/changes/2020-10-20_richardm_chore-replace-recommended.change.md`
+- `.hark/changes/2020-10-23_remi_add-support-passing.change.md`
+- `.hark/changes/2020-10-23_remi_support-passing-taxrates.change.md`
+- `.hark/changes/2020-10-26_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-10-26_richardm_add-stripe-emptyable.change.md`
+- `.hark/changes/2020-10-27_paulasjes_added-requirements-readme.change.md`
+- `.hark/changes/2020-10-27_remi_add-paymentmetho-interacprese.change.md`
+- `.hark/changes/2020-10-27_richardm_standardize-cruld-order.change.md`
+- `.hark/changes/2020-11-04_remi_add-support-company.change.md`
+- `.hark/changes/2020-11-09_remi_add-invoice-finalization.change.md`
+- `.hark/changes/2020-11-09_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-11-17_ctrudeau_update-generated-code.change.md`
+- `.hark/changes/2020-11-17_unknown_identical-7-15.change.md`
+- `.hark/changes/2020-11-17_unknown_identical-8-122.change.md`
+- `.hark/changes/2020-11-17_unknown_published-error-do.change.md`
+- `.hark/changes/2020-11-18_richardm_add-support-grabpay.change.md`
+- `.hark/changes/2020-11-19_richardm_more-consistent-namespacing.change.md`
+- `.hark/changes/2020-11-19_richardm_update-generated-code.change.md`
+- `.hark/changes/2020-11-20_remi_add-support-capabilities.change.md`
+- `.hark/changes/2020-11-24_remi_multiple-api-changes.change.md`
+- `.hark/changes/2020-11-30_remi_fixed-promises-example.change.md`
+- `.hark/changes/2020-12-04_remi_add-support-documents.change.md`
+- `.hark/changes/2020-12-10_ctrudeau_multiple-api-changes.change.md`
+- `.hark/changes/2020-12-15_ctrudeau_api-updates.change.md`
+- `.hark/changes/2020-12-26_remi_typo-receieved-received.change.md`
+- `.hark/changes/2021-01-07_ctrudeau_api-updates.change.md`
+- `.hark/changes/2021-01-07_richardm_implement-fix-reverse.change.md`
+- `.hark/changes/2021-01-14_richardm_more-consistent-type.change.md`
+- `.hark/changes/2021-01-14_richardm_multiple-api-changes.change.md`
+- `.hark/changes/2021-01-15_richardm_make-request-timeout.change.md`
+- `.hark/changes/2021-01-22_richardm_api-updates.change.md`
+- `.hark/changes/2021-02-03_richardm_api-updates.change.md`
+- `.hark/changes/2021-02-05_richardm_api-updates.change.md`
+- `.hark/changes/2021-02-09_richardm_api-updates.change.md`
+- `.hark/changes/2021-02-17_richardm_api-updates.change.md`
+- `.hark/changes/2021-02-17_richardm_api-updates2.change.md`
+- `.hark/changes/2021-02-22_richardm_api-updates.change.md`
+- `.hark/changes/2021-03-19_richardm_types-export-striperawerr.change.md`
+- `.hark/changes/2021-03-22_richardm_api-updates.change.md`
+- `.hark/changes/2021-03-25_richardm_api-updates.change.md`
+- `.hark/changes/2021-03-31_richardm_api-updates.change.md`
+- `.hark/changes/2021-03-31_richardm_api-updates2.change.md`
+- `.hark/changes/2021-04-02_richardm_api-updates.change.md`
+- `.hark/changes/2021-04-12_richardm_api-updates.change.md`
+- `.hark/changes/2021-04-16_richardm_api-updates.change.md`
+- `.hark/changes/2021-04-21_richardm_api-updates.change.md`
+- `.hark/changes/2021-04-21_richardm_improve-type-definition.change.md`
+- `.hark/changes/2021-05-04_unknown_add-support-cardpresent.change.md`
+- `.hark/changes/2021-05-04_unknown_subscription-create-paymentbehav.change.md`
+- `.hark/changes/2021-05-05_richardm_api-updates.change.md`
+- `.hark/changes/2021-05-07_richardm_api-updates.change.md`
+- `.hark/changes/2021-05-11_richardm_api-updates.change.md`
+- `.hark/changes/2021-05-20_richardm_api-updates.change.md`
+- `.hark/changes/2021-05-26_dcr_api-updates.change.md`
+- `.hark/changes/2021-06-02_richardm_api-updates.change.md`
+- `.hark/changes/2021-06-04_richardm_api-updates.change.md`
+- `.hark/changes/2021-06-04_richardm_api-updates2.change.md`
+- `.hark/changes/2021-06-07_dcr_api-updates.change.md`
+- `.hark/changes/2021-06-16_richardm_api-updates.change.md`
+- `.hark/changes/2021-06-18_richardm_api-updates.change.md`
+- `.hark/changes/2021-06-25_richardm_add-support-streaming.change.md`
+- `.hark/changes/2021-06-25_richardm_api-updates.change.md`
+- `.hark/changes/2021-06-29_dcr_api-updates.change.md`
+- `.hark/changes/2021-06-30_dcr_api-updates.change.md`
+- `.hark/changes/2021-06-30_richardm_api-updates.change.md`
+- `.hark/changes/2021-07-09_richardm_api-updates.change.md`
+- `.hark/changes/2021-07-09_richardm_bugfix-binary-streaming.change.md`
+- `.hark/changes/2021-07-13_remi_update-links-stripe.change.md`
+- `.hark/changes/2021-07-14_dcr_api-updates.change.md`
+- `.hark/changes/2021-07-14_dcr_api-updates2.change.md`
+- `.hark/changes/2021-07-15_richardm_1191-add-support.change.md`
+- `.hark/changes/2021-07-21_richardm_api-updates.change.md`
+- `.hark/changes/2021-07-22_dcr_api-updates.change.md`
+- `.hark/changes/2021-07-27_richardm_fix-error-arguments.change.md`
+- `.hark/changes/2021-07-28_dcr_add-support-fullpath.change.md`
+- `.hark/changes/2021-07-28_dcr_api-updates.change.md`
+- `.hark/changes/2021-07-28_dcr_explicitly-define-basic.change.md`
+- `.hark/changes/2021-07-28_richardm_fix-typescript-definition.change.md`
+- `.hark/changes/2021-07-28_richardm_prevent-concurrent-initial.change.md`
+- `.hark/changes/2021-08-04_richardm_api-updates.change.md`
+- `.hark/changes/2021-08-11_dcr_api-updates.change.md`
+- `.hark/changes/2021-08-12_dcr_update-nock.change.md`
+- `.hark/changes/2021-08-13_dcr_add-httpclient-interface.change.md`
+- `.hark/changes/2021-08-16_dcr_add-client-name.change.md`
+- `.hark/changes/2021-08-16_dcr_update-user-agent.change.md`
+- `.hark/changes/2021-08-19_dcr_api-updates.change.md`
+- `.hark/changes/2021-08-27_richardm_api-updates.change.md`
+- `.hark/changes/2021-08-30_richardm_add-support-paginting.change.md`
+- `.hark/changes/2021-09-01_richardm_1228-api-updates.change.md`
+- `.hark/changes/2021-09-01_richardm_api-updates.change.md`
+- `.hark/changes/2021-09-07_richardm_api-updates.change.md`
+- `.hark/changes/2021-09-08_dcr_add-http-client.change.md`
+- `.hark/changes/2021-09-13_dcr_add-cryptoprovid-interface.change.md`
+- `.hark/changes/2021-09-15_richardm_api-updates.change.md`
+- `.hark/changes/2021-09-16_dcr_api-updates.change.md`
+- `.hark/changes/2021-09-16_remi_update-readme-md.change.md`
+- `.hark/changes/2021-09-16_richardm_fix-striperesour-extend.change.md`
+- `.hark/changes/2021-09-24_dcr_bump-up-ansi.change.md`
+- `.hark/changes/2021-09-24_dcr_update-fetchhttpcli-make.change.md`
+- `.hark/changes/2021-09-24_richardm_api-updates.change.md`
+- `.hark/changes/2021-09-29_dcr_api-updates.change.md`
+- `.hark/changes/2021-10-07_richardm_api-updates.change.md`
+- `.hark/changes/2021-10-08_richardm_api-updates.change.md`
+- `.hark/changes/2021-10-11_richardm_api-updates.change.md`
+- `.hark/changes/2021-10-14_richardm_api-updates.change.md`
+- `.hark/changes/2021-10-15_dcr_api-updates.change.md`
+- `.hark/changes/2021-10-18_dcr_add-typed-createfetchh.change.md`
+- `.hark/changes/2021-10-20_richardm_api-updates.change.md`
+- `.hark/changes/2021-11-01_dcr_api-updates.change.md`
+- `.hark/changes/2021-11-01_richardm_api-updates.change.md`
+- `.hark/changes/2021-11-04_dcr_api-updates.change.md`
+- `.hark/changes/2021-11-11_dcr_add-subtlecrypto-update.change.md`
+- `.hark/changes/2021-11-11_richardm_api-updates.change.md`
+- `.hark/changes/2021-11-11_richardm_better-types-lib.change.md`
+- `.hark/changes/2021-11-12_yejia_api-updates.change.md`
+- `.hark/changes/2021-11-16_dcr_api-updates.change.md`
+- `.hark/changes/2021-11-17_dcr_api-updates.change.md`
+- `.hark/changes/2021-11-19_richardm_api-updates.change.md`
+- `.hark/changes/2021-11-19_richardm_api-updates2.change.md`
+- `.hark/changes/2021-11-20_richardm_fix-broken-link.change.md`
+- `.hark/changes/2021-11-22_richardm_remove-coveralls-package.change.md`
+- `.hark/changes/2021-12-09_dcr_api-updates.change.md`
+- `.hark/changes/2021-12-09_yejia_api-updates.change.md`
+- `.hark/changes/2021-12-15_yejia_api-updates.change.md`
+- `.hark/changes/2021-12-17_dcr_api-updates.change.md`
+- `.hark/changes/2021-12-22_dcr_api-updates.change.md`
+- `.hark/changes/2021-12-22_dcr_api-updates2.change.md`
+- `.hark/changes/2022-01-10_dcr_add-comment-documenting.change.md`
+- `.hark/changes/2022-01-11_dcr_remove-dom-type.change.md`
+- `.hark/changes/2022-01-12_dcr_api-updates.change.md`
+- `.hark/changes/2022-01-12_richardm_api-updates.change.md`
+- `.hark/changes/2022-01-13_dcr_api-updates.change.md`
+- `.hark/changes/2022-01-19_dcr_api-updates.change.md`
+- `.hark/changes/2022-01-19_richardm_api-updates.change.md`
+- `.hark/changes/2022-01-20_dcr_customer-taxids-included.change.md`
+- `.hark/changes/2022-01-25_yejia_api-updates.change.md`
+- `.hark/changes/2022-01-28_dcr_bump-nanoid-3.change.md`
+- `.hark/changes/2022-01-28_dcr_bump-node-fetch.change.md`
+- `.hark/changes/2022-01-28_dcr_fix-striperesour-successfully.change.md`
+- `.hark/changes/2022-02-03_yejia_api-updates.change.md`
+- `.hark/changes/2022-02-09_richardm_api-updates.change.md`
+- `.hark/changes/2022-02-11_yejia_api-updates.change.md`
+- `.hark/changes/2022-02-23_yejia_api-updates.change.md`
+- `.hark/changes/2022-02-26_richardm_api-updates.change.md`
+- `.hark/changes/2022-02-26_richardm_properly-handle-api.change.md`
+- `.hark/changes/2022-02-26_richardm_typescript-add-declaration.change.md`
+- `.hark/changes/2022-02-26_richardm_update-documentatio-use.change.md`
+- `.hark/changes/2022-03-01_richardm_1362-api-updates.change.md`
+- `.hark/changes/2022-03-02_dcr_api-updates.change.md`
+- `.hark/changes/2022-03-09_dcr_api-updates.change.md`
+- `.hark/changes/2022-03-11_dcr_update-search-pagination.change.md`
+- `.hark/changes/2022-03-11_kamil_api-updates.change.md`
+- `.hark/changes/2022-03-18_dcr_api-updates.change.md`
+- `.hark/changes/2022-03-23_dcr_api-updates.change.md`
+- `.hark/changes/2022-03-23_kamil_force-update-minimist.change.md`
+- `.hark/changes/2022-03-25_pakrym_update-error-types.change.md`
+- `.hark/changes/2022-03-25_yejia_api-updates.change.md`
+- `.hark/changes/2022-03-28_dcr_bump-qs-package.change.md`
+- `.hark/changes/2022-03-28_pakrym_api-updates.change.md`
+- `.hark/changes/2022-03-29_pakrym_api-updates.change.md`
+- `.hark/changes/2022-03-31_dcr_stop-sending-content.change.md`
+- `.hark/changes/2022-04-01_kamil_api-updates.change.md`
+- `.hark/changes/2022-04-08_kamil_api-updates.change.md`
+- `.hark/changes/2022-04-13_richardm_api-updates.change.md`
+- `.hark/changes/2022-04-18_richardm_api-updates.change.md`
+- `.hark/changes/2022-04-21_richardm_api-updates.change.md`
+- `.hark/changes/2022-04-28_dcr_add-tests-specifying.change.md`
+- `.hark/changes/2022-05-03_dcr_api-updates.change.md`
+- `.hark/changes/2022-05-04_dcr_api-updates.change.md`
+- `.hark/changes/2022-05-04_dcr_update-autopaginati-tests.change.md`
+- `.hark/changes/2022-05-04_pakrym_enable-ci-beta.change.md`
+- `.hark/changes/2022-05-05_dcr_api-updates.change.md`
+- `.hark/changes/2022-05-05_dcr_api-updates2.change.md`
+- `.hark/changes/2022-05-09_richardm_1417-api-updates.change.md`
+- `.hark/changes/2022-05-09_richardm_feat-http-client.change.md`
+- `.hark/changes/2022-05-11_richardm_api-updates.change.md`
+- `.hark/changes/2022-05-19_richardm_api-updates.change.md`
+- `.hark/changes/2022-05-23_pakrym_api-updates.change.md`
+- `.hark/changes/2022-05-23_pakrym_api-updates2.change.md`
+- `.hark/changes/2022-05-25_dcr_docs-update-httpclient.change.md`
+- `.hark/changes/2022-05-26_pakrym_api-updates.change.md`
+- `.hark/changes/2022-06-01_dcr_api-updates.change.md`
+- `.hark/changes/2022-06-08_pakrym_api-updates.change.md`
+- `.hark/changes/2022-06-09_pakrym_add-types-extra.change.md`
+- `.hark/changes/2022-06-09_pakrym_api-updates.change.md`
+- `.hark/changes/2022-06-13_pakrym_only-publish-stable.change.md`
+- `.hark/changes/2022-06-14_pakrym_fix-non-conforming.change.md`
+- `.hark/changes/2022-06-17_kamil_api-updates.change.md`
+- `.hark/changes/2022-06-21_dcr_fix-stop-using.change.md`
+- `.hark/changes/2022-06-23_dcr_api-updates.change.md`
+- `.hark/changes/2022-06-23_dcr_api-updates2.change.md`
+- `.hark/changes/2022-06-29_dcr_api-updates.change.md`
+- `.hark/changes/2022-07-06_pakrym_api-updates.change.md`
+- `.hark/changes/2022-07-07_pakrym_api-updates.change.md`
+- `.hark/changes/2022-07-12_ramya_update-readme-include.change.md`
+- `.hark/changes/2022-07-12_yejia_api-updates.change.md`
+- `.hark/changes/2022-07-13_yejia_move-types-node.change.md`
+- `.hark/changes/2022-07-14_dcr_fix-include-trailing.change.md`
+- `.hark/changes/2022-07-18_pakrym_api-updates.change.md`
+- `.hark/changes/2022-07-25_dcr_api-updates.change.md`
+- `.hark/changes/2022-07-26_dcr_api-updates.change.md`
+- `.hark/changes/2022-08-01_kamil_next-major-release.change.md`
+- `.hark/changes/2022-08-02_pakrym_api-updates.change.md`
+- `.hark/changes/2022-08-02_unknown_add-support-new.change.md`
+- `.hark/changes/2022-08-02_unknown_add-support-shippingcost.change.md`
+- `.hark/changes/2022-08-02_unknown_change-location-typescript.change.md`
+- `.hark/changes/2022-08-02_unknown_change-type-address.change.md`
+- `.hark/changes/2022-08-02_unknown_change-type-businessprof.change.md`
+- `.hark/changes/2022-08-02_unknown_change-type-currency.change.md`
+- `.hark/changes/2022-08-02_unknown_cleaning-up-sdk.change.md`
+- `.hark/changes/2022-08-02_unknown_moving-use-new.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-alipayaccoun-bitcoinrecei.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-alipayaccoun-deletedalipa.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-deprecated-stripe.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-invoicemarku-definition.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-issuerfraudr-issuerfraudr.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-issuerfraudr-resource.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-issuing-carddetails.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-lineitemlist-definition.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-order-paymentfaile.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-recipient-resource.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-redirecturl-loginlinks.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-retrievedeta-method.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-stripe-deletedalipa.change.md`
+- `.hark/changes/2022-08-02_unknown_remove-treasury-receivedcred.change.md`
+- `.hark/changes/2022-08-02_unknown_rename-invoicelinei-invoicelistu.change.md`
+- `.hark/changes/2022-08-02_unknown_rename-invoiceretri-invoicelistu.change.md`
+- `.hark/changes/2022-08-02_unknown_rename-invoiceretri-invoicelistu2.change.md`
+- `.hark/changes/2022-08-02_unknown_rename-listupcoming-method.change.md`
+- `.hark/changes/2022-08-05_pakrym_api-updates.change.md`
+- `.hark/changes/2022-08-09_yejia_api-updates.change.md`
+- `.hark/changes/2022-08-09_yejia_simplify-addressparam-definitions.change.md`
+- `.hark/changes/2022-08-11_anniel_api-updates.change.md`
+- `.hark/changes/2022-08-17_ramya_add-support-section.change.md`
+- `.hark/changes/2022-08-19_kamil_api-updates.change.md`
+- `.hark/changes/2022-08-23_anniel_add-test-coverage.change.md`
+- `.hark/changes/2022-08-23_dcr_api-updates.change.md`
+- `.hark/changes/2022-08-23_pakrym_add-beta-readme.change.md`
+- `.hark/changes/2022-08-24_dcr_fix-update-fetchhttpcli.change.md`
+- `.hark/changes/2022-08-24_pakrym_update-readme-md.change.md`
+- `.hark/changes/2022-08-25_dcr_regen-yarn-lock.change.md`
+- `.hark/changes/2022-08-26_anniel_update-coveralls-step.change.md`
+- `.hark/changes/2022-08-26_dcr_api-updates.change.md`
+- `.hark/changes/2022-08-31_pakrym_api-updates.change.md`
+- `.hark/changes/2022-09-06_yejia_api-updates.change.md`
+- `.hark/changes/2022-09-09_yejia_api-updates.change.md`
+- `.hark/changes/2022-09-15_kamil_api-updates.change.md`
+- `.hark/changes/2022-09-22_anniel_re-introduce-typescript.change.md`
+- `.hark/changes/2022-09-22_pakrym_api-updates.change.md`
+- `.hark/changes/2022-09-23_anniel_restore-lib-after.change.md`
+- `.hark/changes/2022-09-28_anniel_migrate-other-stripe.change.md`
+- `.hark/changes/2022-09-29_pakrym_fix-release-tag.change.md`
+- `.hark/changes/2022-09-29_yejia_api-updates.change.md`
+- `.hark/changes/2022-10-03_kamil_upgrade-dependencies.change.md`
+- `.hark/changes/2022-10-04_kamil_update-node-fetch.change.md`
+- `.hark/changes/2022-10-06_kamil_api-updates.change.md`
+- `.hark/changes/2022-10-11_anniel_change-stripesignat-header.change.md`
+- `.hark/changes/2022-10-12_anniel_drop-support-node.change.md`
+- `.hark/changes/2022-10-12_anniel_remove-deprecated-checkout.change.md`
+- `.hark/changes/2022-10-12_anniel_remove-orders-resource.change.md`
+- `.hark/changes/2022-10-13_richardm_api-updates.change.md`
+- `.hark/changes/2022-10-17_anniel_remove-sku-resource.change.md`
+- `.hark/changes/2022-10-18_xavdid_use-native-uuid.change.md`
+- `.hark/changes/2022-10-20_richardm_api-updates.change.md`
+- `.hark/changes/2022-11-01_anniel_remove-deprecated-configuratio.change.md`
+- `.hark/changes/2022-11-02_kamil_api-updates.change.md`
+- `.hark/changes/2022-11-04_anniel_remove-deprecated-basic.change.md`
+- `.hark/changes/2022-11-04_anniel_remove-deprecated-option.change.md`
+- `.hark/changes/2022-11-07_pakrym_api-updates.change.md`
+- `.hark/changes/2022-11-10_anniel_api-updates.change.md`
+- `.hark/changes/2022-11-11_pakrym_add-type-information.change.md`
+- `.hark/changes/2022-11-11_pakrym_annotate-prototypes-types.change.md`
+- `.hark/changes/2022-11-16_anniel_next-major-release.change.md`
+- `.hark/changes/2022-11-16_unknown_remove-charges-field.change.md`
+- `.hark/changes/2022-11-16_unknown_remove-deprecated-amount.change.md`
+- `.hark/changes/2022-11-16_unknown_remove-support-tosshownanda.change.md`
+- `.hark/changes/2022-11-17_pakrym_api-updates.change.md`
+- `.hark/changes/2022-11-17_pakrym_api-updates2.change.md`
+- `.hark/changes/2022-11-22_pakrym_split-resource-service.change.md`
+- `.hark/changes/2022-11-23_pakrym_move-child-resource.change.md`
+- `.hark/changes/2022-11-23_pakrym_remove-api-version.change.md`
+- `.hark/changes/2022-11-29_richardm_remove-unneeded-iife.change.md`
+- `.hark/changes/2022-12-01_richardm_narrower-type-stripe.change.md`
+- `.hark/changes/2022-12-05_pakrym_remove-basicmethods-ts.change.md`
+- `.hark/changes/2022-12-06_richardm_api-updates.change.md`
+- `.hark/changes/2022-12-06_richardm_api-updates2.change.md`
+- `.hark/changes/2022-12-08_pakrym_api-updates.change.md`
+- `.hark/changes/2022-12-13_anniel_update-packages-examples.change.md`
+- `.hark/changes/2022-12-15_anniel_api-updates.change.md`
+- `.hark/changes/2022-12-22_richardm_api-updates.change.md`
+- `.hark/changes/2023-01-05_anniel_api-updates.change.md`
+- `.hark/changes/2023-01-10_anniel_bump-json5-2.change.md`
+- `.hark/changes/2023-01-19_anniel_introduce-separate-entry.change.md`
+- `.hark/changes/2023-01-19_pakrym_api-updates.change.md`
+- `.hark/changes/2023-01-26_anniel_api-updates.change.md`
+- `.hark/changes/2023-01-27_anniel_fix-added-support.change.md`
+- `.hark/changes/2023-02-01_anniel_use-eventtarget-worker.change.md`
+- `.hark/changes/2023-02-02_anniel_change-default-entrypoint.change.md`
+- `.hark/changes/2023-02-02_richardm_api-updates.change.md`
+- `.hark/changes/2023-02-03_anniel_update-main-entrypoint.change.md`
+- `.hark/changes/2023-02-08_anniel_enable-library-work.change.md`
+- `.hark/changes/2023-02-10_pakrym_add-infrastructu-mocked.change.md`
+- `.hark/changes/2023-02-11_pakrym_add-more-webhook.change.md`
+- `.hark/changes/2023-02-13_pakrym_add-nextjs-webhook.change.md`
+- `.hark/changes/2023-02-16_anniel_api-updates.change.md`
+- `.hark/changes/2023-02-23_anniel_convert-typescript-files.change.md`
+- `.hark/changes/2023-02-23_richardm_api-updates.change.md`
+- `.hark/changes/2023-02-23_richardm_update-v11-8.change.md`
+- `.hark/changes/2023-03-02_pakrym_api-updates.change.md`
+- `.hark/changes/2023-03-06_anniel_migrate-generated-files.change.md`
+- `.hark/changes/2023-03-06_pakrym_remove-extra-test.change.md`
+- `.hark/changes/2023-03-08_anniel_change-httpproxy-httpagent.change.md`
+- `.hark/changes/2023-03-09_anniel_api-updates.change.md`
+- `.hark/changes/2023-03-14_anniel_configure-2-typescript.change.md`
+- `.hark/changes/2023-03-15_anniel_add-es-module.change.md`
+- `.hark/changes/2023-03-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-03-17_richardm_api-updates.change.md`
+- `.hark/changes/2023-03-20_anniel_add-deno-entry.change.md`
+- `.hark/changes/2023-03-23_pakrym_update-generated-code.change.md`
+- `.hark/changes/2023-03-30_anniel_update-generated-code.change.md`
+- `.hark/changes/2023-04-05_richardm_pin-latest-api.change.md`
+- `.hark/changes/2023-04-05_richardm_remove-stripe-default.change.md`
+- `.hark/changes/2023-04-05_richardm_typescript-remove-deprecated.change.md`
+- `.hark/changes/2023-04-06_pakrym_type-extend-resourcename.change.md`
+- `.hark/changes/2023-04-06_richardm_update-generated-code.change.md`
+- `.hark/changes/2023-04-13_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-04-14_anniel_add-deno-usage.change.md`
+- `.hark/changes/2023-04-14_anniel_add-deno-webhook.change.md`
+- `.hark/changes/2023-04-20_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-04-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-05-03_richardm_let-user-supply.change.md`
+- `.hark/changes/2023-05-04_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-05-11_anniel_update-generated-code.change.md`
+- `.hark/changes/2023-05-19_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-05-25_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-06-01_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-06-02_richardm_change-default-behavior.change.md`
+- `.hark/changes/2023-06-07_richardm_more-helpful-error.change.md`
+- `.hark/changes/2023-06-08_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-06-13_pakrym_generate-filecreatepa.change.md`
+- `.hark/changes/2023-06-13_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-06-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-06-20_anniel_update-readme-md.change.md`
+- `.hark/changes/2023-06-22_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-06-27_richardm_better-cryptoprovid-error.change.md`
+- `.hark/changes/2023-06-29_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-07-06_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-07-13_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-07-17_richardm_changelog-checkoutsess-checkout.change.md`
+- `.hark/changes/2023-07-17_richardm_changelog-fix-delimiterles.change.md`
+- `.hark/changes/2023-07-20_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-07-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-07-27_unknown_version-included-breaking.change.md`
+- `.hark/changes/2023-07-28_richardm_revert-import-http.change.md`
+- `.hark/changes/2023-08-02_anniel_allow-monkey-patching.change.md`
+- `.hark/changes/2023-08-03_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-08-10_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-08-16_anniel_allow-request-level.change.md`
+- `.hark/changes/2023-08-16_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-08-16_unknown_more-information-available.change.md`
+- `.hark/changes/2023-08-16_unknown_please-read-api.change.md`
+- `.hark/changes/2023-08-16_unknown_remove-deprecated-del.change.md`
+- `.hark/changes/2023-08-17_richardm_update-typescript-types.change.md`
+- `.hark/changes/2023-08-17_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-08-18_richardm_improved-maxnetworkre-options.change.md`
+- `.hark/changes/2023-08-21_anniel_update-v13-0.change.md`
+- `.hark/changes/2023-08-24_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-08-31_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-09-07_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-09-11_pakrym_feat-webhook-signing.change.md`
+- `.hark/changes/2023-09-11_richardm_use-src-apiversion.change.md`
+- `.hark/changes/2023-09-14_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-09-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-09-21_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-09-28_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-10-05_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-10-10_pakrym_bump-get-func.change.md`
+- `.hark/changes/2023-10-11_pakrym_update-generated-code.change.md`
+- `.hark/changes/2023-10-12_pakrym_add-event-types.change.md`
+- `.hark/changes/2023-10-13_pakrym_add-named-unions.change.md`
+- `.hark/changes/2023-10-16_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-10-16_stripe-openapi_update-generated-code2.change.md`
+- `.hark/changes/2023-10-16_unknown_please-read-api.change.md`
+- `.hark/changes/2023-10-17_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-10-18_pakrym_do-require-passing.change.md`
+- `.hark/changes/2023-10-26_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-11-02_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-11-09_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-11-13_pakrym_use-abortcontrol-native.change.md`
+- `.hark/changes/2023-11-15_anniel_move-webhooks-instance.change.md`
+- `.hark/changes/2023-11-16_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-11-16_stripe-openapi_update-generated-code2.change.md`
+- `.hark/changes/2023-11-21_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-11-30_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-12-07_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-12-14_richardm_add-usage-x.change.md`
+- `.hark/changes/2023-12-14_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-12-21_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2023-12-22_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-01-03_anniel_update-docstrings-indicate.change.md`
+- `.hark/changes/2024-01-04_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-01-12_pakrym_add-hint-about.change.md`
+- `.hark/changes/2024-01-12_pakrym_add-hint-about2.change.md`
+- `.hark/changes/2024-01-12_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-01-18_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-01-18_stripe-openapi_update-generated-code2.change.md`
+- `.hark/changes/2024-01-25_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-01-29_richardm_remove-https-check.change.md`
+- `.hark/changes/2024-02-01_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-02-08_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-02-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-02-22_pakrym_add-taxids-api.change.md`
+- `.hark/changes/2024-02-22_pakrym_standardize-parameter-interface.change.md`
+- `.hark/changes/2024-02-22_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-02-23_anniel_vscode-settings-true.change.md`
+- `.hark/changes/2024-02-29_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-03-07_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-03-14_ramya_update-generated-code.change.md`
+- `.hark/changes/2024-03-21_anniel_don-t-mutate.change.md`
+- `.hark/changes/2024-03-21_anniel_esbuild-test-project.change.md`
+- `.hark/changes/2024-03-21_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-03-28_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-04_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-09_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-10_ramya_update-generated-code.change.md`
+- `.hark/changes/2024-04-11_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-16_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-18_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-22_anniel_make-cloudflare-package.change.md`
+- `.hark/changes/2024-04-25_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-04-29_richardm_add-more-explicit.change.md`
+- `.hark/changes/2024-05-02_prathmesh_deprecate-node-methods.change.md`
+- `.hark/changes/2024-05-02_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-05-09_prathmesh_remove-unnecessary-pointer.change.md`
+- `.hark/changes/2024-05-09_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-05-09_stripe-openapi_update-generated-code2.change.md`
+- `.hark/changes/2024-05-16_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-05-23_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-05-30_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-06-06_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-06-13_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-06-14_ramya_where-params-union.change.md`
+- `.hark/changes/2024-06-17_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-06-24_prathmesh_use-worker-module.change.md`
+- `.hark/changes/2024-06-24_stripe-openapi_please-read-api.change.md`
+- `.hark/changes/2024-06-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-07-05_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-07-08_xavdid_add-generatetest-function.change.md`
+- `.hark/changes/2024-07-09_xavdid_check-hasownproper-using.change.md`
+- `.hark/changes/2024-07-09_xavdid_update-node-versions.change.md`
+- `.hark/changes/2024-07-11_prathmesh_update-changelog.change.md`
+- `.hark/changes/2024-07-11_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-07-18_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-07-25_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-07-25_stripe-openapi_update-generated-code2.change.md`
+- `.hark/changes/2024-08-01_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-08-08_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-08-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-08-29_ramya_generate-sdk-openapi.change.md`
+- `.hark/changes/2024-09-05_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-09-12_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-09-18_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-09-18_stripe-openapi_update-generated-code2.change.md`
+- `.hark/changes/2024-10-01_ramya_support-apis-new.change.md`
+- `.hark/changes/2024-10-03_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-10-08_jar_add-fetchrelated-v2.change.md`
+- `.hark/changes/2024-10-14_helenye_update-signature-verification.change.md`
+- `.hark/changes/2024-10-18_xavdid_update-object-tags.change.md`
+- `.hark/changes/2024-10-29_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-10-30_prathmesh_fixed-bug-where.change.md`
+- `.hark/changes/2024-11-05_jar_remove-empty-resources.change.md`
+- `.hark/changes/2024-11-20_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-12-17_xavdid_add-missing-key.change.md`
+- `.hark/changes/2024-12-18_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2024-12-19_jar_added-pull-request.change.md`
+- `.hark/changes/2025-01-15_jar_added-contributing-md.change.md`
+- `.hark/changes/2025-01-16_xavdid_add-justfile-remove.change.md`
+- `.hark/changes/2025-01-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-01-29_helenye_include-openapiversi-npm.change.md`
+- `.hark/changes/2025-02-07_xavdid_add-next-js.change.md`
+- `.hark/changes/2025-02-24_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-03-25_xavdid_swap-stripe-webhooks.change.md`
+- `.hark/changes/2025-03-28_ramya_remove-types-marked.change.md`
+- `.hark/changes/2025-03-31_stripe-openapi_support-apis-new.change.md`
+- `.hark/changes/2025-04-15_xavdid_bump-cross-spawn.change.md`
+- `.hark/changes/2025-04-15_xavdid_bump-micromatch-4.change.md`
+- `.hark/changes/2025-04-24_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-04-24_xavdid_put-types-node.change.md`
+- `.hark/changes/2025-04-28_jar_add-build-scripts.change.md`
+- `.hark/changes/2025-05-02_jar_adds-contributing-md.change.md`
+- `.hark/changes/2025-05-06_prathmesh_rawrequest-now-allows.change.md`
+- `.hark/changes/2025-05-06_xavdid_fix-examples-webhook.change.md`
+- `.hark/changes/2025-05-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-06-02_helenye_allow-data-set.change.md`
+- `.hark/changes/2025-06-24_mbroshi_add-stripecontex-requestoptio.change.md`
+- `.hark/changes/2025-06-25_xavdid_add-mise-config.change.md`
+- `.hark/changes/2025-07-01_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-07-14_prathmesh_expose-api-version.change.md`
+- `.hark/changes/2025-07-30_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-08-25_xavdid_fix-example-expiresat.change.md`
+- `.hark/changes/2025-08-27_ramya_add-section-private.change.md`
+- `.hark/changes/2025-08-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-09-08_xavdid_build-sdk-w.change.md`
+- `.hark/changes/2025-09-22_xavdid_support-more-npm.change.md`
+- `.hark/changes/2025-09-23_stripe-openapi_2413-2430-2428.change.md`
+- `.hark/changes/2025-09-24_xavdid_add-strongly-typed.change.md`
+- `.hark/changes/2025-09-25_prathmesh_fixed-file-uploading.change.md`
+- `.hark/changes/2025-09-26_xavdid_add-stripecontex-object.change.md`
+- `.hark/changes/2025-09-29_xavdid_move-v2-event.change.md`
+- `.hark/changes/2025-09-30_xavdid_drop-support-node.change.md`
+- `.hark/changes/2025-10-01_ramya_update-changelog-md.change.md`
+- `.hark/changes/2025-10-01_xavdid_update-param-deprecation.change.md`
+- `.hark/changes/2025-10-03_xavdid_add-missing-fetchevent.change.md`
+- `.hark/changes/2025-10-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-10-28_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-11-03_xavdid_correctly-calculate-content.change.md`
+- `.hark/changes/2025-11-04_ramya_add-support-value.change.md`
+- `.hark/changes/2025-11-05_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-11-12_xavdid_use-textencoder-instead.change.md`
+- `.hark/changes/2025-11-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-11-17_mbroshi_update-v2-array.change.md`
+- `.hark/changes/2025-11-17_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2025-12-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-01-06_ramya_delete-apiversion-file.change.md`
+- `.hark/changes/2026-01-06_ramya_update-qs-dependency.change.md`
+- `.hark/changes/2026-01-07_jar_fix-content-length.change.md`
+- `.hark/changes/2026-01-15_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-01-19_ramya_document-usage-undocumented.change.md`
+- `.hark/changes/2026-01-21_mbroshi_remove-qs-dependency.change.md`
+- `.hark/changes/2026-01-28_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-02-03_mbroshi_fix-unhandledpro-error.change.md`
+- `.hark/changes/2026-02-23_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-03-03_xavdid_add-agent-information.change.md`
+- `.hark/changes/2026-03-05_xavdid_add-stripe-request.change.md`
+- `.hark/changes/2026-03-18_mbroshi_add-runtime-support.change.md`
+- `.hark/changes/2026-03-18_xavdid_drop-support-node.change.md`
+- `.hark/changes/2026-03-19_xavdid_add-manual-amount.change.md`
+- `.hark/changes/2026-03-19_xavdid_add-new-oauth.change.md`
+- `.hark/changes/2026-03-23_stripe-openapi_2616-throw-error.change.md`
+- `.hark/changes/2026-03-24_jar_add-decimalstrin-support.change.md`
+- `.hark/changes/2026-03-25_unknown_generated-changes-2611.change.md`
+- `.hark/changes/2026-03-26_prathmesh_fix-export-stripe.change.md`
+- `.hark/changes/2026-03-26_prathmesh_improved-typescript-support.change.md`
+- `.hark/changes/2026-03-26_prathmesh_improved-typescript-support2.change.md`
+- `.hark/changes/2026-03-30_prathmesh_updated-stripe-spec.change.md`
+- `.hark/changes/2026-03-31_prathmesh_converted-v2-amount.change.md`
+- `.hark/changes/2026-04-01_xavdid_removed-per-request.change.md`
+- `.hark/changes/2026-04-02_xavdid_remove-stripemethod-standardize.change.md`
+- `.hark/changes/2026-04-03_prathmesh_added-string-webhookheade.change.md`
+- `.hark/changes/2026-04-06_xavdid_throw-more-descriptive.change.md`
+- `.hark/changes/2026-04-08_mbroshi_add-type-safety.change.md`
+- `.hark/changes/2026-04-08_prathmesh_add-constructor-based.change.md`
+- `.hark/changes/2026-04-08_prathmesh_fixed-named-export.change.md`
+- `.hark/changes/2026-04-08_prathmesh_fixed-nested-service.change.md`
+- `.hark/changes/2026-04-14_prathmesh_tolerance-receivedat-timestamp.change.md`
+- `.hark/changes/2026-04-14_xavdid_adds-parseeventno-match.change.md`
+- `.hark/changes/2026-04-15_prathmesh_add-emiteventbod-config.change.md`
+- `.hark/changes/2026-04-17_xavdid_preserve-stack-traces.change.md`
+- `.hark/changes/2026-04-23_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-05-06_mbroshi_export-decimal-type.change.md`
+- `.hark/changes/2026-05-06_mbroshi_fix-file-upload.change.md`
+- `.hark/changes/2026-05-12_prathmesh_export-manually-maintained.change.md`
+- `.hark/changes/2026-05-12_prathmesh_exported-types-nested.change.md`
+- `.hark/changes/2026-05-15_jar_add-wintertc-compatibilit.change.md`
+- `.hark/changes/2026-05-20_jar_add-v2list-v2listpromis.change.md`
+- `.hark/changes/2026-05-27_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-05-27_xavdid_emit-warning-stripe.change.md`
+- `.hark/changes/2026-06-01_jar_fix-parsehttphea-return.change.md`
+- `.hark/changes/2026-06-05_xavdid_add-source-field.change.md`
+- `.hark/changes/2026-06-08_jar_fix-v2listiterat-concurrency.change.md`
+- `.hark/changes/2026-06-12_xavdid_uri-encode-path.change.md`
+- `.hark/changes/2026-06-17_xavdid_handle-shadowed-namespaces.change.md`
+- `.hark/changes/2026-06-18_xavdid_fix-stripe-errortype.change.md`
+- `.hark/changes/2026-06-18_xavdid_fixes-cjs-type.change.md`
+- `.hark/changes/2026-06-22_xavdid_encode-uri-path.change.md`
+- `.hark/changes/2026-06-24_jar_fix-cjs-companion.change.md`
+- `.hark/changes/2026-06-24_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-07-06_jar_restore-missing-public.change.md`
+- `.hark/changes/2026-07-07_jar_export-httpclient-types.change.md`
+- `.hark/changes/2026-07-09_xavdid_remove-unused-retry.change.md`
+- `.hark/changes/2026-07-13_xavdid_make-error-fields.change.md`
+- `.hark/changes/2026-07-16_jar_enum-type-annotations.change.md`
+- `.hark/changes/2026-07-16_xavdid_replace-source-hash.change.md`
+- `.hark/changes/2026-07-21_kidus_bump-brace-expansion.change.md`
+- `.hark/changes/2026-07-29_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-08-07_johno_emit-claude-code.change.md`
+- `.hark/changes/2026-08-07_xavdid_add-adjust-event.change.md`
+- `.hark/changes/2026-08-07_xavdid_add-stripe-majorapivers.change.md`
+- `.hark/changes/2026-08-19_xavdid_add-new-eventnotific.change.md`
+- `.hark/changes/2026-08-19_xavdid_correctly-throw-connection.change.md`
+- `.hark/changes/2026-08-25_jar_add-discriminate-kind.change.md`
+- `.hark/changes/2026-08-26_stripe-openapi_update-generated-code.change.md`
+- `.hark/changes/2026-08-31_xavdid_harden-api-requestor.change.md`
+- `.hark/changes/2026-09-01_jar_fix-request-coercion.change.md`
+- `.hark/changes/2026-09-01_xavdid_update-otherstring-docstring.change.md`
+- `.hark/changes/2026-09-01_xavdid_use-cryptographi-secure.change.md`
+- `.hark/changes/2026-09-09_xavdid_validate-webhook-secrets.change.md`
+- `.hark/changes/2026-09-11_xavdid_singleton-related-object.change.md`
+- `.hark/changes/2026-09-15_zacchua_add-stripe-suppress-notices.change.md`
+- `.hark/changes/2026-09-15_zacchua_fix-event-callback-context.change.md`
+- `.hark/changes/2026-09-18_jar_remove-v1-v2-list-fields.change.md`
+- `.hark/changes/2026-09-23_markisaackogan_remove-stripe-constructEventWithoutVerification.change.md`
+- `.hark/changes/2026-09-23_stripe_fix-v2-address-param.change.md`
+- `.hark/changes/2026-09-24_markisaackogan_remove-ErrorType-export.change.md`
+- `.hark/changes/2026-09-25_jar_classify-incomplete-response-bodies.change.md`
+- `.hark/changes/2026-09-25_jar_fix-node-http-interception.change.md`
+- `.hark/changes/2026-09-25_unknown_drop-node-18-support.change.md`
+- `.hark/changes/2026-09-29_update-verifyHeader-method-to-use-DEFAULT_TOLERANCE.change.md`
+- `.hark/changes/2026-09-30_stripe-openapi_8e765d05.change.md`
+- `.hark/changes/2026-09-30_stripe-openapi_fd79b81c.change.md`
+- `.hark/intros/intro-10.0.0.md`
+- `.hark/intros/intro-11.0.0.md`
+- `.hark/intros/intro-12.1.1.md`
+- `.hark/intros/intro-13.0.0.md`
+- `.hark/intros/intro-19.0.0.md`
+- `.hark/intros/intro-21.0.0.md`
+- `.hark/intros/intro-22.0.0.md`
+- `.hark/intros/intro-6.33.0.md`
+- `.hark/intros/intro-7.0.0.md`
+- `.hark/intros/intro-8.0.0.md`
+- `.hark/intros/intro-8.25.0.md`
+- `.hark/intros/intro-9.0.0.md`
+- `.hark/migration-guides/v23.md`
+- `.hark/releases.json`
+- `CHANGELOG.md`
+- `CODEGEN_VERSION`
+- `OPENAPI_VERSION`
+- `README.md`
+- `VERSION`
+- `justfile`
+- `package.json`
+- `src/Error.ts`
+- `src/RequestSender.ts`
+- `src/StripeEventNotificationHandler.ts`
+- `src/Types.ts`
+- `src/Webhooks.ts`
+- `src/apiVersion.ts`
+- `src/lib.ts`
+- `src/net/NodeHttpClient.ts`
+- `src/platform/NodePlatformFunctions.ts`
+- `src/resources.ts`
+- `src/resources/AccountSessions.ts`
+- `src/resources/Accounts.ts`
+- `src/resources/Apps/Installs.ts`
+- `src/resources/Apps/index.ts`
+- `src/resources/Balance.ts`
+- `src/resources/BalanceTransactions.ts`
+- `src/resources/BankAccounts.ts`
+- `src/resources/Billing/FeedbackOptions.ts`
+- `src/resources/Capabilities.ts`
+- `src/resources/Charges.ts`
+- `src/resources/Checkout/Sessions.ts`
+- `src/resources/ConfirmationTokens.ts`
+- `src/resources/Customers.ts`
+- `src/resources/Discounts.ts`
+- `src/resources/Events.ts`
+- `src/resources/Files.ts`
+- `src/resources/FinancialConnections/Accounts.ts`
+- `src/resources/FinancialConnections/Sessions.ts`
+- `src/resources/InvoiceItems.ts`
+- `src/resources/InvoicePayments.ts`
+- `src/resources/Invoices.ts`
+- `src/resources/Issuing/Cardholders.ts`
+- `src/resources/Issuing/Tokens.ts`
+- `src/resources/LineItems.ts`
+- `src/resources/Mandates.ts`
+- `src/resources/PaymentAttemptRecords.ts`
+- `src/resources/PaymentIntentAmountDetailsLineItems.ts`
+- `src/resources/PaymentIntents.ts`
+- `src/resources/PaymentLinks.ts`
+- `src/resources/PaymentMethodConfigurations.ts`
+- `src/resources/PaymentMethods.ts`
+- `src/resources/PaymentRecords.ts`
+- `src/resources/Payouts.ts`
+- `src/resources/Persons.ts`
+- `src/resources/Plans.ts`
+- `src/resources/Prices.ts`
+- `src/resources/ProductCatalog/TrialOffers.ts`
+- `src/resources/ProductCatalog/index.ts`
+- `src/resources/Products.ts`
+- `src/resources/Quotes.ts`
+- `src/resources/Radar/PaymentEvaluations.ts`
+- `src/resources/Reserve/Holds.ts`
+- `src/resources/Reserve/Plans.ts`
+- `src/resources/Reserve/Releases.ts`
+- `src/resources/SetupAttempts.ts`
+- `src/resources/SetupIntents.ts`
+- `src/resources/Sigma/ScheduledQueryRuns.ts`
+- `src/resources/SubscriptionItems.ts`
+- `src/resources/SubscriptionSchedules.ts`
+- `src/resources/Subscriptions.ts`
+- `src/resources/Tax/CalculationLineItems.ts`
+- `src/resources/Tax/Calculations.ts`
+- `src/resources/Tax/Locations.ts`
+- `src/resources/Tax/Registrations.ts`
+- `src/resources/Tax/Settings.ts`
+- `src/resources/Tax/Transactions.ts`
+- `src/resources/Tax/index.ts`
+- `src/resources/TaxCodes.ts`
+- `src/resources/TaxRates.ts`
+- `src/resources/Terminal/Configurations.ts`
+- `src/resources/Terminal/Readers.ts`
+- `src/resources/TestHelpers/ConfirmationTokens.ts`
+- `src/resources/TestHelpers/Treasury/ReceivedCredits.ts`
+- `src/resources/ThreeDSecure/Authentications.ts`
+- `src/resources/ThreeDSecure/index.ts`
+- `src/resources/Tokens.ts`
+- `src/resources/Topups.ts`
+- `src/resources/Treasury/FinancialAccounts.ts`
+- `src/resources/Treasury/InboundTransfers.ts`
+- `src/resources/Treasury/ReceivedCredits.ts`
+- `src/resources/Treasury/ReceivedDebits.ts`
+- `src/resources/Treasury/TransactionEntries.ts`
+- `src/resources/Treasury/Transactions.ts`
+- `src/resources/V2/Billing/MeterEventAdjustments.ts`
+- `src/resources/V2/Core/AccountLinks.ts`
+- `src/resources/V2/Core/AccountPersons.ts`
+- `src/resources/V2/Core/AccountTokens.ts`
+- `src/resources/V2/Core/Accounts.ts`
+- `src/resources/V2/Core/Accounts/PersonTokens.ts`
+- `src/resources/V2/Core/Accounts/Persons.ts`
+- `src/resources/V2/Core/EventDestinations.ts`
+- `src/resources/V2/Core/Events.ts`
+- `src/resources/WebhookEndpoints.ts`
+- `src/stripe.cjs.node.ts`
+- `src/stripe.core.ts`
+- `src/stripe.esm.node.ts`
+- `src/utils.ts`
+- `test/CloudProviderEvent.spec.ts`
+- `test/Integration.spec.ts`
+- `test/PlatformFunctions.spec.ts`
+- `test/RequestSender.spec.ts`
+- `test/StripeEventNotificationHandler.spec.ts`
+- `test/V2List.spec.ts`
+- `test/Webhook.spec.ts`
+- `test/multipart.spec.ts`
+- `test/net/NodeHttpClient.spec.ts`
+- `test/net/helpers.ts`
+- `test/resources/Account.spec.js`
+- `test/resources/generated_examples_test.spec.js`
+- `testProjects/types-cjs-node16/typescriptTest.ts`
+- `testProjects/types-cjs/typescriptTest.ts`
+- `testProjects/types/typescriptTest.ts`
+- `yarn.lock`
+
+## Upstream changes
+
+- `modified`: `.github/pull_request_template.md`
+- `added`: `.github/workflows/changelog.yml`
+- `modified`: `.github/workflows/main.yml`
+- `modified`: `.github/zizmor.yml`
+- `added`: `.hark/changes/2011-09-28_unknown_initial-release-customers.change.md`
+- `added`: `.hark/changes/2011-10-05_unknown_add-charges-api.change.md`
+- `added`: `.hark/changes/2011-10-05_unknown_add-customers-list.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_add-invoices-api.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_add-subscription-api.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_amount-stripe-charges.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_bugfix-fix-bug.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_bugfix-fix-bug2.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_change-documentatio-links.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_make-tests-pass.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_only-require-node.change.md`
+- `added`: `.hark/changes/2011-11-26_unknown_various-documentatio-fixes.change.md`
+- `added`: `.hark/changes/2011-12-06_unknown_add-apis-tests.change.md`
+- `added`: `.hark/changes/2012-08-03_unknown_add-coupons-api.change.md`
+- `added`: `.hark/changes/2012-08-03_unknown_added-events-api.change.md`
+- `added`: `.hark/changes/2012-08-03_unknown_added-plans-update.change.md`
+- `added`: `.hark/changes/2012-08-03_unknown_fix-duplicate-callbacks.change.md`
+- `added`: `.hark/changes/2012-08-03_unknown_pass-more-robust.change.md`
+- `added`: `.hark/changes/2012-08-03_unknown_various-test-fixes.change.md`
+- `added`: `.hark/changes/2013-01-30_unknown_requests-return-javascript.change.md`
+- `added`: `.hark/changes/2013-10-18_unknown_api-overhaul-refactor.change.md`
+- `added`: `.hark/changes/2013-10-18_unknown_release-version-2.change.md`
+- `added`: `.hark/changes/2013-11-07_unknown_add-missing-stripe.change.md`
+- `added`: `.hark/changes/2013-11-07_unknown_bugfix-fix-windows.change.md`
+- `added`: `.hark/changes/2013-11-07_unknown_remove-global-resources.change.md`
+- `added`: `.hark/changes/2013-11-07_unknown_support-setting-authtoken.change.md`
+- `added`: `.hark/changes/2013-11-07_unknown_support-single-key.change.md`
+- `added`: `.hark/changes/2013-11-09_unknown_add-specs-invoice.change.md`
+- `added`: `.hark/changes/2013-11-09_unknown_add-support-settimeout.change.md`
+- `added`: `.hark/changes/2013-11-12_unknown_bugfix-fix-user.change.md`
+- `added`: `.hark/changes/2013-11-20_unknown_bugfix-fix-incorrect.change.md`
+- `added`: `.hark/changes/2013-12-04_unknown_add-application-fees.change.md`
+- `added`: `.hark/changes/2014-01-10_unknown_document-cancelsubscr-method.change.md`
+- `added`: `.hark/changes/2014-01-11_unknown_bugfix-fix-76.change.md`
+- `added`: `.hark/changes/2014-01-29_unknown_support-multiple-subscription.change.md`
+- `added`: `.hark/changes/2014-02-07_unknown_ensure-raw-error.change.md`
+- `added`: `.hark/changes/2014-02-20_unknown_add-binding-transfers.change.md`
+- `added`: `.hark/changes/2014-03-27_unknown_add-more-debug.change.md`
+- `added`: `.hark/changes/2014-03-27_unknown_bugfix-fix-url.change.md`
+- `added`: `.hark/changes/2014-04-08_unknown_add-better-checks.change.md`
+- `added`: `.hark/changes/2014-04-08_unknown_validate-connect-auth.change.md`
+- `added`: `.hark/changes/2014-04-09_unknown_ensure-prevent-requests.change.md`
+- `added`: `.hark/changes/2014-04-25_unknown_bugfix-fix-revoked.change.md`
+- `added`: `.hark/changes/2014-04-25_unknown_upgrade-js-3.change.md`
+- `added`: `.hark/changes/2014-04-28_unknown_bugfix-fix-js.change.md`
+- `added`: `.hark/changes/2014-05-16_unknown_allow-update-method.change.md`
+- `added`: `.hark/changes/2014-05-21_unknown_support-cards-recipients.change.md`
+- `added`: `.hark/changes/2014-06-17_unknown_add-metadata-disputes.change.md`
+- `added`: `.hark/changes/2014-07-17_unknown_add-support-optional.change.md`
+- `added`: `.hark/changes/2014-07-17_unknown_bugfix-fix-lack.change.md`
+- `added`: `.hark/changes/2014-07-29_unknown_make-application-fee.change.md`
+- `added`: `.hark/changes/2014-11-12_unknown_add-stack-traces.change.md`
+- `added`: `.hark/changes/2014-11-12_unknown_allow-setting-http.change.md`
+- `added`: `.hark/changes/2014-11-18_unknown_bugfix-fix-stringifyreq.change.md`
+- `added`: `.hark/changes/2014-11-18_unknown_bump-major-re.change.md`
+- `added`: `.hark/changes/2014-11-26_unknown_bugfix-fix-issue.change.md`
+- `added`: `.hark/changes/2014-11-26_unknown_version-skipped-due.change.md`
+- `added`: `.hark/changes/2014-12-23_unknown_adding-file-uploads.change.md`
+- `added`: `.hark/changes/2015-01-21_unknown_support-making-bitcoin.change.md`
+- `added`: `.hark/changes/2015-02-05_unknown_bugfix-fix-incorrect.change.md`
+- `added`: `.hark/changes/2015-02-05_unknown_switch-bluebird-promises.change.md`
+- `added`: `.hark/changes/2015-02-05_unknown_update-all-dependencies.change.md`
+- `added`: `.hark/changes/2015-02-19_unknown_account-resource-will.change.md`
+- `added`: `.hark/changes/2015-02-19_unknown_add-methods-manipulating.change.md`
+- `added`: `.hark/changes/2015-02-19_unknown_support-bitcoinrecei-update.change.md`
+- `added`: `.hark/changes/2015-02-21_unknown_bugfix-fix-passing.change.md`
+- `added`: `.hark/changes/2015-02-24_unknown_support-transfer-reversals.change.md`
+- `added`: `.hark/changes/2015-03-31_unknown_bugfix-fix-support.change.md`
+- `added`: `.hark/changes/2015-04-02_unknown_remove-ssl-revocation.change.md`
+- `added`: `.hark/changes/2015-06-10_unknown_added-support-bank.change.md`
+- `added`: `.hark/changes/2015-06-11_unknown_added-support-optional.change.md`
+- `added`: `.hark/changes/2015-06-30_unknown_bugfix-fixed-issue.change.md`
+- `added`: `.hark/changes/2015-06-30_unknown_bugfix-fixed-issue2.change.md`
+- `added`: `.hark/changes/2015-07-07_unknown_added-request-ids.change.md`
+- `added`: `.hark/changes/2015-08-03_unknown_added-dispute-listing.change.md`
+- `added`: `.hark/changes/2015-08-03_unknown_added-managed-account.change.md`
+- `added`: `.hark/changes/2015-08-17_unknown_added-refund-object.change.md`
+- `added`: `.hark/changes/2015-09-11_unknown_added-rate-limiting.change.md`
+- `added`: `.hark/changes/2015-09-14_unknown_add-relay-resources.change.md`
+- `added`: `.hark/changes/2015-09-17_unknown_remove-ability-api.change.md`
+- `added`: `.hark/changes/2015-09-17_unknown_rename-stripeinvali-stripeinvali.change.md`
+- `added`: `.hark/changes/2015-12-02_unknown_add-verification-routine.change.md`
+- `added`: `.hark/changes/2016-01-13_unknown_add-lastresponse-property.change.md`
+- `added`: `.hark/changes/2016-01-13_unknown_return-usage-errors.change.md`
+- `added`: `.hark/changes/2016-01-13_unknown_use-latest-year.change.md`
+- `added`: `.hark/changes/2016-01-26_unknown_add-support-deleting.change.md`
+- `added`: `.hark/changes/2016-02-08_unknown_add-countryspec-model.change.md`
+- `added`: `.hark/changes/2016-03-15_unknown_add-reject-account.change.md`
+- `added`: `.hark/changes/2016-05-04_unknown_add-update-create.change.md`
+- `added`: `.hark/changes/2016-05-25_unknown_add-support-returning.change.md`
+- `added`: `.hark/changes/2016-07-14_unknown_add-threedsecure-model.change.md`
+- `added`: `.hark/changes/2016-07-19_unknown_add-source-model.change.md`
+- `added`: `.hark/changes/2016-08-22_unknown_uri-encode-unames.change.md`
+- `added`: `.hark/changes/2016-08-29_unknown_refactor-deprecated-uses.change.md`
+- `added`: `.hark/changes/2016-09-16_unknown_add-support-apple.change.md`
+- `added`: `.hark/changes/2016-10-18_unknown_support-403-status.change.md`
+- `added`: `.hark/changes/2016-11-21_unknown_add-retrieve-method.change.md`
+- `added`: `.hark/changes/2016-12-01_unknown_add-support-verifying.change.md`
+- `added`: `.hark/changes/2017-01-18_unknown_add-support-updating.change.md`
+- `added`: `.hark/changes/2017-03-08_unknown_update-required-version.change.md`
+- `added`: `.hark/changes/2017-03-22_unknown_make-requestid-available.change.md`
+- `added`: `.hark/changes/2017-03-30_unknown_fix-bad-reference.change.md`
+- `added`: `.hark/changes/2017-03-31_unknown_add-support-payouts.change.md`
+- `added`: `.hark/changes/2017-04-05_unknown_fix-paths-error.change.md`
+- `added`: `.hark/changes/2017-04-12_unknown_reject-id-parameters.change.md`
+- `added`: `.hark/changes/2017-05-11_unknown_support-checking-webhook.change.md`
+- `added`: `.hark/changes/2017-05-18_unknown_tweak-class-initializati.change.md`
+- `added`: `.hark/changes/2017-05-24_unknown_add-stripe-setappinfo.change.md`
+- `added`: `.hark/changes/2017-05-25_unknown_add-support-account.change.md`
+- `added`: `.hark/changes/2017-05-25_unknown_make-response-headers.change.md`
+- `added`: `.hark/changes/2017-06-20_unknown_add-support-ephemeral.change.md`
+- `added`: `.hark/changes/2017-06-20_unknown_fix-usage-hasownproper.change.md`
+- `added`: `.hark/changes/2017-06-24_unknown_properly-encode-subscription.change.md`
+- `added`: `.hark/changes/2017-08-03_unknown_handle-buffer-incompatibil.change.md`
+- `added`: `.hark/changes/2017-08-10_unknown_support-informationa-events.change.md`
+- `added`: `.hark/changes/2017-08-25_unknown_specify-utf-8.change.md`
+- `added`: `.hark/changes/2017-09-05_unknown_switch-bearer-token.change.md`
+- `added`: `.hark/changes/2017-09-12_unknown_drop-support-node.change.md`
+- `added`: `.hark/changes/2017-09-25_unknown_add-check-options.change.md`
+- `added`: `.hark/changes/2017-09-25_unknown_bump-required-versions.change.md`
+- `added`: `.hark/changes/2017-09-25_unknown_remove-dependency-object.change.md`
+- `added`: `.hark/changes/2017-09-25_unknown_use-safe-buffer.change.md`
+- `added`: `.hark/changes/2017-10-04_brandur_fix-improper-warning.change.md`
+- `added`: `.hark/changes/2017-10-26_brandur_support-listing-source.change.md`
+- `added`: `.hark/changes/2017-10-31_brandur_support-exchange-rates.change.md`
+- `added`: `.hark/changes/2017-12-05_brandur_add-stripeidempo-type.change.md`
+- `added`: `.hark/changes/2018-02-21_brandur_add-support-topups.change.md`
+- `added`: `.hark/changes/2018-03-24_ob_drop-bluebird-dependency.change.md`
+- `added`: `.hark/changes/2018-03-25_ob_fix-error-message.change.md`
+- `added`: `.hark/changes/2018-04-02_brandur_write-directly-connection.change.md`
+- `added`: `.hark/changes/2018-04-04_brandur_introduce-flexible-billing.change.md`
+- `added`: `.hark/changes/2018-05-09_brandur_add-support-issuer.change.md`
+- `added`: `.hark/changes/2018-05-14_brandur_export-error-types.change.md`
+- `added`: `.hark/changes/2018-05-14_brandur_re-implement-usage.change.md`
+- `added`: `.hark/changes/2018-05-31_brandur_warn-unknown-options.change.md`
+- `added`: `.hark/changes/2018-06-07_brandur_add-npmignore-create.change.md`
+- `added`: `.hark/changes/2018-06-28_ob_add-support-payment.change.md`
+- `added`: `.hark/changes/2018-07-03_enugent_fixes-array-encoding.change.md`
+- `added`: `.hark/changes/2018-07-18_ob_add-support-streams.change.md`
+- `added`: `.hark/changes/2018-07-26_brandur_add-support-stripe.change.md`
+- `added`: `.hark/changes/2018-07-28_brandur_add-support-sigma.change.md`
+- `added`: `.hark/changes/2018-08-02_brandur_add-support-file.change.md`
+- `added`: `.hark/changes/2018-08-03_brandur_add-support-cancel.change.md`
+- `added`: `.hark/changes/2018-08-27_tomer_remove-support-bitcoinrecei.change.md`
+- `added`: `.hark/changes/2018-09-05_ob_add-support-reporting.change.md`
+- `added`: `.hark/changes/2018-09-05_ob_add-support-usage.change.md`
+- `added`: `.hark/changes/2018-09-18_rattrayalex_add-auto-pagination.change.md`
+- `added`: `.hark/changes/2018-09-24_ob_add-support-stripe.change.md`
+- `added`: `.hark/changes/2018-09-24_ob_fix-test-suite.change.md`
+- `added`: `.hark/changes/2018-09-24_ob_rename-fileuploads-files.change.md`
+- `added`: `.hark/changes/2018-10-30_remi_add-support-persons.change.md`
+- `added`: `.hark/changes/2018-10-30_remi_add-support-webhook.change.md`
+- `added`: `.hark/changes/2018-11-09_ob_add-support-new.change.md`
+- `added`: `.hark/changes/2018-11-12_remi_add-support-partnerid.change.md`
+- `added`: `.hark/changes/2018-11-23_ob_handle-buffer-instances.change.md`
+- `added`: `.hark/changes/2018-11-26_rattrayalex_fixes-accidental-mutation.change.md`
+- `added`: `.hark/changes/2018-11-27_ob_add-support-valuelists.change.md`
+- `added`: `.hark/changes/2018-11-28_remi_add-support-review.change.md`
+- `added`: `.hark/changes/2018-12-06_ob_export-errors-root.change.md`
+- `added`: `.hark/changes/2018-12-07_ob_fix-iterating-files.change.md`
+- `added`: `.hark/changes/2018-12-11_ob_add-support-account.change.md`
+- `added`: `.hark/changes/2018-12-21_remi_add-support-checkoutsess.change.md`
+- `added`: `.hark/changes/2019-01-17_ob_fix-buffer-deprecation.change.md`
+- `added`: `.hark/changes/2019-01-23_remi_rename-checkoutsess-session.change.md`
+- `added`: `.hark/changes/2019-01-25_robz_add-support-oauth.change.md`
+- `added`: `.hark/changes/2019-01-31_brandur_add-configurable-telemetry.change.md`
+- `added`: `.hark/changes/2019-02-04_ob_enable-persistent-connections.change.md`
+- `added`: `.hark/changes/2019-02-12_remi_add-support-subscription.change.md`
+- `added`: `.hark/changes/2019-02-14_ob_always-encode-arrays.change.md`
+- `added`: `.hark/changes/2019-02-14_rattrayalex_add-stripe-setmaxnetwor.change.md`
+- `added`: `.hark/changes/2019-03-11_ob_encode-dates-unix.change.md`
+- `added`: `.hark/changes/2019-03-14_ob_fix-support-https.change.md`
+- `added`: `.hark/changes/2019-03-16_remi_add-support-deleting.change.md`
+- `added`: `.hark/changes/2019-03-19_remi_add-support-paymentmetho.change.md`
+- `added`: `.hark/changes/2019-03-19_remi_add-support-retrieving.change.md`
+- `added`: `.hark/changes/2019-04-18_remi_add-support-creditnote.change.md`
+- `added`: `.hark/changes/2019-04-22_remi_add-support-taxid.change.md`
+- `added`: `.hark/changes/2019-04-22_remi_retrieveupco-invoice-can.change.md`
+- `added`: `.hark/changes/2019-04-24_remi_add-support-taxrate.change.md`
+- `added`: `.hark/changes/2019-04-26_ob_fix-encoding-nested.change.md`
+- `added`: `.hark/changes/2019-05-02_rattrayalex_handle-errors-oauth.change.md`
+- `added`: `.hark/changes/2019-05-06_irace_prettier-formatting.change.md`
+- `added`: `.hark/changes/2019-05-07_irace_alphabetize-basic-methods.change.md`
+- `added`: `.hark/changes/2019-05-07_irace_use-id-single.change.md`
+- `added`: `.hark/changes/2019-05-07_ob_add-balancetrans-resource.change.md`
+- `added`: `.hark/changes/2019-05-08_ob_remove-deprecated-methods.change.md`
+- `added`: `.hark/changes/2019-05-08_paulasjes_add-generatewebh-make.change.md`
+- `added`: `.hark/changes/2019-05-08_rattrayalex_modernize-es5-es6.change.md`
+- `added`: `.hark/changes/2019-05-08_rattrayalex_move-generatetest-stripe.change.md`
+- `added`: `.hark/changes/2019-05-09_irace_misc-manual-formatting.change.md`
+- `added`: `.hark/changes/2019-05-09_ob_add-vscode-editorconfig.change.md`
+- `added`: `.hark/changes/2019-05-09_ob_drop-support-node.change.md`
+- `added`: `.hark/changes/2019-05-09_ob_remove-legacy-parameter.change.md`
+- `added`: `.hark/changes/2019-05-10_rattrayalex_remove-curried-urldata.change.md`
+- `added`: `.hark/changes/2019-05-14_irace_extract-resources-file.change.md`
+- `added`: `.hark/changes/2019-05-14_ob_add-listlineitem-listupcoming.change.md`
+- `added`: `.hark/changes/2019-05-14_ob_add-support-capability.change.md`
+- `added`: `.hark/changes/2019-05-14_rattrayalex_drop-support-node.change.md`
+- `added`: `.hark/changes/2019-05-22_ob_make-autopaginati-functions.change.md`
+- `added`: `.hark/changes/2019-05-23_ob_add-support-radar.change.md`
+- `added`: `.hark/changes/2019-06-18_ob_add-support-customerbala.change.md`
+- `added`: `.hark/changes/2019-06-25_ob_enable-request-latency.change.md`
+- `added`: `.hark/changes/2019-06-28_remi_add-support-setupintent.change.md`
+- `added`: `.hark/changes/2019-07-05_rattrayalex_reorder-customer-methods.change.md`
+- `added`: `.hark/changes/2019-07-12_brandur_update-readme-retry.change.md`
+- `added`: `.hark/changes/2019-07-24_rattrayalex_interpret-any-string.change.md`
+- `added`: `.hark/changes/2019-07-25_rattrayalex_remove-safe-buffer.change.md`
+- `added`: `.hark/changes/2019-07-29_brandur_bump-lodash-4.change.md`
+- `added`: `.hark/changes/2019-07-30_rattrayalex_expose-use-once.change.md`
+- `added`: `.hark/changes/2019-07-30_rattrayalex_move-balance-history.change.md`
+- `added`: `.hark/changes/2019-07-31_rattrayalex_refactor-request-headers.change.md`
+- `added`: `.hark/changes/2019-08-01_rattrayalex_include-prefix-generated.change.md`
+- `added`: `.hark/changes/2019-08-02_rattrayalex_refactor-errors-es6.change.md`
+- `added`: `.hark/changes/2019-08-02_rattrayalex_refinements-error-es6.change.md`
+- `added`: `.hark/changes/2019-08-02_rattrayalex_remove-lodash-isplainobjec.change.md`
+- `added`: `.hark/changes/2019-08-08_rattrayalex_add-request-start.change.md`
+- `added`: `.hark/changes/2019-08-09_rattrayalex_refactor-requestdatap-file.change.md`
+- `added`: `.hark/changes/2019-08-09_rattrayalex_remove-subscription-schedule.change.md`
+- `added`: `.hark/changes/2019-08-13_ob_add-subscription-createusager.change.md`
+- `added`: `.hark/changes/2019-08-27_ob_bump-eslint-utils.change.md`
+- `added`: `.hark/changes/2019-09-09_richardm_get-delete-requests.change.md`
+- `added`: `.hark/changes/2019-09-18_rattrayalex_retry-based-stripe.change.md`
+- `added`: `.hark/changes/2019-10-08_richardm_add-request-specific.change.md`
+- `added`: `.hark/changes/2019-10-24_ob_contributor-convenant.change.md`
+- `added`: `.hark/changes/2019-10-28_brandur_readme-imply-context.change.md`
+- `added`: `.hark/changes/2019-10-30_richardm_define-type-property.change.md`
+- `added`: `.hark/changes/2019-11-06_remi_add-support-mandate.change.md`
+- `added`: `.hark/changes/2019-11-07_rattrayalex_new-config-object.change.md`
+- `added`: `.hark/changes/2019-11-22_rattrayalex_remove-duplicate-export.change.md`
+- `added`: `.hark/changes/2019-11-26_remi_add-support-creditnote.change.md`
+- `added`: `.hark/changes/2019-12-06_rattrayalex_fix-flows-test.change.md`
+- `added`: `.hark/changes/2019-12-24_rattrayalex_add-typescript-definitions.change.md`
+- `added`: `.hark/changes/2019-12-26_rattrayalex_remove-deprecated-resources.change.md`
+- `added`: `.hark/changes/2019-12-31_ob_bump-handlebars-4.change.md`
+- `added`: `.hark/changes/2020-01-09_rattrayalex_deprecate-many-library.change.md`
+- `added`: `.hark/changes/2020-01-10_rattrayalex_bugfix-add-types.change.md`
+- `added`: `.hark/changes/2020-01-13_ob_improve-docs-core.change.md`
+- `added`: `.hark/changes/2020-01-14_remi_add-support-listing.change.md`
+- `added`: `.hark/changes/2020-01-15_remi_add-support-pendingupdat.change.md`
+- `added`: `.hark/changes/2020-01-15_remi_adding-missing-events.change.md`
+- `added`: `.hark/changes/2020-01-16_rattrayalex_added-typescript-webhook.change.md`
+- `added`: `.hark/changes/2020-01-17_remi_add-metadata-checkout.change.md`
+- `added`: `.hark/changes/2020-01-21_remi_improve-docstrings-many.change.md`
+- `added`: `.hark/changes/2020-01-23_brandur_gracefully-handle-missing.change.md`
+- `added`: `.hark/changes/2020-01-23_remi_add-support-new.change.md`
+- `added`: `.hark/changes/2020-01-24_remi_add-support-shipping.change.md`
+- `added`: `.hark/changes/2020-01-28_remi_add-new-type.change.md`
+- `added`: `.hark/changes/2020-01-30_brandur_fix-file-uploads.change.md`
+- `added`: `.hark/changes/2020-01-30_rattrayalex_allow-types-node.change.md`
+- `added`: `.hark/changes/2020-01-30_remi_add-support-fpx.change.md`
+- `added`: `.hark/changes/2020-01-30_richardm_fix-typescript-definition.change.md`
+- `added`: `.hark/changes/2020-01-31_rattrayalex_make-typescript-param.change.md`
+- `added`: `.hark/changes/2020-01-31_remi_add-new-type.change.md`
+- `added`: `.hark/changes/2020-01-31_remi_add-support-company.change.md`
+- `added`: `.hark/changes/2020-02-04_ob_rename-sortcode-sendersortco.change.md`
+- `added`: `.hark/changes/2020-02-04_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-02-10_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-02-12_remi_add-support-paymentinten.change.md`
+- `added`: `.hark/changes/2020-02-12_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-02-14_richardm_ts-fixes.change.md`
+- `added`: `.hark/changes/2020-02-18_brandur_change-timeout-default.change.md`
+- `added`: `.hark/changes/2020-02-21_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-02-24_remi_add-support-listing.change.md`
+- `added`: `.hark/changes/2020-02-25_remi_add-new-enum.change.md`
+- `added`: `.hark/changes/2020-02-27_remi_make-type-accountlink.change.md`
+- `added`: `.hark/changes/2020-02-28_remi_add-mysst-valid.change.md`
+- `added`: `.hark/changes/2020-03-02_rattrayalex_update-type-stripeerror.change.md`
+- `added`: `.hark/changes/2020-03-03_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-03-04_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-03-04_remi_multiple-api-changes2.change.md`
+- `added`: `.hark/changes/2020-03-05_remi_add-support-metadata.change.md`
+- `added`: `.hark/changes/2020-03-06_rattrayalex_allow-null-undefined.change.md`
+- `added`: `.hark/changes/2020-03-06_remi_make-metadata-nullable.change.md`
+- `added`: `.hark/changes/2020-03-12_remi_add-support-shipping.change.md`
+- `added`: `.hark/changes/2020-03-12_remi_add-support-threedsecure.change.md`
+- `added`: `.hark/changes/2020-03-13_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-03-20_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-03-24_remi_add-new-capabilities.change.md`
+- `added`: `.hark/changes/2020-03-24_remi_add-support-pausecollect.change.md`
+- `added`: `.hark/changes/2020-03-25_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-03-26_remi_add-support-spendingcont.change.md`
+- `added`: `.hark/changes/2020-03-27_rattrayalex_improve-stripeerror-generate.change.md`
+- `added`: `.hark/changes/2020-04-03_remi_add-support-calculatedst.change.md`
+- `added`: `.hark/changes/2020-04-08_richardm_fix-ts-return.change.md`
+- `added`: `.hark/changes/2020-04-10_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-04-14_remi_add-support-description.change.md`
+- `added`: `.hark/changes/2020-04-14_remi_add-support-settings.change.md`
+- `added`: `.hark/changes/2020-04-15_remi_clean-up-deprecated.change.md`
+- `added`: `.hark/changes/2020-04-16_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-04-18_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-04-22_remi_add-support-billingporta.change.md`
+- `added`: `.hark/changes/2020-04-22_remi_add-support-coupon.change.md`
+- `added`: `.hark/changes/2020-04-24_remi_add-support-jcbpayments.change.md`
+- `added`: `.hark/changes/2020-04-28_ob_make-displayitems-checkout.change.md`
+- `added`: `.hark/changes/2020-04-29_remi_add-support-price.change.md`
+- `added`: `.hark/changes/2020-05-01_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-05-07_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-05-12_remi_add-support-lineitem.change.md`
+- `added`: `.hark/changes/2020-05-13_remi_add-support-purchasedeta.change.md`
+- `added`: `.hark/changes/2020-05-19_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-05-20_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-05-22_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-05-28_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-05-29_remi_add-support-bacs.change.md`
+- `added`: `.hark/changes/2020-06-03_remi_add-support-bancontact.change.md`
+- `added`: `.hark/changes/2020-06-03_remi_add-support-paymentinten.change.md`
+- `added`: `.hark/changes/2020-06-03_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-06-03_remi_multiple-api-changes2.change.md`
+- `added`: `.hark/changes/2020-06-09_remi_add-support-idnpwp.change.md`
+- `added`: `.hark/changes/2020-06-11_remi_add-support-cartes.change.md`
+- `added`: `.hark/changes/2020-06-11_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-06-18_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-06-23_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-06-24_remi_add-support-paymentmetho.change.md`
+- `added`: `.hark/changes/2020-06-25_remi_add-support-invoice.change.md`
+- `added`: `.hark/changes/2020-06-28_remi_fix-tests-plan.change.md`
+- `added`: `.hark/changes/2020-07-01_richardm_document-discourage-protocol.change.md`
+- `added`: `.hark/changes/2020-07-06_richardm_expose-striperesour-instance.change.md`
+- `added`: `.hark/changes/2020-07-06_richardm_fix-assertcapabi-type.change.md`
+- `added`: `.hark/changes/2020-07-13_cjavilla_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-07-14_cjavilla_change-string-enum.change.md`
+- `added`: `.hark/changes/2020-07-15_remi_add-support-amounttotal.change.md`
+- `added`: `.hark/changes/2020-07-16_remi_bump-lodash-4.change.md`
+- `added`: `.hark/changes/2020-07-16_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-07-16_richardm_add-new-fields.change.md`
+- `added`: `.hark/changes/2020-07-16_richardm_refactor-remaining-var.change.md`
+- `added`: `.hark/changes/2020-07-16_richardm_use-strict-equality.change.md`
+- `added`: `.hark/changes/2020-07-17_remi_add-support-accountonboa.change.md`
+- `added`: `.hark/changes/2020-07-17_remi_add-support-politicalexp.change.md`
+- `added`: `.hark/changes/2020-07-20_remi_add-support-capabilities.change.md`
+- `added`: `.hark/changes/2020-07-22_remi_add-support-cartesbancai.change.md`
+- `added`: `.hark/changes/2020-07-25_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-07-29_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-07-30_remi_improve-types-customer.change.md`
+- `added`: `.hark/changes/2020-08-04_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-08-05_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-08-07_remi_add-support-alipay.change.md`
+- `added`: `.hark/changes/2020-08-13_richardm_codegen-multiple-api.change.md`
+- `added`: `.hark/changes/2020-08-14_remi_add-support-alipay.change.md`
+- `added`: `.hark/changes/2020-08-17_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-08-18_remi_add-support-amountdetail.change.md`
+- `added`: `.hark/changes/2020-08-19_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-08-27_richardm_typescript-add-lastresponse.change.md`
+- `added`: `.hark/changes/2020-08-28_richardm_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-08-31_remi_add-support-paymentmetho.change.md`
+- `added`: `.hark/changes/2020-09-02_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-09-08_remi_add-support-sofort.change.md`
+- `added`: `.hark/changes/2020-09-09_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-09-10_remi_add-support-sepa.change.md`
+- `added`: `.hark/changes/2020-09-13_remi_add-support-promotioncod.change.md`
+- `added`: `.hark/changes/2020-09-21_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-09-23_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-09-24_ctrudeau_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-09-24_richardm_add-type-definition.change.md`
+- `added`: `.hark/changes/2020-09-25_remi_add-support-oxxo.change.md`
+- `added`: `.hark/changes/2020-09-25_richardm_more-idiomatic-types.change.md`
+- `added`: `.hark/changes/2020-09-29_remi_add-support-contribution.change.md`
+- `added`: `.hark/changes/2020-09-29_remi_add-support-oxxopayments.change.md`
+- `added`: `.hark/changes/2020-09-29_richardm_add-version-constant.change.md`
+- `added`: `.hark/changes/2020-09-30_remi_add-support-setupattempt.change.md`
+- `added`: `.hark/changes/2020-10-02_remi_add-support-new.change.md`
+- `added`: `.hark/changes/2020-10-02_remi_add-support-tosacceptanc.change.md`
+- `added`: `.hark/changes/2020-10-09_richardm_add-support-bancontact.change.md`
+- `added`: `.hark/changes/2020-10-09_richardm_add-support-internal.change.md`
+- `added`: `.hark/changes/2020-10-12_remi_add-support-setupintent.change.md`
+- `added`: `.hark/changes/2020-10-13_remi_add-support-description.change.md`
+- `added`: `.hark/changes/2020-10-14_remi_add-support-payout.change.md`
+- `added`: `.hark/changes/2020-10-14_richardm_add-support-discounts.change.md`
+- `added`: `.hark/changes/2020-10-14_richardm_do-mutate-user.change.md`
+- `added`: `.hark/changes/2020-10-15_remi_make-originalpayo-reversedby.change.md`
+- `added`: `.hark/changes/2020-10-20_remi_add-support-jprn.change.md`
+- `added`: `.hark/changes/2020-10-20_richardm_chore-replace-recommended.change.md`
+- `added`: `.hark/changes/2020-10-23_remi_add-support-passing.change.md`
+- `added`: `.hark/changes/2020-10-23_remi_support-passing-taxrates.change.md`
+- `added`: `.hark/changes/2020-10-26_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-10-26_richardm_add-stripe-emptyable.change.md`
+- `added`: `.hark/changes/2020-10-27_paulasjes_added-requirements-readme.change.md`
+- `added`: `.hark/changes/2020-10-27_remi_add-paymentmetho-interacprese.change.md`
+- `added`: `.hark/changes/2020-10-27_richardm_standardize-cruld-order.change.md`
+- `added`: `.hark/changes/2020-11-04_remi_add-support-company.change.md`
+- `added`: `.hark/changes/2020-11-09_remi_add-invoice-finalization.change.md`
+- `added`: `.hark/changes/2020-11-09_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-11-17_ctrudeau_update-generated-code.change.md`
+- `added`: `.hark/changes/2020-11-17_unknown_identical-7-15.change.md`
+- `added`: `.hark/changes/2020-11-17_unknown_identical-8-122.change.md`
+- `added`: `.hark/changes/2020-11-17_unknown_published-error-do.change.md`
+- `added`: `.hark/changes/2020-11-18_richardm_add-support-grabpay.change.md`
+- `added`: `.hark/changes/2020-11-19_richardm_more-consistent-namespacing.change.md`
+- `added`: `.hark/changes/2020-11-19_richardm_update-generated-code.change.md`
+- `added`: `.hark/changes/2020-11-20_remi_add-support-capabilities.change.md`
+- `added`: `.hark/changes/2020-11-24_remi_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-11-30_remi_fixed-promises-example.change.md`
+- `added`: `.hark/changes/2020-12-04_remi_add-support-documents.change.md`
+- `added`: `.hark/changes/2020-12-10_ctrudeau_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2020-12-15_ctrudeau_api-updates.change.md`
+- `added`: `.hark/changes/2020-12-26_remi_typo-receieved-received.change.md`
+- `added`: `.hark/changes/2021-01-07_ctrudeau_api-updates.change.md`
+- `added`: `.hark/changes/2021-01-07_richardm_implement-fix-reverse.change.md`
+- `added`: `.hark/changes/2021-01-14_richardm_more-consistent-type.change.md`
+- `added`: `.hark/changes/2021-01-14_richardm_multiple-api-changes.change.md`
+- `added`: `.hark/changes/2021-01-15_richardm_make-request-timeout.change.md`
+- `added`: `.hark/changes/2021-01-22_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-02-03_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-02-05_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-02-09_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-02-17_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-02-17_richardm_api-updates2.change.md`
+- `added`: `.hark/changes/2021-02-22_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-03-19_richardm_types-export-striperawerr.change.md`
+- `added`: `.hark/changes/2021-03-22_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-03-25_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-03-31_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-03-31_richardm_api-updates2.change.md`
+- `added`: `.hark/changes/2021-04-02_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-04-12_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-04-16_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-04-21_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-04-21_richardm_improve-type-definition.change.md`
+- `added`: `.hark/changes/2021-05-04_unknown_add-support-cardpresent.change.md`
+- `added`: `.hark/changes/2021-05-04_unknown_subscription-create-paymentbehav.change.md`
+- `added`: `.hark/changes/2021-05-05_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-05-07_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-05-11_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-05-20_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-05-26_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-02_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-04_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-04_richardm_api-updates2.change.md`
+- `added`: `.hark/changes/2021-06-07_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-16_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-18_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-25_richardm_add-support-streaming.change.md`
+- `added`: `.hark/changes/2021-06-25_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-29_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-30_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-06-30_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-07-09_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-07-09_richardm_bugfix-binary-streaming.change.md`
+- `added`: `.hark/changes/2021-07-13_remi_update-links-stripe.change.md`
+- `added`: `.hark/changes/2021-07-14_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-07-14_dcr_api-updates2.change.md`
+- `added`: `.hark/changes/2021-07-15_richardm_1191-add-support.change.md`
+- `added`: `.hark/changes/2021-07-21_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-07-22_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-07-27_richardm_fix-error-arguments.change.md`
+- `added`: `.hark/changes/2021-07-28_dcr_add-support-fullpath.change.md`
+- `added`: `.hark/changes/2021-07-28_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-07-28_dcr_explicitly-define-basic.change.md`
+- `added`: `.hark/changes/2021-07-28_richardm_fix-typescript-definition.change.md`
+- `added`: `.hark/changes/2021-07-28_richardm_prevent-concurrent-initial.change.md`
+- `added`: `.hark/changes/2021-08-04_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-08-11_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-08-12_dcr_update-nock.change.md`
+- `added`: `.hark/changes/2021-08-13_dcr_add-httpclient-interface.change.md`
+- `added`: `.hark/changes/2021-08-16_dcr_add-client-name.change.md`
+- `added`: `.hark/changes/2021-08-16_dcr_update-user-agent.change.md`
+- `added`: `.hark/changes/2021-08-19_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-08-27_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-08-30_richardm_add-support-paginting.change.md`
+- `added`: `.hark/changes/2021-09-01_richardm_1228-api-updates.change.md`
+- `added`: `.hark/changes/2021-09-01_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-09-07_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-09-08_dcr_add-http-client.change.md`
+- `added`: `.hark/changes/2021-09-13_dcr_add-cryptoprovid-interface.change.md`
+- `added`: `.hark/changes/2021-09-15_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-09-16_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-09-16_remi_update-readme-md.change.md`
+- `added`: `.hark/changes/2021-09-16_richardm_fix-striperesour-extend.change.md`
+- `added`: `.hark/changes/2021-09-24_dcr_bump-up-ansi.change.md`
+- `added`: `.hark/changes/2021-09-24_dcr_update-fetchhttpcli-make.change.md`
+- `added`: `.hark/changes/2021-09-24_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-09-29_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-10-07_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-10-08_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-10-11_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-10-14_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-10-15_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-10-18_dcr_add-typed-createfetchh.change.md`
+- `added`: `.hark/changes/2021-10-20_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-01_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-01_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-04_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-11_dcr_add-subtlecrypto-update.change.md`
+- `added`: `.hark/changes/2021-11-11_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-11_richardm_better-types-lib.change.md`
+- `added`: `.hark/changes/2021-11-12_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-16_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-17_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-19_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2021-11-19_richardm_api-updates2.change.md`
+- `added`: `.hark/changes/2021-11-20_richardm_fix-broken-link.change.md`
+- `added`: `.hark/changes/2021-11-22_richardm_remove-coveralls-package.change.md`
+- `added`: `.hark/changes/2021-12-09_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-12-09_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2021-12-15_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2021-12-17_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-12-22_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2021-12-22_dcr_api-updates2.change.md`
+- `added`: `.hark/changes/2022-01-10_dcr_add-comment-documenting.change.md`
+- `added`: `.hark/changes/2022-01-11_dcr_remove-dom-type.change.md`
+- `added`: `.hark/changes/2022-01-12_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-01-12_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-01-13_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-01-19_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-01-19_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-01-20_dcr_customer-taxids-included.change.md`
+- `added`: `.hark/changes/2022-01-25_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-01-28_dcr_bump-nanoid-3.change.md`
+- `added`: `.hark/changes/2022-01-28_dcr_bump-node-fetch.change.md`
+- `added`: `.hark/changes/2022-01-28_dcr_fix-striperesour-successfully.change.md`
+- `added`: `.hark/changes/2022-02-03_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-02-09_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-02-11_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-02-23_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-02-26_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-02-26_richardm_properly-handle-api.change.md`
+- `added`: `.hark/changes/2022-02-26_richardm_typescript-add-declaration.change.md`
+- `added`: `.hark/changes/2022-02-26_richardm_update-documentatio-use.change.md`
+- `added`: `.hark/changes/2022-03-01_richardm_1362-api-updates.change.md`
+- `added`: `.hark/changes/2022-03-02_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-09_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-11_dcr_update-search-pagination.change.md`
+- `added`: `.hark/changes/2022-03-11_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-18_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-23_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-23_kamil_force-update-minimist.change.md`
+- `added`: `.hark/changes/2022-03-25_pakrym_update-error-types.change.md`
+- `added`: `.hark/changes/2022-03-25_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-28_dcr_bump-qs-package.change.md`
+- `added`: `.hark/changes/2022-03-28_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-29_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-03-31_dcr_stop-sending-content.change.md`
+- `added`: `.hark/changes/2022-04-01_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-04-08_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-04-13_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-04-18_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-04-21_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-04-28_dcr_add-tests-specifying.change.md`
+- `added`: `.hark/changes/2022-05-03_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-05-04_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-05-04_dcr_update-autopaginati-tests.change.md`
+- `added`: `.hark/changes/2022-05-04_pakrym_enable-ci-beta.change.md`
+- `added`: `.hark/changes/2022-05-05_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-05-05_dcr_api-updates2.change.md`
+- `added`: `.hark/changes/2022-05-09_richardm_1417-api-updates.change.md`
+- `added`: `.hark/changes/2022-05-09_richardm_feat-http-client.change.md`
+- `added`: `.hark/changes/2022-05-11_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-05-19_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-05-23_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-05-23_pakrym_api-updates2.change.md`
+- `added`: `.hark/changes/2022-05-25_dcr_docs-update-httpclient.change.md`
+- `added`: `.hark/changes/2022-05-26_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-06-01_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-06-08_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-06-09_pakrym_add-types-extra.change.md`
+- `added`: `.hark/changes/2022-06-09_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-06-13_pakrym_only-publish-stable.change.md`
+- `added`: `.hark/changes/2022-06-14_pakrym_fix-non-conforming.change.md`
+- `added`: `.hark/changes/2022-06-17_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-06-21_dcr_fix-stop-using.change.md`
+- `added`: `.hark/changes/2022-06-23_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-06-23_dcr_api-updates2.change.md`
+- `added`: `.hark/changes/2022-06-29_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-07-06_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-07-07_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-07-12_ramya_update-readme-include.change.md`
+- `added`: `.hark/changes/2022-07-12_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-07-13_yejia_move-types-node.change.md`
+- `added`: `.hark/changes/2022-07-14_dcr_fix-include-trailing.change.md`
+- `added`: `.hark/changes/2022-07-18_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-07-25_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-07-26_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-01_kamil_next-major-release.change.md`
+- `added`: `.hark/changes/2022-08-02_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_add-support-new.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_add-support-shippingcost.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_change-location-typescript.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_change-type-address.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_change-type-businessprof.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_change-type-currency.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_cleaning-up-sdk.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_moving-use-new.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-alipayaccoun-bitcoinrecei.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-alipayaccoun-deletedalipa.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-deprecated-stripe.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-invoicemarku-definition.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-issuerfraudr-issuerfraudr.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-issuerfraudr-resource.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-issuing-carddetails.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-lineitemlist-definition.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-order-paymentfaile.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-recipient-resource.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-redirecturl-loginlinks.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-retrievedeta-method.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-stripe-deletedalipa.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_remove-treasury-receivedcred.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_rename-invoicelinei-invoicelistu.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_rename-invoiceretri-invoicelistu.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_rename-invoiceretri-invoicelistu2.change.md`
+- `added`: `.hark/changes/2022-08-02_unknown_rename-listupcoming-method.change.md`
+- `added`: `.hark/changes/2022-08-05_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-09_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-09_yejia_simplify-addressparam-definitions.change.md`
+- `added`: `.hark/changes/2022-08-11_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-17_ramya_add-support-section.change.md`
+- `added`: `.hark/changes/2022-08-19_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-23_anniel_add-test-coverage.change.md`
+- `added`: `.hark/changes/2022-08-23_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-23_pakrym_add-beta-readme.change.md`
+- `added`: `.hark/changes/2022-08-24_dcr_fix-update-fetchhttpcli.change.md`
+- `added`: `.hark/changes/2022-08-24_pakrym_update-readme-md.change.md`
+- `added`: `.hark/changes/2022-08-25_dcr_regen-yarn-lock.change.md`
+- `added`: `.hark/changes/2022-08-26_anniel_update-coveralls-step.change.md`
+- `added`: `.hark/changes/2022-08-26_dcr_api-updates.change.md`
+- `added`: `.hark/changes/2022-08-31_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-09-06_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-09-09_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-09-15_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-09-22_anniel_re-introduce-typescript.change.md`
+- `added`: `.hark/changes/2022-09-22_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-09-23_anniel_restore-lib-after.change.md`
+- `added`: `.hark/changes/2022-09-28_anniel_migrate-other-stripe.change.md`
+- `added`: `.hark/changes/2022-09-29_pakrym_fix-release-tag.change.md`
+- `added`: `.hark/changes/2022-09-29_yejia_api-updates.change.md`
+- `added`: `.hark/changes/2022-10-03_kamil_upgrade-dependencies.change.md`
+- `added`: `.hark/changes/2022-10-04_kamil_update-node-fetch.change.md`
+- `added`: `.hark/changes/2022-10-06_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-10-11_anniel_change-stripesignat-header.change.md`
+- `added`: `.hark/changes/2022-10-12_anniel_drop-support-node.change.md`
+- `added`: `.hark/changes/2022-10-12_anniel_remove-deprecated-checkout.change.md`
+- `added`: `.hark/changes/2022-10-12_anniel_remove-orders-resource.change.md`
+- `added`: `.hark/changes/2022-10-13_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-10-17_anniel_remove-sku-resource.change.md`
+- `added`: `.hark/changes/2022-10-18_xavdid_use-native-uuid.change.md`
+- `added`: `.hark/changes/2022-10-20_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-11-01_anniel_remove-deprecated-configuratio.change.md`
+- `added`: `.hark/changes/2022-11-02_kamil_api-updates.change.md`
+- `added`: `.hark/changes/2022-11-04_anniel_remove-deprecated-basic.change.md`
+- `added`: `.hark/changes/2022-11-04_anniel_remove-deprecated-option.change.md`
+- `added`: `.hark/changes/2022-11-07_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-11-10_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2022-11-11_pakrym_add-type-information.change.md`
+- `added`: `.hark/changes/2022-11-11_pakrym_annotate-prototypes-types.change.md`
+- `added`: `.hark/changes/2022-11-16_anniel_next-major-release.change.md`
+- `added`: `.hark/changes/2022-11-16_unknown_remove-charges-field.change.md`
+- `added`: `.hark/changes/2022-11-16_unknown_remove-deprecated-amount.change.md`
+- `added`: `.hark/changes/2022-11-16_unknown_remove-support-tosshownanda.change.md`
+- `added`: `.hark/changes/2022-11-17_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-11-17_pakrym_api-updates2.change.md`
+- `added`: `.hark/changes/2022-11-22_pakrym_split-resource-service.change.md`
+- `added`: `.hark/changes/2022-11-23_pakrym_move-child-resource.change.md`
+- `added`: `.hark/changes/2022-11-23_pakrym_remove-api-version.change.md`
+- `added`: `.hark/changes/2022-11-29_richardm_remove-unneeded-iife.change.md`
+- `added`: `.hark/changes/2022-12-01_richardm_narrower-type-stripe.change.md`
+- `added`: `.hark/changes/2022-12-05_pakrym_remove-basicmethods-ts.change.md`
+- `added`: `.hark/changes/2022-12-06_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2022-12-06_richardm_api-updates2.change.md`
+- `added`: `.hark/changes/2022-12-08_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2022-12-13_anniel_update-packages-examples.change.md`
+- `added`: `.hark/changes/2022-12-15_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2022-12-22_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2023-01-05_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2023-01-10_anniel_bump-json5-2.change.md`
+- `added`: `.hark/changes/2023-01-19_anniel_introduce-separate-entry.change.md`
+- `added`: `.hark/changes/2023-01-19_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2023-01-26_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2023-01-27_anniel_fix-added-support.change.md`
+- `added`: `.hark/changes/2023-02-01_anniel_use-eventtarget-worker.change.md`
+- `added`: `.hark/changes/2023-02-02_anniel_change-default-entrypoint.change.md`
+- `added`: `.hark/changes/2023-02-02_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2023-02-03_anniel_update-main-entrypoint.change.md`
+- `added`: `.hark/changes/2023-02-08_anniel_enable-library-work.change.md`
+- `added`: `.hark/changes/2023-02-10_pakrym_add-infrastructu-mocked.change.md`
+- `added`: `.hark/changes/2023-02-11_pakrym_add-more-webhook.change.md`
+- `added`: `.hark/changes/2023-02-13_pakrym_add-nextjs-webhook.change.md`
+- `added`: `.hark/changes/2023-02-16_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2023-02-23_anniel_convert-typescript-files.change.md`
+- `added`: `.hark/changes/2023-02-23_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2023-02-23_richardm_update-v11-8.change.md`
+- `added`: `.hark/changes/2023-03-02_pakrym_api-updates.change.md`
+- `added`: `.hark/changes/2023-03-06_anniel_migrate-generated-files.change.md`
+- `added`: `.hark/changes/2023-03-06_pakrym_remove-extra-test.change.md`
+- `added`: `.hark/changes/2023-03-08_anniel_change-httpproxy-httpagent.change.md`
+- `added`: `.hark/changes/2023-03-09_anniel_api-updates.change.md`
+- `added`: `.hark/changes/2023-03-14_anniel_configure-2-typescript.change.md`
+- `added`: `.hark/changes/2023-03-15_anniel_add-es-module.change.md`
+- `added`: `.hark/changes/2023-03-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-03-17_richardm_api-updates.change.md`
+- `added`: `.hark/changes/2023-03-20_anniel_add-deno-entry.change.md`
+- `added`: `.hark/changes/2023-03-23_pakrym_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-03-30_anniel_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-04-05_richardm_pin-latest-api.change.md`
+- `added`: `.hark/changes/2023-04-05_richardm_remove-stripe-default.change.md`
+- `added`: `.hark/changes/2023-04-05_richardm_typescript-remove-deprecated.change.md`
+- `added`: `.hark/changes/2023-04-06_pakrym_type-extend-resourcename.change.md`
+- `added`: `.hark/changes/2023-04-06_richardm_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-04-13_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-04-14_anniel_add-deno-usage.change.md`
+- `added`: `.hark/changes/2023-04-14_anniel_add-deno-webhook.change.md`
+- `added`: `.hark/changes/2023-04-20_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-04-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-05-03_richardm_let-user-supply.change.md`
+- `added`: `.hark/changes/2023-05-04_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-05-11_anniel_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-05-19_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-05-25_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-06-01_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-06-02_richardm_change-default-behavior.change.md`
+- `added`: `.hark/changes/2023-06-07_richardm_more-helpful-error.change.md`
+- `added`: `.hark/changes/2023-06-08_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-06-13_pakrym_generate-filecreatepa.change.md`
+- `added`: `.hark/changes/2023-06-13_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-06-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-06-20_anniel_update-readme-md.change.md`
+- `added`: `.hark/changes/2023-06-22_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-06-27_richardm_better-cryptoprovid-error.change.md`
+- `added`: `.hark/changes/2023-06-29_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-07-06_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-07-13_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-07-17_richardm_changelog-checkoutsess-checkout.change.md`
+- `added`: `.hark/changes/2023-07-17_richardm_changelog-fix-delimiterles.change.md`
+- `added`: `.hark/changes/2023-07-20_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-07-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-07-27_unknown_version-included-breaking.change.md`
+- `added`: `.hark/changes/2023-07-28_richardm_revert-import-http.change.md`
+- `added`: `.hark/changes/2023-08-02_anniel_allow-monkey-patching.change.md`
+- `added`: `.hark/changes/2023-08-03_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-08-10_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-08-16_anniel_allow-request-level.change.md`
+- `added`: `.hark/changes/2023-08-16_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-08-16_unknown_more-information-available.change.md`
+- `added`: `.hark/changes/2023-08-16_unknown_please-read-api.change.md`
+- `added`: `.hark/changes/2023-08-16_unknown_remove-deprecated-del.change.md`
+- `added`: `.hark/changes/2023-08-17_richardm_update-typescript-types.change.md`
+- `added`: `.hark/changes/2023-08-17_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-08-18_richardm_improved-maxnetworkre-options.change.md`
+- `added`: `.hark/changes/2023-08-21_anniel_update-v13-0.change.md`
+- `added`: `.hark/changes/2023-08-24_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-08-31_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-09-07_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-09-11_pakrym_feat-webhook-signing.change.md`
+- `added`: `.hark/changes/2023-09-11_richardm_use-src-apiversion.change.md`
+- `added`: `.hark/changes/2023-09-14_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-09-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-09-21_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-09-28_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-10-05_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-10-10_pakrym_bump-get-func.change.md`
+- `added`: `.hark/changes/2023-10-11_pakrym_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-10-12_pakrym_add-event-types.change.md`
+- `added`: `.hark/changes/2023-10-13_pakrym_add-named-unions.change.md`
+- `added`: `.hark/changes/2023-10-16_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-10-16_stripe-openapi_update-generated-code2.change.md`
+- `added`: `.hark/changes/2023-10-16_unknown_please-read-api.change.md`
+- `added`: `.hark/changes/2023-10-17_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-10-18_pakrym_do-require-passing.change.md`
+- `added`: `.hark/changes/2023-10-26_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-11-02_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-11-09_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-11-13_pakrym_use-abortcontrol-native.change.md`
+- `added`: `.hark/changes/2023-11-15_anniel_move-webhooks-instance.change.md`
+- `added`: `.hark/changes/2023-11-16_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-11-16_stripe-openapi_update-generated-code2.change.md`
+- `added`: `.hark/changes/2023-11-21_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-11-30_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-12-07_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-12-14_richardm_add-usage-x.change.md`
+- `added`: `.hark/changes/2023-12-14_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-12-21_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2023-12-22_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-01-03_anniel_update-docstrings-indicate.change.md`
+- `added`: `.hark/changes/2024-01-04_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-01-12_pakrym_add-hint-about.change.md`
+- `added`: `.hark/changes/2024-01-12_pakrym_add-hint-about2.change.md`
+- `added`: `.hark/changes/2024-01-12_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-01-18_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-01-18_stripe-openapi_update-generated-code2.change.md`
+- `added`: `.hark/changes/2024-01-25_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-01-29_richardm_remove-https-check.change.md`
+- `added`: `.hark/changes/2024-02-01_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-02-08_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-02-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-02-22_pakrym_add-taxids-api.change.md`
+- `added`: `.hark/changes/2024-02-22_pakrym_standardize-parameter-interface.change.md`
+- `added`: `.hark/changes/2024-02-22_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-02-23_anniel_vscode-settings-true.change.md`
+- `added`: `.hark/changes/2024-02-29_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-03-07_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-03-14_ramya_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-03-21_anniel_don-t-mutate.change.md`
+- `added`: `.hark/changes/2024-03-21_anniel_esbuild-test-project.change.md`
+- `added`: `.hark/changes/2024-03-21_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-03-28_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-04_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-09_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-10_ramya_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-11_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-16_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-18_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-22_anniel_make-cloudflare-package.change.md`
+- `added`: `.hark/changes/2024-04-25_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-04-29_richardm_add-more-explicit.change.md`
+- `added`: `.hark/changes/2024-05-02_prathmesh_deprecate-node-methods.change.md`
+- `added`: `.hark/changes/2024-05-02_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-05-09_prathmesh_remove-unnecessary-pointer.change.md`
+- `added`: `.hark/changes/2024-05-09_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-05-09_stripe-openapi_update-generated-code2.change.md`
+- `added`: `.hark/changes/2024-05-16_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-05-23_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-05-30_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-06-06_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-06-13_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-06-14_ramya_where-params-union.change.md`
+- `added`: `.hark/changes/2024-06-17_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-06-24_prathmesh_use-worker-module.change.md`
+- `added`: `.hark/changes/2024-06-24_stripe-openapi_please-read-api.change.md`
+- `added`: `.hark/changes/2024-06-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-07-05_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-07-08_xavdid_add-generatetest-function.change.md`
+- `added`: `.hark/changes/2024-07-09_xavdid_check-hasownproper-using.change.md`
+- `added`: `.hark/changes/2024-07-09_xavdid_update-node-versions.change.md`
+- `added`: `.hark/changes/2024-07-11_prathmesh_update-changelog.change.md`
+- `added`: `.hark/changes/2024-07-11_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-07-18_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-07-25_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-07-25_stripe-openapi_update-generated-code2.change.md`
+- `added`: `.hark/changes/2024-08-01_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-08-08_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-08-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-08-29_ramya_generate-sdk-openapi.change.md`
+- `added`: `.hark/changes/2024-09-05_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-09-12_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-09-18_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-09-18_stripe-openapi_update-generated-code2.change.md`
+- `added`: `.hark/changes/2024-10-01_ramya_support-apis-new.change.md`
+- `added`: `.hark/changes/2024-10-03_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-10-08_jar_add-fetchrelated-v2.change.md`
+- `added`: `.hark/changes/2024-10-14_helenye_update-signature-verification.change.md`
+- `added`: `.hark/changes/2024-10-18_xavdid_update-object-tags.change.md`
+- `added`: `.hark/changes/2024-10-29_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-10-30_prathmesh_fixed-bug-where.change.md`
+- `added`: `.hark/changes/2024-11-05_jar_remove-empty-resources.change.md`
+- `added`: `.hark/changes/2024-11-20_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-12-17_xavdid_add-missing-key.change.md`
+- `added`: `.hark/changes/2024-12-18_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2024-12-19_jar_added-pull-request.change.md`
+- `added`: `.hark/changes/2025-01-15_jar_added-contributing-md.change.md`
+- `added`: `.hark/changes/2025-01-16_xavdid_add-justfile-remove.change.md`
+- `added`: `.hark/changes/2025-01-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-01-29_helenye_include-openapiversi-npm.change.md`
+- `added`: `.hark/changes/2025-02-07_xavdid_add-next-js.change.md`
+- `added`: `.hark/changes/2025-02-24_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-03-25_xavdid_swap-stripe-webhooks.change.md`
+- `added`: `.hark/changes/2025-03-28_ramya_remove-types-marked.change.md`
+- `added`: `.hark/changes/2025-03-31_stripe-openapi_support-apis-new.change.md`
+- `added`: `.hark/changes/2025-04-15_xavdid_bump-cross-spawn.change.md`
+- `added`: `.hark/changes/2025-04-15_xavdid_bump-micromatch-4.change.md`
+- `added`: `.hark/changes/2025-04-24_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-04-24_xavdid_put-types-node.change.md`
+- `added`: `.hark/changes/2025-04-28_jar_add-build-scripts.change.md`
+- `added`: `.hark/changes/2025-05-02_jar_adds-contributing-md.change.md`
+- `added`: `.hark/changes/2025-05-06_prathmesh_rawrequest-now-allows.change.md`
+- `added`: `.hark/changes/2025-05-06_xavdid_fix-examples-webhook.change.md`
+- `added`: `.hark/changes/2025-05-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-06-02_helenye_allow-data-set.change.md`
+- `added`: `.hark/changes/2025-06-24_mbroshi_add-stripecontex-requestoptio.change.md`
+- `added`: `.hark/changes/2025-06-25_xavdid_add-mise-config.change.md`
+- `added`: `.hark/changes/2025-07-01_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-07-14_prathmesh_expose-api-version.change.md`
+- `added`: `.hark/changes/2025-07-30_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-08-25_xavdid_fix-example-expiresat.change.md`
+- `added`: `.hark/changes/2025-08-27_ramya_add-section-private.change.md`
+- `added`: `.hark/changes/2025-08-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-09-08_xavdid_build-sdk-w.change.md`
+- `added`: `.hark/changes/2025-09-22_xavdid_support-more-npm.change.md`
+- `added`: `.hark/changes/2025-09-23_stripe-openapi_2413-2430-2428.change.md`
+- `added`: `.hark/changes/2025-09-24_xavdid_add-strongly-typed.change.md`
+- `added`: `.hark/changes/2025-09-25_prathmesh_fixed-file-uploading.change.md`
+- `added`: `.hark/changes/2025-09-26_xavdid_add-stripecontex-object.change.md`
+- `added`: `.hark/changes/2025-09-29_xavdid_move-v2-event.change.md`
+- `added`: `.hark/changes/2025-09-30_xavdid_drop-support-node.change.md`
+- `added`: `.hark/changes/2025-10-01_ramya_update-changelog-md.change.md`
+- `added`: `.hark/changes/2025-10-01_xavdid_update-param-deprecation.change.md`
+- `added`: `.hark/changes/2025-10-03_xavdid_add-missing-fetchevent.change.md`
+- `added`: `.hark/changes/2025-10-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-10-28_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-11-03_xavdid_correctly-calculate-content.change.md`
+- `added`: `.hark/changes/2025-11-04_ramya_add-support-value.change.md`
+- `added`: `.hark/changes/2025-11-05_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-11-12_xavdid_use-textencoder-instead.change.md`
+- `added`: `.hark/changes/2025-11-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-11-17_mbroshi_update-v2-array.change.md`
+- `added`: `.hark/changes/2025-11-17_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2025-12-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-01-06_ramya_delete-apiversion-file.change.md`
+- `added`: `.hark/changes/2026-01-06_ramya_update-qs-dependency.change.md`
+- `added`: `.hark/changes/2026-01-07_jar_fix-content-length.change.md`
+- `added`: `.hark/changes/2026-01-15_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-01-19_ramya_document-usage-undocumented.change.md`
+- `added`: `.hark/changes/2026-01-21_mbroshi_remove-qs-dependency.change.md`
+- `added`: `.hark/changes/2026-01-28_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-02-03_mbroshi_fix-unhandledpro-error.change.md`
+- `added`: `.hark/changes/2026-02-23_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-03-03_xavdid_add-agent-information.change.md`
+- `added`: `.hark/changes/2026-03-05_xavdid_add-stripe-request.change.md`
+- `added`: `.hark/changes/2026-03-18_mbroshi_add-runtime-support.change.md`
+- `added`: `.hark/changes/2026-03-18_xavdid_drop-support-node.change.md`
+- `added`: `.hark/changes/2026-03-19_xavdid_add-manual-amount.change.md`
+- `added`: `.hark/changes/2026-03-19_xavdid_add-new-oauth.change.md`
+- `added`: `.hark/changes/2026-03-23_stripe-openapi_2616-throw-error.change.md`
+- `added`: `.hark/changes/2026-03-24_jar_add-decimalstrin-support.change.md`
+- `added`: `.hark/changes/2026-03-25_unknown_generated-changes-2611.change.md`
+- `added`: `.hark/changes/2026-03-26_prathmesh_fix-export-stripe.change.md`
+- `added`: `.hark/changes/2026-03-26_prathmesh_improved-typescript-support.change.md`
+- `added`: `.hark/changes/2026-03-26_prathmesh_improved-typescript-support2.change.md`
+- `added`: `.hark/changes/2026-03-30_prathmesh_updated-stripe-spec.change.md`
+- `added`: `.hark/changes/2026-03-31_prathmesh_converted-v2-amount.change.md`
+- `added`: `.hark/changes/2026-04-01_xavdid_removed-per-request.change.md`
+- `added`: `.hark/changes/2026-04-02_xavdid_remove-stripemethod-standardize.change.md`
+- `added`: `.hark/changes/2026-04-03_prathmesh_added-string-webhookheade.change.md`
+- `added`: `.hark/changes/2026-04-06_xavdid_throw-more-descriptive.change.md`
+- `added`: `.hark/changes/2026-04-08_mbroshi_add-type-safety.change.md`
+- `added`: `.hark/changes/2026-04-08_prathmesh_add-constructor-based.change.md`
+- `added`: `.hark/changes/2026-04-08_prathmesh_fixed-named-export.change.md`
+- `added`: `.hark/changes/2026-04-08_prathmesh_fixed-nested-service.change.md`
+- `added`: `.hark/changes/2026-04-14_prathmesh_tolerance-receivedat-timestamp.change.md`
+- `added`: `.hark/changes/2026-04-14_xavdid_adds-parseeventno-match.change.md`
+- `added`: `.hark/changes/2026-04-15_prathmesh_add-emiteventbod-config.change.md`
+- `added`: `.hark/changes/2026-04-17_xavdid_preserve-stack-traces.change.md`
+- `added`: `.hark/changes/2026-04-23_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-05-06_mbroshi_export-decimal-type.change.md`
+- `added`: `.hark/changes/2026-05-06_mbroshi_fix-file-upload.change.md`
+- `added`: `.hark/changes/2026-05-12_prathmesh_export-manually-maintained.change.md`
+- `added`: `.hark/changes/2026-05-12_prathmesh_exported-types-nested.change.md`
+- `added`: `.hark/changes/2026-05-15_jar_add-wintertc-compatibilit.change.md`
+- `added`: `.hark/changes/2026-05-20_jar_add-v2list-v2listpromis.change.md`
+- `added`: `.hark/changes/2026-05-27_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-05-27_xavdid_emit-warning-stripe.change.md`
+- `added`: `.hark/changes/2026-06-01_jar_fix-parsehttphea-return.change.md`
+- `added`: `.hark/changes/2026-06-05_xavdid_add-source-field.change.md`
+- `added`: `.hark/changes/2026-06-08_jar_fix-v2listiterat-concurrency.change.md`
+- `added`: `.hark/changes/2026-06-12_xavdid_uri-encode-path.change.md`
+- `added`: `.hark/changes/2026-06-17_xavdid_handle-shadowed-namespaces.change.md`
+- `added`: `.hark/changes/2026-06-18_xavdid_fix-stripe-errortype.change.md`
+- `added`: `.hark/changes/2026-06-18_xavdid_fixes-cjs-type.change.md`
+- `added`: `.hark/changes/2026-06-22_xavdid_encode-uri-path.change.md`
+- `added`: `.hark/changes/2026-06-24_jar_fix-cjs-companion.change.md`
+- `added`: `.hark/changes/2026-06-24_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-07-06_jar_restore-missing-public.change.md`
+- `added`: `.hark/changes/2026-07-07_jar_export-httpclient-types.change.md`
+- `added`: `.hark/changes/2026-07-09_xavdid_remove-unused-retry.change.md`
+- `added`: `.hark/changes/2026-07-13_xavdid_make-error-fields.change.md`
+- `added`: `.hark/changes/2026-07-16_jar_enum-type-annotations.change.md`
+- `added`: `.hark/changes/2026-07-16_xavdid_replace-source-hash.change.md`
+- `added`: `.hark/changes/2026-07-21_kidus_bump-brace-expansion.change.md`
+- `added`: `.hark/changes/2026-07-29_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-08-07_johno_emit-claude-code.change.md`
+- `added`: `.hark/changes/2026-08-07_xavdid_add-adjust-event.change.md`
+- `added`: `.hark/changes/2026-08-07_xavdid_add-stripe-majorapivers.change.md`
+- `added`: `.hark/changes/2026-08-19_xavdid_add-new-eventnotific.change.md`
+- `added`: `.hark/changes/2026-08-19_xavdid_correctly-throw-connection.change.md`
+- `added`: `.hark/changes/2026-08-25_jar_add-discriminate-kind.change.md`
+- `added`: `.hark/changes/2026-08-26_stripe-openapi_update-generated-code.change.md`
+- `added`: `.hark/changes/2026-08-31_xavdid_harden-api-requestor.change.md`
+- `added`: `.hark/changes/2026-09-01_jar_fix-request-coercion.change.md`
+- `added`: `.hark/changes/2026-09-01_xavdid_update-otherstring-docstring.change.md`
+- `added`: `.hark/changes/2026-09-01_xavdid_use-cryptographi-secure.change.md`
+- `added`: `.hark/changes/2026-09-09_xavdid_validate-webhook-secrets.change.md`
+- `added`: `.hark/changes/2026-09-11_xavdid_singleton-related-object.change.md`
+- `added`: `.hark/changes/2026-09-15_zacchua_add-stripe-suppress-notices.change.md`
+- `added`: `.hark/changes/2026-09-15_zacchua_fix-event-callback-context.change.md`
+- `added`: `.hark/changes/2026-09-18_jar_remove-v1-v2-list-fields.change.md`
+- `added`: `.hark/changes/2026-09-23_markisaackogan_remove-stripe-constructEventWithoutVerification.change.md`
+- `added`: `.hark/changes/2026-09-23_stripe_fix-v2-address-param.change.md`
+- `added`: `.hark/changes/2026-09-24_markisaackogan_remove-ErrorType-export.change.md`
+- `added`: `.hark/changes/2026-09-25_jar_classify-incomplete-response-bodies.change.md`
+- `added`: `.hark/changes/2026-09-25_jar_fix-node-http-interception.change.md`
+- `added`: `.hark/changes/2026-09-25_unknown_drop-node-18-support.change.md`
+- `added`: `.hark/changes/2026-09-29_update-verifyHeader-method-to-use-DEFAULT_TOLERANCE.change.md`
+- `added`: `.hark/changes/2026-09-30_stripe-openapi_8e765d05.change.md`
+- `added`: `.hark/changes/2026-09-30_stripe-openapi_fd79b81c.change.md`
+- `added`: `.hark/intros/intro-10.0.0.md`
+- `added`: `.hark/intros/intro-11.0.0.md`
+- `added`: `.hark/intros/intro-12.1.1.md`
+- `added`: `.hark/intros/intro-13.0.0.md`
+- `added`: `.hark/intros/intro-19.0.0.md`
+- `added`: `.hark/intros/intro-21.0.0.md`
+- `added`: `.hark/intros/intro-22.0.0.md`
+- `added`: `.hark/intros/intro-6.33.0.md`
+- `added`: `.hark/intros/intro-7.0.0.md`
+- `added`: `.hark/intros/intro-8.0.0.md`
+- `added`: `.hark/intros/intro-8.25.0.md`
+- `added`: `.hark/intros/intro-9.0.0.md`
+- `added`: `.hark/migration-guides/v23.md`
+- `added`: `.hark/releases.json`
+- `modified`: `CHANGELOG.md`
+- `modified`: `CODEGEN_VERSION`
+- `modified`: `OPENAPI_VERSION`
+- `modified`: `README.md`
+- `modified`: `VERSION`
+- `modified`: `justfile`
+- `modified`: `package.json`
+- `modified`: `src/Error.ts`
+- `modified`: `src/RequestSender.ts`
+- `modified`: `src/StripeEventNotificationHandler.ts`
+- `modified`: `src/Types.ts`
+- `modified`: `src/Webhooks.ts`
+- `modified`: `src/apiVersion.ts`
+- `modified`: `src/lib.ts`
+- `modified`: `src/net/NodeHttpClient.ts`
+- `modified`: `src/platform/NodePlatformFunctions.ts`
+- `modified`: `src/resources.ts`
+- `modified`: `src/resources/AccountSessions.ts`
+- `modified`: `src/resources/Accounts.ts`
+- `added`: `src/resources/Apps/Installs.ts`
+- `modified`: `src/resources/Apps/index.ts`
+- `modified`: `src/resources/Balance.ts`
+- `modified`: `src/resources/BalanceTransactions.ts`
+- `modified`: `src/resources/BankAccounts.ts`
+- `modified`: `src/resources/Billing/FeedbackOptions.ts`
+- `modified`: `src/resources/Capabilities.ts`
+- `modified`: `src/resources/Charges.ts`
+- `modified`: `src/resources/Checkout/Sessions.ts`
+- `modified`: `src/resources/ConfirmationTokens.ts`
+- `modified`: `src/resources/Customers.ts`
+- `modified`: `src/resources/Discounts.ts`
+- `modified`: `src/resources/Events.ts`
+- `modified`: `src/resources/Files.ts`
+- `modified`: `src/resources/FinancialConnections/Accounts.ts`
+- `modified`: `src/resources/FinancialConnections/Sessions.ts`
+- `modified`: `src/resources/InvoiceItems.ts`
+- `modified`: `src/resources/InvoicePayments.ts`
+- `modified`: `src/resources/Invoices.ts`
+- `modified`: `src/resources/Issuing/Cardholders.ts`
+- `modified`: `src/resources/Issuing/Tokens.ts`
+- `modified`: `src/resources/LineItems.ts`
+- `modified`: `src/resources/Mandates.ts`
+- `modified`: `src/resources/PaymentAttemptRecords.ts`
+- `modified`: `src/resources/PaymentIntentAmountDetailsLineItems.ts`
+- `modified`: `src/resources/PaymentIntents.ts`
+- `modified`: `src/resources/PaymentLinks.ts`
+- `modified`: `src/resources/PaymentMethodConfigurations.ts`
+- `modified`: `src/resources/PaymentMethods.ts`
+- `modified`: `src/resources/PaymentRecords.ts`
+- `modified`: `src/resources/Payouts.ts`
+- `modified`: `src/resources/Persons.ts`
+- `modified`: `src/resources/Plans.ts`
+- `modified`: `src/resources/Prices.ts`
+- `added`: `src/resources/ProductCatalog/TrialOffers.ts`
+- `added`: `src/resources/ProductCatalog/index.ts`
+- `modified`: `src/resources/Products.ts`
+- `modified`: `src/resources/Quotes.ts`
+- `modified`: `src/resources/Radar/PaymentEvaluations.ts`
+- `modified`: `src/resources/Reserve/Holds.ts`
+- `modified`: `src/resources/Reserve/Plans.ts`
+- `modified`: `src/resources/Reserve/Releases.ts`
+- `modified`: `src/resources/SetupAttempts.ts`
+- `modified`: `src/resources/SetupIntents.ts`
+- `modified`: `src/resources/Sigma/ScheduledQueryRuns.ts`
+- `modified`: `src/resources/SubscriptionItems.ts`
+- `modified`: `src/resources/SubscriptionSchedules.ts`
+- `modified`: `src/resources/Subscriptions.ts`
+- `modified`: `src/resources/Tax/CalculationLineItems.ts`
+- `modified`: `src/resources/Tax/Calculations.ts`
+- `added`: `src/resources/Tax/Locations.ts`
+- `modified`: `src/resources/Tax/Registrations.ts`
+- `modified`: `src/resources/Tax/Settings.ts`
+- `modified`: `src/resources/Tax/Transactions.ts`
+- `modified`: `src/resources/Tax/index.ts`
+- `modified`: `src/resources/TaxCodes.ts`
+- `modified`: `src/resources/TaxRates.ts`
+- `modified`: `src/resources/Terminal/Configurations.ts`
+- `modified`: `src/resources/Terminal/Readers.ts`
+- `modified`: `src/resources/TestHelpers/ConfirmationTokens.ts`
+- `modified`: `src/resources/TestHelpers/Treasury/ReceivedCredits.ts`
+- `added`: `src/resources/ThreeDSecure/Authentications.ts`
+- `added`: `src/resources/ThreeDSecure/index.ts`
+- `modified`: `src/resources/Tokens.ts`
+- `modified`: `src/resources/Topups.ts`
+- `modified`: `src/resources/Treasury/FinancialAccounts.ts`
+- `modified`: `src/resources/Treasury/InboundTransfers.ts`
+- `modified`: `src/resources/Treasury/ReceivedCredits.ts`
+- `modified`: `src/resources/Treasury/ReceivedDebits.ts`
+- `modified`: `src/resources/Treasury/TransactionEntries.ts`
+- `modified`: `src/resources/Treasury/Transactions.ts`
+- `modified`: `src/resources/V2/Billing/MeterEventAdjustments.ts`
+- `modified`: `src/resources/V2/Core/AccountLinks.ts`
+- `modified`: `src/resources/V2/Core/AccountPersons.ts`
+- `modified`: `src/resources/V2/Core/AccountTokens.ts`
+- `modified`: `src/resources/V2/Core/Accounts.ts`
+- `modified`: `src/resources/V2/Core/Accounts/PersonTokens.ts`
+- `modified`: `src/resources/V2/Core/Accounts/Persons.ts`
+- `modified`: `src/resources/V2/Core/EventDestinations.ts`
+- `modified`: `src/resources/V2/Core/Events.ts`
+- `modified`: `src/resources/WebhookEndpoints.ts`
+- `modified`: `src/stripe.cjs.node.ts`
+- `modified`: `src/stripe.core.ts`
+- `modified`: `src/stripe.esm.node.ts`
+- `modified`: `src/utils.ts`
+- `modified`: `test/CloudProviderEvent.spec.ts`
+- `modified`: `test/Integration.spec.ts`
+- `modified`: `test/PlatformFunctions.spec.ts`
+- `modified`: `test/RequestSender.spec.ts`
+- `modified`: `test/StripeEventNotificationHandler.spec.ts`
+- `modified`: `test/V2List.spec.ts`
+- `modified`: `test/Webhook.spec.ts`
+- `modified`: `test/multipart.spec.ts`
+- `modified`: `test/net/NodeHttpClient.spec.ts`
+- `modified`: `test/net/helpers.ts`
+- `modified`: `test/resources/Account.spec.js`
+- `modified`: `test/resources/generated_examples_test.spec.js`
+- `modified`: `testProjects/types-cjs-node16/typescriptTest.ts`
+- `modified`: `testProjects/types-cjs/typescriptTest.ts`
+- `modified`: `testProjects/types/typescriptTest.ts`
+- `modified`: `yarn.lock`

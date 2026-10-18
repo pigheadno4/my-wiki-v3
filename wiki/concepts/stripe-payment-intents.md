@@ -122,6 +122,10 @@ stripe.paymentIntents.create({
 
 `@stripe/stripe-js@10.0.0` adds `confirmPayByBankPayment(clientSecret, data?, options?)`, returning `Promise<PaymentIntentResult>`. Data permits an existing PaymentMethod ID or new Pay by Bank data, with optional `return_url`; `handleActions: false` opts into merchant-managed authorization redirection. The method is declared on Stripe, but the new `CreatePaymentMethodPayByBankData` is not added to the standalone `CreatePaymentMethodData` union. Do not infer that every `createPaymentMethod({type: 'pay_by_bank'})` overload is now supported. These are declaration findings, not a newly launched payment method, eligibility or executed redirect/payment proof. Source: [[source-github-stripe-js]].
 
+## Server SDK 23.0.0 Endive Boundary
+
+`stripe@23.0.0` removes request `payment_method_types` from PaymentIntent create/update/confirm and SetupIntent create/update. The response field remains, and SetupIntent confirm is not included in that removal. Existing request `allowed_payment_method_types` adds `card_present` and `interac_present` enum values; do not mechanically rename every occurrence across APIs. PaymentIntent gains expandable `payment_record`, and BLIK gains off-session setup and mandate-expiration options. These are exact-version server contracts, not client confirmation support or payment-method eligibility. Source: [[source-github-stripe-node]].
+
 ## Related Concepts
 
 - [[stripe-elements]] — Stripe Elements (UI component library used with Payment Intents)

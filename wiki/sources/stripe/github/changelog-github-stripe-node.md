@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/stripe-node"
 type: source
 date_ingested: 2026-08-08
-date_updated: 2026-09-21
+date_updated: 2026-10-18
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/manifest.json"
+  - "github/stripe/stripe-node/supplements/2026-10-18-fe645f6-8f77364b/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
@@ -17,6 +19,19 @@ tags: [stripe, stripe-node, node-js, changelog, github-repository]
 ## Overview
 
 Package-qualified retained release history for `stripe/stripe-node`. Cumulative implementation knowledge belongs in [[source-github-stripe-node]].
+
+## `stripe@23.0.0` - Change Set `fe645f6` (2026-09-30)
+
+- **Identity:** `stripe@22.6.2` -> `stripe@23.0.0`, exact SHA `fe645f63d645011aca38dff9e245c1cf7b9ae60e`; upstream changelog date 2026-09-30, release publication 2026-10-01 UTC, collected/ingested 2026-10-18.
+- **Mode:** approved additive **full**, preserving all v22 history. Explicit focused-reading exception covers unchanged schemas, generated inventories, old changelog and duplicated diff; runtime/examples/supplement fully read, generated changes and affected prior code read. Snapshot 68 files (35 modified/33 unchanged), 1,119 upstream paths classified; exact-SHA handler is a separate approved attachment.
+- **Migration:** Node20+, optional Node types20+, API `2026-09-30.endive`, OpenAPI `v2526`; removes client unverified snapshot alias, `ErrorType`, V1-only V2 list fields and selected request `payment_method_types`. Checkout's new allowlist intersects dynamic eligibility; do not globally rename fields or remove response/payment-settings fields.
+- **Context:** `withStripeContext` constructs properly bound callback resources, shares telemetry/emitter and drops inherited `stripeAccount`; replaces the v22 shallow-copy issue. Handler known types grow 24 -> 240, distinct from ordinary snapshot-event names; registration/verification/deduplication boundaries persist.
+- **Webhooks:** low-level default age check becomes 300 seconds; zero skips age checking in snapshot helpers but thin parsers still substitute 300. Signature checks remain. Stale helper spelling and retry default remain flagged.
+- **Transport:** every incomplete JSON-body read becomes `StripeConnectionError`, without a new body-read retry loop; malformed complete JSON stays `StripeAPIError`. Immediate Node write/end fixes interceptor compatibility. Notice suppression excludes detected AI agents; no client key-mode enforcement inferred.
+- **Checkout/Billing:** PayPay/SeQura/BLIK mandate types, expandable card mandate, product tax details, PaymentIntent payment record, explicit subscription pause, one-entry pause schedules, item trials/status details and object-shaped update/resume billing anchors. Distinct direct/scheduled resume payment defaults and stale trial-only pause comment documented; no eligibility guarantee.
+- **History:** the regenerated upstream changelog reformats/reorders old records and changes some dates; older wiki chapters remain unchanged. Source chapter, Node/Checkout/PaymentIntent/Subscription concepts, company/index/logs updated. No new source count, cross-company comparison, SDK execution, commit or push.
+
+**Evidence:** [Release](../../../../raw/github/stripe/stripe-node/releases/stripe/23.0.0/2026-10-18/manifest.json), [exact-SHA changelog](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/CHANGELOG.md), [snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/manifest.json), [comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.2--23.0.0/comparison.json), [supplement](../../../../raw/github/stripe/stripe-node/supplements/2026-10-18-fe645f6-8f77364b/manifest.json), [handler](../../../../raw/github/stripe/stripe-node/supplements/2026-10-18-fe645f6-8f77364b/files/src/StripeEventNotificationHandler.ts), [attachment](../../../../tracking/github/repos/stripe/stripe-node/evidence-attachments/github-fc2596c23efd4fe6756c/attachment.json). Per-topic implementation links in [[source-github-stripe-node]].
 
 ## `stripe@22.6.2` - Change Set `d9d0927` (2026-09-09)
 

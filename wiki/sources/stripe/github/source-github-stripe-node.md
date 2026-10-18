@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-node"
 type: source
 date_ingested: 2026-05-08
-date_updated: 2026-09-21
+date_updated: 2026-10-18
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/manifest.json"
+  - "github/stripe/stripe-node/supplements/2026-10-18-fe645f6-8f77364b/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-9f82c46/manifest.json"
   - "github/stripe/stripe-node/snapshots/2026-09-21-2f64e7a/manifest.json"
@@ -20,6 +22,8 @@ tags: [stripe, stripe-node, node-js, sdk, typescript, payment-intents, checkout,
 `stripe/stripe-node` publishes the `stripe` npm package, Stripe's server-side JavaScript SDK. This cumulative page preserves the `stripe@22.1.1` baseline, full `22.4.0` ingest, `22.5.0` delta and full `22.6.0` ingest, then adds approved delta `stripe@22.6.1` at SHA `9f82c466c0a5913906ab1bf39790edd4d231ee5d`. The subsequent 22.6.2 delta adds missing-webhook-secret guards while retaining that history. See the separate [[changelog-github-stripe-node]] for release chronology.
 
 Repository: <https://github.com/stripe/stripe-node>
+
+**Latest ingested:** additive full baseline `stripe@23.0.0`, SHA `fe645f63d645011aca38dff9e245c1cf7b9ae60e`, API `2026-09-30.endive`. The earlier generic sections below describe retained v22 knowledge; the v23 chapter explicitly qualifies changed contracts. No v22 version chapter is replaced.
 
 ## Evidence Boundary
 
@@ -59,7 +63,7 @@ The 22.6.1 delta uses an explicitly approved focused-reading exception: changed 
 
 | Package | Latest ingested release | Pinned API | OpenAPI marker | Node support | Evidence status |
 | --- | --- | --- | --- | --- | --- |
-| `stripe` | `22.6.2` | `2026-08-26.dahlia` | `v2442` | Node.js 18+ | Approved delta with focused reading; earlier versions retained |
+| `stripe` | `23.0.0` | `2026-09-30.endive` | `v2526` | Node.js 20+ | Approved full with focused reading and exact-SHA handler supplement; v22 retained |
 
 This table reports wiki ingest progress, not the latest release currently published upstream.
 
@@ -272,6 +276,87 @@ Refunds support create, retrieve, update, list, and cancellation for refunds req
 
 Stripe Node types reflect the latest API shape associated with the package. Minor releases may add response enum values or weaken exhaustiveness without runtime incompatibility, so TypeScript errors can appear on minor upgrades. Major SDK releases carry backwards-incompatible Stripe API changes. Exact package and API versions should therefore be recorded in implementation and comparison answers.
 
+## 23.0.0 Full Baseline: Endive
+
+Ingested 2026-10-18, from `stripe@22.6.2` to `stripe@23.0.0`, work item `github-fc2596c23efd4fe6756c`. The upstream changelog dates this release 2026-09-30; the GitHub release record is published 2026-10-01 UTC. These are distinct timestamps, not a corrected release date.
+
+### Reading and Evidence Scope
+
+Full mode is preserved with the user's one-time focused-reading exception: runtime/shared code, examples and the handler supplement read fully; changed generated API sections and affected prior code read; unchanged schemas, generated inventories, old cumulative changelog and duplicated comparison checked mechanically. Both 68-file snapshots pass SHA-256, Git blob and size checks: 35 modified, 33 unchanged, no additions/removals. All 1,119 upstream changed paths are classified, including 995 `.hark` fragments outside the retained capsule. The original snapshot/packet remains immutable; the separately attached handler belongs to the same SHA. Neither this reading nor full mode means the entire upstream repository was read or tested.
+
+The regenerated upstream changelog adds anchors, reorders old entries and changes some old metadata (for example, the old 22.6.1 date differs). Older wiki entries and exact-SHA raw remain authoritative historical evidence; they are not rewritten from the new cumulative file.
+
+### Grounding Quotes
+
+These exact excerpts were extracted before canonical edits; paths below are relative to the retained snapshot's `files/`, except the identified supplement:
+
+1. `package.json:25`: `"node": ">=20"`.
+2. `src/Webhooks.ts:280`: `tolerance ?? Webhook.DEFAULT_TOLERANCE,`.
+3. `src/stripe.core.ts:1764`: `* Stripe context. The new client does not inherit this client's Stripe account.`
+4. Supplement `src/StripeEventNotificationHandler.ts:348`: `const eventClient = this.client.withStripeContext(event.context);`.
+5. `src/resources/Checkout/Sessions.ts:3810`: ``* Unlike `payment_method_types`, this acts as a filter on the dynamically computed set of``.
+
+### Runtime, Exports and Removed APIs
+
+- Node.js minimum becomes 20 (previously 18); optional `@types/node` peer becomes `>=20`. Runtime dependencies remain absent. Node removes its imported-crypto UUID override and uses the shared global-crypto implementation; do not carry the v22 Node18 workaround forward.
+- Pinned API becomes `2026-09-30.endive`, static `Stripe.MAJOR_API_VERSION` resolves to `endive`, OpenAPI marker becomes `v2526`. Conditional CJS/ESM/browser/Bun/Deno/workerd/extensibility paths remain; this is not browser payment collection support.
+- The client-level `constructEventWithoutVerification` alias is removed. The webhook-object helper remains, and thin `parseEventNotificationWithoutVerification` remains unauthenticated. Keep those only behind prior verification or another independently trusted delivery boundary.
+- Top-level `ErrorType` namespace is removed; use `Stripe.errors` as value/type namespace. `V2List<T>` loses never-populated `object`, `has_more`, `url`; V1 list contracts remain. V2 pagination uses its next-page URL rather than the V1 `has_more` pattern.
+- Defaults still include the 80-second timeout. Explicit retry settings, application idempotency/deduplication and webhook authentication remain necessary; no new automatic business-level retries are inferred.
+
+### Notification Callback Context Fix
+
+`withStripeContext(context)` instantiates a new client using the current constructor/authenticator, API version, HTTP client, retries, timeout, host/port/protocol, telemetry, body-emission and app configuration. The new resources and request sender bind to this new client. It shares emitter and prior-request metrics, copies client ID, does not mutate the original client, and deliberately does **not** inherit `stripeAccount`; null/undefined clears the context.
+
+The fully read exact-SHA supplement calls this method for callback clients, replacing the v22 shallow copy whose resource/request bindings remained on the original client. This addresses that recorded implementation gap, rather than deleting the old finding. It is source tracing, not an executed Connect routing or authorization guarantee.
+
+The handler's known thin-notification set grows from 24 to 240 types with none removed, including `v1.checkout.session.completed`, PaymentIntent and subscription names. These are thin notification identifiers, not instructions to rename ordinary snapshot events such as `checkout.session.completed`. Registration still locks on the first `handle()` attempt (even a failed parse); each type has one callback, one pre-hook is allowed, false skips callbacks and fallback, and exceptions propagate. Known-type fallback membership is not the same as a registered callback. The handler supplies no HTTP acknowledgment policy, durable deduplication or automatic retry and uses the synchronous verified thin parser.
+
+### Webhook Tolerance Boundaries
+
+`stripe.webhooks.signature.verifyHeader/verifyHeaderAsync` now default to 300 seconds when tolerance is omitted/nullish; v22 low-level behavior skipped the age check by default. `webhooks.constructEvent/constructEventAsync` now respect explicit `0` to skip the age check. HMAC and nonempty-secret validation still run; zero never means unauthenticated parsing. The check is one-sided payload age, not a universal absolute-clock-skew validator.
+
+> [!warning] Contradiction
+> Do not apply the zero-tolerance change to every parser: `stripe.core.ts:1711,1738` still uses `tolerance || DEFAULT_TOLERANCE` in `parseEventNotification/Async`, so zero remains 300 there. Comments also retain the nonexistent `webhooks.verifySignatureHeader` spelling; actual low-level methods live under `webhooks.signature`. Historical v22 warnings remain version-specific. Shared-core omitted/null-object handling and the older Node ESM evidence are not a claim of packaged import/require parity.
+
+### Transport and Notices
+
+All `HttpClientResponseBodyError` JSON body-read failures now map to `StripeConnectionError`, not just timeouts. A fully received but malformed JSON document remains `StripeAPIError`. Body-read failure returns through the callback rather than reentering the request retry loop. The Node client writes/ends immediately instead of waiting for connection, improving Nock14/MSW interception; it tracks timeout state with the request and destroys the request on timeout. Raw response streams retain their distinct behavior. Fetch's body-lifetime timeout and streaming handoff remain transport-specific; no universal deadline is promised.
+
+`STRIPE_SUPPRESS_NOTICES=true` suppresses returned notices when no AI agent is detected; notices still print under detected agents. Release notes describe test/sandbox notices, but the retained client does not itself enforce a test/live key-mode restriction on this branch. Hermes agent detection is added. Existing telemetry-ID storage is not a newly introduced v23 feature.
+
+> [!warning] Contradiction
+> README/config comments continue to document a retry default of one while the base/Node platform returns two and extensibility returns zero. Set `maxNetworkRetries` explicitly. The unchanged snippets README also mentions older Node requirements; package engines and the main README require Node20+. These comments do not restore Node18 support.
+
+### Checkout and Payment Contract Migration
+
+| Surface | Exact 23.0.0 change |
+| --- | --- |
+| Checkout Session create | Removes `payment_method_types`; adds `allowed_payment_method_types`, a filter intersected with dynamically eligible methods, not the old static-list guarantee. Response adds a nullable allowlist. |
+| PaymentIntent create/update/confirm | Removes request `payment_method_types`; response field remains. Existing allowlist enums add card-present/interac-present values. Adds expandable response `payment_record`. |
+| SetupIntent create/update | Removes request `payment_method_types`; do not extend that removal to confirm or response fields. Adds BLIK mandate options and related payment-data types. |
+| Other surfaces | Payment Links and Invoice/Subscription payment settings retain their own `payment_method_types`. This is not a repository-wide string replacement. |
+| Methods/mandates | PayPay and SeQura data/options/enums; BLIK off-session usage and expiration; Bancontact Checkout off-session option. Charge card mandate becomes `string | Mandate | null`; card ECI is nullable and alone does not determine liability shift. |
+| Products/tax | Product and inline price product data gain `tax_details`, including performance location and tax code. Checkout custom-field labels document 100 characters instead of 50. |
+| PayTo | `PaymentMethodUpdateParams.payto` is removed; create/response contracts are not generally removed. |
+
+Declaration availability is not merchant onboarding, geography, client UI support or successful payment evidence. Generated legacy Charge create/capture comments now explicitly deprecate those methods; prefer the appropriate PaymentIntent flow rather than treating their continued presence as a new recommendation.
+
+### Subscription Lifecycle Contracts
+
+`subscriptions.pause()` POSTs to `/v1/subscriptions/{id}/pause`. Its comment describes paused subscriptions generating no invoices and advancing no billing periods, resumed via the resume endpoint, and rejects attached schedules. This is not `pause_collection`. Parameters control metered-usage billing, unused-time credit and invoice versus pending-invoice-item handling.
+
+Subscription schedules separately add `pause_schedules` (one entry supported), keys for update, pause/resume timing, billing/payment/proration settings and operation status/error fields. Omitting the update preserves settings; an empty string clears them. Direct resume defaults `payment_behavior` to `resume_on_payment_attempt`, whereas schedule resume defaults to `resume_on_payment_success`; do not merge these defaults.
+
+Subscription update/resume billing-cycle anchors change from scalar enums to `{type: 'now' | 'unchanged'}`; preview anchors also support `{type: 'timestamp', timestamp}`. Item-level `current_trial`, trial-end anchor controls, pending cancellation state and invoice/subscription `status_details` extend lifecycle typing. No universal Billing eligibility is inferred.
+
+> [!warning] Contradiction
+> The same Subscriptions file retains a status comment saying a subscription can only enter paused status after a trial without a payment method, while implementing explicit pause and exposing `pause_requested` and other reasons. The older comment is not an exhaustive v23 state-transition rule. See [[stripe-subscriptions]] and [[stripe-node-sdk]].
+
+### Retained Limits and Query Routing
+
+Unchanged public APIs, pagination, error classes, request hardening, V1 idempotency at zero retries and extensibility constraints remain the v22 baseline unless overridden above. The 24-to-240 handler set does not mean every generated notification implementation was retained. Newly exported Apps Install, ProductCatalog TrialOffer, Tax Location and ThreeDSecure Authentication and non-checkout V2/Financial Connections changes remain navigation/release-note scope only. Collect/read their exact implementation before detailed behavioral answers. No SDK install/build, upstream tests, browser or provider payment execution was performed.
+
 ## Retained History
 
 ### `stripe@22.1.1`
@@ -301,6 +386,14 @@ The September 21 delta ingest retains the September 1 release: 13 modified and 5
 - History: [[changelog-github-stripe-node]]
 
 ## Raw Sources
+
+- [23.0.0 ingest receipt](../../../../tracking/github/repos/stripe/stripe-node/ingest-review-fc2596c2.md) - approved reading exception, history preservation and validation limits
+
+- [23.0.0 snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/manifest.json), [release](../../../../raw/github/stripe/stripe-node/releases/stripe/23.0.0/2026-10-18/manifest.json), [notes](../../../../raw/github/stripe/stripe-node/releases/stripe/23.0.0/2026-10-18/release-notes.md), [exact-SHA changelog](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/CHANGELOG.md)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.2--23.0.0/comparison.json), [duplicated diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.2--23.0.0/diff.patch), [packet](../../../../tracking/github/repos/stripe/stripe-node/ingest-packets/github-fc2596c23efd4fe6756c/packet.json)
+- [Supplement manifest](../../../../raw/github/stripe/stripe-node/supplements/2026-10-18-fe645f6-8f77364b/manifest.json), [handler implementation](../../../../raw/github/stripe/stripe-node/supplements/2026-10-18-fe645f6-8f77364b/files/src/StripeEventNotificationHandler.ts), [attachment](../../../../tracking/github/repos/stripe/stripe-node/evidence-attachments/github-fc2596c23efd4fe6756c/attachment.json)
+- [Core/context](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/stripe.core.ts), [webhooks](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/Webhooks.ts), [request sender](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/RequestSender.ts), [Node transport](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/net/NodeHttpClient.ts), [package](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/package.json)
+- [Checkout](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/resources/Checkout/Sessions.ts), [PaymentIntents](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/resources/PaymentIntents.ts), [SetupIntents](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/resources/SetupIntents.ts), [Subscriptions](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/resources/Subscriptions.ts), [schedules](../../../../raw/github/stripe/stripe-node/snapshots/2026-10-18-fe645f6/files/src/resources/SubscriptionSchedules.ts) - changed generated sections and prior context read under approval
 
 - [22.6.2 snapshot](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/manifest.json), [release manifest](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/manifest.json), [release notes](../../../../raw/github/stripe/stripe-node/releases/stripe/22.6.2/2026-09-21/release-notes.md)
 - [22.6.1 to 22.6.2 comparison](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/comparison.json), [diff](../../../../tracking/github/repos/stripe/stripe-node/comparisons/stripe/22.6.1--22.6.2/diff.patch), [Webhooks implementation](../../../../raw/github/stripe/stripe-node/snapshots/2026-09-21-d9d0927/files/src/Webhooks.ts)
