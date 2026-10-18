@@ -72,7 +72,7 @@ These are response/display contracts for merchant-built summaries, not a pricing
 
 - `CheckoutElementsProvider` initializes `initCheckoutElementsSdk()`, and `useCheckoutElements()` returns the Elements action and session surface.
 - `CheckoutFormProvider` initializes the beta `initCheckoutFormSdk()`, and `useCheckoutForm()` returns the narrower Form action and session surface.
-- `useCheckout()` remains a backward-compatible Elements-shaped alias but has been deprecated since v6.3.0 and is scheduled for removal in v7.
+- `useCheckout()` remains a backward-compatible Elements-shaped alias, deprecated since v6.3.0; the v6 comment planned removal in v7, but the retained 7.0.0 code still exports it (see below).
 - Both providers initialize once, accept a sync Stripe object, promise, or `null` for SSR, and reject changing the Stripe prop after it has been set.
 - The `/checkout` entrypoint also exposes Payment, Express Checkout, address, Tax ID, Contact Details, Checkout Form, Currency Selector, and beta Terms components.
 
@@ -89,6 +89,13 @@ The separately retained `@stripe/react-stripe-js@6.10.0` adds the beta `/checkou
 ### React Stripe.js 6.11.0 initialization handling
 
 Both Checkout providers now surface rejected Stripe promises, invalid asynchronously resolved Stripe objects, and synchronous SDK initialization/loadActions exceptions through their hook error state. Invalid synchronous Stripe props still throw during render. StrictMode observes discarded derived promises, but the release adds no automatic retry. SDK-only consumers are separated from session updates; checkout hooks retain loading/error/success semantics. See [[source-github-react-stripe-js]].
+
+### React Stripe.js 7.0.0 full baseline
+
+The React wrapper now requires Stripe JS `>=10.0.0 <11.0.0`, with React/React DOM peers unchanged at `>=16.8.0 <20.0.0`. The `/checkout` Elements and beta Form providers, loading/error/success states, SDK/session separation, appearance/font updates and matching hooks remain. `useCheckoutElements()` and `useCheckoutForm()` compute their memoized result before the successful-state wrong-provider guard; the guard still throws. The package's root Payment Request Button wrapper is removed, but this is not removal of the Checkout Elements or Embedded Checkout paths. Source: [[source-github-react-stripe-js]].
+
+> [!warning] Contradiction
+> The 7.0.0 JSDoc still says `useCheckout()` will be removed in 7.0.0, yet that release implements and re-exports it. Keep the older plan as historical evidence, not an actual removal. Prefer the provider-specific hooks; no new payment capability, beta eligibility or hosted-runtime behavior is proven. See [[stripe-elements]], [[source-github-react-stripe-js]] and [[changelog-github-react-stripe-js]].
 
 ## Checkout Sessions vs Payment Intents (for Elements)
 

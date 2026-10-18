@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-10-16] ingest | React Stripe.js `7.0.0`
+
+- Full additive major baseline: Payment Request Button React wrapper removal, Stripe JS v10 peer requirement, React 19 lifecycle guard and retained deprecated hook despite its stale removal comment. All 57 retained source files and assigned prior files read; generated evidence mechanically verified under approval. V6 history and source count preserved. Details [[stripe-log]], [[source-github-react-stripe-js]], [[changelog-github-react-stripe-js]]. No commit/push.
+
+
 ## [2026-10-16] ingest | PayPal iOS `3.1.1`
 
 - Delta after full `3.0.0` and full `3.1.0`: BN session forwarding/demo settings and later unsupported-3.0.0 notice. Nine changed files read; original release histories preserved. Details [[paypal-log]], [[source-github-paypal-ios]], [[changelog-github-paypal-ios]]. No commit/push.

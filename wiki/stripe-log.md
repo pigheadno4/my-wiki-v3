@@ -6,6 +6,11 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-16] ingest | React Stripe.js `7.0.0`
+
+- Approved additive full ingest, `github-e5ebdcfb6b9b67582191`, from `@stripe/react-stripe-js@6.12.0` to `@stripe/react-stripe-js@7.0.0` at `3b42f3d838c5f2279e719a4faac93b617c7e83af`. Fully read all 57 retained current files, four assigned deleted prior demos/stories, release notes and cumulative source/changelog; generated manifests/inventories and duplicated comparison diff mechanically verified under explicit approval. Current/prior 57/61 hashes/sizes verified; 18 modified/four removed/39 unchanged and all 35 upstream paths classified, no evidence gaps.
+- Elements/Checkout/Express Checkout concepts first; cumulative source/changelog/company/index/logs preserve v6 history and source count. Documented removed Payment Request Button React API, Stripe JS v10 peers, unchanged React peer range, scoped React 19 initialization guard and memo-before-provider-guard ordering. Flagged stale promised `useCheckout()` v7 removal against its retained implementation/export. No extra collection, SDK tests/build/browser/payment execution, commit or push. Details [[source-github-react-stripe-js]] and [[changelog-github-react-stripe-js]]. Next: scoped commit/push approval after validation.
+
 ## [2026-10-14] ingest | React Native `0.81.0`
 
 - Approved additive full override with focused reading, github-79a6db1277f60762c57f at 1b792fbddad9fe758cdc1c5504133bd7e4ddb656, from 0.80.0. Current/prior 244/240 retained files, four added/33 modified/207 unchanged; 484 hashes/sizes and packet/comparison/notes verified; 72 upstream dispositions. Effective full inventory: 253 paths, changed implementation/affected prior code read, unchanged history/inventories mechanically checked. All 1,264 prior changelog lines preserved with 17 insertions.

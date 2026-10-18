@@ -202,6 +202,10 @@ The ECE replaces the older Payment Request Button Element. Key changes:
 
 Full migration guide: [[source-stripe-express-checkout-element-migration]]
 
+### React wrapper boundary at 7.0.0
+
+`@stripe/react-stripe-js@7.0.0` removes the root `PaymentRequestButtonElement` export, its React props/component types, the React `getElement` overload, and the class/hooks demo and Storybook pairs. `ExpressCheckoutElement` remains exported. Existing v6 code importing the removed wrapper must migrate before adopting v7; this is not a drop-in name change because initialization, availability, event and confirmation contracts differ as described above. It does not prove removal of all lower-level Payment Request APIs or a new wallet rollout. The v7 wrapper requires `@stripe/stripe-js >=10.0.0 <11.0.0`; underlying declaration/runtime behavior has its own evidence boundary. See [[source-github-react-stripe-js]] and [[changelog-github-react-stripe-js]].
+
 ## Integration Notes
 
 - Domain must be registered in Stripe in both test and live mode
@@ -217,6 +221,7 @@ Full migration guide: [[source-stripe-express-checkout-element-migration]]
 
 ## Sources
 
+- [[source-github-react-stripe-js]] - version-qualified React 7.0.0 Payment Request Button removal and retained Express Checkout wrapper
 - [[source-stripe-express-checkout-element]] — overview reference: supported methods, browser matrix, customization options, ready event
 - [[source-stripe-express-checkout-element-accept-payment]] — full integration guide: both API paths, customer detail collection, wallet events, testing, Connect
 - [[source-stripe-express-checkout-element-migration]] — migration guide: Payment Request Button → ECE, before/after code, MPAN support

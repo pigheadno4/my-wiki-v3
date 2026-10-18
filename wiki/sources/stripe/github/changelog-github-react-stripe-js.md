@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-09-29
+date_updated: 2026-10-16
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json"
@@ -19,6 +20,24 @@ tags: [stripe, react, stripe-js, elements, checkout, changelog, github-repositor
 ## Overview
 
 Chronological release synthesis for `stripe/react-stripe-js`. Cumulative implementation knowledge belongs in [[source-github-react-stripe-js]] and the linked immutable evidence.
+
+## `@stripe/react-stripe-js@7.0.0` - Change Set `3b42f3d` (2026-10-01)
+
+Approved full ingest on 2026-10-16 from `@stripe/react-stripe-js@6.12.0` (`fd7981cbe61020b3cebd29157d098950e4e7cfdf`) to `@stripe/react-stripe-js@7.0.0` (`3b42f3d838c5f2279e719a4faac93b617c7e83af`). Additive major baseline; all prior release knowledge retained.
+
+**Changes:** removes root `PaymentRequestButtonElement`, related React props/component types and lookup overload, plus both example/story pairs. Stripe JS peer range becomes `>=10.0.0 <11.0.0`; React and React DOM remain `>=16.8.0 <20.0.0`. Development tooling upgrades to React 19.1/types 19, TypeScript 5.6.3 and Jest 29.7.0, not a React-19-only peer requirement. Standard Elements adds a context-initialization ref guard for React 19 StrictMode; provider-specific Checkout hooks memoize before wrong-provider guards. Existing providers and other retained components remain.
+
+**Migration and contradiction:** upgrade the Stripe JS dependency, remove deleted imports/types, and implement the appropriate Express Checkout flow rather than renaming a component. No blanket removal of lower-level Payment Request APIs is established. `useCheckout()` is still implemented and exported, despite its JSDoc promising removal in v7; the source, Elements and Checkout concepts record this contradiction and prefer provider-specific hooks.
+
+**Reading and limits:** all 57 retained current files, four assigned deleted prior demo/story files, release notes and complete cumulative wiki context read. Generated manifests/inventories and duplicated diff mechanically checked under explicit approval. Current/prior 57/61 hashes and sizes verified; 18 retained modified, four removed and 39 unchanged, with all 35 upstream changes classified and no evidence gaps. Tests remain policy exclusions. No build, SDK tests, browser/payment execution, beta eligibility or hosted-runtime proof. The empty generated public-API-change list does not negate the observed export removal.
+
+**Updated sections:** existing Elements, Checkout and Express Checkout concepts first; cumulative source overview/status/compatibility/surface/history, this ledger, company, provider index and logs. No new source/concept or cross-company comparison; source count unchanged. Wrapper evidence does not replace separately collected Stripe JS declaration/runtime history.
+
+- [Snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/manifest.json)
+- [Release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/manifest.json)
+- [Release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/release-notes.md)
+- [Comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.12.0--7.0.0/comparison.json)
+- [[source-github-react-stripe-js]] - exact-source grounding, migration and historical knowledge
 
 ## `@stripe/react-stripe-js@6.12.0` - Change Set `fd7981c` (2026-09-23)
 

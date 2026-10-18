@@ -172,6 +172,10 @@ Current APIs: Payment Intents + Setup Intents + Payment Methods. SCA-ready, Term
 
 `@stripe/stripe-js@9.17.0` adds optional beta pre-collected consent evidence to four Financial Connections/bank-account collection methods. It does not guarantee skipping the consent pane, establish an ACH mandate, or change the loader. See [[source-github-stripe-js]] and [[stripe-ach-direct-debit]].
 
+## React Stripe.js 7.0.0 Update
+
+The full `@stripe/react-stripe-js@7.0.0` baseline removes the Payment Request Button React wrapper/types/demos and requires Stripe JS `>=10.0.0 <11.0.0`. React/React DOM peers still permit `>=16.8.0 <20.0.0`; React 19 is the development baseline, not the sole allowed consumer version. Standard Elements gains a scoped initialization guard and Checkout hooks retain provider-kind errors. Deprecated `useCheckout()` is still exported despite its stale promised-v7-removal comment; prefer provider-specific hooks. Migration to retained Express Checkout is not just a component rename. Prior history, source count and underlying hosted-runtime/eligibility limits remain intact. See [[source-github-react-stripe-js]], [[changelog-github-react-stripe-js]] and [[stripe-express-checkout-element]].
+
 ## React Stripe.js 6.11.0 Update
 
 React binding update: `@stripe/react-stripe-js@6.11.0` improves Checkout initialization-error reporting and separates SDK context from session changes, with memoized hook results. Peer ranges remain unchanged; no automatic retry or new payment capability is added. Earlier release history is retained in [[source-github-react-stripe-js]].
@@ -636,7 +640,7 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-stripe-react-stripejs]] — React Stripe.js reference: CheckoutElementsProvider/useCheckoutElements + Elements/useStripe/useElements/ElementsConsumer
 - [[source-github-stripe-node]] — cumulative `stripe` Node SDK history through `22.6.2`: checkout resources, thin-event handlers, transport/coercion, request hardening and context boundaries
 - [[changelog-github-stripe-node]] — package-qualified stripe-node release history retaining `22.1.1`, `22.4.0`, `22.5.0`, `22.6.0` `22.6.1` and `22.6.2`
-- [[source-github-react-stripe-js]] — cumulative react-stripe-js history through `@stripe/react-stripe-js@6.10.0`: beta Link Signup wrappers, provider restrictions, compatibility and preserved Checkout Sessions guidance
+- [[source-github-react-stripe-js]] — cumulative react-stripe-js history through `@stripe/react-stripe-js@7.0.0`: wrapper removal, Stripe JS v10 peer contract, React 19 lifecycle guard and preserved v6 knowledge
 - [[changelog-github-react-stripe-js]] — package-qualified react-stripe-js release history
 - [[source-stripe-bizum]] — Bizum: Spain-only real-time, phone auth, 395-day refunds, 40-day evidence, onboarding required
 - [[source-stripe-declines-overview]] — Declines overview: 3 failure types (issuer/blocked/invalid), outcome object fields, Radar block reasons, Adaptive Acceptance blocking, allow list

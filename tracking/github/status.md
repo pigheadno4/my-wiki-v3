@@ -4977,6 +4977,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.581/2026-10-15/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.580--5.0.581/comparison.json)
 
+## `github-e5ebdcfb6b9b67582191`
+
+- Repository: `stripe/react-stripe-js`
+- SHA: `3b42f3d838c5f2279e719a4faac93b617c7e83af`
+- Collection date: `2026-10-16`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/manifest.json)
+- Packet: [review packet](repos/stripe/react-stripe-js/ingest-packets/github-e5ebdcfb6b9b67582191/packet.md)
+- Review priority: `high`
+- Required reading: `31` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/react-stripe-js@7.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/manifest.json)
+  Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.12.0--7.0.0/comparison.json)
+
 ## `github-e7df3a4d7b67eb7c108b`
 
 - Repository: `stripe/stripe-android`

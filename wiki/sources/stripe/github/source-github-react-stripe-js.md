@@ -2,9 +2,10 @@
 title: "GitHub: stripe/react-stripe-js"
 type: source
 date_ingested: 2026-05-08
-date_updated: 2026-09-29
+date_updated: 2026-10-16
 original_format: github-repo
 raw_files:
+  - "github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-27-1a31984/manifest.json"
   - "github/stripe/react-stripe-js/snapshots/2026-09-15-d1750b0/manifest.json"
@@ -18,7 +19,7 @@ tags: [stripe, react, stripe-js, elements, checkout, typescript, github-reposito
 
 ## Overview
 
-`stripe/react-stripe-js` publishes `@stripe/react-stripe-js`, the official React component and hook layer for Stripe.js and Elements. This cumulative page preserves the legacy `6.3.0` manual capsule, the approved `6.8.0` baseline, and approved deltas through `@stripe/react-stripe-js@6.12.0` at commit `fd7981cbe61020b3cebd29157d098950e4e7cfdf`.
+`stripe/react-stripe-js` publishes `@stripe/react-stripe-js`, the official React component and hook layer for Stripe.js and Elements. This cumulative page preserves the legacy `6.3.0` manual capsule, the approved `6.8.0` baseline and deltas through `6.12.0`, and adds the full `@stripe/react-stripe-js@7.0.0` baseline at commit `3b42f3d838c5f2279e719a4faac93b617c7e83af`.
 
 Repository: <https://github.com/stripe/react-stripe-js>
 
@@ -63,20 +64,20 @@ Repository: <https://github.com/stripe/react-stripe-js>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `@stripe/react-stripe-js` | `6.12.0` | `fd7981cbe61020b3cebd29157d098950e4e7cfdf` | Approved delta; `6.8.0` full baseline and prior history retained |
+| `@stripe/react-stripe-js` | `7.0.0` | `3b42f3d838c5f2279e719a4faac93b617c7e83af` | Approved additive full baseline; all v6 history retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
 
 ## Package Shape and Compatibility
 
-Version `6.10.0` preserves the two explicit entrypoints established by the `6.8.0` baseline:
+Version `7.0.0` preserves the two explicit entrypoints established by the `6.8.0` baseline:
 
 - `@stripe/react-stripe-js` for standard Elements, Embedded Checkout, disclosure components, hooks, and the root Element component set.
 - `@stripe/react-stripe-js/checkout` for Checkout Elements and beta Checkout Form providers, hooks, and components.
 
 Both entrypoints declare separate CommonJS, ES module, and TypeScript outputs under generated `dist/`. The package requires:
 
-- `@stripe/stripe-js >=9.16.0 <10.0.0` in 6.10.0 (6.9.0 required `>=9.10.0 <10.0.0`; 6.8.x required `>=9.5.0 <10.0.0`);
+- `@stripe/stripe-js >=10.0.0 <11.0.0` in 7.0.0 (6.10.0 through 6.12.0 required `>=9.16.0 <10.0.0`; 6.9.0 required `>=9.10.0 <10.0.0`; 6.8.x required `>=9.5.0 <10.0.0`);
 - React `>=16.8.0 <20.0.0`; and
 - React DOM `>=16.8.0 <20.0.0`.
 
@@ -88,7 +89,7 @@ The README directs consumers to install both React Stripe.js and Stripe.js. Type
 
 The provider treats `clientSecret` and `fonts` as immutable. Other changed options are compared recursively and forwarded to `elements.update()`. The `useStripe()` and `useElements()` hooks expose the current context; `ElementsConsumer` provides the same values to class components.
 
-The root entrypoint exports:
+The historical v6 root entrypoint exports the following set; 7.0.0 removes Payment Request Button only from this list:
 
 - Card, split-card, IBAN, Payment, Address, Link Authentication, Express Checkout, Payment Request Button, Payment Method Messaging, Contact Details, Tax ID, and Currency Selector components;
 - five Issuing components for card number, CVC, expiry, PIN, and copy-button rendering;
@@ -110,7 +111,10 @@ The provider can apply later `elementsOptions.appearance` and `elementsOptions.f
 
 `CheckoutFormProvider` calls the beta `stripe.initCheckoutFormSdk(options)`. `useCheckoutForm()` returns the narrower Form action surface, reflecting fields and actions owned by the form UI. Appearance and fonts are top-level options for this provider.
 
-`useCheckout()` is retained as an Elements-shaped backward-compatibility alias, but it has been deprecated since `6.3.0` and is scheduled for removal in v7. Provider-specific code should use `useCheckoutElements()` or `useCheckoutForm()`. The runtime rejects calling a provider-specific hook under the wrong provider.
+`useCheckout()` is retained as an Elements-shaped backward-compatibility alias, deprecated since `6.3.0`. Its comment planned removal in v7, but the retained 7.0.0 implementation and `/checkout` export still exist. Provider-specific code should use `useCheckoutElements()` or `useCheckoutForm()`. The runtime rejects calling a provider-specific hook under the wrong provider.
+
+> [!warning] Contradiction
+> The 7.0.0 JSDoc says the alias will be removed in 7.0.0, while the same snapshot implements and exports it. The older planned-removal statement is not proof of removal. This resolution is also recorded in [[stripe-elements]] and [[stripe-checkout]]; prefer their provider-specific hook guidance.
 
 An application cannot wrap the same consumer in both standard `Elements` and a Checkout provider.
 
@@ -134,6 +138,52 @@ Billing and shipping wrappers inject their fixed address mode. Unsupported Eleme
 Standard and Checkout providers also allow a `null` Stripe value for server rendering. This is an initialization allowance, not permission to swap between populated Stripe instances later.
 
 ## Version History
+
+### `@stripe/react-stripe-js@7.0.0` - full additive baseline
+
+Released 2026-10-01; full-ingested 2026-10-16 from `@stripe/react-stripe-js@6.12.0` (`fd7981cbe61020b3cebd29157d098950e4e7cfdf`) to `@stripe/react-stripe-js@7.0.0` (`3b42f3d838c5f2279e719a4faac93b617c7e83af`). All 57 retained current files, four assigned deleted prior demo/story files and cumulative wiki context were read fully. Generated inventories and the duplicated comparison diff were mechanically verified under explicit approval. The retained comparison has 18 modified, four removed and 39 unchanged files, with all 35 upstream paths classified (22 retained, 13 policy exclusions). No evidence gaps or unclassified paths. Older version sections remain intact.
+
+**Compatibility:** Stripe JS peers move from `>=9.16.0 <10.0.0` to `>=10.0.0 <11.0.0`. React and React DOM peers remain `>=16.8.0 <20.0.0`; the React 19 release note is not a React-19-only consumer requirement. Development dependencies move to React/React DOM 19.1.0, React 19 types, TypeScript 5.6.3 and Jest 29.7.0. Root and `/checkout` entrypoints and generated output targets remain; `prop-types` stays the runtime dependency. Declared compatibility is not a locally executed compatibility matrix.
+
+**Breaking removal:** `src/index.ts` no longer exports `PaymentRequestButtonElement`; `src/types/index.ts` removes its props, component type and React-specific `StripeElements.getElement` overload. Both class/hooks Payment Request Button examples and stories are deleted upstream. The shared factory no longer treats `paymentRequest` as an immutable option key. This is a React public-surface removal even though the packet's `public_api_changes` array is empty. It does not establish removal of every lower-level `stripe.paymentRequest` API or browser wallet capability. The historical v6 examples remain queryable in their immutable snapshot.
+
+**Migration:** remove the deleted React imports/types before upgrading, resolve Stripe JS v10 alongside the wrapper, and adapt the wallet flow rather than renaming the component. `ExpressCheckoutElement` remains on both entrypoints, but its matching provider, availability events and confirmation contract must be respected. See [[stripe-express-checkout-element]]. This ingest does not independently collect Stripe JS v10 internals or verify wallet rollout.
+
+**React lifecycle:** standard `Elements` adds `elementsInitializedRef` to guard context-population initialization; it checks existing context first, sets the ref before calling `stripe.elements(options)` and resets it in effect cleanup. The synchronous `useState` initializer still creates Elements directly. Therefore this is a scoped React 19 StrictMode guard, not an across-all-renders exactly-once guarantee or permission to replace a populated Stripe prop. `clientSecret`/`fonts` remain immutable; other changed provider options are forwarded as before. No general Stripe-promise rejection handling is added to standard `Elements`.
+
+**Checkout hooks:** `useCheckoutElements()` and `useCheckoutForm()` now invoke their memoization before the successful-state provider-kind guard, keeping that hook in the call order before a possible wrong-provider throw. The guard remains. Deprecated `useCheckout()` still maps to the Elements-shaped result and is re-exported, contradicting its unchanged planned-v7-removal JSDoc. Use matching provider-specific hooks rather than assuming the alias disappeared or provides Form-specific typing.
+
+**Retained architecture:** the full baseline still separates SDK-only context from Checkout session state; providers initialize `initCheckoutElementsSdk` or beta `initCheckoutFormSdk`, load actions, expose loading/error/success and apply appearance/font updates. Standard Elements and Checkout providers cannot wrap the same consumer. Shared Element wrappers mount, attach/detach requested callbacks and destroy on cleanup, with SSR returning a context-validated wrapper. Embedded Checkout still owns a separate `createEmbeddedCheckoutPage` path. Financial Account, Issuing and Treasury disclosures remain standalone wrappers; the previously recorded disclosure rejection/post-await race limits are not fixed by this release.
+
+**Integration evidence:** the unchanged README retains server-created Checkout Sessions using trusted pricing, client-secret/HTTP checks, `canConfirm`, duplicate-submission disabling and returned/thrown error handling. Changed demo handlers use `SubmitEventHandler`. Demos are not production payment proof: the detailed Card demos create a PaymentMethod and explicitly say no money was charged; the removed Payment Request demos call `event.complete('success')` without confirming/capturing payment. The custom Checkout demo still does not reset loading in a `finally` block or inspect returned confirmation errors, so prefer the stronger README error pattern. No upstream tests/build, browser checkout, hosted runtime, merchant/beta eligibility or payment execution was performed.
+
+#### 7.0.0 grounding
+
+> `"@stripe/stripe-js": ">=10.0.0 <11.0.0",`
+>
+> [Package peer contract](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/package.json), line 140.
+
+> `"react": ">=16.8.0 <20.0.0",`
+>
+> [Package peer contract](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/package.json), line 141.
+
+> `if (elementsInitializedRef.current) return ctx;`
+>
+> [Standard Elements provider](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/components/Elements.tsx), line 105.
+
+> `export const useCheckout = (): StripeUseCheckoutResult => {`
+>
+> [Checkout hook implementation](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/checkout/components/CheckoutContext.tsx), line 183; [retained public export](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/checkout/index.ts), line 3.
+
+> `* @deprecated Since v6.3.0. Will be removed in v7.0.0. Prefer the`
+>
+> [Contradictory JSDoc](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/checkout/components/CheckoutContext.tsx), line 172.
+
+- [7.0.0 snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/manifest.json)
+- [Release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/manifest.json) and [notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/release-notes.md)
+- [6.12.0 to 7.0.0 comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.12.0--7.0.0/comparison.json)
+- [Root exports](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/index.ts) and [React props/lookup types](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/types/index.ts)
+- [Current custom Checkout demo](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/examples/hooks/11-Custom-Checkout.tsx) and [historical Payment Request demo](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/files/examples/hooks/3-Payment-Request-Button.tsx)
 
 ### `@stripe/react-stripe-js@6.12.0`
 
@@ -314,6 +364,10 @@ The `6.8.0` baseline preserves these responsibilities while adding later public 
 
 ## Raw Sources
 
+- [7.0.0 snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/manifest.json)
+- [7.0.0 release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/manifest.json)
+- [7.0.0 release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/7.0.0/2026-10-16/release-notes.md)
+- [6.12.0 to 7.0.0 comparison](../../../../tracking/github/repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.12.0--7.0.0/comparison.json)
 - [6.12.0 snapshot](../../../../raw/github/stripe/react-stripe-js/snapshots/2026-09-27-fd7981c/manifest.json)
 - [6.12.0 release identity](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/manifest.json)
 - [6.12.0 release notes](../../../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/release-notes.md)

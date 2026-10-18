@@ -478,8 +478,8 @@ Operations history: [[stripe-log]]
 - [[changelog-github-stripe-apps]] — commit-qualified Stripe Apps baseline, schema/example drift, SDK-history boundary, and future comparison rule (github-repo, 2026-08-28)
 - [[source-github-stripe-php]] — `stripe-php@21.2.0`: PHP server SDK services, v1/v2 encoding, retries/idempotency, webhook and thin-event handling, Checkout, subscriptions, and Terminal (github-repo, 2026-08-15)
 - [[changelog-github-stripe-php]] — package-qualified Stripe PHP baseline and exact v21.2.0 event-notification and pre-verified parser changes (github-repo, 2026-08-15)
-- [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` history through v6.12.0: TreasuryDisclosure, lifecycle limitations and preserved Checkout history (github-repo, updated 2026-09-29)
-- [[changelog-github-react-stripe-js]] — package-qualified `stripe/react-stripe-js` history through v6.12.0 with compatibility and runtime boundaries (github-repo, updated 2026-09-29)
+- [[source-github-react-stripe-js]] — `@stripe/react-stripe-js` history through v7.0.0: Payment Request Button removal, Stripe JS v10 peers, React 19 lifecycle guard and preserved v6 knowledge (github-repo, updated 2026-10-16)
+- [[changelog-github-react-stripe-js]] — package-qualified `stripe/react-stripe-js` history through v7.0.0 with migration, retained deprecated hook and runtime boundaries (github-repo, updated 2026-10-16)
 - [[stripe-financial-account-disclosures]] — React TreasuryDisclosure contract, error/lifecycle limits and eligibility boundary
 - [[source-github-stripe-js]] — cumulative `@stripe/stripe-js` v8.11.0 through v9.17.0: beta pre-collected consent types, loader boundary and preserved Checkout/Elements history (github-repo, updated 2026-09-27)
 - [[changelog-github-stripe-js]] — package-qualified `stripe/stripe-js` history through v9.17.0 with exact deltas separated from cumulative transitions (github-repo, updated 2026-09-27)

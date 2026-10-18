@@ -134,7 +134,7 @@ const error = await actions.confirm();
 
 - `CheckoutElementsProvider` → wraps app; `clientSecret` from Checkout Session; `stripe` prop immutable
 - `useCheckoutElements()` → returns `{ type: 'loading'|'error'|'success', checkout }` object; `checkout.confirm()` submits
-- `useCheckout()` has been deprecated since v6.3.0 and is scheduled for removal in v7; use the provider-specific hook
+- `useCheckout()` has been deprecated since v6.3.0; its historical planned v7 removal did not occur in the retained 7.0.0 source. Prefer the provider-specific hook; see the contradiction below.
 - `CheckoutFormProvider` + `useCheckoutForm()` expose the narrower beta Checkout Form SDK, while `CheckoutElementsProvider` + `useCheckoutElements()` expose the Elements SDK
 - Checkout exports include Billing Address, Shipping Address, Currency Selector, Payment, Express Checkout, Tax ID, Contact Details, Checkout Form, and beta-gated Terms components
 
@@ -147,6 +147,13 @@ const error = await actions.confirm();
 - Root exports include Address, Express Checkout, Link Authentication, Payment, Payment Method Messaging, Tax ID, five Issuing display/copy components, and beta-gated Terms components
 
 ### Retained React package baseline
+
+The additive full baseline `@stripe/react-stripe-js@7.0.0` requires `@stripe/stripe-js >=10.0.0 <11.0.0`, while React and React DOM peers remain `>=16.8.0 <20.0.0`. React 19.1 and its types are development dependencies, not a React-19-only consumer requirement. The root `PaymentRequestButtonElement`, its props/component types and React `getElement` overload are removed, along with both demo/story pairs. `ExpressCheckoutElement` remains, but migration requires its own initialization, events and confirmation flow, not just a component rename. Older v6 evidence remains valid for that version. See [[source-github-react-stripe-js]], [[changelog-github-react-stripe-js]] and [[stripe-express-checkout-element]].
+
+The v7 standard `Elements` provider adds a ref guard around context-population calls to `stripe.elements(options)` for React 19 StrictMode; cleanup resets the ref. This is not a global exactly-once guarantee, a change to the existing synchronous state initializer, or permission to replace an established Stripe prop. Provider-specific Checkout hooks now compute their memoized result before checking the successful state's SDK kind; wrong-provider calls still throw.
+
+> [!warning] Contradiction
+> The retained 7.0.0 `useCheckout()` JSDoc still promises removal in 7.0.0, but the implementation and `/checkout` export remain present. Earlier removal guidance describes an unfulfilled plan, not an observed API removal. Use `useCheckoutElements()` or `useCheckoutForm()` for accurate provider-specific typing. See [[source-github-react-stripe-js]] and [[stripe-checkout]].
 
 The `@stripe/react-stripe-js@6.11.0` delta separates Checkout SDK context from session state and memoizes checkout hook results. Session-only changes no longer propagate through the SDK-only context, while checkout hooks still refresh with session state. Identical option references now bypass recursive comparison; use immutable option updates. Peer ranges and entrypoints remain unchanged. See [[source-github-react-stripe-js]].
 

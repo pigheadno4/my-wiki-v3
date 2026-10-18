@@ -1,0 +1,83 @@
+# GitHub package comparison
+
+- Repository: `stripe/react-stripe-js`
+- Package: `@stripe/react-stripe-js`
+- From: `6.12.0` (`fd7981cbe61020b3cebd29157d098950e4e7cfdf`)
+- To: `7.0.0` (`3b42f3d838c5f2279e719a4faac93b617c7e83af`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `.github/workflows/build.yml`
+- `examples/class-components/0-Card-Minimal.tsx`
+- `examples/class-components/1-Card-Detailed.tsx`
+- `examples/class-components/2-Split-Card.tsx`
+- `examples/class-components/3-Payment-Request-Button.stories.tsx`
+- `examples/class-components/3-Payment-Request-Button.tsx`
+- `examples/class-components/4-IBAN.tsx`
+- `examples/hooks/0-Card-Minimal.tsx`
+- `examples/hooks/1-Card-Detailed.tsx`
+- `examples/hooks/11-Custom-Checkout.tsx`
+- `examples/hooks/12-Embedded-Checkout.tsx`
+- `examples/hooks/13-Checkout-Form.tsx`
+- `examples/hooks/2-Split-Card.tsx`
+- `examples/hooks/3-Payment-Request-Button.stories.tsx`
+- `examples/hooks/3-Payment-Request-Button.tsx`
+- `examples/hooks/4-IBAN.tsx`
+- `examples/hooks/9-Payment-Element.tsx`
+- `package.json`
+- `scripts/publish`
+- `src/checkout/components/CheckoutContext.test.tsx`
+- `src/checkout/components/CheckoutContext.tsx`
+- `src/checkout/components/CheckoutElementsProvider.test.tsx`
+- `src/checkout/components/CheckoutFormProvider.test.tsx`
+- `src/checkout/components/CheckoutSdkContext.test.tsx`
+- `src/components/Elements.test.tsx`
+- `src/components/Elements.tsx`
+- `src/components/EmbeddedCheckoutProvider.test.tsx`
+- `src/components/createElementComponent.test.tsx`
+- `src/components/createElementComponent.tsx`
+- `src/index.ts`
+- `src/types/index.ts`
+- `src/utils/usePrevious.test.tsx`
+- `test/mocks.js`
+- `test/setupJest.js`
+- `yarn.lock`
+
+## Upstream changes
+
+- `modified`: `.github/workflows/build.yml`
+- `modified`: `examples/class-components/0-Card-Minimal.tsx`
+- `modified`: `examples/class-components/1-Card-Detailed.tsx`
+- `modified`: `examples/class-components/2-Split-Card.tsx`
+- `deleted`: `examples/class-components/3-Payment-Request-Button.stories.tsx`
+- `deleted`: `examples/class-components/3-Payment-Request-Button.tsx`
+- `modified`: `examples/class-components/4-IBAN.tsx`
+- `modified`: `examples/hooks/0-Card-Minimal.tsx`
+- `modified`: `examples/hooks/1-Card-Detailed.tsx`
+- `modified`: `examples/hooks/11-Custom-Checkout.tsx`
+- `modified`: `examples/hooks/12-Embedded-Checkout.tsx`
+- `modified`: `examples/hooks/13-Checkout-Form.tsx`
+- `modified`: `examples/hooks/2-Split-Card.tsx`
+- `deleted`: `examples/hooks/3-Payment-Request-Button.stories.tsx`
+- `deleted`: `examples/hooks/3-Payment-Request-Button.tsx`
+- `modified`: `examples/hooks/4-IBAN.tsx`
+- `modified`: `examples/hooks/9-Payment-Element.tsx`
+- `modified`: `package.json`
+- `modified`: `scripts/publish`
+- `modified`: `src/checkout/components/CheckoutContext.test.tsx`
+- `modified`: `src/checkout/components/CheckoutContext.tsx`
+- `modified`: `src/checkout/components/CheckoutElementsProvider.test.tsx`
+- `modified`: `src/checkout/components/CheckoutFormProvider.test.tsx`
+- `modified`: `src/checkout/components/CheckoutSdkContext.test.tsx`
+- `modified`: `src/components/Elements.test.tsx`
+- `modified`: `src/components/Elements.tsx`
+- `modified`: `src/components/EmbeddedCheckoutProvider.test.tsx`
+- `modified`: `src/components/createElementComponent.test.tsx`
+- `modified`: `src/components/createElementComponent.tsx`
+- `modified`: `src/index.ts`
+- `modified`: `src/types/index.ts`
+- `modified`: `src/utils/usePrevious.test.tsx`
+- `modified`: `test/mocks.js`
+- `modified`: `test/setupJest.js`
+- `modified`: `yarn.lock`
