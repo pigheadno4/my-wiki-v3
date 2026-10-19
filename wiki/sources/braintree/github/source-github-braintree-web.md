@@ -2,9 +2,10 @@
 title: "GitHub: braintree/braintree-web"
 type: source
 date_ingested: 2026-07-28
-date_updated: 2026-09-27
+date_updated: 2026-10-19
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json"
   - "github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json"
@@ -15,13 +16,13 @@ tags: [braintree, javascript-sdk, checkout, hosted-fields, venmo, paypal, 3d-sec
 
 ## Overview
 
-`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest ingested release is `braintree-web@3.146.0` at exact SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d`. All earlier version findings remain preserved below.
+`braintree/braintree-web` contains Braintree's modular browser SDK. The retained history begins with `braintree-web@3.143.0`; the latest ingested release is `braintree-web@3.147.0` at exact SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`. All earlier version findings remain preserved below.
 
 Repository: <https://github.com/braintree/braintree-web>
 
 ## Evidence Boundary
 
-- The snapshots prove implementation present in the retained `braintree-web@3.143.0` through `3.146.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
+- The snapshots prove implementation present in the retained `braintree-web@3.143.0` through `3.147.0` releases. They do not replace current product documentation or prove merchant, buyer, country, or payment-method eligibility.
 - The package exposes SDK components, not Braintree Web Drop-in. Drop-in is a separately versioned repository.
 - The `3.146.0` snapshot adds the Edit Saved Payment story to the earlier 28 stories. Tests, fixtures, and mocks remain excluded; the approved helper supplement does not change future collection policy.
 - PayPal Checkout v6 and Fastlane delegate runtime behavior to PayPal SDKs. This source covers the Braintree adapters and nonce boundary, not the complete delegated runtimes.
@@ -231,6 +232,75 @@ Released 2026-09-15 and collected 2026-09-27. The user approved full additive in
 
 The helper is an immutable exact-SHA supplement linked through work item `github-9eb53b57a85a75efdb3e`. The original snapshot and collection-time packet remain unchanged.
 
+## `3.147.0` App-Switch Return, Locale and BIN Hardening
+
+Released 2026-10-12; additive full ingest on 2026-10-19 against `3.146.0`. The user approved full mode with focused reading, overriding the packet's delta/high recommendation because SDK initialization and redirect recovery change. The snapshot retains 333 files: eight modified, 325 unchanged, none added/removed. All 666 prior/current file hashes and sizes were verified. Review fully covered changed implementation/content and affected prior/dependency code; unchanged source sections, cumulative changelog history, manifests and duplicated diff inventories were checked mechanically. The effective full list is 342 paths, not a claim of 342 semantic full-file reads or a whole-upstream-tree audit. No supplemental collection was needed.
+
+### Return Check and Resume
+
+The [v6 adapter](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/paypal-checkout-v6/paypal-checkout-v6.js) adds `hasReturned(url?)` and `resume(urlOrQueryItems?)` to the common payment-session wrapper and the billing-agreement wrapper. The common payment path serves one-time PayPal/Credit, Pay Later and checkout-with-vault; billing agreements choose PayPal or Credit without purchase. This is redirect/app-switch recovery, not the introduction of returning-buyer checkout or saved-payment editing, which have separate preserved histories above. No new return-helper API is established for Edit Saved Payment or vault-initiated checkout by these changes.
+
+On the return page, load the SDK, recreate the appropriate session with its configuration and callbacks, await `hasReturned()`, then resume only if true. URL/query arguments are forwarded to the hosted SDK; these adapter methods do not themselves parse or authenticate every return parameter. `_getOrCreateAppSwitchSession` lazily creates and memoizes a delegated session for the return-check/resume pair, so this page does not need to call `start()` first. Resume delegates directly without making a fresh order/billing-token request in this wrapper; approval tokenization and merchant-server transaction processing remain separate.
+
+Illustrative return branch, adapted from the retained JSDoc; `checkout` is the Braintree `paypalCheckoutV6` instance and `options` includes trusted amount/currency, return/cancel URLs and merchant-owned approval/cancel/error handling. Not executed:
+
+```javascript
+await checkout.loadPayPalSDK();
+const session = checkout.createOneTimePaymentSession(options);
+if (await session.hasReturned()) {
+  await session.resume();
+} else {
+  // Attach session.start(...) to the buyer's payment-button interaction.
+}
+```
+
+**Failure and lifecycle limits:** `hasReturned()` returns a Promise, so a synchronous `if (session.hasReturned())` tests the Promise rather than the boolean result. A missing ready instance and pending initialization promise produces `PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY`. The return-session cache retains that rejected promise and other asynchronous creation failures; later SDK loading alone does not repair the same wrapper. Initialize first; after resolving a setup failure, create a fresh appropriate session wrapper rather than assuming a cached retry. The ready-instance session factory may also throw synchronously, so keep setup inside error handling. `start()` still creates its own delegated session and retains the synchronous-ready/user-activation path; do not assume a prior return check makes every fresh `start()` Safari-safe.
+
+Return-check true/false and resume started/succeeded/failed analytics are added. Resume resolution or its success event is not authoritative authorization, capture, settlement or merchant enablement. The merchant still validates order/buyer context and consumes the approved nonce through its Braintree server flow. No hosted-SDK execution or return-path test was performed.
+
+### Locale Forwarding and Shared State
+
+`_initializePayPalInstance` now accepts locale and normalizes underscores to hyphens (`fr_FR` -> `fr-FR`). New SDK instances receive it in `createInstance` options. Existing instances use `updateLocale` only if available; pending instance promises apply it after resolution. One-time, Pay Later, checkout-with-vault and billing-agreement creators forward their locale. `findEligibleMethods()` now reuses the shared checkout initialization/promise path instead of unnecessarily creating a separate instance. This fixes an earlier gap between forwarding locale in the payment request and applying it to hosted SDK UI.
+
+The module caches locale with the owning `window.paypal` reference so later component types without an explicit locale can reuse it; replacement of that global invalidates the cached lookup. This is page-wide language state, not isolated per button or wrapper. Existing-instance updates remain conditional on the delegated `updateLocale` method. Coordinate language changes and check actual UI in the merchant integration rather than assuming independent concurrent locales.
+
+> [!warning] Contradiction
+> Initializer comments describe the last successfully applied locale, but the new-instance/pending paths record the request before successful resolution and do not restore the earlier locale when creation fails. The cache can therefore retain a failed/pending request. This is not transactional locale rollback or confirmation of the displayed language. The same version-qualified discrepancy is recorded in [[paypal-braintree-integration]].
+
+### Hosted Fields BIN-Length Validation
+
+The [external constructor](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/hosted-fields/external/hosted-fields.js) copies merchant options, validates the copied `binVerificationLength`, then makes that property non-writable and non-configurable before frame configuration is forwarded. This avoids repeatedly invoking a changing getter and forwarding a different value from the one validated. Public input remains numeric 6 or 8, or omission; an invalid supplied value throws `INSTANTIATION_OPTION_INVALID`. This is not a new arbitrary BIN-length option.
+
+The separate [internal card model](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/hosted-fields/internal/models/credit-card-form.js) normalizes missing/invalid values to the [shared default](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/hosted-fields/shared/constants.js) of 6 before number-change/BIN events use it. Do not describe the internal fallback as public acceptance of invalid merchant configuration. The constructor's frozen property does not freeze the entire configuration or establish comprehensive card-data/security protection.
+
+### Dependencies, Migration and Limits
+
+`inject-stylesheet` changes 7.0.0 -> 7.1.0. `framebus` remains 6.2.0, `credit-card-type` 10.2.0 and Fastlane loader 1.2.1. The dependency implementation was not audited; no new runtime behavior is inferred from its bump. All 13 upstream changes reconcile to eight retained changes and five policy exclusions (three tests, lockfile, release tooling). Excluded test changes are not executed evidence.
+
+No mandatory migration is stated in the release notes. For adopters, verify awaited return detection, correct return-session recreation, missing SDK/initialization failure and retry, cancellation, nonce/server processing, page-wide locale coordination, and omitted/6/8/invalid BIN-length input. Older View/Edit Saved Payment, vault-initiated checkout, Venmo, Hosted Fields prototype guards and nonce-processing boundaries remain intact. This release does not update the independent PayPal sample or React wrapper evidence. No cross-company comparison, build, upstream tests, browser, wallet, payment or settlement execution was performed.
+
+### 3.147.0 Grounding Excerpts
+
+> `allowedBinVerificationLengths: [6, 8],`
+>
+> [Hosted Fields constants, line 11](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/hosted-fields/shared/constants.js#L11)
+
+> `writable: false,`
+>
+> [External constructor, line 471](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/hosted-fields/external/hosted-fields.js#L471)
+
+> `var normalizedLocale = locale && locale.replace(/_/g, "-");`
+>
+> [v6 adapter, line 607](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L607)
+
+> `if (cache.promise) {`
+>
+> [v6 adapter, line 1523](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L1523)
+
+> `if (await session.hasReturned()) {`
+>
+> [Corrected v6 JSDoc example, line 1872](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/files/src/paypal-checkout-v6/paypal-checkout-v6.js#L1872)
+
 ## Related
 
 - [[changelog-github-braintree-web]] — package-qualified release ledger
@@ -240,6 +310,10 @@ The helper is an immutable exact-SHA supplement linked through work item `github
 - [[paypal-fastlane]] — delegated Fastlane product concept
 
 ## Raw Sources
+
+- [3.147.0 snapshot](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json)
+- [3.147.0 release identity](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/manifest.json) and [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/release-notes.md)
+- [3.146.0 to 3.147.0 comparison](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.146.0--3.147.0/comparison.json)
 
 - [3.146.0 snapshot manifest](../../../../raw/github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json)
 - [3.146.0 release manifest](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.146.0/2026-09-27/manifest.json) and [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.146.0/2026-09-27/release-notes.md)

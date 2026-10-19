@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-19] ingest | braintree-web@3.147.0
+
+- Approved additive full ingest with focused reading, exact SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`, released 2026-10-12. Fully reviewed changed implementation/content and affected prior/dependency code; unchanged source sections, cumulative changelog history and generated inventories checked mechanically. Verified all 666 prior/current file hashes and sizes: eight modified, 325 unchanged retained files per snapshot.
+- Added v6 awaited return detection/resume for payment and billing-agreement wrappers, cached-failure recovery limits, shared locale normalization/update behavior, and Hosted Fields BIN-length validation. Flagged the locale comment/runtime contradiction: requested locale is cached before initialization succeeds. No new returning-buyer or saved-payment-edit introduction is inferred.
+- Updated two existing concepts before the cumulative source/changelog, then company, provider index and logs. All older history and source counts preserved; no new comparison needed. No upstream tests, browser/payment execution, commit or push. Details [[source-github-braintree-web]] and [[changelog-github-braintree-web]].
+
 ## [2026-10-11] ingest | braintree_php@6.37.0 to 6.38.0
 
 - Approved serial delta `github-6714266673554498ace5`, exact SHA `2a97c3d516a1ee66e710db8140a835d79789627a`; released 2026-09-16, collected 2026-10-10. User-approved focused reading: all changed implementation, affected prior code and helper/search dependencies; inventories and unchanged changelog history checked mechanically. Both snapshots verified: 452 file hashes/sizes, 19 changed and 207 unchanged retained files. Tests/fixtures intentionally excluded; empty upstream release-note body.

@@ -2,9 +2,10 @@
 title: "GitHub changelog: braintree/braintree-web"
 type: source
 date_ingested: 2026-07-28
-date_updated: 2026-09-27
+date_updated: 2026-10-19
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-27-893d4e7/manifest.json"
   - "github/braintree/braintree-web/supplements/2026-09-27-893d4e7-1540eb0a/manifest.json"
   - "github/braintree/braintree-web/snapshots/2026-09-15-732ed09/manifest.json"
@@ -16,6 +17,22 @@ tags: [braintree, javascript-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree-web`. Cumulative implementation knowledge belongs in [[source-github-braintree-web]] and the linked immutable snapshots.
+
+## `braintree-web@3.147.0` (2026-10-12)
+
+`braintree-web@3.146.0` -> `braintree-web@3.147.0`; SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`. Approved full additive ingest on 2026-10-19 with focused reading, overriding the generated delta/high recommendation for initialization and redirect-recovery changes.
+
+**Findings:** PayPal v6 payment and billing-agreement wrappers add Promise-returning `hasReturned()` and `resume()` through a lazy memoized delegated session. The common payment wrapper also covers Pay Later and checkout-with-vault. Await the return check; a prior start on the return page is unnecessary. Setup failure can remain cached in that wrapper, and initial start remains a separate session-creation/user-activation path. Return success analytics is not transaction settlement. Saved-payment editing and vault-initiated checkout remain separate preserved capabilities.
+
+**Locale:** underscore-to-hyphen normalization reaches new instances and supported existing/pending instance updates; eligibility reuses the checkout initialization path. Locale is page-wide, shared with the current `window.paypal` identity, not per-button isolation. Comments say last successfully applied locale, but code records requested/pending locale before success and retains it on creation failure; this discrepancy is qualified in [[source-github-braintree-web]] and [[paypal-braintree-integration]].
+
+**Hosted Fields:** validate the copied BIN length once, freeze the forwarded property, allow numeric 6/8 or omission, reject other public inputs. The internal card model separately defaults invalid/missing input to 6. This is bounded getter/value-divergence hardening, not comprehensive security proof. `inject-stylesheet` changes 7.0.0 -> 7.1.0; its internals were not audited.
+
+**Migration:** no mandatory migration is stated. Adopt awaited return detection after SDK loading, recreate the correct wrapper/configuration on return, handle cached initialization errors, preserve server-owned buyer/order/nonce processing, coordinate locale across components, and test BIN-length boundaries. No automatic update to the independent PayPal sample or React wrapper is inferred.
+
+**Reading and updates:** snapshot 333 files: eight modified and 325 unchanged; all 666 prior/current hashes and sizes verified. Changed implementation/content, affected prior code and retained dependencies read; unchanged source ranges, changelog history, manifests and duplicated comparisons checked mechanically under the approved focus exception. Effective full list 342 paths; not a complete semantic read of every unchanged file or upstream tree. Thirteen upstream changes reconcile without packet gaps/unclassified changes. Concepts updated first, then source/changelog, company, index and logs; old history and source count preserved. No supplement, upstream tests, build, browser or payment execution.
+
+**Evidence:** [snapshot](../../../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json), [release identity](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/manifest.json), [release notes](../../../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/release-notes.md), [comparison](../../../../tracking/github/repos/braintree/braintree-web/comparisons/braintree-web/3.146.0--3.147.0/comparison.json). Exact code links and five quotes: [[source-github-braintree-web]].
 
 ## `braintree-web@3.146.0` (2026-09-15)
 

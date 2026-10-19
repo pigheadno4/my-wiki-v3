@@ -5101,6 +5101,31 @@
   Release: [manifest](../../raw/github/adyen/adyen-node-api-library/releases/api-library/32.1.0/2026-10-04/manifest.json)
   Comparison: [manifest](repos/adyen/adyen-node-api-library/comparisons/api-library/32.0.0--32.1.0/comparison.json)
 
+## `github-dfec71761728d6c2810f`
+
+- Repository: `braintree/braintree-web`
+- SHA: `f3357c49c7b71f079d031c3ddf89cdfe444f6511`
+- Collection date: `2026-10-19`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-web/snapshots/2026-10-19-f3357c4/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-web/ingest-packets/github-dfec71761728d6c2810f/packet.md)
+- Review priority: `high`
+- Required reading: `17` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree-web@3.147.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.146.0--3.147.0/comparison.json)
+
 ## `github-e27c0e62a2e8e19ebd7c`
 
 - Repository: `adyen/adyen-web`

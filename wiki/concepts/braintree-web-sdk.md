@@ -58,7 +58,7 @@ The collected 2026-09-16 JavaScript v3 deprecation-policy snapshot distinguishes
 
 ## Versioned Evidence
 
-The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. Release `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3` adds the checkout/recovery changes below. The latest retained release is `3.146.0` at SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d`; all earlier baselines remain in the cumulative source and changelog.
+The first retained baseline is `braintree-web@3.143.0` at SHA `bae582d791026c143abb91c3bdcada92b8c060f6`. Release `3.144.0` at SHA `41460fba05c1ea1222e795b36a10765a6699b8e7` adds PayPal funding-instrument editing, v6 session options, and the Venmo detection fallback. Release `3.145.0` at SHA `732ed094354d650605e678d98246ce6332952ad3` adds the checkout/recovery changes below. Release `3.146.0` at SHA `893d4e786f4161c3b96c5d34425752c5b63ff84d` adds v6 saved-payment editing. The latest ingested release is `3.147.0` at SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`; all earlier baselines remain in the cumulative source and changelog.
 
 ## Checkout and Recovery Changes in 3.145.0
 
@@ -73,7 +73,15 @@ These are changes in the Braintree adapter and retained browser implementation, 
 
 `braintree-web@3.146.0` adds v6 `createEditSavedPaymentSession()` for viewing/changing the funding instrument behind an existing PayPal Billing Agreement during checkout. This is distinct from the already-retained vault-initiated repeat-purchase flow and the non-v6 Edit FI path introduced in `3.144.0`. It requires a client token carrying the preferred vaulted payment-method context, a fresh client/adapter instance, and `<paypal-saved-payment-methods>` present before SDK loading. Approval still produces a nonce through tokenization, not a completed payment. See [[paypal-braintree-integration]] and [[source-github-braintree-web]].
 
-The release also forwards `autoRedirect` and `fullPageOverlay` session-start options, blocks three dangerous property-path keys in Hosted Fields' EventedModel, and adds explicit frame targets to Payment Request, 3DS completion, and UnionPay. Payment Request adds domain verification; `framebus` changes from `6.1.0` to `6.2.0`. These are implementation changes, not proof of comprehensive security or browser acceptance. This latest retained release preserves all earlier versioned evidence above. [[changelog-github-braintree-web]]
+The release also forwards `autoRedirect` and `fullPageOverlay` session-start options, blocks three dangerous property-path keys in Hosted Fields' EventedModel, and adds explicit frame targets to Payment Request, 3DS completion, and UnionPay. Payment Request adds domain verification; `framebus` changes from `6.1.0` to `6.2.0`. These are implementation changes, not proof of comprehensive security or browser acceptance. This 3.146.0 evidence preserves all earlier versioned knowledge above. [[changelog-github-braintree-web]]
+
+## Return Recovery and BIN Validation in 3.147.0
+
+PayPal v6 payment and billing-agreement session wrappers add asynchronous `hasReturned()` and `resume()` methods. Recreate the appropriate wrapper after SDK loading on the return page, await the return check, then resume only if true; the memoized delegated session does not require a prior `start()` on that page. The common payment path also exposes these helpers to Pay Later and checkout-with-vault. This does not add them to every saved-payment or vault-initiated API. Rejected session-cache promises are retained, so an early missing-instance failure is not automatically repaired by loading the SDK later; initialize first and create a fresh wrapper after addressing the cause. Resume analytics is not payment settlement. [[source-github-braintree-web]]
+
+Locale normalization changes underscores to hyphens and propagates locale to new, ready or pending SDK instances where supported. Locale is shared through the loaded PayPal SDK rather than isolated per button. The cache is scoped to the `window.paypal` object and can retain a pending/requested locale even after failed instance creation; it is not a record of only successful locale application. Coordinate locale across components and handle failures. [[paypal-braintree-integration]]
+
+Hosted Fields validates the copied `binVerificationLength` once and freezes that property before forwarding it to frames. Public input remains numeric 6 or 8 (or omitted); invalid values throw, while the internal card model separately falls back to 6 for invalid/missing configuration. This limits value divergence/getter bypass, not every card-data or security risk. `inject-stylesheet` changes 7.0.0 to 7.1.0 without an audit of its implementation. No browser, payment or upstream test execution is claimed. [[source-github-braintree-web]] and [[changelog-github-braintree-web]]
 
 ## Related
 

@@ -106,7 +106,16 @@ The exact-SHA Storybook helper maps its `preferredPaymentMethodToken` option to 
 
 The independently collected PayPal JS versions (`@paypal/paypal-js@11.1.1` and `@paypal/react-paypal-js@10.5.1`) do not provide a dedicated typed edit-session API or React wrapper for this new Braintree method. Do not infer delegated runtime availability from wrapper declarations or assume upgrading the wrapper alone adds the Braintree adapter API. See [[source-github-paypal-js]] for that separate package history.
 
-## Returning-Buyer Sample at `06bc2de`
+## Braintree Web 3.147.0 Return Recovery
+
+The later SDK release adds Promise-returning `hasReturned(url?)` and `resume(urlOrQueryItems?)` to v6 payment and billing-agreement wrappers. The shared payment path covers one-time PayPal/Credit, Pay Later and checkout-with-vault; it is not evidence of a newly added edit-saved-payment return API. After SDK loading, recreate the matching session configuration/callbacks on the return page, then use `if (await session.hasReturned()) { await session.resume(); }`. Neither return detection nor resume resolution proves a Braintree transaction was authorized or settled; tokenization, trusted server processing and reconciliation remain separate. This SDK update does not update the independent sample or PayPal React package. [[source-github-braintree-web]]
+
+The wrapper memoizes the underlying session for return-check/resume calls, including rejected initialization promises; it does not automatically clear that cache for retry. Initial `start()` uses its own creation path and preserves the existing user-activation/Safari boundary. Locale is a page-wide hosted-SDK setting, normalized from underscores to hyphens and reused across wrapper/component types, not an independent per-session language.
+
+> [!warning] Contradiction
+> In 3.147.0, initializer comments describe the last successfully applied locale, but the implementation caches the requested locale before the instance-creation promise resolves and does not roll it back on failure. Treat it as requested/pending state rather than verified successful application. The same discrepancy is recorded in [[source-github-braintree-web]].
+
+## Returning-Buyer Sample at `06bc2de` (independent commit evidence)
 
 The independent Braintree v6 sample adds a static View/Edit Saved Payment page at `default-branch@06bc2de` (October 1, 2026). That page loads Braintree Web `3.146.0`; its unchanged React entry still loads `3.142.0` and declares `@paypal/react-paypal-js@^10.1.0`. This sample update does not add a React edit component or update the independently versioned PayPal JS packages. [[source-github-v6-web-sdk-with-braintree-sdk-sample-integration]]
 

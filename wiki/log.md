@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-19] ingest | Braintree Web `3.147.0`
+
+- Approved focused-reading additive full ingest: v6 app-switch return helpers, shared locale handling and BIN-length hardening, with cached-failure and locale-comment caveats. Earlier history and source counts preserved. Details [[braintree-log]], [[source-github-braintree-web]] and [[changelog-github-braintree-web]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-19] ingest | Adyen Web `6.47.0`
 
 - Approved focused-reading additive full ingest: construction diagnostics, plan-only installments, Drop-in/3DS2 resilience and dependency updates; out-of-capsule gift-card/locale announcements explicitly qualified. Earlier history, warning and source count retained. Details [[adyen-log]], [[source-github-adyen-web]], [[changelog-github-adyen-web]]. No SDK execution, commit or push.

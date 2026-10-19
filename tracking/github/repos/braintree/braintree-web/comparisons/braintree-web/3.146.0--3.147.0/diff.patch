@@ -1,0 +1,1791 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 2e73148..42e57d0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,15 @@
+ # CHANGELOG
+ 
++## 3.147.0 (2026-10-12)
++
++- Hosted Fields
++  - Fix validation of `binVerificationLength` option to prevent it from being bypassed
++- PayPal Checkout v6
++  - Fix issue where `locale` option in `createOneTimePaymentSession` was not correctly setting the language in the button UI.
++  - Add `resume()` and `hasReturned()` to one-time payment and billing agreement sessions for app switch redirect flows
++- Dependencies:
++  - update `inject-stylesheet` to 7.1.0
++
+ ## 3.146.0 (2026-09-15)
+ 
+ - PayPal Checkout v6
+diff --git a/package-lock.json b/package-lock.json
+index d616505..24b3cf3 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,12 +1,12 @@
+ {
+   "name": "braintree-web",
+-  "version": "3.146.0",
++  "version": "3.147.0",
+   "lockfileVersion": 3,
+   "requires": true,
+   "packages": {
+     "": {
+       "name": "braintree-web",
+-      "version": "3.146.0",
++      "version": "3.147.0",
+       "license": "MIT",
+       "dependencies": {
+         "@braintree/asset-loader": "2.1.0",
+@@ -21,7 +21,7 @@
+         "card-validator": "10.0.3",
+         "credit-card-type": "10.2.0",
+         "framebus": "6.2.0",
+-        "inject-stylesheet": "7.0.0",
++        "inject-stylesheet": "7.1.0",
+         "promise-polyfill": "8.2.3",
+         "qrcode": "1.5.4",
+         "restricted-input": "4.0.3"
+@@ -10647,9 +10647,9 @@
+       "license": "ISC"
+     },
+     "node_modules/inject-stylesheet": {
+-      "version": "7.0.0",
+-      "resolved": "https://registry.npmjs.org/inject-stylesheet/-/inject-stylesheet-7.0.0.tgz",
+-      "integrity": "sha512-PjZfvYXKKPz7Y8uDAQPbY3qGMzgB5sjU5PDvvdlkqw751iipPULS4pIBzmrWkDV9fgObgSUpxwHGTSufESoPZQ==",
++      "version": "7.1.0",
++      "resolved": "https://registry.npmjs.org/inject-stylesheet/-/inject-stylesheet-7.1.0.tgz",
++      "integrity": "sha512-ZlIaWtpbqdNf88dFqniEpDftLc9504obcBbflglb7LBMiZuIlmr0w6UsikyCnVNc2fzRzL2gZPJa8PW4MXIw+g==",
+       "license": "MIT"
+     },
+     "node_modules/inline-source-map": {
+diff --git a/package.json b/package.json
+index fae268e..3aa9227 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree-web",
+-  "version": "3.146.0",
++  "version": "3.147.0",
+   "license": "MIT",
+   "main": "src/index.js",
+   "private": true,
+@@ -57,7 +57,7 @@
+     "card-validator": "10.0.3",
+     "credit-card-type": "10.2.0",
+     "framebus": "6.2.0",
+-    "inject-stylesheet": "7.0.0",
++    "inject-stylesheet": "7.1.0",
+     "promise-polyfill": "8.2.3",
+     "qrcode": "1.5.4",
+     "restricted-input": "4.0.3"
+diff --git a/scripts/release b/scripts/release
+index d88e968..7f8f693 100755
+--- a/scripts/release
++++ b/scripts/release
+@@ -115,7 +115,22 @@ run_unit_tests() {
+   fi
+ }
+ 
++check_no_untracked_changes() {
++  local changes
++  changes="$(git status --porcelain)"
++
++  if [[ -n "$changes" ]]; then
++    echo -e "${RED}Error: Uncommitted changes detected in this repository.${RESET}"
++    echo -e "${RED}Please commit, stash, or remove them before running a source release.${RESET}"
++    echo -e "${YELLOW}Changes:${RESET}"
++    echo "$changes"
++    exit 1
++  fi
++}
++
+ confirm_version() {
++  check_no_untracked_changes
++
+   echo -en "Release ${MAGENTA}braintree.js $BLUE$(get_package_json_version)$RESET"
+   echo -en " at $YELLOW$(get_version_for_prompt)$RESET (y/n)? "
+   read message
+@@ -182,6 +197,8 @@ join() {
+ }
+ 
+ release_source() {
++  check_no_untracked_changes
++
+   set +e
+ 
+   local CP_CMD="cp"
+diff --git a/src/hosted-fields/external/hosted-fields.js b/src/hosted-fields/external/hosted-fields.js
+index c712cb2..b5512a2 100644
+--- a/src/hosted-fields/external/hosted-fields.js
++++ b/src/hosted-fields/external/hosted-fields.js
+@@ -384,7 +384,12 @@ function isVisibleEnough(node) {
+  * @classdesc This class represents a Hosted Fields component produced by {@link module:braintree-web/hosted-fields.create|braintree-web/hosted-fields.create}. Instances of this class have methods for interacting with the input fields within Hosted Fields' iframes.
+  */
+ function HostedFields(options) {
+-  var failureTimeout, clientConfig, assetsUrl, isDebug, hostedFieldsUrl;
++  var failureTimeout,
++    clientConfig,
++    assetsUrl,
++    isDebug,
++    hostedFieldsUrl,
++    binVerificationLength;
+   var self = this;
+   var fields = {};
+   var frameReadyPromiseResolveFunctions = {};
+@@ -437,11 +442,18 @@ function HostedFields(options) {
+     });
+   }
+ 
+-  if (options.binVerificationLength !== undefined) {
++  // Validate the value already copied into _merchantConfigurationOptions
++  // (rather than re-reading options.binVerificationLength) so that only a
++  // single read of a potentially untrusted getter ever occurs, and the
++  // validated value and forwarded value can never diverge.
++  binVerificationLength =
++    this._merchantConfigurationOptions.binVerificationLength;
++
++  if (binVerificationLength !== undefined) {
+     if (
+-      typeof options.binVerificationLength !== "number" ||
+-      (options.binVerificationLength !== 6 &&
+-        options.binVerificationLength !== 8)
++      typeof binVerificationLength !== "number" ||
++      constants.allowedBinVerificationLengths.indexOf(binVerificationLength) ===
++        -1
+     ) {
+       throw new BraintreeError({
+         type: sharedErrors.INSTANTIATION_OPTION_INVALID.type,
+@@ -451,6 +463,17 @@ function HostedFields(options) {
+     }
+   }
+ 
++  Object.defineProperty(
++    this._merchantConfigurationOptions,
++    "binVerificationLength",
++    {
++      value: binVerificationLength,
++      writable: false,
++      configurable: false,
++      enumerable: true,
++    }
++  );
++
+   EventEmitter.call(this);
+ 
+   this._injectedNodes = [];
+diff --git a/src/hosted-fields/internal/models/credit-card-form.js b/src/hosted-fields/internal/models/credit-card-form.js
+index 6c2654b..e90e446 100644
+--- a/src/hosted-fields/internal/models/credit-card-form.js
++++ b/src/hosted-fields/internal/models/credit-card-form.js
+@@ -30,6 +30,15 @@ function CreditCardForm(configuration) {
+ 
+   this.configuration = configuration;
+ 
++  if (
++    constants.allowedBinVerificationLengths.indexOf(
++      this.configuration.binVerificationLength
++    ) === -1
++  ) {
++    this.configuration.binVerificationLength =
++      constants.defaultBinVerificationLength;
++  }
++
+   this.setSupportedCardTypes(configuration.supportedCardTypes);
+ 
+   EventedModel.apply(this, arguments);
+@@ -197,7 +206,9 @@ CreditCardForm.prototype._onSplitDateChange = function () {
+ };
+ 
+ CreditCardForm.prototype._onNumberChange = function (number, metadata) {
+-  var binLength = this.configuration.binVerificationLength || 6;
++  var binLength =
++    this.configuration.binVerificationLength ||
++    constants.defaultBinVerificationLength;
+ 
+   var newPossibleCardTypes = this.getCardTypes(number);
+   var oldPossibleCardTypes = this.get("possibleCardTypes");
+@@ -491,7 +502,7 @@ function splitDate(date) {
+ }
+ 
+ function getBinFromNumber(number, binLength) {
+-  binLength = binLength || 6;
++  binLength = binLength || constants.defaultBinVerificationLength;
+   return (number || "").substr(0, binLength);
+ }
+ 
+diff --git a/src/hosted-fields/shared/constants.js b/src/hosted-fields/shared/constants.js
+index d7a3069..ef01a7a 100644
+--- a/src/hosted-fields/shared/constants.js
++++ b/src/hosted-fields/shared/constants.js
+@@ -7,6 +7,8 @@ var VERSION = process.env.npm_package_version;
+ var constants = {
+   VERSION: VERSION,
+   maxExpirationYearAge: 19,
++  defaultBinVerificationLength: 6,
++  allowedBinVerificationLengths: [6, 8],
+   externalEvents: {
+     FOCUS: "focus",
+     BLUR: "blur",
+diff --git a/src/paypal-checkout-v6/constants.js b/src/paypal-checkout-v6/constants.js
+index 7049f6f..5188325 100644
+--- a/src/paypal-checkout-v6/constants.js
++++ b/src/paypal-checkout-v6/constants.js
+@@ -39,6 +39,14 @@ var ANALYTICS_EVENTS = {
+   PAYMENT_APPROVED: ANALYTICS_PREFIX + ".payment.approved",
+   PAYMENT_CANCELED: ANALYTICS_PREFIX + ".payment.canceled",
+ 
++  // Redirect Flow (App Switch)
++  REDIRECT_HAS_RETURNED_TRUE: ANALYTICS_PREFIX + ".redirect.has-returned.true",
++  REDIRECT_HAS_RETURNED_FALSE:
++    ANALYTICS_PREFIX + ".redirect.has-returned.false",
++  REDIRECT_RESUME_STARTED: ANALYTICS_PREFIX + ".redirect.resume.started",
++  REDIRECT_RESUME_SUCCEEDED: ANALYTICS_PREFIX + ".redirect.resume.succeeded",
++  REDIRECT_RESUME_FAILED: ANALYTICS_PREFIX + ".redirect.resume.failed",
++
+   // Checkout with Vault Flow
+   CHECKOUT_WITH_VAULT_STARTED:
+     ANALYTICS_PREFIX + ".checkout-with-vault.started",
+diff --git a/src/paypal-checkout-v6/errors.js b/src/paypal-checkout-v6/errors.js
+index 83ef8ec..d588bf7 100644
+--- a/src/paypal-checkout-v6/errors.js
++++ b/src/paypal-checkout-v6/errors.js
+@@ -25,7 +25,7 @@
+  * @property {CUSTOMER} PAYPAL_CHECKOUT_V6_PAYMENT_CANCELED Occurs when a customer cancels the payment flow.
+  * @property {MERCHANT} PAYPAL_CHECKOUT_V6_INVALID_SESSION_OPTIONS Occurs when session options are invalid or missing required fields.
+  * @property {MERCHANT} PAYPAL_CHECKOUT_V6_APP_SWITCH_URLS_REQUIRED Occurs when returnUrl or cancelUrl is missing for direct-app-switch mode.
+- * @property {MERCHANT} PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY Occurs when start() is called before the PayPal SDK instance is ready.
++ * @property {MERCHANT} PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY Occurs when start(), hasReturned(), or resume() is called before the PayPal SDK instance is ready.
+  */
+ 
+ /**
+@@ -152,7 +152,7 @@ module.exports = {
+     type: BraintreeError.types.MERCHANT,
+     code: "PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY",
+     message:
+-      "PayPal SDK instance is not ready. Ensure loadPayPalSDK() has completed before calling start().",
++      "PayPal SDK instance is not ready. Ensure loadPayPalSDK() has completed before calling start(), hasReturned(), or resume().",
+   },
+ 
+   // Order Creation Errors
+diff --git a/src/paypal-checkout-v6/paypal-checkout-v6.js b/src/paypal-checkout-v6/paypal-checkout-v6.js
+index ef5ec1c..8ebc3a2 100644
+--- a/src/paypal-checkout-v6/paypal-checkout-v6.js
++++ b/src/paypal-checkout-v6/paypal-checkout-v6.js
+@@ -27,6 +27,25 @@ var REQUIRED_PARAMS_FOR_VIC = [
+   "vaultInitiatedCheckoutPaymentMethodToken",
+ ];
+ 
++// Locale applied to the current window.paypal, shared across PayPalCheckoutV6 wrappers.
++// Guarded by the window.paypal reference it was recorded for, so a script reload (a new
++// window.paypal object) invalidates it instead of leaking a stale locale forward.
++var activePayPalSdkLocale;
++var activePayPalSdkLocaleOwner;
++
++function getActivePayPalSdkLocale() {
++  if (activePayPalSdkLocaleOwner !== window.paypal) {
++    return undefined;
++  }
++
++  return activePayPalSdkLocale;
++}
++
++function setActivePayPalSdkLocale(locale) {
++  activePayPalSdkLocaleOwner = window.paypal;
++  activePayPalSdkLocale = locale;
++}
++
+ /**
+  * @class
+  * @param {object} options see {@link module:braintree-web/paypal-checkout-v6.create|paypal-checkout-v6.create}
+@@ -549,9 +568,13 @@ PayPalCheckoutV6.prototype._createPayPalInstance = function (options) {
+  * Does nothing if the instance already exists or the SDK is not available.
+  * @private
+  * @param {string} instanceType The type of instance: 'checkout', 'vault', or 'messages'.
++ * @param {string} [locale] Locale code (e.g., 'en_US', 'fr_FR'); reused from the last successfully applied locale if omitted, since createInstance's locale is a single page-wide setting.
+  * @returns {void}
+  */
+-PayPalCheckoutV6.prototype._initializePayPalInstance = function (instanceType) {
++PayPalCheckoutV6.prototype._initializePayPalInstance = function (
++  instanceType,
++  locale
++) {
+   var self = this;
+   var instanceConfig = {
+     checkout: {
+@@ -580,16 +603,62 @@ PayPalCheckoutV6.prototype._initializePayPalInstance = function (instanceType) {
+   var instanceKey = config.instanceKey;
+   var promiseKey = config.promiseKey;
+   var components = config.components;
++  // window.paypal only accepts hyphenated locales ("fr-FR"); this SDK documents underscores ("fr_FR").
++  var normalizedLocale = locale && locale.replace(/_/g, "-");
+ 
+-  // If instance already exists, promise already exists, or SDK not available, nothing to do
+-  if (self[instanceKey] || self[promiseKey] || !self._isPayPalSdkAvailable()) {
++  // Instance may already exist (e.g. via findEligibleMethods); apply the locale in place instead of discarding it.
++  if (self[instanceKey]) {
++    if (
++      normalizedLocale &&
++      typeof self[instanceKey].updateLocale === "function"
++    ) {
++      self[instanceKey].updateLocale(normalizedLocale);
++      setActivePayPalSdkLocale(normalizedLocale);
++    }
+     return;
+   }
+ 
++  // Instance creation is already in-flight; apply the locale once it resolves.
++  if (self[promiseKey]) {
++    if (normalizedLocale) {
++      // Recorded eagerly so a concurrent creation for another instance type
++      // sees this pending locale instead of resetting the SDK.
++      setActivePayPalSdkLocale(normalizedLocale);
++
++      self[promiseKey] = self[promiseKey].then(function (instance) {
++        if (instance && typeof instance.updateLocale === "function") {
++          instance.updateLocale(normalizedLocale);
++        }
++
++        return instance;
++      });
++    }
++
++    return;
++  }
++
++  if (!self._isPayPalSdkAvailable()) {
++    return;
++  }
++
++  // createInstance's locale is a single page-wide setting on window.paypal itself (shared across
++  // every PayPalCheckoutV6 instance); reuse the last one successfully applied so a new instance
++  // type (e.g. messages) doesn't reset the locale set for another (e.g. checkout).
++  var localeForNewInstance = normalizedLocale || getActivePayPalSdkLocale();
++
++  var createInstanceOptions = { components: components };
++
++  if (localeForNewInstance) {
++    createInstanceOptions.locale = localeForNewInstance;
++    // Recorded eagerly so a concurrent creation for another instance type sees this
++    // pending locale instead of resetting the SDK.
++    setActivePayPalSdkLocale(localeForNewInstance);
++  }
++
+   // Create and cache the promise
+   self[promiseKey] = self._clientPromise
+     .then(function () {
+-      return self._createPayPalInstance({ components: components });
++      return self._createPayPalInstance(createInstanceOptions);
+     })
+     .then(function (instance) {
+       self[instanceKey] = instance;
+@@ -1151,6 +1220,38 @@ PayPalCheckoutV6.prototype._buildSessionStartOptions = function (
+   return sessionStartOptions;
+ };
+ 
++/**
++ * Creates the underlying PayPal SDK checkout session (without starting it).
++ * @private
++ * @param {object} instance PayPal SDK instance.
++ * @param {object} client Braintree client instance.
++ * @param {string} sessionType Type of session: 'paypal', 'paypal-credit', or 'pay-later'.
++ * @param {object} options Payment session options.
++ * @param {boolean} isCheckoutWithVault Whether this is a checkout-with-vault flow.
++ * @returns {object} The PayPal SDK's checkout session, exposing `start()`, `hasReturned()`, and `resume()`.
++ */
++PayPalCheckoutV6.prototype._createCheckoutSdkSession = function (
++  instance,
++  client,
++  sessionType,
++  options,
++  isCheckoutWithVault
++) {
++  var sessionMethod;
++
++  if (sessionType === "paypal-credit") {
++    sessionMethod = "createPayPalCreditOneTimePaymentSession";
++  } else if (sessionType === "pay-later") {
++    sessionMethod = "createPayLaterOneTimePaymentSession";
++  } else {
++    sessionMethod = "createPayPalOneTimePaymentSession";
++  }
++
++  return instance[sessionMethod](
++    this._createCheckoutSessionOptions(client, options, isCheckoutWithVault)
++  );
++};
++
+ /**
+  * Starts a checkout payment session with the given instance and client.
+  * @private
+@@ -1174,16 +1275,6 @@ PayPalCheckoutV6.prototype._startCheckoutSession = function (
+   autoRedirect,
+   fullPageOverlay
+ ) {
+-  var sessionMethod;
+-
+-  if (sessionType === "paypal-credit") {
+-    sessionMethod = "createPayPalCreditOneTimePaymentSession";
+-  } else if (sessionType === "pay-later") {
+-    sessionMethod = "createPayLaterOneTimePaymentSession";
+-  } else {
+-    sessionMethod = "createPayPalOneTimePaymentSession";
+-  }
+-
+   var isCheckoutWithVault = Boolean(paymentOptions.requestBillingAgreement);
+   var startEvent = isCheckoutWithVault
+     ? constants.ANALYTICS_EVENTS.CHECKOUT_WITH_VAULT_STARTED
+@@ -1191,8 +1282,12 @@ PayPalCheckoutV6.prototype._startCheckoutSession = function (
+ 
+   analytics.sendEvent(client, startEvent);
+ 
+-  var session = instance[sessionMethod](
+-    this._createCheckoutSessionOptions(client, options, isCheckoutWithVault)
++  var session = this._createCheckoutSdkSession(
++    instance,
++    client,
++    sessionType,
++    options,
++    isCheckoutWithVault
+   );
+ 
+   return session.start(
+@@ -1301,6 +1396,31 @@ PayPalCheckoutV6.prototype._createBillingTokenPromise = function (
+   });
+ };
+ 
++/**
++ * Creates the underlying PayPal SDK billing agreement session (without starting it).
++ * @private
++ * @param {object} instance PayPal SDK instance.
++ * @param {object} client Braintree client instance.
++ * @param {string} sessionType Type of session: 'paypal' or 'paypal-credit'.
++ * @param {object} options Billing agreement session options.
++ * @returns {object} The PayPal SDK's billing agreement session, exposing `start()`, `hasReturned()`, and `resume()`.
++ */
++PayPalCheckoutV6.prototype._createBillingSdkSession = function (
++  instance,
++  client,
++  sessionType,
++  options
++) {
++  var sessionMethod =
++    sessionType === "paypal-credit"
++      ? "createPayPalCreditBillingAgreementWithoutPurchase"
++      : "createPayPalBillingAgreementWithoutPurchase";
++
++  return instance[sessionMethod](
++    this._createBillingSessionCallbacks(client, options)
++  );
++};
++
+ /**
+  * Starts a billing agreement session with the given instance and client.
+  * @private
+@@ -1325,18 +1445,17 @@ PayPalCheckoutV6.prototype._startBillingSession = function (
+   fullPageOverlay
+ ) {
+   var self = this;
+-  var sessionMethod =
+-    sessionType === "paypal-credit"
+-      ? "createPayPalCreditBillingAgreementWithoutPurchase"
+-      : "createPayPalBillingAgreementWithoutPurchase";
+ 
+   analytics.sendEvent(
+     client,
+     constants.ANALYTICS_EVENTS.CREATE_BA_SESSION_STARTED
+   );
+ 
+-  var paypalSession = instance[sessionMethod](
+-    this._createBillingSessionCallbacks(client, options)
++  var paypalSession = this._createBillingSdkSession(
++    instance,
++    client,
++    sessionType,
++    options
+   );
+ 
+   analytics.sendEvent(
+@@ -1382,11 +1501,59 @@ PayPalCheckoutV6.prototype._validatePaymentSessionOptions = function (options) {
+   }
+ };
+ 
++/**
++ * Lazily creates and memoizes a PayPal SDK session so that `hasReturned()`
++ * and `resume()` can be called on page load (e.g. after an app switch
++ * redirect) without requiring `start()` to have been called first.
++ * @private
++ * @param {object} cache Memoization holder (kept alive via closure by the caller).
++ * @param {string} instanceKey Property name on `this` holding the ready PayPal SDK instance (e.g. `_paypalInstance`).
++ * @param {string} instancePromiseKey Property name on `this` holding the pending instance promise (e.g. `_checkoutInstancePromise`).
++ * @param {function} createSdkSession Callback invoked with `(instance, client)` to build the PayPal SDK session.
++ * @returns {Promise} Resolves with the PayPal SDK session.
++ */
++PayPalCheckoutV6.prototype._getOrCreateAppSwitchSession = function (
++  cache,
++  instanceKey,
++  instancePromiseKey,
++  createSdkSession
++) {
++  var self = this;
++
++  if (cache.promise) {
++    return cache.promise;
++  }
++
++  if (self[instanceKey] && self._client) {
++    cache.promise = Promise.resolve(
++      createSdkSession(self[instanceKey], self._client)
++    );
++
++    return cache.promise;
++  }
++
++  if (!self[instancePromiseKey]) {
++    cache.promise = Promise.reject(
++      new BraintreeError(errors.PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY)
++    );
++
++    return cache.promise;
++  }
++
++  cache.promise = self[instancePromiseKey].then(function (instance) {
++    return self._clientPromise.then(function (client) {
++      return createSdkSession(instance, client);
++    });
++  });
++
++  return cache.promise;
++};
++
+ /**
+  * @private
+  * @param {object} options Payment session options.
+  * @param {string} sessionType Type of session: 'paypal' or 'paypal-credit'.
+- * @returns {object} Payment session object with `start()` method.
++ * @returns {object} Payment session object with `start()`, `hasReturned()`, and `resume()` methods.
+  */
+ PayPalCheckoutV6.prototype._createPaymentSession = function (
+   options,
+@@ -1441,6 +1608,26 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+     paymentOptions.shippingAddressEditable = options.shippingAddressEditable;
+   }
+ 
++  var isCheckoutWithVault = Boolean(paymentOptions.requestBillingAgreement);
++  var appSwitchSessionCache = {};
++
++  function getAppSwitchSession() {
++    return self._getOrCreateAppSwitchSession(
++      appSwitchSessionCache,
++      "_paypalInstance",
++      "_checkoutInstancePromise",
++      function (instance, client) {
++        return self._createCheckoutSdkSession(
++          instance,
++          client,
++          sessionType,
++          options,
++          isCheckoutWithVault
++        );
++      }
++    );
++  }
++
+   return {
+     /**
+      * Starts the PayPal payment flow.
+@@ -1516,6 +1703,66 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+         new BraintreeError(errors.PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY)
+       );
+     },
++
++    /**
++     * Checks whether the current page load is the result of returning from
++     * an app switch (or other full-page redirect) flow.
++     * @param {string} [url=window.location.href] URL to check for resume parameters.
++     * @returns {Promise<boolean>} Resolves with `true` if the page should resume a payment session.
++     */
++    hasReturned: function (url) {
++      return getAppSwitchSession().then(function (sdkSession) {
++        var hasReturned = sdkSession.hasReturned(url);
++
++        return self._clientPromise.then(function (client) {
++          analytics.sendEvent(
++            client,
++            hasReturned
++              ? constants.ANALYTICS_EVENTS.REDIRECT_HAS_RETURNED_TRUE
++              : constants.ANALYTICS_EVENTS.REDIRECT_HAS_RETURNED_FALSE
++          );
++
++          return hasReturned;
++        });
++      });
++    },
++
++    /**
++     * Resumes a payment session after returning from an app switch (or other
++     * full-page redirect) flow. Should only be called when `hasReturned()`
++     * resolves with `true`.
++     * @param {string|object} [urlOrQueryItems=window.location.href] URL, or an object of query
++     * parameters, containing the resume parameters.
++     * @returns {Promise} Resolves when the resumed payment flow completes.
++     */
++    resume: function (urlOrQueryItems) {
++      return getAppSwitchSession().then(function (sdkSession) {
++        return self._clientPromise.then(function (client) {
++          analytics.sendEvent(
++            client,
++            constants.ANALYTICS_EVENTS.REDIRECT_RESUME_STARTED
++          );
++
++          return sdkSession
++            .resume(urlOrQueryItems)
++            .then(function (result) {
++              analytics.sendEvent(
++                client,
++                constants.ANALYTICS_EVENTS.REDIRECT_RESUME_SUCCEEDED
++              );
++
++              return result;
++            })
++            .catch(function (err) {
++              analytics.sendEvent(
++                client,
++                constants.ANALYTICS_EVENTS.REDIRECT_RESUME_FAILED
++              );
++              throw err;
++            });
++        });
++      });
++    },
+   };
+ };
+ 
+@@ -1553,7 +1800,7 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+  * @param {string} [options.shippingAddressOverride.recipientEmail] Email address of the recipient.
+  * @param {string} [options.contactPreference] Optional field to control contact information display. Can be 'NO_CONTACT_INFO' (default, no contact info shown), 'RETAIN_CONTACT_INFO' (contact info shown but not editable), or 'UPDATE_CONTACT_INFO' (contact info shown and editable). Required if using different recipient via shippingAddressOverride.
+  * * Note: this feature is currently available for US-based merchants only; see https://developer.paypal.com/docs/checkout/standard/customize/contact-module/#availability for up-to-date regional availability.
+- * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') for the PayPal experience language and format. This is a page-wide PayPal SDK setting: the most recently specified locale applies across every session/component created through this client, not just this call.
+  * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows guest checkout). Defaults to PayPal's selection.
+  * @param {string} [options.userAction] Changes the call-to-action in the PayPal flow: 'continue' or 'pay_now'.
+  * @param {boolean} [options.enableShippingAddress=false] When `true`, prompts the customer for a shipping address.
+@@ -1622,7 +1869,7 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+  *
+  *     // First, check if returning from app switch using the hasReturned() method
+  *     // This should be done when your page loads, before showing any UI
+- *     if (session.hasReturned()) {
++ *     if (await session.hasReturned()) {
+  *       // Resume the payment session to complete the flow
+  *       await session.resume();
+  *     } else {
+@@ -1762,7 +2009,7 @@ PayPalCheckoutV6.prototype._createPaymentSession = function (
+  *   session.start();
+  * });
+  *
+- * @returns {object} Payment session object with `start()` method.
++ * @returns {object} Payment session object with `start()`, `hasReturned()`, and `resume()` methods.
+  */
+ PayPalCheckoutV6.prototype.createOneTimePaymentSession = function (options) {
+   var self = this;
+@@ -1787,7 +2034,7 @@ PayPalCheckoutV6.prototype.createOneTimePaymentSession = function (options) {
+   }
+ 
+   // Eagerly create PayPal instance so start() can run synchronously (required for Safari)
+-  self._initializePayPalInstance("checkout");
++  self._initializePayPalInstance("checkout", options.locale);
+ 
+   return this._createPaymentSession(options, sessionType);
+ };
+@@ -1825,7 +2072,7 @@ PayPalCheckoutV6.prototype.createOneTimePaymentSession = function (options) {
+  * @param {string} [options.shippingAddressOverride.recipientEmail] Email address of the recipient.
+  * @param {string} [options.contactPreference] Optional field to control contact information display. Can be 'NO_CONTACT_INFO' (default, no contact info shown), 'RETAIN_CONTACT_INFO' (contact info shown but not editable), or 'UPDATE_CONTACT_INFO' (contact info shown and editable). Required if using different recipient via shippingAddressOverride.
+  * * Note: this feature is currently available for US-based merchants only; see https://developer.paypal.com/docs/checkout/standard/customize/contact-module/#availability for up-to-date regional availability.
+- * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') for the PayPal experience language and format. This is a page-wide PayPal SDK setting: the most recently specified locale applies across every session/component created through this client, not just this call.
+  * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows guest checkout). Defaults to PayPal's selection.
+  * @param {string} [options.userAction] Changes the call-to-action in the PayPal flow: 'continue' or 'pay_now'.
+  * @param {boolean} [options.enableShippingAddress=false] When `true`, prompts the customer for a shipping address.
+@@ -1947,7 +2194,7 @@ PayPalCheckoutV6.prototype.createOneTimePaymentSession = function (options) {
+  *   session.start();
+  * });
+  *
+- * @returns {object} Payment session object with `start()` method.
++ * @returns {object} Payment session object with `start()`, `hasReturned()`, and `resume()` methods.
+  */
+ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+   var self = this;
+@@ -1967,7 +2214,7 @@ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+   );
+ 
+   // Eagerly create PayPal instance so start() can run synchronously (required for Safari)
+-  self._initializePayPalInstance("checkout");
++  self._initializePayPalInstance("checkout", options.locale);
+ 
+   return this._createPaymentSession(options, "pay-later");
+ };
+@@ -2002,7 +2249,7 @@ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+  * @param {string} [options.returnUrl] URL to return to after payment completion. This parameter is required when using direct-app-switch presentation mode; for other flows, it is optional and defaults to the PayPal error page if not provided.
+  * @param {string} [options.cancelUrl] URL to return to after payment cancellation. This parameter is required when using direct-app-switch presentation mode; for other flows, it is optional and defaults to the PayPal error page if not provided.
+  * @param {string} [options.displayName] The merchant name displayed inside of the PayPal lightbox; defaults to the company name on your Braintree account.
+- * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') for the PayPal experience language and format. This is a page-wide PayPal SDK setting: the most recently specified locale applies across every session/component created through this client, not just this call.
+  * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows guest checkout). Defaults to PayPal's selection.
+  * @param {string} [options.userAction] Changes the call-to-action in the PayPal flow: 'continue' or 'pay_now'.
+  * @param {boolean} [options.enableShippingAddress=false] When `true`, prompts the customer for a shipping address.
+@@ -2141,7 +2388,7 @@ PayPalCheckoutV6.prototype.createPayLaterSession = function (options) {
+  *   session.start();
+  * });
+  *
+- * @returns {object} Payment session object with `start()` method.
++ * @returns {object} Payment session object with `start()`, `hasReturned()`, and `resume()` methods.
+  */
+ PayPalCheckoutV6.prototype.createCheckoutWithVaultSession = function (options) {
+   var self = this;
+@@ -2162,7 +2409,7 @@ PayPalCheckoutV6.prototype.createCheckoutWithVaultSession = function (options) {
+   });
+ 
+   // Eagerly create PayPal instance so start() can run synchronously (required for Safari)
+-  self._initializePayPalInstance("checkout");
++  self._initializePayPalInstance("checkout", checkoutWithVaultOptions.locale);
+ 
+   return this._createPaymentSession(checkoutWithVaultOptions, "paypal");
+ };
+@@ -2519,7 +2766,7 @@ PayPalCheckoutV6.prototype.createPayment = function (options) {
+  * @param {object} [options.shippingAddressOverride] Shipping address to override.
+  * @param {string} [options.userAction] User action: CONTINUE, COMMIT, or SETUP_NOW.
+  * @param {string} [options.displayName] The merchant name displayed inside of the PayPal lightbox; defaults to the company name on your Braintree account.
+- * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') to customize the PayPal experience language and format.
++ * @param {string} [options.locale] Locale code (e.g., 'en_US', 'fr_FR') for the PayPal experience language and format. This is a page-wide PayPal SDK setting: the most recently specified locale applies across every session/component created through this client, not just this call.
+  * @param {string} [options.landingPageType] Landing page type: 'login' (shows PayPal login) or 'billing' (shows billing agreement consent). Defaults to PayPal's selection.
+  * @param {boolean} [options.enableShippingAddress] When `true`, prompts the customer for a shipping address. Defaults to suppressed when omitted.
+  * @param {boolean} [options.shippingAddressEditable] Controls whether a displayed shipping address is editable. Pass `false` to make it read-only. Defaults to editable when omitted.
+@@ -2568,7 +2815,7 @@ PayPalCheckoutV6.prototype.createPayment = function (options) {
+  * document.getElementById('paypal-button').addEventListener('click', function () {
+  *   session.start();
+  * });
+- * @returns {object} Session object with start() method.
++ * @returns {object} Session object with `start()`, `hasReturned()`, and `resume()` methods.
+  */
+ PayPalCheckoutV6.prototype.createBillingAgreementSession = function (options) {
+   var self = this;
+@@ -2601,9 +2848,86 @@ PayPalCheckoutV6.prototype.createBillingAgreementSession = function (options) {
+   }
+ 
+   // Eagerly create PayPal instance so start() can run synchronously (required for Safari).
+-  self._initializePayPalInstance("vault");
++  self._initializePayPalInstance("vault", options.locale);
+ 
+   var billingAgreementRequest = self._buildBillingAgreementRequest(options);
++  var appSwitchSessionCache = {};
++
++  function getAppSwitchSession() {
++    return self._getOrCreateAppSwitchSession(
++      appSwitchSessionCache,
++      "_paypalVaultInstance",
++      "_vaultInstancePromise",
++      function (instance, client) {
++        return self._createBillingSdkSession(
++          instance,
++          client,
++          sessionType,
++          options
++        );
++      }
++    );
++  }
++
++  /**
++   * Checks whether the current page load is the result of returning from
++   * an app switch (or other full-page redirect) flow.
++   * @param {string} [url=window.location.href] URL to check for resume parameters.
++   * @returns {Promise<boolean>} Resolves with `true` if the page should resume a billing agreement session.
++   */
++  session.hasReturned = function (url) {
++    return getAppSwitchSession().then(function (sdkSession) {
++      var hasReturned = sdkSession.hasReturned(url);
++
++      return self._clientPromise.then(function (client) {
++        analytics.sendEvent(
++          client,
++          hasReturned
++            ? constants.ANALYTICS_EVENTS.REDIRECT_HAS_RETURNED_TRUE
++            : constants.ANALYTICS_EVENTS.REDIRECT_HAS_RETURNED_FALSE
++        );
++
++        return hasReturned;
++      });
++    });
++  };
++
++  /**
++   * Resumes a billing agreement session after returning from an app switch
++   * (or other full-page redirect) flow. Should only be called when
++   * `hasReturned()` resolves with `true`.
++   * @param {string|object} [urlOrQueryItems=window.location.href] URL, or an object of query
++   * parameters, containing the resume parameters.
++   * @returns {Promise} Resolves when the resumed billing agreement flow completes.
++   */
++  session.resume = function (urlOrQueryItems) {
++    return getAppSwitchSession().then(function (sdkSession) {
++      return self._clientPromise.then(function (client) {
++        analytics.sendEvent(
++          client,
++          constants.ANALYTICS_EVENTS.REDIRECT_RESUME_STARTED
++        );
++
++        return sdkSession
++          .resume(urlOrQueryItems)
++          .then(function (result) {
++            analytics.sendEvent(
++              client,
++              constants.ANALYTICS_EVENTS.REDIRECT_RESUME_SUCCEEDED
++            );
++
++            return result;
++          })
++          .catch(function (err) {
++            analytics.sendEvent(
++              client,
++              constants.ANALYTICS_EVENTS.REDIRECT_RESUME_FAILED
++            );
++            throw err;
++          });
++      });
++    });
++  };
+ 
+   session.start = function (presentationOptions) {
+     presentationOptions = presentationOptions || {};
+@@ -3382,10 +3706,12 @@ PayPalCheckoutV6.prototype.findEligibleMethods = function (options) {
+       );
+     }
+ 
+-    // Get or create the PayPal instance
++    self._initializePayPalInstance("checkout");
++
+     var instancePromise = self._paypalInstance
+       ? Promise.resolve(self._paypalInstance)
+-      : self
++      : self._checkoutInstancePromise ||
++        self
+           ._createPayPalInstance({
+             components: ["paypal-payments"],
+           })
+diff --git a/test/hosted-fields/unit/external/hosted-fields.js b/test/hosted-fields/unit/external/hosted-fields.js
+index 71a1985..ea33509 100644
+--- a/test/hosted-fields/unit/external/hosted-fields.js
++++ b/test/hosted-fields/unit/external/hosted-fields.js
+@@ -216,6 +216,82 @@ describe("HostedFields", () => {
+       expect(testContext.instance).toBeDefined();
+     });
+ 
++    it("only ever reads binVerificationLength once, so a getter that would return a different (invalid) value on a hypothetical later call can never let an invalid value slip past validation (regression test for a TOCTOU bypass reported via bug bounty)", () => {
++      let readCount = 0;
++      let error;
++
++      Object.defineProperty(
++        testContext.defaultConfiguration,
++        "binVerificationLength",
++        {
++          enumerable: true,
++          configurable: true,
++          // If this getter were read more than once, the first (invalid)
++          // value would be silently replaced by the second (valid) value
++          // and validation would incorrectly pass.
++          get: () => (readCount++ === 0 ? 16 : 8),
++        }
++      );
++
++      try {
++        testContext.instance = new HostedFields(
++          testContext.defaultConfiguration
++        );
++      } catch (e) {
++        error = e;
++      }
++
++      expect(readCount).toBe(1);
++      expect(error).toBeInstanceOf(BraintreeError);
++      expect(error.code).toBe("INSTANTIATION_OPTION_INVALID");
++    });
++
++    it("forwards the exact validated binVerificationLength value with no divergence for a well-behaved getter", () => {
++      let readCount = 0;
++
++      Object.defineProperty(
++        testContext.defaultConfiguration,
++        "binVerificationLength",
++        {
++          enumerable: true,
++          configurable: true,
++          get: () => {
++            readCount += 1;
++
++            return 8;
++          },
++        }
++      );
++
++      testContext.instance = new HostedFields(testContext.defaultConfiguration);
++
++      expect(readCount).toBe(1);
++      expect(
++        testContext.instance._merchantConfigurationOptions.binVerificationLength
++      ).toBe(8);
++    });
++
++    it("prevents binVerificationLength from being redefined on the merchant configuration options after construction, closing the window where code with a reference to the instance could otherwise redefine it as a getter before it is asynchronously forwarded to the iframe", () => {
++      testContext.defaultConfiguration.binVerificationLength = 6;
++
++      testContext.instance = new HostedFields(testContext.defaultConfiguration);
++
++      expect(() => {
++        Object.defineProperty(
++          testContext.instance._merchantConfigurationOptions,
++          "binVerificationLength",
++          {
++            configurable: true,
++            get: () => 16,
++          }
++        );
++      }).toThrow(TypeError);
++
++      expect(
++        testContext.instance._merchantConfigurationOptions.binVerificationLength
++      ).toBe(6);
++    });
++
+     it("sends a timeout event if the fields take too long to set up", () => {
+       jest.useFakeTimers();
+ 
+diff --git a/test/hosted-fields/unit/internal/models/credit-card-form.js b/test/hosted-fields/unit/internal/models/credit-card-form.js
+index c017ae2..f167759 100644
+--- a/test/hosted-fields/unit/internal/models/credit-card-form.js
++++ b/test/hosted-fields/unit/internal/models/credit-card-form.js
+@@ -1144,6 +1144,39 @@ describe("credit card model", () => {
+         "41111111"
+       );
+     });
++
++    describe("defense in depth: clamping an out-of-range value forwarded from the parent frame", () => {
++      it.each([16, 0, -1, "8", null, NaN])(
++        "clamps binVerificationLength to 6 when given %p",
++        (badValue) => {
++          const config = Object.assign({}, getModelConfig(["number"]), {
++            binVerificationLength: badValue,
++          });
++          const card = new CreditCardForm(config);
++
++          expect(card.configuration.binVerificationLength).toBe(6);
++
++          card.set("number.value", "4111111111111111");
++          expect(window.bus.emit).toHaveBeenCalledWith(
++            events.BIN_AVAILABLE,
++            "411111"
++          );
++          expect(window.bus.emit).not.toHaveBeenCalledWith(
++            events.BIN_AVAILABLE,
++            "4111111111111111"
++          );
++        }
++      );
++
++      it("does not clamp a valid value of 8", () => {
++        const config = Object.assign({}, getModelConfig(["number"]), {
++          binVerificationLength: 8,
++        });
++        const card = new CreditCardForm(config);
++
++        expect(card.configuration.binVerificationLength).toBe(8);
++      });
++    });
+   });
+ 
+   describe("bin available", () => {
+diff --git a/test/paypal-checkout-v6/unit/paypal-checkout-v6.js b/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
+index a607e02..8058191 100644
+--- a/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
++++ b/test/paypal-checkout-v6/unit/paypal-checkout-v6.js
+@@ -881,6 +881,175 @@ describe("PayPalCheckoutV6", () => {
+       });
+     });
+ 
++    it("forwards locale to window.paypal.createInstance, normalized to hyphenated format", () => {
++      testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++
++      return testContext.instance._checkoutInstancePromise.then(() => {
++        expect(window.paypal.createInstance).toHaveBeenCalledWith(
++          expect.objectContaining({
++            locale: "fr-FR",
++          })
++        );
++      });
++    });
++
++    it("does not include locale in createInstance options when not provided", () => {
++      testContext.instance._initializePayPalInstance("checkout");
++
++      return testContext.instance._checkoutInstancePromise.then(() => {
++        const callArgs = window.paypal.createInstance.mock.calls[0][0];
++
++        expect(callArgs).not.toHaveProperty("locale");
++      });
++    });
++
++    it("applies locale via updateLocale when an instance already exists (e.g. created by findEligibleMethods)", () => {
++      const updateLocale = jest.fn();
++
++      testContext.instance._paypalInstance = { updateLocale };
++
++      testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++
++      expect(updateLocale).toHaveBeenCalledWith("fr-FR");
++      expect(window.paypal.createInstance).not.toHaveBeenCalled();
++    });
++
++    it("does not throw when an existing instance has no updateLocale method", () => {
++      testContext.instance._paypalInstance = { existing: true };
++
++      expect(() => {
++        testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++      }).not.toThrow();
++    });
++
++    it("applies locale via updateLocale once an in-flight instance creation resolves", () => {
++      const updateLocale = jest.fn();
++
++      testContext.instance._checkoutInstancePromise = Promise.resolve({
++        updateLocale,
++      });
++
++      testContext.instance._initializePayPalInstance("checkout", "de_DE");
++
++      return testContext.instance._checkoutInstancePromise.then(() => {
++        expect(updateLocale).toHaveBeenCalledWith("de-DE");
++        expect(window.paypal.createInstance).not.toHaveBeenCalled();
++      });
++    });
++
++    it("reuses the last applied locale for a new instance type that doesn't specify one", () => {
++      // window.paypal.createInstance sets a single, page-wide locale. If a second
++      // instance type (e.g. messages) is created without a locale, it must not
++      // silently reset the locale already established by another instance type
++      // (e.g. checkout) back to the browser default.
++      testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++
++      return testContext.instance._checkoutInstancePromise.then(() => {
++        testContext.instance._initializePayPalInstance("messages");
++
++        return testContext.instance._messagesInstancePromise.then(() => {
++          expect(window.paypal.createInstance).toHaveBeenLastCalledWith(
++            expect.objectContaining({ locale: "fr-FR" })
++          );
++        });
++      });
++    });
++
++    it("shares the applied locale across separate PayPalCheckoutV6 instances", () => {
++      // The locale lives on window.paypal (the shared SDK), not on a single
++      // PayPalCheckoutV6 wrapper, since createInstance's locale is page-wide.
++      const otherInstance = new PayPalCheckoutV6({});
++
++      return otherInstance
++        ._initialize({ client: testContext.client })
++        .then(() => {
++          otherInstance._initializePayPalInstance("checkout", "fr_FR");
++
++          return otherInstance._checkoutInstancePromise.then(() => {
++            testContext.instance._initializePayPalInstance("messages");
++
++            return testContext.instance._messagesInstancePromise.then(() => {
++              expect(window.paypal.createInstance).toHaveBeenLastCalledWith(
++                expect.objectContaining({ locale: "fr-FR" })
++              );
++            });
++          });
++        });
++    });
++
++    it("still reuses a requested locale for a later instance type after a failed creation attempt", () => {
++      // Locale validation happens synchronously before any network call, so a
++      // createInstance() failure is essentially never caused by the locale itself.
++      // Reusing it for an unrelated, later instance type is a safe, simpler
++      // trade-off than tracking success/failure per locale request.
++      window.paypal.createInstance = jest
++        .fn()
++        .mockRejectedValueOnce(new Error("createInstance failed"))
++        .mockResolvedValue({ mockInstance: true });
++
++      testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++
++      return testContext.instance._checkoutInstancePromise.catch(() => {
++        testContext.instance._initializePayPalInstance("messages");
++
++        return testContext.instance._messagesInstancePromise.then(() => {
++          const callArgs = window.paypal.createInstance.mock.calls[1][0];
++
++          expect(callArgs).toHaveProperty("locale", "fr-FR");
++        });
++      });
++    });
++
++    it("propagates a pending locale to a concurrent creation of a different instance type", () => {
++      // Both calls are made before either createInstance() call resolves, so the
++      // second (locale-less) call must see the first's locale as already pending
++      // instead of racing it and resetting the SDK's locale to the browser default.
++      testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++      testContext.instance._initializePayPalInstance("messages");
++
++      return Promise.all([
++        testContext.instance._checkoutInstancePromise,
++        testContext.instance._messagesInstancePromise,
++      ]).then(() => {
++        expect(window.paypal.createInstance).toHaveBeenCalledWith(
++          expect.objectContaining({
++            components: ["paypal-payments"],
++            locale: "fr-FR",
++          })
++        );
++        expect(window.paypal.createInstance).toHaveBeenCalledWith(
++          expect.objectContaining({
++            components: ["paypal-messages"],
++            locale: "fr-FR",
++          })
++        );
++      });
++    });
++
++    it("does not let a failed attempt clobber a newer locale set by a concurrent creation", () => {
++      window.paypal.createInstance = jest
++        .fn()
++        .mockRejectedValueOnce(new Error("checkout failed"))
++        .mockResolvedValueOnce({ mockInstance: true })
++        .mockResolvedValue({ mockInstance: true });
++
++      testContext.instance._initializePayPalInstance("checkout", "fr_FR");
++      testContext.instance._initializePayPalInstance("vault", "de_DE");
++
++      return Promise.allSettled([
++        testContext.instance._checkoutInstancePromise,
++        testContext.instance._vaultInstancePromise,
++      ]).then(() => {
++        testContext.instance._initializePayPalInstance("messages");
++
++        return testContext.instance._messagesInstancePromise.then(() => {
++          const callArgs = window.paypal.createInstance.mock.calls[2][0];
++
++          expect(callArgs).toHaveProperty("locale", "de-DE");
++        });
++      });
++    });
++
+     it("does not pass clientToken to createInstance for saved-payment-methods type", () => {
+       testContext.instance._billingAgreementJwt = "fake-baid-jwt";
+       testContext.instance._billingAgreementJwtPromise = Promise.resolve();
+@@ -1203,6 +1372,26 @@ describe("PayPalCheckoutV6", () => {
+       expect(typeof session.start).toBe("function");
+     });
+ 
++    it("forwards the locale option to window.paypal.createInstance, normalized to hyphenated format", () => {
++      testContext.instance._paypalInstance = null;
++      testContext.instance._checkoutInstancePromise = null;
++
++      testContext.instance.createOneTimePaymentSession({
++        amount: "10.00",
++        currency: "USD",
++        locale: "fr_FR",
++        onApprove: jest.fn(),
++      });
++
++      return testContext.instance._checkoutInstancePromise.then(() => {
++        expect(window.paypal.createInstance).toHaveBeenCalledWith(
++          expect.objectContaining({
++            locale: "fr-FR",
++          })
++        );
++      });
++    });
++
+     it("requires amount option", () => {
+       expect(() => {
+         testContext.instance.createOneTimePaymentSession({
+@@ -1927,6 +2116,216 @@ describe("PayPalCheckoutV6", () => {
+           .catch(done);
+       });
+     });
++
++    describe("hasReturned and resume", () => {
++      it("resolves hasReturned() with the underlying SDK session's result when the instance is already ready", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session
++          .hasReturned("https://example.com/return")
++          .then((result) => {
++            expect(result).toBe(true);
++            expect(mockSession.hasReturned).toHaveBeenCalledWith(
++              "https://example.com/return"
++            );
++          });
++      });
++
++      it("resolves resume() with the underlying SDK session's result", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session.resume("https://example.com/return").then((result) => {
++          expect(result).toEqual({ nonce: "abc" });
++          expect(mockSession.resume).toHaveBeenCalledWith(
++            "https://example.com/return"
++          );
++        });
++      });
++
++      it("sends analytics events for hasReturned() true/false", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({}),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session.hasReturned().then(() => {
++          expect(analytics.sendEvent).toHaveBeenCalledWith(
++            testContext.client,
++            "paypal-checkout-v6.redirect.has-returned.true"
++          );
++
++          mockSession.hasReturned.mockReturnValue(false);
++
++          return session.hasReturned().then(() => {
++            expect(analytics.sendEvent).toHaveBeenCalledWith(
++              testContext.client,
++              "paypal-checkout-v6.redirect.has-returned.false"
++            );
++          });
++        });
++      });
++
++      it("sends analytics events for resume() started/succeeded/failed", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session.resume().then(() => {
++          expect(analytics.sendEvent).toHaveBeenCalledWith(
++            testContext.client,
++            "paypal-checkout-v6.redirect.resume.started"
++          );
++          expect(analytics.sendEvent).toHaveBeenCalledWith(
++            testContext.client,
++            "paypal-checkout-v6.redirect.resume.succeeded"
++          );
++
++          mockSession.resume.mockRejectedValueOnce(new Error("nope"));
++
++          return session.resume().catch(() => {
++            expect(analytics.sendEvent).toHaveBeenCalledWith(
++              testContext.client,
++              "paypal-checkout-v6.redirect.resume.failed"
++            );
++          });
++        });
++      });
++
++      it("reuses the same underlying SDK session across hasReturned() and resume() calls", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({}),
++        };
++        const createSessionSpy = jest.fn().mockReturnValue(mockSession);
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession =
++          createSessionSpy;
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session
++          .hasReturned()
++          .then(() => session.resume())
++          .then(() => {
++            expect(createSessionSpy).toHaveBeenCalledTimes(1);
++          });
++      });
++
++      it("resolves hasReturned() by waiting for the checkout instance when not yet ready", () => {
++        testContext.instance._paypalInstance = null;
++        testContext.instance._checkoutInstancePromise = Promise.resolve(
++          testContext.paypalInstance
++        );
++
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({}),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session.hasReturned().then((result) => {
++          expect(result).toBe(true);
++        });
++      });
++
++      it("rejects hasReturned() with INSTANCE_NOT_READY when the SDK is not loaded", async () => {
++        delete window.paypal;
++        testContext.instance._paypalInstance = null;
++        testContext.instance._checkoutInstancePromise = null;
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        await expect(session.hasReturned()).rejects.toMatchObject({
++          code: "PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY",
++        });
++      });
++
++      it("rejects resume() with INSTANCE_NOT_READY when the SDK is not loaded", async () => {
++        delete window.paypal;
++        testContext.instance._paypalInstance = null;
++        testContext.instance._checkoutInstancePromise = null;
++
++        const session = testContext.instance.createOneTimePaymentSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        await expect(session.resume()).rejects.toMatchObject({
++          code: "PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY",
++        });
++      });
++    });
+   });
+ 
+   describe("Transient Activation - Synchronous Start", () => {
+@@ -4272,6 +4671,145 @@ describe("PayPalCheckoutV6", () => {
+           });
+       });
+     });
++
++    describe("hasReturned and resume", () => {
++      let mockPayPalInstance, mockPayPalSession;
++
++      beforeEach(() => {
++        mockPayPalSession = {
++          start: jest.fn().mockResolvedValue({ success: true }),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        mockPayPalInstance = {
++          createPayPalBillingAgreementWithoutPurchase: jest
++            .fn()
++            .mockReturnValue(mockPayPalSession),
++          createPayPalCreditBillingAgreementWithoutPurchase: jest
++            .fn()
++            .mockReturnValue(mockPayPalSession),
++        };
++
++        window.paypal = {
++          createInstance: jest.fn().mockResolvedValue(mockPayPalInstance),
++        };
++      });
++
++      afterEach(() => {
++        delete window.paypal;
++      });
++
++      it("resolves hasReturned() with the underlying SDK session's result", () => {
++        testContext.instance._paypalVaultInstance = mockPayPalInstance;
++
++        const session = testContext.instance.createBillingAgreementSession({
++          billingAgreementDescription: "Monthly subscription",
++          onApprove: () => {},
++        });
++
++        return session
++          .hasReturned("https://example.com/return")
++          .then((result) => {
++            expect(result).toBe(true);
++            expect(mockPayPalSession.hasReturned).toHaveBeenCalledWith(
++              "https://example.com/return"
++            );
++          });
++      });
++
++      it("resolves resume() with the underlying SDK session's result", () => {
++        testContext.instance._paypalVaultInstance = mockPayPalInstance;
++
++        const session = testContext.instance.createBillingAgreementSession({
++          billingAgreementDescription: "Monthly subscription",
++          onApprove: () => {},
++        });
++
++        return session.resume().then((result) => {
++          expect(result).toEqual({ nonce: "abc" });
++          expect(mockPayPalSession.resume).toHaveBeenCalledWith(undefined);
++        });
++      });
++
++      it("sends analytics events for hasReturned() true/false", () => {
++        testContext.instance._paypalVaultInstance = mockPayPalInstance;
++
++        const session = testContext.instance.createBillingAgreementSession({
++          billingAgreementDescription: "Monthly subscription",
++          onApprove: () => {},
++        });
++
++        return session.hasReturned().then(() => {
++          expect(analytics.sendEvent).toHaveBeenCalledWith(
++            testContext.client,
++            "paypal-checkout-v6.redirect.has-returned.true"
++          );
++
++          mockPayPalSession.hasReturned.mockReturnValue(false);
++
++          return session.hasReturned().then(() => {
++            expect(analytics.sendEvent).toHaveBeenCalledWith(
++              testContext.client,
++              "paypal-checkout-v6.redirect.has-returned.false"
++            );
++          });
++        });
++      });
++
++      it("sends analytics events for resume() started/succeeded/failed", () => {
++        testContext.instance._paypalVaultInstance = mockPayPalInstance;
++
++        const session = testContext.instance.createBillingAgreementSession({
++          billingAgreementDescription: "Monthly subscription",
++          onApprove: () => {},
++        });
++
++        return session.resume().then(() => {
++          expect(analytics.sendEvent).toHaveBeenCalledWith(
++            testContext.client,
++            "paypal-checkout-v6.redirect.resume.started"
++          );
++          expect(analytics.sendEvent).toHaveBeenCalledWith(
++            testContext.client,
++            "paypal-checkout-v6.redirect.resume.succeeded"
++          );
++
++          mockPayPalSession.resume.mockRejectedValueOnce(new Error("nope"));
++
++          return session.resume().catch(() => {
++            expect(analytics.sendEvent).toHaveBeenCalledWith(
++              testContext.client,
++              "paypal-checkout-v6.redirect.resume.failed"
++            );
++          });
++        });
++      });
++
++      it("waits for the vault instance to be ready before resolving hasReturned()", () => {
++        const session = testContext.instance.createBillingAgreementSession({
++          billingAgreementDescription: "Monthly subscription",
++          onApprove: () => {},
++        });
++
++        return session.hasReturned().then((result) => {
++          expect(result).toBe(true);
++        });
++      });
++
++      it("rejects hasReturned() with INSTANCE_NOT_READY when the SDK is not loaded", async () => {
++        delete window.paypal;
++
++        const session = testContext.instance.createBillingAgreementSession({
++          billingAgreementDescription: "Monthly subscription",
++          onApprove: () => {},
++        });
++
++        await expect(session.hasReturned()).rejects.toMatchObject({
++          code: "PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY",
++        });
++      });
++    });
+   });
+ 
+   describe("createPayLaterSession", () => {
+@@ -4601,6 +5139,76 @@ describe("PayPalCheckoutV6", () => {
+           );
+         });
+     });
++
++    describe("hasReturned and resume", () => {
++      it("resolves hasReturned() with the underlying SDK session's result", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayLaterOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createPayLaterSession({
++          amount: "100.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session
++          .hasReturned("https://example.com/return")
++          .then((result) => {
++            expect(result).toBe(true);
++            expect(mockSession.hasReturned).toHaveBeenCalledWith(
++              "https://example.com/return"
++            );
++          });
++      });
++
++      it("resolves resume() with the underlying SDK session's result", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayLaterOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createPayLaterSession({
++          amount: "100.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session.resume("https://example.com/return").then((result) => {
++          expect(result).toEqual({ nonce: "abc" });
++          expect(mockSession.resume).toHaveBeenCalledWith(
++            "https://example.com/return"
++          );
++        });
++      });
++
++      it("rejects hasReturned() with INSTANCE_NOT_READY when the SDK is not loaded", async () => {
++        delete window.paypal;
++        testContext.instance._paypalInstance = null;
++        testContext.instance._checkoutInstancePromise = null;
++
++        const session = testContext.instance.createPayLaterSession({
++          amount: "100.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        await expect(session.hasReturned()).rejects.toMatchObject({
++          code: "PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY",
++        });
++      });
++    });
+   });
+ 
+   describe("createCheckoutWithVaultSession", () => {
+@@ -5752,6 +6360,76 @@ describe("PayPalCheckoutV6", () => {
+           .catch(done);
+       });
+     });
++
++    describe("hasReturned and resume", () => {
++      it("resolves hasReturned() with the underlying SDK session's result", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createCheckoutWithVaultSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session
++          .hasReturned("https://example.com/return")
++          .then((result) => {
++            expect(result).toBe(true);
++            expect(mockSession.hasReturned).toHaveBeenCalledWith(
++              "https://example.com/return"
++            );
++          });
++      });
++
++      it("resolves resume() with the underlying SDK session's result", () => {
++        const mockSession = {
++          start: jest.fn().mockResolvedValue({}),
++          hasReturned: jest.fn().mockReturnValue(true),
++          resume: jest.fn().mockResolvedValue({ nonce: "abc" }),
++        };
++
++        testContext.paypalInstance.createPayPalOneTimePaymentSession = jest
++          .fn()
++          .mockReturnValue(mockSession);
++
++        const session = testContext.instance.createCheckoutWithVaultSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        return session.resume("https://example.com/return").then((result) => {
++          expect(result).toEqual({ nonce: "abc" });
++          expect(mockSession.resume).toHaveBeenCalledWith(
++            "https://example.com/return"
++          );
++        });
++      });
++
++      it("rejects hasReturned() with INSTANCE_NOT_READY when the SDK is not loaded", async () => {
++        delete window.paypal;
++        testContext.instance._paypalInstance = null;
++        testContext.instance._checkoutInstancePromise = null;
++
++        const session = testContext.instance.createCheckoutWithVaultSession({
++          amount: "10.00",
++          currency: "USD",
++          onApprove: jest.fn(),
++        });
++
++        await expect(session.hasReturned()).rejects.toMatchObject({
++          code: "PAYPAL_CHECKOUT_V6_INSTANCE_NOT_READY",
++        });
++      });
++    });
+   });
+ 
+   describe("createEditSavedPaymentSession", () => {
+@@ -7613,5 +8291,60 @@ describe("PayPalCheckoutV6", () => {
+           expect(result.getDetails("credit")).toEqual(creditDetails);
+         });
+     });
++
++    it("applies the locale from a later createOneTimePaymentSession call to the instance findEligibleMethods already created", () => {
++      mockPayPalInstance.updateLocale = jest.fn();
++      mockPayPalInstance.createPayPalOneTimePaymentSession = jest
++        .fn()
++        .mockReturnValue({
++          start: jest.fn().mockResolvedValue(),
++        });
++
++      return testContext.instance
++        .findEligibleMethods({
++          amount: "100.00",
++          currency: "USD",
++        })
++        .then(() => {
++          testContext.instance.createOneTimePaymentSession({
++            amount: "100.00",
++            currency: "USD",
++            locale: "fr_FR",
++            onApprove: jest.fn(),
++          });
++
++          expect(mockPayPalInstance.updateLocale).toHaveBeenCalledWith("fr-FR");
++        });
++    });
++
++    it("does not create a duplicate instance when createOneTimePaymentSession is called before findEligibleMethods resolves", () => {
++      mockPayPalInstance.createPayPalOneTimePaymentSession = jest
++        .fn()
++        .mockReturnValue({
++          start: jest.fn().mockResolvedValue(),
++        });
++
++      var findEligibleMethodsPromise = testContext.instance.findEligibleMethods(
++        {
++          amount: "100.00",
++          currency: "USD",
++        }
++      );
++
++      testContext.instance.createOneTimePaymentSession({
++        amount: "100.00",
++        currency: "USD",
++        locale: "fr_FR",
++        onApprove: jest.fn(),
++      });
++
++      return findEligibleMethodsPromise.then(() => {
++        expect(window.paypal.createInstance).toHaveBeenCalledTimes(1);
++        expect(window.paypal.createInstance).toHaveBeenCalledWith(
++          expect.objectContaining({ locale: "fr-FR" })
++        );
++        expect(testContext.instance._paypalInstance).toBe(mockPayPalInstance);
++      });
++    });
+   });
+ });

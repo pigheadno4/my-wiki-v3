@@ -1,0 +1,7 @@
+- Hosted Fields
+  - Fix validation of binVerificationLength option to prevent it from being bypassed
+- PayPal Checkout v6
+  - Fix issue where locale option in createOneTimePaymentSession was not correctly setting the language in the button UI.
+  - Add resume() and hasReturned() to one-time payment and billing agreement sessions for app switch redirect flows
+- Dependencies
+  - update inject-stylesheet to 7.1.0
