@@ -2,9 +2,10 @@
 title: "GitHub: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-10-02
+date_updated: 2026-10-19
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json"
@@ -25,18 +26,20 @@ tags: [adyen, checkout, web-sdk, cards, 3d-secure, github-repository]
 
 ## Overview
 
-`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.46.0` at exact SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`, preserving the 6.45.1 do-not-use warning and subsequent fix.
+`Adyen/adyen-web` contains Adyen's browser checkout SDK. It provides an all-in-one Drop-in and individually mounted payment-method Components, plus shared handling for sessions, payment actions, analytics, risk data, localization, and accessibility. This cumulative page begins with package-qualified release `@adyen/adyen-web@6.41.0` and records history through `@adyen/adyen-web@6.47.0` at exact SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`, preserving the 6.45.1 do-not-use warning and subsequent fix.
 
 Repository: <https://github.com/Adyen/adyen-web>
 
 ## Evidence boundary
 
-The newest ingested release is `@adyen/adyen-web@6.46.0`, SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1`. This additive full ingest uses the explicitly approved focused-reading exception: all 30 changed retained files and seven supplemental files read fully, affected prior context reviewed, and 192 unchanged current files plus manifest inventories checked mechanically. It does not claim a complete upstream repository or whole-patch semantic read. Older architecture, regression and rollback history remains preserved.
+The newest ingested release is `@adyen/adyen-web@6.47.0`, SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`. This additive full ingest uses the explicitly approved focused-reading exception: all 34 changed retained files read fully, affected prior code and dependencies reviewed, and 188 unchanged current files, inventories and the duplicated comparison checked mechanically. Both 222-file snapshots passed hash and size verification. The effective full-mode list contains 231 paths; focused reading does not mean every unchanged source file or the whole upstream repository was semantically reread. No new supplement was collected for this release.
+
+The preceding `6.46.0` additive full ingest at SHA `d77a5f76b7e37edcd785aa8f98a837ff081954b1` used its separately approved focused-reading exception: all 30 changed retained files and seven supplemental files read fully, affected prior context reviewed, and 192 unchanged current files plus manifest inventories checked mechanically. Older architecture, regression and rollback history remains preserved.
 
 > [!warning] Do not use 6.45.1
 > The collected upstream release notes warn of a payment-action handling bug and direct users to 6.45.2. Recording this release preserves evidence; it is not an upgrade recommendation.
 
-- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.46.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
+- The ingested snapshots and supplements cover version-qualified implementation from `@adyen/adyen-web@6.41.0` through `@adyen/adyen-web@6.47.0`. They do not replace current Adyen integration guidance or prove that a payment method is enabled for a merchant.
 - Drop-in and Components are presentation and client-orchestration surfaces. Payment-method availability still comes from backend responses, merchant configuration, shopper context, and regional or product eligibility.
 - Stories are retained as intended integration scenarios. Tests were excluded by collection policy, so test-only behavior is outside this capsule.
 - PayPal Fastlane support in this repository depends on `@paypal/paypal-js`; these snapshots describe Adyen's adapter and configuration surface, not the delegated PayPal runtime.
@@ -414,7 +417,68 @@ For Drop-in, use the payment method's configuration entry rather than passing th
 
 Implementation: [shared UIElement](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/UIElement/UIElement.tsx), [configuration types](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/UIElement/types.ts), [disclaimer renderer](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/files/packages/lib/src/components/internal/DisclaimerMessage/DisclaimerMessage.tsx), [Card story](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/components/Card/stories/Card.stories.tsx), [core types](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/types.ts), [RiskElement](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/RiskModule/RiskModule.tsx), [HTTP](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/files/packages/lib/src/core/Services/http.ts).
 
+## `6.47.0` configuration diagnostics, installments and resilience
+
+`@adyen/adyen-web@6.46.0` -> `@adyen/adyen-web@6.47.0`, released 2026-10-15 and ingested 2026-10-19. The user approved additive full mode, overriding the packet's delta/high recommendation; historical baselines are not replaced. The packet classifies 349 repository-wide upstream changes, while the saved package-scoped comparison covers 279 changed paths. These counts are not retained-source counts: the capsule has 34 modified and 188 unchanged files, with no additions or deletions.
+
+### Multiple-instance warning is not lifecycle enforcement
+
+[Core](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/core/core.ts) increments static `metadata.numberOfInitialisedCheckouts` during construction. A count above one emits a console warning unless `suppressConfigWarnings` is true. [CoreConfiguration](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/core/types.ts) adds that optional boolean; the property validator recognizes it. This is advisory and does not block another instance or a payment. The counter is cumulative for the loaded Core class, not a count of simultaneously mounted instances; no decrement/reset is present in this retained class. It does not detect all independently loaded SDK copies. Suppression only guards this new warning, not all configuration warnings.
+
+**Migration:** reuse the checkout instance when appropriate, particularly across UI re-renders. If multiple instances are intentional, suppression removes noise but is not cleanup or proof that the setup is safe. Story import changes to `@adyen/adyen-web` are example/tooling maintenance, not a new React integration API. The longstanding Card story address-rejection catch still falls through to resolve, so it remains an illustrative rather than production-complete recovery pattern.
+
+### Installments without numeric values
+
+[Installments](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Card/components/CardInput/components/Installments/Installments.tsx) makes `InstallmentOption.values` optional and defaults it to an empty array. Revolving/bonus configuration still renders one-time and supported plan radio choices without inventing numeric installments; the installments radio choice and numeric Select only appear when values exist. Regular-only configuration with no values renders no installment selector. A previously selected plan no longer present in the choices falls back to one-time.
+
+The emitted state uses `{ value: 1, plan: 'revolving' }` or `{ value: 1, plan: 'bonus' }` for those plans. The existing [Card data helper](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Card/components/CardInput/utils.ts) includes these plans in payment data even with value one, but omits a plain one-time value. This is not a new server-side installment eligibility rule. [Card](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Card/Card.tsx) still obtains installments from Session configuration for Sessions integrations; the existing amount and funding-source gates remain. Recheck omitted/empty values and brand/plan switches in the merchant's own integration.
+
+### Drop-in layout and stored-method controls
+
+[DropinComponent.scss](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Dropin/components/DropinComponent.scss) disables scroll anchoring for non-selected methods and keeps details overflow hidden until the expand duration ends; reduced-motion users skip the transition/delay. [PaymentMethodItem styles](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.scss) suppress WebKit tap highlighting. Dual-brand buttons explicitly inherit the page font.
+
+Stored-method confirmation uses shared Button components with new `disable-confirmation` modifiers instead of the former raw-button CSS classes. The remove-method link passes translated text through `label` rather than children. Existing confirmation visibility, disabled-state and action-key propagation handling remain. See [confirmation controls](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Dropin/components/PaymentMethod/DisableOneClickConfirmation.tsx) and [method item](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Dropin/components/PaymentMethod/PaymentMethodItem/PaymentMethodItem.tsx). Review custom selectors targeting the removed confirmation button classes. These CSS/source changes are not browser or assistive-technology test results.
+
+### 3DS2 defensive changes and preserved architecture
+
+[Challenge preparation](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx) checks for a missing challenge `result` before reading its error fields. It also defaults missing completion inputs, defaults challenge size when neither option is set, guards optional callbacks and uses fallback analytics labels. The challenge explicitly receives Core's translation module. [Fingerprint preparation](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/ThreeDS2/components/DeviceFingerprint/PrepareFingerprint3DS2.tsx) gains null-aware state checks and fallback data keys/payment data. [ThreeDS2Form](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/ThreeDS2/components/Form/ThreeDS2Form.tsx) submits and reports submission only when its form reference exists. URL/origin validation remains; the new type guards do not validate every malformed token property. No universal authentication-success or passkey-availability claim follows. See [[adyen-3d-secure]].
+
+The retained Core payment/review methods are unchanged from 6.46.0 apart from the new construction diagnostics elsewhere in the class. Sessions-only `processPayment`, merchant-owned action presentation, Card's one-argument status API and Drop-in's distinct status handling remain version-qualified knowledge. The HTTP change exports `AdyenApiErrorResponse` from its internal module without changing request logic; package exports are unchanged, so this alone does not establish a new top-level import. Its temporary Promise type still permits undefined at runtime on 204/non-fatal paths.
+
+### Dependencies and release-note-only scope
+
+- PayPal JS changes `11.0.0` -> `11.1.0`; Google Pay types change `0.7.12` -> `0.7.13`; Preact remains `10.29.8`. Delegated runtime behavior requires independent package evidence, including [[source-github-paypal-js]].
+- **Release notes, not complete implementation review:** gift-card brand-specific placeholders with per-key fallback, surfaced balance failures and loading recovery; requested-locale amount/date formatting when translations are unavailable; wider Address, wallet, shared-field and validation null-safety; Riverty English consent fallback; SDK-wide button font inheritance. Retained code directly confirms the narrower dual-brand/Drop-in findings above. Do not infer complete wallet/gift-card recipes from excluded implementation or automatically carry older supplements forward as current code.
+- No new cross-company comparison or contradiction was warranted. Earlier disclaimers, review lifecycle, regression/rollback history and the 6.45.1 warning remain. No build, upstream tests, browser, screen-reader, payment or delegated wallet runtime was executed.
+
+### 6.47.0 grounding
+
+> `if (Core.metadata.numberOfInitialisedCheckouts > 1 && !this.options.suppressConfigWarnings) {`
+>
+> [Core, line 109](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/core/core.ts#L109)
+
+> `const installmentValues = installmentOptions?.values ?? [];`
+>
+> [Installments, line 57](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Card/components/CardInput/components/Installments/Installments.tsx#L57)
+
+> `...(hasInstallmentValues ? [{ id: 'installments', name: 'installments.installments' }] : []),`
+>
+> [Installments, line 44](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Card/components/CardInput/components/Installments/Installments.tsx#L44)
+
+> `overflow-anchor: none;`
+>
+> [Drop-in styles, line 59](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/Dropin/components/DropinComponent.scss#L59)
+
+> `if (!challenge.result) {`
+>
+> [Challenge preparation, line 281](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/files/packages/lib/src/components/ThreeDS2/components/Challenge/PrepareChallenge3DS2.tsx#L281)
+
 ## Raw sources
+
+- [6.47.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json)
+- [6.47.0 release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.47.0/2026-10-19/manifest.json)
+- [6.47.0 release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.47.0/2026-10-19/release-notes.md)
+- [6.46.0 to 6.47.0 comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.46.0--6.47.0/comparison.json)
 
 - [6.46.0 snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json)
 - [6.46.0 seven-file supplement](../../../../raw/github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json)

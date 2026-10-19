@@ -2,9 +2,10 @@
 title: "GitHub changelog: Adyen/adyen-web"
 type: source
 date_ingested: 2026-07-26
-date_updated: 2026-10-02
+date_updated: 2026-10-19
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-10-02-d77a5f7/manifest.json"
   - "github/adyen/adyen-web/supplements/2026-10-02-d77a5f7-8f8a28a7/manifest.json"
   - "github/adyen/adyen-web/snapshots/2026-09-22-386715e/manifest.json"
@@ -26,6 +27,20 @@ tags: [adyen, checkout, web-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-web`. Cumulative implementation knowledge belongs in [[source-github-adyen-web]] and the linked immutable snapshots.
+
+## `@adyen/adyen-web@6.47.0` (2026-10-15)
+
+`@adyen/adyen-web@6.46.0` -> `@adyen/adyen-web@6.47.0`; SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`; additive full ingest on 2026-10-19, with the user-approved focused-reading exception overriding the generated delta/high recommendation.
+
+**Changes:** suppressible multiple-checkout warning based on a cumulative construction counter, not simultaneous mounted instances; optional numeric installment values with conditional numeric UI and supported revolving/bonus choices; Drop-in scroll anchoring/overflow/reduced-motion and tap-highlight fixes; stored-method confirmation uses shared buttons/new CSS modifiers and the removal link uses `label`. 3DS2 checks a missing challenge result before inspecting error fields, guards optional callbacks/form references, and supplies fallback size/data keys and Core translations. Existing validation, Sessions installment ownership and review/action responsibilities remain.
+
+**Dependencies and qualified announcements:** PayPal JS 11.0.0 -> 11.1.0; Google Pay types 0.7.12 -> 0.7.13; Preact unchanged at 10.29.8. Gift-card placeholder/balance/loading fixes, requested-locale formatting, wider wallet/shared-field null-safety, Riverty fallback and SDK-wide font inheritance are release-note-qualified, not fully reviewed implementation. No delegated-runtime capability is inferred from a version bump.
+
+**Migration:** recheck intentional multiple checkout construction, omitted/empty installment values and plan switches, custom stored-method CSS, reduced-motion layout and malformed/timeout 3DS paths. Suppressing the warning is not lifecycle cleanup. Card/UIElement status signatures and Sessions-only `processPayment` are not newly changed. Preserve 6.45.1's do-not-use warning as historical evidence.
+
+**Reading and pages:** all 34 changed retained files fully read with affected prior code/dependencies; both 222-file snapshots hash/size verified. The 188 unchanged current files, generated inventories and duplicated comparison were mechanically checked under explicit approval; full-mode effective reading expands to 231 paths. Repository-wide packet dispositions cover 349 changes; package-scoped comparison covers 279 paths. No supplement or complete upstream-tree read is claimed. Updated online-payments and 3D Secure concepts first, then source/changelog, company, provider index and logs; prior release sections and source count preserved. No build, upstream tests, browser, accessibility, payment or delegated runtime execution.
+
+**Evidence:** [snapshot](../../../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json), [release identity](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.47.0/2026-10-19/manifest.json), [release notes](../../../../raw/github/adyen/adyen-web/releases/adyen-web/6.47.0/2026-10-19/release-notes.md), [comparison](../../../../tracking/github/repos/adyen/adyen-web/comparisons/adyen-web/6.46.0--6.47.0/comparison.json). Exact source links and five grounding excerpts: [[source-github-adyen-web]].
 
 ## `@adyen/adyen-web@6.46.0` (2026-09-28)
 

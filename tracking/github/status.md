@@ -1115,6 +1115,31 @@
   To SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
   Comparison: Not applicable
 
+## `github-3a7fb016b04d339b03dd`
+
+- Repository: `adyen/adyen-web`
+- SHA: `6068f43579dfbf50bad7505113b369e4e0d4df54`
+- Collection date: `2026-10-19`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-web/snapshots/2026-10-19-6068f43/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-web/ingest-packets/github-3a7fb016b04d339b03dd/packet.md)
+- Review priority: `high`
+- Required reading: `43` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/adyen-web@6.47.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-web/releases/adyen-web/6.47.0/2026-10-19/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-web/comparisons/adyen-web/6.46.0--6.47.0/comparison.json)
+
 ## `github-3d250b234dd9acbad2a0`
 
 - Repository: `stripe/stripe-js`

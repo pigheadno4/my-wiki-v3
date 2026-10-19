@@ -1528,7 +1528,35 @@ class GitHubIngestPacketTests(unittest.TestCase):
             classified["src/funding/paypal/style.scoped.scss"],
         )
 
-    def test_checkout_classification_does_not_reclassify_nested_repository_files(self):
+    def test_changed_nested_scss_files_are_required_public_source(self):
+        styles = (
+            "packages/lib/src/components/Card/DualBrandSelector.module.scss",
+            "packages/lib/src/components/Dropin/DropinComponent.scss",
+        )
+        prior = {"package.json": self.manifest_content("10.0.0")}
+        current = {"package.json": self.manifest_content("10.1.0")}
+        for path in styles:
+            prior[path] = ".button { color: blue; }\n"
+            current[path] = ".button { color: navy; }\n"
+
+        packet = self.build(
+            prior,
+            current,
+            tuple(UpstreamChange("modified", path, path) for path in styles),
+            from_version="10.0.0",
+            to_version="10.1.0",
+        )
+
+        package = packet.document["packages"][0]
+        rows = {row["path"]: row for row in package["retained_evidence"]["files"]}
+        snapshot_files = PurePosixPath(packet.document["snapshot_manifest"]).parent / "files"
+        for path in styles:
+            self.assertEqual("public-source", rows[path]["classification"])
+            self.assertEqual("modified", rows[path]["status"])
+            self.assertIn(str(snapshot_files / path), packet.document["required_reading"])
+        self.assertEqual([], packet.document["unclassified_changes"])
+
+    def test_unchanged_nested_scss_preserves_historical_packet_classification(self):
         prior = {
             "package.json": self.manifest_content("10.0.0"),
             "examples/.gitignore": "node_modules\n",

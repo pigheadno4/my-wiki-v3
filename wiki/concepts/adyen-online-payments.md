@@ -13,6 +13,12 @@ Adyen Online Payments is Adyen's documentation area for accepting card, wallet, 
 
 At overview level, the integration is divided among a payments server that calls Checkout API endpoints, a client website or app that collects shopper payment details and passes payment information to the server, and a webhook server that receives payment-status and other payments-related activity. The overview recommends API Libraries and Drop-in/Components; it does not state that those choices are mandatory. Library/API updates and the product lifecycle remain qualifications when applying the overview to a specific implementation.
 
+## Web SDK 6.47.0 implementation qualifications
+
+The exact-version repository evidence adds a suppressible warning when more than one Core instance has been constructed. `suppressConfigWarnings: true` suppresses this warning, not every configuration warning. The static counter is cumulative for that loaded Core class; it is not a live mounted-instance count, does not prevent creation, and has no decrement in the retained implementation. Prefer reusing the checkout instance rather than interpreting suppression as lifecycle cleanup. [[source-github-adyen-web]]
+
+Card installments now accept plan configuration without numeric `values`: one-time, revolving and bonus choices can remain while the numeric selector is omitted; regular-only configuration without values renders no installment selector. Existing amount/funding-source gates and Sessions-owned configuration remain. Drop-in changes scroll anchoring, delayed overflow visibility and reduced-motion handling, suppresses mobile tap highlights, and changes stored-method confirmation button classes. These are code/CSS findings, not browser-tested behavior or merchant enablement. Earlier release evidence remains in [[changelog-github-adyen-web]].
+
 ## Sources
 
 - [[source-adyen-docs-industries-peak-season-online-payments]] — 2026-09-15 seasonal online-checkout readiness guide for early changes, local-method consideration and test-market/SCA/webhook/failure-path checks; proposed benefits and tests do not prove live availability or payment outcome.

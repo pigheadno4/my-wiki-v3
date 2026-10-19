@@ -21,6 +21,10 @@ For a qualifying native transaction, issuer requirements determine whether the f
 
 This concept covers the high-level merchant website guide across web and mobile integration choices. It does not replace [[adyen-3ds2-ios-sdk]] or [[adyen-3ds2-android-sdk]], which retain package-qualified native transaction, challenge, lifecycle, security, privacy, and UI evidence. Do not attribute those SDK-specific behaviors or versions to the unversioned website guide, and do not use SDK availability as proof of merchant enablement or payment outcome.
 
+### Web 6.47.0 source-qualified hardening
+
+In `@adyen/adyen-web@6.47.0`, the challenge handler checks for a missing `result` before inspecting its error fields; challenge/fingerprint preparation gains null-aware guards and fallback keys, and the form submits/reports submission only when its form reference exists. The challenge receives the Core translation module explicitly and a default window size when neither size option is supplied. Optional error callbacks are guarded. These changes retain URL/origin checks and the existing Sessions/Advanced ownership; they do not establish successful authentication, a new merchant-facing passkey API, or universal malformed-token acceptance. Some guards distinguish missing/error objects rather than validating every token property. [[source-github-adyen-web]] and [[changelog-github-adyen-web]] preserve exact source and prior versions; no browser, issuer or payment execution was performed.
+
 ## Related
 
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios]] — 2019-modified, 2026-09-15-captured iOS redirect 3D Secure landing page routing to Drop-in or Components guides; navigation only, with no SDK or payment behavior specified.

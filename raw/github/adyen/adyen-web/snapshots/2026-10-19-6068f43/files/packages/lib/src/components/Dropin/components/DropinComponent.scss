@@ -1,0 +1,110 @@
+@use 'styles/index';
+@use 'styles/variable-generator';
+
+.adyen-checkout__dropin {
+    display: flex;
+    flex-direction: column;
+    gap: variable-generator.token(spacer-070);
+}
+
+.adyen-checkout__button--dropin-show-paymentmethods {
+    align-self: start;
+}
+
+.adyen-checkout-payment-methods-container {
+    display: flex;
+    flex-direction: column;
+    gap: variable-generator.token(spacer-070);
+}
+
+.adyen-checkout-payment-methods-list-label {
+    @include index.adyen-checkout-text-subtitle;
+
+    color: variable-generator.token(color-label-primary);
+}
+
+.adyen-checkout__payment-methods-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: variable-generator.token(spacer-070);
+
+    &--loading {
+        user-select: none;
+        pointer-events: none;
+    }
+}
+
+.adyen-checkout__instant-payment-methods-list {
+    $instant-pm-gap: variable-generator.token(spacer-070);
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: $instant-pm-gap;
+
+    li {
+        flex: 1 0 calc(50% - $instant-pm-gap / 2);
+    }
+}
+
+.adyen-checkout__payment-method {
+    display: block;
+
+    &:not(.adyen-checkout__payment-method--selected) {
+        overflow-anchor: none;
+    }
+
+    &__details {
+        overflow: hidden;
+    }
+
+    &__image {
+        width: variable-generator.token(spacer-110);
+        height: 26px;
+
+        &__wrapper {
+            [dir='rtl'] & {
+                margin-right: 0;
+                margin-left: variable-generator.token(spacer-040);
+            }
+        }
+    }
+
+    $pm-details-expand-duration: variable-generator.token(animation-duration-slow);
+
+    .adyen-checkout-pm-details-wrapper {
+        display: grid;
+        grid-template-rows: 0fr;
+        visibility: hidden;
+
+        @media not (prefers-reduced-motion: reduce) {
+            transition: grid-template-rows $pm-details-expand-duration ease;
+        }
+    }
+
+    .adyen-checkout-pm-details-wrapper[aria-hidden='false'] {
+        grid-template-rows: 1fr;
+        visibility: visible;
+
+        .adyen-checkout__payment-method__details {
+            @media (prefers-reduced-motion: reduce) {
+                overflow: visible;
+            }
+
+            @media not (prefers-reduced-motion: reduce) {
+                animation: adyen-checkout-show-overflow 0s $pm-details-expand-duration forwards;
+
+                @keyframes adyen-checkout-show-overflow {
+                    to {
+                        overflow: visible;
+                    }
+                }
+            }
+        }
+    }
+}

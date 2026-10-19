@@ -57,6 +57,7 @@ _SOURCE_SUFFIXES = (
     ".py",
     ".rb",
     ".rs",
+    ".scss",
     ".sh",
     ".swift",
     ".swiftinterface",
@@ -1143,6 +1144,10 @@ def _retained_diff(
         elif old["sha256"] == new["sha256"]:
             status = "unchanged"
             classification = _classify_file(path, new)
+            # Preserve the recorded classification of unchanged nested SCSS in old packets.
+            if (classification == "public-source" and path.lower().endswith(".scss")
+                    and not path.lower().startswith("src/")):
+                classification = "unclassified"
         else:
             status = "modified"
             classification = _classify_file(path, new)
