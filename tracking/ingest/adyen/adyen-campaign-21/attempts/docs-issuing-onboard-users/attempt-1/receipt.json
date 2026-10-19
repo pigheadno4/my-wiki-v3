@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-onboard-users",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Onboard and verify users\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/onboard-users\"\nraw_files:\n  - \"adyen/docs/issuing/onboard-users/2026-09-15.md\"\ntags: [adyen, issuing, onboarding, verification, source-of-funds]\n---\n\n## Overview\n\nAdyen's Issuing onboarding guide contrasts hosted onboarding, where users provide information through an Adyen-hosted page, with API-only onboarding, where the platform builds the UI and submits user data. The legal-entity type and operating country determine the information to collect; Adyen says verification starts automatically after it receives that information. This is a 2026-09-15 capture of a page marked last modified 2023-07-07. It describes routes and requirements for [[adyen-issuing]], not completed verification or current eligibility.\n\n## Key takeaways\n\n- With hosted onboarding, the platform makes Legal Entity Management API and Configuration API calls to create and customize resources for the Adyen-hosted page. Adyen presents it as the recommended, lower-integration-effort collection route. The page can be themed and localized, and includes Terms of Service acceptance if users need it (raw lines 30\u201342). The hosted operating-location list at raw lines 44\u201386 is a dated documentation snapshot, not a universal live-availability promise.\n- Instant hosted bank-account verification is available only for the listed location and legal-entity-type combinations; qualifying users log into online banking and confirm account details, instead of supplying a bank statement (raw lines 88\u2013119). The hosted ID-document autofill, guided organization decision-maker roles, and decision-maker invitation features are each limited to onboarding v3 or v4 (raw lines 127\u2013158); ID autofill supports only documents with Latin characters (raw line 133).\n- With API-only onboarding, the platform builds its own UI and submits collected data through the Legal Entity Management and Configuration APIs. Optional embedded onboarding components can create the relevant resources from user input, avoiding the platform's corresponding create-resource request (raw lines 160\u2013164).\n- Under the page's onboarding v4 requirements for issuing cards, a business line must be created with `service: issuing` and an industry code (raw lines 166\u2013172). Adyen says it must verify the source of funds for card issuing and business accounts and may request evidence depending on funding type (raw lines 174\u2013189). If funds were not processed through Adyen, the prose instructs `sourceOfFunds.adyenProcessedFunds: false` plus `sourceOfFunds.type` and an origin description (raw line 187). If processed through Adyen, it says to set `sourceOfFunds.adyenProcessedFunds: true`. The funding-source table instead says `businessLines.adyenProcessedFunds` for the Adyen-processed row (raw line 193); this field-path discrepancy is unresolved in this snapshot. Consult the raw table for accepted types, document content, and age limits (raw lines 189\u2013280).\n\n## Detail locators\n\n- `Hosted onboarding` and supported operating locations: raw lines 30\u201386. `Requirements` states no additional preparation for an existing Issuing integration at lines 26\u201328; it does not establish one.\n- `Instant bank account verification in hosted onboarding`: raw lines 88\u2013119, with country/entity-type matrix.\n- Hosted v3/v4 ID autofill and decision-maker features: raw lines 127\u2013158.\n- `API-only onboarding`, v4 business line, and source-of-funds instructions: raw lines 160\u2013189.\n- Source-of-funds table: raw lines 191\u2013280; inspect the row and prose together because of the field-path mismatch noted above.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-issuing]] \u2014 Issuing concept.\n- [[source-adyen-docs-issuing-onboard-users-components]] \u2014 optional embedded components.\n- [[source-adyen-docs-issuing-integration-checklist]] \u2014 separate setup and live transition context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/onboard-users/2026-09-15|Adyen Issuing onboard users, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Your users' legal entity type and operating country determine the [required verification information](/issuing/onboard-users/onboarding-steps) you need to collect from your users.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "**Hosted onboarding**: Direct your users to a page hosted by Adyen, where Adyen manages the onboarding flow and user interface (UI).",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "**API-only onboarding**: Build your own UI and collect required user data.",
+      "location": "raw line 22, introduction"
+    },
+    {
+      "text": "You must create business lines to issue cards to your users.",
+      "location": "raw line 172, Onboarding v4 requirements > Business lines"
+    },
+    {
+      "text": "Set `businessLines.adyenProcessedFunds` to **true**",
+      "location": "raw line 193, source-of-funds table, Business earnings processed through Adyen"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-onboard-users-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-issuing-onboard-users-components]]",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-onboard-users]] \u2014 2023-modified, 2026-09-15-captured hosted versus API-only user onboarding guide, with dated location/feature limits and v4 issuing business-line/source-of-funds requirements; prose/table differ on the Adyen-processed-funds field path.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source prose uses `sourceOfFunds.adyenProcessedFunds` (raw line 187), while the table uses `businessLines.adyenProcessedFunds` (raw line 193); do not silently choose one path."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/onboard-users/2026-09-15.md",
+  "raw_sha256": "ce70f87e40776e9dcfcf12c1a3515974192685ac7ba1adf7030286425e7e225b",
+  "status": "candidate_ready"
+}

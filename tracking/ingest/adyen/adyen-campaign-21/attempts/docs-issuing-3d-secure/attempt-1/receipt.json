@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-3d-secure",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Enroll cards in 3D Secure\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/3d-secure\"\nraw_files:\n  - \"adyen/docs/issuing/3d-secure/2026-09-15.md\"\ntags: [adyen, issuing, 3d-secure, authentication, sca]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified and captured 2026-09-15) describes enrolling **Adyen-issued cards** for cardholder authentication during online payments. Adyen acts on the **issuer** side here; the processing merchant's **acquirer** appears separately in the guide's transaction-scope and exemption discussion. 3D Secure authentication is a step before the separate Issuing payment **authorisation** decision, not proof of an authorised or captured payment. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- **Conditional enrollment:** The captured guide says enroll an issued card in 3D Secure when **both** conditions hold: cards are issued within the EEA or UK, and they can be used for online payments within the EEA or UK. It frames the purpose as two-factor cardholder authentication under PSD2/SCA. The Issuing integration's API credential needs the **Bank SCA Webservice Role** to enroll cards. These dated statements are source scope, not a current legal determination for a particular program.\n- **Issuer-side methods:** The guide offers password plus one-time password (OTP), using cardholder mobile phone and password data, or out-of-band (OOB) authentication after registering an eligible cardholder device. An enrolled OTP cardholder is prompted for password and phone OTP; an enrolled OOB cardholder completes the challenge in the platform's secure application with a passcode or biometrics. Enrollment and a completed challenge are different events.\n- **Challenge versus payment outcome:** The page explicitly says not all EEA/UK online payments trigger 3D Secure. When an online payment is out of PSD2 SCA scope or exempt, Adyen does not require the OTP/password or OOB challenge and the payment proceeds to **authorisation**. Skipping a challenge is not an authorisation approval, and a passed authentication does not itself establish capture or settlement.\n- **Scope and exemptions:** The page lists cards issued outside the EEA/UK, an **acquirer** based outside the EEA/UK, merchant-initiated recurring/subscription transactions (**excluding the initial setup transaction**), and MOTO as out of scope. It separately lists possible in-scope exemptions: low value, secure corporate virtual-card payment, and low-risk transaction risk analysis. Adyen may apply exemptions or the acquirer may request them; the guide directs readers to their Adyen contact to check applicability. Its EUR 30 / cumulative EUR 100 low-value thresholds are part of this dated snapshot, not a universal live rule.\n\n## Detail locators\n\n- Dated issuer-card enrollment conditions and SCA factor framing: pinned raw lines 19\u201332.\n- Issuing integration role and OTP versus OOB enrollment methods: pinned raw lines 34\u201346.\n- Challenge-free payments proceeding to separate authorisation: pinned raw lines 48\u201352.\n- Out-of-scope issuer/acquirer geography, MIT initial-transaction exception, and MOTO: pinned raw lines 54\u201361.\n- Conditional exemptions and low-value thresholds: pinned raw lines 63\u201369.\n\n## Related\n\n- [[source-adyen-docs-issuing-3d-secure-password-otp]] \u2014 card authentication data, OTP delivery and authentication outcomes.\n- [[source-adyen-docs-issuing-payment-stages]] \u2014 later authorisation reservation and capture/debit stages.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/3d-secure/2026-09-15|Adyen Issuing 3D Secure enrollment, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If the following two statements are true, then you must enroll your card in 3D Secure to direct the transactions for authentication with Adyen.\n\n1. You are issuing cards within the EEA or the UK.\n2. The cards that you issue can be used for online payments within the EEA or the UK.",
+      "location": "raw/adyen/docs/issuing/3d-secure/2026-09-15.md:29-32"
+    },
+    {
+      "text": "| **API credential roles** | To enroll cards in 3D Secure, make sure your API credential has the **Bank SCA Webservice Role**. For more information, refer to [Roles for API credentials](/issuing/manage-access/webservice-roles). |",
+      "location": "raw/adyen/docs/issuing/3d-secure/2026-09-15.md:39"
+    },
+    {
+      "text": "Not all online payments made within the EEA and the UK trigger 3D Secure authentication. This is because some online payments are out of scope or exempted from PSD2 SCA. For these payments, Adyen doesn't require the cardholder to provide an OTP and password or perform out-of-band authentication. The payment proceeds to [authorisation](/issuing/authorisation).",
+      "location": "raw/adyen/docs/issuing/3d-secure/2026-09-15.md:50"
+    },
+    {
+      "text": "* Transactions with the acquirer based outside the EEA and the UK.\n* Merchant-initiated transactions (MIT), used for recurring and subscription transactions. This does not apply to the initial transaction where the merchants set up the recurring or subscription contracts.",
+      "location": "raw/adyen/docs/issuing/3d-secure/2026-09-15.md:59-60"
+    },
+    {
+      "text": "If a payment is within the scope of PSD2 regulations, it can still be exempted from SCA. Exemptions can be applied by Adyen or requested by the acquirer. SCA is not required if a transaction is considered to be:",
+      "location": "raw/adyen/docs/issuing/3d-secure/2026-09-15.md:65"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-3ds-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-3d-secure]] \u2014 2026-09-15 Issuing 3D Secure card-enrollment guide for conditional EEA/UK scope, OTP/OOB issuer authentication, acquirer-related exemptions and later authorisation boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/3d-secure/2026-09-15.md",
+  "raw_sha256": "e61a693b1808f2ede73fb42364aaa0187e58aacc074d020c1893b5cb1ad699ad",
+  "status": "candidate_ready"
+}

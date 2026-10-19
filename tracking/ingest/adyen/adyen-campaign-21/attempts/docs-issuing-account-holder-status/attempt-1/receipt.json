@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-issuing-account-holder-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen account-holder status and inheritance\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/account-holder-status\"\nraw_files:\n  - \"adyen/docs/issuing/account-holder-status/2026-09-15.md\"\ntags: [adyen, issuing, account-holders, status, balance-platform]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen page defines account-holder status and describes Adyen-initiated suspensions/closures, related-resource and shared-legal-entity effects, and **split settlement** routing when account holders cannot receive funds. The payment section concerns supplied split instructions after settlement; it does not establish authorization behavior for an issued-card purchase. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- After onboarding and verification, an account holder is `active`. The status table says account holders and balance accounts start active; `active` can move to `suspended` or `closed`, `suspended` to `active` or `closed`, and `closed` permanently disables the resource/capabilities. It also lists `inactive` for payment instruments. See raw lines 19-36.\n- **Cross-page conflict:** this page calls `inactive` the initial payment-instrument status and marks it non-editable (raw line 36). The 2026-09-15-captured [[source-adyen-docs-issuing-create-cards]] says cards default `active` and can be explicitly created `inactive` (its raw lines 53, 610), while [[source-adyen-docs-issuing-manage-cards]] describes activating inactive cards. Treat initial card status and the table's `Editable` cell as unresolved across pages; do not use this table to deny activation.\n- Adyen may suspend or close an account holder for suspected risk, fraud or terms issues. Its action can be seen through a Customer Area status reason or `balancePlatform.accountHolder.updated` webhook. Only Adyen can reverse an Adyen-initiated suspension. See raw lines 40-49.\n- When Adyen suspends an account holder, related balance accounts become suspended; when it closes one, related balance accounts and payment instruments close. Depending on the reason, capability effects can inherit at the **legal-entity** level to other account holders sharing that entity. The reason/capability/inheritance tables are general guidance, with case-by-case variation, not universal rules. See raw lines 51-85.\n- The page says status does not directly stop payment processing where the integration supplies split information after settlement. A split to a suspended holder may settle in that holder's balance account **if pay-in remains available**; if pay-in is blocked, or the holder is closed, the split is directed to the liable account holder's Reserved Incorrect Splits Account. This is documented routing, not evidence of a specific settlement. See raw lines 87-93.\n\n## Detail locators\n\n- Status values and editable transitions: raw lines 25-38.\n- Adyen action signals, resource/legal-entity inheritance and reason tables: raw lines 40-85.\n- Split-fund routing after settlement: raw lines 87-93.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[source-adyen-docs-issuing-manage-account-holders]] \u2014 suspend/reactivate/close procedures.\n- [[source-adyen-docs-issuing-create-cards]] \u2014 conflicting card initial-status description.\n- [[source-adyen-docs-issuing-manage-cards]] \u2014 card activation procedure.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/account-holder-status/2026-09-15|Adyen Account holder status, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This is the initial status after creating a payment instrument.",
+      "location": "raw/adyen/docs/issuing/account-holder-status/2026-09-15.md:36, under ## Status definitions"
+    },
+    {
+      "text": "Adyen-initiated account holder suspensions can only be reversed by Adyen.",
+      "location": "raw/adyen/docs/issuing/account-holder-status/2026-09-15.md:49, under ## Adyen-initiated status updates"
+    },
+    {
+      "text": "When Adyen closes an account holder, the related balance accounts and payment instruments get closed.",
+      "location": "raw/adyen/docs/issuing/account-holder-status/2026-09-15.md:56, under ### Status inheritance"
+    },
+    {
+      "text": "The changes in the allowed capabilities and the inheritance level can differ on a case-by-case basis.",
+      "location": "raw/adyen/docs/issuing/account-holder-status/2026-09-15.md:69, under ### Status reasons"
+    },
+    {
+      "text": "If the funds are split to an account holder that is **suspended**, but the pay-in capabilities are also blocked, the split amount will settle in your Liable Account holder's \"Reserved Incorrect Splits Account\" balance account.",
+      "location": "raw/adyen/docs/issuing/account-holder-status/2026-09-15.md:92, under ## Payment processing"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "issuing-account-holder-status-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-account-holder-status]] \u2014 2026-09-15-captured account-holder status, Adyen suspension/closure inheritance and split routing; its inactive-card table conflicts with create/manage-cards guidance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Raw line 36 says inactive is the initial payment-instrument status and marks it non-editable; the Create cards raw says cards default active, and Manage cards describes activation. Preserve as unresolved cross-page conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/account-holder-status/2026-09-15.md",
+  "raw_sha256": "a07a88f267dcc22f588a41a3a7670d58db3eab0c9b419bf13eafca25b199ceec",
+  "status": "candidate_ready"
+}

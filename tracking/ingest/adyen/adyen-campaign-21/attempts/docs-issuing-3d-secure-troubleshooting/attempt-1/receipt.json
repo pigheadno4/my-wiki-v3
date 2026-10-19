@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-3d-secure-troubleshooting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: troubleshoot 3D Secure failures\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/3d-secure/troubleshooting\"\nraw_files:\n  - \"adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md\"\ntags: [adyen, issuing, 3d-secure, troubleshooting]\n---\n\n## Overview\n\nThis Issuing troubleshooting page (last modified 2024-07-04; captured 2026-09-15) describes failed 3D Secure authentication for online payments made with Adyen-issued cards. It separates an authentication failure before authorisation, a temporary card block after repeated failures, and an issuer soft decline when a processing merchant skips required SCA. The processing merchant controls whether to retry a soft-declined payment with 3D Secure. This is issuer-side troubleshooting, not an acquiring checkout flow or proof of a live payment outcome. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The guide requires an Issuing integration. Viewing Customer Area **Payments** and **Transfers** lists requires the **Balance platform base role**. It instructs subscribing to `balancePlatform.transfer.created` and `balancePlatform.transfer.updated` for soft-decline updates.\n- For failed 3D Secure authentication, this page says the authorisation is not sent to Adyen, so no relayed authorisation or Payments-list entry appears; it also broadly says \u201cno webhook.\u201d Its remedy is to check 3D Secure enrollment before retrying and contact Adyen Support if the issue persists. **Cross-source warning:** [[source-adyen-docs-issuing-3d-secure-password-otp]] says `balancePlatform.authentication.created` is sent regardless of authentication outcome, including a rejected example. The troubleshooting page's broad no-webhook statement therefore must not be used to rule out that authentication-specific event; distinguish it from transfer/authorisation events.\n- The snapshot says Adyen temporarily blocks 3D Secure authentication after **five consecutive failed attempts** and automatically lifts the block after **one hour**. For earlier unblocking, contact Support, which may ask for cardholder ownership information. These are dated operational claims; the page attributes the policy to PSD2 but does not establish current legal requirements.\n- If the **processing merchant** skips 3D Secure for a payment requiring SCA, the page says Adyen declines by default. Issuing programs may request soft declines through an Adyen contact. When enabled, Adyen sends a soft decline asking the processing merchant to retry with 3D Secure; merchant retry is its own decision. For this failed authorisation, `balancePlatform.transfer.created` includes a `validationFacts` entry with `type: psd2SoftDeclineCheck` and `result: invalid`; `balancePlatform.transfer.updated` follows status changes, and the attempt can appear in **Transfers**.\n\n## Detail locators\n\n- Raw lines 19\u201329 identify scope, Customer Area role and transfer-webhook subscriptions.\n- Raw lines 31\u201335 give the pre-authorisation failure description and enrollment/Support remedy.\n- Raw lines 37\u201344 give repeated-failure block threshold, one-hour release and faster Support path.\n- Raw lines 46\u201356 cover skipped SCA, optional soft declines, merchant retry ownership, validation fact, transfer webhooks and Transfers-list visibility.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing program context.\n- [[adyen]] \u2014 provider context.\n- [[source-adyen-docs-issuing-3d-secure-password-otp]] \u2014 authentication outcome webhook evidence and conflict.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15|Adyen Issuing 3D Secure troubleshooting, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This applies to online payments that a cardholder makes with your Adyen-issued card.",
+      "location": "raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md:19"
+    },
+    {
+      "text": "You do not receive a relayed authorization or a webhook.",
+      "location": "raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md:33"
+    },
+    {
+      "text": "Adyen temporarily blocks a card from performing 3D Secure authentication after *five consecutive failed authentication attempts*.",
+      "location": "raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md:39"
+    },
+    {
+      "text": "It is up to the processing merchant to retry the payment.",
+      "location": "raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md:50"
+    },
+    {
+      "text": "Look for the entry with `type` **psd2SoftDeclineCheck** and `result` **invalid**.",
+      "location": "raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md:52"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-3ds-troubleshooting-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-3d-secure-troubleshooting]] \u2014 2024-modified, 2026-09-15-captured Issuing 3D Secure failure, card-block and soft-decline guide; its broad no-webhook statement conflicts with the OTP guide's authentication-outcome webhook.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Troubleshooting raw line 33 says no webhook after failed authentication, whereas the Issuing OTP raw line 945 says balancePlatform.authentication.created is sent regardless of outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/3d-secure/troubleshooting/2026-09-15.md",
+  "raw_sha256": "6daa5efd7d9f7c341ab79869733cea8fc26ed5c18b0faeb0a3c87b10b7421b7f",
+  "status": "candidate_ready"
+}

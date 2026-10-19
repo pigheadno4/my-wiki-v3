@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-authorisation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing payment authorisation\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/authorisation\"\nraw_files:\n  - \"adyen/docs/issuing/authorisation/2026-09-15.md\"\ntags: [adyen, issuing, authorisation, transaction-rules, relayed-authorisation]\n---\n\n## Overview\n\nAdyen's Issuing authorization guide (last modified 2023-08-14, captured 2026-09-15) describes how an Adyen-issued-card payment attempt reaches an initial approved or refused decision. Adyen performs mandatory issuer validations and internal transaction rules; after successful internal checks, the platform can use transaction rules, relayed authorisation, or both for custom verification. The guide separately explains that later scheme advice can supersede the initial decision and change the final status and reserved balance. This is authorization-stage evidence, not evidence of capture or settlement. [[adyen-issuing]] [[adyen]]\n\n## Key takeaways\n\n- **Issuer checks first:** Adyen must authorize each issued-card payment and checks card/transaction legitimacy (examples: expiry, CVC, available balance) plus internal regulatory transaction rules (examples: missing payment-instrument capabilities, contactless limit and ecommerce CVC2). A failed validation refuses the attempt before custom verification. See raw lines 19\u201337 and 63\u201367.\n- **Platform controls:** If internal checks succeed, configured transaction rules can automatically approve/decline based on conditions such as amount, transaction count or payment type; the rules apply to each payment attempt. Relayed authorisation sends each attempt to the platform server for its own decision. The server has **up to 2000 ms** to respond; without a response in that period, Adyen applies the configured default fallback. See raw lines 39\u201355.\n- **Initial flow order:** Payment request \u2192 Adyen validations \u2192 configured transaction rules (refuse if noncompliant) \u2192 configured relayed-authorisation webhook (server response or fallback). If relayed authorisation is not configured after successful earlier checks, the initial flow approves. The flow diagram's endpoint is initial approval/refusal. See raw lines 57\u201371.\n- **Later scheme advice:** A scheme may evaluate a payment after Adyen's initial flow, for example when real-time completion was not possible. If the scheme decision differs, Adyen defers to it; scheme advice sets the final payment status and reserved-balance change and produces a `balancePlatform.transfer.updated` webhook with a new booking event. Do not treat the initial response alone as final in that case. See raw lines 73\u201379.\n\n## Detail locators\n\n- Internal validation and regulatory-rule examples: raw lines 23\u201337.\n- Automatic rules, relayed decision time budget and fallback: raw lines 39\u201355.\n- Numbered initial payment flow: raw lines 57\u201371.\n- Post-initial scheme precedence and update webhook: raw lines 73\u201379.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept.\n- [[source-adyen-docs-issuing-authorisation-scheme-advice]] \u2014 detailed scheme-advice webhook and reconciliation behavior.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/authorisation/2026-09-15|Payment authorisation, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For security and compliance reasons, Adyen must authorise any payment made with an Adyen-issued card.",
+      "location": "raw/adyen/docs/issuing/authorisation/2026-09-15.md:19"
+    },
+    {
+      "text": "If Adyen's internal checks are successful, then we perform the custom verifications created by you.",
+      "location": "raw/adyen/docs/issuing/authorisation/2026-09-15.md:41"
+    },
+    {
+      "text": "Your server has up to 2000 milliseconds to respond.",
+      "location": "raw/adyen/docs/issuing/authorisation/2026-09-15.md:55"
+    },
+    {
+      "text": "If we do not receive a response within this timeframe, we apply your [default fallback](/issuing/authorisation/relayed-authorisation#fallback).",
+      "location": "raw/adyen/docs/issuing/authorisation/2026-09-15.md:55"
+    },
+    {
+      "text": "If the scheme's advice differs from Adyen's initial authorization decision, Adyen always defers to the scheme's advice.",
+      "location": "raw/adyen/docs/issuing/authorisation/2026-09-15.md:77"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-authorisation-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-authorisation]] \u2014 2023-modified, 2026-09-15-captured Issuing authorization flow: mandatory Adyen checks, optional platform transaction rules and relayed decisions with a 2000 ms response window/fallback, followed by possible scheme-advice precedence.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Initial approval or refusal may be superseded by later scheme advice; authorization does not establish capture or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/authorisation/2026-09-15.md",
+  "raw_sha256": "c96eb64c07f4e3a2cc2a47ff5bccf1a0924660a2b95e365ae4a8643a90a1e4ab",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-payment-stages",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Payment stages\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/payment-stages\"\nraw_files:\n  - \"adyen/docs/issuing/payment-stages/2026-09-15.md\"\ntags: [adyen, issuing, card-payments, authorisation, capture, webhooks]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified 2019-12-06; captured 2026-09-15) describes stages of an issued-card payment and their effect on the cardholder's balance account. The **processing merchant** sends card-payment and later capture requests; Adyen is the card issuer and sends balance-platform transfer webhooks to the platform. A payment event or example does not prove a particular payment was authorised, captured, refunded or settled. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- **Request and authorisation:** On receiving the processing merchant's payment request, Adyen sends `balancePlatform.transfer.created` with request details. The authorisation decision uses the platform's relayed decision, transaction rules and other validations; `balancePlatform.transfer.updated` reports the request and result. An authorised amount is **reserved**, not yet deducted from the balance account. The merchant can then capture, cancel, or let the authorisation expire.\n- **Changes to a hold:** A merchant may adjust the authorised amount. If an authorisation expires without capture, or is cancelled before capture, the reserved amount returns to available balance; the page says expiry varies by scheme and authorisation type and is seven days in most cases. These changes generate transfer-updated webhooks. A card scheme may later authorise or refuse after Adyen's initial decision; if the advice differs, Adyen defers to the scheme, which determines final payment status and reserved-balance changes, with a new transfer-updated booking event.\n- **Capture and money flow:** At capture the processing merchant confirms the transaction and asks for funds. Adyen then deducts the captured amount from the cardholder's balance account and sends it to the processing merchant, reporting the event through `balancePlatform.transfer.updated`. Full capture is the default; partial, multiple partial, overcapture and forced capture are also described. A single partial capture can leave a remainder released after the expiry timeframe, while multiple partial captures can use an authorisation for separate later captures. These are possible processing patterns, not a promise that every merchant uses them.\n- **Forced capture liability:** A forced capture has no valid authorisation because it was declined or never received. The card scheme sends the unmatched capture; the guide says Adyen cannot decline it and must debit funds. Its transfer webhook marks `categoryData.IssuedCard.authorisationType` as `syntheticAuthorisation`. Because authorisation's balance check was skipped, insufficient funds can produce a **negative balance**. If the linked balance account is inactive or blocked, Adyen debits the **platform's liable balance account**. A cardholder or platform can dispute an illegitimate forced capture, but a chargeback depends on authorisation requirements, transaction type and regional rules.\n- **Refund signal:** When the processing merchant initiates a refund, a transfer-updated webhook reports the **refund request**. The page does not say that this webhook alone confirms money has been credited back.\n\n## Detail locators\n\n- Actors, balance effect, Customer Area Transfers view and webhook route: pinned raw lines 17\u201328.\n- Request, authorisation hold, adjustment, expiration, cancellation and scheme advice: pinned raw lines 30\u201364.\n- Capture, partial/multiple partial, overcapture and examples: pinned raw lines 66\u2013113.\n- Forced capture triggers, synthetic authorisation marker, dispute qualification, negative balance and liable-account debit: pinned raw lines 114\u2013134.\n- Refund request signal and linked next steps: pinned raw lines 136\u2013160.\n\n## Related\n\n- [[source-adyen-docs-issuing-payment-stages-check-details-payment]] \u2014 payment/transfer lookup and status-history routes.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 Issuing authorisation-decision context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/payment-stages/2026-09-15|Adyen Issuing payment stages, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Each payment on the Balance Platform goes through a series of events. Most of the events are triggered by the processing merchant, the business that processed the card payment. These events then result in funds being deducted from or added to the balance account. We inform you of these events through:",
+      "location": "raw/adyen/docs/issuing/payment-stages/2026-09-15.md:19"
+    },
+    {
+      "text": "When the payment is authorised, the payment amount is reserved but not yet deducted from the balance account. When you check the balance account details, the payment amount is reflected as a [reserved](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/balanceAccounts/_id_#responses-200-balances-reserved) amount.",
+      "location": "raw/adyen/docs/issuing/payment-stages/2026-09-15.md:38"
+    },
+    {
+      "text": "If the scheme's advice differs from Adyen's initial authorization decision, Adyen always defers to the scheme's advice. The scheme's decision determines the final status of the payment and any changes to the reserved balance.",
+      "location": "raw/adyen/docs/issuing/payment-stages/2026-09-15.md:62"
+    },
+    {
+      "text": "Adyen cannot decline forced captures and must process the transaction and deduct the funds.",
+      "location": "raw/adyen/docs/issuing/payment-stages/2026-09-15.md:122"
+    },
+    {
+      "text": "* If the forced capture is linked to an inactive or blocked balance account, Adyen debits the amount from the liable balance account of your platform.",
+      "location": "raw/adyen/docs/issuing/payment-stages/2026-09-15.md:130"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-payment-stages-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-payment-stages]] \u2014 2019-modified, 2026-09-15-captured Issuing payment-stage guide for reserved authorisation, merchant capture, scheme advice, forced-capture liabilities and refund-request webhooks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/payment-stages/2026-09-15.md",
+  "raw_sha256": "a89120c8a29217521f9cc6f479b207f72bb846c827b27b5e6051725a0f47210f",
+  "status": "candidate_ready"
+}

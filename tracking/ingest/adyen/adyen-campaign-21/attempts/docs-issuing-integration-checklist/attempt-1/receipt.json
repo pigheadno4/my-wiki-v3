@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-issuing-integration-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing integration and go-live checklist\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/integration-checklist\"\nraw_files:\n  - \"adyen/docs/issuing/integration-checklist/2026-09-15.md\"\ntags: [adyen, issuing, integration, cards, go-live]\n---\n\n## Overview\n\nThis Adyen Issuing checklist, captured 2026-09-15, guides an integration from test credentials and account-holder onboarding through cards, funding, authorization decisions, test payments, webhooks, reports, and a separate live-account transition. It is a procedure and test example, not evidence that an account or card is currently eligible or that a payment has completed. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Before development, Adyen says to design the implementation and obtain an Issuing test account and API credential from an Adyen contact. The Balance Platform credential is used for Configuration and Transfers APIs; a distinct Scope.Company credential is used for Legal Entity Management. An online payments API credential is separately requested for simulated test payments. See raw lines 25-37 and 668-674.\n- Before issuing cards, account holders undergo verification against their legal entities; the required information depends on where the account holder operates. Create and link legal entities, account holders, and balance accounts. Transfer instruments matter for use cases moving funds between balance and bank accounts, and additional documents may be required. See raw lines 583-603.\n- The checklist covers virtual or physical cards. Successful *test* virtual-card creation yields card details for a test payment. It describes suspending a used single-use card as temporary, while closing a card is permanent and irreversible. A balance account needs funds for test payments; an Adyen contact helps fund the liable balance account in test, then the platform may transfer funds to other balance accounts according to its account structure. See raw lines 614-640.\n- For authorization decisions, relayed authorisation can return allow/decline through a separate webhook endpoint within 2000 ms; configurable fallback applies when Adyen receives no valid response. Transaction rules can apply to a card, group, or balance platform; if combined with relayed authorisation, rules run first. The sample Checkout `/payments` call uses a distinct online payments credential in test, and its response depends on the approval/decline decision. See raw lines 642-674 and 1007.\n- Regular asynchronous webhooks cover payments, captures, refunds and fund transfers, and use a separate endpoint from relayed authorisation. Programmatic report download needs a report credential and the `balancePlatform.report.created` notification before authenticated GET. See raw lines 1009-1031.\n- Live issuing requires applying for a live account. Test account configuration does not replicate automatically: account holders, balance accounts, transaction rules and payment instrument groups must be recreated where applicable. Switch to live credentials/endpoints and run the listed end-to-end checks, including both approved and declined payment paths, webhooks, verification errors and reports. These are prescribed checks, not evidence they passed. See raw lines 1033-1077.\n\n## Detail locators\n\n- Credential verification requests, sample responses, and language-specific SDK examples: raw lines 30-582.\n- Test Checkout v68 request body and SDK examples: raw lines 668-1007.\n- Live Balance Platform endpoint example and checklist: raw lines 1046-1077.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[source-adyen-docs-issuing-get-started]] \u2014 design, test account and live application context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/integration-checklist/2026-09-15|Adyen integration and go-live checklist, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you can start issuing cards, your account holders need to go through verification checks. Adyen performs the checks against the legal entity of the account holder.",
+      "location": "raw/adyen/docs/issuing/integration-checklist/2026-09-15.md:585, under ## Onboard legal entities"
+    },
+    {
+      "text": "Closing a card is a permanent action and cannot be reversed.",
+      "location": "raw/adyen/docs/issuing/integration-checklist/2026-09-15.md:628, under ## Manage card status"
+    },
+    {
+      "text": "When combined, transaction rules are applied first, serving as a filtering mechanism for payment attempts before sending you the relayed authorisation webhook.",
+      "location": "raw/adyen/docs/issuing/integration-checklist/2026-09-15.md:646, under ## Approve or decline payments"
+    },
+    {
+      "text": "You can define default fallback logic for Adyen to apply to the payment attempt in cases when Adyen does not receive a response, or receives an invalid response, from you.",
+      "location": "raw/adyen/docs/issuing/integration-checklist/2026-09-15.md:657, under ### Use relayed authorisation"
+    },
+    {
+      "text": "The setup from your test Adyen Issuing account is *not* replicated to your live Adyen Issuing account.",
+      "location": "raw/adyen/docs/issuing/integration-checklist/2026-09-15.md:1039, under ## Going live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "issuing-checklist-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-integration-checklist]] \u2014 Adyen Issuing integration and go-live checklist (captured 2026-09-15): test setup, account-holder verification, card/payment checks and separate live transition.",
+        "quote_indexes": [
+          0,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/integration-checklist/2026-09-15.md",
+  "raw_sha256": "558a95953f0c3d37eb7d82b19611c14a1ba29a0e231b8fafab6d112da8e5e5e4",
+  "status": "candidate_ready"
+}

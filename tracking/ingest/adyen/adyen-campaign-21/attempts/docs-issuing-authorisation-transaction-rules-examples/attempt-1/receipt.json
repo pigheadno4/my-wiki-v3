@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-issuing-authorisation-transaction-rules-examples",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Transaction rule examples\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/authorisation/transaction-rules/examples\"\nraw_files:\n  - \"adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md\"\ntags: [adyen, issuing, authorisation, transaction-rules, examples]\n---\n\n## Overview\n\nThis Adyen Issuing example collection (last modified 2022-04-04; captured 2026-09-15) shows illustrative JSON transaction rules for card-payment channel, country/MCC, amount/count, international, ATM and scoring conditions. The examples illustrate `blockList` or `velocity` rules and `hardBlock` or `scoreBased` outcomes at per-transaction, rolling or sliding intervals. They are examples of configured criteria, not proof that a rule was created, active, evaluated, or that a payment was authorized, declined, captured or settled. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The processing-type blocklist examples use `noneMatch: [\"pos\"]` to decline an ecommerce payment while allowing POS, and `anyMatch: [\"pos\"]` for the inverse POS block (raw lines 21-67). The US/MCC example combines `countries` `anyMatch: [\"US\"]` with `mccs` `noneMatch` for grocery, restaurant and fast-food MCCs to illustrate blocking other US categories (raw lines 69-97). Do not derive general multi-condition rule-evaluation semantics from these examples: the linked general and creation guides disagree on whether all versus any specified condition triggers a rule.\n- Velocity examples show a per-transaction USD 100 amount threshold (`greaterThan` 10000 minor units), a one-month transaction count threshold of 50 resetting on day 15, and two distinct rolling rules for US/Canada fuel-related MCCs: monthly USD 500 amount and monthly count 10. The guide says meeting either fuel rule leads to a decline (raw lines 99-229). Exact IDs, MCCs, amounts and dates are example inputs.\n- Entity scope matters: the international daily EUR 50 example targets one `PaymentInstrument`; a last-12-hours EUR 2000 example targets the whole `BalancePlatform`; a daily EUR 1000 example targets all payment instruments in one `BalanceAccount`; and the two-week EUR 2000 ATM example targets a balance platform (raw lines 231-396). The weekly-limit heading for that ATM section should be read with its explicit **every two weeks** prose and `duration: 2 weeks`.\n- Two `scoreBased` examples target a payment instrument: a time-of-day condition with `score: 30`, and token processing with `score: -25` (raw lines 398-461). The prose says **11 AM\u20136 PM Europe/Amsterdam**, while the JSON time window is **10:00\u201317:00 +01:00** (raw lines 404, 418-428); the source does not reconcile these times. Do not convert this example into an exact local-hour implementation without checking the intended timezone/offset behavior.\n\n## Example and evidence cautions\n\n- The balance-account daily-limit JSON appears structurally incomplete around closing braces (raw lines 323-353). The ATM example omits `outcomeType` even though the heading/prose describes a decline (raw lines 355-396). Treat those snippets as illustrative, not directly deployable validated payloads.\n- For actual rule creation, allowed condition combinations, hierarchy and outcomes, consult [[source-adyen-docs-issuing-authorisation-transaction-rules]] and [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]]. Those two captured guides conflict over all-versus-any condition matching; this example page does not resolve the conflict.\n\n## Detail locators\n\n- Channel and country/MCC examples: raw lines 21-97. Velocity amount/count and combined fuel rules: raw lines 99-229. Scoped international, balance-platform, balance-account and ATM limit examples: raw lines 231-396. Scoring examples: raw lines 398-461.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-issuing]] \u2014 Issuing concept.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 rule behavior and scope.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 creation and management.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15|2026-09-15 capture of Adyen Issuing transaction-rule examples]]\n",
+  "quotes": [
+    {
+      "text": "On this page we show use cases and examples of how to create the corresponding transaction rules.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md:19"
+    },
+    {
+      "text": "When an ecommerce payment is processed, the transaction meets the condition and is therefore declined.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md:47"
+    },
+    {
+      "text": "To implement this use case, you need to create two rules: one for the maximum amount and another one for the maximum number of payments.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md:161"
+    },
+    {
+      "text": "When a payment meets the conditions of either of the two rules, the payment is declined.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md:229"
+    },
+    {
+      "text": "Increase the score by 30 when a transaction happens between 11AM to 6PM Europe/Amsterdam time.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md:404"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-transaction-rules-examples-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-authorisation-transaction-rules-examples]] \u2014 2022-modified, 2026-09-15-captured illustrative Issuing rule payloads for channel, MCC/country, velocity, scoped limits and scores; time-window prose/JSON differ and some payloads are incomplete.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Scoring time prose says 11:00-18:00 Europe/Amsterdam while example JSON says 10:00-17:00 +01:00.",
+          "Balance-account daily-limit JSON is structurally incomplete, and the ATM decline example omits outcomeType.",
+          "General and creation guides disagree on all-versus-any condition matching; examples do not resolve it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/authorisation/transaction-rules/examples/2026-09-15.md",
+  "raw_sha256": "cb8c52291c4c270afea4ea4edd7214596fe0e60804188f695c3ef8e8e18dbf2c",
+  "status": "candidate_ready"
+}

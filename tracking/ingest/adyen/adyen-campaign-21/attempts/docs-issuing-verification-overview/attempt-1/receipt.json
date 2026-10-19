@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-verification-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Verification process\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/verification-overview\"\nraw_files:\n  - \"adyen/docs/issuing/verification-overview/2026-09-15.md\"\ntags: [adyen, issuing, verification, capabilities]\n---\n\n## Overview\n\nThis Adyen Issuing verification overview (last modified 2023-12-29; captured 2026-09-15) describes when Adyen checks cardholders and how verification status governs requested capabilities. It says cardholders must be verified before paying out their funds and describes asynchronous checks, re-verification after data changes, and conditional deadlines. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Default capabilities set during integration design are requested when a new cardholder's account holder is created; a non-default capability must be requested separately and may require more checks. Adyen's verification decision governs whether the cardholder can use the capability. See raw lines 19\u201338.\n- A change to cardholder data after capabilities are allowed triggers re-verification. If updated data fails, Adyen may set a deadline; the cardholder may continue using the affected capabilities while that deadline is active, but unresolved issues can disallow them. The page says `balancePlatform.accountHolder.updated` is triggered only for capability-related account-holder changes; legal-entity data changes do not themselves trigger that webhook. See raw lines 42\u201350.\n- **Version and timing boundary:** Verification deadlines are stated to be available only in Legal Entity Management API v3/v4. The captured page gives standard 30-day periods for `sendToBalanceAccount`, `sendToTransferInstrument`, and `receiveFromTransferInstrument`; it gives 60-day periods for `receiveFromBalanceAccount`, card issuance/use, restricted-country/industry card use, and ATM withdrawal capabilities. Adyen says monitoring and subsequent checks can shorten or remove a standard deadline. These are dated page descriptions, not a promise of a specific user's deadline or current eligibility. See raw lines 52\u201380.\n- In the illustrated workflow, Adyen checks asynchronously after account-holder creation, additional capability requests, or data changes. Verification errors may appear while overall capability status remains `pending`; the page recommends waiting until checks complete and status becomes `invalid` before contacting Adyen. A `rejected` verification status means the capability is not allowed. If a change-induced issue remains unresolved by the deadline, or new data fails checks, capabilities are disallowed. See raw lines 136\u2013168.\n- The sample account-holder response illustrates an `invalid` verification status with `allowed`/`enabled`/`requested` values, deadline entries and errors; it is an example rather than a live verification result. Read the exact example at raw lines 82\u2013132.\n\n## Detail locators\n\n- Verification triggers, default/additional capabilities, data changes and webhook distinction: raw lines 28\u201350.\n- Deadline API-version qualification, standard capability periods, variability and lookup: raw lines 52\u201380.\n- Illustrative account-holder response: raw lines 82\u2013132.\n- Initial request and data-change workflow, pending/invalid/rejected handling: raw lines 136\u2013168.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main concept.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/verification-overview/2026-09-15|Verification process, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen must verify the cardholders in your issuing integration before you can pay out their funds.",
+      "location": "raw/adyen/docs/issuing/verification-overview/2026-09-15.md:19"
+    },
+    {
+      "text": "The cardholder is allowed to continue using the capabilities while the verification deadline is active.",
+      "location": "raw/adyen/docs/issuing/verification-overview/2026-09-15.md:46"
+    },
+    {
+      "text": "Data changes to the legal entity of the account holder do not trigger webhooks.",
+      "location": "raw/adyen/docs/issuing/verification-overview/2026-09-15.md:50"
+    },
+    {
+      "text": "Verification deadlines are only available in v3 and v4",
+      "location": "raw/adyen/docs/issuing/verification-overview/2026-09-15.md:54"
+    },
+    {
+      "text": "the capabilities are disallowed.",
+      "location": "raw/adyen/docs/issuing/verification-overview/2026-09-15.md:168"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-verification-overview-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-verification-overview]] \u2014 2023-modified, 2026-09-15-captured Issuing verification overview for capability checks, re-verification, version-qualified deadlines and status/webhook boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/verification-overview/2026-09-15.md",
+  "raw_sha256": "b6f340345fa9787e30cd239a99b6d16d464eb3778eb98d22c7d2f226a850aed2",
+  "status": "candidate_ready"
+}

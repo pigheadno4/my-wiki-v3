@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-19] ingest | Adyen website C21
+
+- Fifty independently approved Issuing account/onboarding/KYC/card/payment/authorization/3DS foundations documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 1 concepts touched (0 new); source_count 1064 = 1050 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-21/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-18] ingest | Adyen website C20
 
 - Fifty independently approved Business Accounts funds/SCA/open-banking/transactions/compliance and Issuing foundations documentation sources; first full-review approvals 42/50 and 9 targeted correction reviews. 3 concepts touched (1 new); source_count 1014 = 1000 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-20/`; details [[adyen-log]]. No commit/push.

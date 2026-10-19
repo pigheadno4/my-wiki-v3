@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-issuing-payment-stages-authorisation-holds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing authorisation holds\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/payment-stages/authorisation-holds\"\nraw_files:\n  - \"adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md\"\ntags: [adyen, issuing, authorization, holds, cards]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Issuing page explains holds on a cardholder's balance account after an Adyen-issued-card authorisation, who may reverse a hold, scheme-specific expiry, and the continued capture risk after expiry. A hold reserves the authorized amount until capture or release; release follows merchant cancellation or expiry. It is guidance for explaining held but uncaptured funds, not evidence of a particular card payment or balance. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- **Only the processing merchant** can request an authorisation cancellation/reversal; Adyen, acting as issuer, and the platform cannot cancel an existing authorisation or change its expiry timeline on their own. Adyen releases the hold to the cardholder's available balance after the merchant request. Transaction rules can prevent unwanted *future* authorisations, not reverse an existing one. A merchant may cancel even after Adyen approved, and cardholders should ask the merchant why it cancelled. See raw lines 21-27.\n- Expiry happens automatically. On expiry Adyen returns the reserved amount to available balance and sends `balancePlatform.transfer.updated`. The initial `balancePlatform.transfer.created` includes `authorisationType` and merchant category code (MCC), which help determine the expiry period. See raw lines 29-38.\n- For Visa, the dated table says cruise/lodging/vehicle rental authorisations expire after 31 days; US commuter/bus/railway after 3 days; otherwise after 7 days, based on MCC and merchant location. A separate card-not-present provision allows Visa to extend an authorisation up to 30 days when the acquirer requests it; it is not limited to the table's MCCs. See raw lines 40-50.\n- For Mastercard, a pre-authorisation expires after 30 days and the merchant can adjust its value or extend it for another 30 days at the same value; final/default authorisations expire after 7 days. See raw lines 52-62. These are the source snapshot's scheme timelines, not live guarantees.\n- **Expiry is not a promise that the returned amount is safe from later capture.** The processing merchant can still submit a capture after expiry, and the page says Adyen as issuer must honor/process each capture request regardless of authorisation status. See raw lines 64-68.\n\n## Detail locators\n\n- Cancellation ownership and examples: raw lines 21-27.\n- Expiry webhook and source fields: raw lines 29-38.\n- Visa MCC/location and conditional card-not-present timing: raw lines 40-50.\n- Mastercard pre/final/default timing and adjustment: raw lines 52-62.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[source-adyen-docs-issuing-payment-stages]] \u2014 card payment lifecycle and funds stages.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 future authorisation decisions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15|Adyen Authorisation holds, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Only the processing merchant can cancel an authorisation.",
+      "location": "raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md:23, under ## Who can cancel an authorisation"
+    },
+    {
+      "text": "When the authorisation expires, Adyen returns the reserved amount to the cardholder's [available balance](/issuing/payment-stages#expired) and sends a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook message.",
+      "location": "raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md:31, under ## When authorisations expire"
+    },
+    {
+      "text": "If the MCC and location do not match a condition in the following table, the authorisation expires after 7 days.",
+      "location": "raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md:42, under ### Visa"
+    },
+    {
+      "text": "The merchant can adjust a pre-authorisation to increase or decrease the value, or extend it to keep the same value for another 30 days.",
+      "location": "raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md:56, under ### Mastercard"
+    },
+    {
+      "text": "Because Adyen processes captures for expired authorisations, an amount that has been returned to the available balance can still be captured later.",
+      "location": "raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md:68, under ## Captures after an authorisation expires"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "issuing-authorisation-holds-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-payment-stages-authorisation-holds]] \u2014 2026-09-15-captured Issuing guide to merchant-only reversals, Visa/Mastercard hold expiry and capture after expiry.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/payment-stages/authorisation-holds/2026-09-15.md",
+  "raw_sha256": "9176d7cde187fc9008b16230a7f37d6fd3b3b9f4d882c8f0bfaf93426bc089ab",
+  "status": "candidate_ready"
+}

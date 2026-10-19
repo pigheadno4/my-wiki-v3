@@ -6,6 +6,20 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-19] ingest | Adyen website C21
+
+- All 50 exact-manifest Issuing account/onboarding/KYC/card/payment/authorization/3DS foundations General Docs sources independently approved and promoted. First full-review approvals 43/50; 7 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 1 concepts, including 0 new concept(s). Issuing embedded/enterprise ownership and resource identities, roles/capabilities/verification/consent, dated country/entity/document requirements, destructive lifecycle effects, authentication versus authorization/capture/settlement, and configuration or examples versus live card/payment outcomes remain distinct. Original reviews, attempts and bounded correction evidence retained. Platform guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 1064 = 1050 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-21/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
+## [2026-10-19] ingest | adyen/adyen-web `@adyen/adyen-web@6.47.0`
+
+- Approved additive full ingest at SHA `6068f43579dfbf50bad7505113b369e4e0d4df54`, overriding generated delta/high. Focused-reading authorization: all 34 changed retained files fully read, affected prior code/dependencies reviewed; 188 unchanged current files and generated/duplicated inventories checked mechanically. Both 222-file snapshots verified by hash and size; effective full reading list 231 paths.
+- Recorded cumulative construction warning/suppression limits, optional numeric installment values, Drop-in scroll/overflow/reduced-motion and stored-button changes, defensive 3DS2 guards, PayPal JS 11.1.0 and Google Pay types 0.7.13. Gift-card/locale/wider wallet and form announcements remain release-note-qualified. No supplement, runtime tests or whole-upstream-tree read claimed.
+- Concept audit/updates first, then cumulative source/changelog, company, provider index and logs. Preserved all previous releases, the 6.45.1 warning and source count. Adyen accepted package-release count becomes 23. Details: [[source-github-adyen-web]], [[changelog-github-adyen-web]]. No commit/push.
+- Validation: six schema-bearing pages pass `validate_wiki.py`; all eight touched pages pass wikilink/Markdown-target checks, and historical source/changelog headings plus raw references are retained. All 62 packet tests pass. Global GitHub validation retains 12 pre-existing errors for six unrelated historical packet budgets/invalid-packet counterparts, with no Adyen Web errors. The existing frontmatter-free provider index/root log were link-checked separately.
+
 ## [2026-10-18] ingest | Adyen website C20
 
 - All 50 exact-manifest Business Accounts funds/SCA/open-banking/transactions/compliance and Issuing foundations General Docs sources independently approved and promoted. First full-review approvals 42/50; 9 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

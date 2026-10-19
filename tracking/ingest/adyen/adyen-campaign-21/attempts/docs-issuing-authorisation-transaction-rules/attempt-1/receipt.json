@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-authorisation-transaction-rules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Use transaction rules\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/authorisation/transaction-rules\"\nraw_files:\n  - \"adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md\"\ntags: [adyen, issuing, transaction-rules, authorisation]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified 2022-04-04; captured 2026-09-15) explains transaction-rule criteria, conditions and outcomes for Adyen-issued card activity, including payment authorizations and ATM withdrawals. It describes entity scope, accumulation and limits, outcome hierarchy, relayed authorisation ordering, and triggered-rule notifications. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Rules specify request type (`authorization` by default, `authentication`, or `tokenization`), rule type, interval, one target entity, conditions, and outcome. Entity scope may be a balance account, account holder, payment instrument, payment instrument group, or balance platform; one rule targets one resource. Accumulation defaults to payment instrument and can occur only at or below the rule's entity level. See raw lines 23\u201338, 54\u201373, 75\u2013119.\n- The guide says **all conditions within a rule** must match before its outcome applies, while one or more rules may apply to an entity. This conflicts with the companion [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]], which says **any** specified condition triggers the rule outcome (its raw line 86). Do not silently combine these into one rule-evaluation guarantee. See this raw's lines 121\u2013135 and 174\u2013184.\n- The described outcomes are hard block, score-based, and enforce SCA. For authorization or tokenization, a matching hard block declines first; then score-based rules are evaluated, with totals above 100 declining. For authentication, the order adds enforce SCA and RBA/TRA exemption checks before the score step; a score above 100 prompts identity verification, and failed verification declines. Enforce SCA is restricted to `requestType=authentication`. The source's branch descriptions use above/below 100, so do not infer treatment at exactly 100. See raw lines 148\u2013172 and 184\u2013222.\n- If transaction rules decline a transaction, Adyen says it does not send a relayed authorisation webhook for that transaction. Amount/count limits use authorized amounts/transactions, including uncaptured authorizations; an expired or canceled authorization releases that amount/count back to the available limit. This is the guide's accounting description, not evidence of a particular capture or settled payment. See raw lines 40\u201350 and 137\u2013146.\n- Blocklist, maximum usage, velocity and bypass are described rule types. Intervals include lifetime, per transaction, fixed, rolling and sliding. A bypass identifies the rule to skip for a specified entity. For payout declines, the page points to transfer webhooks (`transactionRulesResult`, reason `declinedByTransactionRule`) or Customer Area **Balances > Transfers**; that payout-monitoring section sits alongside Issuing/card framing and should be read within its own stated scope. See raw lines 64\u201389 and 224\u2013229.\n\n## Detail locators\n\n- Criteria and request/rule types: raw lines 23\u201373.\n- Interval table, entity hierarchy, and aggregation: raw lines 75\u2013119.\n- Restriction operations and authorization-based limits: raw lines 121\u2013146.\n- Outcomes and request-type-specific evaluation order: raw lines 148\u2013222.\n- Triggered-rule payout update routes: raw lines 224\u2013229.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main concept.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 creation and management guide with the conflicting condition statement.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15|Use transaction rules, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen evaluates transaction rules first before sending the relayed authorisation webhook to your server.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md:50"
+    },
+    {
+      "text": "Each transaction rule must be applied to only one resource.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md:93"
+    },
+    {
+      "text": "Transaction rules check whether the transaction meets all of the conditions",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md:123"
+    },
+    {
+      "text": "All authorizations are deducted from the available limit, regardless of whether they have been captured or not.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md:144"
+    },
+    {
+      "text": "You can only use this outcome type when the `requestType` is set to **authentication**.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md:172"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-transaction-rules-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 2022-modified, 2026-09-15-captured Issuing transaction-rule concepts: scope, limits, outcomes, hierarchy and relayed-authorisation ordering; condition logic conflicts with the companion creation guide.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This guide says all conditions within one rule must match; the companion create-and-manage guide says any specified condition triggers the outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/authorisation/transaction-rules/2026-09-15.md",
+  "raw_sha256": "598fc110ab34320ec7a1602fd7806d9b299106a5591617415d8a88ac31f220b9",
+  "status": "candidate_ready"
+}

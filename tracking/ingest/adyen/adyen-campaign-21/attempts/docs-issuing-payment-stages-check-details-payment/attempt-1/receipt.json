@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-issuing-payment-stages-check-details-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: View payment and transfer details\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/payment-stages/check-details-payment\"\nraw_files:\n  - \"adyen/docs/issuing/payment-stages/check-details-payment/2026-09-15.md\"\ntags: [adyen, issuing, transfers, payments, balance-platform]\n---\n\n## Overview\n\nThis Issuing-path guide (last modified 2019-12-06; captured 2026-09-15) describes how to view balance-platform payment and transfer details through GET `/transfers`, GET `/transfers/{id}`, or Customer Area **Balances > Transfers**. It recommends webhooks for recurring transfer tracking such as reconciliation. A transfer represents funds credited to or debited from a balance account, and the guide distinguishes initiation, authorization, then capture for payment events or booking for other events. The page is a lookup guide, not evidence that a particular card payment was authorized, captured, booked or settled. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- **Access is scoped.** Although the URL is under Issuing, the requirements table says an **Adyen for Platforms integration** is required. For API retrieval it names the `TransferService Webservice Retrieve role`; Customer Area viewing requires the **Balance platform base role**. It separately names roles for downloading transfer confirmation letters and viewing unmasked PII in those letters. The page does not establish that an Issuing integration alone meets the listed requirement or that a particular credential has these roles. See raw lines 35-45.\n- **List lookup:** GET `/transfers` or the Customer Area Transfers view lists activity; Customer Area results are limited to one balance platform at a time. The API table marks `createdSince` and `createdUntil` required and says the window must be under six months, and the prose says to provide at least one unique identifier. `paymentInstrumentId` requires `balanceAccountId`, `accountHolderId` or `balancePlatform` alongside it. Returned `data` contains matching transfers, with `_links` for next/previous pages when applicable. See raw lines 47-83 and 264-269.\n- **Specific lookup:** Customer Area can search by transfer/payment instrument ID and open a Transfer ID; GET `/transfers/{id}` retrieves one transfer by path ID. The response guide highlights amount/currency, direction, event history, payment instrument, reference and current status such as `received`, `authorised` or `booked`. See raw lines 463-484 and 630-639.\n- **Examples are internally inconsistent with the list-query rules.** The prose describes May 2025 to May 2026, longer than the stated six-month window; the displayed curl uses May 12 to May 13 **2026**, and neither that curl nor the prose supplies the unique identifier that the text says is required. Do not copy the examples as a validated request contract; confirm against the applicable Transfers API schema and observed response. See raw lines 76-95. The list response also illustrates a `booked` issued-card payment with reason `counterpartyAccountNotFound`, so its sample combination should not be treated as a successful real payment. See raw lines 294-310.\n- **Status is contextual.** The response examples include accounting events and balances and are test/example data; a `booked` transfer in a sample is not proof that every card payment is captured or externally settled. For recurring operations, follow the guide's webhook recommendation rather than relying on a one-time GET snapshot. See raw lines 19-33, 271-461 and 641-739.\n\n## Detail locators\n\n- **Requirements**, raw lines 35-45: integration and role requirements, including confirmation-letter/PII roles.\n- **View a list of payments and transfers**, raw lines 47-83: Customer Area navigation/filters and GET `/transfers` query table.\n- **List request and response examples**, raw lines 85-461: test endpoint, language-specific examples, pagination shape and illustrative payment/internal-transfer objects; several examples conflict with the query prose.\n- **View a specific payment or transfer**, raw lines 463-484: Customer Area search and GET `/transfers/{id}`.\n- **Specific request and response examples**, raw lines 486-739: sample SDK calls, response fields, accounting-event history and issued-card payment object.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing product context and evidence boundary.\n- [[source-adyen-docs-issuing]] \u2014 Issuing account/balance/card overview; separate lifecycle context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/payment-stages/check-details-payment/2026-09-15|Adyen Issuing payment and transfer details guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to view payment and transfer details using the API and your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw line 23, opening"
+    },
+    {
+      "text": "3. **Captured**, in payment events, or **booked**, in other events.",
+      "location": "raw line 29, transfer-stage list"
+    },
+    {
+      "text": "You must have an Adyen for Platforms integration.",
+      "location": "raw line 41, Requirements, Integration type row"
+    },
+    {
+      "text": "You must provide at least one of the unique identifiers in your request.",
+      "location": "raw line 83, list Transfers API instructions"
+    },
+    {
+      "text": "To get the details of a specific transfer, make a GET [/transfers/{id}]",
+      "location": "raw line 484, specific Transfers API instructions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "issuing-payment-details-reciprocal",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-payment-stages-check-details-payment]] \u2014 2019-modified, 2026-09-15-captured guide to Transfers API/Customer Area payment-detail lookup and webhook tracking, with a Platforms-integration requirement and conflicting list-query examples.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Issuing-path requirements table expressly says Adyen for Platforms integration; do not infer Issuing alone satisfies it.",
+          "The one-year prose example, one-day curl example, and absent unique identifier conflict with the list-query rules; source flags these rather than endorsing a request shape."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/payment-stages/check-details-payment/2026-09-15.md",
+  "raw_sha256": "a3a2ebc58b7a7205494b9c3b48bf3a970c7b8ee14919324ea11ec69017d0a867",
+  "status": "candidate_ready"
+}

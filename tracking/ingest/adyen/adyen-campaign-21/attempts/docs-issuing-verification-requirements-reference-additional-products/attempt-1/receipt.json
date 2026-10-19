@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-verification-requirements-reference-additional-products",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: reference for additional capabilities\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/verification-requirements/reference-additional-products\"\nraw_files:\n  - \"adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md\"\ntags: [adyen, issuing, verification, source-of-funds]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Issuing-path reference covers industry-code values and source-of-funds information for business lines, including onboarding v4. Its \u201cRequirements\u201d section says an Issuing integration has no additional requirements, limitations or preparations, yet its source-of-funds section explicitly says source-of-funds verification applies to card issuing as well as Business Accounts. Treat that as a source-internal scope tension; the page is not proof that a particular program or user is currently eligible or verified. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- For **business-account requests**, the page says industry codes representing a user's line of business are required; some industries need Adyen approval before onboarding. It directs a `POST /businessLines` with the most representative code and links separate general and brand-specific code lists. The page does not state this industry-code requirement as a universal Issuing prerequisite.\n- The source-of-funds section expressly applies to **card issuing and Business Accounts**. It says to submit a `POST /businessLines` with `service: issuing` for card issuing or `service: banking` for Business Accounts. Adyen may ask for supporting documents depending on fund type; the table's document and date requirements apply **if requested**.\n- The prose says set `sourceOfFunds.adyenProcessedFunds` true when funds were processed through Adyen, otherwise false and provide `sourceOfFunds.type` and `sourceOfFunds.description` stating the origin. A table row instead labels the Adyen-processed flag `businessLines.adyenProcessedFunds`. This path difference is unresolved in the snapshot; check the applicable API schema before implementing the request.\n- The table lists business earnings, employment, cryptocurrency, dividends, loans, grants, third-party funding, asset sales, rent, gifts, royalties, gambling winnings, inheritance, pension and insurance/settlement, with category-specific required information, example documents and recency conditions. Its Adyen-processed business-earnings row says no supporting document is required; do not generalize that to other sources or bypass separate verification.\n\n## Detail locators\n\n- Raw lines 19\u201323 contain the onboarding-v4 pointer and the Issuing \u201cno additional requirements\u201d statement.\n- Raw lines 25\u201338 describe industry-code collection for business-account requests, approval caveat, list links and `POST /businessLines`.\n- Raw lines 40\u201355 state the card-issuing/Business Accounts source-of-funds scope, service values, processed-funds field prose and conditional document rule.\n- Raw lines 57\u2013146 contain source-of-funds categories, API values, information and conditional supporting-document examples; line 59 has the conflicting field path and no-document row.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing program context.\n- [[adyen]] \u2014 provider context.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15|Adyen additional-capabilities reference, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you have an [Adyen Issuing](/issuing) integration, there are no additional requirements, limitations, or preparations.",
+      "location": "raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md:23"
+    },
+    {
+      "text": "You are required to provide industry codes for your users when requesting business accounts.",
+      "location": "raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md:27"
+    },
+    {
+      "text": "This requirement is applicable for both [card issuing](/issuing) and [business accounts](/business-accounts/).",
+      "location": "raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md:44"
+    },
+    {
+      "text": "If the source of funds was processed through Adyen, set the `sourceOfFunds.adyenProcessedFunds` to **true**.",
+      "location": "raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md:53"
+    },
+    {
+      "text": "Set `businessLines.adyenProcessedFunds` to **true**",
+      "location": "raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md:59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-additional-products-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-verification-requirements-reference-additional-products]] \u2014 2026-09-15 Issuing-path business-line industry-code and source-of-funds reference; its Issuing no-additional-requirements claim conflicts with the card-issuing SOF section, and its processed-funds field paths differ.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source-internal scope conflict: Issuing no-additional-requirements statement versus card-issuing source-of-funds verification section.",
+          "Source-internal field-path conflict: sourceOfFunds.adyenProcessedFunds prose versus businessLines.adyenProcessedFunds table."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/verification-requirements/reference-additional-products/2026-09-15.md",
+  "raw_sha256": "1bf6f6784b1060eba806f8dff54a2e19ba7e999d09c075ba1720eb73d5b4abb6",
+  "status": "candidate_ready"
+}

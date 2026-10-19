@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-authorisation-scheme-advice",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing scheme advice after authorization\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/authorisation/scheme-advice\"\nraw_files:\n  - \"adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md\"\ntags: [adyen, issuing, authorisation, scheme-advice, reconciliation]\n---\n\n## Overview\n\nAdyen's Issuing scheme-advice guide (captured 2026-09-15) describes cases where a payment scheme evaluates an issued-card payment after Adyen's initial authorization, for example when Adyen could not finish that flow in real time. Adyen updates the payment after the scheme's own authorize/refuse decision. If the two decisions differ, the scheme's advice governs the payment's final status and whether funds are reserved or released. This concerns the authorization and reserved-balance outcome; it is not evidence of capture or settlement. [[adyen-issuing]] [[adyen]]\n\n## Key takeaways\n\n- **Final decision and booking boundary:** Adyen defers to differing scheme advice. Later Adyen decisions can create another event booking, but the guide says these have no balance change and cannot alter the final payment status. See raw lines 19\u201323.\n- **Transfer webhook:** A scheme-advice status change yields an additional `balancePlatform.transfer.updated` webhook. Identify it by `data.reason = schemeAdvice`, `data.status = authorised` or `refused`, and a new `data.events` booking with `adviceAuthorised` or `adviceRefused`. Use the scheme-advice webhook status as the payment's final authorization outcome. See raw lines 25\u201339. The shortened example changes an initial refusal to `authorised` and shows both the original `refused` event and the later `adviceAuthorised` event; it is an illustration, not a guarantee of approval. See raw lines 43\u201388.\n- **Customer Area:** Under Balances > Transfers, the payment's Transfer lifecycle shows status history. The guide names **AdviceAuthorised** and **AdviceRefused** for the scheme's final decision and associated reserved-balance change. See raw lines 90\u201394.\n- **Accounting report:** In the Balance Platform Accounting Report, an additional payment row carries Description `schemeAdvice` and Status `authorised` or `refused`. Scheme-advice rows are additive rather than replacements. If the original and scheme statuses differ, the `schemeAdvice` row determines the final reserved-balance change; when both authorize, the sample additional row has zero reserved change, while the reversal example assigns the change to the scheme-advice row. See raw lines 96\u2013121.\n\n## Detail locators\n\n- Post-initial authorization precedence and subsequent event limits: raw lines 19\u201323.\n- Webhook fields, final-outcome instruction and shortened refusal-to-authorization example: raw lines 25\u201388.\n- Customer Area transfer lifecycle: raw lines 90\u201394.\n- BPAR identification, additive-row rule and two booking examples: raw lines 96\u2013121.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15|Scheme advice, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If the scheme's advice differs from Adyen's initial authorization decision, Adyen always defers to the scheme's advice.",
+      "location": "raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md:23"
+    },
+    {
+      "text": "Any decisions made by Adyen after the scheme's decision can create a new event booking, but will not contain any balance changes, nor affect the final status of the payment.",
+      "location": "raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md:23"
+    },
+    {
+      "text": "When you receive a webhook related to scheme advice, use its status as the final outcome of that payment.",
+      "location": "raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md:39"
+    },
+    {
+      "text": "Events related to scheme advice are always additive.",
+      "location": "raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md:105"
+    },
+    {
+      "text": "If the values in the **Status** column for these events differ, then the row with **Description** set to **schemeAdvice** determines the final change to the reserved balance.",
+      "location": "raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md:105"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-scheme-advice-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-authorisation-scheme-advice]] \u2014 2026-09-15-captured Issuing guide to post-initial scheme authorization advice, final status/reserved-balance precedence, additional transfer webhooks, Customer Area history and additive accounting rows.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The scheme-advice result is a final authorization/reserved-balance status in this guide; it does not establish capture or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15.md",
+  "raw_sha256": "0e3f8109d3bdab9a04df3f9142d60143c7ae15bcf651c6cd9a7f60c494e543e2",
+  "status": "candidate_ready"
+}

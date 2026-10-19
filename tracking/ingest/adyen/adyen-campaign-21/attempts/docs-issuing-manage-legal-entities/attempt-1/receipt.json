@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-manage-legal-entities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Manage legal entities\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-legal-entities\"\nraw_files:\n  - \"adyen/docs/issuing/manage-legal-entities/2026-09-15.md\"\ntags: [adyen, issuing, legal-entities, onboarding, verification]\n---\n\n## Overview\n\nThis captured Issuing guide explains how a platform creates, views, and updates users' legal entity resources with the Legal Entity Management API, Customer Area, or Hosted onboarding. A legal entity describes an individual or organization on the Balance Platform, including user details and associations with other entities; Adyen uses its information for verification. These operations sit within onboarding and verification, not card issuance or payment execution. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Create an individual or organization with `POST /legalEntities`; the minimum information varies by location and entity type. Save the generated legal entity ID for later account-holder creation, viewing, updates, or Hosted onboarding. The US organization request and test-environment SDK examples are examples, not a universal KYC checklist or live eligibility proof.\n- View the main legal entity with `GET /legalEntities/{id}` or via the Customer Area/Hosted onboarding. To retrieve an associated entity's details by API, use the `legalEntityId` in each `entityAssociations` item for another GET. In the Customer Area, individual or sole-proprietorship PII is redacted unless the user has the **View account holders PII data** role.\n- Update changed account-holder details with `PATCH /legalEntities/{id}`; the guide says only supplied body parameters are updated. The Customer Area update route requires the **Manage account holders and legal entities** role and opens Hosted onboarding. For Hosted onboarding links, the main legal entity ID is used, or the owner's individual legal entity ID for a sole proprietorship; redirect the user to Adyen's returned URL. Updating legal entity details reruns verification checks.\n- A type change reruns all verification checks and is limited to the **main** legal entity; an incorrect associated legal entity type calls for a new legal entity. API-only onboarding directly changes only individual \u2194 organization, followed by additional required information. Hosted onboarding lets a user select a different type and provide additional information. The guide lists retained resources and specific migrated name/country fields; it says to PATCH again for additional information such as a complete address.\n\n## Detail locators\n\n- Raw lines 19\u201325: resource identity, associations, verification purpose, Legal Entity Management API, and onboarding context.\n- Raw lines 27\u201335 and 365\u2013392: creation prerequisites, example request, generated ID, and downstream uses.\n- Raw lines 395\u2013422 and 424\u2013611: Customer Area and API viewing, PII role, associated entity retrieval.\n- Raw lines 612\u2013643 and 964\u2013973: Customer Area/API/Hosted onboarding update paths, role, patch behavior, sole-proprietorship ID, and verification rerun.\n- Raw lines 975\u20131028 and 1219\u20131239: type-change boundaries, retained/migrated information, direct API transition limits, additional PATCH, and sole-proprietorship route.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[source-adyen-docs-issuing]] \u2014 Issuing overview.\n- [[source-adyen-docs-issuing-get-started]] \u2014 program setup context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-legal-entities/2026-09-15|Manage legal entities \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A legal entity is an API resource that describes an individual or an organization on your Balance Platform.",
+      "location": "raw/adyen/docs/issuing/manage-legal-entities/2026-09-15.md:19"
+    },
+    {
+      "text": "The minimum required information for creating a legal entity depends on the location and entity type that you are onboarding.",
+      "location": "raw/adyen/docs/issuing/manage-legal-entities/2026-09-15.md:31"
+    },
+    {
+      "text": "Only parameters passed in the request body are updated.",
+      "location": "raw/adyen/docs/issuing/manage-legal-entities/2026-09-15.md:643"
+    },
+    {
+      "text": "All verification checks are run again after the legal entity type is changed.",
+      "location": "raw/adyen/docs/issuing/manage-legal-entities/2026-09-15.md:982"
+    },
+    {
+      "text": "You can only change the type of the main legal entity.",
+      "location": "raw/adyen/docs/issuing/manage-legal-entities/2026-09-15.md:984"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-issuing-manage-legal-entities-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-legal-entities]] \u2014 2026-09-15-captured Issuing guide to Legal Entity Management API, Customer Area, and Hosted onboarding create/view/update operations, including verification and main-entity type-change boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-legal-entities/2026-09-15.md",
+  "raw_sha256": "de89f61374ecc0b402e38b500b9645d7b056f2e3a226be15b381f508164cf76d",
+  "status": "candidate_ready"
+}

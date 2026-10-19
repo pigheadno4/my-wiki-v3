@@ -2,7 +2,7 @@
 title: "Adyen"
 type: company
 tags: [adyen, payments, checkout, terminal-api, postman, web-sdk, ios-sdk, android-sdk, 3ds2-sdk, react-native-sdk, nodejs, php, server-sdk, sdk-automation, release-automation, openapi, adobe-commerce, magento2, wechat-pay]
-source_count: 1014
+source_count: 1064
 ---
 
 ## Overview
@@ -11,7 +11,7 @@ Adyen is represented in this wiki by independently versioned Web, iOS, Android, 
 
 ## Website documentation retrieval
 
-One thousand dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. C14 adds Mirakl, Salesforce OMS, Cegid and Dynamics connectors plus partner OAuth, Uplift, regional and seasonal references through [[adyen-mirakl]], [[adyen-salesforce-order-management-system]], [[adyen-cegid-retail-y2]], [[adyen-microsoft-dynamics]], [[adyen-partners]], [[adyen-partner-oauth]] and [[adyen-peak-season-readiness]]. C15 adds Adyen for Platforms foundations, account/resource management, onboarding and verification references through [[adyen-platforms]]. C16 adds Platforms online and in-person payment splits, capture/refund/chargeback allocation, transaction fees, surcharge/tipping/DCC, payment methods, Giving and third-party multi-pay-in references through [[adyen-platforms]], [[adyen-automatic-split-configuration]], [[adyen-currencies-and-fx]] and [[adyen-giving]]. C17 adds Platforms managed/custom payouts, internal transfers, instant cash-out, balance top-ups, settlement and reporting references through [[adyen-platforms]], [[adyen-platform-internal-transfers]] and [[adyen-reporting]]. C18 adds Platforms reconciliation, embedded components, tax and financial-product compliance references plus Capital foundations through [[adyen-reporting]], [[adyen-platform-components]], [[adyen-financial-products]] and [[adyen-capital]]. C19 adds Capital detailed offers, grants, terms, components and compliance plus Business Accounts resource, access, onboarding and verification foundations through [[adyen-capital]] and [[adyen-business-accounts]]. C20 adds remaining Business Accounts funds, transfers, SCA, transaction, open-banking and scoped compliance references plus Issuing overview and setup foundations through [[adyen-business-accounts]] and [[adyen-issuing]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
+One thousand fifty dated Adyen General Docs sources collected in September 2026 provide retrieval routes for online-payment flows and lifecycle, tokenization, 3DS/SCA, API access and security, webhooks, testing, risk and disputes, payouts, Giving, account updating, compliance, and upgrade guidance. Start with [[adyen-online-payments]], [[adyen-tokenization]], [[adyen-3d-secure]], [[adyen-api-access]], [[adyen-webhooks]] or [[adyen-payment-testing]]; C02 adds [[adyen-risk-management]], [[adyen-payouts]], [[adyen-giving]], [[adyen-pci-dss-compliance]], [[adyen-currencies-and-fx]] and [[adyen-security-incident-response]] retrieval routes; detailed fields and examples remain in each source's immutable raw evidence. C04 adds in-person payment retrieval through [[adyen-terminal-api]] and [[adyen-pos-store-management]], covering integration design, connectivity, notifications, support catalogs and selected lifecycle/testing guides. C05 adds detailed payment/refund/status/receipt and operational follow-ups, plus selected tipping, surcharge, DCC, installment, card-data and other POS feature routes. C06 adds terminal-fleet administration, Android terminal apps, standalone use, physical terminal manuals and mobile-reader retrieval through [[adyen-terminal-management]], [[adyen-android-terminals]], [[adyen-standalone-terminals]], [[adyen-payment-terminals]] and [[adyen-mobile-card-readers]]. C07 adds merchant-phone Mobile POS SDK and Payments app guides through [[adyen-mobile-pos]], in-person alternative payments through [[adyen-pos-alternative-payment-methods]] and [[adyen-pos-gift-cards]], plus remaining physical-device manuals and operational/deprecation guides. C08 adds terminal shopper interactions through [[adyen-pos-shopper-engagement]], card recognition through [[adyen-card-recognition]], loyalty through [[adyen-pos-loyalty]], cross-channel routes through [[adyen-unified-commerce]], autonomous-store flows through [[adyen-autonomous-stores]], and the scoped POS facilitator model through [[adyen-pos-payment-facilitators]]. C09 adds scoped Pay by Link and retail scenario references, plus explicitly dated Classic API, authentication, tokenization, modification and PCI-DSS guidance. C10 adds developer authentication, security/privacy/PCI, operational/testing, versioning and migration references, plus batch-processing orientation through [[adyen-batch-processing]]. C11 adds batch request/result schemas and Customer Area structure/access/settings references through [[adyen-batch-processing]], [[adyen-account-structure]] and [[adyen-customer-area-iam]]. C12 adds merchant settlement/balance/payment-management and reporting/reconciliation references through [[adyen-reporting]], [[adyen-sales-day-payout]], [[adyen-account-structure]] and [[adyen-transaction-descriptions]]. C13 adds Adobe Commerce, Salesforce Commerce Cloud, NetSuite, Shopify and Oracle plugin documentation routes through [[adyen-magento2]], [[adyen-salesforce-commerce-cloud]], [[adyen-netsuite]] and [[adyen-shopify]]. C14 adds Mirakl, Salesforce OMS, Cegid and Dynamics connectors plus partner OAuth, Uplift, regional and seasonal references through [[adyen-mirakl]], [[adyen-salesforce-order-management-system]], [[adyen-cegid-retail-y2]], [[adyen-microsoft-dynamics]], [[adyen-partners]], [[adyen-partner-oauth]] and [[adyen-peak-season-readiness]]. C15 adds Adyen for Platforms foundations, account/resource management, onboarding and verification references through [[adyen-platforms]]. C16 adds Platforms online and in-person payment splits, capture/refund/chargeback allocation, transaction fees, surcharge/tipping/DCC, payment methods, Giving and third-party multi-pay-in references through [[adyen-platforms]], [[adyen-automatic-split-configuration]], [[adyen-currencies-and-fx]] and [[adyen-giving]]. C17 adds Platforms managed/custom payouts, internal transfers, instant cash-out, balance top-ups, settlement and reporting references through [[adyen-platforms]], [[adyen-platform-internal-transfers]] and [[adyen-reporting]]. C18 adds Platforms reconciliation, embedded components, tax and financial-product compliance references plus Capital foundations through [[adyen-reporting]], [[adyen-platform-components]], [[adyen-financial-products]] and [[adyen-capital]]. C19 adds Capital detailed offers, grants, terms, components and compliance plus Business Accounts resource, access, onboarding and verification foundations through [[adyen-capital]] and [[adyen-business-accounts]]. C20 adds remaining Business Accounts funds, transfers, SCA, transaction, open-banking and scoped compliance references plus Issuing overview and setup foundations through [[adyen-business-accounts]] and [[adyen-issuing]]. C21 adds Issuing accounts, onboarding/verification, cards, payment/authorization and transaction-rule guides plus 3DS/Authentication SDK foundations through [[adyen-issuing]]. Website snapshots do not establish current merchant eligibility or successful payment execution, and remain separate from versioned GitHub implementation evidence.
 
 ## Web checkout surface
 
@@ -23,7 +23,9 @@ One thousand dated Adyen General Docs sources collected in September 2026 provid
 
 ## Versioned implementation knowledge
 
-Newest ingested Web release: `@adyen/adyen-web@6.46.0`. It adds shared SDK-button disclaimers with ordered links and presentation/accessibility boundaries; Card/UIElement status signatures narrow while Drop-in explicitly retains action props forwarding. PayPal JS becomes 11.0.0; delegated runtime is not verified. Japan address localization and gift-card loading remain release-note-qualified. See [[adyen-web-disclaimers]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+Newest ingested Web release: `@adyen/adyen-web@6.47.0`. It adds suppressible multiple-instance diagnostics (a cumulative construction counter, not live instance enforcement), installment plans without numeric values, Drop-in layout/stored-control fixes and defensive 3DS2 handling. PayPal JS becomes 11.1.0; delegated runtime is not verified. Gift-card placeholder/balance/loading, requested-locale formatting and wider null-safety remain release-note-qualified. See [[adyen-online-payments]], [[adyen-3d-secure]], [[source-github-adyen-web]] and [[changelog-github-adyen-web]].
+
+The preserved `6.46.0` baseline adds shared SDK-button disclaimers with ordered links and presentation/accessibility boundaries; Card/UIElement status signatures narrow while Drop-in explicitly retains action props forwarding. PayPal JS becomes 11.0.0 in that release. Japan address localization and gift-card loading remain release-note-qualified. See [[adyen-web-disclaimers]].
 
 The preserved 6.45.2 rollback fixes payment-action mounting and restores earlier status forwarding. **Do not use 6.45.1:** its upstream warning remains historical, not automatically applied to 6.46.0. No browser/payment reproduction was performed.
 
@@ -130,17 +132,17 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 
 ## Knowledge status
 
-- Latest ingested Web update: `@adyen/adyen-web@6.46.0` (2026-10-02), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
+- Latest ingested Web update: `@adyen/adyen-web@6.47.0` (2026-10-19), additive full ingest with approved focused reading; bad-release warning and older history retained; source count unchanged.
 
-- Ingested website documentation sources: 1000 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13 + C14 + C15 + C16 + C17 + C18 + C19 + C20).
-- Total source summaries: 1014 (1000 website + 14 GitHub).
+- Ingested website documentation sources: 1050 (Adyen C01 + C02 + C03 + C04 + C05 + C06 + C07 + C08 + C09 + C10 + C11 + C12 + C13 + C14 + C15 + C16 + C17 + C18 + C19 + C20 + C21).
+- Total source summaries: 1064 (1050 website + 14 GitHub).
 - Ingested cumulative GitHub repository sources: 14
-- Ingested package releases: 22
+- Ingested package releases: 23
 - Retained package releases: `@adyen/adyen-web@6.41.0`, `@adyen/adyen-web@6.41.1`, `@adyen/adyen-web@6.42.0`; `adyen-ios@5.25.1`; `AdyenWeChatPayInternal@2.2.0`; `adyen-android@5.20.0`; `adyen-3ds2-android@2.2.27`; `adyen-3ds2-ios@2.4.4`; `adyen-3ds2-ios-swift@3.0.1`; `@adyen/react-native@2.12.0`; `@adyen/api-library@32.0.0`; `adyen/php-api-library@30.0.2`; `adyen/module-payment@11.0.0`
-- Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`.
+- Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`, `@adyen/adyen-web@6.47.0`.
 - Additional retained and ingested Node releases: `@adyen/api-library@32.1.0`, `@adyen/api-library@32.2.0`.
 - Additional retained and ingested iOS release: `adyen-ios@5.26.0`, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c` (2026-10-15 ingest), preserving `5.25.1`.
-- Latest GitHub ingest: `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
+- Latest GitHub ingest: `@adyen/adyen-web@6.47.0` (2026-10-19). Prior iOS ingest remains `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
 
 ## Sources
 
@@ -1203,6 +1205,59 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[source-adyen-docs-business-accounts-piisp]] — Adyen Business Accounts PIISP funds confirmation (webpage, 2026-10-18)
 - [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products-industry-codes]] — Adyen Business Accounts: Industry codes list (webpage, 2026-10-18)
 - [[source-adyen-docs-business-accounts-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — Adyen Business Accounts: Brand-specific industry codes (webpage, 2026-10-18)
+
+### Website documentation — Campaign 21
+
+- [[source-adyen-docs-issuing-integration-checklist]] — Adyen Issuing integration and go-live checklist (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-account-structure-resources]] — Adyen Issuing account structure and resources (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-account-structure-resources-issuing-embedded]] — Adyen Embedded Issuing account structure (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-account-holders]] — Adyen Issuing: Manage account holders (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-test-verification-errors]] — Adyen Issuing: Test verification/KYC scenarios (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-requirements-data-formats-per-country]] — Adyen Issuing verification: data formats per country/region (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-requirements-document-requirements]] — Adyen Issuing: requirements for document uploads (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] — Adyen Issuing: Create and manage transaction rules (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-kyc-verification-codes-sub-errors]] — Adyen Issuing KYC suberror codes (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-legal-entities]] — Adyen Issuing: Manage legal entities (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-create-cards]] — Adyen Issuing: Create cards (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-onboard-users-components]] — Adyen Issuing onboarding Transfer Instrument components (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-kyc-verification-codes-general-verification-errors]] — Adyen Issuing general verification error codes (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-onboard-users-terms-of-service]] — Adyen Issuing: Terms of Service acceptance (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-cards]] — Adyen Issuing: Manage cards (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-3d-secure-password-otp]] — Adyen Issuing: one-time password authentication (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation-transaction-rules]] — Adyen Issuing: Use transaction rules (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-payment-stages-check-details-payment]] — Adyen Issuing: View payment and transfer details (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-kyc-verification-codes-remediating-actions]] — Adyen Issuing: Remediating action codes (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-requirements]] — Adyen Issuing: Determine verification requirements (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-onboard-users]] — Adyen Issuing: Onboard and verify users (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-onboard-users-customize-hosted-onboarding]] — Adyen hosted onboarding: customize and test (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-validation-checks]] — Adyen Issuing validation types and refusal reasons (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-kyc-insights]] — Adyen Issuing KYC verification analytics (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation-transaction-rules-view-available-limits]] — Adyen Issuing: View available card limits (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-overview-capabilities]] — Adyen Issuing: user capabilities and verification status (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-access-api-credentials-web-service]] — Adyen balance-platform API credentials (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-balance-accounts]] — Adyen Issuing manage balance accounts (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-payment-stages]] — Adyen Issuing: Payment stages (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation-transaction-rules-examples]] — Adyen Issuing: Transaction rule examples (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation-relayed-authorisation]] — Adyen Issuing: Use relayed authorisation (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-requirements-reference-additional-products]] — Adyen Issuing: reference for additional capabilities (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-overview]] — Adyen Issuing: Verification process (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-account-holder-status]] — Adyen account-holder status and inheritance (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation-scheme-advice]] — Adyen Issuing scheme advice after authorization (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-account-structure-resources-issuing-enterprise]] — Adyen Enterprise Issuing account structure (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-kyc-verification-codes]] — Adyen Issuing: Verification code structure and retrieval (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-payment-stages-authorisation-holds]] — Adyen Issuing authorisation holds (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-authorisation]] — Adyen Issuing payment authorisation (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-3d-secure]] — Adyen Issuing: Enroll cards in 3D Secure (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-install-sdk-mobile]] — Adyen Issuing: Install mobile Authentication SDK for OOB (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-3d-secure-troubleshooting]] — Adyen Issuing: troubleshoot 3D Secure failures (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-access-webservice-roles]] — Adyen Issuing API credential web service roles (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk]] — Adyen Issuing: Out-of-band Authentication SDK (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-liable-accounts]] — Adyen Issuing: Manage liable balance accounts (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-manage-access]] — Adyen Issuing team access in Customer Area (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-account-structure-resources-legal-entity-management]] — Adyen Issuing: Legal entity management resources (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-onboard-users-onboarding-steps]] — Adyen Issuing: onboarding steps selector (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-requirements-reference-additional-products-industry-codes]] — Adyen Issuing: Industry codes list (webpage, 2026-10-19)
+- [[source-adyen-docs-issuing-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — Adyen Issuing: Brand-specific industry codes (webpage, 2026-10-19)
 
 ### GitHub repository evidence
 

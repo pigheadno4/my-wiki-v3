@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-manage-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Manage cards\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-cards\"\nraw_files:\n  - \"adyen/docs/issuing/manage-cards/2026-09-15.md\"\ntags: [adyen, issuing, cards, payment-instruments, lifecycle]\n---\n\n## Overview\n\nThis captured Adyen Issuing guide describes managing a card's `paymentInstrument` after creation: changing its linked balance account, activating or suspending payment processing, permanently closing it, and viewing its payments in Customer Area. The raw page was captured 2026-09-15 and marked last modified 2019-12-18; the API and SDK snippets are examples, not evidence that a card exists or a live status transition or payment succeeded. See [[adyen-issuing]].\n\n## Key takeaways\n\n- The linked `balanceAccountId` can be changed only while the card is `inactive`, using a Balance Platform `PATCH /paymentInstruments/{id}` request; the response contains the `paymentInstrument` with its updated `balanceAccountId` (raw lines 27\u201331, 223).\n- Activation is available in Customer Area or through that PATCH endpoint with `status: active`. Adyen recommends keeping physical cards inactive until the user receives them. An activated card can start processing payments; this does not assert any particular payment was authorized or settled (raw lines 225\u2013244, 436).\n- Suspension temporarily prevents payment processing and can be reversed by setting the card back to `active`; closing is permanent and cannot be reversed. Customer Area offers both status changes. In the API, suspension uses `status: suspended` plus a `statusReason` from `lost`, `stolen`, `damaged`, `suspectedFraud`, or `other`; `statusComment` is required when the reason is `other` (raw lines 438\u2013463, 664). Closing uses `status: closed` and a reason from `lost`, `stolen`, `damaged`, `suspectedFraud`, `endOfLife`, or `accountClosure` (raw lines 666\u2013689).\n- Customer Area's **View payments** displays payments made with the card and defaults to the last six months (raw lines 894\u2013903). This is a viewing instruction, not proof of transaction outcomes.\n\n## Detail locators\n\n- `Update the balance account linked to a card` (raw lines 27\u2013223): inactive-only condition, endpoint, response, and test/SDK examples.\n- `Activate a card` (raw lines 225\u2013436): Customer Area and API steps, plus sample client-library versions.\n- `Suspend a card` (raw lines 438\u2013664): reversible status, required reason and conditional comment, Customer Area and API steps.\n- `Close a card` (raw lines 666\u2013892): irreversible status, permitted API reasons, Customer Area and API steps.\n- `View card payments` (raw lines 894\u2013903): Customer Area path and default six-month filter.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-issuing]] \u2014 Issuing concept.\n- [[source-adyen-docs-issuing-get-started]] \u2014 initial setup and separate live-account transition.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-cards/2026-09-15|Adyen Issuing manage cards, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Some use cases might require that you update the balance account linked to a card after the card has been created. You can do this only if the card is in **inactive** status.",
+      "location": "raw line 29, Update the balance account linked to a card"
+    },
+    {
+      "text": "To activate a card, make a [/paymentInstruments/{id}](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/paymentInstruments/\\(id\\)) request and set its `status` to **active**.",
+      "location": "raw line 244, Activate a card > API"
+    },
+    {
+      "text": "You can suspend a payment instrument to temporarily prevent payment processing. You can activate the card again at any time.",
+      "location": "raw line 440, Suspend a card"
+    },
+    {
+      "text": "* `statusComment` : Required if `statusReason` is **other**.",
+      "location": "raw line 463, Suspend a card > API"
+    },
+    {
+      "text": "Closing a card is a permanent action and cannot be reversed.",
+      "location": "raw line 668, Close a card"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-manage-cards-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-issuing-get-started]]",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-cards]] \u2014 2019-modified, 2026-09-15-captured card-management guide for inactive-only balance-account reassignment, activation, reversible suspension, irreversible closure, and Customer Area payment viewing.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-cards/2026-09-15.md",
+  "raw_sha256": "10add2c7892d2730e3712be4b9fe96373a67cc510721fd2531f60d1aabde30db",
+  "status": "candidate_ready"
+}

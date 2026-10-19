@@ -1,0 +1,9 @@
+# Retrieval checks — Issuing scheme advice
+
+## Q1: What happens when scheme advice differs from Adyen's initial authorization, and how do I detect it?
+
+The scheme may evaluate a payment after Adyen's initial authorization and supply an authorize/refuse decision. If the decisions differ, Adyen defers to the scheme; its advice sets the final payment authorization status and reserved/released balance (raw lines 19–23). An additional `balancePlatform.transfer.updated` webhook has `data.reason = schemeAdvice`, `data.status = authorised` or `refused`, and an `adviceAuthorised` or `adviceRefused` booking event; the advice webhook status is the final outcome to use (raw lines 29–39). Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-authorisation-scheme-advice]] → [[raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15]].
+
+## Q2: How should I read later bookings and the accounting report; does this prove capture or settlement?
+
+After scheme advice, later Adyen bookings cannot change the balance or final payment status (raw line 23). The Balance Platform Accounting Report adds a row with Description `schemeAdvice`; when original and scheme statuses differ, that row determines the final reserved-balance change. The guide's same-authorization example has a zero-change advice row; its refusal-to-authorization example assigns the reserved change to the advice row (raw lines 96–121). Customer Area's Balances > Transfers lifecycle also shows AdviceAuthorised or AdviceRefused history (raw lines 90–94). This is an authorization and reservation outcome, not evidence of capture or settlement. Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-authorisation-scheme-advice]] → [[raw/adyen/docs/issuing/authorisation/scheme-advice/2026-09-15]].

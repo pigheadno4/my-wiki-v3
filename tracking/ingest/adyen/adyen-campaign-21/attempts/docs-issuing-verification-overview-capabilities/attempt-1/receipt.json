@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-issuing-verification-overview-capabilities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: user capabilities and verification status\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/verification-overview/capabilities\"\nraw_files:\n  - \"adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md\"\ntags: [adyen, issuing, capabilities, verification]\n---\n\n## Overview\n\nThis Adyen Issuing-path user-capabilities guide (last modified 2024-02-20; captured 2026-09-15) explains how account-holder capabilities govern actions on a platform, including balance-account and verified-transfer-instrument transfers and card issuing/use. Adyen generally configures default capabilities during design; those are requested automatically when account holders are created, while a missing capability must be requested separately and may trigger additional KYC checks. It is a dated description of configuration and verification, not evidence that any account holder currently has an enabled capability. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- General capabilities include receiving or sending funds via balance accounts or verified transfer instruments. The balance-account receive/send capabilities are only required when the accounts have different account holders. The card-issuing list also distinguishes `issueCard`, `useCard`, ATM withdrawal, restricted-country and restricted-industry card use, and transfer capabilities. The page states that from **LEM API v3**, `sendToTransferInstrument` verification is at the transfer-instrument level, so one verified instrument may be usable independently of another instrument's verification state.\n- The level table applies **per card, per day** to ATM withdrawals and restricted-country/industry card use. Low/medium/high levels may entail additional checks and monitoring. The listed ATM high ranges use strict upper bounds (under EUR 1,500 for `withdrawFromAtm`, under EUR 1,000 for restricted-country ATM withdrawals); do not infer treatment at or above those bounds. Restricted-industry limits are described only as industry-specific.\n- Read `verificationStatus` together with `requested`, `allowed`, and `enabled`. A capability is usable only when it is both allowed and enabled. First-time pending verification is requested=true, allowed=false; a previously allowed capability may remain allowed=true while changed user data is checked. The page likewise describes an `invalid` data-change/deadline case that remains allowed=true temporarily, although its ordinary invalid case is allowed=false. A `rejected` status is final and cannot be remedied by updating data or uploading documents.\n- `enabled` is the platform's access switch and changing it does not initiate verification or stop a request. The source points to account-holder created/updated webhooks or `GET /accountHolders/{id}` for current capability status and settings. It does not establish a card's payment authorisation, live transfer, or settlement outcome.\n\n## Detail locators\n\n- Raw lines 19\u201323 explain default versus additional capability requests and possible KYC; lines 25\u201334 list general transfers.\n- Raw lines 36\u201349 list Issuing capabilities and the LEM API v3 transfer-instrument qualification.\n- Raw lines 51\u201364 give levels and per-card/day threshold table, including strict endpoint wording and industry-specific limits.\n- Raw lines 66\u201380 define capability verification statuses and data-change exceptions; lines 82\u201393 define `requested`, `allowed`, and `enabled` and how to retrieve updates.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing program context.\n- [[adyen]] \u2014 provider context.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15|Adyen Issuing user capabilities, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Every account holder has a list of capabilities that determine what they can do on your platform.",
+      "location": "raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md:19"
+    },
+    {
+      "text": "If a user needs a specific capability that is not part of their default configuration, you must [request the additional capability](/issuing/manage-account-holders#request-capability).",
+      "location": "raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md:21"
+    },
+    {
+      "text": "From LEM API v3, this capability is verified at the level of the transfer instrument.",
+      "location": "raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md:45"
+    },
+    {
+      "text": "The amounts below are the threshold amounts per card, per day.",
+      "location": "raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md:55"
+    },
+    {
+      "text": "The capability can only be used when it is both allowed and enabled.",
+      "location": "raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md:92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-capabilities-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-verification-overview-capabilities]] \u2014 2024-modified, 2026-09-15-captured Issuing-path account-holder capability catalog, verification statuses, allowed/enabled controls and per-card/day levels.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/verification-overview/capabilities/2026-09-15.md",
+  "raw_sha256": "037b0cd5c586f224348fff8c888d404f6131f3cecd56ba5081a9198c07a9d775",
+  "status": "candidate_ready"
+}

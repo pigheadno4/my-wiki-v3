@@ -1,0 +1,49 @@
+{
+  "job_id": "docs-issuing-create-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Create cards\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/create-cards\"\nraw_files:\n  - \"adyen/docs/issuing/create-cards/2026-09-15.md\"\ntags: [adyen, issuing, cards, payment-instruments]\n---\n\n## Overview\n\nAdyen's 2026-09-15-captured Issuing guide describes creating virtual or physical cards as `paymentInstrument` resources linked to a balance account, then conditionally assigning authorized users to company cards. It provides test-environment request and response examples and live physical-card requirements; the examples do not establish current eligibility, card activation, or completed payment. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- An account holder and balance account precede issuance. Cards need a Visa or Mastercard pre-approved use case (scheme program), handled by Adyen by default. PCI scope depends on card type and use; Adyen directs the platform to its contact for a use-case assessment. See raw lines 19-23.\n- Creating a card means POSTing a card `paymentInstrument` associated with a `balanceAccountId`. A virtual card has no physical form and returns card details; a physical-card creation request starts a manufacturing order and does **not** return full card details. Physical requests include manufacturing-profile and delivery information. The balance-account association can be changed later only while the card is inactive. See raw lines 31-53 and 598-610.\n- The guide says cards default to `active`, recommends `inactive` for physical cards until delivery, and uses an inactive physical-card test example. Test physical cards are not delivered, though card-order created/updated events are sent asynchronously. Live physical-card creation requires a card and mailer design approved by Visa or Mastercard; to stop personalization, status must be updated before the order reaches the manufacturer. See raw lines 25-29, 53-57, 591-596 and 972-976.\n- For multiple authorized users of a company card, the guide says all users must be identified when the card is created. It requires Configuration and Legal Entity Management API credentials, and says existing cards intended for multiple users must be updated before contacting Adyen to enable the feature. Each user needs a legal entity and requested `authorisedPaymentInstrumentUser` capability; a newly requested capability starts `pending`. Assignment follows verification and `allowed` capability status. `invalid` needs more information; `rejected` is final and the user cannot use the card. Subsequent daily sanctions checks can change capability to invalid/rejected and suspend the card. See raw lines 927-958.\n- After card creation, POST assigns authorized-user legal-entity IDs; GET lists them. PATCH **replaces the entire authorized-user list**, so a one-user removal must send the retained users too; DELETE removes all users. Successful mutation examples return HTTP 204 only. See raw lines 960-970.\n\n## Detail locators\n\n- Physical request fields, test examples in curl and eight SDK variants, response and card-order events: raw lines 38-596.\n- Virtual request fields, test examples in curl and eight SDK variants, response with card details: raw lines 598-925.\n- Authorized-user legal-entity data, verification timing and API sequence: raw lines 927-970. Adyen says verification can take up to 48 hours and recommends waiting at least 48 hours to check status; this is advice, not a guarantee.\n- Funding, authorization and lifecycle are directed to separate guides under `## Next steps`: raw lines 978-998.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[source-adyen-docs-issuing-integration-checklist]] \u2014 integration and go-live sequence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/create-cards/2026-09-15|Adyen Create cards, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Sending a request to create a physical card also starts an order to manufacture the card.",
+      "location": "raw/adyen/docs/issuing/create-cards/2026-09-15.md:36, under ## Create a card"
+    },
+    {
+      "text": "We recommended that you create physical cards with an **inactive** status, to keep them secure from use until they are delivered to the cardholder.",
+      "location": "raw/adyen/docs/issuing/create-cards/2026-09-15.md:53, physical-card status row"
+    },
+    {
+      "text": "Authorized users must have the **authorisedPaymentInstrumentUser** capability to be able to use the card.",
+      "location": "raw/adyen/docs/issuing/create-cards/2026-09-15.md:940, under ### Requirements"
+    },
+    {
+      "text": "If the status is `rejected`, this is final and the user cannot use the card.",
+      "location": "raw/adyen/docs/issuing/create-cards/2026-09-15.md:956, under ## Assign authorized users to an issued card"
+    },
+    {
+      "text": "Note that this request replaces the entire list of authorized users for the card.",
+      "location": "raw/adyen/docs/issuing/create-cards/2026-09-15.md:968, under ## Assign authorized users to an issued card"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "issuing-create-cards-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-create-cards]] \u2014 Adyen Issuing create-cards guide (captured 2026-09-15): virtual versus physical `paymentInstrument` responses, manufacturing and authorized-user requirements.",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/create-cards/2026-09-15.md",
+  "raw_sha256": "6dcc2d7fac402087d107507651478517e6d55e1f7592cee71f147be3a67cab05",
+  "status": "candidate_ready"
+}

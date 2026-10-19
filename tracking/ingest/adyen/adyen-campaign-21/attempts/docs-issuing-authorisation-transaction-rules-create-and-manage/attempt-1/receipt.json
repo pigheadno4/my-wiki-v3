@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-issuing-authorisation-transaction-rules-create-and-manage",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Create and manage transaction rules\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/authorisation/transaction-rules/create-and-manage\"\nraw_files:\n  - \"adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md\"\ntags: [adyen, issuing, transaction-rules, authorisation]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified 2025-01-07; captured 2026-09-15) describes creating and managing transaction rules in Customer Area or via the Balance Platform Configuration API. It covers rule conditions and outcomes, listing rules, entity-specific overrides or bypasses, updates, and activation status. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The stated setup requires Configuration API access with the **Bank Manage TransactionRules** role, subscriptions to transfer and transaction webhooks, and familiarity with transaction-rule behavior. The page's integration type is Adyen Issuing. See raw lines 27\u201335.\n- In Customer Area, rule details include an entity type/key, aggregation level where relevant, and rule type. The page says at most five conditions per rule and that meeting any specified condition applies the outcome. Review can test a rule against previous platform transactions; this is a historical test, not proof of live authorization. See raw lines 53\u201390.\n- The API creation table describes `entityKey`, `interval`, `requestType`, `type`, `ruleRestrictions`, `outcomeType`, and other fields; it lists `hardBlock`, `scoreBased`, and `enforceSCA` outcomes and `authorization`, `authentication`, or `tokenization` request types. The allowed restriction/type/operation/interval combinations are tabulated at raw lines 538\u2013557. The sample POST and response illustrate a country block for one payment instrument and a returned rule ID, not an executed payment. See raw lines 92\u2013113 and 503\u2013535.\n- Rules can be viewed in Customer Area or fetched by rule ID or by balance account, account holder, balance platform, payment instrument, or payment instrument group. Entity-specific POST rules can override a higher-ranked rule through `overridesRule`; a `bypass` rule with empty restrictions skips that rule for the entity. PATCH updates a rule by ID; PATCH status `inactive` stops its application and `active` resumes it. See raw lines 559\u2013602, 668\u2013679, 726\u2013751, and 997\u20131226.\n- **Source boundary/conflicts:** The opening describes suspicious payout requests and every external payout, while the same page is labeled Issuing and its rule parameters and primary example describe card authorization, authentication, tokenization, and a payment instrument. The skip example also switches between a balance-account/bank-transfer request and a payment-instrument/authorization response. Treat these as inconsistent examples rather than a unified payout/card rule guarantee. The Customer Area maximum-usage description says the card is deactivated after its lifetime threshold; the API `maxUsage` description says a transaction is declined when limits are met. Check the exact context in raw lines 19, 27\u201335, 70, 106\u2013109, 668\u2013723.\n\n## Detail locators\n\n- Customer Area creation and testing: raw lines 37\u201390.\n- API request field table and sample, including dates/status: raw lines 92\u2013535.\n- Valid rule restriction combinations: raw lines 538\u2013557.\n- Listing, override, skip, update, deactivate and activate: raw lines 559\u20131226.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main concept.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15|Create and manage rules, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "automatically evaluate every external payout",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md:19"
+    },
+    {
+      "text": "Bank Manage TransactionRules role",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md:32"
+    },
+    {
+      "text": "You can have up to five conditions per rule.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md:86"
+    },
+    {
+      "text": "To override this hierarchy for a specific resource or entity",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md:592"
+    },
+    {
+      "text": "This means that the rule no longer applies to that entity.",
+      "location": "raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md:670"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-create-manage-rules-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 2025-modified, 2026-09-15-captured Issuing guide for creating, viewing, overriding, skipping, updating and activating transaction rules; source flags payout/card and sample-response conflicts.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening external-payout framing conflicts with Issuing card-authorization parameters/examples; skip request and response also disagree on entity/request type."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/authorisation/transaction-rules/create-and-manage/2026-09-15.md",
+  "raw_sha256": "a3f85a74c9e9ccea56ec40c4a83f068e974368c6fe6768257650410406a0bbfb",
+  "status": "candidate_ready"
+}

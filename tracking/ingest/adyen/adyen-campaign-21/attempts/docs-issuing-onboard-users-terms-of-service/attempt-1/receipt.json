@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-onboard-users-terms-of-service",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Terms of Service acceptance\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/onboard-users/terms-of-service\"\nraw_files:\n  - \"adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md\"\ntags: [adyen, issuing, onboarding, terms-of-service, verification]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Issuing onboarding guide describes how a platform using its own user interface determines which Adyen Terms of Service documents are required, generates and presents them, and records acceptance through the Legal Entity Management API. Hosted onboarding includes the acceptance step within its flow. The accepter must be an individual legal entity representing a person; an organization uses an authorized signatory. This source is an integration guide, not evidence that a particular user has accepted terms or gained a capability.\n\n## Key takeaways\n\n- The guide's requirements table specifies an **Adyen for Platforms integration**, Legal Entity Management API credentials, standard/Configuration webhooks, and legal entities for the user with the contractual relationship and the individual accepter (raw lines 30-42). That integration-type wording appears under an **Issuing** URL; the page does not resolve whether the same instructions apply to Issuing-only configurations. Confirm the actual product and account requirements with Adyen before implementation.\n- For the account holder, `balancePlatform.accountHolder.updated` may report a Terms of Service acceptance requirement in `verificationErrors`; its example shows code `2_902` and a capability problem (raw lines 55-107). A reported requirement is not acceptance.\n- GET `/legalEntities/{id}/termsOfServiceStatus` for the **main legal entity** to identify required types; for a sole proprietorship, use the owner's individual legal-entity ID. More than one document may be required. The page says test returns only `adyenForPlatformsAdvanced` regardless of integration, while live returns actual required types (raw lines 109-115). Its illustrative JSON response lists three types (raw lines 119-127), so do not treat that example as a test-environment result.\n- POST `/legalEntities/{id}/termsOfService` for the main legal entity (sole proprietor: owner's individual ID), specifying document `type` and `language`, with optional format (`JSON` by default, or `PDF`/`TXT`). The response includes Base64 document content and a `termsOfServiceDocumentId`; if multiple documents are required, present each. French language availability is qualified by integration type and region (raw lines 129-137, 335-363).\n- Decode and show the generated document to the user (JSON may use Adyen Document Viewer; PDF/TXT may be rendered in the platform UI). Only after the user reviews and accepts it, PATCH `/legalEntities/{id}/termsOfService/{termsOfServiceDocumentId}` with required `acceptedBy`, the **individual legal-entity ID** of the accepter; `ipAddress` is optional. The path uses the main organization ID, or the owner's individual ID for sole proprietorships. For an organization, the accepter is its authorized signatory (raw lines 365-396).\n- GET `/legalEntities/{id}/termsOfServiceAcceptanceInfos` optionally retrieves acceptance information for the main legal entity, including `acceptedBy` and `acceptedFor` (raw lines 620-622, 766-790). The examples do not establish actual consent, live eligibility or card issuance.\n\n## Detail locators\n\n- Flow sequence and webhook example: raw lines 44-107. Document generation request, SDK snippets and response: raw lines 129-363. Presentation formats: raw lines 365-383. Acceptance request, response and SDK examples: raw lines 385-618. Optional acceptance-information lookup: raw lines 620-790.\n- The captured text has broken placeholders such as `in your .` and a malformed setup table (raw lines 19, 34-42); avoid inferring the missing noun or a broader product scope from those fragments.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15|2026-09-15 Adyen Issuing Terms of Service guide]]\n",
+  "quotes": [
+    {
+      "text": "If you are using [hosted onboarding](/issuing/onboard-users#hosted-onboarding), your user will complete this step as part of the onboarding process.",
+      "location": "raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md:21"
+    },
+    {
+      "text": "The Terms of Service document must be accepted by an individual [legal entity](/issuing/verification-requirements#legal-entity-type) that represents a physical person. For organizations, the document must be accepted by an authorized signatory of the organization.",
+      "location": "raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md:23"
+    },
+    {
+      "text": "| **Integration type** | You must have an Adyen for Platforms integration.                                                                                                                                                                                                 |   |",
+      "location": "raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md:36"
+    },
+    {
+      "text": "In your test environment, only the document type `adyenForPlatformsAdvanced` is returned regardless of your actual integration. This is since all accounts use the same default configuration. In your live environment, the actual Terms of Service document types are returned.",
+      "location": "raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md:115"
+    },
+    {
+      "text": "Note that your user may need to accept more than one Terms of Service document.",
+      "location": "raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md:113"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c21-issuing-tos-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-onboard-users-terms-of-service]] \u2014 2026-09-15 Issuing-path Terms of Service guide for determining required document types, presenting them and recording acceptance by an individual or organizational signatory; its requirements table says Adyen for Platforms and its test-type response conflicts with its example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Issuing URL versus Adyen for Platforms integration requirement is unresolved in the source; preserve the distinction.",
+          "The guide says test returns only adyenForPlatformsAdvanced, while illustrative response lists three types."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/onboard-users/terms-of-service/2026-09-15.md",
+  "raw_sha256": "73cb0a9aa6d22c3820912a14653943221fa0036022d4d3c626a47189826121af",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-authorisation-transaction-rules-view-available-limits",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: View available card limits\"\ntype: source\ndate_ingested: 2026-10-19\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/authorisation/transaction-rules/view-available-limits\"\nraw_files:\n  - \"adyen/docs/issuing/authorisation/transaction-rules/view-available-limits/2026-09-15.md\"\ntags: [adyen, issuing, transaction-rules, limits, cards]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified 2025-01-07; captured 2026-09-15) describes viewing available limits on an Adyen-issued card's payment instrument. It distinguishes transaction-rule amount/count limits from capability-level ATM, restricted-country and restricted-industry limits. The GET `/paymentinstruments/{id}/limits` lookup reports the limit, used and remaining amounts or counts, source and active interval at calculation time. It is a read of configured and authorized activity, not proof of card activation, a future authorization decision, capture or settlement. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- **Scope and access:** The requirements name an Adyen Issuing integration, Configuration API access and the **Bank Manage TransactionRules role**. The guide says to have created a rule with `totalAmount` or `matchingTransactions` restrictions for the transaction-rule path. The broader opening also discusses limits from capability levels; do not assume every capability limit is covered by the rule setup step. See raw lines 19-30 and 48-57.\n- **Return limits are narrower than all configured rules:** the feature supports `totalAmount` and `matchingTransactions` restrictions only, excludes `matchingValues` combined with `matchingTransactions`, returns only limits aggregated at the **payment instrument** level rather than higher levels, and excludes `blockList` because it has no limits. A missing result therefore does not prove there is no higher-level or otherwise unsupported restriction. See raw lines 54-56.\n- **Authorization-based counters:** amount uses total authorized card amount and count uses number of authorized card transactions. All authorizations reduce available limit whether captured or not; an expired or canceled authorization releases its amount/count back. Do not equate `spent` or `remaining` with captured or settled funds. See raw lines 59-66.\n- **Lookup and hierarchy:** GET `/paymentinstruments/{id}/limits` requires the issued-card/payment-instrument ID. `transactionRuleId` is optional; when omitted, the page says the response returns the limit applying to that card according to transaction-rule hierarchy. The response has `calculatedAt`, optional `amountLimits`/`countLimits` arrays, and entries with `limit`, `spent`, `remaining`, `source` and `interval`. `calculatedAt` marks the snapshot time, not a promise that the remaining value will persist. See raw lines 68-108.\n- **Interval/schema caution:** The interval table lists per-transaction, daily, weekly, monthly, lifetime, rolling and sliding types, with duration/start fields conditional on type or unit (raw lines 110-131). It names the field `timezone` and default `UTC`, while the JSON example uses `timeZone` with `CST` (raw lines 131, 168, 190). Treat the sample as illustrative and verify the applicable schema and actual response before parsing field casing or applying a timezone assumption.\n\n## Detail locators\n\n- **Opening and benefits**, raw lines 15-46: rule versus capability sources, amount/count and ATM/geography/industry examples, warning/budget use cases.\n- **Requirements**, raw lines 48-57: integration, role, supported restrictions, aggregation level, `blockList` exclusion and transaction-rule setup.\n- **Calculating limits**, raw lines 59-66: authorized amount/count, uncaptured deductions and expiry/cancellation release.\n- **View available limits**, raw lines 68-108: path and optional query ID, hierarchy fallback, `calculatedAt` and amount/count result fields.\n- **Interval fields and illustrative response**, raw lines 110-196: interval types and conditional duration/start fields, sample amount/count limit and `timezone`/`timeZone` discrepancy.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and evidence boundary.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules]] \u2014 rule scope and hierarchy context.\n- [[source-adyen-docs-issuing-authorisation-transaction-rules-create-and-manage]] \u2014 rule creation and lifecycle context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/authorisation/transaction-rules/view-available-limits/2026-09-15|Adyen Issuing available-limits guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen allows you to set specific limits that regulate outgoing payments made from your users' payment instruments (Adyen-issued cards).",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "Adyen Issuing",
+      "location": "raw line 52, Requirements, Integration type"
+    },
+    {
+      "text": "Limits that are aggregated at higher levels are not returned in the response.",
+      "location": "raw line 55, Requirements, Limitations"
+    },
+    {
+      "text": "All authorizations are deducted from the available limit, regardless of whether they have been captured or not.",
+      "location": "raw line 66, Calculating limits"
+    },
+    {
+      "text": "If not provided, we return the limit that applies to the Adyen-issued card based on the [transaction rule hierarchy](/issuing/authorisation/transaction-rules#hierarchy-for-transaction-rules).",
+      "location": "raw line 77, View available limits, transactionRuleId row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "issuing-available-limits-reciprocal",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-authorisation-transaction-rules-view-available-limits]] \u2014 2025-modified, 2026-09-15-captured guide to card-level available-limit lookup, supported rule restrictions and authorization-based counters; flags example timezone-field mismatch.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The response example uses timeZone while the interval table names timezone; do not infer field casing from the sample.",
+          "Only supported payment-instrument-level limits are returned; absent results do not exclude higher-level or unsupported restrictions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/authorisation/transaction-rules/view-available-limits/2026-09-15.md",
+  "raw_sha256": "1f75a54d39a6d204b03c636376c55f0d60a53ced329690d5d13da146a68ce4d2",
+  "status": "candidate_ready"
+}
