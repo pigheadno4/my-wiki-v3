@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-configure-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Configure notifications\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/configure-notifications\"\nraw_files:\n  - \"adyen/docs/classic-platforms/configure-notifications/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, webhooks]\n---\n\n## Overview\n\nThis 2021-modified guide captured 2026-09-15 configures notification webhooks for **Classic Adyen for Platforms**. It says Classic Platforms API create, update and delete requests are asynchronous, so the final result is learned from notifications delivered to configured server URLs. The guide directs new implementations to a separate integration guide; its Notification API should not be substituted for modern Platforms webhooks. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- POST `/createNotificationConfiguration` supplies a delivery URL and chosen notification event types. The Classic Notification v6 test-host examples also show API-version, active, include/exclude event selection and optional credentials/protocol fields. The page gives POST endpoints to retrieve one configuration by `notificationId`, list all with an empty request, update settings by `notificationId`, and delete configurations by `notificationIds`. Deletion is an explicit removal action; do not infer ongoing delivery to a removed configuration.\n- The receiving server should acknowledge each notification with literal `[accepted]`. The page describes at-least-once delivery: without acknowledgment within 10 seconds, Adyen queues notifications to that endpoint and retries at increasing intervals, then every eight hours for the following seven days. At-least-once delivery means consumers must allow for repeat delivery; an initial API response or test sample is not a final business-operation outcome.\n- POST `/testNotificationConfiguration` targets a `notificationId`; an empty `eventTypes` array generates all configured types for the test. Its successful and failed example responses are test diagnostics, not proof that a particular live endpoint is subscribed, acknowledging, or processing real events.\n- Example consistency warning: the create request sets `apiVersion: 6` and `sslProtocol: SSL`, while the shown response says `apiVersion: 5` and `SSLInsecureCiphers`. The update example repeats this 6/5 and protocol mismatch. The get-one example requests `notificationId: 20272` but returns `2`. Treat these as conflicting sample values, not a demonstrated transformation rule.\n\n## Detail locators\n\n- Classic scope and asynchronous-final-result rule: raw lines 19\u201331. Create endpoint and test-host request/response: 33\u201390; conflicting `apiVersion`/protocol fields: 45, 61, 73, 87.\n- Get-one by ID, get-list and update operations: raw lines 92\u2013243. Get-one ID mismatch: lines 103 and 124. Update request/response API-version and protocol mismatch: lines 197, 214, 226, 240. Delete by ID array: lines 245\u2013266.\n- Literal acknowledgment, 10-second queue/retry behavior and seven-day schedule: raw lines 268\u2013289. Test endpoint, empty event-type behavior and example diagnostics: lines 291\u2013371. HMAC-signature navigation only: lines 373\u2013381.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 Classic account-holder integration context.\n- [[adyen-platforms]] \u2014 separate modern Platforms model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15|Classic notification configuration \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15.md:19"
+    },
+    {
+      "text": "All Platforms API create, update, and delete requests are asynchronous, so you must rely on notifications to know the final result of a request.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15.md:21"
+    },
+    {
+      "text": "Notifications to be deleted are specified by the IDs in the `notificationIds` array.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15.md:247"
+    },
+    {
+      "text": "If your server has not acknowledged a notification within 10 seconds we will queue all notifications to this endpoint.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15.md:276"
+    },
+    {
+      "text": "Retries then happen every 8 hours for the following\u00a07\u00a0days.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15.md:289"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-configure-notifications-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 2021-modified, 2026-09-15-captured Classic Notification API setup, update/delete, acknowledgment, retry and test guide; examples conflict on API version, protocol and one configuration ID.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The create and update examples request `apiVersion: 6`/`SSL` but show `5`/`SSLInsecureCiphers` responses; the get-one request and response IDs differ.",
+          "An API configuration response or test response does not establish a final underlying Classic operation or live webhook delivery."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/configure-notifications/2026-09-15.md",
+  "raw_sha256": "9c5808e21631cc9569b6248845b486abd178acb5ab74c390aa2d0e12dbd98d94",
+  "status": "candidate_ready"
+}

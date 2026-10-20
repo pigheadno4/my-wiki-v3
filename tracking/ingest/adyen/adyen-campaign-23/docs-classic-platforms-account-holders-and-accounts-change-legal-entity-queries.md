@@ -1,0 +1,9 @@
+# C23 query checks — docs-classic-platforms-account-holders-and-accounts-change-legal-entity
+
+Q1. What does this Classic API change, and what prerequisites or approaches are stated?
+
+A Classic account holder with the wrong legal-entity type can use Account API `/updateAccountHolder` to change it; the feature is stated for **v5 and later**, with v6 TEST examples (pinned raw 19–30, 44–45). The holder keeps `accountHolderCode`, `accountCode` and transaction history (23). The guide offers migrating existing details or providing new ones (25–28). This is the older Classic account-holder model, not a modern Platforms legal-entity update (19). Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-account-holders-and-accounts-change-legal-entity]] → [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15]].
+
+Q2. Which verification effects and rejection boundary matter?
+
+Migration carries identity-check status and passport verification, while bank-account verification runs again **if required** for the new type; after completion, `ACCOUNT_HOLDER_VERIFICATION` contains migrated/new check statuses or requirements (raw 32–36). For Business-to-Individual migration, a business holder must have exactly one shareholder; multiple shareholders cause rejection (60–64). In the separate new-details route, completion produces new verification statuses or requirements (78–82), with examples of Business and Individual payloads (84–165). None of these example requests or notifications proves verification approval, payout permission, transfer or settlement. Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-account-holders-and-accounts-change-legal-entity]] → [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15]].

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-verification-process-legal-arrangements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Classic Platforms legal arrangements verification\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/verification-process/legal-arrangements\"\nraw_files:\n  - \"adyen/docs/classic-platforms/verification-process/legal-arrangements/2026-09-15.md\"\ntags: [adyen, classic-platforms, verification, legal-arrangements, account-holders]\n---\n\n## Overview\n\nThis Classic Adyen for Platforms guide (last modified 2021-07-27; captured 2026-09-15) describes collection and verification of an account holder's contractual legal arrangement when it conducts business on behalf of another entity. It explicitly directs new implementations to a different integration guide. This page uses the **Classic Account API v6** and Classic account-holder codes; it does not define modern Adyen for Platforms Legal Entity Management API resources. See [[adyen-classic-platforms]] and [[adyen]].\n\n## Key takeaways\n\n- For applicable Classic account holders, the page names association, partnership, sole proprietorship and trust arrangements. The dated support list is association **US for both holder and association**, partnership **Australia/Singapore**, sole proprietorship **Singapore**, and trust **Australia/Singapore**. Except for association, the arrangement's establishment country may differ from the holder's operating country (raw lines 35\u201360). This is a captured support statement, not current availability or legal advice.\n- Hosted onboarding is described as collecting requirements by default. A platform using its own onboarding UI must collect the extra information and send it through **API version 6**. Failing to declare arrangements can lead to **blocked payouts and account suspensions** (raw lines 28\u201333).\n- The UI collects arrangement identity and registration details, plus other associates, partners or trust members as applicable; an Australian trust needs a proving document. The detailed per-type fields and conditional automatic checks are at raw lines 62\u2013128. Adyen may request a proving document if automatic verification fails (raw line 128).\n- To send data, update an existing Classic account holder through `POST /updateAccountHolder`, using `accountHolderCode` and `accountHolderDetails.legalArrangements` with arrangement reference, type and relevant entity/member details (raw lines 130\u2013147, 238\u2013252, 343\u2013355, 386\u2013400). Requests are **asynchronous**: the API response is not the final verification result. `ACCOUNT_HOLDER_CREATED`/`ACCOUNT_HOLDER_UPDATED` and `ACCOUNT_HOLDER_VERIFICATION` notifications carry update/check status and Adyen-generated arrangement/entity codes used in later updates or uploads (raw lines 529\u2013534).\n- Upload a proving document only for an Australian trust or when automatic verification failed and Adyen required one. The text calls for `CONSTITUTIONAL_DOCUMENT`, the relevant `legalArrangementCode`, and Base64 content; member identity documents may also be required under an `legalArrangementEntityCode`. Upload processing is likewise asynchronous and needs the verification notification for its final result (raw lines 566\u2013601).\n\n## Material source tensions\n\n- The association support rule says both account holder and association must operate and be established in the **US**, and the general rule exempts associations from cross-country establishment (raw lines 55, 60). The association collection tab nonetheless says its establishment country **can differ** from the holder's operating country (raw line 72). Do not infer cross-country association support from that sentence.\n- The support list says sole proprietorship is supported in **Singapore** (raw line 57), while its API example uses an **Australian** address (raw lines 343\u2013383). Treat the payload as illustrative, not evidence of Australian support.\n- The upload instructions require `legalArrangementCode` (raw lines 575\u2013579), but the shown `/uploadDocument` payload has `accountHolderCode`, type and filename without that code (raw lines 583\u2013597). The sample does not establish that the stated code can be omitted.\n- The trust example introduction calls the added members a business settlor and individual protector (raw line 388); the individual payload labels its `legalArrangementMembers` role `Trustee` (raw lines 484\u2013490). Rely on the per-type requirements and actual member role data, not the example caption, for that distinction.\n\n## Detail locators\n\n- Per-arrangement required collection fields and region-specific trust document: raw lines 62\u2013128. The sample request bodies for association, partnership, sole proprietorship and trust occupy raw lines 134\u2013527; their placeholder and test values are not a live onboarding or verification outcome.\n- Verification webhooks and generated codes: raw lines 529\u2013564. Conditional document upload and verification notification: raw lines 566\u2013601.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic platform model and source route.\n- [[adyen]] \u2014 provider context.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/verification-process/legal-arrangements/2026-09-15|Classic Platforms legal arrangements check, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "Your own onboarding flow: Follow the steps on this page to [collect documents and additional information](#required-information) in your UI and then [send the information](#send-through-api) to Adyen. This requires **API version 6**.",
+      "location": "raw line 31, opening onboarding routes"
+    },
+    {
+      "text": "Failing to declare legal arrangements can result in blocked payouts and account suspensions.",
+      "location": "raw line 33, opening"
+    },
+    {
+      "text": "**Association**: Both the account holder and the association must be operating and established in the US.",
+      "location": "raw line 55, ### Supported legal arrangements"
+    },
+    {
+      "text": "Requests using [/updateAccountHolder](https://docs.adyen.com/api-explorer/Account/updateAccountHolder) are processed asynchronously. You'll receive a response to your API request, but you must rely on notification webhooks to know the final result of a request.",
+      "location": "raw line 529, ## Step 2: Update the account holder"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-legal-arrangements-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-verification-process-legal-arrangements]] \u2014 2021-modified, 2026-09-15-captured Classic Account API v6 legal-arrangements verification guide for association, partnership, sole proprietorship and trust; conditional documents, asynchronous results and example/region conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Classic adyen-classic-platforms concept is planned by the designated foundational worker; do not route this source to the modern adyen-platforms concept.",
+          "The page conflicts on cross-country association collection, Singapore-only sole proprietorship versus Australian example, required legalArrangementCode omitted from upload example, and trust member role caption versus payload."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/verification-process/legal-arrangements/2026-09-15.md",
+  "raw_sha256": "c1b44a39b239874692fd616ef87064653c190e819fb459db145af9a23723c3e0",
+  "status": "candidate_ready"
+}

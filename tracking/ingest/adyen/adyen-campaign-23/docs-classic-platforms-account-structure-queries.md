@@ -1,0 +1,9 @@
+# C23 Classic Platforms account-structure retrieval checks
+
+## Q1 — What resources and money flow does the Classic guide define?
+
+The 2021-modified page is explicitly for classic Adyen for Platforms (raw line 19). The platform has a company account and merchant account(s); each sub-merchant needs an account holder with KYC/payout-bank details and a funds-holding account; the platform has its own liable account holder/account for its funds, fees and negative-balance liability (raw lines 31–55). Customer payments run through platform merchant accounts, are captured and split into platform accounts, then can be paid from the holder account to verified bank accounts; refunds reverse value from platform accounts toward customers (raw lines 57–72). Those resources and configured splits are the described prerequisites, not evidence that any operation occurred. Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-account-structure]] → [[raw/adyen/docs/classic-platforms/account-structure/2026-09-15]].
+
+## Q2 — What product and outcome boundaries matter?
+
+The page directs new implementers to a separate newer integration guide (raw line 19). Its classic account-holder/account and liable-pair model must not be read as the current Platforms balance-account resource model. One merchant account per country is called a common setup, not a requirement (raw lines 33–35). Split, capture, settlement, verified-bank payout and refund are described steps (raw lines 61–72), not proof of live eligibility, completed payment, bank receipt or refund outcome. Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-account-structure]] → [[raw/adyen/docs/classic-platforms/account-structure/2026-09-15]].

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-manage-card-data-reveal-pin-ios-sdk",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Reveal PIN with the Card Reveal iOS SDK\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-card-data/reveal-pin-ios-sdk\"\nraw_files:\n  - \"adyen/docs/issuing/manage-card-data/reveal-pin-ios-sdk/2026-09-15.md\"\ntags: [adyen, issuing, pin, ios, card-reveal, encryption]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Issuing guide shows how a platform can let a cardholder reveal the PIN of an Adyen-issued card in its iOS app through Adyen's Card Reveal iOS SDK. The flow obtains a public key from Adyen, generates an encrypted symmetric session key on the client, requests an encrypted PIN block for a specific card, and decrypts it for display in the app. It concerns access to sensitive card data under [[adyen-issuing]], not PIN change, card activation, or payment authorization. See [[adyen]].\n\n## Key takeaways\n\n- Prerequisites are Configuration API credentials with the **Bank Issuing PIN Reveal Webservice role**, an app running **iOS 13.0 or higher**, and the installed Card Reveal iOS SDK (raw lines 36\u201346). This page does not identify a Card Reveal SDK release version. Its many server API-library snippets have their own named versions and use TEST environment examples; those versions are not the SDK's version (raw lines 63\u2013214, 270\u2013463).\n- Retrieve a base64-encoded RSA public key through Configuration API `GET /publicKey` with `purpose=pinReveal` and `format=pem`; the response includes the key and its expiry date. Pass the returned public key to the client, where `PinRevealService.generateEncryptedKey(withPem:)` creates the encrypted session key (raw lines 48\u201357, 217\u2013253). Some multi-language sample calls use literal `string` placeholders rather than the specified query values; follow the prose and endpoint parameters.\n- Request `POST /pins/reveal` with the card's `paymentInstrumentId` and the `encryptedKey`. Adyen's response supplies an ISO Format 4 `encryptedPinBlock` and a `token`; pass both to the client. The SDK's `pin(from:token:)` method decrypts the block, after which the app displays the decrypted PIN to the cardholder (raw lines 255\u2013264, 465\u2013495). The PIN is sensitive data: this guide describes a secure-transfer flow, while the app is the place where the decrypted PIN is handled and displayed.\n- The test endpoint and example IDs/ciphertext demonstrate request shape only. A public-key response, generated key, or PIN-block response does not by itself establish that a particular cardholder is authenticated, a live PIN was shown, or any payment succeeded.\n\n## Detail locators\n\n- Purpose and four-step flow: raw lines 15\u201334.\n- Role, iOS and SDK prerequisites: raw lines 36\u201346.\n- Public-key API and response including expiry: raw lines 48\u2013231; Swift session-key generation at 233\u2013253.\n- PIN-block request and test/API-library examples: raw lines 255\u2013463.\n- Encrypted block, token and client-side reveal: raw lines 465\u2013495.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-issuing]] \u2014 Issuing concept.\n- [[source-adyen-docs-issuing-manage-card-data]] \u2014 card-data management hub.\n- [[source-adyen-docs-issuing-manage-card-data-reveal-pin]] \u2014 separate standard-encryption PIN-reveal path.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-card-data/reveal-pin-ios-sdk/2026-09-15|Adyen Issuing reveal PIN with iOS SDK, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can allow your cardholders to access the PIN of their Adyen-issued card within your app.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "To securely request the data, you use a base64-encoded [RSA](https://en.wikipedia.org/wiki/RSA_\\(cryptosystem\\)) public key and [Adyen's Card Reveal iOS SDK](https://github.com/Adyen/adyen-card-reveal-ios) to generate an encrypted session key.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "Your API credential has the **Bank Issuing PIN Reveal Webservice role**.",
+      "location": "raw line 42, Requirements"
+    },
+    {
+      "text": "Your application uses iOS version 13.0 or higher.",
+      "location": "raw line 44, Requirements"
+    },
+    {
+      "text": "A [token](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/pins/reveal#responses-200-token) that you need for decrypting the PIN block",
+      "location": "raw line 468, Request the PIN block from Adyen"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-ios-pin-reveal-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-issuing-manage-card-data]]",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-card-data-reveal-pin-ios-sdk]] \u2014 2026-09-15-captured iOS 13+ Card Reveal SDK PIN-display flow with PIN Reveal role, public-key/session-key exchange, encrypted PIN block and client decryption; SDK release version unspecified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-card-data/reveal-pin-ios-sdk/2026-09-15.md",
+  "raw_sha256": "8a7f80ad15964591017b78e35093448feb8e80ccea269d9ce6c8a6e781e5bdbf",
+  "status": "candidate_ready"
+}

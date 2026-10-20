@@ -1176,6 +1176,59 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-issuing-components-overview-before-payment]] — Adyen Issuing: Before-payment components (webpage, 2026-10-20)
 - [[source-adyen-docs-issuing-components-overview-after-payment]] — Adyen Issuing after-payment component route (webpage, 2026-10-20)
 
+### Website documentation — Campaign 23
+
+- [[source-adyen-docs-classic-platforms]] — Adyen Classic Platforms integration overview (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-account-structure]] — Adyen Classic Platforms account structure (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data]] — Adyen Issuing: Manage card data (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-error-codes]] — Adyen Classic Platforms error codes (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process-legal-arrangements]] — Classic Platforms legal arrangements verification (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-platforms-integration-checklist]] — Adyen Classic Platforms: Integration and go-live checklist (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process-requirements-update]] — Adyen Classic Platforms: 2022 verification requirements update (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data-change-pin]] — Adyen Issuing: Change PIN using standard encryption methods (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-processing-payments]] — Adyen Classic Platforms: Processing split payments (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data-reveal-pin]] — Reveal PIN using standard encryption methods | Adyen Issuing (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-account-holders-and-accounts]] — Adyen Classic Platforms: Create account holders and accounts (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process]] — Adyen Classic Platforms verification process and account-holder deadlines (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process-verification-codes]] — Adyen Classic Platforms: Verification error codes (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details]] — Adyen Issuing: Reveal card details with standard encryption (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process-accepted-data-format]] — Classic Platforms accepted verification data formats (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data-reveal-pin-ios-sdk]] — Adyen Issuing: Reveal PIN with the Card Reveal iOS SDK (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details-ios-sdk]] — Adyen Issuing: reveal card details with the iOS SDK (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-manage-card-data-change-pin-ios-sdk]] — Adyen Issuing: Change PIN using the iOS SDK (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-onboard-users]] — Onboard and verify users | Adyen Classic Platforms (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-payouts-track-payouts]] — Classic Platforms payout tracking and returns (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process-document-requirements]] — Adyen Classic Platforms: Document upload requirements (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-identify-account-holder-risk-review-and-manage]] — Adyen Classic Platforms: manage account-holder risk with Score (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-test-scenarios]] — Adyen Classic Platforms: Test scenarios (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-verification-process-check-verification-results]] — Adyen Classic Platforms verification results (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-quick-start]] — Adyen Classic Platforms: Quick start (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-onboard-users-custom-onboarding]] — Adyen Classic Platforms custom onboarding (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-fund-transfer]] — Adyen Classic Platforms: Fund transfers between accounts (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-payouts-scheduled-payout]] — Classic Platforms scheduled bank payouts (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-top-up-accounts]] — Adyen Classic Platforms: Top up accounts by direct debit (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] — Adyen Classic Platforms Hosted Onboarding Page (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-card-on-file-tokens]] — Adyen Issuing: Card-on-file network tokens (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-identify-account-holder-risk]] — Adyen Classic Platforms: Identify account-holder risk with Score (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-configure-notifications]] — Adyen Classic Platforms: Configure notifications (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-prepare-reports]] — Classic Platforms prepare reconciliation reports (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-payouts-manual-payout-payout-to-cards]] — Adyen Classic Platforms: Manual payouts to cards (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-payouts-manual-payout]] — Adyen Classic Platforms: manual payouts (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-configure-notifications-signing-notifications-with-hmac]] — Adyen Classic Platforms HMAC-signed notifications (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page-customize-experience]] — Adyen Classic Platforms: Customize Hosted Onboarding Page (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-payouts]] — Adyen Classic Platforms: Payouts (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page-hop-appearance]] — Adyen Classic Platforms HOP appearance customization (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-account-holders-and-accounts-change-legal-entity]] — Adyen Classic Platforms: Change account-holder legal entity type (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-notification-types]] — Adyen Classic Platforms notification types (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-account-structure-example-structures]] — Classic Platforms example account structures (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-kyc-action-required-snapshot-report]] — Adyen Classic Platforms: KYC action required snapshot report (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-payouts-payout-notifications]] — Adyen Classic Platforms payout notifications (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-identify-account-holder-risk-configure-notifications-for-risk-signals]] — Adyen Classic Platforms: Configure Score risk-signal notifications (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-reconciliation-use-cases]] — Adyen Classic Platforms: Common reconciliation processes (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-build-user-dashboards]] — Adyen Issuing user dashboards with UI components (webpage, 2026-10-20)
+- [[source-adyen-docs-classic-platforms-api]] — Adyen Classic Platforms API reference (webpage, 2026-10-20)
+- [[source-adyen-docs-issuing-authentication-label]] — Adyen Issuing process payments label (title-only) (webpage, 2026-10-20)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)
@@ -1208,6 +1261,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 
 ## Concepts
+
+- [[adyen-classic-platforms]] — Adyen Classic Platforms
 
 - [[adyen-issuing]] — Adyen Issuing
 

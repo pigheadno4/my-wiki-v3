@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-classic-platforms-payouts-manual-payout-payout-to-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Manual payouts to cards\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/payouts/manual-payout/payout-to-cards\"\nraw_files:\n  - \"adyen/docs/classic-platforms/payouts/manual-payout/payout-to-cards/2026-09-15.md\"\ntags: [adyen, classic-platforms, payouts, cards, account-holders]\n---\n\n## Overview\n\nThis 2026-09-15 capture of a 2021-modified **Classic Adyen for Platforms** guide describes manually paying an account holder to an eligible Mastercard or Visa debit card, separate from bank-account payouts. It uses the account holder's Classic `accountCode`/`accountHolderCode` and a stored card `payoutMethodCode`; it is not the newer balance-platform Transfers API model. The page says card payouts are available with Fund API v5 and later, and directs new implementers to a separate integration guide. See [[adyen-classic-platforms]] and [[adyen]].\n\n## Key takeaways\n\n- The platform must contact Adyen Support to enable card payouts (raw lines 25\u201327). The page describes cardholder receipt within 30 minutes without bank-cutoff dependency (raw line 23); that is dated product guidance, not evidence or a guarantee of a particular card credit.\n- First, submit a zero-value `/payments` request using the platform merchant account, a unique account-holder `shopperReference` of at least three characters, card `paymentMethod`, and `enablePayOut: true` to check eligibility and store card details (raw lines 29\u201379). Raw card data may be passed only if the platform is fully PCI compliant; otherwise use Adyen's Card Component to collect and encrypt it (raw line 38). Check `payoutEligible`: `Y` means eligible, `D` means Mastercard domestic-only, and `N` or `U` means unusable for payout (raw lines 81\u201386). A sample `fundsAvailability: I` means instant-payout eligibility in that example, not receipt (raw lines 63\u201376).\n- For an eligible card, take `recurring.recurringDetailReference` as tokenized card details and submit it through Classic Account API `/updateAccountHolder` to add the card payout method (raw lines 88\u2013113). A 200 response can contain `payoutMethodCode`, but the guide says to wait for `ACCOUNT_HOLDER_UPDATED` before business logic; a 202 response is queued and also needs the notification for confirmation and its code (raw lines 115\u2013140). The example's returned `recurringDetailReference` differs from the submitted value (raw lines 105\u2013106, 125\u2013129), so do not use the sample identifiers as an identity invariant.\n- Submit `/payoutAccountHolder` with `accountCode`, `accountHolderCode`, amount, reference and the `payoutMethodCode` (raw lines 142\u2013160). The example response has `resultCode: Received`; the page then instructs waiting for `ACCOUNT_HOLDER_PAYOUT` to confirm payout status (raw lines 162\u2013174). `Received` is not card-credit proof. The earlier text says the recurring detail reference is needed for future payout requests (raw line 88), whereas the explicit Step 3 request uses `payoutMethodCode`; retain this unresolved identifier distinction rather than substituting one for the other.\n\n## Detail locators\n\n- Classic-only scope, Fund API version, timing claim and Support enablement: raw lines 15\u201327.\n- Zero-value card check, PCI boundary, response example, eligibility values and token: raw lines 29\u201388.\n- Add card as payout method and 200/202 versus `ACCOUNT_HOLDER_UPDATED`: raw lines 90\u2013140.\n- Payout request, `Received` example and `ACCOUNT_HOLDER_PAYOUT` outcome notification: raw lines 142\u2013174.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/account model.\n- [[source-adyen-docs-classic-platforms-payouts-track-payouts]] \u2014 separate payout status and return tracking.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/payouts/manual-payout/payout-to-cards/2026-09-15|Classic Platforms manual payout to cards, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Aside from paying out to bank accounts, you also have the option to send payouts to eligible Mastercard and Visa debit cards.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "You can only pass raw card data if you are\u00a0[fully PCI compliant](/get-started-with-adyen/adyen-glossary/#pci-compliance).",
+      "location": "raw line 38, Step 1 eligibility and storage"
+    },
+    {
+      "text": "**HTTP 200**: You can use the information returned in API response, such as the `payoutMethodCode`, but wait for the [ACCOUNT\\_HOLDER\\_UPDATED](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_UPDATED) notification before performing any business logic.",
+      "location": "raw line 139, Step 2 add payout method"
+    },
+    {
+      "text": "Wait for the [ACCOUNT\\_HOLDER\\_PAYOUT](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_PAYOUT) notification to confirm the status of the payout.",
+      "location": "raw line 173, Step 3 submit card payout"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-card-payout-source",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-classic-platforms-payouts-track-payouts]]",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-payouts-manual-payout-payout-to-cards]] \u2014 2021-modified, 2026-09-15-captured Classic manual payout-to-card guide with Support/PCI/eligibility gates, stored payout method and asynchronous update/payout notifications; request receipt does not prove card credit.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 88 says recurring detail reference is needed for future payout requests, while Step 3 at raw lines 142\u2013160 sends payoutMethodCode; preserve this identifier difference.",
+          "Step 2 example submitted and returned recurringDetailReference values differ at raw lines 105\u2013106 and 125\u2013129; do not derive identity from sample values.",
+          "The 30-minute cardholder arrival statement at raw line 23 is dated guidance, not proof of a particular card credit."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/payouts/manual-payout/payout-to-cards/2026-09-15.md",
+  "raw_sha256": "ed2e3fc3b0f0f324ea75d293d7af4ef203c776063fc6a872fc9ba0dd2941a686",
+  "status": "candidate_ready"
+}

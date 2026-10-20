@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-20] ingest | Adyen website C23
+
+- Fifty independently approved Issuing card-data/PIN and Classic Platforms foundations, verification, payments/funds/payouts and risk references documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 2 concepts touched (1 new); source_count 1164 = 1150 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-23/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-20] ingest | Adyen website C22
 
 - Fifty independently approved Issuing funding/balance/report/dispute/token/component/OOB references documentation sources; first full-review approvals 40/50 and 11 targeted correction reviews. 3 concepts touched (0 new); source_count 1114 = 1100 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-22/`; details [[adyen-log]]. No commit/push.

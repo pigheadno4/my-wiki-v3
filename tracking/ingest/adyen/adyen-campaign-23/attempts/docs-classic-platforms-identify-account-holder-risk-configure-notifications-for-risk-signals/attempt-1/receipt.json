@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-identify-account-holder-risk-configure-notifications-for-risk-signals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Configure Score risk-signal notifications\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals\"\nraw_files:\n  - \"adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md\"\ntags: [adyen, classic-platforms, score, risk-signals, notifications]\n---\n\n## Overview\n\nThis 2022-modified, 2026-09-15-captured **Classic Adyen for Platforms** guide explains how to subscribe a platform server to `SCORE_SIGNAL_TRIGGERED` notifications when a new Score risk signal triggers for an account holder. It covers Classic Notification API configuration and a test example, not case adjudication or automatic payout/processing restriction. The companion [[source-adyen-docs-classic-platforms-identify-account-holder-risk|Score overview]] says a high score is not confirmed fraud and the platform owns review/action. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- Create a notification configuration or update an existing one. The event configuration uses `eventType: SCORE_SIGNAL_TRIGGERED` with `includeMode: INCLUDE`, plus the server `notifyURL`. On update, `notificationId` identifies the configuration to change. The examples use Classic Notification API v6 **TEST** endpoints.\n- **After completing setup, notify Adyen so it can turn on the webhook notification.** A configuration API response alone does not establish that risk-signal delivery has been enabled or a live signal has been received.\n- The create example sends `active: false` but shows `active: true` in its response (pinned raw lines 40\u201349 versus 55\u201369). The update example sends and returns `active: false`. Treat these as inconsistent illustrations, not a reliable active-state transition rule; verify configuration behavior against the applicable API contract.\n- The sample `SCORE_SIGNAL_TRIGGERED` body is marked `live: \"false\"` and contains `accountHolderCode`, `riskScore: 80` and `scoreSignalsTriggered: [\"EmailSyntaxCheck\"]`. These fields identify a test notification and a signal for investigation; they do not establish confirmed fraud, a disabled payout, or any completed account action.\n\n## Detail locators\n\n- Pinned raw lines 15\u201327: Classic scope, optional risk-signal subscription, event type, create/update choices and Adyen activation step.\n- Pinned raw lines 29\u201370: create API, TEST request/response and `active` mismatch.\n- Pinned raw lines 72\u2013124: update API, `notificationId`, event inclusion and inactive TEST example.\n- Pinned raw lines 126\u2013147: sample event metadata, `live`, account-holder code, score and signal name.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and notification context.\n- [[source-adyen-docs-classic-platforms-identify-account-holder-risk]] \u2014 Score risk interpretation and platform-owned actions.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 general Classic notification setup and handling.\n- [[adyen-platforms]] \u2014 newer model with separate risk notifications.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15|Classic Score notification configuration guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a new risk signal triggers for an account holder, Adyen can send webhooks to your server. If you want to get notified of these events, you can subscribe to the webhook.",
+      "location": "raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md:21"
+    },
+    {
+      "text": "After you have completed your setup, notify us so that we can turn on the webhook notification.",
+      "location": "raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md:27"
+    },
+    {
+      "text": "Make a POST [/createNotificationConfiguration](https://docs.adyen.com/api-explorer/NotificationConfiguration/latest/post/createNotificationConfiguration) call, passing the URL where the notifications should be sent, and the notification type.",
+      "location": "raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md:31"
+    },
+    {
+      "text": "\"active\": false,",
+      "location": "raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md:41"
+    },
+    {
+      "text": "\"active\": true,",
+      "location": "raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md:59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-score-notifications-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-identify-account-holder-risk-configure-notifications-for-risk-signals]] \u2014 2022-modified, 2026-09-15-captured Classic Score webhook setup for `SCORE_SIGNAL_TRIGGERED`, with Adyen activation step and conflicting create-example `active` values.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The create example sends active false but returns active true; do not infer a configuration activation rule."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/identify-account-holder-risk/configure-notifications-for-risk-signals/2026-09-15.md",
+  "raw_sha256": "182b221ceb720b39f7602ab37b34945a9bec53baabbd8d9d3eba40ea5b835a3c",
+  "status": "candidate_ready"
+}

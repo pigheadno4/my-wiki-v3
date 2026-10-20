@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-manage-card-data-change-pin",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Change PIN using standard encryption methods\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-card-data/change-pin\"\nraw_files:\n  - \"adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md\"\ntags: [adyen, issuing, cards, pin, encryption]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified and captured 2026-09-15) describes a platform feature for a cardholder to change an issued card PIN through an app or website. It gives the Configuration API public-key and `/pins/change` route, encryption sequence, and request-status values. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The guide requires Configuration API credentials with the **Bank Issuing PIN Change Webservice** role. Its illustrated steps obtain an Adyen public key, generate a 256-bit AES key, RSA-encrypt that AES key as a session key, generate a token and encrypted PIN block, then send a POST `/pins/change` request for a `paymentInstrumentId`. See raw lines 19\u201343, 227\u2013248, 281\u2013290.\n- For the key request, GET `/publicKey` uses `purpose=pinChange`; the response includes the public key and its expiry date, and the guide says to pass the public key to the front end. The RSA encryption step cites PKCS 1. The token must be a 16-digit random number without zeros. The PIN block uses ISO format 4; the full formatting and AES/ECB sequence is in the raw, not repeated here. See raw lines 45\u201351, 211\u2013279.\n- The POST request table lists `paymentInstrumentId`, `encryptedKey`, `token`, and `encryptedPinBlock`. The `encryptedKey` row calls the field \u201cThe symmetric session AES key,\u201d while the preceding text instructs encrypting the AES key with Adyen's public key to produce an encrypted session key. Keep that distinction when implementing; do not infer that a plaintext AES key should be sent. See raw lines 229\u2013238 and 281\u2013290.\n- The response gives request status values **completed**, **pending**, or **unavailable**. A submitted sample or `pending` response is not proof that the PIN changed. The curl and library snippets use a test host/environment and mixed library versions; the prose specifies `purpose=pinChange` even though several generated library snippets show generic `string` placeholder arguments. Read version-specific SDK details in raw lines 55\u2013209 and request samples at lines 294\u2013509. The page gives no evidence of a live card or payment outcome.\n\n## Detail locators\n\n- Role and workflow prerequisites: raw lines 19\u201343.\n- Public-key request, response, expiry and test/SDK snippets: raw lines 45\u2013225.\n- AES/RSA, token and ISO-4 PIN-block sequence: raw lines 227\u2013279.\n- PIN-change request fields and examples: raw lines 281\u2013509.\n- Response status values: raw line 511.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main concept.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15|Change PIN using standard encryption methods, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "base64-encoded [RSA]",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md:21"
+    },
+    {
+      "text": "Bank Issuing PIN Change Webservice role",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md:43"
+    },
+    {
+      "text": "set to **pinChange**.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md:51"
+    },
+    {
+      "text": "16-digit random number that does not contain zeros.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md:242"
+    },
+    {
+      "text": "Possible values: **completed**, **pending**, **unavailable**.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md:511"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-issuing-change-pin-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-card-data-change-pin]] \u2014 2026-09-15-captured Issuing PIN-change encryption and Configuration API guide, including public-key expiry, role prerequisite, request-status boundary and encrypted-key wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The request table's encryptedKey description is less precise than the preceding RSA-encrypted session-key workflow; the returned status can be pending or unavailable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-card-data/change-pin/2026-09-15.md",
+  "raw_sha256": "a560b9e473d4e4dc264d92b7def6abdee0803a9803280a866a9d7f57546497a7",
+  "status": "candidate_ready"
+}

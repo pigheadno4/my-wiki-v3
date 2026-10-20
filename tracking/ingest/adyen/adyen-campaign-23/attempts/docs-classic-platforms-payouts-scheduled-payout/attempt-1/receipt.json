@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-classic-platforms-payouts-scheduled-payout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Classic Platforms scheduled bank payouts\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/payouts/scheduled-payout\"\nraw_files:\n  - \"adyen/docs/classic-platforms/payouts/scheduled-payout/2026-09-15.md\"\ntags: [adyen, classic-platforms, payouts, schedules, account-api]\n---\n\n## Overview\n\nThis Classic Adyen for Platforms page (last modified 2020-03-20; captured 2026-09-15) describes automatic payouts of available account funds to account holders, platform and per-account schedule settings, optional same-day speed, and payout descriptors. It explicitly routes new integrations elsewhere. Its Classic `accountCode` and Account API operations belong under [[adyen-classic-platforms]], with provider context at [[adyen]]; configuration alone does not establish a sent payout or bank receipt.\n\n## Key takeaways\n\n- The page says the platform default is `DAILY`: automatic payouts each day to account holders with a **positive balance**, using available account funds. A platform-wide default change requires Adyen Support (raw lines 21\u201325). For **newer Classic integrations**, optimized daily timing depends on account-holder country code; existing integrations can ask Support to enable it. Otherwise daily payouts are at **00:00 CET**. The country-time matrix is at raw lines 29\u201340.\n- To override the platform default for a **specific account**, use Classic Account API `POST /updateAccount` with `payoutSchedule.schedule`. The table lists daily, weekly, twice-monthly and monthly options. `HOLD` means **no scheduled payout by Adyen**, requires a `reason`, and leaves payouts to be manually triggered (raw lines 42\u201359). The sample request includes an `action` field but does not establish the consequences of that sample value for already scheduled payouts (raw lines 61\u201375).\n- For schedule updates, **HTTP 200** supplies response data but still requires `ACCOUNT_UPDATED` notification to confirm central-database update. **HTTP 202** acknowledges a queued request and likewise requires the notification to confirm success (raw lines 90\u201393). Do not read either response as a completed payout.\n- Faster payout processing is an option only where the relevant express method is available, with this dated page listing **Australia, United Kingdom and United States**. It says funds can be available the same day **if processed before the bank cutoff**. Platform-wide enablement goes through Support; a specific account uses `POST /updateAccount` with `payoutSpeed=SAME_DAY`. The page again requires `ACCOUNT_UPDATED` confirmation for update responses (raw lines 95\u2013125). This conditional schedule does not guarantee same-day bank receipt.\n- The default payout descriptor is the platform name. Support can configure dynamic values from account/account-holder descriptions or codes and payout PSP reference; the submitted value has a **1\u201335-character** and character-set constraint (raw lines 127\u2013142). The page does not demonstrate how a particular bank actually displays it.\n\n## Detail locators\n\n- Optimized timing matrix and legacy default: raw lines 29\u201340. Schedule enum and `HOLD` reason/manual boundary: raw lines 42\u201359. The value named `WEEKLY_ON_TUE_FRI_MIDNIGHT` is described as Tuesday and Friday; `BIWEEKLY_ON_1ST_AND_15TH_AT_MIDNIGHT` is described as monthly on the 1st and 15th. Preserve table wording rather than inferring cadence from enum names (raw lines 55\u201358).\n- Illustrative test `/updateAccount` request/response and asynchronous confirmation: raw lines 61\u201393.\n- Same-day regions, cutoff, configuration and notification: raw lines 95\u2013125. Descriptor values and allowed characters: raw lines 127\u2013142.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic concept and source route.\n- [[adyen]] \u2014 provider.\n- [[source-adyen-docs-classic-platforms-payouts-track-payouts]] \u2014 separate payout status and return tracking.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/payouts/scheduled-payout/2026-09-15|Classic Platforms scheduled payouts, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "The default payout schedule for your platform is **DAILY**. This means that your platform is configured to automatically send payouts every day to all account holders with a positive balance.",
+      "location": "raw line 25, ## Default payout schedule"
+    },
+    {
+      "text": "No scheduled payout by Adyen. In this case, you need to provide a `reason` for putting the payouts on hold. All payouts to this account holder have to be now [triggered manually](/classic-platforms/payouts/manual-payout).",
+      "location": "raw line 59, ## Override the default payout schedule, HOLD row"
+    },
+    {
+      "text": "**HTTP 202**: The request has been acknowledged and added to the queue. Use the response to check and confirm the changes you made. Wait for the [ACCOUNT\\_UPDATED](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_UPDATED) notification to confirm if the payout schedule has been successfully updated.",
+      "location": "raw line 93, ## Override the default payout schedule"
+    },
+    {
+      "text": "To speed up this process, Adyen offers the option to set a faster payout schedule, where the payouts are available to the account holder the same day if processed before the bank cutoff time.",
+      "location": "raw line 97, ## Set the payout speed"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-scheduled-payout-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-payouts-scheduled-payout]] \u2014 2020-modified, 2026-09-15-captured Classic daily/per-account payout schedules, HOLD/manual behavior, notification-confirmed updates and conditional regional same-day speed.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/payouts/scheduled-payout/2026-09-15.md",
+  "raw_sha256": "858f53c47e4437e84f55528d19c7210d8ff161a729c838c4b300801214da7a10",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-verification-process-requirements-update",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: 2022 verification requirements update\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/verification-process/requirements-update\"\nraw_files:\n  - \"adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md\"\ntags: [adyen, classic-platforms, verification, onboarding]\n---\n\n## Overview\n\nThis 2022-modified Classic Adyen for Platforms guide, captured 2026-09-15, describes additional sub-merchant verification information enforced for new sub-merchants from **1 August 2022**. Existing sub-merchants may be asked for it during periodic risk review or when account-holder data or processing tier changes. The page directs new implementations to a separate, newer integration guide; its Classic Account API payloads and verification notifications must not be applied to current balance-platform Legal Entity Management resources. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The update distinguishes organization shareholders as **owners** (individuals with at least 25% direct or indirect shares, votes or equity) versus **controllers** (ultimate effective control, or senior management if none is identified). It calls for at least one owner or controller for EEA sub-merchants, at least one controller outside the EEA, and identification of all signatories. It separately says at least one signatory is required, with name, title, residence address, birth date, email and phone; ID details may depend on residence country.\n- Other dated inputs include nationality for individual account holders, shareholders and signatories with an address in Hong Kong or Singapore; `principalBusinessAddress` when it differs from the registered address (same country, no PO Box); listed ultimate parent-company data for wholly owned subsidiaries of publicly listed/regulated-market companies; and company TIN for business sub-merchants that processed **more than USD 1,000**. The introduction calls the TIN requirement risk-classification-dependent, while its detailed section gives the monetary trigger; retain both formulations. Gender is no longer required for individuals or shareholders.\n- Classic Account API **v5/v6** examples put shareholders and signatories directly under `businessDetails`; **v4 and earlier** wrap them in `ShareholderContact` or `SignatoryContact`. The signatory-nationality examples are labeled signatory but use a `shareholders` array, so those samples cannot settle the correct payload path. The supported stock exchanges spreadsheet and linked API pages remain separate references.\n- Signatories undergo verification like shareholders, with `ACCOUNT_HOLDER_VERIFICATION` notification examples for identity and passport states including `AWAITING_DATA`, `DATA_PROVIDED`, and `INVALID_DATA`. Those samples are historical test payloads, not proof that a particular sub-merchant passed verification.\n- The action depends on onboarding mode and cohort. For Hosted Onboarding Page (HOP), Adyen requests information from new sub-merchants, while existing ones start verification when Adyen requests it. A custom implementation can use Classic `/getAccountHolder` to inspect existing data, `/updateAccountHolder` when information is requested, or `/createAccountHolder` with complete data up front for new sub-merchants. Submission is distinct from verification approval or any payment/payout outcome.\n\n## Detail locators\n\n- Raw lines 19\u201327 establish Classic scope, 2022 enforcement, and new/existing cohort conditions; lines 29\u201345 list updated requirement topics and shareholder definitions.\n- Raw lines 47\u2013142 show Classic Account API v5/v6 versus v4-and-earlier shareholder payloads and title examples; lines 144\u2013214 cover signatory identity fields and versioned payloads.\n- Raw lines 216\u2013309 cover Hong Kong/Singapore nationality and the signatory/shareholder example-path mismatch; lines 311\u2013395 cover principal address and wholly owned listed-parent information.\n- Raw lines 397\u2013436 give the TIN threshold/country table and gender change; lines 438\u2013537 show Classic verification notification examples.\n- Raw lines 539\u2013577 distinguish HOP and custom onboarding actions for existing versus new sub-merchants.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic Platforms concept.\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 separate current Platforms integration.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15|Adyen Classic Platforms verification requirements update, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md:19"
+    },
+    {
+      "text": "The following requirements apply to all new sub-merchants starting **August 1, 2022**.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md:27"
+    },
+    {
+      "text": "For sub-merchants operating in non-EEA countries, we require that you provide at least one controller.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md:44"
+    },
+    {
+      "text": "We do not limit the number of signatories you can add but we require that you provide at least one.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md:146"
+    },
+    {
+      "text": "Adyen requires the merchant to provide a Tax Identification Number (TIN) for all business sub-merchants that have processed more than USD\u00a01,000.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md:399"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-requirements-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-verification-process-requirements-update]] \u2014 2022-modified, 2026-09-15-captured Classic sub-merchant verification changes: shareholder/signatory identity, regional data, versioned Account API shapes, notifications and cohort-specific onboarding actions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Classic concept is planned by the foundational C23 worker; this reciprocal link depends on that concept being created.",
+          "The page's TIN introduction cites risk classification while the detailed section cites a USD 1,000 trigger; signatory-nationality examples use a shareholders array."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15.md",
+  "raw_sha256": "fb36c4b440976d0ff622965eed45cec1eeaf82c1654ae8c01c69ffc44c856491",
+  "status": "candidate_ready"
+}

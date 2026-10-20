@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-notification-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms notification types\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/notification-types\"\nraw_files:\n  - \"adyen/docs/classic-platforms/notification-types/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, webhooks, payouts]\n---\n\n## Overview\n\nThis 2020-modified page captured 2026-09-15 catalogs notification event types for **Classic Adyen for Platforms**. It says messages go to endpoints configured by the platform and fields vary by event type. The page directs new implementations to a separate integration guide; these Classic event names are not the modern Platforms webhook contract. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The table covers Classic account/account-holder creation, closure, updates, status and verification; stores and deadlines; liable-account threshold and negative-balance compensation; direct debit, split-payment failure, transfer/refund requests, payout initiation, and report availability. It is an event-purpose index, not the payload schema or acknowledgment procedure for each event.\n- `ACCOUNT_HOLDER_CREATED` can indicate either creation or an error during creation. `ACCOUNT_HOLDER_PAYOUT` is triggered on payout initiation and distinguishes `statusCode: Initiated` when the process started from `Failed` on error. An Initiated notification does not establish bank credit.\n- `TRANSFER_FUNDS`, `REFUND_FUNDS_TRANSFER` and `SCHEDULED_REFUNDS` are described as triggered when the corresponding Fund API request is made. Their catalog entries do not by themselves prove transfer or refund completion. `DIRECT_DEBIT_INITIATED` likewise indicates initiation.\n- `COMPENSATE_NEGATIVE_BALANCE` describes an end-of-month check for accounts with a negative balance one month old; when found, Adyen compensates from the liable platform account and sends the notification. This is a specific liable-account funds-direction statement, not evidence of a particular platform's balance or debit.\n\n## Detail locators\n\n- Classic-only boundary, configured endpoint and varying fields: raw lines 19\u201323. Full event-purpose table: lines 25\u201345.\n- Account and account-holder events, liable-account threshold, payout statuses and verification: raw lines 27\u201337. Beneficiary setup and conditional negative-balance compensation: lines 38\u201339.\n- Direct debit, split-payment failure, Fund API request-triggered transfer/refund events and report availability: raw lines 40\u201345. For endpoint configuration and acknowledgments, use [[source-adyen-docs-classic-platforms-configure-notifications]] as a separate guide.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 Classic integration context.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 configuration, acknowledgment and retry navigation.\n- [[adyen-platforms]] \u2014 separate modern Platforms model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/notification-types/2026-09-15|Classic notification types \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw/adyen/docs/classic-platforms/notification-types/2026-09-15.md:19"
+    },
+    {
+      "text": "This notification is triggered when an [account holder](/classic-platforms/account-structure) is created, or when an error occurred during account holder creation.",
+      "location": "raw/adyen/docs/classic-platforms/notification-types/2026-09-15.md:30"
+    },
+    {
+      "text": "the notification contains `statusCode` = Initiated; in case of any error the notification contains `statusCode` = Failed.",
+      "location": "raw/adyen/docs/classic-platforms/notification-types/2026-09-15.md:31"
+    },
+    {
+      "text": "Adyen for Platforms compensates their balance from the liable platform account and sends the COMPENSATE\\_NEGATIVE\\_BALANCE notification to the platform.",
+      "location": "raw/adyen/docs/classic-platforms/notification-types/2026-09-15.md:39"
+    },
+    {
+      "text": "This notification is triggered when a [/transferFunds](https://docs.adyen.com/api-explorer/Fund/latest/post/transferFunds) request is made.",
+      "location": "raw/adyen/docs/classic-platforms/notification-types/2026-09-15.md:45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-notification-types-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-notification-types]] \u2014 2020-modified, 2026-09-15-captured Classic event-purpose catalog for account holders, payouts, transfers, refunds and liable-account compensation; request/Initiated labels are not completion or bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "`ACCOUNT_HOLDER_CREATED` also covers a creation error; `ACCOUNT_HOLDER_PAYOUT` Initiated indicates process start, not bank receipt.",
+          "The transfer and refund event entries are described as triggered by requests, so their labels alone do not establish completed funds movement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/notification-types/2026-09-15.md",
+  "raw_sha256": "77796b6e7a53233a584bc8792724c7e51396a77e9c4eabdecd89a0e3c3f8dd85",
+  "status": "candidate_ready"
+}

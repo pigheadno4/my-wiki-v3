@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-classic-platforms-account-holders-and-accounts-change-legal-entity",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Change account-holder legal entity type\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/account-holders-and-accounts/change-legal-entity\"\nraw_files:\n  - \"adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-holders, legal-entity, verification]\n---\n\n## Overview\n\nThis 2020-modified, 2026-09-15-captured **Classic Adyen for Platforms** guide explains changing an existing account holder's legal-entity type with `/updateAccountHolder` so the holder enters the appropriate verification process. The holder retains its `accountHolderCode`, `accountCode` and transaction history. The feature is stated for **Account API v5 and later**; examples use v6 TEST endpoints. New implementations are directed to the separate newer integration model. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- The guide offers two approaches: **migrate existing details** or **provide new details**. Under migration, Adyen carries over identity-check status and passport verification from the old legal entity, but performs bank-account verification again if required for the new type. After the update completes, `ACCOUNT_HOLDER_VERIFICATION` reports migrated and new check statuses or requirements. This is a verification transition, not automatic approval.\n- Individual-to-Business examples send `accountHolderCode`, `legalEntity: Business` and business details. For Business-to-Individual **migration**, Adyen says the business account holder must have **only one shareholder**; a request with multiple shareholders is rejected. Do not apply that migration rule as a stated constraint on the alternative new-details path without its own API contract.\n- With new details, the examples send business/shareholder data or individual name/personal/document data along with `accountHolderCode` and the new `legalEntity`. Once the update completes, `ACCOUNT_HOLDER_VERIFICATION` reports **new** check statuses or requirements. Test payloads illustrate the shapes; they do not prove a live holder was reverified, gained payout capability or moved money.\n\n## Detail locators\n\n- Pinned raw lines 15\u201330: Classic scope, retained identifiers/history, two approaches and v5+ boundary.\n- Pinned raw lines 32\u201336: migrated identity/passport status, conditional bank reverification and notification.\n- Pinned raw lines 38\u201376: Individual-to-Business and Business-to-Individual migration examples, including one-shareholder rejection at line 62.\n- Pinned raw lines 78\u2013165: new-details route, completion notification and v6 TEST examples for both direction changes.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and verification context.\n- [[source-adyen-docs-classic-platforms-verification-process]] \u2014 Classic verification requirements and status flow.\n- [[adyen-platforms]] \u2014 newer model with separate legal-entity resources.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15|Classic legal-entity change guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you change the legal entity type, the account holder retains the `accountHolderCode`, `accountCode` and the transaction history.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md:23"
+    },
+    {
+      "text": "This feature is supported from **v5 and later** of the [/updateAccountHolder](https://docs.adyen.com/api-explorer/Account/updateAccountHolder) endpoint.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md:30"
+    },
+    {
+      "text": "If you choose to migrate existing details, we also migrate the identity check status and the passport verification from the previous legal entity to the new one. We will perform the bank account verification again if required for the new legal entity.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md:34"
+    },
+    {
+      "text": "You can only migrate data if the business account holder has only one shareholder. If the account holder has multiple shareholders, the request is rejected.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md:62"
+    },
+    {
+      "text": "After we complete the update, you get the [ACCOUNT\\_HOLDER\\_VERIFICATION](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_VERIFICATION) notification, containing new verification check statuses or requirements.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md:82"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-change-legal-entity-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-account-holders-and-accounts-change-legal-entity]] \u2014 2020-modified, 2026-09-15-captured Classic Account API v5+ legal-entity change guide preserving account codes/history, with migrate-versus-new-details verification and one-shareholder migration limit.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/change-legal-entity/2026-09-15.md",
+  "raw_sha256": "cb8ec93a667b7990a1c595668f1aaa949ed1e97d1597c4d244716018a7951b97",
+  "status": "candidate_ready"
+}

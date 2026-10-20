@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-top-up-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Top up accounts by direct debit\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/top-up-accounts\"\nraw_files:\n  - \"adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md\"\ntags: [adyen, classic-platforms, direct-debit, top-ups, account-holders]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured **Classic Adyen for Platforms** guide describes pulling funds from an account holder's bank account by direct debit to top up platform accounts, for example to cover a negative balance or costs. The documented funds path is **account holder bank debit \u2192 Adyen merchant-account settlement \u2192 credits to accounts according to split instructions**. It directs new implementations to the separate new-integration guide; its Classic Fund API/account model must not be conflated with modern balance-platform top-ups.\n\n## Key takeaways\n\n- The page lists account-holder bank accounts in the **EU, UK and US**, using SEPA, BACS and ACH respectively, as its dated support scope. The platform must have direct debits enabled through Support and obtain the account holder's agreement. For ACH, business and non-profit holders must arrange for their bank to allow specified Adyen originator IDs or the debit may be blocked. See raw lines 19\u201337.\n- A Classic Fund API `POST /debitAccountHolder` request identifies the holder with `accountHolderCode`, debits the account-holder bank instrument identified by `bankAccountUUID`, names the platform `merchantAccount`, and supplies one or more `splits` to receiving platform accounts. The guide gives **EUR 500 per transaction** as the maximum when debiting EU bank accounts. Its example uses a **v6 test** endpoint and illustrates USD 62 split USD 60 to an account-holder account and USD 2 to the platform liable account. See raw lines 39\u201399.\n- The API response `resultCode: Received` only acknowledges the request. The direct debit is asynchronous: inspect `DIRECT_DEBIT_INITIATED` notification `status.statusCode` for `Initiated` or `Failed`. `Initiated` is not settlement; rails have their own timing and settled transactions appear in reports. `Failed` can arrive up to three business days later, with causes including validation, limits, bank-blocked originator IDs, missing funds receipt and insufficient bank funds. See raw lines 101\u2013117.\n- The guide says successful debits settle to the Adyen merchant account and appear as `MerchantPayin` in Settlement details. Credits made under the split instructions appear in the Marketplace Payments accounting report, where the request `description` can be matched to `Payment Merchant Reference`. See raw lines 207\u2013211.\n\n## Example discrepancy\n\nThe illustrative request and response are **USD 62**, split **USD 60 + USD 2** (raw lines 52\u201398). Its `Initiated` notification keeps the total at **USD 62** but labels the split amounts **EUR 60 + EUR 2** (raw lines 127\u2013151). The capture does not explain any FX conversion; do not use this specimen as a coherent currency or reconciliation example.\n\n## Detail locators\n\n- Scope, consent, ACH allowlist and direct-debit request fields/limit: [[raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15|raw lines 19\u201352]].\n- Test request/response, asynchronous statuses and failure reasons: [[raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15|raw lines 54\u2013117]].\n- Notification examples and merchant-account/split-account report routes: [[raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15|raw lines 119\u2013211]].\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic platform account and payment model.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15|Top up funds in accounts (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "While the funds in account holders' accounts usually come from [payments](/classic-platforms/processing-payments), you can also let them top up their accounts with direct debit.",
+      "location": "raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md:21"
+    },
+    {
+      "text": "Topping up funds is supported for account holders with bank accounts in the EU, the UK, and the US.",
+      "location": "raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md:28"
+    },
+    {
+      "text": "Have the account holder agree to your platform performing direct debits on their bank account.",
+      "location": "raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md:35"
+    },
+    {
+      "text": "Requests using [/debitAccountHolder](https://docs.adyen.com/api-explorer/Fund/latest/post/debitAccountHolder) are processed asynchronously. You'll receive a response acknowledging that we have received your request, but you must listen to notification webhooks to know the result.",
+      "location": "raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md:101"
+    },
+    {
+      "text": "Successful direct debits are settled to your [Adyen merchant account](/classic-platforms/account-structure#your-adyen-account).",
+      "location": "raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md:209"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-top-up-accounts-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-top-up-accounts]] \u2014 2023-modified, 2026-09-15-captured Classic Fund API direct-debit top-up guide: holder bank to merchant settlement to split credits, consent/rail/limit gates, asynchronous results and USD/EUR sample mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Initiated webhook example keeps USD 62 total but labels split amounts EUR 60 and EUR 2 (raw lines 127\u2013151), unlike the USD request/response (lines 52\u201398); no conversion rule is established."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15.md",
+  "raw_sha256": "5279452e1573a8022d0d1e64a2c35e690f6c26bce18248af3b0382b810aa03d8",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-verification-process-check-verification-results",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms verification results\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/verification-process/check-verification-results\"\nraw_files:\n  - \"adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md\"\ntags: [adyen, classic-platforms, verification, account-holders, kyc]\n---\n\n## Overview\n\nThis 2021-modified page captured 2026-09-15 explains how a **Classic Adyen for Platforms** integration reads account-holder verification checks and decides whether a retry or more evidence is appropriate. It directs new implementations to a separate integration guide; its Classic Account API and notification fields should not be mapped onto the modern balance-platform capability model. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- Results are available through the `ACCOUNT_HOLDER_VERIFICATION` notification, POST `/getAccountHolder` with `accountHolderCode`, or the Customer Area KYC tab. The notification/API check data include verification `type`, `status`, a summary with code and description, and `requiredFields`; the Customer Area path requires the Merchant MarketPlace role. The examples show invalid data and are not a real account-holder result.\n- The type catalog distinguishes company, identity, legal arrangement, nonprofit, passport, payout-method and PCI checks. `PAYOUT_METHOD_VERIFICATION` is described as starting with notification webhook version 6 and replacing earlier bank-account/card check types.\n- Statuses matter per check: `AWAITING_DATA` calls for missing information, `DATA_PROVIDED` and `PENDING` do not call for an immediate retry, `INVALID_DATA` points to correction, and `RETRY_LIMIT_REACHED` permits retry only for some checks. The table describes `PASSED` as a completed check and `FAILED` as final, with account-holder suspension when a check fails. Do not treat a single sample check as proof of overall live eligibility, enabled payouts or completed payments.\n- Retry guidance varies by subject. For identity or payout-method `INVALID_DATA`, ask for review/update; after the retry limit, the table calls for photo ID or bank statement respectively. For company/nonprofit `INVALID_DATA`, inspect the version-specific `kycCheckCode`: API v5+ points to the company-code list, while v4 or earlier singles out `1604`. For those matching codes, review name/registration data, offer a registration document when the holder believes them correct, and require that document after three attempts with those codes. The page says Adyen uses it for manual verification; submission alone is not approval.\n\n## Detail locators\n\n- Classic-only boundary and three result channels: raw lines 19\u201325. Notification fields and invalid-data example: raw lines 27\u201369. Customer Area role/navigation: lines 71\u201377. POST `/getAccountHolder` and verification response: lines 79\u2013132.\n- Verification types and v6 payout-method replacement: raw lines 134\u2013144. Per-check statuses/actions, including final `FAILED`: lines 146\u2013158.\n- General retry caveat and subject-specific actions: raw lines 160\u2013202. Identity/photo ID: 171\u2013178; payout method/bank statement: 180\u2013187; version-qualified company/nonprofit codes and registration-document escalation: 189\u2013202.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 Classic platform/account-holder context.\n- [[adyen-platforms]] \u2014 separate modern Platforms model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15|Classic verification results \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md:19"
+    },
+    {
+      "text": "notification webhook to inform your server of the results of the check.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md:29"
+    },
+    {
+      "text": "This type is sent starting from notification webhook version 6. This replaces **BANK\\_ACCOUNT\\_VERIFICATION** and **CARD\\_VERIFICATION** from earlier versions.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md:143"
+    },
+    {
+      "text": "This is a final state. When a check fails, the account holder status is set to suspended.",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md:158"
+    },
+    {
+      "text": "*require* the account holder to [upload a company registration document](/classic-platforms/verification-process/document-requirements#organization-documents)",
+      "location": "raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md:200"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-verification-results-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-verification-process-check-verification-results]] \u2014 2021-modified, 2026-09-15-captured Classic notification, Account API and Customer Area verification-result guide with per-check status, versioned payout-method type and conditional retry/document steps.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "`FAILED` is final and sets the account holder to suspended in this Classic guide; `RETRY_LIMIT_REACHED` is only conditionally retriable by check type.",
+          "The company/nonprofit document escalation is conditional on specific `kycCheckCode` values and API version, not every INVALID_DATA result."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/verification-process/check-verification-results/2026-09-15.md",
+  "raw_sha256": "2dc69c9b4d7c67becd31db8926b8fd567acc565bdb446e93f1ce620491ad9159",
+  "status": "candidate_ready"
+}

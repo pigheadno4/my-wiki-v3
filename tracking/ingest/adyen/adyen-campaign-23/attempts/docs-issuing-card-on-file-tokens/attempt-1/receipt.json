@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-card-on-file-tokens",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Card-on-file network tokens\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/card-on-file-tokens\"\nraw_files:\n  - \"adyen/docs/issuing/card-on-file-tokens/2026-09-15.md\"\ntags: [adyen, issuing, network-tokens, card-on-file]\n---\n\n## Overview\n\nThis 2026-09-15-captured Issuing guide describes **merchant card-on-file network tokens** created when a cardholder saves an Adyen-issued card with a merchant, for example for later purchases or recurring charges. The merchant requests a network token through the card scheme; the scheme forwards the request to Adyen. This is a merchant-stored credential route, distinct from adding a card to a digital wallet.\n\n## Key takeaways\n\n- The guide requires an Issuing-supporting integration, subscription to the **Network token webhook**, and an Adyen-contact check that a card manufacturing profile is set up. The merchant-PCI statement is conditional: it says a merchant that is not PCI compliant does not store raw card details and requests a network token instead. See raw lines 19\u201331.\n- Provisioning starts with an **inactive** network token. Adyen verifies the merchant against the card scheme's allowlist. An allowlisted merchant leads to automatic token approval/activation; a merchant outside the allowlist leads to token closure. Created and outcome webhooks are distinct stages, so creation is not proof of activation. See raw lines 64\u2013117.\n- The illustrated merchant/card-scheme/Adyen path describes the scheme passing an activated token to the merchant for storage, then checking token status through Adyen when it is used. The page's sentence that a valid token makes the scheme approve a transaction is a simplified sketch; the separate [[source-adyen-docs-issuing-authorisation|Issuing authorisation guide]] still describes card, balance, transaction-rule and possible relayed-authorisation checks before a payment is approved or refused ([[raw/adyen/docs/issuing/authorisation/2026-09-15|related raw lines 19\u201341, 63\u201377]]). Token validity alone does not establish payment approval or capture. See this raw lines 33\u201362.\n\n## Detail locators\n\n- Merchant card-on-file context, conditional card-data handling and setup requirements: [[raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15|raw lines 19\u201331]].\n- High-level provisioning/payment actors and status-validation sketch: [[raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15|raw lines 33\u201362]].\n- Inactive creation, merchant allowlist, activation/closure and webhooks: [[raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15|raw lines 64\u2013117]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuer-side card and token source catalog.\n- [[adyen]] \u2014 provider context.\n- [[source-adyen-docs-issuing-network-tokens]] \u2014 broader wallet and card-on-file token overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15|Card-on-file network tokens (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Card-on-file network tokens, also called merchant network tokens, occurs when your cardholder saves the card details with a merchant.",
+      "location": "raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15.md:19"
+    },
+    {
+      "text": "Unless the merchant is PCI compliant, the merchant does not store the raw card details. Instead, the merchant makes a network token request that is forwarded to Adyen.",
+      "location": "raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15.md:21"
+    },
+    {
+      "text": "If the network token is valid, the card scheme approves the transaction.",
+      "location": "raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15.md:57"
+    },
+    {
+      "text": "After receiving the request, Adyen creates a network token with status **inactive**.",
+      "location": "raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15.md:74"
+    },
+    {
+      "text": "If the merchant is **not** on the allowlist, Adyen automatically closes the network token and ends the provisioning process.",
+      "location": "raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15.md:85"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-issuing-cof-tokens-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-card-on-file-tokens]] \u2014 2026-09-15 merchant card-on-file network-token guide for inactive creation, scheme merchant allowlist, activation/closure and webhooks; valid-token payment sketch is narrower than full Issuing authorisation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Card-on-file raw line 57 says valid token leads to scheme transaction approval, but related Issuing authorisation raw lines 19\u201341 and 63\u201377 describe additional checks; do not infer token validity guarantees payment approval."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/card-on-file-tokens/2026-09-15.md",
+  "raw_sha256": "2cebb6dcb02630966773563f81fe29a52d528ac345b2bf6185c50d9815bfcc0c",
+  "status": "candidate_ready"
+}

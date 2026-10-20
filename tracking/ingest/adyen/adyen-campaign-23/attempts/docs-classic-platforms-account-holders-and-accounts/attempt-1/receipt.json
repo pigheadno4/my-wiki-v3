@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-account-holders-and-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Create account holders and accounts\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/account-holders-and-accounts\"\nraw_files:\n  - \"adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md\"\ntags: [adyen, classic-platforms, account-holders, accounts, onboarding]\n---\n\n## Overview\n\nThis 2021-modified, 2026-09-15-captured guide is for **Classic Adyen for Platforms**. It describes creating a sub-merchant **account holder** with the Classic Account API, receiving an automatically created **account**, and optionally creating additional accounts for that holder. It directs new implementations to a separate new-integration guide. Keep its `accountHolderCode` and `accountCode` model distinct from the newer balance-platform resources.\n\n## Key takeaways\n\n- Choose the sub-merchant's legal-entity type, collect the page's minimum data for that type, and call `/createAccountHolder`. The listed types are Individual, Business, Nonprofit, Partnership and Public company; example request values use `NonProfit` and `PublicCompany`. The request supplies a unique `accountHolderCode`. See raw lines 25\u201393 and the entity-specific examples at lines 95\u2013394.\n- When the account holder is created, an **account is created automatically** and identified by `accountCode`, which the guide says to save for transactions. The examples use Classic Account API **v6 on a test host**. Optional extra accounts are created with `/createAccount` and the existing `accountHolderCode`; the guide gives separate business lines as an example. See raw lines 95\u201398 and 396\u2013429.\n- Creation is **asynchronous**. HTTP 200 can return an `accountCode`, while HTTP 202 acknowledges a queued request; for the final creation result, wait for `ACCOUNT_HOLDER_CREATED` and `ACCOUNT_CREATED` notifications. Likewise, an extra `/createAccount` call requires `ACCOUNT_CREATED`. Do not treat the request response or illustrative `Active` response object as completed creation. See raw lines 396\u2013403 and 424\u2013429.\n- The guide says a newly created account holder with `accountHolderStatus.status: Active` may process payments on their behalf. **Paying out funds is a separate gate**: the sub-merchant must provide more information, including bank details, and pass verification checks. The status also determines whether processing and payouts are allowed. See raw lines 21\u201323 and 403\u2013405.\n\n## Detail locators\n\n- Legal-entity choices and minimum collected fields, including 25% owner/signatory and nonprofit control-officer cases: [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15|raw lines 25\u201379]].\n- Classic Account API v6 test examples for each entity type: [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15|raw lines 81\u2013394]].\n- Asynchronous creation, IDs, Active status, optional accounts and their notification gate: [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15|raw lines 396\u2013429]].\n\n## Source wording note\n\nIn the optional `/createAccount` step, the HTTP 202 paragraph says `ACCOUNT_CREATED` confirms if the **account holder** was successfully created (raw line 429). The step is creating an additional **account** for an existing holder (raw lines 407\u2013411); do not use that sentence to infer a second holder-creation flow.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic platform resource and money-flow context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15|Account holders and accounts (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Start the onboarding process by creating an account holder. To create an account holder, you need to get the sub-merchant's legal entity type, collect the minimum required information, and send the information in an API request.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md:21"
+    },
+    {
+      "text": "Once the account holder is created and active, you can start processing payments for them. However, to pay out their funds, they have to provide more information (such as their bank account details) and pass verification checks.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md:23"
+    },
+    {
+      "text": "Requests using [/createAccountHolder](https://docs.adyen.com/api-explorer/Account/createAccountHolder) are processed asynchronously. You'll receive a response to your API request, but you must wait for the webhooks to know the final result of a request.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md:396"
+    },
+    {
+      "text": "When an account holder is created, an **account** is also automatically created identified by the [accountCode](https://docs.adyen.com/api-explorer/Account/latest/post/createAccountHolder#responses-200-accountCode).",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md:403"
+    },
+    {
+      "text": "Requests using [/createAccount](https://docs.adyen.com/api-explorer/Account/createAccount) are processed asynchronously. You'll receive a response to your API request, but you must wait for the webhooks to know the final result of a request.",
+      "location": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md:424"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-account-holders-and-accounts-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-account-holders-and-accounts]] \u2014 2021-modified, 2026-09-15-captured Classic Account API v6 guide to sub-merchant account-holder creation, automatic and optional accounts, asynchronous notification gates, and separate payment-versus-payout verification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Optional createAccount HTTP 202 paragraph says ACCOUNT_CREATED confirms account-holder creation (raw line 429), although the step creates an additional account for an existing holder (lines 407\u2013411)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/account-holders-and-accounts/2026-09-15.md",
+  "raw_sha256": "974eeee900a5e25ef35c10ff8d81efec02f2de13807bcbad41704b8f4c90ee66",
+  "status": "candidate_ready"
+}

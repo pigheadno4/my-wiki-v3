@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-manage-card-data-reveal-card-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Reveal card details with standard encryption\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-card-data/reveal-card-details\"\nraw_files:\n  - \"adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md\"\ntags: [adyen, issuing, card-data, encryption, pan]\n---\n\n## Overview\n\nThis 2026-09-15 Issuing guide describes an app or website flow for revealing an Adyen-issued card's PAN, CVC and expiration date to its cardholder. It uses an Adyen RSA public key, a locally generated AES session key, and an encrypted Configuration API reveal response before rendering sensitive details in the interface. This is card-data display guidance, not a payment or card-activation result. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The guide requires Configuration API credentials with the **Bank Issuing PaymentInstrument Reveal Webservice** role. GET `/publicKey` uses `purpose=panReveal`; its response carries `publicKey` and `publicKeyExpiryDate`. The curl request uses the test Balance Platform API host.\n- Generate a 256-bit AES key, then encrypt it with Adyen's public RSA key using the guide's PKCS 1 wording. POST `/paymentInstruments/reveal` supplies `paymentInstrumentId` and `encryptedKey`; its response contains `encryptedData`, which is passed to the client. Decrypt with that AES key in CBC mode with PKCS 5 padding, then render the extracted card details to the cardholder. This flow makes PAN/CVC plaintext available to the rendering client after decryption; a successful API request alone does not prove that the intended cardholder saw it.\n- The SDK snippets for GET `/publicKey` use placeholder `purpose: string`/`format: string` while the prose and curl specify `panReveal`. Do not substitute the placeholder for the stated purpose. The GET and reveal sections also show different language-library version labels; treat these as dated examples rather than one pinned SDK integration.\n\n## Detail locators\n\n- Cardholder-facing data and high-level sequence: raw lines 17\u201339. Credential role: raw lines 41\u201346.\n- `purpose=panReveal` GET, test curl, language examples and public-key expiry response: raw lines 48\u2013228. The SDK placeholder-purpose examples appear at lines 98, 124, 173 and 193.\n- AES/RSA session-key steps: raw lines 230\u2013241. POST reveal request fields, test-host and SDK examples: raw lines 243\u2013452. Encrypted response, client handoff and AES-CBC/PKCS 5 decryption: raw lines 453\u2013474. Example plaintext JSON and final display statement: raw lines 476\u2013491.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-issuing]] \u2014 Issuing card-program context.\n- [[source-adyen-docs-issuing-manage-card-data]] \u2014 card-data management navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15|Reveal card details \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Your API credential has the **Bank Issuing PaymentInstrument Reveal Webservice** role.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md:46"
+    },
+    {
+      "text": "set to **panReveal**.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md:54"
+    },
+    {
+      "text": "You need a 256-bit [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) encryption key",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md:232"
+    },
+    {
+      "text": "The response contains the [encryptedData](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal#responses-200-encryptedData).",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md:453"
+    },
+    {
+      "text": "The AES algorithm in [CBC mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation) with PKCS 5 padding.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md:472"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-issuing-reveal-card-details-source-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details]] \u2014 2026-09-15 Issuing Configuration API guide for role-gated encrypted PAN/CVC/expiry reveal to a cardholder app or website, with `panReveal` purpose and test/SDK example boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Revealing PAN/CVC makes plaintext card data available to the rendering client after decryption; the guide does not establish a particular implementation's data-handling compliance.",
+          "GET public-key SDK snippets use placeholder `string` purpose values despite the guide's explicit `panReveal` instruction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details/2026-09-15.md",
+  "raw_sha256": "695040999b8d16c543824d04d4afd03b61bdae65533d3f2fd0bc8904ab4fc7d5",
+  "status": "candidate_ready"
+}

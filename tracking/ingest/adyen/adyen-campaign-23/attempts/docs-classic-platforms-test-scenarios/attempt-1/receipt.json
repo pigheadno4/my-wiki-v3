@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-test-scenarios",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Test scenarios\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/test-scenarios\"\nraw_files:\n  - \"adyen/docs/classic-platforms/test-scenarios/2026-09-15.md\"\ntags: [adyen, classic-platforms, testing, verification, payouts]\n---\n\n## Overview\n\nThis Classic Adyen for Platforms test guide (last modified 2020-10-26; captured 2026-09-15) describes predefined account-holder test states created with Classic Account API requests or Hosted Onboarding Page document uploads. It explicitly directs new implementations to a separate new-integration guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The payout-state examples use Classic POST `/createAccountHolder` for Individual or Business account holders, with `PASSED` and `TestData` sentinel fields and at least one bank account. The flow then uploads photo ID/passport and a bank statement through HOP or Classic POST `/uploadDocument`. The page says photo-ID upload sets the account holder to the \u201climitless\u201d state requiring the highest KYC-check level; after the listed uploads it describes verified identity/document/bank statement (and company for Business). These are predefined test fixtures, not live verification or bank-payout evidence. See raw lines 26\u2013144 and 146\u2013278.\n- For a KYC check set to `FAILED`, the guide uses `FRAUD` in city fields for Individual or Business account holders; its examples describe suspended account holders with payouts blocked. The Business example also uses shareholder city. See raw lines 280\u2013421.\n- For `INVALID_DATA`, the guide specifies `INVALIDDATA` in `address.city`, a bank-account owner-city field, or passport description/filename; passport testing uses HOP or `/uploadDocument`. The `INVALID_DATA` bullet names `bankAccount.ownerCity`, whereas the earlier payout and `FAILED` examples use `bankAccountDetails.ownerCity`; preserve this field-path difference rather than treating the bullet as validated payload syntax. See raw lines 32\u201338, 148\u2013156, 286\u2013292, 347\u2013354, 423\u2013443.\n- The `INACTIVEDEADLINECITY` and `REFUNDDEADLINECITY` city sentinels are described as inactivating an account holder with a `/refundNotPaidOutTransfers` call scheduled in six weeks or performed immediately, respectively. Those are test-scenario descriptions; this snapshot does not prove a real refund, payout, or bank receipt. See raw lines 445\u2013455.\n- The examples use Classic `accountHolderCode`, `processingTier`, `legalEntity`, and Account API endpoints. Do not substitute modern Balance Platform account-holder resources or capability semantics for these Classic test fixtures. See raw lines 32\u201340, 42\u201386, 148\u2013158 and 280\u2013358.\n\n## Detail locators\n\n- Individual payout-state fixture and HOP/API document uploads: raw lines 26\u2013144.\n- Business payout-state fixture, shareholder passport and bank statement: raw lines 146\u2013278.\n- `FAILED` Individual/Business KYC fixtures: raw lines 280\u2013421.\n- `INVALID_DATA` and passport fixture: raw lines 423\u2013443.\n- Inactivation/refund timing sentinels: raw lines 445\u2013455.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 main concept.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15|Test scenarios, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15.md:19"
+    },
+    {
+      "text": "the account holder is set to the limitless state.",
+      "location": "raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15.md:103"
+    },
+    {
+      "text": "suspended Individual legal entity account holder with its payouts blocked",
+      "location": "raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15.md:294"
+    },
+    {
+      "text": "`bankAccount.ownerCity`",
+      "location": "raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15.md:426"
+    },
+    {
+      "text": "The `/refundNotPaidOutTransfers` call is scheduled to be performed in 6 weeks.",
+      "location": "raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15.md:449"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-test-scenarios-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-test-scenarios]] \u2014 2020-modified, 2026-09-15-captured Classic Account API/HOP test fixtures for payout, failed KYC and refund-timing states; the invalid-data owner-city field path differs from earlier examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The INVALID_DATA owner-city bullet uses bankAccount.ownerCity, while earlier fixtures use bankAccountDetails.ownerCity; these test descriptions do not prove real payouts/refunds."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/test-scenarios/2026-09-15.md",
+  "raw_sha256": "f312368a6277bb50ec43c35a31a7206ccd7271cb01b921d7f6416c3c0f086099",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-onboard-users-hosted-onboarding-page",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms Hosted Onboarding Page\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/onboard-users/hosted-onboarding-page\"\nraw_files:\n  - \"adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md\"\ntags: [adyen, classic-platforms, onboarding, account-holders, verification]\n---\n\n## Overview\n\nThis 2021-modified Classic Adyen for Platforms guide, captured 2026-09-15, describes sending an existing account holder to Adyen's Hosted Onboarding Page (HOP) to supply verification information. It calls HOP the recommended lower-effort route and directs new implementations to a separate newer integration guide. This is a Classic account-holder workflow, not a current balance-platform API flow. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- Hosted onboarding must be enabled for the platform through Adyen Support, which also receives a default return URL. The platform chooses upfront or staggered collection: the guide says upfront aims to collect data for all payment-processing and payout tiers once, while staggered requires another HOP URL when processed funds exceed the current tier (raw lines 47\u201357). Neither choice proves verification approval or payout execution.\n- Create a Classic account holder and retain its `accountHolderCode`; when the holder chooses to onboard, POST to `/getOnboardingUrl` and redirect them to the returned one-time URL (raw lines 31\u201341, 59\u201369, 87\u2013105). The guide says the returned URL must be used once within 15 seconds. A successful redirect starts a 30-minute session; if the redirect is late or the holder reloads after the session starts, the holder receives HTTP 401 and the platform must request a new URL (raw lines 87\u2013112).\n- `returnUrl`, `shopperLocale` and `platformName` are optional request parameters; account-holder updates arrive through `ACCOUNT_HOLDER_UPDATED`, and subsequent verification results through `ACCOUNT_HOLDER_VERIFICATION` webhooks (raw lines 67\u201370, 113\u2013122). Returning to the platform site or receiving the URL response is not a verification result. On expiry or incomplete onboarding, generate a new URL; entered information is saved per section so the next session resumes at remaining sections (raw lines 114\u2013120).\n- The prose/bullet calls the returned field `redirectURL`, while the JSON example spells it `redirectUrl`. Preserve that mismatch rather than assuming both spellings are valid response keys; confirm against the actual API contract before implementing the parser (raw lines 87\u2013105). The sample `pspReference` is recommended for troubleshooting, not evidence of completion (raw lines 89\u2013100).\n- Customer Area access on behalf of a holder is a separate operational route that requires the **Manage HOP settings** role (raw lines 124\u2013132). The page says a newly created holder can immediately process payments, but that statement alone does not establish completed verification or payouts (raw lines 59\u201363).\n\n## Detail locators\n\n- Classic-only scope, recommended HOP and customizable language, appearance and notification options: raw lines 19\u201329. Four-step flow and 30-minute session: raw lines 31\u201341.\n- Enablement, default return URL, upfront/staggered collection: raw lines 47\u201357. Holder creation and optional URL parameters: raw lines 59\u201370. Test request/response example and response-field mismatch: raw lines 71\u2013101.\n- 15-second one-time URL, 401 cases, renewed URL, progress and verification webhooks: raw lines 103\u2013122. Role-gated Customer Area access: raw lines 124\u2013132.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder and account model.\n- [[source-adyen-docs-classic-platforms-onboard-users-custom-onboarding]] \u2014 platform-built alternative.\n- [[source-adyen-docs-classic-platforms-verification-process]] \u2014 verification and payout gates.\n- [[adyen-platforms]] \u2014 separate newer platform model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15|Classic Hosted Onboarding Page, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md:19"
+    },
+    {
+      "text": "Send account holders to Adyen's Hosted Onboarding Page (HOP) where they provide additional information directly to Adyen. This is our recommended solution, because it requires less implementation effort on your side.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md:21"
+    },
+    {
+      "text": "This URL must be used within 15 seconds and can only be used once.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md:89"
+    },
+    {
+      "text": "The redirection did not occur within 15 seconds.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md:109"
+    },
+    {
+      "text": "You receive all the subsequent verification results in [ACCOUNT\\_HOLDER\\_VERIFICATION](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_VERIFICATION) notification webhooks.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md:120"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-docs-classic-hosted-onboarding-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] \u2014 2021-modified, 2026-09-15-captured Classic HOP guide for enabled hosted verification, one-time redirect timing, session recovery and webhook result gates.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The prose uses `redirectURL` while its JSON example uses `redirectUrl`; confirm the actual API response key. A return redirect or URL response is not verification approval, and immediate processing after account-holder creation does not prove payout eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/2026-09-15.md",
+  "raw_sha256": "cd926c4387bd1ad9e32088f9fdfe70948ee0330c0e48d2111452f70220402b9b",
+  "status": "candidate_ready"
+}

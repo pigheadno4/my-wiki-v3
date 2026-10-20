@@ -1,0 +1,9 @@
+# C23 worker retrieval checks — docs-classic-platforms-top-up-accounts
+
+## Q1: Who funds whom, and what is required to use Classic direct-debit top-ups?
+
+The Classic page lets the platform pull funds from an **account holder's bank account**, settle successful debits to the **Adyen merchant account**, then credit accounts according to `splits` (raw lines 17–21, 39–52, 207–211). Dated scope is account-holder bank accounts in EU/UK/US over SEPA/BACS/ACH; enable direct debits through Support, obtain holder agreement, and for ACH business/non-profit accounts arrange the listed Adyen originator-ID allowlist (lines 28–37). `/debitAccountHolder` identifies holder, source bank UUID, merchant account, amount and split destinations; EU-bank debits have the page's EUR 500 per-transaction cap (lines 39–52). Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-top-up-accounts]] → [[raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15]].
+
+## Q2: Does Received or Initiated prove a funded account, and is the example currency coherent?
+
+No. `Received` acknowledges the request; the async `DIRECT_DEBIT_INITIATED` notification can be `Initiated` or `Failed`, with later rail settlement and reports separate. Failure may arrive up to three business days after request (raw lines 89–117, 207–211). The example prose and request show USD 62 with a USD 60/2 split (lines 52–86); the immediate `Received` response has no amount, currency or split values (lines 89–99). The later `Initiated` webhook has USD 62 total but EUR 60/2 split amounts (lines 127–151); the raw gives no FX explanation. Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-top-up-accounts]] → [[raw/adyen/docs/classic-platforms/top-up-accounts/2026-09-15]].

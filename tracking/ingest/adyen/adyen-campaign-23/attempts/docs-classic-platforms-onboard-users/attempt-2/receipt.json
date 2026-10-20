@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-classic-platforms-onboard-users",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Onboard and verify users | Adyen Classic Platforms\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/onboard-users\"\nraw_files:\n  - \"adyen/docs/classic-platforms/onboard-users/2026-09-15.md\"\ntags: [adyen, classic-platforms, onboarding, verification, payouts]\n---\n\n## Overview\n\nThis 2020-modified, 2026-09-15-captured [[adyen]] [[adyen-classic-platforms]] guide describes verification choices for Classic sub-merchant account holders before payouts can be enabled. It explicitly routes new implementations to a separate new-integration guide. Its Classic Account API `/checkAccountHolder`, account-holder tiers and notifications should be read in the Classic model, separate from the newer Adyen for Platforms resources.\n\n## Key takeaways\n\n- A platform chooses when to collect required information: upfront collection and verification right after account-holder creation, or staggered collection as needed when processing volume increases. It also chooses Adyen's Hosted Onboarding Page or a custom application that sends collected information through the API. Adyen says it conducts verification after receiving the information; upfront verification must be enabled through Support. See raw **Onboard and verify users**, **Upfront verification**, and **Onboarding options** (lines 19\u201334, 232\u2013247).\n- In the staggered approach, processing tiers reflect funds processed and payout tiers reflect passed checks. Country, legal entity and processing volume shape the tiers/limits. A higher processing tier disables payouts and triggers additional checks; missing or incorrect information leads to `ACCOUNT_HOLDER_UPDATED` and `ACCOUNT_HOLDER_VERIFICATION` notifications. Payouts resume at a higher payout tier after Adyen validates sufficient data successfully. See raw **Staggered verification** and **Verification tiers** (lines 36\u201351).\n- `POST /checkAccountHolder` with `accountStateType: Payout` and a selected `tier` proactively checks the holder while preserving the current payout state if information is insufficient or checks fail. `accountStateType: Processing` forces immediate checks and permits payouts only if verification succeeds; on insufficient data or failure, payouts are disabled and the platform must collect details and call `/checkAccountHolder` again. See raw **Precheck the required information** and its two tabs (lines 53\u201397, 138\u2013175). A successful request response example is not itself verification success or a completed payout.\n\n## Detail locators\n\n- The Payout precheck test-environment Account API v6 request/response and status-change sample are at raw lines 62\u2013136.\n- The Processing forced-verification test-environment request/response and status-change sample are at raw lines 138\u2013230. The samples describe status fields; actual outcomes are communicated by `ACCOUNT_HOLDER_VERIFICATION` and `ACCOUNT_HOLDER_STATUS_CHANGE` notifications (lines 94\u201397, 172\u2013175).\n- The Hosted Onboarding Page and custom-onboarding routes are listed at raw lines 232\u2013247.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic model, money flow, and other source routes.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/onboard-users/2026-09-15|Onboard and verify users, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/2026-09-15.md, Onboard and verify users, line 19"
+    },
+    {
+      "text": "To enable upfront verification for your platform, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/2026-09-15.md, Upfront verification, line 34"
+    },
+    {
+      "text": "* **Processing tiers** are determined by the amount of funds processed.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/2026-09-15.md, Verification tiers, line 48"
+    },
+    {
+      "text": "We will perform verification on the account holder for all checks in the tier number provided. If the checks do not have enough information to verify or if a check fails, the current payout state will not be affected. Your account holder can continue processing payments and being paid out in their current tier.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/2026-09-15.md, Proactively verify account holder details, line 92"
+    },
+    {
+      "text": "We will perform verification on the account holder for all checks in the tier number provided. This immediately initiates the required checks for that tier, and only allow payouts if the verification is successful. If the checks do not have enough information to verify or if a check fails, payouts are disabled. You then need to collect the appropriate details from your account holder and make another `/checkAccountHolder` call to restart the verification.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/2026-09-15.md, Force immediate verification, line 170"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-onboard-users-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-onboard-users]] \u2014 2020-modified, 2026-09-15-captured Classic account-holder verification guide for upfront versus staggered onboarding, payout-tier transitions, and the distinct Payout/Processing `/checkAccountHolder` prechecks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/onboard-users/2026-09-15.md",
+  "raw_sha256": "9f1fdecba87d7c953299822637d6da024c27a56d2adb0e8414393820f5f9b7a4",
+  "status": "candidate_ready"
+}

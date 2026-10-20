@@ -1,0 +1,9 @@
+# C23 worker retrieval checks — docs-classic-platforms-quick-start
+
+## Q1: What does the Classic quick start require and walk through?
+
+It starts with a use-case fit check and two **test** credentials: platform for onboarding/payouts and payments for processing (raw lines 21–34). It then creates Classic sub-merchant account holders/accounts, collects verification data through hosted or custom onboarding, sends a Checkout split-payment example, shows capture and payout requests, configures notifications, and uses test reports (lines 36–232). The example splits a EUR 62 customer payment into EUR 60 for the account holder's account and EUR 2 platform commission (lines 113–159). Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-quick-start]] → [[raw/adyen/docs/classic-platforms/quick-start/2026-09-15]].
+
+## Q2: Which gates prevent treating these examples as live payment or payout proof?
+
+Higher processing tiers and payouts require passed verification (raw line 86); payout request identifiers separate source account/account holder from receiving bank instrument (lines 165–187). Authorisation still needs capture for settlement (line 163). Classic create/update/delete outcomes are asynchronous and require notifications (lines 191–197). The 2021 basic-data/gender example (lines 42–77) predates the [[source-adyen-docs-classic-platforms-verification-process-requirements-update|Classic requirements update]] for new sub-merchants from 1 August 2022; it says gender is no longer required ([[raw/adyen/docs/classic-platforms/verification-process/requirements-update/2026-09-15|related raw lines 21–37, 434–436]]). None of these test examples establishes current eligibility, capture, payout or bank receipt. Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-quick-start]] → [[raw/adyen/docs/classic-platforms/quick-start/2026-09-15]].

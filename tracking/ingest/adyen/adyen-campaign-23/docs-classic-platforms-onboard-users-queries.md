@@ -1,0 +1,9 @@
+# Retrieval checks — docs-classic-platforms-onboard-users
+
+## Q1 — What onboarding and verification choices does the Classic guide describe?
+
+For Classic Adyen for Platforms, the platform chooses upfront collection and verification right after account-holder creation, or staggered collection as needed, and either Adyen's Hosted Onboarding Page or a custom API-fed application (raw lines 19–34, 232–247). Upfront verification requires contacting Support to enable it (line 34). Staggered verification uses processing and payout tiers; higher processing volume can trigger additional checks and temporarily disable payouts until successful validation (lines 36–51). Route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-onboard-users]] → [[raw/adyen/docs/classic-platforms/onboard-users/2026-09-15]].
+
+## Q2 — How do the two `/checkAccountHolder` prechecks differ, and what limits a success response?
+
+With `accountStateType: Payout`, a selected-tier proactive check leaves the current payout state unaffected if information is insufficient or a check fails (raw lines 62–92). With `accountStateType: Processing`, the selected-tier check allows payouts only on successful verification; missing data or failed checks disable payouts and require corrected details plus another call (lines 138–170). Both tabs describe verification/status-change notifications (lines 94–97, 172–175); the sample `resultCode: Success` at lines 85–90 or 163–168 is a request response, not proof of verification success or funds received. This dated Classic page also directs new implementers to a separate integration guide (line 19). Route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-onboard-users]] → [[raw/adyen/docs/classic-platforms/onboard-users/2026-09-15]].

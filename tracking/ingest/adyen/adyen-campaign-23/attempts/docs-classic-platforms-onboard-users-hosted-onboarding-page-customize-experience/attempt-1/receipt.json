@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-onboard-users-hosted-onboarding-page-customize-experience",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Customize Hosted Onboarding Page\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience\"\nraw_files:\n  - \"adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md\"\ntags: [adyen, classic-platforms, hosted-onboarding, verification, customization]\n---\n\n## Overview\n\nThis 2022-modified, 2026-09-15-captured **Classic Adyen for Platforms** guide describes optional `/getOnboardingUrl` request controls for the Hosted Onboarding Page (HOP): which verification information to collect, which summary pages to show, language, editing previously verified data, platform display name and post-session return URL. It is a Classic account-holder verification UI route, separate from newer Platforms hosted onboarding. The companion [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page|HOP guide]] owns enablement, one-time URL timing, session recovery and verification-result webhooks. See [[adyen]] and [[adyen-classic-platforms]].\n\n## Key takeaways\n\n- By default HOP collects information for every verification check that applies to the account holder's legal-entity type. Set `collectInformation` on `/getOnboardingUrl` to collect selected bank, business, individual, PCI-questionnaire or shareholder information, singly or in combination. Set `showPages` to show or hide the welcome and listed summary pages; the **welcome page is hidden by default**.\n- HOP normally uses the browser language, falling back to `en-US` if unsupported. The account holder can select a language; `shopperLocale` can render the page in a specified supported language. If that requested locale is unsupported, HOP falls back to browser language, then to `en-US` if the browser language is also unsupported. The supported locale table is a dated snapshot.\n- HOP is described as a one-time onboarding tool, so account holders cannot edit already verified data by default. Supplying `editMode` changes that behavior to allow editing after checks have passed; this alters what the holder can change and does **not** by itself establish that updated information is accepted or verified.\n- `platformName` changes the welcome-page name, relevant only when that page is displayed. The page says a `returnURL` object overrides the platform's default return URL after onboarding completion or session timeout, with a **500-character maximum**. The companion HOP page calls the optional request parameter `returnUrl` (companion raw line 69), while this page says `returnURL` (pinned raw line 113); verify the exact API contract before sending it. A return redirect is not a verification decision.\n\n## Detail locators\n\n- Pinned raw lines 15\u201334: Classic scope and customizable `/getOnboardingUrl` capabilities.\n- Pinned raw lines 36\u201348: default legal-entity checks and `collectInformation` categories; lines 50\u201362: `showPages` categories and hidden welcome default.\n- Pinned raw lines 64\u201396: browser/`shopperLocale` fallback and supported locale table; lines 98\u2013102: verified-data editing default and `editMode`.\n- Pinned raw lines 104\u2013114: platform display name, return redirect and URL length; companion HOP raw line 69 uses different return-parameter casing.\n\n## Related\n\n- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] \u2014 HOP enablement, redirect/session and webhook guide.\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/onboarding context.\n- [[adyen-platforms]] \u2014 newer model with separate hosted-onboarding configuration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15|Classic HOP customization guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md:19"
+    },
+    {
+      "text": "To collect information only for specific [verification checks](/classic-platforms/verification-process), specify the `collectInformation` object in your [/getOnboardingUrl](https://docs.adyen.com/api-explorer/Hop/latest/post/getOnboardingUrl) request.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md:40"
+    },
+    {
+      "text": "The welcome page is not shown by default.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md:62"
+    },
+    {
+      "text": "The main purpose of HOP is to be a one-time onboarding tool, which means that, by default, account holders cannot edit data on HOP that has already been verified.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md:100"
+    },
+    {
+      "text": "To change this URL, send the `returnURL` object in your [/getOnboardingUrl](https://docs.adyen.com/api-explorer/Hop/latest/post/getOnboardingUrl) request.",
+      "location": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md:113"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-hop-customization-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page-customize-experience]] \u2014 2022-modified, 2026-09-15-captured Classic HOP customization guide for check/page selection, locale fallback, verified-data editing and return redirect; source flags `returnURL` versus companion `returnUrl` casing.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The exact return-parameter spelling conflicts with the companion Classic HOP guide; confirm against the applicable API contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/onboard-users/hosted-onboarding-page/customize-experience/2026-09-15.md",
+  "raw_sha256": "35968a8a103e79447d5b8bd5f8a25d7ce13881b0c4c242e8e69bf098cf34b6a2",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-classic-platforms-verification-process-document-requirements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Document upload requirements\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/verification-process/document-requirements\"\nraw_files:\n  - \"adyen/docs/classic-platforms/verification-process/document-requirements/2026-09-15.md\"\ntags: [adyen, classic-platforms, verification, documents, account-holders]\n---\n\n## Overview\n\nThis 2026-09-15 capture of a 2021-modified Adyen page gives document-upload requirements for **Classic Adyen for Platforms** account-holder verification. It directs new implementations to a separate new integration guide. If automatic entity verification fails because information is wrong or cannot be verified, Adyen may request identity, registration, or bank evidence. Account holders can upload through the Classic Hosted Onboarding Page, or the platform can collect documents in its own flow and submit them to Adyen through the API. See [[adyen-classic-platforms]] and [[adyen]]; this is dated source guidance, not a finding that a particular account holder passed verification.\n\n## Key takeaways\n\n- **Individuals:** In the EU the page requires account-holder photo ID; elsewhere Adyen asks for photo ID if identity cannot be validated automatically (raw lines 28\u201330). Accepted ID types include passport data page, both sides of an ID card, or both sides of a driving licence, with front/back as separate files where relevant (raw lines 32\u201338, 51\u201355). The ID name must match onboarding data; if it does not, the check fails and matching first/last names must be supplied. Single-name individuals use the same name in both fields (raw lines 40\u201342). The ID must be physical, unexpired, appropriately signed where a signature field exists, and legible; digital IDs, secondary screenshots/copies, AI or image-editor modifications, and low-quality images are rejected (raw lines 44\u201364).\n- **Organizations:** After automatic verification fails for the listed business or organization types, Adyen asks for a registration document, with asynchronous verification averaging about two days; that duration is guidance, not a completion guarantee (raw lines 81\u201388). The document must come from a reliable independent source and meet the page's one-year issuance or signed/status-date condition (raw lines 85\u201388).\n- **Bank accounts:** If bank verification fails, Adyen asks for bank-account evidence. The page lists statements, deposit documents, **screenshots of the online banking environment**, official bank letters, and cheques, with location-specific forms (raw lines 99\u2013115). This acceptance of online-banking screenshots is scoped to bank evidence; it does not override the photo-ID rejection of screenshots. Bank-issued card photos are explicitly disallowed because they contain sensitive information (raw lines 117, 133\u2013140). The account-holder name, account number/IBAN, country, and bank issuer indicator must be visible, with issuance-date rules and exceptions for specified document types (raw lines 119\u2013131).\n- **File limits and regional conditions:** Individual photo-ID uploads have a general 15-page statement, but the same section restricts PDF files to two pages and limits files to 1 KB\u20134 MB (raw lines 64, 74\u201377); read these together rather than treating 15 pages as a PDF allowance. Organization files are generally 1 KB\u20134 MB with two-page PDFs, except legal-arrangement PDFs can reach 25 MB (raw lines 90\u201397). Bank evidence allows PDFs without a page maximum but retains the 1 KB\u20134 MB size range (raw lines 162\u2013166). France, Poland and Ukraine notes are dated snapshot-specific, including an anomalous Polish date string `2013/19/01`; do not infer current legal validity from them (raw lines 66\u201372).\n- The bank-evidence text gives a less-than-12-month issuance rule with exceptions for RIBs, cheques, online banking and TAMIEYTHPIO; if a RIB or online-bank view shows an issue date, that date must also be under 12 months (raw lines 125\u2013127). Its later generic rejection of documents older than 12 months (raw line 137) does not restate those exceptions, so apply the type-specific wording rather than flattening the rules.\n\n## Detail locators\n\n- Classic-only scope, failed-verification trigger, HOP/API upload routes: raw lines 15\u201326.\n- Individual ID conditions, exclusions, countries and format limits: raw lines 28\u201379.\n- Organization registration document, asynchronous check and size exceptions: raw lines 81\u201397.\n- Bank evidence types, disallowed card photos, mandatory fields, age exceptions, document-specific rules and file limits: raw lines 99\u2013166.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-classic-platforms]] \u2014 Classic account-holder verification route.\n- [[source-adyen-docs-classic-platforms-verification-process-accepted-data-format]] \u2014 separate accepted data-format reference.\n- [[adyen-platforms]] \u2014 newer platform model, with separate verification rules.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/verification-process/document-requirements/2026-09-15|Classic Platforms document upload requirements, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations. If you are just starting your implementation, refer to our [new integration guide](/adyen-for-platforms-model) instead.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Adyen verifies the account holder's entity based on the information provided during onboarding.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "Documents that have been enhanced or modified using AI tools or image-editing software.",
+      "location": "raw line 61, For individuals > Photo ID exclusions"
+    },
+    {
+      "text": "Documents are verified asynchronously, and on average, the check will take about two days to complete.",
+      "location": "raw line 83, For organizations"
+    },
+    {
+      "text": "The date of issuance needs to be visible and needs to be dated less than 12 months ago.",
+      "location": "raw line 125, For bank accounts > Mandatory information"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-document-requirements-source",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-classic-platforms-verification-process-accepted-data-format]]",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-verification-process-document-requirements]] \u2014 2021-modified, 2026-09-15-captured Classic failed-verification document guide for individual ID, organization registration and bank evidence, with category-specific screenshot, age, page and size limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Individual photo-ID screenshots are rejected (raw lines 57\u201361), while online-banking screenshots are listed as bank-account evidence (raw line 107); keep categories distinct.",
+          "Bank-evidence age exceptions at raw lines 125\u2013127 are not restated in the general older-than-12-month rejection at raw line 137.",
+          "The 15-page individual document statement at raw line 64 coexists with a two-page PDF limit at raw line 76."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/verification-process/document-requirements/2026-09-15.md",
+  "raw_sha256": "8c703272577fe234b08ae34f0cb686b0adeefe6e02089ec31a7f13e9fca81eef",
+  "status": "candidate_ready"
+}

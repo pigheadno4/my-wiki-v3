@@ -1,0 +1,9 @@
+# Retrieval checks — docs-issuing-manage-card-data-change-pin-ios-sdk
+
+Q1. What prerequisites and client/API steps does this iOS PIN-change guide describe?
+
+A1. Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-manage-card-data-change-pin-ios-sdk]] → [[raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15]]. It requires Configuration API credentials with the Bank Issuing PIN Change Webservice role, iOS 13.0+, and the Card Reveal iOS SDK (raw lines 35–45). GET `/publicKey` uses `purpose=pinChange`, `format=pem`, returning a public key and expiry (raw lines 47–68, 216–230). In the client, `PinChangeService.encryptedPinBlock(withPem:pin:)` produces the encrypted PIN block plus encrypted key and token (raw lines 232–256); POST `/pins/change` sends those outputs with `paymentInstrumentId` (raw lines 258–267).
+
+Q2. What sensitive-data and outcome limits should a reader retain?
+
+A2. Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-manage-card-data-change-pin-ios-sdk]] → [[raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15]]. The new PIN is passed into the SDK client method (raw lines 244–249), while the API request fields are `paymentInstrumentId`, `encryptedKey`, `token`, and `encryptedPinBlock`, with no plaintext PIN field shown (raw lines 252–267). The request table calls `encryptedKey` the AES key, but the preceding SDK section presents it as an encrypted output (raw lines 252–265). The response may be `completed`, `pending`, or `unavailable`; a sample POST or pending state does not prove the PIN changed (raw lines 269–488). The public-key examples are test-host snippets with generic placeholder arguments in several language tabs despite the prose's `pinChange`/`pem` values (raw lines 53–68, 70–214).

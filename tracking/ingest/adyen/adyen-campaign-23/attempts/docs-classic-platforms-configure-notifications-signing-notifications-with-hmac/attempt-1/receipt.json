@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-configure-notifications-signing-notifications-with-hmac",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms HMAC-signed notifications\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/configure-notifications/signing-notifications-with-hmac\"\nraw_files:\n  - \"adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md\"\ntags: [adyen, classic-platforms, notifications, hmac, security]\n---\n\n## Overview\n\nThis 2023-modified Classic Adyen for Platforms guide, captured 2026-09-15, describes optional HMAC signing for notifications from Notifications v5 onward. Basic authentication is the stated default; HMAC adds an integrity check using a shared secret. The page points integrations built after 2022-08-01 to a separate new-integration guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- Supply an HMAC signature key while subscribing with `/createNotificationConfiguration` to receive signed notifications at the configured URL; the example is a test Notification API v6 call with endpoint credentials (raw lines 19\u201325, 27\u201335, 37\u201382). The source says a payment-notification key may be reused. If a new key is generated, previous notifications remain signed with the previous key, so verification of older deliveries needs the appropriate previous key (raw lines 29\u201331).\n- For each incoming notification, take `HmacSignature` and `Protocol` from HTTP headers. The page says only SHA256 is supported; compute HMAC over the whole, original HTTP request body with the shared key and compare with the header signature before deserializing. JSON element reordering after deserialization may otherwise make a valid signature fail (raw lines 84\u201390). Its Java sample uses `HmacSHA256`, UTF-8 payload bytes and Base64 output (raw lines 109\u2013157).\n- The page calls the key a **32bit hexadecimal** HMAC key, but its subscription and Java examples show a 64-hex-character key. This is a material size/terminology mismatch; do not derive a key-length rule from the wording alone (raw lines 29, 54, 114\u2013115).\n- The subscribe prose says the example activates `ACCOUNT_HOLDER_VERIFICATION`, whereas the request and response `eventConfigs` specify `ACCOUNT_CREATED`. Treat the sample as an illustration of configuration fields, not proof that the verification event is included by that request (raw lines 35, 48\u201353, 71\u201376). The example key and credentials are illustrative, not values to reuse.\n\n## Detail locators\n\n- Notifications v5+ and post-2022 integration boundary; default basic authentication and optional HMAC: raw lines 19\u201325. Key wording, reuse and rotation caveat: raw lines 27\u201331.\n- Subscription description, test v6 request, example event config and response: raw lines 33\u201382. Header fields, SHA256, whole-body comparison before deserialization: raw lines 84\u201390. Java and sample-header mechanics: raw lines 92\u2013174.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older platform model.\n- [[adyen-webhooks]] \u2014 general webhook context; do not assume its signature format applies to this Classic notification route.\n- [[source-adyen-docs-classic-platforms-verification-process]] \u2014 account-holder verification events and status.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15|Classic HMAC notification signing, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This feature is supported from [Notifications v5](https://docs.adyen.com/api-explorer/NotificationService/v5/overview) and later.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md:19"
+    },
+    {
+      "text": "If you generate a new HMAC key, your previous notifications will still be signed with your previous HMAC key.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md:31"
+    },
+    {
+      "text": "\"eventType\":\"ACCOUNT_CREATED\"",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md:50"
+    },
+    {
+      "text": "To compute the HMAC signature, apply the algorithm/protocol to the whole HTTP body using the key. If the computed HMAC signature is equal to the one in the header, the verification is successful.",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md:88"
+    },
+    {
+      "text": "Perform this check before deserializing",
+      "location": "raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md:90"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-docs-classic-hmac-notifications-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-configure-notifications-signing-notifications-with-hmac]] \u2014 2023-modified, 2026-09-15-captured Classic Notifications v5+ HMAC guide for configuration, raw-body verification and key-rotation boundary; key-size and example-event text conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source says `32bit hexadecimal` but shows a 64-character hex key; prose says ACCOUNT_HOLDER_VERIFICATION while sample eventConfigs contain ACCOUNT_CREATED. Verify exact key requirements and event selection against the applicable API contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/configure-notifications/signing-notifications-with-hmac/2026-09-15.md",
+  "raw_sha256": "c6a54fcc4ee0068512d3b482b150852b8174d1bf2ec1d12a204048273b640270",
+  "status": "candidate_ready"
+}

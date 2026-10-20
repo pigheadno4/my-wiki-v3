@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-manage-card-data-reveal-card-details-ios-sdk",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: reveal card details with the iOS SDK\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-card-data/reveal-card-details-ios-sdk\"\nraw_files:\n  - \"adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md\"\ntags: [adyen, issuing, card-data, ios]\n---\n\n## Overview\n\nThis 2026-09-15 Issuing guide describes revealing an Adyen-issued card's PAN, CVC and expiration date to its cardholder inside an iOS app. Its flow obtains an Adyen public key through the Configuration API, uses the Card Reveal iOS SDK to generate an encrypted symmetric session key, requests encrypted details for a `paymentInstrumentId`, then decrypts and displays those details on the client. This is sensitive card-data access, not card activation, a payment authorization, or a claim about a particular integration's PCI scope. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Prerequisites stated here are Configuration API credentials with the **Bank Issuing PaymentInstrument Reveal Webservice** role, iOS **13.0 or later**, and Adyen's Card Reveal iOS SDK. The snapshot does not pin a Card Reveal SDK release; its server-language snippets carry historical library versions and TEST endpoints.\n- The server obtains `GET /publicKey` with `purpose=panReveal` and `format=jwk`; the response contains a public key and expiry date. The guide calls the key \u201cbase64-encoded RSA\u201d in its prose while requesting JWK format and passing the result to `generateEncryptedKey(withJwk: publicKey)`. Preserve this representation ambiguity instead of assuming the raw response is directly interchangeable with any base64 RSA encoding.\n- The app initializes `CardRevealService` and generates an `encryptedKey`; the server then calls `POST /paymentInstruments/reveal` with that key and the target `paymentInstrumentId`. Adyen returns `encryptedData`, which is passed to the client; `cardDetails(from: encryptedData)` decrypts it, and the app reveals the result to the cardholder. The guide does not document user-authentication, entitlement or display-retention controls for this flow.\n- The sample keys, IDs, API calls and responses are illustrative TEST examples. They do not establish that a real card was retrieved or that a live sensitive-data flow met security or compliance requirements.\n\n## Detail locators\n\n- Raw lines 15\u201347 define purpose, ordered flow and prerequisites.\n- Raw lines 49\u201358 specify public-key retrieval and query values; lines 60\u2013232 contain TEST/server-library snippets and sample response with public-key expiry.\n- Raw lines 234\u2013254 show iOS `CardRevealService` and `generateEncryptedKey(withJwk:)`.\n- Raw lines 256\u2013266 define the reveal request fields; lines 267\u2013476 contain TEST/server-language examples, encrypted response and client handoff.\n- Raw lines 478\u2013492 show SDK decryption and app display.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing program context.\n- [[adyen]] \u2014 provider context.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15|Adyen Issuing iOS card-details reveal, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To securely request the data, you use a base64-encoded [RSA](https://en.wikipedia.org/wiki/RSA_\\(cryptosystem\\)) public key and [Adyen's Card Reveal iOS SDK](https://github.com/Adyen/adyen-card-reveal-ios) to generate an encrypted session key.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md:25"
+    },
+    {
+      "text": "Your API credential has the **Bank Issuing PaymentInstrument Reveal Webservice** role.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md:45"
+    },
+    {
+      "text": "* [format](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/publicKey#query-format): **jwk**",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md:58"
+    },
+    {
+      "text": "1. Make a POST [/paymentInstruments/reveal](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal) request and specify the following parameters:",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md:260"
+    },
+    {
+      "text": "The response contains the [encryptedData](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments/reveal#responses-200-encryptedData).",
+      "location": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md:466"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-ios-card-reveal-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details-ios-sdk]] \u2014 2026-09-15 Issuing iOS Card Reveal SDK guide for encrypted PAN/CVC/expiry retrieval and client display; public-key representation wording differs from its JWK request.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source calls the key base64-encoded RSA in prose but requests format=jwk and passes it to withJwk; do not assume an unspecified conversion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-card-data/reveal-card-details-ios-sdk/2026-09-15.md",
+  "raw_sha256": "4105f3187effbf479b511a50896ea9df6376369563561c90530d0ac48e624b35",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-manage-card-data-change-pin-ios-sdk",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Change PIN using the iOS SDK\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-card-data/change-pin-ios-sdk\"\nraw_files:\n  - \"adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md\"\ntags: [adyen, issuing, ios, cards, pin]\n---\n\n## Overview\n\nThis Adyen Issuing guide (last modified and captured 2026-09-15) describes changing an issued card's PIN within an iOS app using Adyen's Card Reveal iOS SDK to form the encrypted PIN block, then the Balance Platform Configuration API to request the change. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Requirements are Configuration API credentials with the **Bank Issuing PIN Change Webservice** role, an app on **iOS 13.0 or higher**, and the installed Card Reveal iOS SDK. The page's flow gets a public key, generates an encrypted PIN block in the client, and sends POST `/pins/change`. See raw lines 19\u201345.\n- GET `/publicKey` specifies `purpose=pinChange` and `format=pem`. The returned public key has an expiry date and is passed to the client. The public-key examples use a test host; several generated language snippets show generic `string` placeholders, while the prose specifies the actual query values. See raw lines 47\u201368 and 216\u2013230; versioned SDK examples are at raw lines 70\u2013214.\n- The iOS example constructs `PinChangeService` and calls `encryptedPinBlock(withPem: publicKey, pin: pin)`. The resulting object contains `encryptedPinBlock`, `encryptedKey`, and `token` to submit with the card's `paymentInstrumentId`. The new PIN is supplied to the SDK's client method; the described API request carries the encrypted block and related outputs, not a plaintext PIN field. See raw lines 232\u2013267.\n- The request table describes `encryptedKey` as \u201cThe symmetric session AES key,\u201d while the SDK-output prose calls it the symmetric session `encryptedKey` used to securely send the block. Keep the encrypted-output identity when reading the terse table; the page does not specify sending a plaintext AES key. See raw lines 252\u2013267. The companion [[source-adyen-docs-issuing-manage-card-data-change-pin]] describes the separate standard-encryption route.\n- The POST response reports request status **completed**, **pending**, or **unavailable**. A sample request or `pending` response does not establish a completed PIN change. The API snippets are test-environment examples with differing library versions, not evidence of a live card or payment. See raw lines 269\u2013488.\n\n## Detail locators\n\n- Scope, role, iOS and SDK prerequisites: raw lines 19\u201345.\n- Public-key parameters, example response and expiry: raw lines 47\u2013230.\n- iOS PIN-block method and outputs: raw lines 232\u2013256.\n- POST fields, test snippets and status values: raw lines 258\u2013488.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main concept.\n- [[source-adyen-docs-issuing-manage-card-data-change-pin]] \u2014 standard-encryption PIN-change route.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15|Change PIN using Adyen's iOS SDK, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Bank Issuing PIN Change Webservice role",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md:41"
+    },
+    {
+      "text": "iOS version 13.0 or higher.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md:43"
+    },
+    {
+      "text": "**pem**",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md:56"
+    },
+    {
+      "text": "revealService.encryptedPinBlock(withPem: publicKey, pin: pin)",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md:249"
+    },
+    {
+      "text": "Possible values: **completed**, **pending**, **unavailable**.",
+      "location": "raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md:488"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-issuing-change-pin-ios-sdk-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-card-data-change-pin-ios-sdk]] \u2014 2026-09-15-captured iOS 13+ Card Reveal SDK PIN-change route with role, PEM key, encrypted request outputs and pending/unavailable status boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The request table's encryptedKey description is terse; the SDK section names encryptedKey as output. A pending/unavailable status is not completed PIN change."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-card-data/change-pin-ios-sdk/2026-09-15.md",
+  "raw_sha256": "9b4c36f632947ae142190bf8aed3e68a3f03c13388f525ff3200b53269d3d497",
+  "status": "candidate_ready"
+}

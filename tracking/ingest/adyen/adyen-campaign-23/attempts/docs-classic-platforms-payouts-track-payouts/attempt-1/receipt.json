@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-classic-platforms-payouts-track-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Classic Platforms payout tracking and returns\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/payouts/track-payouts\"\nraw_files:\n  - \"adyen/docs/classic-platforms/payouts/track-payouts/2026-09-15.md\"\ntags: [adyen, classic-platforms, payouts, notifications, returns]\n---\n\n## Overview\n\nThis 2026-09-15 Classic Adyen for Platforms guide explains how to track a sub-merchant/account-holder bank payout through notifications or Customer Area and respond to a return. It directs new integrations to a different guide. The statuses are for the **Classic** payout flow under [[adyen-classic-platforms]], with provider context at [[adyen]]; a confirmed platform debit is not independent evidence of receiving-bank credit.\n\n## Key takeaways\n\n- The page gives general timing: a regular-speed payout may take **1\u20132 business days** to confirm success or failure; if successful, funds may take **another 3 business days** to reach the receiving bank (raw lines 19\u201323). These are guide estimates, not an account-specific arrival guarantee.\n- `ACCOUNT_HOLDER_PAYOUT` with `statusCode=Initiated` signals initiation. From **notification version 5**, `content.estimatedArrivalDate` can provide an estimated date. A later `Confirmed` notification means the payout was **debited from the platform account**; Customer Area payout History can show these states (raw lines 25\u201359). A payout confirmation letter can be downloaded after confirmation only with the stated Customer Area role; it is a confirmation artifact, not bank-receipt proof (raw lines 61\u201375).\n- A receiving bank can return a payout **after Confirmed**, causing another `ACCOUNT_HOLDER_PAYOUT` notification with `status.statusCode=Failed`. The bank may provide a return code/text, but sometimes gives no reason. Customer Area has a **Payout reversed** type; after funds return to Adyen, booking back to the account holder's payable balance may take around **3\u20136 business days** (raw lines 77\u2013124).\n- For a returned **scheduled** payout, Adyen says it blocks further payouts to that bank account. For **manual** payouts, retrying unchanged bank details is likely to return again. The guide first calls for verifying/updating details or discussing a bank rejection with the account holder's bank, then distinguishes manual reissue from scheduled payout-state unblocking (raw lines 126\u2013152, 199\u2013215). A new instruction does not establish a successful retry or bank receipt.\n\n## Detail locators\n\n- Customer Area payout History paths for initiated/confirmed status and payout-letter download, including role gate and support escalation if still Initiated after 2\u20133 business days: raw lines 31\u201375.\n- Return-reason code examples and notification payload: raw lines 79\u2013114. No bank-supplied reason is guaranteed.\n- Manual reissue: Customer Area requires **Instruct payouts to bank accounts for all account holders from the customer area** role, a positive source-account balance, and explicit source account, bank destination and amount; Classic Fund API `POST /payoutAccountHolder` is an alternative (raw lines 148\u2013197).\n- Scheduled payout-state unblocking: Customer Area **Unblock payouts** or Classic Account API `POST /updateAccountHolderState` with `disable=false`, `stateType=Payout` (raw lines 199\u2013228). This is a state/action route after correcting the returned payout, not confirmation of a later payment.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic concept and source route.\n- [[adyen]] \u2014 provider.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/payouts/track-payouts/2026-09-15|Classic Platforms payout tracking, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In general, a regular speed payout can take up to 1-2 business days to confirm if it is successful or if it failed. If the payout is successful, it can take another 3 business days for the funds to reach the receiving bank.",
+      "location": "raw line 21, opening"
+    },
+    {
+      "text": "Once the payout is initiated, you will receive an [ACCOUNT\\_HOLDER\\_PAYOUT](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_PAYOUT) notification with `statusCode` **Initiated**.",
+      "location": "raw line 29, ## Check if payout was initiated > ### Notifications"
+    },
+    {
+      "text": "Once the payout is debited from your platform account, you receive another [ACCOUNT\\_HOLDER\\_PAYOUT](https://docs.adyen.com/api-explorer/Notification/latest/post/ACCOUNT_HOLDER_PAYOUT) notification with `statusCode` **Confirmed**.",
+      "location": "raw line 46, ## Check if payout was confirmed > ### Notifications"
+    },
+    {
+      "text": "After receiving a **Confirmed** notification, it is still possible that the payout is returned to Adyen by the receiving bank triggering a new notification with `status.statusCode` **Failed**.",
+      "location": "raw line 92, ## Check if payout was returned to Adyen > ### Notifications"
+    },
+    {
+      "text": "If you are making scheduled payouts and a payout was returned, Adyen will block further payouts to that bank account.",
+      "location": "raw line 128, ## Resolve returned payouts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-classic-track-payouts-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-payouts-track-payouts]] \u2014 2026-09-15 Classic payout tracking guide for Initiated/Confirmed/Failed notifications, post-confirmation bank returns, timing estimates and manual versus scheduled recovery routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/payouts/track-payouts/2026-09-15.md",
+  "raw_sha256": "1bb5becf9ab8c390d8e733f0a244bd2244333d1c5fd25bbe3c2abe10cdf07b4b",
+  "status": "candidate_ready"
+}

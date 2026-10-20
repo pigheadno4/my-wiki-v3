@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-payouts-payout-notifications",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms payout notifications\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/payouts/payout-notifications\"\nraw_files:\n  - \"adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md\"\ntags: [adyen, classic-platforms, payouts, notifications, bank-returns]\n---\n\n## Overview\n\nThis 2022-modified Classic Adyen for Platforms guide, captured 2026-09-15, defines `ACCOUNT_HOLDER_PAYOUT` notification status updates after a payout is initiated: `Initiated`, `Confirmed` and `Failed`. It directs new implementations to the separate newer integration guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- `Initiated` means the payout has been scheduled to be sent to the account holder's bank; `estimatedArrivalDate` can be conveyed as an expectation, not bank receipt (raw lines 18\u201326). `Confirmed`, available in Notification v5 or later, means funds have left Adyen and are on their way to the bank; the guide estimates a few business days, but explicitly says the receiving bank can still return the payout afterward (raw lines 28\u201345).\n- A `Confirmed` notification can include `payoutReference` and origin-bank account number, branch code, country and bank name to help the account holder locate the payout; these describe the bank from which the payout is initiated, not proof of final credit to the recipient (raw lines 36\u201345).\n- `Failed` lists invalid account/routing, missing or closed account, returned funds, and validation errors such as payout disabled or amount above payable balance; a validation error carries `invalidFields`. The failed payout gets a new `pspReference` distinct from the initial payout (raw lines 47\u201362). Update bank details through `/updateAccountHolder` where applicable; the source links its Account API v4 reference (raw line 58).\n- If a scheduled payout is returned, the account holder's payout state is automatically disabled. The guide instructs updating bank details via `/updateAccountHolder` and re-enabling payout state via `/updateAccountHolderState`; the MarketPay payments accounting report can link returned and initial payouts (raw lines 64\u201364). This return/recovery condition is specific to configured scheduled payouts, not every `Failed` event.\n\n## Detail locators\n\n- Classic-only scope, notification event and status vocabulary: raw lines 16\u201322. Initiated and estimated arrival: raw lines 24\u201326.\n- Confirmed v5+ qualifier, bank-in-transit meaning, origin-bank fields and possible return: raw lines 28\u201345. Failed reasons, `invalidFields`, new `pspReference` and bank-detail update: raw lines 47\u201362. Scheduled-return disablement, two update calls and report join: raw line 64.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older platform model and account holders.\n- [[source-adyen-docs-classic-platforms-payouts-track-payouts]] \u2014 payout tracking and further recovery context.\n- [[source-adyen-docs-classic-platforms-payouts-scheduled-payout]] \u2014 schedule and HOLD behavior.\n- [[adyen-platforms]] \u2014 separate newer platform model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15|Classic payout notifications, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md:16"
+    },
+    {
+      "text": "Receiving the notification with `status.statusCode` **Initiated** means that the payout has been scheduled to be sent to the account holder's bank.",
+      "location": "raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md:26"
+    },
+    {
+      "text": "Receiving the notification with `status.statusCode` **Confirmed** means that the funds have left Adyen and are on their way to the account holder's bank.",
+      "location": "raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md:32"
+    },
+    {
+      "text": "After receiving a **Confirmed** notification, it is still possible that the payout is returned to Adyen by the receiving bank.",
+      "location": "raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md:45"
+    },
+    {
+      "text": "A failed payout will have a new `pspReference`, different from the initial payout.",
+      "location": "raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md:62"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c23-docs-classic-payout-notifications-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-payouts-payout-notifications]] \u2014 2022-modified, 2026-09-15-captured Classic `ACCOUNT_HOLDER_PAYOUT` status reference for Initiated/Confirmed/Failed, possible post-confirmation bank return and scheduled-return recovery.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Confirmed means funds left Adyen, not recipient-bank credit; a receiving bank can return the payout later. Only returned scheduled payouts are stated to disable payout state automatically."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/payouts/payout-notifications/2026-09-15.md",
+  "raw_sha256": "aed69778e45eb3f3d8e08757f8112bf5accdec460552c147924ca0d875a24ee7",
+  "status": "candidate_ready"
+}

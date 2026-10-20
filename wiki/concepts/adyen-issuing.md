@@ -15,6 +15,36 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-docs-issuing-authentication-label]] — 2026-09-15 title-only Issuing capture headed `process payments label`; no behavioral or API evidence.
+
+
+- [[source-adyen-docs-issuing-build-user-dashboards]] — 2026-09-15 Issuing user-dashboard hub linking the Transaction component and component-library guides; navigation, not transaction-outcome proof.
+
+
+- [[source-adyen-docs-issuing-card-on-file-tokens]] — 2026-09-15 merchant card-on-file network-token guide for inactive creation, scheme merchant allowlist, activation/closure and webhooks; valid-token payment sketch is narrower than full Issuing authorisation.
+
+
+- [[source-adyen-docs-issuing-manage-card-data-change-pin-ios-sdk]] — 2026-09-15-captured iOS 13+ Card Reveal SDK PIN-change route with role, PEM key, encrypted request outputs and pending/unavailable status boundary.
+
+
+- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details-ios-sdk]] — 2026-09-15 Issuing iOS Card Reveal SDK guide for encrypted PAN/CVC/expiry retrieval and client display; public-key representation wording differs from its JWK request.
+
+
+- [[source-adyen-docs-issuing-manage-card-data-reveal-card-details]] — 2026-09-15 Issuing Configuration API guide for role-gated encrypted PAN/CVC/expiry reveal to a cardholder app or website, with `panReveal` purpose and test/SDK example boundaries.
+
+
+- [[source-adyen-docs-issuing-manage-card-data-reveal-pin]] — 2026-09-15-captured Issuing PIN-reveal guide for Configuration API role/key, encrypted block retrieval and client display; its final RSA/ECB-with-AES-key wording conflicts with its generated-key description.
+
+
+- [[source-adyen-docs-issuing-manage-card-data-change-pin]] — 2026-09-15-captured Issuing PIN-change encryption and Configuration API guide, including public-key expiry, role prerequisite, request-status boundary and encrypted-key wording.
+
+
+- [[source-adyen-docs-issuing-manage-card-data]] — 2026-09-15 Issuing hub for cardholder PAN/details reveal and PIN reveal/change, with encrypted sensitive-data transfer and an iOS-only card-management SDK snapshot.
+
+- [[source-adyen-docs-issuing-manage-card-data-reveal-pin-ios-sdk]] — 2026-09-15-captured iOS 13+ Card Reveal SDK PIN-display flow with PIN Reveal role, public-key/session-key exchange, encrypted PIN block and client decryption; SDK release version unspecified.
+
+
+
 - [[source-adyen-docs-issuing-components-overview-after-payment]] — 2026-09-15-captured after-payment component route linking the Transactions filter/export/detail guide; this page itself is navigation only.
 
 
