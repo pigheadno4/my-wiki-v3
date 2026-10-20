@@ -634,8 +634,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-subscriptions-change-price]] — Change price (upgrade/downgrade): item-ID pitfall, quantity resets to 1, billing period rules, zero-amount edge cases (webpage, 2026-05-13)
 - [[source-stripe-subscriptions-prorations]] — Prorations: 6 triggers, non-trigger table, classic vs flexible credit prorations, preview locking, unpaid invoice handling (webpage, 2026-05-13)
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections, public workspace postman.com/stripedev (github-repo, 2026-05-13)
-- [[source-github-stripe-android]] — cumulative Android SDK through v23.23.0: security/error announcements, next-action callers, Onramp callback restoration and additional payment-method declarations; older knowledge/gaps retained (github-repo, updated 2026-10-14)
-- [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.23.0; contracts, announcements and retrospective attribution (github-repo, updated 2026-10-14)
+- [[source-github-stripe-android]] — cumulative Android SDK through v23.24.0: preview annotation migration, four method declarations, restricted KYC and qualified UI/test-mode announcements; older knowledge/gaps retained (github-repo, updated 2026-10-20)
+- [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.24.0; contracts, announcements and retrospective attribution (github-repo, updated 2026-10-20)
 - [[stripe-android-sdk]] — Stripe Android SDK: v23.13.1 requirements, builder-first PaymentSheet, Embedded Payment Element, Google Pay, low-level Intent APIs, specialized modules, and fulfillment boundary
 - [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.13.0: MoMo/GoPay/ShopeePay processing distinctions, FlowController plumbing and alpha pre-auth Apple Pay/KYC; older history, Pix caveat and evidence gaps retained (github-repo, updated 2026-10-13)
 - [[changelog-github-stripe-ios]] — package-qualified iOS ledger through v26.13.0; release changes, migration/evidence limits and retrospective attribution changes (github-repo, updated 2026-10-13)

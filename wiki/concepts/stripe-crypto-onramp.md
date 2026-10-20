@@ -183,6 +183,12 @@ OnrampCoordinator now receives OnrampCallbackStore. Builder.build updates it wit
 
 The new cumulative changelog labels the reused-coordinator/missing-callback fix under 23.22.0, but the retained 23.22.0 coordinator lacked this code. Preserve the later attribution separately from the observed 23.22.0 -> 23.23.0 boundary. Generated AdditionalKycScreen Compose declarations are added without establishing a new supported merchant KYC API. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
 
+### Android `23.24.0` Restricted KYC and Wallet Labels
+
+Experimental OnrampCoordinator.Presenter adds `fulfillKycRequirements()`, explicitly annotated `@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)`. Its body delegates to the excluded presenter coordinator; its documentation describes collecting/submitting outstanding KYC requirements and delivery through OnrampCallbacks. This is not a supported general merchant entry point, proof of KYC completion, callback delivery, authentication enforcement or a complete document-upload integration. Generated AdditionalKycScreen Compose declarations are replaced by KycScreen declarations without proving feature removal or a new public UI API. [[source-github-stripe-android]]
+
+Release notes announce Google Pay/Samsung Pay card sublabels including Credit, Debit or Prepaid, with Card fallback. That formatting implementation is excluded, and label text does not prove wallet eligibility, funding authorization or successful checkout. Retained build changes add the moved core ApiConfigurationPreview opt-in; Onramp's API 24 floor remains unchanged. The cumulative changelog moves the older Identity/Onramp floor note from 23.15.0 to 23.17.0; preserve previous attributions separately from the observed retained build boundary. All older native/React Native/iOS findings remain version-qualified in [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## iOS `26.13.0` Alpha Delta
 
 This version-qualified native alpha flow is distinct from the older web/headless setup sequence above. `CryptoOnrampCoordinator.collectPaymentMethod(type:from:)` can present Apple Pay before Link authentication: its platform-client resolver now forwards an optional crypto customer ID instead of rejecting an absent one. Card/bank collection still checks verified Link state, and `createCryptoPaymentToken()` still requires a crypto customer ID. Collection creates a payment source; it does not perform checkout or prove payment success.

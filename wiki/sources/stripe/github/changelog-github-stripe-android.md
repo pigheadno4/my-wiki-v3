@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-android"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-14
+date_updated: 2026-10-20
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-09-29-a074a95/manifest.json"
@@ -24,6 +25,28 @@ tags: [stripe, android, kotlin, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-android`. Durable architecture and integration knowledge belongs in [[source-github-stripe-android]] and the linked immutable evidence.
+
+## `stripe-android@23.24.0` - Change Set `51f27a7` (upstream date 2026-10-19)
+
+| Package | From | To | Exact SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `stripe-android` | `23.23.0` | `23.24.0` | `51f27a791f68ff1f007b4179768ca5caf6c205b8` | Additive full override, approved focused reading |
+
+Published 2026-10-20 03:03 China time; collected and ingested 2026-10-20. The packet recommended delta/high; full override was approved for the preview annotation's package migration.
+
+**Changes:** old paymentelement.ApiConfigurationPreview declaration disappears from the retained PaymentSheet inventory; Embedded example imports core.ApiConfigurationPreview and adds helper/result opt-ins. Six retained module builds opt into the new core annotation. Compiled payments-core adds Mondu, NgBankTransfer, NgUssd and NgWallet Type values and matching static/Companion create overloads. Notes announce PaymentIntent PaymentSheet support. Experimental Onramp Presenter adds library-group-restricted fulfillKycRequirements delegation; generated AdditionalKycScreen declarations become KycScreen. Wallet funding-type labels, saved-address country autofill and Identity bundled-image test-mode uploads are release announcements with excluded implementation.
+
+**Impact/migration:** update preview imports and compiler opt-in strings, recompile consumers and review direct references to removed/generated classes. The new annotation definition is excluded; no general-availability, tenant-isolation or universal binary-failure claim follows. Review exhaustive payment-type switches; method field requirements, currencies, eligibility, SetupIntent/recurring support and complete routing are unverified. Restricted KYC is not a general merchant API. The Embedded example's server-owned Intent flow and retained module floors remain unchanged. No Android build, device, camera/upload, wallet or payment tests were performed.
+
+**Historical attribution:** raw changelog 4,887 -> 4,911 lines, 27 inserted/three removed. Eighteen lines introduce this release; older edits add brandColor and move the Identity/Onramp API 24 note from 23.15.0 to 23.17.0, add manual capture under 23.14.0 and image-upload/privacy-link fixes under 23.7.0. Preserve old wiki/raw labels and the observed 23.16.0 -> 23.17.0 build/styling boundary separately. Source and both relevant concepts carry this contradiction/attribution distinction; these are not new 23.24.0 changes.
+
+**Scope/updates:** 52 files per snapshot, fifteen modified/37 unchanged; all 104 stored hashes/sizes verified. All 602 upstream paths classified (15 retained/587 policy exclusions), no packet gaps/unclassified changes. Effective full list 61 paths/1.68 MB. Explicit one-release focused exception covers changed implementation/API sections, affected prior code, release/comparison/short content and complete cumulative wiki pages; unchanged source/API/history/inventories mechanically checked. Concepts first, cumulative source/changelog, company/catalog/index/logs; source count and every older version section retained. No extra collection or cross-company comparison warranted.
+
+**Evidence:**
+- [Release identity](../../../../raw/github/stripe/stripe-android/releases/stripe-android/23.24.0/2026-10-20/manifest.json) and [release notes](../../../../raw/github/stripe/stripe-android/releases/stripe-android/23.24.0/2026-10-20/release-notes.md)
+- [Exact-SHA snapshot](../../../../raw/github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json)
+- [Comparison](../../../../tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.23.0--23.24.0/comparison.json) and [retained patch](../../../../tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.23.0--23.24.0/diff.patch)
+- [[source-github-stripe-android]] - complete versioned findings, exact source paths, five grounding excerpts and implementation limits
 
 ## `stripe-android@23.23.0` - Change Set `e6f4a67` (2026-10-12)
 

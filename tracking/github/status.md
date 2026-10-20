@@ -4953,6 +4953,31 @@
   Release: [manifest](../../raw/github/braintree/braintree-web-drop-in/releases/braintree-web-drop-in/1.48.0/2026-09-20/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web-drop-in/comparisons/braintree-web-drop-in/1.47.0--1.48.0/comparison.json)
 
+## `github-d8740fe4c8e9ce7596a4`
+
+- Repository: `stripe/stripe-android`
+- SHA: `51f27a791f68ff1f007b4179768ca5caf6c205b8`
+- Collection date: `2026-10-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-android/ingest-packets/github-d8740fe4c8e9ce7596a4/packet.md)
+- Review priority: `high`
+- Required reading: `24` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-android@23.24.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.24.0/2026-10-20/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.23.0--23.24.0/comparison.json)
+
 ## `github-d9f1ae40b60cf515676a`
 
 - Repository: `stripe/stripe-react-native`

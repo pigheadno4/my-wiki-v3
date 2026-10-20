@@ -193,6 +193,15 @@ Compiled API adds GCash, NgCard, Qris and ShopeePay types/creation overloads; Ng
 
 Financial Connections forwards the same public key/account/consent fields through internal ApiConfiguration.State without changing merchant configuration signatures. Identity adds library-group-restricted primary/secondary button styles, not general merchant APIs; generated debug/Compose declarations change/remove. Experimental Onramp restores callback registration before constructing presenters; its excluded store implementation and retrospective attribution are detailed in [[stripe-crypto-onramp]]. Production floors are not raised by retained build changes (test/debug tooling and root classpath changes). Older history remains in [[source-github-stripe-android]] and [[changelog-github-stripe-android]]. No build/device/payment testing.
 
+## `23.24.0` Additive Full Ingest
+
+The preview annotation moves from `com.stripe.android.paymentelement.ApiConfigurationPreview` to `com.stripe.android.core.ApiConfigurationPreview`. The old annotation disappears from the retained PaymentSheet API inventory; the Embedded example changes its import and adds explicit opt-ins to its checkout helper and result type. Six retained module build files add the new opt-in. Preview consumers must update imports/compiler opt-ins and recompile; this does not make the API generally available, change the example's server-owned Intent flow, or establish new credential-isolation behavior. The core annotation definition itself is outside this capsule. [[source-github-stripe-android]]
+
+Compiled payments-core adds Mondu, NgBankTransfer, NgUssd and NgWallet types plus corresponding static/Companion creation overloads. Notes announce PaymentIntent PaymentSheet support for all four; declarations do not establish request-field requirements, enabled accounts/currencies, recurring support, next-action behavior or actual payment results. Address country-dropdown autofill and Identity test-mode bundled document/selfie upload are release announcements with excluded implementation. The retained module floors do not change. Experimental Onramp changes are recorded in [[stripe-crypto-onramp]].
+
+> [!warning] Contradiction
+> The newer cumulative changelog moves the Identity/Onramp API 24 note from 23.15.0 to 23.17.0 and adds older brandColor/manual-capture/upload/privacy-link notes. Preserve the prior raw/wiki attributions and observed 23.16.0 -> 23.17.0 floor/styling boundary; these retrospective edits are not new 23.24.0 runtime changes or proof of an earlier first implementation. [[source-github-stripe-android]] records the same distinction. The user approved additive full mode with focused reading; all earlier knowledge remains in [[changelog-github-stripe-android]]. No build/device/payment tests were run.
+
 ## Related
 
 - Source: [[source-github-stripe-android]]

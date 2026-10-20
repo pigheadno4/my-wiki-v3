@@ -1,0 +1,358 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index d8b652cb..24e78893 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,24 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.24.0 - 2026-10-19
++
++### Crypto Onramp
++* [Changed] Google Pay and Samsung Pay card sublabels now include the funding type (Credit, Debit, or Prepaid), falling back to Card when unavailable, matching Link's formatting.
++
++### Payments
++* [Fixed] Address country dropdowns now support autofill from saved addresses.
++
++### PaymentSheet
++* [CHANGED][15002](https://github.com/stripe/stripe-android/pull/15002) Moved `ApiConfigurationPreview` from the `paymentsheet` module to `stripe-core`. Update preview opt-in imports to `com.stripe.android.core.ApiConfigurationPreview`.
++* [ADDED][14586](https://github.com/stripe/stripe-android/pull/14586) Added Naira bank transfer API bindings and PaymentSheet support for PaymentIntents.
++* [ADDED][14830](https://github.com/stripe/stripe-android/pull/14830) Added Naira USSD API bindings and PaymentSheet support for PaymentIntents.
++* [ADDED][14831](https://github.com/stripe/stripe-android/pull/14831) Added Naira Wallet API bindings and PaymentSheet support for PaymentIntents.
++* [ADDED][14832](https://github.com/stripe/stripe-android/pull/14832) Added Mondu API bindings and PaymentSheet support for PaymentIntents.
++
++### Identity
++* [ADDED] Added test mode support to Stripe Identity, uploading bundled test document and selfie images for test-mode verification sessions.
++
+ ## 23.23.0 - 2026-10-12
+ 
+ ### Payments
+@@ -117,6 +135,8 @@ NEXT_VERSION_BUMP: PATCH
+ 
+ ### Identity
+ * [ADDED][13176](https://github.com/stripe/stripe-android/pull/13176) Added guided 3D selfie capture for supported verification sessions, including left and right pose collection.
++* [ADDED][13176](https://github.com/stripe/stripe-android/pull/13176) Added optional `IdentityVerificationSheet.Configuration.brandColor` to customize the native verification flow's primary action button color.
++* [CHANGED][13176](https://github.com/stripe/stripe-android/pull/13176) Stripe Identity and Crypto Onramp now require Android API 24 or later to support MediaPipe-based 3D selfie capture.
+ 
+ ## 23.16.0 - 2026-08-18
+ 
+@@ -143,9 +163,6 @@ NEXT_VERSION_BUMP: PATCH
+ ### CryptoOnramp
+ * [ADDED][13623](https://github.com/stripe/stripe-android/pull/13623) Added optional Samsung Pay support to Crypto Onramp, including availability checks, payment credential collection, and developer-facing error details. Integrators must provide the Samsung Pay SDK in their application.
+ 
+-### Identity
+-* [CHANGED][13176](https://github.com/stripe/stripe-android/pull/13176) Stripe Identity and Crypto Onramp now require Android API 24 or later to support MediaPipe-based 3D selfie capture.
+-
+ ## 23.14.0 - 2026-08-03
+ 
+ ### CryptoOnramp
+@@ -154,6 +171,9 @@ NEXT_VERSION_BUMP: PATCH
+ ### PaymentSheet
+ * [ADDED] `LinkController` now supports appearance customization via `LinkAppearance` (private preview).
+ 
++### Identity
++* [FIXED][13684](https://github.com/stripe/stripe-android/pull/13684) Enabled manual document capture when live capture is required.
++
+ ## 23.13.1 - 2026-07-23
+ 
+ ### Payments
+@@ -251,6 +271,10 @@ Added support for [Onelink](https://support.stripe.com/questions/what-is-onelink
+ * [FIXED][12973](https://github.com/stripe/stripe-android/pull/12973) Fixed an issue where `FlowController` would bypass mandate display when `setupFutureUsage` was added via `configureWithIntentConfiguration()` after the user had already entered card details.
+ * [CHANGED][12975](https://github.com/stripe/stripe-android/pull/12975) When `paymentMethodLayout` is set to `Automatic`, the layout is now horizontal when there are 2 or fewer payment methods available.
+ 
++### Identity
++* [FIXED][12753](https://github.com/stripe/stripe-android/pull/12753) Fixed crashes when preparing document or selfie images for upload.
++* [FIXED][12753](https://github.com/stripe/stripe-android/pull/12753) Fixed privacy policy links that open in-app bottom sheets on the consent and individual welcome screens.
++
+ ## 23.6.0 - 2026-04-27
+ ### PaymentSheet
+ * [ADDED] Stripe card scanning is back in public preview. [Add `stripecardscan` to the `dependencies` block of your build.gradle](https://docs.stripe.com/payments/accept-a-payment?payment-ui=mobile&platform=android#android-card-scanning) to enable the Stripe card scanner.
+diff --git a/README.md b/README.md
+index e613f312..90875cb1 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.23.0'
++    implementation 'com.stripe:stripe-android:23.24.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 4372cf9c..06785ed6 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.23.0
++23.24.0
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index 2b613cb7..2f9757d4 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -865,10 +865,10 @@ public final class com/stripe/android/crypto/onramp/model/compliance/SubmitIdent
+ 	public fun toString ()Ljava/lang/String;
+ }
+ 
+-public final class com/stripe/android/crypto/onramp/ui/ComposableSingletons$AdditionalKycScreenKt {
+-	public static final field INSTANCE Lcom/stripe/android/crypto/onramp/ui/ComposableSingletons$AdditionalKycScreenKt;
++public final class com/stripe/android/crypto/onramp/ui/ComposableSingletons$KycScreenKt {
++	public static final field INSTANCE Lcom/stripe/android/crypto/onramp/ui/ComposableSingletons$KycScreenKt;
+ 	public fun <init> ()V
+-	public final fun getLambda$136789293$crypto_onramp_release ()Lkotlin/jvm/functions/Function2;
+-	public final fun getLambda$1864343240$crypto_onramp_release ()Lkotlin/jvm/functions/Function2;
++	public final fun getLambda$-1816014815$crypto_onramp_release ()Lkotlin/jvm/functions/Function2;
++	public final fun getLambda$-761184410$crypto_onramp_release ()Lkotlin/jvm/functions/Function2;
+ }
+ 
+diff --git a/crypto-onramp/build.gradle b/crypto-onramp/build.gradle
+index 43ea011f..e03d79b1 100644
+--- a/crypto-onramp/build.gradle
++++ b/crypto-onramp/build.gradle
+@@ -71,6 +71,7 @@ android {
+ 
+     kotlin {
+         compilerOptions {
++            optIn.add("com.stripe.android.core.ApiConfigurationPreview")
+             freeCompilerArgs.addAll([
+                     "-opt-in=com.stripe.android.crypto.onramp.ExperimentalCryptoOnramp",
+                     "-opt-in=com.stripe.android.link.LinkControllerPreview",
+diff --git a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+index 89935b5c..7c642fd4 100644
+--- a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
++++ b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+@@ -2,6 +2,7 @@ package com.stripe.android.crypto.onramp
+ 
+ import android.app.Application
+ import androidx.activity.ComponentActivity
++import androidx.annotation.RestrictTo
+ import androidx.lifecycle.SavedStateHandle
+ import com.stripe.android.crypto.onramp.di.OnrampComponentHolder
+ import com.stripe.android.crypto.onramp.di.OnrampPresenterComponent
+@@ -286,6 +287,15 @@ class OnrampCoordinator @Inject internal constructor(
+             coordinator.presentUserAttestation()
+         }
+ 
++        /**
++         * Presents UI to collect and submit outstanding KYC requirements.
++         * The result will be delivered through the KYC callback provided in [OnrampCallbacks].
++         */
++        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++        fun fulfillKycRequirements() {
++            coordinator.fulfillKycRequirements()
++        }
++
+         /**
+          * Presents the current terms and conditions when acceptance is required.
+          * Requires an authenticated Link user.
+diff --git a/financial-connections/build.gradle b/financial-connections/build.gradle
+index 9cf3bf43..5594ed86 100644
+--- a/financial-connections/build.gradle
++++ b/financial-connections/build.gradle
+@@ -93,6 +93,7 @@ android {
+ 
+     kotlin {
+         compilerOptions {
++            optIn.add("com.stripe.android.core.ApiConfigurationPreview")
+             freeCompilerArgs.addAll([
+                     "-opt-in=kotlin.RequiresOptIn",
+                     "-opt-in=androidx.compose.material.ExperimentalMaterialApi",
+diff --git a/gradle.properties b/gradle.properties
+index f62ad0ae..036a18cd 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -24,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.23.0
++VERSION_NAME=23.24.0
+diff --git a/payment-method-messaging/build.gradle b/payment-method-messaging/build.gradle
+index f11c8b5d..64204a2b 100644
+--- a/payment-method-messaging/build.gradle
++++ b/payment-method-messaging/build.gradle
+@@ -8,6 +8,12 @@ apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+ apply plugin: 'app.cash.paparazzi'
+ 
+ android {
++    kotlin {
++        compilerOptions {
++            optIn.add("com.stripe.android.core.ApiConfigurationPreview")
++        }
++    }
++
+     testOptions {
+         unitTests {
+             includeAndroidResources = true
+diff --git a/payments-core/api/payments-core.api b/payments-core/api/payments-core.api
+index 94ac7ef0..a97059a3 100644
+--- a/payments-core/api/payments-core.api
++++ b/payments-core/api/payments-core.api
+@@ -2171,10 +2171,14 @@ public final class com/stripe/android/model/PaymentMethod$Type : java/lang/Enum,
+ 	public static final field MbWay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field MoMo Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field MobilePay Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field Mondu Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Multibanco Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field NaverPay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Netbanking Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field NgBankTransfer Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field NgCard Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field NgUssd Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field NgWallet Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Oxxo Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field P24 Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field PayByBank Lcom/stripe/android/model/PaymentMethod$Type;
+@@ -2396,6 +2400,10 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createMondu ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createMondu (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createMondu (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createMondu (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMultibanco ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2404,10 +2412,22 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgBankTransfer ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgBankTransfer (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgBankTransfer (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgBankTransfer (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createNgCard ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createNgCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createNgCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createNgCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgUssd ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgUssd (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgUssd (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgUssd (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgWallet ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgWallet (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgWallet (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createNgWallet (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2710,6 +2730,11 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMobilePay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createMobilePay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createMondu ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createMondu (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createMondu (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createMondu (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createMondu$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMultibanco ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createMultibanco (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2720,11 +2745,26 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createNaverPay (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createNaverPay$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgBankTransfer ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgBankTransfer (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgBankTransfer (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgBankTransfer (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createNgBankTransfer$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createNgCard ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createNgCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createNgCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createNgCard (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createNgCard$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgUssd ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgUssd (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgUssd (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgUssd (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createNgUssd$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgWallet ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgWallet (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgWallet (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createNgWallet (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createNgWallet$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createOxxo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+diff --git a/payments-core/build.gradle b/payments-core/build.gradle
+index 55c6b5f3..ef22893c 100644
+--- a/payments-core/build.gradle
++++ b/payments-core/build.gradle
+@@ -112,6 +112,7 @@ android {
+ 
+     kotlin {
+         compilerOptions {
++            optIn.add("com.stripe.android.core.ApiConfigurationPreview")
+             freeCompilerArgs.addAll([
+                     "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                     "-Xcontext-parameters",
+diff --git a/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt b/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt
+index 3a7c8b5e..135537ca 100644
+--- a/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt
++++ b/paymentsheet-example/src/main/java/com/stripe/android/paymentsheet/example/playground/embedded/EmbeddedExampleActivity.kt
+@@ -32,7 +32,7 @@ import com.github.kittinunf.fuel.core.requests.suspendable
+ import com.github.kittinunf.result.Result
+ import com.stripe.android.PaymentConfiguration
+ import com.stripe.android.core.ApiConfiguration
+-import com.stripe.android.paymentelement.ApiConfigurationPreview
++import com.stripe.android.core.ApiConfigurationPreview
+ import com.stripe.android.paymentelement.EmbeddedPaymentElement
+ import com.stripe.android.paymentelement.rememberEmbeddedPaymentElement
+ import com.stripe.android.paymentsheet.CreateIntentResult
+@@ -125,6 +125,7 @@ fun CheckoutScreen(useApiConfiguration: Boolean = false) {
+     }
+ }
+ 
++@OptIn(ApiConfigurationPreview::class)
+ private suspend fun checkout(
+     context: Context,
+     initializePaymentConfiguration: Boolean,
+@@ -162,6 +163,7 @@ private suspend fun checkout(
+     }
+ }
+ 
++@OptIn(ApiConfigurationPreview::class)
+ private data class CheckoutResult(
+     val createIntentResult: CreateIntentResult,
+     val apiConfiguration: ApiConfiguration?,
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index b1ba9c5d..ad4d1f9a 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -635,9 +635,6 @@ public abstract interface class com/stripe/android/paymentelement/AnalyticEventC
+ 	public abstract fun onEvent (Lcom/stripe/android/paymentelement/AnalyticEvent;)V
+ }
+ 
+-public abstract interface annotation class com/stripe/android/paymentelement/ApiConfigurationPreview : java/lang/annotation/Annotation {
+-}
+-
+ public abstract interface annotation class com/stripe/android/paymentelement/AppearanceAPIAdditionsPreview : java/lang/annotation/Annotation {
+ }
+ 
+diff --git a/paymentsheet/build.gradle b/paymentsheet/build.gradle
+index 91b55795..028ef6bc 100644
+--- a/paymentsheet/build.gradle
++++ b/paymentsheet/build.gradle
+@@ -170,6 +170,7 @@ android {
+ 
+     kotlin {
+         compilerOptions {
++            optIn.add("com.stripe.android.core.ApiConfigurationPreview")
+             freeCompilerArgs.addAll([
+                     "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                     "-opt-in=kotlinx.coroutines.FlowPreview",
+diff --git a/stripecardscan/build.gradle b/stripecardscan/build.gradle
+index 894fe20e..adf0641b 100644
+--- a/stripecardscan/build.gradle
++++ b/stripecardscan/build.gradle
+@@ -71,6 +71,7 @@ android {
+ 
+     kotlinOptions {
+         freeCompilerArgs += [
++                "-opt-in=com.stripe.android.core.ApiConfigurationPreview",
+                 "-Xconsistent-data-class-copy-visibility",
+         ]
+     }

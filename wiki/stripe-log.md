@@ -6,6 +6,12 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-20] ingest | Stripe Android `23.24.0`
+
+- Approved serial full override `github-d8740fe4c8e9ce7596a4`, exact SHA `51f27a791f68ff1f007b4179768ca5caf6c205b8`, with explicit one-release focused reading. Changed implementation/API sections, affected prior code, release/comparison/short content and complete cumulative wiki pages read; unchanged source/API/history/inventories mechanically verified. Effective full list 61 paths/1.68 MB; both 52-file snapshots match all 104 hashes/sizes, fifteen modified/37 unchanged, 602 classified upstream changes and no packet gaps.
+- Recorded preview annotation migration/import/compiler opt-ins, four new method declarations/support announcements and restricted Onramp KYC delegation. Qualified wallet-label, autofill and Identity test-mode announcements; preserved production floors and older payment/runtime limitations. Raw historical Identity notes move/add without rewriting the older wiki attribution; 4,887 -> 4,911 raw changelog lines (27 inserted/three removed).
+- Android/Onramp concepts updated first, then cumulative source/changelog, company/provider catalog and logs. All older histories/raw references and source_count 666 preserved. No additional collection, cross-company comparison, Android build/device/payment execution, commit or push. Details [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## [2026-10-18] ingest | Stripe PHP `22.0.0`
 
 - Approved serial full `github-c5a513b45b0919c157c8` with five-release focused-reading authorization. Runtime changes/affected prior code and changed API sections read; unchanged generated/history/inventories, repeated mappings and duplicated diff mechanically verified. Both snapshots hash/size checked; 916 files, 443 added/172 modified/301 unchanged; 1,488 upstream changes classified, no gaps.
