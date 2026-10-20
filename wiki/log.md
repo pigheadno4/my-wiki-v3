@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-20] ingest | Android Drop-in `default-branch@72c0586`
+
+- Approved focused-reading delta from the preserved 6.17.0 baseline: lifecycle/certificate notices and development metadata, not a new stable release or payment implementation. Documented historical redaction and stale-status caveats; source count unchanged. Details [[braintree-log]], [[source-github-braintree-android-drop-in]] and [[changelog-github-braintree-android-drop-in]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-19] ingest | Braintree Web `3.147.0`
 
 - Approved focused-reading additive full ingest: v6 app-switch return helpers, shared locale handling and BIN-length hardening, with cached-failure and locale-comment caveats. Earlier history and source counts preserved. Details [[braintree-log]], [[source-github-braintree-web]] and [[changelog-github-braintree-web]]. No SDK/payment execution, commit or push.

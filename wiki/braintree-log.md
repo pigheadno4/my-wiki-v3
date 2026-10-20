@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-20] ingest | Android Drop-in `default-branch@72c0586`
+
+- Approved serial delta `github-8540369a45f6df31a495`: `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7` -> `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` (upstream 2026-04-23). Explicit focused-reading exception: three assigned changed documents and affected prior files, complete source/changelog and comparison read; manifests mechanically verified and relevant shared-page sections read. Credential values omitted from display, never changed in raw. Both 165-file snapshots hash/size verified.
+- Ingested README deprecation/unsupported dates, modular migration recommendation, corrected certificate warning and 6.17.1-SNAPSHOT/version-code metadata. Preserved 6.17.0 release history, 4.50.0 module pin and payment implementation. Flagged old Active/TBA and invalid date versus later notices, plus stale Inactive wording as of ingest.
+- Reconciled two actual upstream changed paths with three stored-content changes: unchanged upstream migration-guide blob differs locally due to historical redaction/newline. No inferred credential rotation or new migration API. Updated existing Android concept first, then cumulative source/changelog, company and index; source count unchanged, no cross-company comparison needed. No SDK build, dependency resolution, payment execution, commit or push. Details [[source-github-braintree-android-drop-in]] and [[changelog-github-braintree-android-drop-in]].
+
 ## [2026-10-19] ingest | braintree-web@3.147.0
 
 - Approved additive full ingest with focused reading, exact SHA `f3357c49c7b71f079d031c3ddf89cdfe444f6511`, released 2026-10-12. Fully reviewed changed implementation/content and affected prior/dependency code; unchanged source sections, cumulative changelog history and generated inventories checked mechanically. Verified all 666 prior/current file hashes and sizes: eight modified, 325 unchanged retained files per snapshot.

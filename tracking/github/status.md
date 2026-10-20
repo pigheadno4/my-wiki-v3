@@ -2745,6 +2745,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-messages-ios/releases/paypal-messages-ios/2.0.0/2026-10-07/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-messages-ios/comparisons/paypal-messages-ios/1.2.0--2.0.0/comparison.json)
 
+## `github-8540369a45f6df31a495`
+
+- Repository: `braintree/braintree-android-drop-in`
+- SHA: `72c05861a0e903e19bc9baca8bc0740b0b1ed57c`
+- Collection date: `2026-10-20`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-android-drop-in/ingest-packets/github-8540369a45f6df31a495/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@72c0586` (recommended `delta`)
+  Ref: `main`
+  From SHA: `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
+  To SHA: `72c05861a0e903e19bc9baca8bc0740b0b1ed57c`
+  Comparison: [manifest](repos/braintree/braintree-android-drop-in/comparisons/default-branch/da8a702--72c0586/comparison.json)
+
 ## `github-85652bd08413a3ffc568`
 
 - Repository: `paypal/paypal-ios`

@@ -65,6 +65,15 @@ Website customization guidance warns against enabling Vault Manager for recurrin
 
 At this Drop-in baseline, PayPal defaults to vaulting, Venmo defaults to single use, and Venmo visibility requires remote enablement plus an available Venmo app switch. Saved-method retrieval and deletion require a customer-scoped client token. These statements must not be replaced with newer modular-SDK behavior without a compatible Drop-in release.
 
+### Drop-in Lifecycle at `default-branch@72c0586`
+
+The Android Drop-in repository's exact 2026-04-23 commit `72c05861a0e903e19bc9baca8bc0740b0b1ed57c`, collected and delta-ingested on 2026-10-20, adds a README notice scheduling deprecation for 2026-09-01 and unsupported status for 2027-09-01. The notice says updates stop at deprecation, processing support continues for one year, and processing can be suspended at any time once unsupported. It recommends migration to the separately versioned modular Braintree SDK. These are captured policy statements, not an observed payment outage or a tested replacement integration. [[source-github-braintree-android-drop-in]]
+
+> [!warning] Contradiction
+> The older retained `6.17.0` README listed v6 as Active with dates TBA and an invalid certificate-expiry date of June 31, 2025. The pinned later README supplies the 2026/2027 lifecycle dates and changes the certificate warning to March 30, 2026 for Drop-in 5.4.2 through 6.15.0, directing upgrades to 6.16.0+. As of this 2026-10-20 ingest, the scheduled deprecation date has passed, although the captured table still says Inactive. Preserve that stale wording as historical evidence; do not interpret it as extending support or as a new modular-SDK version requirement. The same discrepancy is recorded in [[source-github-braintree-android-drop-in]].
+
+HEAD build metadata says `6.17.1-SNAPSHOT`, not a new stable release; the accepted release baseline remains `drop-in@6.17.0`. This boundary changes README/build metadata, not payment implementation, and still pins Braintree Android modules to 4.50.0. Its unchanged v6 migration guide describes Drop-in v5-to-v6 migration, not migration from Drop-in to the modular SDK. Earlier nonce, vaulting and dependency boundaries remain intact. [[changelog-github-braintree-android-drop-in]]
+
 ## Version Boundary
 
 Release `5.30.0` makes the principal Kotlin suspend functions public, removes the unsupported Visa Checkout module, deprecates its remaining configuration fields, targets Android API 37 for compilation, and fixes PayPal/Venmo button sizing. Historical migration and removal notes remain context until their exact versions are separately retained.
