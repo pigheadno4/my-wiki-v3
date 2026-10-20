@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-top-ups-create-recurring-top-ups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Create recurring top-ups\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/top-ups/create-recurring-top-ups\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md\"\ntags: [adyen, issuing, balance-accounts, top-ups, direct-debit]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Issuing guide configures recurring top-ups for a balance account. A configured schedule triggers outgoing **direct debit requests to a bank-account source** according to amount, frequency and source settings; Adyen then books top-up funds to the balance account. The guide describes configuration and tracking, not evidence that a particular debit settled or a card payment succeeded.\n\n## Key takeaways\n\n- Scope and prerequisites: Issuing integration; a top-up source with enough balance; an account holder whose `receiveFromTransferInstrument` capability is active with a valid `verificationStatus`; and Configuration, Transfer and Transaction webhook subscriptions. API setup requires the **BankAPI Advanced Webservice role** and prior Terms of Service acceptance. Customer Area setup lists **Balance platform base role** plus **Configure scheduled payouts**; its wizard handles Terms of Service acceptance. See raw Requirements, lines 23\u201338.\n- The captured page says recurring top-ups support **EUR and USD only** and **do not support on-demand top-ups**. API creation uses `POST /balanceAccounts/{balanceAccountId}/recurringTopUps`; the configuration selects one of `topUpAmount.fixed` or `topUpAmount.target`, with a threshold and optional schedule. Without a schedule, the page says balance is continuously monitored. See raw lines 35\u201336, 40\u201399.\n- A triggered top-up creates a transfer record. The guide points to Customer Area transfer status, balance-account schedule/history and the Balance Platform Accounting Report; it gives USD and EUR processing and cut-off examples. A created schedule or transfer record alone does not establish final bank receipt. See raw lines 254\u2013275.\n- Creation can fail for invalid or mismatched currencies, missing capability or signed Terms of Service, inactive account status, invalid/inaccessible transfer instrument, unavailable route, direct-debit threshold, or duplicate configuration. See raw error table, lines 277\u2013304.\n\n## Source discrepancies\n\n- The API `trigger.threshold` prose says a top-up triggers when available balance is **below** the threshold (raw line 99). The Customer Area instructions say **less than or equal to** (raw line 242). The snapshot does not reconcile equality behavior.\n- The parameter table names `topUpAmount.fixed` (raw lines 78\u201383), while the optional placeholder payload uses `topUpAmount.fixedAmount` and an outer `currency` field (raw lines 203\u2013225). Treat that payload as an example, not a resolved schema.\n- The example request uses a `balanceplatform-api-beta.adyen.com` `/bcl/v2/` URL (raw line 122), while the page links the endpoint under the latest API Explorer (raw line 46). The snapshot does not establish which version or host to use now.\n\n## Detail locators\n\n- API field requiredness, `counterparty.transferInstrumentId` condition, fixed-versus-target selection, schedule values and threshold: [[raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15|raw lines 44\u201399]].\n- Example request/response, dynamic description placeholders and Customer Area wizard: [[raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15|raw lines 103\u2013252]].\n- Tracking, timing and failure codes: [[raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15|raw lines 254\u2013304]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing balance-platform model and source catalog.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15|Create recurring top-ups (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A recurring top-up triggers outgoing direct debit requests to a bank account, based on the settings you configure.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md:21"
+    },
+    {
+      "text": "Before attempting a transfer, verify that this capability is active and has a valid `verificationStatus`.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md:34"
+    },
+    {
+      "text": "This feature does not support on-demand top-ups.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md:35"
+    },
+    {
+      "text": "if the available balance is below the threshold amount, we trigger a top-up.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md:99"
+    },
+    {
+      "text": "When the available balance drops to or below this amount, a top-up is triggered.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md:242"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-recurring-top-ups-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-top-ups-create-recurring-top-ups]] \u2014 2026-09-15-captured Issuing recurring direct-debit top-up setup and tracking guide; EUR/USD and capability/Terms limits, with unresolved threshold-equality and payload-example differences.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "API threshold prose says below; Customer Area says less than or equal to (raw lines 99 and 242).",
+          "Parameter table names topUpAmount.fixed; optional payload example uses fixedAmount and outer currency (raw lines 78\u201383 and 203\u2013225)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/top-ups/create-recurring-top-ups/2026-09-15.md",
+  "raw_sha256": "3d817161c513ec1f5ec416723f0b1f4bf36aff1c63a5d7cccbd66aa7463692bc",
+  "status": "candidate_ready"
+}

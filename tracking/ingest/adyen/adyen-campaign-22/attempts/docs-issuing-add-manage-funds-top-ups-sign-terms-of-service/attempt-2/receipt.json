@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-top-ups-sign-terms-of-service",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Issuing: Accept top-up Terms of Service\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/top-ups/sign-terms-of-service\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md\"\ntags: [adyen, issuing, recurring-top-ups, direct-debit, terms-of-service]\n---\n\n## Overview\n\nThis 2026-09-15-captured, 2026-04-28-modified Adyen Issuing guide describes presenting and recording acceptance of the `directDebit` Terms of Service for recurring top-up contracts. It identifies the main legal entity for the contract and the individual who accepts, with an API workflow for top-up setup and a Customer Area wizard alternative. This guide does not establish that a particular cardholder consented or that a direct debit or top-up succeeded. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Acceptance of top-up contract terms precedes recurring top-up setup. The accepter must be an individual legal entity representing a physical person; an organization acts through its authorized signatory. The guide's requirements specify an Issuing integration and Legal Entity Management API credentials. Before either setup route, create the legal entity connected to the account holder. The API workflow records its acceptance; for Customer Area setup, the wizard handles the Terms-of-Service acceptance workflow. See raw lines 19-36.\n- For an API flow, optionally GET `/legalEntities/{id}/termsOfServiceAcceptanceInfos` for the main legal entity: the sole proprietor's individual legal-entity ID or the organization's legal-entity ID. A returned acceptance-information object with `type: directDebit` permits skipping the remaining document steps in this guide; an empty `data` array means none accepted. See raw lines 47-74.\n- Otherwise POST `/legalEntities/{id}/termsOfService` for that main entity with `type: directDebit` and a document language. Decode the returned Base64 document before presenting it to the cardholder: decoded JSON may be rendered with Adyen Document Viewer, while decoded PDF or TXT may be presented in the UI. JSON is the default format. French availability is conditional by integration and region. More than one required document/ID can be returned depending on integration. See raw lines 92-170.\n- After the cardholder reviews and accepts, PATCH `/legalEntities/{id}/termsOfService/{termsOfServiceDocumentId}` using the main entity and returned document ID in the path and the accepting individual's legal-entity ID in required `acceptedBy`; `ipAddress` is optional. For organizations, the populated document contains organization data and the authorized signatory's individual data. After a successful response, GET acceptance information again and verify `directDebit` is linked. See raw lines 172-224.\n- This `directDebit` contract acceptance has a narrower purpose than the separate [[source-adyen-docs-issuing-onboard-users-terms-of-service]] onboarding document-type workflow. Examples using the LEM v3 test URL demonstrate request shape only; they do not prove current live eligibility, acceptance or top-up execution. See raw lines 51-64, 96-119 and 174-224.\n\n## Detail locators\n\n- Acceptance-information response fields (`acceptedBy`, `acceptedFor`, `type`) and sample: raw lines 61-90.\n- Generate-document field table, formats and sample request/response: raw lines 96-147. Presentation and JSON viewer example: raw lines 149-170.\n- Acceptance request/response field tables and test example: raw lines 176-222. Follow-up links for create/manage top-ups and top-up webhooks: raw lines 226-238.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing balance-platform context and reciprocal source route.\n- [[source-adyen-docs-issuing-add-manage-funds-top-ups-create-recurring-top-ups]] \u2014 recurring top-up configuration and its separate prerequisites.\n- [[source-adyen-docs-issuing-onboard-users-terms-of-service]] \u2014 general onboarding Terms of Service workflow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15|Adyen top-up Terms of Service, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you can set up recurring top-ups, you must accept Adyen's Terms of Service for top-up contracts.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md:19"
+    },
+    {
+      "text": "The Terms of Service document must be accepted by an individual legal entity that represents a physical person. For organizations, the document must be accepted by an authorized signatory of the organization.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md:21"
+    },
+    {
+      "text": "This workflow is only required if you are configuring top-ups using the API. If you are using the Customer Area, this is handled during the setup wizard.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md:36"
+    },
+    {
+      "text": "If this object is present, your cardholder has already accepted the Terms of Service for top-up contracts and you can skip the remaining steps.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md:64"
+    },
+    {
+      "text": "After receiving a successful response, confirm that the document is now correctly linked to the legal entity record.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md:224"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-topup-tos-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-top-ups-sign-terms-of-service]] \u2014 2026-04-28-modified, 2026-09-15-captured guide to `directDebit` top-up contract Terms of Service acceptance through Legal Entity Management API, with main-entity/individual-signatory roles and Customer Area wizard alternative.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15.md",
+  "raw_sha256": "a1ce9e0b2d3dedc5a203b6adf8b81d720de5d8040b77b2980fe8101943ba14e0",
+  "status": "candidate_ready"
+}

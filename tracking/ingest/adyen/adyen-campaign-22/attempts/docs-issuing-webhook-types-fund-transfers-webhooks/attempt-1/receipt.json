@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-webhook-types-fund-transfers-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing fund transfer webhooks\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/webhook-types/fund-transfers-webhooks\"\nraw_files:\n  - \"adyen/docs/issuing/webhook-types/fund-transfers-webhooks/2026-09-15.md\"\ntags: [adyen, issuing, fund-transfers, webhooks, balance-platform]\n---\n\n## Overview\n\nThis Adyen Issuing page (last modified 2020-03-16; captured 2026-09-15) maps Balance Platform webhooks for **bank transfers** moving funds between a balance account and an external source or transfer instrument. It defines `direction` relative to the balance account: `outgoing` leaves it; `incoming` enters it. The relevant transfer discriminator is `category: bank` with `type: bankTransfer`. The page sends readers to a separate deprecated page for payment webhooks related to fund transfers.\n\n## Key takeaways\n\n- For an outgoing transfer to a transfer instrument, `balancePlatform.transfer.created` reports a received request; `balancePlatform.transfer.updated` reports `authorised`, then `booked` when funds are deducted from the **source balance account**. The booked transfer identifies the target transfer instrument and a transaction ID. After booking, `balancePlatform.transaction.created` describes the source-account transaction.\n- An outgoing `booked` status does **not** establish receipt by the external beneficiary: the guide says an additional `balancePlatform.transfer.updated` can report a later failure of the fund transfer to the transfer instrument.\n- For an incoming external transfer, `balancePlatform.transfer.created` reports `received`; `balancePlatform.transfer.updated` reports `authorised`, then `booked` when funds are added to the **target balance account**. The booked event identifies the source transfer instrument and transaction ID. A `balancePlatform.transaction.created` event follows booking for the target-account transaction.\n- The examples are test-environment event payloads, not evidence of a live movement of funds. Keep the transfer's top-level `id`, accounting `events[].id`/`transactionId`, and separate transaction webhook `id` distinct. The prose says \u201cthree webhooks\u201d per direction, but also lists a later transaction-created event and an optional outgoing update; read it as three described transfer-state events rather than a fixed total webhook count.\n- The authorised outgoing example is captioned `transfer.created` but has top-level `type: balancePlatform.transfer.updated`. The transaction field tables list `transfer.counterparty.transferInstrumentId`, while the shown transaction JSON omits it. Do not treat those sample payloads as a complete or self-consistent schema.\n\n## Detail locators\n\n- Trigger scope, discriminator and balance-account perspective: raw lines 19\u201338.\n- Outgoing received, authorised and booked event descriptions: 40\u201350, 109\u2013114, 189\u2013196; accounting payload progression and transaction event: 198\u2013340.\n- Optional post-booking outgoing update and possible failure: 342\u2013344.\n- Incoming received, authorised and booked descriptions: 346\u2013355, 415\u2013420, 498\u2013505; transaction event: 600\u2013649.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[source-adyen-docs-issuing-add-manage-funds]] \u2014 Issuing funding routes.\n- [[source-adyen-docs-issuing-webhook-types-payment-events]] \u2014 separate Issuing payment-event webhook guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/webhook-types/fund-transfers-webhooks/2026-09-15|Adyen fund transfer webhook guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For information on which payment webhooks Adyen sends for transfer-related events, see",
+      "location": "raw line 21, ##### Payment webhooks"
+    },
+    {
+      "text": "The direction of the transfer based on the balance account.",
+      "location": "raw line 37, ## Webhook types"
+    },
+    {
+      "text": "funds were deducted from the source balance account.",
+      "location": "raw line 191, ### Outgoing transfer booked"
+    },
+    {
+      "text": "For example, if the fund transfer to a transfer instrument fails.",
+      "location": "raw line 344, ### (Optional) Outgoing transfer updated"
+    },
+    {
+      "text": "funds were added to your target balance account.",
+      "location": "raw line 500, ### Incoming transfer booked"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-fund-transfer-webhooks-reciprocal",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-webhook-types-fund-transfers-webhooks]] \u2014 2020-modified, 2026-09-15-captured Issuing bank-transfer webhook guide: outgoing and incoming balance-account states, later transaction events and possible post-booking outgoing failure.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page's three-webhook wording also includes a transaction-created event and possible later outgoing update; source distinguishes transfer-state sequence from total event count.",
+          "Outgoing authorised example caption says transfer.created but payload type is transfer.updated; transaction example field tables include a counterparty transfer-instrument ID omitted from example JSON."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/webhook-types/fund-transfers-webhooks/2026-09-15.md",
+  "raw_sha256": "40e06e549e8e6891737213fdc0fe958ad542485ef55e72c0b53c1d59ff9c1b2b",
+  "status": "candidate_ready"
+}

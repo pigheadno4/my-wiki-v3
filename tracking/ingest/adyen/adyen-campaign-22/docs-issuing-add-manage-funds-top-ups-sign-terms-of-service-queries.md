@@ -1,0 +1,9 @@
+# docs-issuing-add-manage-funds-top-ups-sign-terms-of-service retrieval checks
+
+Q1. What must happen before recurring top-up setup, and who accepts the contract?
+
+Answer: The `directDebit` top-up Terms of Service must be accepted before recurring top-ups are set up (raw lines 19-21, 63-64, 100). An individual legal entity representing a physical person accepts; for an organization, that person is its authorized signatory. The API workflow uses an Issuing integration and LEM credentials. The legal entity connected to the account holder must already be created; the Customer Area wizard handles the Terms-of-Service acceptance workflow, not entity creation (raw lines 28-36). Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-add-manage-funds-top-ups-sign-terms-of-service]] → [[raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15]].
+
+Q2. Which legal-entity IDs and API steps record acceptance, and what does a successful example prove?
+
+Answer: Optionally GET acceptance information for the main legal entity and look for `type: directDebit`; if present, the guide permits skipping generation (raw lines 47-64). Otherwise POST for the main entity to generate a `directDebit` document. Decode its Base64 contents before presenting them, including JSON rendered through Adyen Document Viewer and PDF/TXT shown in the UI (raw lines 125, 149-170). After the person accepts, PATCH the main entity/document ID with the individual's legal-entity ID in `acceptedBy`; verify with GET afterward (raw lines 172-224). The test endpoint and example response show the described request/response shape, not actual cardholder consent, current live eligibility or successful top-up. Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-add-manage-funds-top-ups-sign-terms-of-service]] → [[raw/adyen/docs/issuing/add-manage-funds/top-ups/sign-terms-of-service/2026-09-15]].

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-raise-disputes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: raise cardholder disputes\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/raise-disputes\"\nraw_files:\n  - \"adyen/docs/issuing/raise-disputes/2026-09-15.md\"\ntags: [adyen, issuing, disputes, chargebacks, cardholders]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Issuing guide describes how a **card-issuing platform** raises disputes on behalf of cardholders for captured payments made with Adyen-issued cards. It covers duplicate charges, fraud and non-delivery, plus draft submission, dispute status webhooks and dispute-account fund movements. The platform may provide a cardholder UI backed by the Raise disputes API, or upload a dispute package through a Customer Area **pilot** feature. This issuer-side process is distinct from a merchant's acquiring-side dispute defense. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The guide says cardholders can raise a maximum of **35 disputes over their possession of their card**. Duplicate-charge and fraud disputes have a **120-day window from the authorised transaction date**; non-delivery has a **120-day window from when goods or services should have been delivered**. These are source-stated windows, not proof that any claim is eligible or will win.\n- The platform locates the captured payment's `transactionId`, raises a `duplicate`, `fraud` or `notDelivered` dispute, can attach supporting information, and presents it to the cardholder. For suspected loss or theft, the guide directs the platform to close the card. The API path calls for moving the reviewed draft to `submitted` or `closed`; Customer Area bulk upload submits automatically after processing. Requirements include the Bank disputes webservice role, Manage issuing disputes Customer Area role for viewing, and dispute plus transfer webhooks.\n- `balancePlatform.dispute.created` provides the dispute ID and initially `draft` status for API-raised disputes. A draft can be edited. Once a dispute is `closed`, it **cannot be edited, reopened or submitted**; closure can also follow a deadline, Adyen ineligibility decision or scheme rejection. Submission sends the case to the card scheme, with later status changes on `balancePlatform.dispute.updated`.\n- `chargeback` means funds were returned to the **Disputes balance account**; it is not the final `won` state. `won` means the acquirer can no longer challenge, with this guide listing Mastercard's challenge period as 45 days and Visa's as 30 days after chargeback. `secondPresentment` means funds were returned to the acquirer.\n- Correlate the capture `transactionId`, Adyen dispute `id`, and ARN. A chargeback or second presentment mutates the Disputes balance account and emits `balancePlatform.transfer.created`; the guide maps dispute `chargeback` to transfer `category: issuedCard, type/status: chargeback`, while dispute `secondPresentment` maps to transfer `type/status: secondChargeback`. The ARN appears in the transfer webhook's `reference` and the accounting report.\n\n## Detail locators\n\n- Platform duty, dispute paths, captured-payment scope and requirements: raw lines 19\u201345.\n- Workflow and card closure instruction: raw lines 47\u201367.\n- 35 limit, reason-specific 120-day triggers, supporting information: raw lines 69\u201394.\n- Draft, closed, submitted, chargeback, won and second-presentment meaning: raw lines 96\u2013119.\n- Correlation IDs, balance-account movements and transfer mapping: raw lines 121\u2013138.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[source-adyen-docs-issuing-raise-disputes-not-delivered]] \u2014 non-delivery dispute detail.\n- [[source-adyen-docs-issuing-manage-cards]] \u2014 card status and closure details.\n- [[source-adyen-docs-issuing-webhook-types-payment-events]] \u2014 separate payment webhook events.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/raise-disputes/2026-09-15|Adyen Issuing raise-disputes guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Cardholders have a maximum limit of 35 disputes that they can raise over the course of their possession of their card.",
+      "location": "raw line 71, ## Dispute reasons and their types"
+    },
+    {
+      "text": "120 days from the date of the authorized transaction.",
+      "location": "raw line 75, ## Dispute reasons and their types"
+    },
+    {
+      "text": "120 days from the date that goods or services should have been delivered.",
+      "location": "raw line 85, ## Dispute reasons and their types"
+    },
+    {
+      "text": "You cannot edit, reopen, or submit a closed dispute.",
+      "location": "raw line 111, ## Lifecycle of a raised dispute"
+    },
+    {
+      "text": "The acquirer can no longer challenge the dispute.",
+      "location": "raw line 117, ## Lifecycle of a raised dispute"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-raise-disputes-reciprocal",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-raise-disputes]] \u2014 2026-09-15 Issuing guide for cardholder dispute reasons, 35-dispute limit, reason-specific 120-day windows, draft/closed/submitted lifecycle and chargeback versus won outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/raise-disputes/2026-09-15.md",
+  "raw_sha256": "a440e17d56cdfba454700ec7c77c64a3d301fa23db4eeb54546e2106821ae6d4",
+  "status": "candidate_ready"
+}

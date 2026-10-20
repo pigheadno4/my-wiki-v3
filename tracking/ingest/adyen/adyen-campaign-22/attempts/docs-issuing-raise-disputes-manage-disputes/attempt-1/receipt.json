@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-issuing-raise-disputes-manage-disputes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: manage a raised dispute\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/raise-disputes/manage-disputes\"\nraw_files:\n  - \"adyen/docs/issuing/raise-disputes/manage-disputes/2026-09-15.md\"\ntags: [adyen, issuing, disputes, lifecycle, api]\n---\n\n## Overview\n\nThis 2026-09-15 Issuing guide covers managing a **draft** raised dispute through the Balance Platform Transfers API: edit its information, add supporting attachments through a linked procedure, or change its status to **submitted** or **closed**. It defers general requirements and limitations to the parent Raise disputes guide. A returned status and updated webhook show a lifecycle change; this page does not establish a chargeback win or returned funds.\n\n## Key takeaways\n\n- For a draft, `PATCH /disputes/{id}` with changed fields; the whole dispute object need not be sent. The page groups patchable information under `duplicateInfo`, `fraudInfo` and `notDeliveredInfo`. It describes fraud `reportOnly=true` as a report with no further chargeback or fee-reversal action, default false. Conditional non-delivery fields include `agreedDeliveryLocation` when the delivery location was wrong and `didCardholderReturn` when delivery was late. Use the field tables for the remaining type-specific details.\n- Set `status=submitted` by PATCH to submit a draft. A successful response includes the updated dispute object, and Adyen sends `balancePlatform.dispute.updated` with the submitted status. The example uses a TEST endpoint; submission does not itself show the card scheme's final decision.\n- Only a draft can be closed when the platform no longer intends to submit it. Set `status=closed` by PATCH; after closure, it cannot be edited, submitted or reopened. A successful response and `balancePlatform.dispute.updated` show closed status, and the guide instructs the platform to notify the cardholder.\n- The duplicate-info PATCH table calls `duplicateTransactionId` a boolean even while describing it as a transaction ID; the sibling duplicate-creation field table calls it a string. The close example sends one dispute ID in the PATCH path but shows a different ID in its webhook. Treat these samples as illustrations, not proof of a valid field type or correlated record.\n\n## Detail locators\n\n- `## Requirements`, `## Edit dispute information`: parent prerequisite link, draft-only scope, partial PATCH and type-specific field tables.\n- `### Tab: duplicate`, `### Tab: fraud`, `### Tab: notDelivered`: type fields and conditional values; note the duplicate-ID type inconsistency.\n- `## Submit a dispute`: `status=submitted` PATCH, TEST example and updated webhook.\n- `## Close a dispute`: draft-only close, no reopening, PATCH and mismatched example IDs.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[adyen]] \u2014 provider context.\n- [[source-adyen-docs-issuing-raise-disputes-duplicate]] \u2014 duplicate-creation field table for the transaction-ID type conflict.\n\n## Related raw API references\n\n- [[raw/adyen/docs/issuing/raise-disputes/2026-09-15|Raise disputes]] \u2014 parent guide for general requirements and lifecycle; navigation only for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/raise-disputes/manage-disputes/2026-09-15|Manage disputes guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "When a dispute has a status of **draft**, you can edit the information associated with the dispute, and change the status of the dispute to **submitted** or **closed**.",
+      "location": "line 19, opening"
+    },
+    {
+      "text": "You do not have to provide the complete dispute object in your PATCH request.",
+      "location": "line 29, ## Edit dispute information"
+    },
+    {
+      "text": "The transaction id associated with the duplicate charge for which you are disputing. The disputed transaction must be in the same amount as the duplicate transaction.",
+      "location": "line 36, ### Tab: duplicate, duplicateTransactionId row"
+    },
+    {
+      "text": "A successful response includes the dispute object, with an updated status of **submitted**.",
+      "location": "line 85, ## Submit a dispute"
+    },
+    {
+      "text": "After you close a dispute, you cannot edit, submit, or reopen that dispute.",
+      "location": "line 115, ## Close a dispute"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-manage-disputes-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-raise-disputes-manage-disputes]] \u2014 2026-09-15 guide to draft-only raised-dispute edits and submitted/closed transitions; closure prevents editing, submission or reopening, and updated webhooks record state changes rather than outcomes.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The PATCH table types duplicateTransactionId as boolean although the sibling POST table types it string; the close PATCH example and webhook use different dispute IDs."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/raise-disputes/manage-disputes/2026-09-15.md",
+  "raw_sha256": "aec0e6cad1e379bdef425f441a0698378ddcf9632ef76a7717dac618d699e9a1",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-process-payments-make-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Process customer payments to fund issued cards\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/process-payments/make-a-payment\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md\"\ntags: [adyen, issuing, payments, balance-platform]\n---\n\n## Overview\n\nAdyen Issuing guide, last modified and captured 2026-09-15, for processing **payments from the platform's customers** through Adyen online or in-person payment processing in combination with Issuing. It says revenue from those payments is booked to the platform's balance platform and can fund Adyen-issued cards. The page does not identify a particular balance account, provide split instructions or prove any live payment, card load, settlement or card transaction. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- **Prerequisites differ by channel.** Online payments need an online payments integration and checkout UI; in-person payments need a POS app integrated with Terminal API plus terminals or a mobile solution, with standalone as a fallback. The requirements list Checkout API credentials for online, Terminal API for in-person, Transfers API, a server accepting standard webhooks and Transfer/Transaction webhook subscriptions. Account holders need `receivePayments`, `receiveFromPlatformPayments` and `sendToTransferInstrument` capabilities. See raw **Requirements**, lines 21\u201335. These are the guide's stated prerequisites, not proof of a platform's current eligibility.\n- **Online route:** POST Checkout `/payments` or `/sessions`, supplying amount, merchant account, payment method, reference and return URL as shown in the guide. Its amount value uses **minor units**; the example is a test-host `/v68/payments` request for EUR 200.00. Check the response for payment outcome. See raw **Online payments**, lines 37\u201379; use the current endpoint contract for implementation details.\n- **In-person route:** POST Terminal API `PaymentRequest`, with `SaleToPOIRequest.MessageHeader` and `PaymentRequest` objects. The guide calls for `MessageClass: Service`, `MessageCategory: Payment`, and a `ServiceID` unique for the terminal in the prior 48 hours. Unlike the online amount, `PaymentTransaction.AmountsReq.RequestedAmount` uses a decimal amount, **not minor units**. The customer completes the payment at a terminal or mobile device; inspect the returned `PaymentResponse.Response.Result`, transaction ID and receipt data. See raw **In-person payments**, lines 81\u2013148.\n- **Example boundary:** The in-person request/response examples are titled \u201cwith split instructions\u201d and \u201cPayment split successful,\u201d but the shown `PaymentRequest` has no split instruction field or account-allocation details. They do not establish split configuration, a particular recipient balance account or an actual successful payment. The surrounding prose describes an approval as part of its illustrative flow; check real response and later events for an actual payment. See raw lines 108\u2013173.\n- Transfer and Transaction webhooks provide payment-related balance-platform event/status tracking; the Customer Area payment list is another view. The page does not specify a guaranteed time when payment proceeds become spendable on an issued card. See raw **Webhooks**, lines 175\u2013179.\n\n## Detail locators\n\n- Online field table and test curl example: raw lines 41\u201377.\n- Terminal header, transaction reference and decimal amount fields: raw lines 85\u2013107.\n- Terminal request and response examples, including tender/PSP reference description: raw lines 108\u2013173.\n- Customer Area Payments \u2192 Payment list: raw line 175.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15|Make a payment \u2014 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "The revenue from these payments are booked to your balance platform, and can be used to fund your Adyen-issued cards.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md, line 19, introduction"
+    },
+    {
+      "text": "**For online payments**: You must have an Adyen [online payments integration and a checkout UI](/online-payments/build-your-integration). **For in-person payments**: For in-person payments with Adyen, your POS app must be integrated with the [Terminal API](/point-of-sale/design-your-integration/terminal-api)",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md, line 27, Requirements > Integration type"
+    },
+    {
+      "text": "Make sure that your account holders have the following capabilities:- **receivePayments**",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md, line 33, Requirements > Capabilities"
+    },
+    {
+      "text": "Do not use minor units. For example, for an amount of USD\u00a010, enter **10.00** (not *1000*).",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md, line 106, In-person payments > PaymentTransaction.AmountsReq"
+    },
+    {
+      "text": "The payment request is routed to the terminal or mobile device, for the customer to complete the payment. The payment is approved, and then sent to the Adyen payments platform for processing.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md, line 142, In-person payments example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-make-payment-issuing-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-process-payments-make-a-payment]] \u2014 2026-09-15 Issuing guide for online/Terminal API payments from customers whose revenue can fund issued cards; distinguishes channel-specific setup and amount units, and flags unlabeled split data in its example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "In-person example titles claim split instructions/success, but the shown request contains no split allocation details; do not infer a configured split or recipient balance account."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/process-payments/make-a-payment/2026-09-15.md",
+  "raw_sha256": "2bc6de79dd37866cd892dc2f0c9d14817236a2c1592c368ba1c45841273654d3",
+  "status": "candidate_ready"
+}

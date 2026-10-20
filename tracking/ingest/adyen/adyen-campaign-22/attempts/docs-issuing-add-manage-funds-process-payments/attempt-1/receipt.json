@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-process-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Enterprise Issuing: Fund cards with acquired payments\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/process-payments\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md\"\ntags: [adyen, issuing, enterprise-issuing, acquiring, settlement]\n---\n\n## Overview\n\nThis 2026-09-15-captured page describes **Enterprise Issuing** funding through payments the business acquires with Adyen. Customers pay the business online or in person; the acquired revenue can then fund Adyen-issued cards. The page sends Embedded Issuing readers to separate marketplace or platform guidance.\n\n## Money flow and limits\n\n- Payments first arrive **pending in the business's merchant account**. After its configured settlement delay (**T+2 by default in this snapshot**), Adyen deducts payment fees, aggregates remaining available funds into **net settlement batches**, and books each batch to the balance platform and the **balance account configured for that merchant account**. Hourly batches are the stated default; daily batching is an option through the Adyen contact. From the resulting balance account, funds can support issued cards or be paid out to a verified external-bank transfer instrument. See raw lines 23\u201330.\n- Each settlement batch is treated as **one transfer** for Transfer webhooks: `balancePlatform.transfer.created` indicates an incoming transfer was initiated, and `balancePlatform.transfer.updated` carries status changes. The page does not make the created event proof of booked funds. See raw lines 74\u201381.\n- In the Balance Platform Accounting Report, each entry represents **a settlement batch**, not a single acquired transaction. The page directs transaction-level reconciliation to a separate guide. See raw lines 83\u201387.\n\n## Example discrepancy\n\nThe hotel example says its Stockholm guest pays **SEK 400** (raw line 47), but later says **EUR 400** becomes available in `HotelChain_SEK` (line 52). Subsequent fee and net-batch lines use **SEK 20** and **SEK 380** (lines 61\u201372). Treat the EUR label in line 52 as an unresolved example inconsistency, not a currency-conversion rule or a reliable reconciliation figure.\n\n## Detail locators\n\n- Enterprise-versus-Embedded scope and optional acquired-payment funding: [[raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15|raw lines 15\u201321]].\n- Settlement sequence, hotel-branch example and currency discrepancy: [[raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15|raw lines 23\u201372]].\n- Transfer webhooks and batch-level report boundary: [[raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15|raw lines 74\u201387]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing balance-platform model and source catalog.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15|Process payments (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to process payments with an Enterprise Issuing integration.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md:19"
+    },
+    {
+      "text": "If you want, you can use the revenue from these acquired payments to fund your Adyen-issued cards.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md:21"
+    },
+    {
+      "text": "The funds from each settlement batch are booked to the balance platform and get settled in the balance account configured for that merchant account.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md:29"
+    },
+    {
+      "text": "Each settlement batch is treated as a single transfer.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md:78"
+    },
+    {
+      "text": "Each entry in this report corresponds to a single settlement batch. You cannot use this report to reconcile your funds at a transactional level.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md:85"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-process-payments-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-process-payments]] \u2014 2026-09-15-captured Enterprise Issuing acquired-payment funding route: merchant account after fees to net settlement batches and configured balance account, with batch-level webhook/report reconciliation and a hotel-example currency inconsistency.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Hotel example labels Stockholm's 400 as EUR once (raw line 52), whereas the payment, fees and net batch are SEK (lines 47, 61\u201372)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/process-payments/2026-09-15.md",
+  "raw_sha256": "4cae29918f915e35dab1b92a61f29dac79fa83b928e28493d999caa9ba58deef",
+  "status": "candidate_ready"
+}

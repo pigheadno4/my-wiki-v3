@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-webhook-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Webhook types\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/webhook-types\"\nraw_files:\n  - \"adyen/docs/issuing/webhook-types/2026-09-15.md\"\ntags: [adyen, issuing, webhooks, transfers, disputes]\n---\n\n## Overview\n\nThis Adyen Issuing webhook catalog was last modified in 2020 and captured on 2026-09-15. It maps balance-platform events such as resource changes, issued-card payments/refunds, fund movements and raised disputes to webhook families and event `type` values. Some webhook families also expose `data.status` to distinguish lifecycle states; receiving an event type alone is not proof of a final payment, booked funds or dispute outcome.\n\n## Key takeaways\n\n- Configuration webhooks cover account holders, balance accounts, payment instruments and network tokens. The network-token `created` event starts **inactive**; `updated` can indicate **active**, **suspended** or **closed**. A separate balance webhook reports balance-account balance changes. See raw lines 39\u201360.\n- Transfer `created` reports a request to credit or deduct a balance account, while transfer `updated` reports a status change. The table identifies payment, bank transfer, chargeback and second-chargeback events by `category`, `type` and sometimes `status`. See raw lines 62\u201379.\n- Dispute `created` and `updated` report raised Issuing-card dispute and status changes; report `created` announces a generated report ready for download. The status lists in this catalog are a dated snapshot, not proof of a particular dispute outcome. See raw lines 81\u201396.\n- **Payment webhooks are deprecated; the page directs integrations to transfer webhooks instead.** The listed older incoming/outgoing transfer and payment events remain as historical reference. See raw lines 98\u2013109.\n\n## Source and related-guide differences\n\n- For a second chargeback, this catalog's transfer table gives `category: issuedCard`, `type: chargeback`, `status: secondChargeback` (raw line 79). The related Issuing Raise disputes guide gives `type: secondChargeback`, `status: secondChargeback` for `secondPresentment` ([[raw/adyen/docs/issuing/raise-disputes/2026-09-15|related Raise disputes raw line 136]]). The captured guides disagree on the transfer `type`; verify actual payloads before relying on either mapping.\n- This catalog's dispute-updated row lists `secondChargeback` as a possible dispute status (raw line 88), while that related dispute-lifecycle guide calls the status `secondPresentment` ([[raw/adyen/docs/issuing/raise-disputes/2026-09-15|related Raise disputes raw line 119]]). Keep dispute status distinct from transfer `type` and `status`; the snapshots do not reconcile the naming.\n- The opening subscription list names Configuration, Payment method, Transfer, Dispute, Negative balance warning and Report (raw lines 28\u201335), while the detailed sections also include Balance and do not detail Payment method or Negative balance warning (raw lines 39\u2013109). Treat it as a navigation catalog, not an exhaustive subscription setup guide.\n\n## Detail locators\n\n- Event categories and configuration/balance families: [[raw/adyen/docs/issuing/webhook-types/2026-09-15|raw lines 19\u201360]].\n- Transfer event mapping and dispute/report families: [[raw/adyen/docs/issuing/webhook-types/2026-09-15|raw lines 62\u201396]].\n- Deprecated payment webhook table and scenario links: [[raw/adyen/docs/issuing/webhook-types/2026-09-15|raw lines 98\u2013125]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing balance-platform model and source catalog.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/webhook-types/2026-09-15|Issuing webhook types (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends webhooks to inform your system about events that occur in your balance platform.",
+      "location": "raw/adyen/docs/issuing/webhook-types/2026-09-15.md:19"
+    },
+    {
+      "text": "You can also differentiate the events based on the `type`. Some webhook types also include a `data.status` field that informs you of the outcome of the event.",
+      "location": "raw/adyen/docs/issuing/webhook-types/2026-09-15.md:37"
+    },
+    {
+      "text": "A transfer request was created to credit funds to or deduct funds from a balance account in your issuing integration.",
+      "location": "raw/adyen/docs/issuing/webhook-types/2026-09-15.md:68"
+    },
+    {
+      "text": "The status of a raised dispute changed. Possible status values for this webhook: **closed**, **submitted**, **chargeback**, **won**, **secondChargeback**.",
+      "location": "raw/adyen/docs/issuing/webhook-types/2026-09-15.md:88"
+    },
+    {
+      "text": "Payment webhooks are deprecated. Use the [transfer webhooks](#transfer-webhooks) instead.",
+      "location": "raw/adyen/docs/issuing/webhook-types/2026-09-15.md:100"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-webhook-types-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-webhook-types]] \u2014 2020-modified, 2026-09-15-captured Issuing webhook-family catalog for configuration, balance, transfer, dispute and report events; payment webhooks deprecated, with second-chargeback naming/mapping differences from the related dispute guide.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Catalog transfer table gives second-chargeback type chargeback (raw line 79), while related raw/adyen/docs/issuing/raise-disputes/2026-09-15.md line 136 gives type secondChargeback.",
+          "Catalog dispute-updated statuses include secondChargeback (raw line 88), while related Issuing dispute lifecycle uses secondPresentment (related raw line 119)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/webhook-types/2026-09-15.md",
+  "raw_sha256": "26dabd515cddd19572b4e1a7e7ecd94f11b23f84b22578458843c1dfd0bb2399",
+  "status": "candidate_ready"
+}

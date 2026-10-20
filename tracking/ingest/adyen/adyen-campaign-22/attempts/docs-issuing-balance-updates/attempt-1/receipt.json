@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-balance-updates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Track balance updates\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/balance-updates\"\nraw_files:\n  - \"adyen/docs/issuing/balance-updates/2026-09-15.md\"\ntags: [adyen, issuing, balance-platform, balance-webhooks, pilot]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Issuing overview explains how a platform can subscribe to Balance webhooks and configure notifications for balance-account changes. Adyen marks the feature **limited availability / pilot** and says its processes and documentation may change. The page is a configuration route, not evidence of an actual balance movement or delivered webhook. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Balance changes may arise during payment lifecycles or from other financial products; the page gives incoming payments, outgoing payouts, refunds and chargebacks as examples. A Balance webhook can scope notifications to the whole balance platform, one account holder's balance accounts, or one balance account. See raw lines 24-32.\n- First subscribe to the Balance webhook in Customer Area and obtain its webhook ID. Then configure settings through POST `/balancePlatforms/{id}/webhooks/{id}/settings`, specifying that ID and trigger criteria. The overview says Adyen sends a webhook when a change in the specified scope meets all configured conditions. See raw lines 34-47.\n- Higher-level settings are inherited by connected balance accounts unless overridden by a more granular setting: account-holder settings override balance-platform settings, and balance-account settings override both. See raw lines 49-57.\n- The linked [[source-adyen-docs-issuing-balance-updates-configure-balance-webhook]] guide's status row says a webhook can be sent if **any** condition is met, while its conditions row and this overview say **all** conditions. The captured docs do not resolve multi-condition behavior; verify the actual contract before depending on that trigger logic. See this raw line 47 and companion raw lines 88-90.\n- The page points to separate guides for configuration and later viewing, updating or deleting settings. A subscription or setting is not proof of current pilot eligibility, actual notification delivery, or a resulting payment/funds outcome. See raw lines 59-67.\n\n## Detail locators\n\n- Pilot label, example balance-change causes and three notification scopes: raw lines 19-32.\n- Customer Area subscription, configuration API path, target scopes and triggering statement: raw lines 34-47.\n- Scope inheritance and override order: raw lines 49-57. Child-guide links: raw lines 59-67.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept and reciprocal source route.\n- [[source-adyen-docs-issuing-balance-updates-configure-balance-webhook]] \u2014 detailed settings fields and the multi-condition wording conflict.\n- [[source-adyen-docs-issuing-balance-updates-manage-balance-webhook]] \u2014 setting lifecycle, including scope-widening effects of removing the last condition.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/balance-updates/2026-09-15|Adyen Issuing balance-updates overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw/adyen/docs/issuing/balance-updates/2026-09-15.md:20"
+    },
+    {
+      "text": "Adyen can send you webhooks to notify you when a balance change occurs:",
+      "location": "raw/adyen/docs/issuing/balance-updates/2026-09-15.md:26"
+    },
+    {
+      "text": "You subscribe to the **Balance webhook** in your [Customer Area](https://ca-test.adyen.com/) and get the webhook ID.",
+      "location": "raw/adyen/docs/issuing/balance-updates/2026-09-15.md:38"
+    },
+    {
+      "text": "When a balance change in the specified balance account in your platform meets all the conditions you set, Adyen sends a balance webhook to your server.",
+      "location": "raw/adyen/docs/issuing/balance-updates/2026-09-15.md:47"
+    },
+    {
+      "text": "Settings you configure on a more granular level override the settings you configure on higher-level resources.",
+      "location": "raw/adyen/docs/issuing/balance-updates/2026-09-15.md:51"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-balance-updates-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-balance-updates]] \u2014 2026-09-15 Issuing pilot overview for scoped Balance webhook subscription, settings and inheritance; its all-conditions statement conflicts with an any-condition row in the linked configuration guide.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Overview raw line 47 says all configured conditions; linked configure guide raw lines 88-90 says any in status row and all in conditions row. Do not resolve behavior from these snapshots."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/balance-updates/2026-09-15.md",
+  "raw_sha256": "0235b58688abc04710c89d763d721297769a96b5fc2aede86231520a117b0b6f",
+  "status": "candidate_ready"
+}

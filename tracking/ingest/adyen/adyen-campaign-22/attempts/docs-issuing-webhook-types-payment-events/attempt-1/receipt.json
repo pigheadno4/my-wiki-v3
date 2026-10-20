@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-webhook-types-payment-events",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Webhooks for payment events\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/webhook-types/payment-events\"\nraw_files:\n  - \"adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md\"\ntags: [adyen, issuing, webhooks, payment-events]\n---\n\n## Overview\n\nThis 2020-modified Adyen Issuing guide, captured 2026-09-15, maps Adyen-issued-card payment stages to balance-platform webhooks sent to the platform's server. A merchant initiates the card payment; its transfer is `category: issuedCard`, `type: payment`, and outgoing relative to the card-linked balance account. A merchant refund is incoming. The page describes webhook reporting, not a way to initiate a payment or proof that a payment settled. See [[adyen-issuing]] and [[adyen]].\n\n## Key takeaways\n\n- A payment request produces `balancePlatform.transfer.created` with `status: received`; authorisation, refusal, adjusted authorisation, cancellation and expiry are `balancePlatform.transfer.updated` states. `authorised` reports reserved funds; `refused` can follow a transaction-rule violation. An adjusted amount can produce `authAdjustmentAuthorised`, `authAdjustmentRefused` or `authAdjustmentError`.\n- Scheme advice can add a `transfer.updated` event with `data.reason: schemeAdvice` and an `adviceAuthorised` or `adviceRefused` event. The guide says to use that webhook's `data.status` as the final payment outcome and whether the authorisation reserve stays or is released. This does not establish capture.\n- Before capture, the merchant can cancel an authorisation. On capture, funds are deducted from the balance account and Adyen sends both `transfer.updated` (`captured`) and `balancePlatform.transaction.created`. The examples distinguish full, partial, multiple partial and overcapture. Uncaptured authorised remainder expires; `expired` is reported by `transfer.updated`.\n- A forced capture can be processed and deducted without a prior valid authorisation under card-network rules. Its `captured` payload has `categoryData.authorisationType: syntheticAuthorisation`; near-simultaneous received/authorised/captured entries are retrospective accounting, not evidence of an earlier valid authorisation.\n- For a merchant refund, Adyen sends `transfer.updated` (`refunded`) and `transaction.created`. The guide explicitly says the refund is not linked to the original payment. Treat example IDs and balances as illustrations, not a matching rule or live outcome.\n\n## Detail locators\n\n- Pinned raw lines 19\u201329: webhook purpose and `issuedCard` / outgoing-payment versus incoming-refund classifiers.\n- Pinned raw lines 31\u2013112, 300\u2013406: received, authorised, adjustment and refusal states; examples show `environment: test`.\n- Pinned raw lines 495\u2013505: scheme-advice reason, event status and precedence; lines 740\u2013742: pre-capture cancellation.\n- Pinned raw lines 844\u20131001: capture and transaction webhooks; lines 1004\u20131390: partial and multiple partial examples; lines 1392\u20131644: overcapture and forced-capture examples.\n- Pinned raw lines 1646\u20131648: expiry; lines 1766\u20131779: refund webhooks and unlinked-original warning.\n- Example caution: the multiple-partial-capture prose uses EUR while its JSON uses USD (raw lines 1178\u20131183, 1241\u20131281), and the refund examples show different transfer IDs in `transfer.updated` and `transaction.created` (lines 1788, 1895\u20131903). Do not infer an exact identifier reconciliation rule from these examples.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing resource and funds context.\n- [[source-adyen-docs-issuing-payment-stages]] \u2014 payment-stage overview (navigation only).\n- [[source-adyen-docs-issuing-authorisation-scheme-advice]] \u2014 scheme-advice guide (navigation only).\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15|Adyen Issuing payment-event webhooks, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen sends webhooks to inform your server about payment-related events. On this page, you'll find details about webhook types along with examples.",
+      "location": "raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md:19"
+    },
+    {
+      "text": "The scheme's decision determines the final status of the payment and whether the funds are reserved or released. When you receive a webhook related to scheme advice, use its status as the final outcome of that payment.",
+      "location": "raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md:505"
+    },
+    {
+      "text": "When a payment is captured, the funds are deducted from the balance account. This event triggers:",
+      "location": "raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md:846"
+    },
+    {
+      "text": "A forced capture occurs when the payment is captured without a prior valid authorisation. Under card network rules, Adyen is still required to process the transaction and deduct the funds from the balance account.",
+      "location": "raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md:1498"
+    },
+    {
+      "text": "Note that the refund is not linked to the original payment.",
+      "location": "raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md:1777"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-payment-events-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-webhook-types-payment-events]] \u2014 2020-modified, 2026-09-15-captured Issuing payment-event webhook guide for transfer states, scheme advice, capture variants including forced capture, expiry and unlinked refunds.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/webhook-types/payment-events/2026-09-15.md",
+  "raw_sha256": "b97651ab361194e211614c262664c0267527bad1de8dcc0eb9a6afaf45971a58",
+  "status": "candidate_ready"
+}

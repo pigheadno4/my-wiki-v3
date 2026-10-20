@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-webhook-types-network-tokens-events",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing network token lifecycle webhooks\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/webhook-types/network-tokens-events\"\nraw_files:\n  - \"adyen/docs/issuing/webhook-types/network-tokens-events/2026-09-15.md\"\ntags: [adyen, issuing, network-tokens, digital-wallets, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15-captured Issuing guide (marked modified 2026-03-16) explains `balancePlatform.networkToken.created` and `.updated` webhooks for the lifecycle of network tokens associated with **Adyen-issued cards added to digital wallets**, such as Apple Pay or Google Pay. These are issuer-side card-token events, not a merchant checkout token or a payment authorization result. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Subscribe to Network token webhooks in the Customer Area. The payload `type` distinguishes created from updated; `data.status` lists `inactive`, `active`, `suspended`, and permanently `closed`, while `data.decision` lists `approved`, `requireAuthentication`, and `declined` for a token request (raw lines 19\u201341).\n- A `created` event follows a wallet provisioning request and risk analysis. The created token is **inactive** even when the decision is `approved`. With `requireAuthentication`, the cardholder must complete SMS/email OTP two-factor authentication or phone-call verification before activation; the guide suggests showing pending verification. With `approved`, Adyen says it activates automatically and a later `.updated` webhook confirms `active` (raw lines 43\u201362, 104\u2013112).\n- An `.updated` event reports a later status change. The examples distinguish `active` with `authenticationApplied=false` after automatic activation from `active` with `authenticationApplied=true` after the required verification. `active` means the card is available in the wallet and ready for payments; it does not prove any particular payment was authorized or settled (raw lines 194\u2013251).\n- The `.updated` `closed` case is permanent. The guide lists failed provisioning risk analysis, cardholder wallet removal, platform PATCH revocation, and closure of the underlying payment instrument as closure scenarios. The status table also labels `suspended` temporarily disabled, but this page gives no suspended event example (raw lines 37\u201341, 283\u2013326).\n\n## Detail locators\n\n- Webhook type/status/decision field table and subscription route: raw lines 26\u201341. The table names `declined`, but the worked `created` scenarios cover only `requireAuthentication` and `approved`; closure after failed risk analysis is under `.updated` (raw lines 43\u201350, 283\u2013297).\n- Authentication-required and automatic created samples, including network-token ID, `paymentInstrumentId`, `authenticationApplied`, wallet/device and test environment: raw lines 52\u2013192. Sample IDs, wallet names and validation fields are illustrative.\n- Updated active-without-authentication and active-after-authentication examples: raw lines 194\u2013281. Closed reasons and sample: raw lines 283\u2013326.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing program and reciprocal source catalog.\n- [[source-adyen-docs-issuing-network-tokens]] \u2014 wallet versus card-on-file token types and lifecycle overview.\n- [[source-adyen-docs-issuing-manage-network-tokens]] \u2014 separate API lookup and asynchronous status-management guide.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/webhook-types/network-tokens-events/2026-09-15|Issuing network token webhooks guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When your cardholders add their Adyen-issued cards to digital wallets like Apple Pay or Google Pay, Adyen replaces the card data with a network token.",
+      "location": "raw line 19, opening network-token lifecycle description"
+    },
+    {
+      "text": "In your Customer Area, subscribe to [Network token webhooks](/development-resources/webhooks/webhook-types#network-token-webhook) to get these events.",
+      "location": "raw line 26, subscription paragraph"
+    },
+    {
+      "text": "created a network token with status **inactive**, and completed the risk analysis.",
+      "location": "raw line 45, Network token created"
+    },
+    {
+      "text": "After receiving this webhook message, expect a [balancePlatform.networkToken.updated](https://docs.adyen.com/api-explorer/balanceplatform-webhooks/latest/post/balancePlatform.networkToken.updated) webhook message that confirms the token is active.",
+      "location": "raw line 106, Network token created without authentication required"
+    },
+    {
+      "text": "Adyen sends this webhook message when a network token is permanently closed.",
+      "location": "raw line 285, Network token closed"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-network-token-events-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-webhook-types-network-tokens-events]] \u2014 2026-03-16-modified, 2026-09-15-captured issuer-side wallet-network-token created/updated webhook guide; created is inactive even with approval, later updated confirms active or closed lifecycle states.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/webhook-types/network-tokens-events/2026-09-15.md",
+  "raw_sha256": "e2c29cbef8e79f7187628add84022b12b1a144fbd3d38991d9b069146ed73626",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-raise-disputes-duplicate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: raise a duplicate-charge dispute\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/raise-disputes/duplicate\"\nraw_files:\n  - \"adyen/docs/issuing/raise-disputes/duplicate/2026-09-15.md\"\ntags: [adyen, issuing, disputes, duplicate-charges, cardholders]\n---\n\n## Overview\n\nThis 2026-09-15 Issuing guide describes a platform raising a `duplicate` dispute for two charges for one purchase, either on the same card or on two Adyen-issued cards. The platform uses the Balance Platform Transfers API to create a draft against one transaction and identify its matching duplicate, offers the cardholder review and optional evidence, then submits to the card scheme for review and a possible chargeback. A draft or submitted status does not establish a win or returned funds.\n\n## Key takeaways\n\n- The page defers overarching requirements, limits and preparations to the parent Raise disputes guide. Find both transaction IDs using the Balance Platform Accounting Report, Customer Area or Transfer webhooks. `POST /disputes` with `type=duplicate`, the disputed `transactionId`, and `duplicateInfo` containing the other `duplicateTransactionId` and `sameCard`; `sameIssuer` is optional. The disputed and duplicate transactions must have the same amount. The optional `description` is limited to 50 characters and must contain no PII.\n- Keep the returned dispute `id` for attachments, updates, submission, closure and lifecycle tracking. Creation returns `draft` and is followed by a `balancePlatform.dispute.created` webhook. Optional supporting attachments are Base64-encoded JPEG/PDF/TIFF files of at most 2 MB; the filename table limits names to 4\u201317 characters including extension.\n- Let the cardholder review the draft. The page allows a partial PATCH without resending the whole dispute object. After the cardholder confirms submission, PATCH the dispute status to `submitted`. Submission to the card scheme ends the ability to update or close the dispute or upload/delete attachments; a `submitted` response and updated webhook show submission, not chargeback success.\n- Process `balancePlatform.dispute.updated` for later states. For `chargeback` or `secondPresentment`, match `balancePlatform.transfer.created` by ARN and reconcile the cardholder balance account. The request/response examples show `sameCard` and `sameIssuer` as quoted strings even though the field tables call them booleans; the PATCH table also labels `duplicateTransactionId` boolean while the POST table and examples use a string. These examples are not reliable schema proof.\n\n## Detail locators\n\n- `## Requirements` and `## 1. Raise a duplicate charge dispute`: parent-guide requirement link, transaction-ID sources, POST fields, same-amount condition, sample payload, draft response and created webhook.\n- `## 2. Upload attachments (optional)`: accepted file types, encoding, size/name limits and attachment ID.\n- `## 3. Review the dispute` through `## 5. Submit the dispute`: cardholder review, partial PATCH and irreversible submission boundary.\n- `## 6. Process webhooks for status changes`: dispute status, ARN matching and account reconciliation.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[adyen]] \u2014 provider context.\n\n## Related raw API references\n\n- [[raw/adyen/docs/issuing/raise-disputes/2026-09-15|Raise disputes]] \u2014 parent guide for overarching requirements and lifecycle; navigation only for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/raise-disputes/duplicate/2026-09-15|Duplicate-charge dispute guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Learn how to raise a dispute for a duplicate charge made either on a single card, or on two Adyen-issued cards.",
+      "location": "line 17, opening"
+    },
+    {
+      "text": "The disputed transaction must be in the same amount as the duplicate transaction.",
+      "location": "line 40, ## 1. Raise a duplicate charge dispute, duplicateTransactionId row"
+    },
+    {
+      "text": "Adyen sends a [balancePlatform.dispute.created](https://docs.adyen.com/api-explorer/dispute-webhooks/latest/post/balancePlatform.dispute.created) webhook to your server for the dispute with a status of **draft**.",
+      "location": "line 93, ## 1. Raise a duplicate charge dispute"
+    },
+    {
+      "text": "When you submit a dispute to the card scheme, you can no longer update the dispute, upload or delete attachments, or close the dispute.",
+      "location": "line 200, ## 5. Submit the dispute"
+    },
+    {
+      "text": "If the `status` of a dispute changes to **chargeback** or **secondPresentment**, inspect [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created) webhooks for the matching Acquirer Reference Number (arn), and reconcile balances for the cardholder's balance account.",
+      "location": "line 242, ## 6. Process webhooks for status changes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-duplicate-dispute-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-raise-disputes-duplicate]] \u2014 2026-09-15 duplicate-charge dispute guide for same-card or two Adyen-issued-card charges, matched transaction IDs/amounts, draft evidence and irreversible submission, followed by status and ARN reconciliation. Sample boolean/type discrepancies require schema verification.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Request/response samples quote sameCard and sameIssuer despite boolean field tables; PATCH table labels duplicateTransactionId boolean although POST table and examples use string."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/raise-disputes/duplicate/2026-09-15.md",
+  "raw_sha256": "9143811973adec34b1ef199e297b437816e67680894a7f33c424d0e421c22d1c",
+  "status": "candidate_ready"
+}

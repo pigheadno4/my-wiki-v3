@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-issuing-report-types-payment-instrument-report",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Issuing Payment Instrument Report\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/report-types/payment-instrument-report\"\nraw_files:\n  - \"adyen/docs/issuing/report-types/payment-instrument-report/2026-09-15.md\"\ntags: [adyen, issuing, reports, payment-instruments, cards]\n---\n\n## Overview\n\nThis Issuing report guide, last modified 2022-03-01 and captured 2026-09-15, describes the Payment Instrument Report as an inventory of a platform's payment instruments with card details and each instrument's status **at report-generation time**. It can be generated on a schedule or manually for a particular day or consecutive days in Customer Area. This is an inventory snapshot: an active row reports active status at generation time, but does not document the activation event or establish a successful payment or settlement.\n\n## Key takeaways\n\n- Each data row represents one payment instrument. The first two rows identify the report, and the third is the header. The listed schema has 32 columns, but the downloadable sample may omit extra data or columns present under a platform's settings; the sample is not an exhaustive schema contract.\n- Core columns include Balance Platform name, payment-instrument ID and platform reference, form factor (virtual/physical), cardholder name, first six and last four PAN digits, sequence number, expiry, status and status reason. Status values shown are `active`, `inactive`, `suspended`, `closed`; listed reasons are `lost`, `stolen`, `damaged`, `suspectedFraud`, `other`.\n- The report also links each payment instrument to account-holder and balance-account IDs, references and descriptions, plus issuing country, currency and brand variant. Its final ten columns are reserved for future enhancements. Handle the report as cardholder/card metadata, even though this table shows partial PAN rather than full PAN.\n- The `Created date` row describes itself as \u201cThe date of the payment,\u201d which is inconsistent with a one-row-per-payment-instrument inventory. Do not reinterpret that field as a verified card-creation or payment date without checking the generated report/schema.\n\n## Detail locators\n\n- Opening and `## Sample`: report purpose, scheduled/manual generation route and platform-specific column variation.\n- `## Report structure`: point-in-time row grain, first two rows, third-row header and 32-column table.\n- Report-structure table rows 1\u201316: instrument/card identifiers, partial PAN, status, country, currency and brand.\n- Report-structure table rows 17\u201332: linked account-holder/balance-account metadata and reserved fields; `Created date` wording anomaly is in row 6.\n\n## Related\n\n- [[adyen-issuing]] \u2014 main Issuing concept.\n- [[adyen]] \u2014 provider context.\n\n## Related raw API references\n\n- [[raw/adyen/docs/issuing/generate-download-reports/2026-09-15|Generate and download reports]] \u2014 linked scheduling/manual generation procedure; navigation only for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/report-types/payment-instrument-report/2026-09-15|Payment Instrument Report guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The Payment Instrument Report shows all the payment instruments in your platform, including details about the card and its status.",
+      "location": "line 19, opening"
+    },
+    {
+      "text": "You can [generate](/issuing/generate-download-reports#generate) a Payment Instrument Report automatically based on a schedule, or manually for a specific day or consecutive days in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "line 21, opening"
+    },
+    {
+      "text": "Based on your platform settings, the report you generate in your account can contain additional data or columns that are not included in the sample report.",
+      "location": "line 26, ## Sample"
+    },
+    {
+      "text": "Every row in the Payment Instrument Report represents one payment instrument with its current status at the time the report is generated.",
+      "location": "line 30, ## Report structure"
+    },
+    {
+      "text": "The status of the payment instrument. Possible values: **active**, **inactive**, **suspended**, **closed**.",
+      "location": "line 54, ## Report structure, Status row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-payment-instrument-report-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-report-types-payment-instrument-report]] \u2014 2022-modified, 2026-09-15-captured Issuing Payment Instrument Report guide for scheduled/manual card-inventory snapshots, point-in-time statuses and account-holder/balance-account link fields; sample columns vary by platform settings.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The Created date table description says date of the payment despite instrument-level row grain; do not assign a stronger meaning without checking a generated report."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/report-types/payment-instrument-report/2026-09-15.md",
+  "raw_sha256": "74b14c4fb43f92753aa0be0f1ddc89fab371f55cd9a351ed9816e9559cab27ad",
+  "status": "candidate_ready"
+}

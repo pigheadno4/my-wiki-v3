@@ -15,6 +15,9 @@ Component availability depends on product, region, user role, and each child gui
 
 ## Sources
 
+- [[source-adyen-docs-issuing-components-overview-after-payment-transactions-component]] — 2026-09-15 Issuing-path copy of the Platform Experience Transactions Overview/Details guide; its stated prerequisite is Adyen for Platforms, with platform-scoped session and role-gated refunds.
+
+
 - [[source-adyen-docs-platforms-build-user-dashboards]] — 2026-09-15 Platform Experience user-dashboard hub linking Transactions, Payouts, Reports, Disputes and Pay by Link component guides; inventory, not operation proof.
 
 

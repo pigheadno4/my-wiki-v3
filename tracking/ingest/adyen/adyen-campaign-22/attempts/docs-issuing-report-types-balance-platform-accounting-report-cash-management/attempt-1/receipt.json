@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-report-types-balance-platform-accounting-report-cash-management",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Balance Platform Accounting Report cash-management examples\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/report-types/balance-platform-accounting-report/cash-management\"\nraw_files:\n  - \"adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md\"\ntags: [adyen, issuing, accounting-report, cash-management, transfers]\n---\n\n## Overview\n\nThis 2026-09-15-captured Issuing-path guide uses Balance Platform Accounting Report rows to illustrate balance-account cash management and bank versus internal-transfer classification. It describes filtering events affecting balance accounts and examining cardholder spending trends as possible cash-management uses; the sample does not prove a live transfer or an actual cash-flow forecast. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The page calls `Balance (PC)` the current balance, affected by funding, captures and refunds, and describes cardholder available balance as the sum of `Balance (PC)` and signed authorized `Reserved (PC)` in this report context (raw lines 21\u201324). Keep that report-column statement separate from the generic balance-type definitions in [[source-adyen-docs-issuing-balance-types]]; the page gives no account-wide calculation procedure.\n- It distinguishes external-bank `bankTransfer` activity from balance-account-to-balance-account `internalTransfer` activity using `Category`, `Type` and `Status`. It says internal transfers have transfer and transaction parts like payments (raw lines 26\u201332). The shown rows are an internal EUR 15 debit from one balance account and credit to another, with `received`, `authorised`, then `booked` statuses and distinct Transfer Ids for the two sides (raw lines 40\u201347).\n- The prose says to reconcile internal-transfer rows with the same `Reference For Beneficiary`, and bank-transfer rows using `Description`, `Reference` or `Reference For Beneficiary` (raw line 38). But in the internal-transfer sample, the shared user-supplied reference is in `Reference` on the outgoing side and `Description` on the incoming side; incoming `Reference For Beneficiary` is not shown as a common value (raw lines 42\u201347). Do not implement a join that assumes the printed sample matches the stated same-field rule.\n- The text announces a bank-transfer flow before the diagram, but the only detailed table below it has `Category: internal` and `Type: internalTransfer` (raw lines 34\u201347). The table therefore does not provide bank-transfer row evidence or show bank receipt.\n\n## Detail locators\n\n- Cash-management purpose and report balance-column statements: raw lines 19\u201324. Bank/internal categories, event types and reconciliation instruction: raw lines 26\u201338.\n- Internal-transfer two-account row example, signed Received/Reserved/Balance (PC), references, booking/value dates and IDs: raw lines 40\u201347.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing and balance-platform context.\n- [[source-adyen-docs-issuing-report-types-balance-platform-accounting-report]] \u2014 parent report scope and field reference.\n- [[adyen-reporting]] \u2014 broader reporting context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15|Cash management report guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can support your cash management activities by consuming and filtering events that affect balance accounts.",
+      "location": "raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md:19"
+    },
+    {
+      "text": "**Current balance**: the actual funds held in the balance account.",
+      "location": "raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md:23"
+    },
+    {
+      "text": "The available balance is the sum of the current balance, **Balance (PC)**, and the authorized balance, **Reserved (PC)**.",
+      "location": "raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md:24"
+    },
+    {
+      "text": "Money movement between balance accounts is referred to as an internal transfer.",
+      "location": "raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md:28"
+    },
+    {
+      "text": "To reconcile an internal transfer, match the rows in the report that have the same **Reference For Beneficiary**.",
+      "location": "raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md:38"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-docs-issuing-accounting-cash-management-source-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-report-types-balance-platform-accounting-report-cash-management]] \u2014 2026-09-15-captured Accounting Report cash-management guide for balance columns and bank/internal-transfer rows; internal-transfer reference-matching prose differs from the shown two-account table.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The stated same-Reference-For-Beneficiary join does not match the outgoing/incoming sample column placement; the table is internalTransfer even though preceding text introduces a bank-transfer diagram."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/report-types/balance-platform-accounting-report/cash-management/2026-09-15.md",
+  "raw_sha256": "80c94934524cfc125390daf8ffaa52c10d2b8ee6ecbe3b17e1a6f0f632e9eaea",
+  "status": "candidate_ready"
+}

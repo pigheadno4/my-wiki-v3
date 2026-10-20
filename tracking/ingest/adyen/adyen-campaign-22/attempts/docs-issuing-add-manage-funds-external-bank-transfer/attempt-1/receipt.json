@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-external-bank-transfer",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: External bank transfer funding\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/external-bank-transfer\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md\"\ntags: [adyen, issuing, balance-accounts, bank-transfers, funding]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Issuing guide describes **push-based** funding: the sender initiates a bank transfer from an onboarded external bank account to an Adyen-provided funding account. Adyen matches the incoming transfer to the verified transfer instrument and books it to the **account holder's primary balance account**, where funds become available for the associated issued card. This is distinct from Adyen-initiated pull top-ups.\n\n## Key takeaways\n\n- Adyen provides the platform's funding bank-account details (for example, IBAN or routing/account number). The sending bank account must be onboarded as a `transferInstrument` linked to the account holder's main legal entity and verified before funds are sent. The transfer must originate from that onboarded account; Adyen says it cannot match funds from an unregistered account. See raw lines 33\u201345, 59 and 84\u201394.\n- Confirm that the account holder's **primary** balance account is the one linked to the card being funded. The guide says incoming transfers are booked there; to fund a non-primary account, first fund the primary account and then transfer internally. See raw lines 49\u201357.\n- Issuing support, Transfer webhook subscription and the account holder's `receiveFromTransferInstrument` capability are requirements. Request and complete verification for the account holder, legal entity and transfer instrument; the capability must be **allowed** before sending. Sending earlier can delay funding. See raw lines 23\u201331 and 59\u201367, 94.\n- Processing may take the same day to a few business days and varies with region, currency, bank network, cutoffs and holidays. For incoming `category: bank`, `type: bankTransfer`, `direction: incoming` webhooks, `received` and `authorised` are intermediate; `balancePlatform.transfer.updated` with `status: booked` indicates that funds have been added to the primary balance account and are available. The page also gives Customer Area and `GET /balanceAccounts/{id}` balance checks. See raw lines 69\u201382 and 96\u2013125.\n\n## Detail locators\n\n- Funding-account destination, primary-account selection, onboarding and verification: [[raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15|raw lines 33\u201367]].\n- Timing, send-from-registered-account rule and availability confirmation: [[raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15|raw lines 69\u2013125]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing balance-platform model and source catalog.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15|External bank transfer (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This is a push-based funding method: you initiate the transfer from your bank, and Adyen receives and processes it.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md:19"
+    },
+    {
+      "text": "Adyen matches the incoming transfer to the onboarded transfer instrument and books the funds to the account holder's primary balance account.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md:40"
+    },
+    {
+      "text": "Adyen books incoming transfers to the primary balance account, so it must match the balance account of the card you intend to fund.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md:53"
+    },
+    {
+      "text": "After all verification is complete and the **receiveFromTransferInstrument** capability shows as **allowed**, you can start making bank transfers to fund the account holder's balance account.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md:67"
+    },
+    {
+      "text": "Funds have been added to the account holder's primary balance account. **The funds are now available for use.**",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md:114"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-external-bank-transfer-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-external-bank-transfer]] \u2014 2026-09-15 Issuing push-funding guide: onboarded external bank account to Adyen funding account, then booking to the account holder's primary balance account after matching; verification and booked-webhook availability gates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15.md",
+  "raw_sha256": "46a65850eaf1ca60159ac4423d5fda3583142f1c1c2a2ef9bf9ab11d2c541f82",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-tokens-digital-wallet-apple-pay-provisioning",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing Apple Pay in-app and Wallet provisioning\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/tokens-digital-wallet/apple-pay-provisioning\"\nraw_files:\n  - \"adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md\"\ntags: [adyen, issuing, apple-pay, digital-wallet, network-tokens]\n---\n\n## Overview\n\nThis Adyen Issuing-path guide, last modified 2023-03-28 and captured 2026-09-15, describes use of the Adyen Apple Pay Provisioning SDK to add an Adyen-issued payment card to Apple Wallet from an issuer's iOS app or directly from Apple Wallet. The page labels itself a work in progress and says APIs, documentation and processes may change (raw lines 15\u201323). [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- For an issuer with an iOS app, the guide says to implement its in-app flow; it also says to support direct Apple Wallet provisioning through a Wallet extension and Authentication UI extension (raw lines 39\u201343, 135\u2013182). These are instructions in this dated guide, not evidence of current Apple or Adyen program approval.\n- The listed SDK environment is iOS target 13.4+, Xcode 14+ and Swift 5.7+. Before provisioning a specified `paymentInstrument`, the issuer's server GETs `/paymentInstruments/{id}/networkTokenActivationData` with the Bank Issuing PaymentInstrument Network Token Activation Data role, then sends returned `sdkInput` to the app (raw lines 31\u201337, 55\u201374). The cURL example uses the test Balance Platform host (raw lines 65\u201370).\n- In-app, `ProvisioningService.canAddCard()` controls whether to show the button; `canAddCardDetails()` checks a particular device. On selection, `start()` invokes the SDK; its delegate sends `sdkOutput` to the back end, which POSTs it to Adyen and returns `sdkInput`. The completion delegate includes both a pass and an error, so invocation or callback alone does not prove that a card was added (raw lines 76\u2013130).\n- For direct Wallet provisioning, `ExtensionProvisioningService` reports status and card passes, generates the pass request, and uses a delegate/back-end POST of `sdkOutput` to return `sdkInput` for the network-token provisioning step. The raw specifies separate 100 ms status and 20 s pass-entry time limits with a fresh activation-data GET if exceeded (raw lines 197\u2013270, 272\u2013348, 350\u2013447). It does not show a completed live provisioning outcome.\n\n## Detail locators\n\n- SDK download and installation pointer: raw lines 25\u201329. In-app sequence, eligibility, delegate and completion callback: raw lines 39\u2013130.\n- Wallet and Authentication UI extension classes, identifiers and protocol setup: raw lines 135\u2013182. Multi-instrument `sdkInput`, status and unavailable-service fallback: raw lines 211\u2013270.\n- iPhone versus Watch pass-entry methods and card-art delegate: raw lines 272\u2013348. Request generation and `provision(paymentInstrumentId, sdkOutput)` callback/POST: raw lines 350\u2013447.\n\n## Related\n\n- [[adyen-issuing]] \u2014 issuing-program and `paymentInstrument` context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15|Adyen Apple Pay provisioning guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is a work in progress. Some of the APIs, documentation, and processes may change.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md:19"
+    },
+    {
+      "text": "If you have an iOS app for your business, you **must** use the in-app provisioning flow described in this section.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md:41"
+    },
+    {
+      "text": "Before you start card provisioning, you must get activation data for the specified payment instrument.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md:57"
+    },
+    {
+      "text": "You must also support card provisioning directly from Apple Wallet.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md:137"
+    },
+    {
+      "text": "The time limit for your app to complete these steps is 100 milliseconds.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md:270"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-docs-issuing-apple-pay-provisioning-source-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-tokens-digital-wallet-apple-pay-provisioning]] \u2014 2023-modified, 2026-09-15-captured work-in-progress SDK guide for issuer-app and direct-Wallet Apple Pay card provisioning, activation data and extension time limits.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page calls itself work in progress; treat its stated flow, SDK requirements and timing as captured documentation, not current eligibility or a successful provisioning result."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/tokens-digital-wallet/apple-pay-provisioning/2026-09-15.md",
+  "raw_sha256": "2c63a1792585b6e3afddb57c8fb82209351b7b666b9848ee2d223036696eecb6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-balance-updates-configure-balance-webhook",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Issuing: Configure balance webhooks\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/balance-updates/configure-balance-webhook\"\nraw_files:\n  - \"adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md\"\ntags: [adyen, issuing, balance-platform, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15-captured Issuing-path guide describes subscribing to Balance webhooks in Customer Area and configuring balance-change notification conditions with the Balance Platform Configuration API. Adyen labels the feature **Limited availability** and says it is in pilot, with processes and documentation subject to change. The notifications can help monitor balances; the page does not claim they prevent a negative balance. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Subscribe to the Balance webhook in Customer Area, then use the webhook ID and balance platform ID in a Configuration API settings request. The guide lists **Balance Platform BCL role** for the Configuration API credential and at least one Customer Area role, **Merchant technical integrator** or **Merchant admin**. Customer Area setup includes a public server URL and encryption protocol; its HMAC key must be copied and saved when generated because it cannot be copied later.\n- A setting targets the whole `balancePlatform`, all balance accounts of one `accountHolder`, or one `balanceAccount`, with a target ID and currency. An `active` setting can trigger when its conditions are met; `inactive` suppresses notifications even when met. The status row says an `active` setting receives a webhook if *any* condition is met, while the conditions row says a balance change must meet *all* conditions; this is an unresolved contradiction. Check the linked API reference or verified behavior before relying on multi-condition triggers. With no conditions, the guide says updates are sent for all balance changes in the specified balance account(s). The documented maxima are 20 settings per Balance webhook and 20 condition sets in each setting.\n- The prose specifies POST `/balancePlatforms/{id}/webhooks/{id}/settings`, but the illustrated curl posts to `/bcl/v2/balancePlatforms` without the webhook settings path. Treat the example as illustrative, not a verified endpoint. The troubleshooting sections also label resubmission as POST while linking a PATCH settings URL. Check the linked API reference for implementation.\n- Keep the returned setting `id` for subsequent view, modification, deletion or matching an event to a setting, and accept received webhooks. The guide lists duplicate conditions (`1047_002`), missing target account (`1047_404`) and invalid currency (`1047_001`) as example setup errors.\n\n## Detail locators\n\n- Pilot status, purpose, subscription and scope choices: raw lines 15\u201330. Credential/Customer Area roles and maxima: lines 32\u201339. Customer Area creation, server/security fields and webhook ID: lines 41\u201371.\n- Stated settings endpoint and field meanings, including target, status, conditions, balance types and comparisons: lines 73\u201396. The liable-account threshold example and shortened curl endpoint: lines 98\u2013123; response `id` and event acceptance: lines 125\u2013149.\n- Troubleshooting error payloads and suggested corrections: lines 151\u2013244. Related use-case, settings-management and funding guides: lines 246\u2013258.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing source route.\n- [[adyen-index]] \u2014 Adyen source catalog.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15|Configure balance webhooks, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md:20"
+    },
+    {
+      "text": "To receive these webhooks, you must subscribe to the [Balance webhook](https://docs.adyen.com/api-explorer/balance-webhooks/latest/overview) in your [Customer Area](https://ca-test.adyen.com/). Use the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview) to set the conditions that a balance change must meet for Adyen to send a balance webhook:",
+      "location": "raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md:26"
+    },
+    {
+      "text": "You can create maximum 20 webhook settings per balance webhook. In each webhook setting, you can configure maximum 20 sets of conditions in the `conditions` array.",
+      "location": "raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md:39"
+    },
+    {
+      "text": "To trigger the webhook, the balance change must meet *all* the conditions you set. If you don't specify any conditions, you will receive updates for *all* balance changes in the specified balance account(s).",
+      "location": "raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md:90"
+    },
+    {
+      "text": "curl https://balanceplatform-api-test.adyen.com/bcl/v2/balancePlatforms \\",
+      "location": "raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md:103"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-balance-webhook-config-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-balance-updates-configure-balance-webhook]] \u2014 2026-09-15-captured pilot Balance webhook subscription and Configuration API settings guide for balance-change notifications; prose and curl example differ on endpoint path.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": [
+          "The prose settings endpoint differs from the shortened curl example; preserve this discrepancy in the source entry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/balance-updates/configure-balance-webhook/2026-09-15.md",
+  "raw_sha256": "29a895fb51ae8ad6925f526fa06ee3c034ac77727bebe970d0dd9c962089eaac",
+  "status": "candidate_ready"
+}

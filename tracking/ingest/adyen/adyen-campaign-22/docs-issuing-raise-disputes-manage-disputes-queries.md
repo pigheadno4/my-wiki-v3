@@ -1,0 +1,7 @@
+# C22 query checks — docs-issuing-raise-disputes-manage-disputes
+
+Q1. What can a platform change on an Issuing raised dispute while it is draft?
+Answer: The guide says draft disputes can be edited, submitted or closed, with supporting attachments through a linked procedure (raw line 19). `PATCH /disputes/{id}` can send changed fields without the whole object; tabs list duplicate, fraud and non-delivery patch fields (raw lines 25–67). It sends `status=submitted` by PATCH and receives updated status plus `balancePlatform.dispute.updated` (raw lines 69–85). Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-raise-disputes-manage-disputes]] → [[raw/adyen/docs/issuing/raise-disputes/manage-disputes/2026-09-15]].
+
+Q2. Can a closed dispute be reopened, and do these responses prove a won dispute?
+Answer: Only a draft can be closed; once closed, it cannot be edited, submitted or reopened (raw lines 111–117). Submitted and closed responses/webhooks record state changes, not a chargeback win or returned funds (raw lines 85–105, 131–151). For implementation, the duplicate PATCH table labels `duplicateTransactionId` boolean while describing an ID, and the close PATCH example uses ID `5UTH6M64Q6OL0076` while its webhook uses `4VXM2M64Q6OL1111` (raw lines 36, 122, 139). Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-raise-disputes-manage-disputes]] → [[raw/adyen/docs/issuing/raise-disputes/manage-disputes/2026-09-15]].

@@ -1,0 +1,9 @@
+# C22 query checks — docs-issuing-report-types-received-payments-report
+
+Q1. What is this report for, and how is it obtained?
+
+The Received Payments Report is a **deprecated** Issuing report for card-user payments made on a selected day; Adyen directs users to its Balance Platform Accounting Report instead (pinned raw lines 15–21). The historical guide says it can be scheduled or generated manually for a day or consecutive days in Customer Area (25). It describes one payment per row and a three-line preamble with header on row four (32–45). It does not prove present-day report availability. Forward route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-report-types-received-payments-report]] → [[raw/adyen/docs/issuing/report-types/received-payments-report/2026-09-15]].
+
+Q2. What timing, field and interpretation limits matter?
+
+Adyen recommends generation two weeks after the reported day so `Authorised` payments have time to become final; `Journal Type` says expect final `Captured`, `Refused`, `Expired`, `Cancelled` or `Refunded` then, but earlier reports may still show `Authorised` (raw 23, 52). This qualifies the row prose saying “final state” at generation (34). Distinguish accounting `Transaction Id`, `Authorisation PSP Reference`, `Payment Reference` described as payment-instrument ID, original acquirer amount, and instructed balance-account deduction (51–63). `Auth Code` is named for cancellation/refund (66). Platform reports may have more columns than the sample (29–30), and the table repeats ordinal 24 for Country and MCC (71–73). The legacy report description alone proves no particular payment settlement or refund. Forward route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-report-types-received-payments-report]] → [[raw/adyen/docs/issuing/report-types/received-payments-report/2026-09-15]].

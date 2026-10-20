@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-balance-updates-manage-balance-webhook",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: manage balance webhook settings\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/balance-updates/manage-balance-webhook\"\nraw_files:\n  - \"adyen/docs/issuing/balance-updates/manage-balance-webhook/2026-09-15.md\"\ntags: [adyen, issuing, balance-webhooks, balance-platform, pilot]\n---\n\n## Overview\n\nThis Adyen Issuing guide, captured 2026-09-15, describes Configuration API operations to view, update and delete **balance webhook settings** for a balance platform. The feature is marked **limited availability / pilot**, with processes and documentation subject to change. A setting determines which balance changes trigger notifications; this page describes configuration, not an observed webhook delivery or a transfer of funds. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Use `GET /balancePlatforms/{balancePlatformId}/webhooks/{webhookId}/settings` for the list, or append `/{settingId}` for one setting. The sample response separates the webhook ID from each setting ID and shows `type: balance`, target, currency, status and conditions.\n- PATCH the individual setting route to change it. The guide marks `type: balance` as required in the PATCH body. Optional target scopes in its table are the entire `balancePlatform`, one `accountHolder`, or one `balanceAccount`; the target ID names that resource. Conditions select `available`, `balance`, `pending` or `reserved` balance and a threshold comparison (`greaterThan`, `greaterThanOrEqual`, `lessThan`, `lessThanOrEqual`) in the specified currency.\n- **Preserve conditions when updating:** to add a condition, send both old and new condition sets; to remove one, omit it but send every condition to keep. If the only existing condition is removed, the guide says the setting will notify for **all balance changes in the specified balance account(s)**. Treat that as a material widening of the trigger.\n- `status: active` permits a webhook if any condition in the setting is met. `inactive` suppresses delivery for the specified conditions and is the guide's temporary stop. DELETE of the individual setting is its permanent stop for those configured conditions. The all-changes statement above concerns removal of the last condition, not reactivation of an inactive setting.\n- The curl commands use a test Balance Platform endpoint and illustrative resource IDs/thresholds. They show configuration request shapes, not current pilot eligibility, actual balance changes or successful webhook receipt.\n\n## Detail locators\n\n- Pilot and list/detail GET routes: raw lines 19\u201328 and 81\u201387; response shapes: 40\u201379 and 99\u2013119.\n- PATCH path/body fields, target types, status and condition vocabulary: raw lines 121\u2013147.\n- Add/remove conditions and temporary deactivation: raw lines 155\u2013157, 191\u2013195 and 224\u2013238.\n- Removing the last condition versus deleting a setting: raw lines 243\u2013253.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[source-adyen-docs-issuing-balance-types]] \u2014 balance-type reference.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/balance-updates/manage-balance-webhook/2026-09-15|Adyen balance webhook setting guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, pilot notice"
+    },
+    {
+      "text": "send both the existing and the new condition set in the `conditions` array.",
+      "location": "raw line 157, #### Add a new set of conditions"
+    },
+    {
+      "text": "You must send the conditions you want to keep in the update request.",
+      "location": "raw line 195, #### Remove a set of conditions"
+    },
+    {
+      "text": "you will receive updates for *all* balance changes in the specified balance account(s).",
+      "location": "raw line 245, #### Remove all conditions"
+    },
+    {
+      "text": "If you want to permanently stop receiving webhooks for the specified conditions, send a DELETE",
+      "location": "raw line 249, ## Delete a balance webhook setting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-balance-webhook-settings-reciprocal",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-balance-updates-manage-balance-webhook]] \u2014 2026-09-15-captured pilot guide for Issuing balance-webhook setting lookup, PATCH condition replacement/deactivation and DELETE; removing the last condition widens notifications to all balance changes in scope.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Pilot availability and behavior may change.",
+          "Removing the final condition broadens matching; distinguish that from inactive or deleted settings."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/balance-updates/manage-balance-webhook/2026-09-15.md",
+  "raw_sha256": "dcfeaba7603f8d3190a100087399ba6dddd429e3068ec7b71b4faa1fb69360c0",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-tokens-digital-wallet",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing network tokens for digital wallets\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/tokens-digital-wallet\"\nraw_files:\n  - \"adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md\"\ntags: [adyen, issuing, network-tokens, digital-wallets]\n---\n\n## Overview\n\nAdyen's 2026-09-15-captured Issuing guide explains the issuer-side provisioning of network tokens when a cardholder adds an Adyen-issued card to a digital wallet such as Apple Pay or Google Pay. The wallet asks the card scheme, the scheme passes the request to Adyen, and a created token initially has `inactive` status while Adyen analyzes risk. The token substitutes for sensitive card details in the wallet; this guide addresses cardholder wallet provisioning rather than acquiring-side checkout tokenization. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The stated prerequisites are an Issuing-supporting integration, a Configuration API credential with the account-scoped NetworkTokens read/patch role, Network token webhook subscription, and Adyen-contact confirmation of a card manufacturing profile. Phone-call authentication is optional setup through the Adyen contact (raw lines 25\u201335).\n- Adyen may activate a token automatically after low-risk analysis; require 2FA if it has the cardholder's email or phone; require cardholder phone verification through the issuer's call center when that option is enabled; or close the token and end provisioning. For successful call-center verification, the issuer PATCHes `/networkTokens/{networkTokenId}` to `active` (raw lines 70\u201389, 93\u2013161).\n- High risk without enabled call-center authentication, or incorrect/incomplete token-request information, leads to automatic closure in this guide. The page suggests linking cardholder email/phone for 2FA or using a different device after high device risk, but does not describe reopening a closed token (raw lines 167\u2013190).\n- Provisioning and decision webhooks are described for creation and subsequent activation/closure (raw lines 99\u2013108, 120\u2013130, 150\u2013161, 181\u2013188). A created `inactive` token, webhook, or wallet add attempt does not demonstrate activation or a successful payment.\n- The page's abbreviated payment example says the scheme approves if the token is valid (raw lines 56\u201364). Treat that as a simplified token-flow illustration, not a complete authorization rule or assurance of approval; the separate [[source-adyen-docs-issuing-authorisation]] describes other issuer checks and decision stages.\n\n## Detail locators\n\n- Wallet request and card scheme/Adyen token handoff: raw lines 19\u201323 and 37\u201354. Illustrated wallet payment handoff: raw lines 56\u201368.\n- Inactive creation and four risk-decision branches: raw lines 70\u201395. Automatic activation: raw lines 93\u2013112; 2FA and contact-data prerequisite: raw lines 114\u2013134.\n- Call-center verification, optional enablement and PATCH: raw lines 136\u2013165. Closure conditions and suggested mitigations: raw lines 167\u2013192.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing program and reciprocal source route.\n- [[source-adyen-docs-issuing-authorisation]] \u2014 separate issued-card payment authorization checks.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15|Network tokens for digital wallets, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Instead of storing your cardholder's sensitive card details, digital wallets make a network token request to Adyen.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md:21"
+    },
+    {
+      "text": "You must have an integration that supports Issuing.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md:31"
+    },
+    {
+      "text": "After receiving the request, Adyen creates a network token with status **inactive**.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md:80"
+    },
+    {
+      "text": "Adyen can only initiate 2FA if your cardholder has provided Adyen with an email or a phone number.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md:118"
+    },
+    {
+      "text": "In these cases, Adyen closes the network token and ends the provisioning flow.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md:174"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-docs-issuing-tokens-digital-wallet-source-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-tokens-digital-wallet]] \u2014 2026-09-15-captured Issuing digital-wallet network-token provisioning guide for prerequisites, inactive creation, risk-based activation/authentication or closure, and related webhooks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Its short payment-flow example should not be read as a complete authorization rule or proof that a valid token guarantees payment approval."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15.md",
+  "raw_sha256": "666e8f37e978261635f95ed7957574409ac09a8996b7c5a5878f583ded623a01",
+  "status": "candidate_ready"
+}

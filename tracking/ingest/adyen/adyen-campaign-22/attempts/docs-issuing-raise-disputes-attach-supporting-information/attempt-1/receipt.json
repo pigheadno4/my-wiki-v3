@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-raise-disputes-attach-supporting-information",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Attach supporting information to raised disputes\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/raise-disputes/attach-supporting-information\"\nraw_files:\n  - \"adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md\"\ntags: [adyen, issuing, disputes, attachments, evidence]\n---\n\n## Overview\n\nThis Adyen Issuing guide, modified and captured 2026-09-15, explains how a card-issuing platform supplies evidence files for a **raised cardholder dispute** through the Balance Platform Transfers API. Adyen recommends adding receipts, merchant correspondence or other reviewable evidence before submitting the dispute. The parent [[source-adyen-docs-issuing-raise-disputes|Raise disputes]] guide owns general requirements, eligibility and lifecycle. This issuer-side evidence flow is distinct from acquiring-side merchant dispute defense. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- Base64-encode a cardholder-provided file, then POST `/disputes/{disputeId}/attachments` with `attachmentType` (`receipt`, `correspondence` or `other`), `fileName` and `content`. The guide lists JPEG, PDF and TIFF support, asks for clear photos, and says the filename including extension must be **4\u201317 characters** with `jpeg`, `pdf` or `tiff` extension. Send a separate POST for each attachment. Its examples use a TEST `btl/api/v4` endpoint.\n- Save the returned `attachmentId` separately from the dispute ID. GET `/disputes/{disputeId}/attachments/{attachmentId}` returns metadata and Base64 `content` that can be decoded for viewing; GET `/disputes/{disputeId}/attachments/` lists attachments for that dispute. The list example shows IDs and filenames, while the individual GET example includes content.\n- DELETE `/disputes/{disputeId}/attachments/{attachmentId}` removes an attachment from the dispute when the response is HTTP **204 No Content**. If reuploading a recently deleted file, use a unique filename. Adyen says it **may retain attached files for audit and compliance**, so API deletion is not proof of physical erasure.\n- The page recommends attachments **before submission**; it does not itself establish that post-submission attachment changes are allowed. Upload, retrieval or deletion confirms an attachment operation, not card-scheme acceptance, dispute success or returned funds.\n\n## Detail locators\n\n- Pinned raw lines 15\u201323: purpose, recommended pre-submission evidence and parent-guide requirements.\n- Pinned raw lines 25\u201345: Base64, POST path, supported formats, filename constraints and one POST per file; lines 47\u201373: TEST example and returned `attachmentId`.\n- Pinned raw lines 75\u2013101: individual GET and decoded content; lines 103\u2013137: per-dispute attachment list.\n- Pinned raw lines 139\u2013161: DELETE, possible retained files, HTTP 204 and unique-name reupload warning.\n\n## Related\n\n- [[source-adyen-docs-issuing-raise-disputes]] \u2014 issuer-side dispute requirements and lifecycle.\n- [[source-adyen-docs-issuing-raise-disputes-manage-disputes]] \u2014 draft edit, submit and close transitions.\n- [[adyen-issuing]] \u2014 Issuing cardholder dispute context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15|Adyen Issuing dispute-attachment guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you submit a dispute, we recommend that you include attachments as supporting information.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md:19"
+    },
+    {
+      "text": "If a cardholder wants to upload multiple attachments, you need to make a separate POST request for each attachment.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md:34"
+    },
+    {
+      "text": "Minimum length: four characters, Maximum length: 17 characters, including the extension type.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md:41"
+    },
+    {
+      "text": "In the response, note the [attachmentId](https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes/\\(disputeId\\)/attachments#responses-200-attachmentId). You need the ID if you want to later [get the attachment](#get-an-attachment), or [delete the attachment](#delete-an-attachment).",
+      "location": "raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md:61"
+    },
+    {
+      "text": "Adyen may retain files attached to disputes for auditing and compliance purposes.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md:143"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-dispute-attachments-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-raise-disputes-attach-supporting-information]] \u2014 2026-09-15 Issuing dispute-evidence attachment guide for Base64 upload, retrieval, list and deletion; preserves pre-submission recommendation, per-file limits and possible retention after delete.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/raise-disputes/attach-supporting-information/2026-09-15.md",
+  "raw_sha256": "7a63a0815055059d9a4cbbf06fa0bad7eb336dbc5c9ed926edd5b4204b8f956c",
+  "status": "candidate_ready"
+}

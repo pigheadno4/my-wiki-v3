@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-raise-disputes-fraud",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Issuing: Raise a fraud dispute\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/raise-disputes/fraud\"\nraw_files:\n  - \"adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md\"\ntags: [adyen, issuing, cards, fraud, disputes]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Issuing guide explains how a platform raises a **fraud** dispute for a transaction on an Adyen-issued physical or virtual card, on behalf of its cardholder. If the cardholder notices fraudulent transactions, the guide says to close the card and dispute those transactions; it also says to close a card suspected lost or stolen immediately, even if no fraudulent transaction has occurred. The page defers general requirements and limitations to its parent Raise disputes guide.\n\n## Key takeaways\n\n- Locate the transaction ID through the Balance Platform Accounting Report, Customer Area or Transfer webhooks. Create a dispute with Transfers API `POST /disputes`, `type: fraud`, `transactionId` and required `fraudInfo` fields. The `description` field is limited to 50 characters and must not contain PII. See raw lines 27\u201347. The illustrated `/btl/api/v4/` request uses a **test** host (raw lines 49\u201366).\n- The creation response supplies a **dispute ID** and initial **draft** status; Adyen sends `balancePlatform.dispute.created`. Keep the dispute ID for attachments, edits, submission, closure and lifecycle lookup. Draft creation is not card-scheme submission or a successful chargeback. See raw lines 68\u2013100.\n- Supporting attachments are optional; the cardholder should review the dispute before confirming submission. While still a draft, the platform can use `GET /disputes/{id}` for review and `PATCH /disputes/{id}` for edits. Attachment formats, encoding and size are at raw lines 124\u2013159; review and editing steps are at lines 173\u2013207.\n- When the cardholder confirms, the platform submits by PATCHing `status: submitted`. **After submission, the dispute can no longer be updated, have attachments uploaded or deleted, or be closed.** The page describes scheme review and chargeback **if successful**, not a guaranteed recovery. Process `balancePlatform.dispute.updated` status changes; for `chargeback` or `secondPresentment`, match `balancePlatform.transfer.created` by ARN and reconcile the cardholder balance account. See raw lines 209\u2013259.\n- `fraudInfo.reportOnly: true` is described as reporting fraud with **no further action such as a chargeback or fee reversal**; its default is false. See raw line 45.\n\n## Source tension\n\nThe `reportOnly` description gives a lost/stolen-card example **without fraudulent transactions** (raw line 45), but the same POST table marks `transactionId` required and the creation flow starts by locating a transaction (raw lines 29\u201347). The captured page does not explain which transaction ID to use when none exists. Do not infer that a transaction-free API report is supported.\n\nThe example POST response for dispute `4VXM2L64EHSACNUU` gives ARN `15265674260001677835046` (raw lines 82 and 96), while the created and updated webhook examples for that same dispute ID give ARN `715265674260001677835046` (raw lines 108, 117, 237 and 246). Because later reconciliation instructs ARN matching (raw line 259), these examples are not one coherent correlation specimen; the page does not establish which example ARN is authoritative.\n\n## Detail locators\n\n- Fraud request fields, draft response/statuses and created webhook: [[raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15|raw lines 27\u2013122]].\n- Optional attachments, cardholder review, edits and submission lock: [[raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15|raw lines 124\u2013253]].\n- Status webhooks, transfer correlation and further lifecycle navigation: [[raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15|raw lines 255\u2013269]].\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing card and balance-platform source catalog.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15|Raise a dispute for fraudulent activities (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If a cardholder notices any fraudulent transactions, [close the card](/issuing/manage-cards#close-card) and submit fraud disputes for those transactions. Even if no fraudulent transactions have occurred, close a card that you suspect has been lost or stolen immediately.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md:21"
+    },
+    {
+      "text": "Set to **true** to report fraud and to indicate that no further action, such as a chargeback or fee reversal, is needed.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md:45"
+    },
+    {
+      "text": "You need this ID to [provide supporting information](/issuing/raise-disputes/attach-supporting-information) as an attachment, update the dispute, submit the dispute for an instance of fraud, close the dispute, and follow the lifecycle of the dispute.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md:68"
+    },
+    {
+      "text": "When you submit a dispute to the card scheme, you can no longer update the dispute, upload or delete attachments, or close the dispute.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md:213"
+    },
+    {
+      "text": "If the `status` of a dispute changes to **chargeback** or **secondPresentment**, inspect [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created) webhooks for the matching Acquirer Reference Number (arn), and reconcile balances for the cardholder's balance account.",
+      "location": "raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md:259"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-fraud-dispute-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-raise-disputes-fraud]] \u2014 2026-09-15 Issuing cardholder fraud-dispute guide: card closure, transaction-linked draft/review/submission, report-only option and ARN-linked outcome tracking; source leaves no-transaction reporting versus required transactionId unresolved.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The reportOnly lost/stolen-without-fraudulent-transaction example at raw line 45 conflicts with the required transactionId table field at line 46; no transaction-free API path is established."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/raise-disputes/fraud/2026-09-15.md",
+  "raw_sha256": "e34cbe77e2688339453eded41026f0ff4bb3954618bf515bb465338b51053e68",
+  "status": "candidate_ready"
+}

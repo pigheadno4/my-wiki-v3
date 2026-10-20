@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Track balance-platform transactions\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/transactions\"\nraw_files:\n  - \"adyen/docs/issuing/transactions/2026-09-15.md\"\ntags: [adyen, issuing, balance-platform, transactions, transfers-api]\n---\n\n## Overview\n\nThis 2020-modified Adyen guide, captured 2026-09-15 under Issuing, explains on-demand retrieval of balance-platform transaction records through the Transfers API `GET /transactions` list endpoint and `GET /transactions/{id}` detail endpoint. Its stated integration scope includes Adyen for Platforms, Issuing or Payouts, and its examples include bank and internal transfers; the result list is not limited to issued-card payments. See [[adyen]] and [[adyen-issuing]].\n\n## Key takeaways\n\n- The requirements table calls for one of those integrations, an API credential assigned **TransferService Webservice Retrieve role**, and transfers enabled for the source balance account. The captured table is visibly malformed around the role and enablement text; use the linked API reference or Adyen contact to resolve operational details rather than inferring a broader permission model.\n- `GET /transactions` can query a whole balance platform, an account holder, or a balance account. The table says include at least one of `balancePlatform`, `accountHolderId`, or `balanceAccountId`; it also marks `createdSince` and `createdUntil` as required ISO 8601 date-time filters. Optional `paymentInstrumentId`, `limit`, `sortOrder` and `cursor` further narrow or page results. The response has matching transactions in `data` and applicable next/previous links in `_links`; pass a returned cursor on the next request. Use `GET /transactions/{id}` with a specific transaction ID for one record.\n- Direction is relative to the balance account: a positive `amount.value` adds funds; a negative value deducts them. `pending` means incoming funds have not yet been added or outgoing funds are reserved for deduction. `booked` means added for incoming or deducted for outgoing. The guide distinguishes `bookingDate` (recorded as reserved/pending) from `valueDate` (deducted or made available), and says outgoing transfers are deducted at the booked stage.\n- The test-environment list response illustrates transaction IDs, account holder/balance account, transfer IDs and references, amount, dates, status and `_links`. Some example snippets are malformed or inconsistent (for example, a stray `accountHolder` query item in the curl URL and invalid Java punctuation), so copy neither sample syntax nor sample `booked` records as proof of a real transfer, card capture or beneficiary receipt.\n\n## Detail locators\n\n- Pinned raw lines 15\u201329: Transfers API scope and integration/credential requirements, including the broken table formatting.\n- Pinned raw lines 31\u201347: list filters and at-least-one scope selector; lines 49\u2013217: test URL and versioned language examples.\n- Pinned raw lines 219\u2013223: `data`, `_links` and cursor paging; lines 224\u2013345: illustrative response with bank and internal-transfer categories; line 347: transaction-ID detail endpoint.\n- Pinned raw lines 349\u2013370: incoming/outgoing amount sign, pending/booked effects and booking/value dates.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing account and payment context.\n- [[source-adyen-docs-issuing-payment-stages-check-details-payment]] \u2014 issued-card payment detail lookup (navigation only).\n- [[source-adyen-docs-issuing-payment-stages]] \u2014 separate card payment stages (navigation only).\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/transactions/2026-09-15|Adyen balance-platform transaction tracking guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use the [Transfers API](https://docs.adyen.com/api-explorer/transfers/latest/overview) to query the [/transactions](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions) endpoint and get transaction details on demand. You can query transactions for your whole balance platform, a particular account holder, or balance account.",
+      "location": "raw/adyen/docs/issuing/transactions/2026-09-15.md:19"
+    },
+    {
+      "text": "You must include at least one of the following in your request:- [balancePlatform](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions#query-balancePlatform): The unique identifier of the balance platform.",
+      "location": "raw/adyen/docs/issuing/transactions/2026-09-15.md:39"
+    },
+    {
+      "text": "* `_links`: an object containing links to the next or previous page when applicable. To page through the results, add the `cursor` value as a query parameter in your next request.",
+      "location": "raw/adyen/docs/issuing/transactions/2026-09-15.md:222"
+    },
+    {
+      "text": "If you only want to get details of a specific transaction, include the `transactionId` in your GET\u00a0 [/transactions/{id}](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions/\\(id\\)) request.",
+      "location": "raw/adyen/docs/issuing/transactions/2026-09-15.md:347"
+    },
+    {
+      "text": "Funds are always deducted at the booked stage for outgoing transfers.",
+      "location": "raw/adyen/docs/issuing/transactions/2026-09-15.md:370"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-transactions-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-transactions]] \u2014 2020-modified, 2026-09-15-captured Transfers API guide for platform/account-holder/balance-account transaction queries, pagination and incoming/outgoing booked-funds interpretation; examples span more than issued-card payments.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/transactions/2026-09-15.md",
+  "raw_sha256": "ef6288595c7337c8e05cd69b7273e715c21a73515fe15672f43fce83e9a0f13f",
+  "status": "candidate_ready"
+}

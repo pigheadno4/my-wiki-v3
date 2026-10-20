@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-settle-funds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing merchant-to-balance-platform settlement\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/settle-funds\"\nraw_files:\n  - \"adyen/docs/issuing/settle-funds/2026-09-15.md\"\ntags: [adyen, issuing, settlement, balance-platform, acquiring]\n---\n\n## Overview\n\nThis 2026-09-15-captured Issuing-path guide describes how Adyen-acquired customer payments move from a store's merchant account to the balance platform. It is a merchant-account-to-configured-balance-account settlement route: pending merchant funds become available after the configured delay, fees are deducted, the remainder is grouped into payable batches, and Adyen describes an internal transfer for each batch. It does not describe an external-bank payout or guarantee completion for a particular merchant. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- Payments arrive pending in the merchant account. The guide calls T+2 the default configured settlement delay, not a fixed rule; afterward funds become available in that merchant account. Adyen deducts payment fees before grouping the remaining funds into payable batches according to the configured settlement frequency, which can produce multiple batches per day (raw lines 19\u201325).\n- The guide says a Settlement Details Report can be generated for each payable batch, including transactions, fees, refunds, chargebacks and other modifications. It then describes each batch as one internal transfer to the balance platform, settling into the balance account configured for that merchant account (raw lines 26\u201328). Report availability and a described transfer step do not independently prove a particular balance-account booking.\n- The hotel illustration has Amsterdam EUR 200 and EUR 100 payments, plus Stockholm SEK 400; after EUR 15 and SEK 20 illustrated fees, the stated net batches are EUR 285 and SEK 380 for their respective configured balance accounts (raw lines 30\u201368). At raw line 48, the text instead calls the Stockholm merchant-account amount `EUR 400.00`, conflicting with the SEK payment, SEK fees and SEK net batch. Preserve this source currency error; do not interpret it as conversion evidence.\n\n## Detail locators\n\n- Pending merchant funds, configurable delay and fees: raw lines 19\u201325. Batch report, internal transfer and merchant-to-balance-account destination: raw lines 26\u201328.\n- Two-branch, two-currency hotel example and inconsistent line-48 currency: raw lines 30\u201368.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing and balance-platform context.\n- [[source-adyen-docs-issuing-add-manage-funds]] \u2014 related funding-route overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/settle-funds/2026-09-15|Settle funds, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains the flow of funds from your merchant account to your balance platform.",
+      "location": "raw/adyen/docs/issuing/settle-funds/2026-09-15.md:19"
+    },
+    {
+      "text": "After the configured settlement delay (T+2 by default), these funds become available in your merchant account.",
+      "location": "raw/adyen/docs/issuing/settle-funds/2026-09-15.md:23"
+    },
+    {
+      "text": "Adyen aggregates the remaining funds into payable batches based on your configured settlement frequency to the balance platform.",
+      "location": "raw/adyen/docs/issuing/settle-funds/2026-09-15.md:25"
+    },
+    {
+      "text": "Adyen settles the funds from each payable batch to your balance platform as a single internal transfer.",
+      "location": "raw/adyen/docs/issuing/settle-funds/2026-09-15.md:27"
+    },
+    {
+      "text": "EUR 400.00 becomes available",
+      "location": "raw/adyen/docs/issuing/settle-funds/2026-09-15.md:48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-docs-issuing-settle-funds-source-route",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-settle-funds]] \u2014 2026-09-15-captured merchant-account-to-balance-platform settlement guide for configurable delay, net payable batches and configured balance accounts; hotel example has a SEK/EUR currency error.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Hotel example says EUR 400 at the SEK merchant-account step although its payment, fees, net batch and destination are SEK; do not infer foreign-exchange conversion from that line."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/settle-funds/2026-09-15.md",
+  "raw_sha256": "c09e845db35da1c4e18b05bd2f9e3532815924bb9edb5d2b3b7b98a2cc72da07",
+  "status": "candidate_ready"
+}

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-20] ingest | Adyen website C22
+
+- Fifty independently approved Issuing funding/balance/report/dispute/token/component/OOB references documentation sources; first full-review approvals 40/50 and 11 targeted correction reviews. 3 concepts touched (0 new); source_count 1114 = 1100 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-22/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-20] ingest | Android Drop-in `default-branch@72c0586`
 
 - Approved focused-reading delta from the preserved 6.17.0 baseline: lifecycle/certificate notices and development metadata, not a new stable release or payment implementation. Documented historical redaction and stale-status caveats; source count unchanged. Details [[braintree-log]], [[source-github-braintree-android-drop-in]] and [[changelog-github-braintree-android-drop-in]]. No SDK/payment execution, commit or push.

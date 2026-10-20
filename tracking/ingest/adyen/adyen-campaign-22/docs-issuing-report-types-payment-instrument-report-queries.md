@@ -1,0 +1,7 @@
+# C22 query checks — docs-issuing-report-types-payment-instrument-report
+
+Q1. What does the Payment Instrument Report contain, and how is it generated?
+Answer: It lists platform payment instruments with card details and status (raw lines 15–19). A platform can generate it on a schedule or manually for one or consecutive days in Customer Area (raw line 21). Each data row is one payment instrument at the status current when the report is generated; the first two rows identify the report and the third is the header (raw lines 28–39). Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-report-types-payment-instrument-report]] → [[raw/adyen/docs/issuing/report-types/payment-instrument-report/2026-09-15]].
+
+Q2. Does the sample fix the full schema or prove a card/payment outcome?
+Answer: Platform settings can add data or columns beyond the downloadable sample (raw lines 23–26). The snapshot table shows status, partial PAN, cardholder, account-holder and balance-account identifiers, and an active row reports active status at generation time; the report does not document the activation event, transaction success or settlement (raw lines 30, 41–64). The `Created date` description says “date of the payment” despite one-row-per-instrument grain, so that field's meaning needs verification (raw lines 30, 48). Route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-report-types-payment-instrument-report]] → [[raw/adyen/docs/issuing/report-types/payment-instrument-report/2026-09-15]].

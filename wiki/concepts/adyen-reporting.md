@@ -19,6 +19,15 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-issuing-generate-download-reports]] — 2021-modified, 2026-09-15-captured Balance Platform report guide for scheduled/manual generation, role-gated access, report-created download URLs and CSV/Accounting TSV retrieval; deselecting automatic generation deletes its schedule.
+
+
+- [[source-adyen-docs-issuing-report-types-balance-report]] — 2022-modified, 2026-09-15-captured Issuing-path Balance Platform Balance Report reference for daily opening/closing snapshots, nonzero-or-movement row selection, generation and time-zone choices.
+
+
+- [[source-adyen-docs-issuing-reconcile-balances]] — 2026-09-15 Issuing-path guide to merchant-to-balance-platform internal-transfer matching with daily SDR/BPSR and monthly ASDR/BPIAR reports, timezone alignment, and a one-account-holder dashboard limit; its dashboard steps conflict on SDR versus ASDR.
+
+
 - [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-transfers]] — 2026-09-15 Platforms transfer/payout accounting-report guide for internal versus bank event types, Transfer/Transaction IDs, booked signed legs, references and Statement alternative; no bank-receipt proof.
 
 

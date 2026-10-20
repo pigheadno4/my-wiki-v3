@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-tokens-digital-wallet-authentication-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Wallet token authentication data\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/tokens-digital-wallet/authentication-data\"\nraw_files:\n  - \"adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md\"\ntags: [adyen, issuing, digital-wallets, authentication, network-tokens]\n---\n\n## Overview\n\nThis Adyen Issuing guide, last modified 2023-03-17 and captured 2026-09-15, describes cardholder contact data used for OTP authentication when adding an Adyen-issued card to a digital wallet. The subject is wallet provisioning for an issued card, not a merchant checkout token or payment-authorization outcome. [[adyen-issuing]]\n\n## Key takeaways\n\n- The guide says Adyen must authenticate the cardholder before wallet use. Link a mobile phone number, email, or both to the card. During the described wallet-add flow, Adyen sends an OTP to the linked contact; if both are linked, the wallet prompts the cardholder to choose one. The page says the card is added after successful OTP validation. It does not provide a wallet-support list and directs readers to their Adyen contact for that list.\n- Supply `card.authentication` on a card `paymentInstrument` create or update request. For phone, the example uses `number` and `type: mobile`; email is an alternative in the prose. The create example uses the Balance Platform API test host, a physical Mastercard card in NL and `status: inactive`; these are example values rather than universal requirements.\n- The opening says to include authentication data when issuing a card, while later text explicitly allows adding the `authentication` object later or changing the phone number with PATCH `/paymentInstruments/{id}`. Read the creation-time wording together with the later update route. Neither sample establishes that a particular card was provisioned, that OTP delivery/validation succeeded, or that a transaction was authorized.\n\n## Detail locators\n\n- Purpose, OTP selection and wallet-support boundary: raw lines 19\u201331. Payload field description: raw line 35.\n- Card-creation API and test-host example: raw lines 37\u201385; language-library examples and their shown versions: raw lines 87\u2013601.\n- Later authentication-data addition or phone change and PATCH example: raw lines 603\u2013624; language-library examples: raw lines 626\u2013898.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing card-program context.\n- [[source-adyen-docs-issuing-network-tokens]] \u2014 Issuing network-token lifecycle overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15|Wallet token authentication data \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "To support this scenario, you must include the cardholder's [authentication data](#send-authentication-data) when issuing a card.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md:21"
+    },
+    {
+      "text": "To allow your cardholders to add their cards to a digital wallet, you must link their mobile phone number, email, or both to their card.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md:25"
+    },
+    {
+      "text": "If you have linked both contact options to the card, the wallet prompts the cardholder to select their preferred option for the OTP.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md:27"
+    },
+    {
+      "text": "For a list of supported digital wallets, reach out to your Adyen contact.",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md:31"
+    },
+    {
+      "text": "You can also add the [authentication](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/paymentInstruments#request-card-authentication) object at a later time or change the card user's phone number",
+      "location": "raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md:603"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-wallet-authentication-data-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-tokens-digital-wallet-authentication-data]] \u2014 2023-modified, 2026-09-15-captured Issuing guide for phone/email authentication data and OTP during digital-wallet card addition; its creation-time wording is qualified by the later card-update route.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The opening says to include authentication data when issuing a card, but line 603 expressly allows adding it later with a payment-instrument update."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/tokens-digital-wallet/authentication-data/2026-09-15.md",
+  "raw_sha256": "dd871e43b3b4343330d98c7977d3f0d68f5d17f23979f7f7a928cb257967855e",
+  "status": "candidate_ready"
+}

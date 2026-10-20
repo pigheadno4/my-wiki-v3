@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-top-ups-top-up-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing recurring top-up webhooks\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/top-ups/top-up-webhooks\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/top-ups/top-up-webhooks/2026-09-15.md\"\ntags: [adyen, issuing, top-ups, direct-debits, webhooks, balance-accounts]\n---\n\n## Overview\n\nThis Issuing-path page, captured 2026-09-15 and marked modified 2020-09-11, maps **recurring Top-up API configuration changes** and their triggered **direct-debit top-ups** to Configuration, Transfer, and Transaction webhooks. A successful Top-up API response does not itself confirm that a recurring top-up was created, updated, or deleted. [[adyen-issuing]]\n\n## Key takeaways\n\n- The guide requires an Adyen Issuing integration and a server able to receive and accept webhooks. Subscribe to Configuration webhooks for successful recurring top-up creation, update, and deletion; their payload identifies the balance account (`data.accountId`), configuration (`data.webhookTopUpConfiguration`), and event `type` (raw lines 19\u201349).\n- For a triggered direct debit, `balancePlatform.transfer.created` reports initiation and `balancePlatform.transfer.updated` reports status changes. The page labels the relevant transfer `category=bank` and `type=bankDirectDebit`; Transaction webhooks track the resulting movement of funds. `balancePlatform.transaction.created` is sent when funds are credited to the balance account, whereas Transfer webhooks cover status changes (raw lines 23, 30\u201332, 164\u2013178, 706\u2013712).\n- An accepted initial request can still fail during processing. The guide supplies `rejected` (internal validation or transaction-rule failure) and `returned` (funds sent back after reaching a destination bank) examples. Inspect the actual status and accounting events rather than treating `created`, `received`, `authorised`, or an example `booked` event as irrevocable funding (raw lines 184\u2013433, 435\u2013439, 573\u2013704).\n- **Direction/example conflict:** prose calls `transfer.created` an *outgoing* direct-debit request from a balance account (raw line 168). The initiated/authorised examples show `direction: outgoing` (raw lines 216, 291), while the booked example shows `direction: incoming` (line 380); failure examples also show incoming direction and include a payment-instrument field (lines 492, 553\u2013565, 625, 686\u2013698). The identification heading calls these payout-related events even though this is a top-up guide (line 173). Do not derive a stable money-flow direction or Issuing-card relationship from these samples alone.\n\n## Detail locators\n\n- Configuration event names, payload fields, and three test-environment example notifications: raw lines 35\u2013162. Example IDs, statuses, timestamps and amounts are illustrative.\n- Transfer identification fields and received/authorised/booked test examples, including balance mutations and direct-debit metadata: raw lines 164\u2013433.\n- Rejected and returned transfer samples, including later reversal-style accounting rows: raw lines 435\u2013704.\n- Credited-balance-account Transaction webhook and sample `booked` transaction: raw lines 706\u2013750.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing model and sources.\n- [[source-adyen-docs-issuing-add-manage-funds]] \u2014 funding-route overview.\n- [[source-adyen-docs-platforms-top-up-balance-account-top-up-webhooks]] \u2014 separate Platforms scheduled/on-demand top-up webhook guide with different transfer categories and flows.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/top-ups/top-up-webhooks/2026-09-15|Issuing recurring top-up webhooks guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A successful API response does not necessarily indicate that a recurring top-up is successfully created, updated, or deleted.",
+      "location": "raw line 19, opening asynchronous-process paragraph"
+    },
+    {
+      "text": "balancePlatform.balanceAccount.recurringTopUp.created",
+      "location": "raw line 39, Configuration webhooks event list"
+    },
+    {
+      "text": "which informs your server that an outgoing direct debit request is initiated from a balance account in your balance platform.",
+      "location": "raw line 168, Transfer webhooks event list"
+    },
+    {
+      "text": "A transfer can fail during processing even if the initial API request is accepted.",
+      "location": "raw line 437, Transfer failure examples"
+    },
+    {
+      "text": "transaction webhooks are only sent when the funds from the transfer are credited to the balance account.",
+      "location": "raw line 710, Transaction webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-recurring-topup-webhooks-source-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-top-ups-top-up-webhooks]] \u2014 2020-modified, 2026-09-15-captured Issuing recurring top-up Configuration, Transfer and Transaction webhook guide; accepted API responses are asynchronous, and its examples conflict on direct-debit transfer direction.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 168 describes an outgoing direct-debit request, but the booked transfer sample uses incoming direction at line 380 and failure samples use incoming at lines 492 and 625; avoid deriving canonical funds direction from examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/top-ups/top-up-webhooks/2026-09-15.md",
+  "raw_sha256": "61ae3c9baf97620aeae1dddad0c2f83075cd56340ce23c091dda3eff1ad22e03",
+  "status": "candidate_ready"
+}

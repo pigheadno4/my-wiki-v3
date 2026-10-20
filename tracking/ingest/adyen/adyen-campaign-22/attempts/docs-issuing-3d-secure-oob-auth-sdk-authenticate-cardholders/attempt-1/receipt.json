@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-3d-secure-oob-auth-sdk-authenticate-cardholders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Authenticate cardholders with the OOB Authentication SDK\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders\"\nraw_files:\n  - \"adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md\"\ntags: [adyen, issuing, 3d-secure, authentication, mobile-sdk]\n---\n\n## Overview\n\nAdyen Issuing guide last modified 2023-07-12 and captured 2026-09-15 for issuer-side out-of-band authentication of a cardholder when an Adyen-issued-card transaction requires 3D Secure. It describes a relayed authentication webhook, a mobile Authentication SDK step, server-side challenge finalization and an authentication outcome webhook. The guide's ten-minute challenge window and two-second webhook response deadline are separate. A completed authentication lets the transaction continue; it does not itself prove payment authorisation, capture or settlement. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The platform must set up an HTTPS server endpoint to receive/process relayed authentication webhooks, with JSON, basic authentication and port 443, 8443 or 8843, then supply the endpoint URL to its Adyen contact. Adyen enrolls the balance platform in ACS if needed, subscribes it to the webhook, sets OOB/OTP priority based on preference and shares ACS basic-auth credentials. The server must respond to an authentication webhook within **2 seconds** or the authentication fails. See raw **Set up and accept relayed authentication webhooks**, lines 29\u201349.\n- The relayed webhook provides `sdkInput` as a Base64-encoded blob in the `www-authenticate` header, challenge `id`, `paymentInstrumentId` to route the request to the correct cardholder, and purchase details. Acknowledge with HTTP 200 and `authenticationDecision.status: proceed`; a late response or `refused` stops the authentication process. See raw **Get data from the authentication webhooks**, lines 53\u2013111.\n- Present transaction details to the cardholder in the app; the guide recommends push notification. Pass `sdkInput` to the iOS/Android Authentication SDK, then send its Base64-encoded `sdkOutput` to the server if authentication succeeds. The Kotlin and Swift snippets are examples, not SDK release guarantees. See raw **Authenticate cardholder**, lines 115\u2013175.\n- Finalize within **10 minutes of receiving the request**: the server PATCHes the ACS `/challenges/{id}` route using the Adyen-provided basic auth, challenge ID, `www-authenticate` header carrying `sdkOutput`, and `completed: true`. Check that the response has the challenge ID and `challengeCompleted: true`; the guide says this indicates cardholder authentication and continuation of the transaction. See raw **Finalize authentication**, lines 177\u2013220.\n- The guide says `balancePlatform.authentication.created` is sent **regardless of authentication outcome**, and shows frictionless authenticated, OOB challenge authenticated, and OTP retry-exceeded rejected examples. This is an authentication event, separate from later payment authorisation. **Cross-source warning:** [[source-adyen-docs-issuing-3d-secure-troubleshooting]] broadly says a failed 3D Secure attempt has \u201cno webhook\u201d; that wording must not be used to rule out this authentication-specific event, and neither source establishes a later authorisation/transfer event for every attempt. See raw **Get updates**, lines 222\u2013360, and the linked troubleshooting source.\n\n## Detail locators\n\n- Webhook header/body field definitions and example: raw lines 63\u201396.\n- Kotlin/Swift SDK examples and success/error branches: raw lines 123\u2013169.\n- ACS PATCH request/response examples, including a live-host example URL: raw lines 181\u2013220. These are sample payloads, not evidence of a live challenge.\n- Authentication outcome example fields and `environment: test`: raw lines 230\u2013360.\n- The guide's next-step links point to separate payment stages and authorisation topics: raw lines 362\u2013374.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and reciprocal source route.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk]] \u2014 OOB SDK overview and issuer-side scope.\n- [[source-adyen-docs-issuing-3d-secure-troubleshooting]] \u2014 conflicting broad webhook statement for failures.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15|Authenticate cardholders using the Authentication SDK \u2014 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "When we send an authentication webhook, your server must respond to the webhook within 2 seconds. Otherwise, the authentication process fails.",
+      "location": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md, line 49, Set up and accept relayed authentication webhooks"
+    },
+    {
+      "text": "If we do not receive the response message within 2 seconds or receive `status` set to **refused**, the authentication process will stop.",
+      "location": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md, line 111, Get data from the authentication webhooks"
+    },
+    {
+      "text": "If the authentication is successful, get the Base64-encoded `sdkOutput` generated by the SDK.",
+      "location": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md, line 171, Authenticate cardholder"
+    },
+    {
+      "text": "You must finalize the authentication within 10 minutes of receiving the request.",
+      "location": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md, line 179, Finalize authentication"
+    },
+    {
+      "text": "Regardless of outcome of the authentication process, we send the [balancePlatform.authentication.created](https://docs.adyen.com/api-explorer/acs-webhook/latest/post/balancePlatform.authentication.created)\u00a0webhook.",
+      "location": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md, line 224, Get updates"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-oob-authenticate-cardholders-issuing-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-authenticate-cardholders]] \u2014 2023-modified, 2026-09-15-captured Issuing OOB Authentication SDK challenge guide: relayed webhook, SDK output, ACS finalization deadlines and outcome webhook; flags the troubleshooting guide's broad no-webhook conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The troubleshooting source broadly says failed 3D Secure authentication has no webhook, while this guide says the authentication-specific webhook is sent regardless of outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/authenticate-cardholders/2026-09-15.md",
+  "raw_sha256": "c4165f2ebf1e732731438648b5153f194d4781282fe4e2e3691e03987d03d188",
+  "status": "candidate_ready"
+}

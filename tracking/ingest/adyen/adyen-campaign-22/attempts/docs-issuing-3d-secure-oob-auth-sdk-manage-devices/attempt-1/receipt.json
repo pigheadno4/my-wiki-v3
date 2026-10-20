@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-issuing-3d-secure-oob-auth-sdk-manage-devices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: manage SCA registered devices\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/3d-secure/oob-auth-sdk/manage-devices\"\nraw_files:\n  - \"adyen/docs/issuing/3d-secure/oob-auth-sdk/manage-devices/2026-09-15.md\"\ntags: [adyen, issuing, sca, devices, 3d-secure]\n---\n\n## Overview\n\nAdyen's Issuing guide (last modified 2022-11-30; captured 2026-09-15) describes how to look up a card's registered SCA device, associate further card payment instruments with an already registered device, and deregister a device from a specific card. These are Balance Platform Configuration API and client authentication steps for issuer-side SCA device management, not evidence of a completed card payment. The API credential needs the **Bank SCA Webservice Role**.\n\n## Key takeaways\n\n- Look up devices with `GET /registeredDevices?paymentInstrumentId=<card ID>`; the response includes device ID, name, card payment instrument ID and type. The guide's GET prose and curl example conflict with its language-library snippets, which invoke registration methods. Follow the endpoint-level guide and verify library calls against the relevant SDK/API version.\n- A previously registered device can authenticate multiple card payment instruments. Each payment instrument can be linked to only one device; the guide allows up to five payment instrument IDs **per association request**, not a five-card device maximum.\n- To associate cards, the server POSTs `/registeredDevices/{deviceId}/associations` with `ids` and `type: PaymentInstrument`; it sends the returned encoded `sdkInput` to the client for `authenticate()`. The client returns `sdkOutput` to the server, which PATCHes the same device's association with the same IDs, `type`, and `strongCustomerAuthentication.sdkOutput`. The SDK's challenge result alone is not proof of completed association; the guide says to check each card's registered devices after a successful API response.\n- For a card already linked to a device, the POST may return 422 \u201cDevice limit reached\u201d; get and deregister existing card associations before retrying. A 422 \u201cChallenge not found\u201d usually means the client challenge device and PATCH device ID differ. Client `NotAllowedError` may follow cancellation; the guide allows the same `sdkInput` for retry in the same session.\n- Deregistration uses `DELETE /registeredDevices/{id}` with the target card's `paymentInstrumentId` query parameter. For a device linked to multiple cards, make a separate request for each; the guide treats HTTP 204 with no content as success.\n\n## Detail locators\n\n- Role, lookup parameter and response fields: raw lines 25\u201341 and 218\u2013254.\n- Association limits and server POST: raw lines 256\u2013262; encoded challenge/client flow: 470\u2013567; verification after PATCH: 813\u2013829.\n- Association failure examples and remedies: raw lines 831\u2013898.\n- Per-card DELETE parameters and success response: raw lines 900\u2013918 and 1071. Curl and SDK snippets show test environment and version-specific examples; inspect the raw before using them.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk]] \u2014 OOB Authentication SDK overview.\n- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-install-sdk-mobile]] \u2014 SDK installation prerequisites.\n- [[source-adyen-docs-issuing-manage-access-webservice-roles]] \u2014 API credential role catalogue.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/manage-devices/2026-09-15|Adyen manage SCA registered devices guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "* **Bank SCA Webservice Role**",
+      "location": "raw line 29, ## Requirements"
+    },
+    {
+      "text": "You can associate up to five payment instruments to a device per",
+      "location": "raw line 258, ## Associate cards to a registered device"
+    },
+    {
+      "text": "The response contains a Base64-encoded string, which our",
+      "location": "raw line 470, ## Associate cards to a registered device"
+    },
+    {
+      "text": "On your server, finalize the association by making a PATCH",
+      "location": "raw line 561, ## Associate cards to a registered device"
+    },
+    {
+      "text": "If the SCA device is associated with multiple cards, you must make a request for each card.",
+      "location": "raw line 907, ## Deregister a device from a card"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-manage-sca-devices-reciprocal",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-3d-secure-oob-auth-sdk-manage-devices]] \u2014 2022-modified, 2026-09-15-captured Issuing guide for SCA device lookup, authenticated card association and per-card deregistration; flags conflicting GET SDK snippets.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "GET prose/curl uses /registeredDevices while adjacent library examples call registration methods; source entry flags conflict."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/3d-secure/oob-auth-sdk/manage-devices/2026-09-15.md",
+  "raw_sha256": "3e1009639e58f567e9a3734a939f1be69e5b5d24dc31fbba739d8f5367c85be2",
+  "status": "candidate_ready"
+}

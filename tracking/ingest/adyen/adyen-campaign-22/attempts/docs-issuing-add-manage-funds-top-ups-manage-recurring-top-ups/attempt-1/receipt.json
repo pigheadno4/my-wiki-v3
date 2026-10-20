@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-issuing-add-manage-funds-top-ups-manage-recurring-top-ups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Manage recurring top-ups\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/add-manage-funds/top-ups/manage-recurring-top-ups\"\nraw_files:\n  - \"adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md\"\ntags: [adyen, issuing, balance-platform, top-ups]\n---\n\n## Overview\n\nAdyen Issuing guide, captured 2026-09-15, for viewing, changing and deleting an existing recurring top-up of a balance account through the Balance Platform Configuration API or Customer Area. Once configured, Adyen triggers top-ups to the balance account according to the schedule settings; this guide explicitly says the feature does not support on-demand top-ups. [[adyen]] [[adyen-issuing]]\n\n## Key takeaways\n\n- The page lists an Issuing integration, a BankAPI Advanced Webservice role for API schedule configuration, Balance platform base and Configure scheduled payouts roles for Customer Area configuration, and Configuration, Transfer and Transaction webhooks. For a transfer-instrument top-up, it requires `receiveFromTransferInstrument`; check that the capability is active with a valid `verificationStatus` before attempting a transfer. The top-up source must have enough balance. See raw **Requirements**, lines 23\u201336.\n- GET `/balanceAccounts/{balanceAccountId}/recurringTopUps` lists schedules for that balance account in creation order. The first request omits `cursor`; subsequent requests may use the returned cursor with `limit` for pagination. The default page size stated here is 10. The Customer Area route is **Accounts & Balances \u2192 Balance Accounts \u2192 Schedule ID**. See raw **View recurring top-ups**, lines 38\u201362 and 162\u2013301.\n- PATCH `/balanceAccounts/{balanceAccountId}/recurringTopUps/{topUpId}` updates specified settings; omitted parameters retain their creation values. `transferInstrumentId`, the funding source, cannot be changed by PATCH. To change the source of funds, deactivate the current schedule and create a new one. See raw **Update a recurring top-up**, lines 303\u2013334.\n- The update section covers fixed versus target amounts, threshold, schedule, `active`/`inactive` status, description and beneficiary reference. Its amount-switching table calls for setting the old amount field to `null`; follow the exact direction in the raw table. The documented schedule values are weekdays, weekly, monthly, or `null` for continuous monitoring; the page does not state a timezone for its 07:00 examples. See raw **Update a recurring top-up**, lines 319\u2013334.\n- DELETE `/balanceAccounts/{balanceAccountId}/recurringTopUps/{topUpId}` removes a schedule; the guide says a successful request returns `204 No Content`. Customer Area uses the schedule action menu\u2019s **Remove**. This is a destructive schedule action, distinct from setting `status` to `inactive` with PATCH. See raw **Delete a recurring top-up**, lines 413\u2013451.\n\n## Detail locators\n\n- Response fields include schedule ID, transfer-instrument counterparty when applicable, fixed or target amount, trigger schedule/threshold, status and direct-debit beneficiary reference: raw lines 84\u2013103.\n- Pagination examples and response links: raw lines 104\u2013295. The example payloads/URLs are illustrations; use the linked API reference for an implementation-specific request shape.\n- PATCH example changes a target amount to a fixed amount and deactivates a schedule: raw lines 342\u2013405.\n- Related create and webhook guide links are in raw **See also**, lines 453\u2013461.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing concept and source route.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15|Manage recurring top-ups \u2014 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "If you need to view or change these settings, or delete a recurring top-up, you can do so using the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview) or the [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md, line 21, introduction"
+    },
+    {
+      "text": "To top up using a transfer instrument, you need the following capability:- **receiveFromTransferInstrument** Before attempting a transfer, verify that this capability is active and has a valid `verificationStatus`.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md, line 34, Requirements > Capabilities"
+    },
+    {
+      "text": "This feature does not support on-demand top-ups.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md, line 35, Requirements > Limitations"
+    },
+    {
+      "text": "The funding source `transferInstrumentId` is immutable. It cannot be updated via a `PATCH` request. To change the source of funds, you must deactivate the current recurring top-up and create a new one.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md, line 313, Update a recurring top-up > API"
+    },
+    {
+      "text": "If the request is successful, you receive a **204 - No Content** response.",
+      "location": "raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md, line 445, Delete a recurring top-up > API"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-manage-recurring-topups-issuing-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-add-manage-funds-top-ups-manage-recurring-top-ups]] \u2014 2026-09-15-captured Issuing guide to Configuration API/Customer Area viewing, updating and deleting recurring balance-account top-up schedules; includes transfer-instrument capability, no on-demand support and immutable funding-source boundary.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/add-manage-funds/top-ups/manage-recurring-top-ups/2026-09-15.md",
+  "raw_sha256": "66fd861daf0f0409622ea1464c0133a1f4f7cac96c93e53b1d4750f0baa52540",
+  "status": "candidate_ready"
+}

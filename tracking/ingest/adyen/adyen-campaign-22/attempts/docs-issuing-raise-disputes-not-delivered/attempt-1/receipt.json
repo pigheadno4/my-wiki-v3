@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-issuing-raise-disputes-not-delivered",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: raise a non-delivery dispute\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/raise-disputes/not-delivered\"\nraw_files:\n  - \"adyen/docs/issuing/raise-disputes/not-delivered/2026-09-15.md\"\ntags: [adyen, issuing, disputes, cardholders, non-delivery]\n---\n\n## Overview\n\nThis 2026-09-15 Issuing guide describes how a platform raises a `notDelivered` dispute for a cardholder who did not receive goods or services and could not resolve the issue with the merchant. The platform should first check whether the merchant already refunded the transaction. The guide creates a draft dispute through the Balance Platform Transfers API, optionally uploads evidence, lets the cardholder review or edit it, then submits it to the card scheme for review and a possible chargeback. Creation or submission does not establish a successful dispute or returned funds.\n\n## Key takeaways\n\n- The page defers its overarching prerequisites and limits to the parent Raise disputes guide; it does not restate them. Find the original transaction ID in the Balance Platform Accounting Report, Customer Area or Transfer webhooks, then `POST /disputes` with `type=notDelivered`, that `transactionId`, and `notDeliveredInfo`. The `descriptionOfIssue`, `isDeliveryLate`, `lastExpectedDate` and `whatWasNotDelivered` fields are marked required inside that object.\n- An optional `disputedAmount` cannot exceed the transaction amount; omitting it disputes the whole transaction. If supplied, its currency and minor-unit value are required. Conditional fields include `agreedDeliveryLocation` when delivery was to the wrong location and `didCardholderReturn` when `isDeliveryLate=true`. The free-text dispute `description` must exclude PII and is limited to 50 characters.\n- Preserve the returned dispute `id` for attachments, edits, submission, closure and lifecycle tracking. The creation response and `balancePlatform.dispute.created` webhook describe a **draft**. Optional supporting attachments are Base64-encoded JPEG/PDF/TIFF, at most 2 MB; the guide's filename table limits names to 4\u201317 characters including extension.\n- Let the cardholder review the dispute before submission. A draft can be patched without resending the complete object, or moved to `submitted` or `closed`. Once submitted to the card scheme, the dispute cannot be updated, attachments cannot be uploaded or deleted, and it cannot be closed. A `submitted` response or updated webhook records submission, not a win or chargeback.\n- Process `balancePlatform.dispute.updated` for later status changes. For `chargeback` or `secondPresentment`, match `balancePlatform.transfer.created` by ARN and reconcile the cardholder balance account. The response example is not valid JSON as printed (missing colons after two keys) and depicts `whatWasNotDelivered` as an object although the request table and request example show a string; use the field table and current API schema before implementing.\n\n## Detail locators\n\n- `## Requirements` and `## 1. Raise a non-delivery dispute`: parent-guide prerequisite link, original transaction ID routes, POST field table, conditional fields, sample request, response status and draft webhook.\n- `## 2. Upload attachments (optional)`: file types, encoding, size/name limits and attachment ID.\n- `## 3. Review the dispute`, `## 4. Edit dispute details (optional)`, `## 5. Submit the dispute`: cardholder confirmation, partial PATCH, irreversible submission boundary and updated webhook.\n- `## 6. Process webhooks for status changes`: later status monitoring, ARN transfer matching and reconciliation.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing product context.\n- [[adyen]] \u2014 provider profile.\n\n## Related raw API references\n\n- [[raw/adyen/docs/issuing/raise-disputes/2026-09-15|Raise disputes]] \u2014 parent guide for overarching prerequisites and limits; navigation only, not evidence read for this entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/raise-disputes/not-delivered/2026-09-15|Non-delivery dispute guide (fetched 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If your cardholder has a dispute based on non-delivery of goods or services, and they made efforts to contact the merchant responsible for providing those goods or services without resolution, they can ask you to raise a dispute on their behalf.",
+      "location": "line 19, opening"
+    },
+    {
+      "text": "Before you raise a dispute on behalf of a cardholder, make sure the merchant has not already provided a refund for the disputed transaction.",
+      "location": "line 21, opening"
+    },
+    {
+      "text": "Make a note of the dispute [id](https://docs.adyen.com/api-explorer/transfers-api/latest/post/disputes#responses-200-id) in the response.",
+      "location": "line 86, ## 1. Raise a non-delivery dispute"
+    },
+    {
+      "text": "When you submit a dispute to the card scheme, you can no longer update the dispute, upload or delete attachments, or close the dispute.",
+      "location": "line 244, ## 5. Submit the dispute"
+    },
+    {
+      "text": "If the `status` of a dispute changes to **chargeback** or **secondPresentment**, inspect [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created) webhooks for the matching Acquirer Reference Number (arn), and reconcile balances for the cardholder's balance account.",
+      "location": "line 290, ## 6. Process webhooks for status changes"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-issuing-nondelivery-dispute-link",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-raise-disputes-not-delivered]] \u2014 2026-09-15 Issuing non-delivery dispute guide: merchant-contact/refund checks, draft evidence and cardholder review, irreversible submission, and later webhook/ARN reconciliation; examples do not prove outcome.\\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The printed response example has invalid JSON and represents whatWasNotDelivered differently from the field table and request example; avoid treating it as implementation schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/raise-disputes/not-delivered/2026-09-15.md",
+  "raw_sha256": "8047ad18552bf195dea9f254091dfa41bf4db43165de73a77696156642a11fb9",
+  "status": "candidate_ready"
+}

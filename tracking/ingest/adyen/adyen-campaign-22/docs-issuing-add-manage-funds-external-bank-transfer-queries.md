@@ -1,0 +1,9 @@
+# C22 worker retrieval checks — docs-issuing-add-manage-funds-external-bank-transfer
+
+## Q1: What is the external-transfer funds path, and what must be prepared?
+
+It is **push-based**: the sender initiates a transfer from their bank to an Adyen-provided funding account; Adyen matches it to an onboarded transfer instrument and books it to the account holder's **primary balance account** (raw lines 19, 37–45). The sending account must be onboarded and verified, tied to the main legal entity; account-holder/legal-entity/instrument verification must be complete and `receiveFromTransferInstrument` must show **allowed** (lines 23–31, 49–67). The primary account must match the card being funded; a non-primary account requires a later internal transfer (lines 53–57). Forward route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-add-manage-funds-external-bank-transfer]] → [[raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15]].
+
+## Q2: What signals fund availability and what can prevent or delay it?
+
+The sender must use the **onboarded** bank account; Adyen says it cannot match money sent from an unregistered account (raw lines 88–90). Sending before onboarding/verification and capability allowance may delay funding (line 94). Timing varies with region, currency, network, cutoffs and holidays (lines 69–82). Incoming bank-transfer webhook states progress through `received` and `authorised`; `balancePlatform.transfer.updated` with `status: booked` says funds have been added to the primary balance account and are available (lines 100–116). A send instruction or intermediate webhook alone does not prove booked funds. Forward route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-add-manage-funds-external-bank-transfer]] → [[raw/adyen/docs/issuing/add-manage-funds/external-bank-transfer/2026-09-15]].

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-issuing-manage-network-tokens",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Issuing: Manage network tokens\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/issuing/manage-network-tokens\"\nraw_files:\n  - \"adyen/docs/issuing/manage-network-tokens/2026-09-15.md\"\ntags: [adyen, issuing, network-tokens, digital-wallets]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of an Adyen Issuing guide covers network tokens created by Visa or Mastercard when a cardholder adds an Adyen-issued card to a digital wallet. A token is a PAN alternative for a particular card-device-wallet pairing; Adyen describes managing its status separately from the card. This is Issuing card-token management, not merchant checkout tokenization. [[adyen-issuing]]\n\n## Key takeaways\n\n- An Issuing-supporting integration and a Configuration API credential with the stated account-scoped NetworkTokens read/patch role are prerequisites in this guide. The sample requests use the test Balance Platform API host.\n- List a payment instrument's tokens with GET `/paymentInstruments/{id}/networkTokens`, including all statuses; retrieve a single token with the documented GET `/networkTokens/{networkTokenId}` operation. The single-token curl sample instead uses a nested `/paymentInstruments/{id}/networkTokens/{networkTokenId}` path. Verify the intended API route before implementation.\n- The guide lists inactive \u2192 active after phone-call authentication, active \u2192 suspended, suspended \u2192 active, and active/suspended \u2192 closed. PATCH requests supply `status`; closed is final. HTTP 202 means accepted for asynchronous processing, with webhooks supplying the final result, not a completed status change. The PATCH operation label and sample curl likewise show different URL shapes.\n- To limit usage, the guide illustrates POST `/transactionRules` for a card-scoped active-token-count rule and a separate rule blocking token-processed transactions greater than EUR 50. These are example rule configurations, not proof that token provisioning or any transaction was actually blocked.\n\n## Detail locators\n\n- Requirements and account-scoped role: raw lines 29\u201336. List and single-token operations, response fields and status values: raw lines 38\u2013294. The list's `type` table names `applePay`/`googlePay` at line 192, while the single-token `type` table names `wallet`/`cof` at line 261; do not silently reconcile these differing descriptions.\n- Status transitions, final closure, PATCH request and asynchronous result: raw lines 295\u2013334. The operation label at line 306 and sample curl at line 323 have different path shapes.\n- Active-token-count rule example: raw lines 340\u2013784, especially `activeNetworkTokens` with `greaterThanOrEqualTo: 1`, payment-instrument scope, `requestType: authorization`, and `hardBlock` at lines 359\u2013383. The document calls this a one-per-card limit; the authorization request type in the example does not by itself establish how provisioning is enforced.\n- Token-transaction amount rule: raw lines 785\u20131319, especially `processingTypes: token`, amount over EUR 50, `hardBlock`, and the test-host sample at lines 801\u2013834. Rule-creation HTTP 200 responses return a rule ID at lines 754 and 1281; they do not demonstrate an evaluated authorization outcome.\n\n## Related\n\n- [[adyen-issuing]] \u2014 Issuing card-program context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/issuing/manage-network-tokens/2026-09-15|Manage network tokens \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A network token is a 16-digit Primary Account Number (PAN) alternative that is unique for each card-device-wallet pairing.",
+      "location": "raw/adyen/docs/issuing/manage-network-tokens/2026-09-15.md:19"
+    },
+    {
+      "text": "Gives the user permissions to read and patch the NetworkTokens that are linked to the accounts they are able to access",
+      "location": "raw/adyen/docs/issuing/manage-network-tokens/2026-09-15.md:36"
+    },
+    {
+      "text": "Permanently close a network token: You change the status from **active** or **suspended** to **closed**.",
+      "location": "raw/adyen/docs/issuing/manage-network-tokens/2026-09-15.md:302"
+    },
+    {
+      "text": "This response means that the request has been accepted, but will be processed asynchronously.",
+      "location": "raw/adyen/docs/issuing/manage-network-tokens/2026-09-15.md:332"
+    },
+    {
+      "text": "In some cases, you might need to limit the number of network tokens per card or set limits for transactions that use network tokens. You can do so by using the `/transactionRules` endpoint.",
+      "location": "raw/adyen/docs/issuing/manage-network-tokens/2026-09-15.md:338"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c22-manage-network-tokens-issuing-source",
+        "target_path": "wiki/concepts/adyen-issuing.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-issuing-manage-network-tokens]] \u2014 2026-09-15-captured Issuing guide for card-linked digital-wallet network-token lookup, asynchronous status updates and example transaction rules; flags path/type inconsistencies and the authorization-rule versus token-count-limit ambiguity.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's single-token and PATCH operation links use `/networkTokens/{networkTokenId}`, while their curl samples use a nested payment-instrument path; list and single-token `type` tables also differ.",
+          "The one-per-card example creates an authorization transaction rule with `activeNetworkTokens`; it does not establish a provisioning-time enforcement result."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/issuing/manage-network-tokens/2026-09-15.md",
+  "raw_sha256": "66c05974223b7cd8f23b451adbd5c721bea2629ba86461cde24c1521a25016a2",
+  "status": "candidate_ready"
+}

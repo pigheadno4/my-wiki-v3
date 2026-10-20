@@ -1,0 +1,9 @@
+# C22 digital-wallet network-token retrieval checks
+
+## Q1 — How is a wallet token created, and what setup does this guide require?
+
+The cardholder adds an Adyen-issued card to a wallet; the wallet sends a network-token request through the card scheme to Adyen, which creates an `inactive` token and performs risk analysis (raw lines 37–48, 70–80). This guide requires an Issuing-supporting integration, a Configuration API credential with the stated NetworkTokens read/patch role, network-token webhook subscription and contact-led card-manufacturing-profile setup; phone-call authentication is optional contact-led setup (raw lines 25–35). Forward route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-tokens-digital-wallet]] → [[raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15]].
+
+## Q2 — What can stop provisioning or require another action, and does a valid token guarantee payment approval?
+
+Risk analysis may activate automatically, require 2FA, require call-center identity verification, or close the token (raw lines 82–89). 2FA requires Adyen to have the cardholder's email or phone; successful call-center verification is followed by issuer PATCH to `active`; high risk without enabled call-center authentication or bad/incomplete request information causes closure (raw lines 114–118, 136–157, 167–174). The brief flow says a scheme approves if a token is valid (raw lines 56–64), but it is a simplified illustration; separate Issuing authorization checks are described in [[source-adyen-docs-issuing-authorisation]]. An inactive token or token-validity statement alone is not proof of payment approval. Forward route: [[index]] → [[adyen-index]] → [[adyen-issuing]] → [[source-adyen-docs-issuing-tokens-digital-wallet]] → [[raw/adyen/docs/issuing/tokens-digital-wallet/2026-09-15]].
