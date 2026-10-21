@@ -1467,8 +1467,8 @@ Operations history: [[adyen-log]]
 - [[changelog-github-adyen-ios]] — package-qualified Adyen iOS release ledger, preserving `5.25.1` through `5.26.0` (github-repo, 2026-10-15)
 - [[source-github-adyen-android]] — cumulative `adyen-android@5.20.0` native baseline: Drop-in, Sessions, View and Compose Components, cards, actions, encryption, and delegated SDKs (github-repo, 2026-08-01)
 - [[changelog-github-adyen-android]] — package-qualified Adyen Android release ledger beginning at `5.20.0` (github-repo, 2026-08-01)
-- [[source-github-adyen-react-native]] — cumulative `@adyen/react-native@2.12.0` wrapper baseline; October note revision adds a dependency table only, with unchanged code and native versions (github-repo, updated 2026-10-04)
-- [[changelog-github-adyen-react-native]] — package-qualified Adyen React Native release ledger and separate `2.12.0` documentation revision (github-repo, updated 2026-10-04)
+- [[source-github-adyen-react-native]] — cumulative `@adyen/react-native@2.13.0` delta: Google Pay merchant info, Apple Pay type export, iOS layout fixes and native pins; complete `2.12.0` history retained (github-repo, updated 2026-10-21)
+- [[changelog-github-adyen-react-native]] — package-qualified `2.12.0` -> `2.13.0` release ledger, demo-client boundaries and preserved `2.12.0` note revision (github-repo, updated 2026-10-21)
 - [[source-github-adyen-node-api-library]] — cumulative server history through `@adyen/api-library@32.2.0`: Session updates, model/multipart compatibility and HTTPS agent reuse; `32.0.0` preserved (github-repo, 2026-10-04)
 - [[changelog-github-adyen-node-api-library]] — package-qualified Adyen Node.js API Library release ledger, `32.0.0` -> `32.1.0` -> `32.2.0` (github-repo, 2026-10-04)
 

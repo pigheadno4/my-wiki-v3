@@ -73,6 +73,8 @@ The Swift package metadata has two upstream contradictions: its podspec says Apa
 
 ## React Native checkout surface
 
+Latest ingested wrapper delta: `@adyen/react-native@2.13.0` (2026-10-21 ingest), native iOS `5.26.0` and Android `5.20.0`. Adds Android Google Pay merchant information, publicly exports the existing Apple Pay authorization-result type, fixes iOS embedded CardView safe-area/view lookup, and moves wrapper version reporting to JavaScript-driven analytics. Android library compile/target defaults become API 36; consuming application settings remain authoritative. Example Netlify limitations/direct-result shortcuts are not production payment or credential guidance. The CocoaPods sunset note concerns the native SDK, not a demonstrated wrapper SPM migration. Full `2.12.0` history remains below and in [[source-github-adyen-react-native]] / [[changelog-github-adyen-react-native]].
+
 The retained `@adyen/react-native@2.12.0` baseline wraps Adyen iOS `5.25.1` and Adyen Android `5.19.0`. It exposes Drop-in, individual Components, Sessions and advanced callbacks, follow-up actions, embedded Fabric card UI, Apple Pay, Google Pay, instant payments, and client-side encryption.
 
 The release-note revision collected 2026-10-04 adds a linked dependency table and version formatting only. The `2.12.0` SHA, native dependency versions and retained code are unchanged; it does not require an integration migration. [[source-github-adyen-react-native]] [[changelog-github-adyen-react-native]]
@@ -142,7 +144,7 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - Additional retained and ingested Web releases: `@adyen/adyen-web@6.43.0`, `@adyen/adyen-web@6.44.0`, `@adyen/adyen-web@6.45.0`, `@adyen/adyen-web@6.45.1`, `@adyen/adyen-web@6.45.2`, `@adyen/adyen-web@6.46.0`, `@adyen/adyen-web@6.47.0`.
 - Additional retained and ingested Node releases: `@adyen/api-library@32.1.0`, `@adyen/api-library@32.2.0`.
 - Additional retained and ingested iOS release: `adyen-ios@5.26.0`, exact SHA `da347498d07b843e5af3f9eb871376514ffdf38c` (2026-10-15 ingest), preserving `5.25.1`.
-- Latest GitHub ingest: `@adyen/adyen-web@6.47.0` (2026-10-19). Prior iOS ingest remains `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
+- Latest GitHub ingest: `@adyen/react-native@2.13.0` (2026-10-21). Previous Web ingest remains `@adyen/adyen-web@6.47.0` (2026-10-19); iOS remains `adyen-ios@5.26.0` (2026-10-15). The preceding Postman boundary remains `default-branch@78874d7`, exact SHA `78874d7b10d8cb438ed15eb01dd732c8d86540a7` (2026-10-07); latest Node release remains `@adyen/api-library@32.2.0`.
 
 ## Sources
 

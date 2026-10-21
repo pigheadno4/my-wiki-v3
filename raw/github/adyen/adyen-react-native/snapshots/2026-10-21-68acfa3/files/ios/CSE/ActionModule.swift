@@ -1,0 +1,96 @@
+//
+// Copyright (c) 2023 Adyen N.V.
+//
+// This file is open source and available under the MIT license. See the LICENSE file for more info.
+//
+
+import Adyen
+import Adyen3DS2
+import Foundation
+import React
+
+@objc(AdyenAction)
+internal final class ActionModule: BaseModule {
+
+    private var actionHandler: AdyenActionComponent?
+
+    @objc override func constantsToExport() -> [AnyHashable: Any]! {
+        [Constant.threeDS2SdkVersionName: threeDS2SdkVersion]
+    }
+
+    private var resolver: RCTPromiseResolveBlock?
+    private var rejecter: RCTPromiseRejectBlock?
+
+    @objc
+    func handle(_ actionJson: NSDictionary,
+                configuration: NSDictionary,
+                resolver: @escaping RCTPromiseResolveBlock,
+                rejecter: @escaping RCTPromiseRejectBlock) {
+        self.resolver = resolver
+        self.rejecter = rejecter
+        let action: Action
+        let parser = RootConfigurationParser(configuration: configuration)
+        let context: AdyenContext
+        do {
+            action = try parseAction(from: actionJson)
+            context = try parser.fetchContext(session: BaseModule.session)
+        } catch {
+            return reject(with: error)
+        }
+
+        let style = AdyenAppearanceLoader.findStyle()?.actionComponent ?? .init()
+        var config = AdyenActionComponent.Configuration(style: style)
+        if let locale = BaseModule.session?.sessionContext.shopperLocale ?? parser.shopperLocale {
+            config.localizationParameters = LocalizationParameters(enforcedLocale: locale)
+        }
+        actionHandler = AdyenActionComponent(context: context, configuration: config)
+        actionHandler?.delegate = self
+        actionHandler?.presentationDelegate = self
+        currentComponent = actionHandler
+
+        ensureMainThread { [weak self] in
+            self?.actionHandler?.handle(action)
+        }
+    }
+
+    @objc
+    func hide(_ success: NSNumber) {
+        resolver = nil
+        rejecter = nil
+        dismiss(success.boolValue)
+    }
+
+    private enum Constant {
+        static var threeDS2SdkVersionName = "threeDS2SdkVersion"
+        static var componentError = "actionError"
+    }
+
+    func reject(with error: ModuleException) {
+        rejecter?(error.errorCode, error.errorDescription, error)
+    }
+
+    func reject(with error: any Error) {
+        if let nativeError = ModuleException.checkErrorType(error) as? ModuleException {
+            return reject(with: nativeError)
+        }
+        rejecter?(Constant.componentError, error.localizedDescription, error)
+    }
+
+    override func sendError(error: any Error) {
+        rejecter?("ActionModule", error.localizedDescription, error)
+    }
+}
+
+extension ActionModule: ActionComponentDelegate {
+    func didProvide(_ data: Adyen.ActionComponentData, from _: Adyen.ActionComponent) {
+        resolver?(data.jsonObject)
+    }
+
+    func didComplete(from _: Adyen.ActionComponent) {
+        resolver?(ResultDTO(result: .presentToShopper).jsonObject)
+    }
+
+    func didFail(with error: Error, from _: Adyen.ActionComponent) {
+        reject(with: error)
+    }
+}

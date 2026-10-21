@@ -1,0 +1,2022 @@
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index 502c9b4..f0f3cf9 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -118,6 +118,22 @@ The `package.json` file contains various scripts for common tasks:
+ - `yarn example start`: start the Metro server for the example app.
+ - `yarn example android`: run the example app on Android.
+ - `yarn example ios`: run the example app on iOS.
++- `yarn prepare`: build the library and generate TypeScript declarations.
++- `yarn api-extractor`: check the public TypeScript API against the committed baseline.
++- `yarn api-extractor:update`: regenerate the baseline after intentionally changing the public API.
++
++### Public API changes
++
++The public TypeScript API is tracked in `etc/api/adyen-react-native.api.md`. Before changing or adding an exported type, component, hook, or module, run:
++
++```sh
++yarn prepare
++yarn api-extractor
++```
++
++If the change is intentional, update the baseline with `yarn api-extractor:update` and include the resulting report diff in the pull request. Use that diff to identify additions, removals, and signature changes when writing release notes. Do not update the report to hide an unintended API change.
++
++The API report covers the JavaScript/TypeScript package surface only; native iOS and Android API changes still require their corresponding platform review.
+ 
+ ### Sending a pull request
+ 
+diff --git a/adyen-react-native.podspec b/adyen-react-native.podspec
+index 8df64f7..4ae49df 100644
+--- a/adyen-react-native.podspec
++++ b/adyen-react-native.podspec
+@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
+   s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
+   s.public_header_files = "ios/ADYRedirectComponent.h"
+ 
+-  s.dependency "Adyen", '5.25.1'
++  s.dependency "Adyen", '5.26.0'
+   s.resource_bundles = { 'adyen-react-native' => [ 'ios/PrivacyInfo.xcprivacy' ] }
+ 
+   install_modules_dependencies(s)
+diff --git a/android/build.gradle b/android/build.gradle
+index b5c9ca1..2ff107a 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -34,11 +34,12 @@ android {
+   defaultConfig {
+     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
+     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+-    buildConfigField "String", "CHECKOUT_VERSION", "\"{SDK_VERSION}\""
+   }
+ 
+-  buildFeatures {
+-    buildConfig true
++  testOptions {
++    unitTests {
++      includeAndroidResources = true
++    }
+   }
+ 
+   buildTypes {
+@@ -73,6 +74,7 @@ dependencies {
+   testImplementation testLibraries.json
+   testImplementation testLibraries.junit5
+   testImplementation testLibraries.mockito
++  testImplementation testLibraries.robolectric
+ }
+ 
+ react {
+diff --git a/android/dependencies.gradle b/android/dependencies.gradle
+index ca9ca78..00b69df 100644
+--- a/android/dependencies.gradle
++++ b/android/dependencies.gradle
+@@ -3,7 +3,7 @@ ext {
+     jacoco_version = '0.8.12'
+ 
+     // Adyen Dependencies
+-    adyen_version = "5.19.0"
++    adyen_version = "5.20.0"
+ 
+     // Android Dependencies
+     gson_version = "2.9.1"
+@@ -13,6 +13,7 @@ ext {
+     junit_jupiter_version = "5.14.0"
+     mockito_kotlin_version = "4.1.0"
+     mockito_version = "4.11.0"
++    robolectric_version = "4.16.1"
+ 
+     testLibraries = [
+             json            : "org.json:json:$json_version",
+@@ -27,5 +28,6 @@ ext {
+                     "org.mockito:mockito-inline:$mockito_version",
+                     "org.mockito.kotlin:mockito-kotlin:$mockito_kotlin_version"
+             ],
++            robolectric     : "org.robolectric:robolectric:$robolectric_version",
+     ]
+ }
+diff --git a/android/gradle.properties b/android/gradle.properties
+index 9bf1533..58f3dc4 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -1,5 +1,5 @@
+ ReactNative_kotlinVersion=2.0.21
+ ReactNative_minSdkVersion=21
+-ReactNative_targetSdkVersion=34
+-ReactNative_compileSdkVersion=35
++ReactNative_targetSdkVersion=36
++ReactNative_compileSdkVersion=36
+ ReactNative_ndkVersion=27.1.12297006
+\ No newline at end of file
+diff --git a/android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt b/android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt
+index e4c905b..f3db039 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt
+@@ -6,9 +6,6 @@
+ 
+ package com.adyenreactnativesdk
+ 
+-import android.annotation.SuppressLint
+-import com.adyen.checkout.components.core.internal.util.CheckoutPlatform
+-import com.adyen.checkout.components.core.internal.util.CheckoutPlatformParams
+ import com.adyenreactnativesdk.component.EmbeddedComponentBusModule
+ import com.adyenreactnativesdk.component.SessionHelperModule
+ import com.adyenreactnativesdk.component.applepay.ApplePayModuleMock
+@@ -40,7 +37,6 @@ class AdyenPaymentPackage : ReactPackage {
+   override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
+     ensureInitialized(reactContext)
+     val sharedBus = messageBus
+-    configureAnalytics()
+     return listOf(
+       DropInModule(reactContext, sharedBus),
+       InstantModule(reactContext, sharedBus),
+@@ -53,13 +49,6 @@ class AdyenPaymentPackage : ReactPackage {
+     )
+   }
+ 
+-  // This is intended.
+-  @SuppressLint("RestrictedApi")
+-  private fun configureAnalytics() {
+-    val version = BuildConfig.CHECKOUT_VERSION
+-    CheckoutPlatformParams.overrideForCrossPlatform(CheckoutPlatform.REACT_NATIVE, version)
+-  }
+-
+   companion object {
+     val messageBus: MessageBus
+       get() = _messageBus ?: throw IllegalStateException("AdyenCheckout MessageBus is not initialized")
+diff --git a/android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt b/android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt
+index 600737b..a9df6fb 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt
+@@ -42,6 +42,11 @@ class SessionHelperModule(
+   ) { // No UI
+   }
+ 
++  @ReactMethod
++  fun setSdkVersion(sdkVersion: String) {
++    BaseModule.sdkVersion = sdkVersion
++  }
++
+   @ReactMethod
+   override fun hide(
+     success: Boolean,
+diff --git a/android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt b/android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt
+index cd7c793..a81201d 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt
+@@ -6,8 +6,11 @@
+ 
+ package com.adyenreactnativesdk.component.base
+ 
++import android.annotation.SuppressLint
+ import com.adyen.checkout.components.core.PaymentMethod
+ import com.adyen.checkout.components.core.PaymentMethodsApiResponse
++import com.adyen.checkout.components.core.internal.util.CheckoutPlatform
++import com.adyen.checkout.components.core.internal.util.CheckoutPlatformParams
+ import com.adyen.checkout.sessions.core.CheckoutSession
+ import com.adyenreactnativesdk.AdyenCheckout
+ import com.adyenreactnativesdk.util.ReactNativeJson
+@@ -63,5 +66,17 @@ abstract class BaseModule(
+ 
+     var currentModule: BaseModule? = null
+       internal set
++
++    @Volatile
++    var sdkVersion: String? = null
++      internal set
++
++    // This is intended.
++    @SuppressLint("RestrictedApi")
++    fun configureAnalytics() {
++      sdkVersion?.let {
++        CheckoutPlatformParams.overrideForCrossPlatform(CheckoutPlatform.REACT_NATIVE, it)
++      }
++    }
+   }
+ }
+diff --git a/android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt b/android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt
+index 9b4b24a..7889fd6 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt
+@@ -4,6 +4,7 @@ import com.adyen.checkout.components.core.AnalyticsConfiguration
+ import com.adyen.checkout.components.core.AnalyticsLevel
+ import com.adyen.checkout.core.AdyenLogLevel
+ import com.adyen.checkout.core.AdyenLogger
++import com.adyenreactnativesdk.component.base.BaseModule
+ import com.facebook.react.bridge.ReadableMap
+ 
+ class AnalyticsParser(
+@@ -35,6 +36,7 @@ class AnalyticsParser(
+     get() {
+       val logLevel = if (verboseLogs) AdyenLogLevel.VERBOSE else AdyenLogLevel.ERROR
+       AdyenLogger.setLogLevel(logLevel)
++      BaseModule.configureAnalytics()
+       return AnalyticsConfiguration(if (analyticsEnabled) AnalyticsLevel.ALL else AnalyticsLevel.NONE)
+     }
+ }
+diff --git a/android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt b/android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt
+index 4e11e46..5462150 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt
+@@ -9,6 +9,7 @@ package com.adyenreactnativesdk.configuration
+ import android.util.Log
+ import com.adyen.checkout.googlepay.BillingAddressParameters
+ import com.adyen.checkout.googlepay.GooglePayConfiguration
++import com.adyen.checkout.googlepay.MerchantInfo
+ import com.adyen.checkout.googlepay.ShippingAddressParameters
+ import com.adyenreactnativesdk.util.ReactNativeJson
+ import com.facebook.react.bridge.ReadableMap
+@@ -21,6 +22,7 @@ class GooglePayConfigurationParser(
+     internal const val TAG = "GooglePayConfigParser"
+     internal const val ROOT_KEY = "googlepay"
+     internal const val MERCHANT_ACCOUNT_KEY = "merchantAccount"
++    internal const val MERCHANT_INFO_KEY = "merchantInfo"
+     internal const val ALLOWED_CARD_NETWORKS_KEY = "allowedCardNetworks"
+     internal const val ALLOWED_AUTH_METHODS_KEY = "allowedAuthMethods"
+     internal const val TOTAL_PRICE_STATUS_KEY = "totalPriceStatus"
+@@ -77,6 +79,17 @@ class GooglePayConfigurationParser(
+       }
+     }
+ 
++  internal val merchantInfo: MerchantInfo?
++    get() {
++      return try {
++        val map = config.getMap(MERCHANT_INFO_KEY)
++        MerchantInfo.SERIALIZER.deserialize(ReactNativeJson.convertMapToJson(map))
++      } catch (e: JSONException) {
++        Log.w(TAG, e.message ?: "Unable to parse merchantInfo")
++        null
++      }
++    }
++
+   internal val allowedAuthMethods: List<String>
+     get() {
+       return config.getArray(ALLOWED_AUTH_METHODS_KEY)?.toArrayList().orEmpty().map {
+@@ -85,6 +98,9 @@ class GooglePayConfigurationParser(
+     }
+ 
+   fun applyConfiguration(builder: GooglePayConfiguration.Builder) {
++    if (config.hasKey(MERCHANT_INFO_KEY)) {
++      builder.merchantInfo = merchantInfo
++    }
+     if (config.hasKey(ALLOWED_AUTH_METHODS_KEY)) {
+       builder.allowedAuthMethods = allowedAuthMethods
+     }
+diff --git a/android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt b/android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt
+index 4d83a2a..1df67cb 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt
+@@ -26,12 +26,12 @@ class ActionFragment : BottomSheetDialogFragment() {
+   private var actionHandled: Boolean = false
+   var component: GenericActionComponent? = null
+ 
+-  private val configuration: CheckoutConfiguration by lazy {
++  internal val configuration: CheckoutConfiguration by lazy {
+     BundleCompat.getParcelable(requireArguments(), KEY_CONFIGURATION, CheckoutConfiguration::class.java)
+       ?: throw IllegalStateException("Missing $KEY_CONFIGURATION argument")
+   }
+ 
+-  private val action: Action by lazy {
++  internal val action: Action by lazy {
+     BundleCompat.getParcelable(requireArguments(), KEY_ACTION, Action::class.java)
+       ?: throw IllegalStateException("Missing $KEY_ACTION argument")
+   }
+diff --git a/android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt b/android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt
+index aed490a..23ac876 100644
+--- a/android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt
++++ b/android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt
+@@ -63,7 +63,7 @@ class ActionModule(
+ 
+   companion object {
+     private const val COMPONENT_NAME = "AdyenAction"
+-    private var threeDS2Version = ThreeDS2Service.INSTANCE.sdkVersion
++    private val threeDS2Version by lazy { ThreeDS2Service.INSTANCE.sdkVersion }
+     private const val THREEDS_VERSION_NAME = "threeDS2SdkVersion"
+     private const val COMPONENT_ERROR = "actionError"
+     private const val PARSING_ERROR = "parsingError"
+diff --git a/docs/Compatibility.md b/docs/Compatibility.md
+index 90eaa15..b237fad 100644
+--- a/docs/Compatibility.md
++++ b/docs/Compatibility.md
+@@ -1,10 +1,22 @@
++## Android API level
++
++Google Play requires new Android phone and tablet app submissions and updates to target Android 16 (API level 36) or higher. See [Google Play's target API level requirement](https://developer.android.com/google/play/requirements/target-sdk). This is set by the consuming application, not this library; configure the Android app that consumes `@adyen/react-native` with:
++
++```groovy
++buildscript {
++    ext {
++        compileSdkVersion = 36
++        targetSdkVersion = 36
++    }
++}
++```
++
+ ## React-Native v0.73
+ 
+ * set `kotlin` in `node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml` to at least **1.9.10**
+ * set `apiVersion` in `node_modules/@react-native/gradle-plugin/build.gradle.kts` to at least **1.7**
+ 
+ > [!NOTE]
+-> Google has introduced new [target API level requirements for Google Play apps](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en) on August 31, 2024.
+ > React-Native version **73** and below are considered deprecated.
+ 
+ ## React-Native v0.72 and below
+diff --git a/docs/Configuration.md b/docs/Configuration.md
+index bade8e3..dd8beed 100644
+--- a/docs/Configuration.md
++++ b/docs/Configuration.md
+@@ -129,6 +129,27 @@
+ | `existingPaymentMethodRequired` | If set to **true** then the `isReadyToPayResponse` object includes an additional paymentMethodPresent property that describes the visitor's readiness to pay with one or more payment methods specified in **allowedPaymentMethods**.                                                                                                                                                          | No       |
+ | `googlePayEnvironment`          | The environment to be used by GooglePay. Should be either **WalletConstants.ENVIRONMENT_TEST** or **WalletConstants.ENVIRONMENT_PRODUCTION**. By default use `environment` from the root.                                                                                                                                                                                                      | No       |
+ 
++#### Merchant information (Android only)
++
++The optional `googlepay.merchantInfo` object accepts:
++
++| Property | Description | Required |
++| --- | --- | --- |
++| `merchantName` | Merchant display name requested for the Google Pay payment sheet. | No |
++| `merchantId` | Google-issued merchant identifier, distinct from Adyen's `merchantAccount`. | No |
++
++For example, include this in your checkout configuration:
++
++```js
++googlepay: {
++  merchantInfo: {
++    merchantName: 'Example Store',
++  },
++}
++```
++
++Omitting `merchantInfo` preserves the existing native configuration. Supplying it does not replace Google Pay production registration; Google Pay's environment and merchant verification rules still apply.
++
+ ## Example
+ 
+ ```js
+diff --git a/example/package.json b/example/package.json
+index 42452ba..cd297fd 100644
+--- a/example/package.json
++++ b/example/package.json
+@@ -4,7 +4,9 @@
+   "private": true,
+   "scripts": {
+     "android": "react-native run-android",
++    "android:netlify": "cd android && ENTRY_FILE=index.netlify.js ./gradlew assembleRelease",
+     "ios": "react-native run-ios",
++    "ios:netlify": "cd ios && ENTRY_FILE=index.netlify.js xcodebuild -workspace AdyenExample.xcworkspace -scheme AdyenExample -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/netlify CODE_SIGNING_ALLOWED=NO ENABLE_USER_SCRIPT_SANDBOXING=NO",
+     "lint": "eslint .",
+     "start": "react-native start",
+     "test": "jest",
+@@ -17,7 +19,7 @@
+     "react": "19.2.3",
+     "react-native": "0.85.0",
+     "react-native-safe-area-context": "^5.4.1",
+-    "react-native-screens": "4.25.2"
++    "react-native-screens": "4.26.2"
+   },
+   "devDependencies": {
+     "@babel/core": "^7.25.2",
+diff --git a/example/src/App.tsx b/example/src/App.tsx
+index 74112a9..d19ce57 100644
+--- a/example/src/App.tsx
++++ b/example/src/App.tsx
+@@ -7,8 +7,8 @@
+  */
+ 
+ import { Alert, SafeAreaView, useColorScheme } from 'react-native';
+-import { DEFAULT_CONFIGURATION } from './Configuration';
+-
++import type { ConfigProvider } from './config/ConfigProvider';
++import type { ApiService } from './api/ApiService';
+ import AppContextProvider from './hooks/useAppContext';
+ import Styles from './components/common/Styles';
+ 
+@@ -23,7 +23,12 @@ import {
+ } from './router/RootStackNavigator';
+ import { useMemo } from 'react';
+ 
+-const App = () => {
++type AppProps = {
++  configProvider: ConfigProvider;
++  apiClient: ApiService;
++};
++
++const App = ({ configProvider, apiClient }: AppProps) => {
+   const isDark = useColorScheme();
+ 
+   const theme = useMemo(() => {
+@@ -33,7 +38,8 @@ const App = () => {
+   return (
+     <NavigationContainer theme={theme} ref={rootNavigationRef}>
+       <AppContextProvider
+-        configuration={DEFAULT_CONFIGURATION}
++        configProvider={configProvider}
++        apiClient={apiClient}
+         onError={(error: Error) => {
+           Alert.alert('App error', error.message || 'Error');
+         }}
+diff --git a/example/src/api/APIClient.ts b/example/src/api/APIClient.ts
+index a239930..2a657ea 100644
+--- a/example/src/api/APIClient.ts
++++ b/example/src/api/APIClient.ts
+@@ -12,9 +12,10 @@ import type {
+   BalanceResponse,
+   OrderResponse,
+ } from './types';
++import type { ApiService } from './ApiService';
+ 
+-class ApiClient {
+-  static payments(
++class ApiClient implements ApiService {
++  payments(
+     data: PaymentMethodData,
+     configuration: PaymentConfiguration,
+     returnUrl?: string
+@@ -29,16 +30,14 @@ class ApiClient {
+       returnUrl: returnUrl ?? data.returnUrl,
+     };
+ 
+-    return ApiClient.makeRequest(ENVIRONMENT.url + 'payments', body);
++    return this.makeRequest(ENVIRONMENT.url + 'payments', body);
+   }
+ 
+-  static paymentDetails = (
+-    data: PaymentDetailsData
+-  ): Promise<PaymentResponse> => {
+-    return ApiClient.makeRequest(ENVIRONMENT.url + 'payments/details', data);
++  paymentDetails = (data: PaymentDetailsData): Promise<PaymentResponse> => {
++    return this.makeRequest(ENVIRONMENT.url + 'payments/details', data);
+   };
+ 
+-  static requestSession = (
++  requestSession = (
+     configuration: PaymentConfiguration,
+     returnUrl: string
+   ): Promise<SessionConfiguration> => {
+@@ -50,10 +49,10 @@ class ApiClient {
+       returnUrl: returnUrl,
+       showRemovePaymentMethodButton: true,
+     };
+-    return ApiClient.makeRequest(ENVIRONMENT.url + 'sessions', body);
++    return this.makeRequest(ENVIRONMENT.url + 'sessions', body);
+   };
+ 
+-  static requestSessionResult = async (
++  requestSessionResult = async (
+     sessionId: string,
+     sessionResult: string
+   ): Promise<PaymentResponse> => {
+@@ -80,7 +79,7 @@ class ApiClient {
+     return { resultCode: payload.status };
+   };
+ 
+-  static paymentMethods = (
++  paymentMethods = (
+     configuration: PaymentConfiguration,
+     order?: Order
+   ): Promise<PaymentMethodsResponse> => {
+@@ -90,10 +89,10 @@ class ApiClient {
+       ...serverConfiguration,
+       ...(order && { order: parseOrder(order) }),
+     };
+-    return ApiClient.makeRequest(ENVIRONMENT.url + 'paymentMethods', body);
++    return this.makeRequest(ENVIRONMENT.url + 'paymentMethods', body);
+   };
+ 
+-  static tryRemoveStoredCard = async (
++  tryRemoveStoredCard = async (
+     id: string,
+     configuration: PaymentConfiguration
+   ): Promise<boolean> => {
+@@ -118,7 +117,7 @@ class ApiClient {
+     }
+   };
+ 
+-  static checkBalance = async (
++  checkBalance = async (
+     paymentData: PaymentMethodData,
+     configuration: PaymentConfiguration
+   ): Promise<BalanceResponse> => {
+@@ -128,13 +127,10 @@ class ApiClient {
+       merchantAccount: configuration.merchantAccount,
+       reference: serverConfiguration.reference,
+     };
+-    return ApiClient.makeRequest(
+-      ENVIRONMENT.url + 'paymentMethods/balance',
+-      body
+-    );
++    return this.makeRequest(ENVIRONMENT.url + 'paymentMethods/balance', body);
+   };
+ 
+-  static requestOrder = async (
++  requestOrder = async (
+     configuration: PaymentConfiguration
+   ): Promise<OrderResponse> => {
+     const body = {
+@@ -142,10 +138,10 @@ class ApiClient {
+       merchantAccount: configuration.merchantAccount,
+       reference: serverConfiguration.reference,
+     };
+-    return ApiClient.makeRequest(ENVIRONMENT.url + 'orders', body);
++    return this.makeRequest(ENVIRONMENT.url + 'orders', body);
+   };
+ 
+-  static cancelOrder = async (
++  cancelOrder = async (
+     order: Order,
+     configuration: PaymentConfiguration
+   ): Promise<OrderResponse> => {
+@@ -153,11 +149,11 @@ class ApiClient {
+       ...(order && { order: parseOrder(order) }),
+       merchantAccount: configuration.merchantAccount,
+     };
+-    return ApiClient.makeRequest(ENVIRONMENT.url + 'orders/cancel', body);
++    return this.makeRequest(ENVIRONMENT.url + 'orders/cancel', body);
+   };
+ 
+   /** @private */
+-  static makeRequest = async (url: string, body: any) => {
++  private makeRequest = async (url: string, body: any) => {
+     const bodyJSON = JSON.stringify(body);
+     console.debug(`Request to: ${url}`);
+     console.debug(`== ${bodyJSON}`);
+@@ -183,7 +179,7 @@ class ApiClient {
+   };
+ }
+ 
+-export default ApiClient;
++export default new ApiClient();
+ 
+ const serverConfiguration = {
+   channel: CHANNEL,
+diff --git a/example/src/api/ApiService.ts b/example/src/api/ApiService.ts
+new file mode 100644
+index 0000000..8da6c09
+--- /dev/null
++++ b/example/src/api/ApiService.ts
+@@ -0,0 +1,57 @@
++import type {
++  PaymentMethodsResponse,
++  PaymentMethodData,
++  PaymentDetailsData,
++  Order,
++  SessionConfiguration,
++} from '@adyen/react-native';
++import type {
++  PaymentConfiguration,
++  PaymentResponse,
++  BalanceResponse,
++  OrderResponse,
++} from './types';
++
++export interface ApiService {
++  usesDirectSessionResult?: boolean;
++
++  payments(
++    data: PaymentMethodData,
++    configuration: PaymentConfiguration,
++    returnUrl?: string
++  ): Promise<PaymentResponse>;
++
++  paymentDetails(data: PaymentDetailsData): Promise<PaymentResponse>;
++
++  requestSession(
++    configuration: PaymentConfiguration,
++    returnUrl: string
++  ): Promise<SessionConfiguration>;
++
++  requestSessionResult(
++    sessionId: string,
++    sessionResult: string
++  ): Promise<PaymentResponse>;
++
++  paymentMethods(
++    configuration: PaymentConfiguration,
++    order?: Order
++  ): Promise<PaymentMethodsResponse>;
++
++  tryRemoveStoredCard(
++    id: string,
++    configuration: PaymentConfiguration
++  ): Promise<boolean>;
++
++  checkBalance(
++    paymentData: PaymentMethodData,
++    configuration: PaymentConfiguration
++  ): Promise<BalanceResponse>;
++
++  requestOrder(configuration: PaymentConfiguration): Promise<OrderResponse>;
++
++  cancelOrder(
++    order: Order,
++    configuration: PaymentConfiguration
++  ): Promise<OrderResponse>;
++}
+diff --git a/example/src/api/NetlifyApiClient.ts b/example/src/api/NetlifyApiClient.ts
+new file mode 100644
+index 0000000..94c1460
+--- /dev/null
++++ b/example/src/api/NetlifyApiClient.ts
+@@ -0,0 +1,119 @@
++import type {
++  PaymentMethodsResponse,
++  PaymentMethodData,
++  PaymentDetailsData,
++  Order,
++  SessionConfiguration,
++} from '@adyen/react-native';
++import type {
++  PaymentConfiguration,
++  PaymentResponse,
++  BalanceResponse,
++  OrderResponse,
++} from './types';
++import type { ApiService } from './ApiService';
++import { CHANNEL } from '../Configuration';
++
++const BASE_URL = 'https://www.mystoredemo.io/.netlify/functions';
++
++class NetlifyApiClient implements ApiService {
++  readonly usesDirectSessionResult = true;
++
++  private async makeRequest(url: string, body: object): Promise<any> {
++    const response = await fetch(url, {
++      method: 'POST',
++      headers: { 'Content-Type': 'application/json' },
++      body: JSON.stringify(body),
++    });
++    if (!response.ok) {
++      let errorMessage = response.statusText;
++      try {
++        const errorJson = await response.json();
++        if (errorJson && errorJson.message) {
++          errorMessage = errorJson.message;
++        } else if (typeof errorJson === 'string') {
++          errorMessage = errorJson;
++        }
++      } catch {
++        // Fall back to statusText if the response is not JSON.
++      }
++      throw new Error(`Network Error ${response.status}: ${errorMessage}`);
++    }
++    return response.json();
++  }
++
++  async payments(
++    data: PaymentMethodData,
++    _configuration: PaymentConfiguration,
++    _returnUrl?: string
++  ): Promise<PaymentResponse> {
++    return this.makeRequest(`${BASE_URL}/payments`, data);
++  }
++
++  async paymentDetails(data: PaymentDetailsData): Promise<PaymentResponse> {
++    return this.makeRequest(`${BASE_URL}/payments/details`, data);
++  }
++
++  async requestSession(
++    configuration: PaymentConfiguration,
++    returnUrl: string
++  ): Promise<SessionConfiguration> {
++    const body = {
++      merchantAccount: configuration.merchantAccount,
++      countryCode: configuration.countryCode,
++      amount: { value: configuration.amount, currency: configuration.currency },
++      returnUrl,
++      channel: CHANNEL,
++      reference: 'React Native',
++    };
++    return this.makeRequest(`${BASE_URL}/sessions`, body);
++  }
++
++  async paymentMethods(
++    configuration: PaymentConfiguration,
++    _order?: Order
++  ): Promise<PaymentMethodsResponse> {
++    const body = {
++      merchantAccount: configuration.merchantAccount,
++      countryCode: configuration.countryCode,
++      amount: { value: configuration.amount, currency: configuration.currency },
++    };
++    return this.makeRequest(`${BASE_URL}/paymentMethods`, body);
++  }
++
++  async requestSessionResult(
++    _sessionId: string,
++    _sessionResult: string
++  ): Promise<PaymentResponse> {
++    throw new Error('requestSessionResult not supported via Netlify');
++  }
++
++  async tryRemoveStoredCard(
++    _id: string,
++    _configuration: PaymentConfiguration
++  ): Promise<boolean> {
++    throw new Error('tryRemoveStoredCard not supported via Netlify');
++  }
++
++  async checkBalance(
++    _paymentData: PaymentMethodData,
++    _configuration: PaymentConfiguration
++  ): Promise<BalanceResponse> {
++    throw new Error('checkBalance not supported via Netlify');
++  }
++
++  async requestOrder(
++    _configuration: PaymentConfiguration
++  ): Promise<OrderResponse> {
++    throw new Error('requestOrder not supported via Netlify');
++  }
++
++  async cancelOrder(
++    _order: Order,
++    _configuration: PaymentConfiguration
++  ): Promise<OrderResponse> {
++    throw new Error('cancelOrder not supported via Netlify');
++  }
++}
++
++export default new NetlifyApiClient();
+diff --git a/example/src/components/Checkout/AdvancedCheckout.tsx b/example/src/components/Checkout/AdvancedCheckout.tsx
+index e4c682e..f5d462b 100644
+--- a/example/src/components/Checkout/AdvancedCheckout.tsx
++++ b/example/src/components/Checkout/AdvancedCheckout.tsx
+@@ -8,10 +8,10 @@ import type {
+   PaymentDetailsData,
+   AdyenError,
+   AdyenComponent,
++  StoredPaymentMethod,
+ } from '@adyen/react-native';
+ import Styles from '../common/Styles';
+ import TopView from './components/TopView';
+-import ApiClient from '../../api/APIClient';
+ import { useAppContext } from '../../hooks/useAppContext';
+ import { processAdyenError } from './utils/processAdyenError';
+ import { processError } from './utils/processError';
+@@ -20,7 +20,7 @@ import { CheckoutNavigator } from '../../router/CheckoutNavigator';
+ import { checkoutConfiguration } from '../../settings/checkoutConfiguration';
+ 
+ const AdvancedCheckout = () => {
+-  const { configuration, processResult } = useAppContext();
++  const { configuration, processResult, apiClient } = useAppContext();
+   const [loading, setLoading] = useState(true);
+   const [initError, setError] = useState<string | undefined>(undefined);
+   const [paymentMethods, setPaymentMethods] = useState<
+@@ -31,7 +31,7 @@ const AdvancedCheckout = () => {
+     const refreshPaymentMethods = async () => {
+       try {
+         const paymentMethodsResponse =
+-          await ApiClient.paymentMethods(configuration);
++          await apiClient.paymentMethods(configuration);
+         setPaymentMethods(paymentMethodsResponse);
+       } catch (e) {
+         setError(String(e));
+@@ -40,7 +40,7 @@ const AdvancedCheckout = () => {
+       }
+     };
+     refreshPaymentMethods();
+-  }, [configuration, setPaymentMethods, setLoading]);
++  }, [configuration, setPaymentMethods, setLoading, apiClient]);
+ 
+   const didSubmit = useCallback(
+     async (
+@@ -49,7 +49,7 @@ const AdvancedCheckout = () => {
+       _extra: any // extra info for Apple and Google Pay
+     ) => {
+       try {
+-        const result = await ApiClient.payments(
++        const result = await apiClient.payments(
+           data,
+           configuration,
+           data.returnUrl
+@@ -63,19 +63,19 @@ const AdvancedCheckout = () => {
+         processError(error, nativeComponent);
+       }
+     },
+-    [configuration, processResult]
++    [configuration, processResult, apiClient]
+   );
+ 
+   const didProvide = useCallback(
+     async (data: PaymentDetailsData, nativeComponent: AdyenActionComponent) => {
+       try {
+-        const result = await ApiClient.paymentDetails(data);
++        const result = await apiClient.paymentDetails(data);
+         processResult(result, nativeComponent);
+       } catch (error) {
+         processError(error, nativeComponent);
+       }
+     },
+-    [processResult]
++    [processResult, apiClient]
+   );
+ 
+   const didFail = useCallback(
+@@ -92,6 +92,25 @@ const AdvancedCheckout = () => {
+     [processResult]
+   );
+ 
++  const onDisableStoredPaymentMethod = useCallback(
++    async (
++      storedPaymentMethod: StoredPaymentMethod,
++      resolve: () => void,
++      reject: () => void
++    ) => {
++      const success = await apiClient.tryRemoveStoredCard(
++        storedPaymentMethod.id,
++        configuration
++      );
++      if (success) {
++        resolve();
++      } else {
++        reject();
++      }
++    },
++    [configuration, apiClient]
++  );
++
+   if (loading) {
+     return (
+       <View style={Styles.centeredContent}>
+@@ -108,11 +127,20 @@ const AdvancedCheckout = () => {
+     );
+   }
+ 
++  const baseConfig = checkoutConfiguration(configuration);
++  const checkoutConfig = {
++    ...baseConfig,
++    dropin: {
++      ...baseConfig.dropin,
++      onDisableStoredPaymentMethod,
++    },
++  };
++
+   return (
+     <View style={Styles.page}>
+       <TopView />
+       <AdyenCheckout
+-        config={checkoutConfiguration(configuration)}
++        config={checkoutConfig}
+         paymentMethods={paymentMethods}
+         onSubmit={didSubmit}
+         onAdditionalDetails={didProvide}
+diff --git a/example/src/components/Checkout/PartialPaymentCheckout.tsx b/example/src/components/Checkout/PartialPaymentCheckout.tsx
+index e00616d..c0c1b7b 100644
+--- a/example/src/components/Checkout/PartialPaymentCheckout.tsx
++++ b/example/src/components/Checkout/PartialPaymentCheckout.tsx
+@@ -16,7 +16,6 @@ import type {
+ import { CheckoutNavigator } from '../../router/CheckoutNavigator';
+ import Styles from '../common/Styles';
+ import TopView from './components/TopView';
+-import ApiClient from '../../api/APIClient';
+ import { useAppContext } from '../../hooks/useAppContext';
+ import { checkoutConfiguration } from '../../settings/checkoutConfiguration';
+ import { processAdyenError } from './utils/processAdyenError';
+@@ -24,7 +23,7 @@ import { processError } from './utils/processError';
+ import { processPartialPaymentResult } from './utils/processPartialPaymentResult';
+ 
+ const PartialPaymentCheckout = () => {
+-  const { configuration, processResult } = useAppContext();
++  const { configuration, processResult, apiClient } = useAppContext();
+   const [loading, setLoading] = useState(true);
+   const [initError, setError] = useState<string | undefined>(undefined);
+   const [paymentMethods, setPaymentMethods] = useState<
+@@ -35,7 +34,7 @@ const PartialPaymentCheckout = () => {
+     const refreshPaymentMethods = async () => {
+       try {
+         const paymentMethodsResponse =
+-          await ApiClient.paymentMethods(configuration);
++          await apiClient.paymentMethods(configuration);
+         setPaymentMethods(paymentMethodsResponse);
+       } catch (e) {
+         setError(String(e));
+@@ -44,7 +43,7 @@ const PartialPaymentCheckout = () => {
+       }
+     };
+     refreshPaymentMethods();
+-  }, [configuration, setPaymentMethods, setLoading]);
++  }, [configuration, setPaymentMethods, setLoading, apiClient]);
+ 
+   const didSubmit = useCallback(
+     async (
+@@ -53,7 +52,7 @@ const PartialPaymentCheckout = () => {
+       _extra: any
+     ) => {
+       try {
+-        const result = await ApiClient.payments(
++        const result = await apiClient.payments(
+           data,
+           configuration,
+           data.returnUrl
+@@ -61,7 +60,8 @@ const PartialPaymentCheckout = () => {
+         const outcome = await processPartialPaymentResult(
+           result,
+           nativeComponent as DropInModule,
+-          configuration
++          configuration,
++          apiClient
+         );
+         if (outcome) {
+           processResult(outcome, nativeComponent);
+@@ -70,17 +70,18 @@ const PartialPaymentCheckout = () => {
+         processError(error, nativeComponent);
+       }
+     },
+-    [configuration, processResult]
++    [configuration, processResult, apiClient]
+   );
+ 
+   const didProvide = useCallback(
+     async (data: PaymentDetailsData, nativeComponent: AdyenActionComponent) => {
+       try {
+-        const result = await ApiClient.paymentDetails(data);
++        const result = await apiClient.paymentDetails(data);
+         const outcome = await processPartialPaymentResult(
+           result,
+           nativeComponent as DropInModule,
+-          configuration
++          configuration,
++          apiClient
+         );
+         if (outcome) {
+           processResult(outcome, nativeComponent);
+@@ -89,7 +90,7 @@ const PartialPaymentCheckout = () => {
+         processError(error, nativeComponent);
+       }
+     },
+-    [configuration, processResult]
++    [configuration, processResult, apiClient]
+   );
+ 
+   const didFail = useCallback(
+@@ -106,7 +107,7 @@ const PartialPaymentCheckout = () => {
+       reject: (error: Error) => void
+     ) => {
+       try {
+-        const response = await ApiClient.checkBalance(
++        const response = await apiClient.checkBalance(
+           paymentData,
+           configuration
+         );
+@@ -116,20 +117,20 @@ const PartialPaymentCheckout = () => {
+         reject(e as Error);
+       }
+     },
+-    [configuration]
++    [configuration, apiClient]
+   );
+ 
+   const requestOrder = useCallback(
+     async (resolve: (order: Order) => void, reject: (error: Error) => void) => {
+       try {
+-        const response = await ApiClient.requestOrder(configuration);
++        const response = await apiClient.requestOrder(configuration);
+         resolve(response);
+       } catch (e) {
+         console.error('Order request error: ', e);
+         reject(e as Error);
+       }
+     },
+-    [configuration]
++    [configuration, apiClient]
+   );
+ 
+   const cancelOrder = useCallback(
+@@ -139,9 +140,9 @@ const PartialPaymentCheckout = () => {
+       component: PartialPaymentComponent
+     ) => {
+       try {
+-        await ApiClient.cancelOrder(order, configuration);
++        await apiClient.cancelOrder(order, configuration);
+         if (shouldUpdatePaymentMethods) {
+-          const newPaymentMethods = await ApiClient.paymentMethods(
++          const newPaymentMethods = await apiClient.paymentMethods(
+             configuration,
+             order
+           );
+@@ -154,7 +155,7 @@ const PartialPaymentCheckout = () => {
+         console.error("Order wasn't canceled! ", e);
+       }
+     },
+-    [configuration]
++    [configuration, apiClient]
+   );
+ 
+   if (loading) {
+diff --git a/example/src/components/Checkout/SessionsComponentsCheckout.tsx b/example/src/components/Checkout/SessionsComponentsCheckout.tsx
+index fc51492..2f94df8 100644
+--- a/example/src/components/Checkout/SessionsComponentsCheckout.tsx
++++ b/example/src/components/Checkout/SessionsComponentsCheckout.tsx
+@@ -10,14 +10,14 @@ import type {
+ import { CheckoutNavigator } from '../../router/CheckoutNavigator';
+ import Styles from '../common/Styles';
+ import TopView from './components/TopView';
+-import ApiClient from '../../api/APIClient';
+ import { useAppContext } from '../../hooks/useAppContext';
+ import { checkoutConfiguration } from '../../settings/checkoutConfiguration';
+ import { processAdyenError } from './utils/processAdyenError';
+ import { ENVIRONMENT } from '../../Configuration';
+ 
+ const SessionsComponentsCheckout = () => {
+-  const { configuration, processResult, navigateToRoot } = useAppContext();
++  const { configuration, processResult, navigateToRoot, apiClient } =
++    useAppContext();
+   const [loading, setLoading] = useState(true);
+   const [initError, setError] = useState<string | undefined>(undefined);
+   const [session, setSession] = useState<SessionConfiguration | undefined>(
+@@ -28,7 +28,7 @@ const SessionsComponentsCheckout = () => {
+     const refreshSession = async () => {
+       try {
+         const returnUrl = ENVIRONMENT.returnUrl;
+-        const newSession = await ApiClient.requestSession(
++        const newSession = await apiClient.requestSession(
+           configuration,
+           returnUrl
+         );
+@@ -40,7 +40,7 @@ const SessionsComponentsCheckout = () => {
+       }
+     };
+     refreshSession();
+-  }, [configuration, setSession, setLoading, setError]);
++  }, [configuration, setSession, setLoading, setError, apiClient]);
+ 
+   const didFail = useCallback(
+     async (error: AdyenError, nativeComponent: AdyenComponent) => {
+@@ -52,17 +52,20 @@ const SessionsComponentsCheckout = () => {
+ 
+   const didComplete = useCallback(
+     async (result: SessionsResult, nativeComponent: AdyenComponent) => {
+-      if (result.resultCode === 'PresentToShopper') {
++      if (
++        result.resultCode === 'PresentToShopper' ||
++        apiClient.usesDirectSessionResult
++      ) {
+         processResult(result, nativeComponent);
+         return;
+       }
+-      const status = await ApiClient.requestSessionResult(
++      const status = await apiClient.requestSessionResult(
+         result.sessionId,
+         result.sessionResult
+       );
+       processResult(status, nativeComponent);
+     },
+-    [processResult]
++    [processResult, apiClient]
+   );
+ 
+   if (loading) {
+diff --git a/example/src/components/Checkout/SessionsDropInCheckout.tsx b/example/src/components/Checkout/SessionsDropInCheckout.tsx
+index a840cd3..2477252 100644
+--- a/example/src/components/Checkout/SessionsDropInCheckout.tsx
++++ b/example/src/components/Checkout/SessionsDropInCheckout.tsx
+@@ -10,14 +10,14 @@ import type {
+ import { CheckoutNavigator } from '../../router/CheckoutNavigator';
+ import Styles from '../common/Styles';
+ import TopView from './components/TopView';
+-import ApiClient from '../../api/APIClient';
+ import { useAppContext } from '../../hooks/useAppContext';
+ import { checkoutConfiguration } from '../../settings/checkoutConfiguration';
+ import { processAdyenError } from './utils/processAdyenError';
+ import { ENVIRONMENT } from '../../Configuration';
+ 
+ const SessionsDropInCheckout = () => {
+-  const { configuration, processResult, navigateToRoot } = useAppContext();
++  const { configuration, processResult, navigateToRoot, apiClient } =
++    useAppContext();
+   const [loading, setLoading] = useState(true);
+   const [initError, setError] = useState<string | undefined>(undefined);
+   const [session, setSession] = useState<SessionConfiguration | undefined>(
+@@ -31,7 +31,7 @@ const SessionsDropInCheckout = () => {
+           android: await AdyenDropIn.getReturnURL(),
+           default: ENVIRONMENT.returnUrl,
+         });
+-        const newSession = await ApiClient.requestSession(
++        const newSession = await apiClient.requestSession(
+           configuration,
+           returnUrl
+         );
+@@ -43,7 +43,7 @@ const SessionsDropInCheckout = () => {
+       }
+     };
+     refreshSession();
+-  }, [configuration, setSession, setLoading, setError]);
++  }, [configuration, setSession, setLoading, setError, apiClient]);
+ 
+   const didFail = useCallback(
+     async (error: AdyenError, nativeComponent: AdyenComponent) => {
+@@ -55,17 +55,20 @@ const SessionsDropInCheckout = () => {
+ 
+   const didComplete = useCallback(
+     async (result: SessionsResult, nativeComponent: AdyenComponent) => {
+-      if (result.resultCode === 'PresentToShopper') {
++      if (
++        result.resultCode === 'PresentToShopper' ||
++        apiClient.usesDirectSessionResult
++      ) {
+         processResult(result, nativeComponent);
+         return;
+       }
+-      const status = await ApiClient.requestSessionResult(
++      const status = await apiClient.requestSessionResult(
+         result.sessionId,
+         result.sessionResult
+       );
+       processResult(status, nativeComponent);
+     },
+-    [processResult]
++    [processResult, apiClient]
+   );
+ 
+   if (loading) {
+diff --git a/example/src/components/Checkout/StoredCardsCheckout.tsx b/example/src/components/Checkout/StoredCardsCheckout.tsx
+index 26d04cb..869c908 100644
+--- a/example/src/components/Checkout/StoredCardsCheckout.tsx
++++ b/example/src/components/Checkout/StoredCardsCheckout.tsx
+@@ -5,14 +5,13 @@ import { AdyenAction } from '@adyen/react-native';
+ import Styles from '../common/Styles';
+ import TopView from './components/TopView';
+ import StoredPaymentMethodsList from './components/StoredPaymentMethodsList';
+-import ApiClient from '../../api/APIClient';
+ import { useAppContext } from '../../hooks/useAppContext';
+ import { processError } from './utils/processError';
+ import { payByID } from './utils/payByID';
+ import type { StoredCardPaymentMethod } from '../../api/types';
+ 
+ const StoredCardsCheckout = () => {
+-  const { configuration, processResult } = useAppContext();
++  const { configuration, processResult, apiClient } = useAppContext();
+   const [loading, setLoading] = useState(true);
+   const [initError, setError] = useState<string | undefined>(undefined);
+   const [paymentMethods, setPaymentMethods] = useState<
+@@ -23,7 +22,7 @@ const StoredCardsCheckout = () => {
+     const refreshPaymentMethods = async () => {
+       try {
+         const paymentMethodsResponse =
+-          await ApiClient.paymentMethods(configuration);
++          await apiClient.paymentMethods(configuration);
+         setPaymentMethods(paymentMethodsResponse);
+       } catch (e) {
+         setError(String(e));
+@@ -32,19 +31,24 @@ const StoredCardsCheckout = () => {
+       }
+     };
+     refreshPaymentMethods();
+-  }, [configuration, setPaymentMethods, setLoading]);
++  }, [configuration, setPaymentMethods, setLoading, apiClient]);
+ 
+   const makePayment = useCallback(
+     async (storedCard: StoredCardPaymentMethod) => {
+       try {
+         const cvv = '737';
+-        const result = await payByID(storedCard.id, cvv, configuration);
++        const result = await payByID(
++          storedCard.id,
++          cvv,
++          configuration,
++          apiClient
++        );
+         processResult(result, AdyenAction);
+       } catch (e) {
+         processError(e, AdyenAction);
+       }
+     },
+-    [configuration, processResult]
++    [configuration, processResult, apiClient]
+   );
+ 
+   if (loading) {
+diff --git a/example/src/components/Checkout/utils/payByID.ts b/example/src/components/Checkout/utils/payByID.ts
+index a7a436f..3f75cbc 100644
+--- a/example/src/components/Checkout/utils/payByID.ts
++++ b/example/src/components/Checkout/utils/payByID.ts
+@@ -5,12 +5,13 @@ import {
+ } from '@adyen/react-native';
+ import type { PaymentConfiguration } from '../../../api/types';
+ import { ENVIRONMENT } from '../../../Configuration';
+-import ApiClient from '../../../api/APIClient';
++import type { ApiService } from '../../../api/ApiService';
+ 
+ export async function payByID(
+   id: string,
+   cvv: string,
+-  configuration: PaymentConfiguration
++  configuration: PaymentConfiguration,
++  apiClient: ApiService
+ ) {
+   const encryptedCard = await AdyenCSE.encryptCard(
+     { cvv },
+@@ -26,14 +27,14 @@ export async function payByID(
+     returnUrl: ENVIRONMENT.returnUrl,
+   };
+ 
+-  let result = await ApiClient.payments(paymentData, configuration);
++  let result = await apiClient.payments(paymentData, configuration);
+   if (result.action) {
+     const actionData = await AdyenAction.handle(result.action, {
+       environment: ENVIRONMENT.environment,
+       clientKey: ENVIRONMENT.clientKey,
+     });
+ 
+-    result = await ApiClient.paymentDetails(actionData);
++    result = await apiClient.paymentDetails(actionData);
+   }
+   return result;
+ }
+diff --git a/example/src/components/Checkout/utils/processPartialPaymentResult.ts b/example/src/components/Checkout/utils/processPartialPaymentResult.ts
+index 39debf4..c00f9d0 100644
+--- a/example/src/components/Checkout/utils/processPartialPaymentResult.ts
++++ b/example/src/components/Checkout/utils/processPartialPaymentResult.ts
+@@ -1,7 +1,7 @@
+ import { ResultCode } from '@adyen/react-native';
+ import type { PaymentResponse } from '../../../api/types';
+ import type { DropInModule, Order } from '@adyen/react-native';
+-import ApiClient from '../../../api/APIClient';
++import type { ApiService } from '../../../api/ApiService';
+ import type { PaymentConfiguration } from '../../../api/types';
+ 
+ function isRefusedInPartialPaymentFlow(response: PaymentResponse) {
+@@ -21,7 +21,8 @@ function isNonFullyPaidOrder(order: Order) {
+ export async function processPartialPaymentResult(
+   result: PaymentResponse,
+   dropInComponent: DropInModule,
+-  configuration: PaymentConfiguration
++  configuration: PaymentConfiguration,
++  apiClient: ApiService
+ ): Promise<PaymentResponse | undefined> {
+   var outcome: ResultCode = result.resultCode;
+   const action = result.action;
+@@ -33,7 +34,7 @@ export async function processPartialPaymentResult(
+     outcome = ResultCode.refused;
+   } else if (order && isNonFullyPaidOrder(order)) {
+     try {
+-      const paymentMethods = await ApiClient.paymentMethods(
++      const paymentMethods = await apiClient.paymentMethods(
+         configuration,
+         order
+       );
+diff --git a/example/src/components/CustomCard/CseView.tsx b/example/src/components/CustomCard/CseView.tsx
+index da1a456..5fa7916 100644
+--- a/example/src/components/CustomCard/CseView.tsx
++++ b/example/src/components/CustomCard/CseView.tsx
+@@ -13,7 +13,7 @@ import { formatMinorUnits } from '../utilities/formatMinorUnits';
+ const CARD_VALIDATION_ERROR_TITLE = 'Invalid card details';
+ 
+ const CseView = () => {
+-  const { configuration, processResult } = useAppContext();
++  const { configuration, processResult, apiClient } = useAppContext();
+   const [number, setNumber] = useState('');
+   const [expiryDate, setExpiryDate] = useState('');
+   const [cvv, setCvv] = useState('');
+@@ -65,13 +65,19 @@ const CseView = () => {
+         Alert.alert(CARD_VALIDATION_ERROR_TITLE, validationError);
+         return;
+       }
+-      result = await payWithCard(unencryptedCard, configuration);
++      result = await payWithCard(unencryptedCard, configuration, apiClient);
+       processResult(result, AdyenAction);
+     } catch (e) {
+       Alert.alert('Error', String(e));
+       return;
+     }
+-  }, [configuration, unencryptedCard, processResult, validateCardData]);
++  }, [
++    apiClient,
++    configuration,
++    unencryptedCard,
++    processResult,
++    validateCardData,
++  ]);
+ 
+   const amountLabel = useMemo(() => {
+     return formatMinorUnits(
+diff --git a/example/src/components/CustomCard/utils/payWithCard.ts b/example/src/components/CustomCard/utils/payWithCard.ts
+index 5e61d66..3e383ee 100644
+--- a/example/src/components/CustomCard/utils/payWithCard.ts
++++ b/example/src/components/CustomCard/utils/payWithCard.ts
+@@ -5,12 +5,13 @@ import {
+   type PaymentMethodData,
+ } from '@adyen/react-native';
+ import { ENVIRONMENT } from '../../../Configuration';
+-import ApiClient from '../../../api/APIClient';
++import type { ApiService } from '../../../api/ApiService';
+ import type { PaymentConfiguration } from '../../../api/types';
+ 
+ export async function payWithCard(
+   unencryptedCard: Card,
+-  configuration: PaymentConfiguration
++  configuration: PaymentConfiguration,
++  apiClient: ApiService
+ ) {
+   const encryptedCard = await AdyenCSE.encryptCard(
+     unencryptedCard,
+@@ -28,13 +29,13 @@ export async function payWithCard(
+     returnUrl: ENVIRONMENT.returnUrl,
+   };
+ 
+-  let result = await ApiClient.payments(paymentData, configuration);
++  let result = await apiClient.payments(paymentData, configuration);
+   if (result.action) {
+     const actionData = await AdyenAction.handle(result.action, {
+       environment: ENVIRONMENT.environment,
+       clientKey: ENVIRONMENT.clientKey,
+     });
+-    result = await ApiClient.paymentDetails(actionData);
++    result = await apiClient.paymentDetails(actionData);
+   }
+   return result;
+ }
+diff --git a/example/src/components/ResultView.tsx b/example/src/components/ResultView.tsx
+index ba62a33..d9c178a 100644
+--- a/example/src/components/ResultView.tsx
++++ b/example/src/components/ResultView.tsx
+@@ -15,7 +15,9 @@ const ResultView = ({ route }: ResultViewProps) => {
+ 
+   return (
+     <View style={Styles.centeredContent}>
+-      <AdaptiveText>{route.params.resultCode}</AdaptiveText>
++      <AdaptiveText testID="result-code">
++        {route.params.resultCode}
++      </AdaptiveText>
+       <View style={Styles.padded}>
+         <Button title="Back to Home" onPress={() => navigateToRoot()} />
+       </View>
+diff --git a/example/src/config/AsyncStorageConfigProvider.ts b/example/src/config/AsyncStorageConfigProvider.ts
+new file mode 100644
+index 0000000..36a0ded
+--- /dev/null
++++ b/example/src/config/AsyncStorageConfigProvider.ts
+@@ -0,0 +1,35 @@
++import AsyncStorage from '@react-native-async-storage/async-storage';
++import type { AppConfiguration } from '../settings/types';
++import type { ConfigProvider } from './ConfigProvider';
++
++const storeKey = '@config_storage';
++
++export class AsyncStorageConfigProvider implements ConfigProvider {
++  constructor(readonly initialConfiguration: AppConfiguration) {}
++
++  async loadConfiguration(): Promise<AppConfiguration> {
++    const value = await AsyncStorage.getItem(storeKey);
++    if (value) {
++      try {
++        return { ...this.initialConfiguration, ...JSON.parse(value) };
++      } catch (e) {
++        console.warn(
++          'Failed to parse stored configuration, falling back to initial configuration',
++          e
++        );
++        return this.initialConfiguration;
++      }
++    }
++    return this.initialConfiguration;
++  }
++
++  async saveConfiguration(configuration: AppConfiguration): Promise<void> {
++    await AsyncStorage.setItem(storeKey, JSON.stringify(configuration));
++  }
++
++  async updateConfiguration(partial: Partial<AppConfiguration>): Promise<void> {
++    const current = await this.loadConfiguration();
++    const merged = { ...current, ...partial };
++    await this.saveConfiguration(merged);
++  }
++}
+diff --git a/example/src/config/ConfigProvider.ts b/example/src/config/ConfigProvider.ts
+new file mode 100644
+index 0000000..f3856e7
+--- /dev/null
++++ b/example/src/config/ConfigProvider.ts
+@@ -0,0 +1,8 @@
++import type { AppConfiguration } from '../settings/types';
++
++export interface ConfigProvider {
++  initialConfiguration: AppConfiguration;
++  loadConfiguration(): Promise<AppConfiguration>;
++  saveConfiguration(configuration: AppConfiguration): Promise<void>;
++  updateConfiguration(partial: Partial<AppConfiguration>): Promise<void>;
++}
+diff --git a/example/src/config/ExternalConfigProvider.ts b/example/src/config/ExternalConfigProvider.ts
+new file mode 100644
+index 0000000..5cd7ea1
+--- /dev/null
++++ b/example/src/config/ExternalConfigProvider.ts
+@@ -0,0 +1,86 @@
++import type { AppConfiguration, CardSettings } from '../settings/types';
++import type { ConfigProvider } from './ConfigProvider';
++
++export class ExternalConfigProvider implements ConfigProvider {
++  readonly initialConfiguration: AppConfiguration;
++
++  constructor(baseConfiguration: AppConfiguration, externalConfig?: string) {
++    const external = externalConfig
++      ? parseExternalConfiguration(externalConfig)
++      : null;
++    this.initialConfiguration = external
++      ? {
++          ...baseConfiguration,
++          ...external,
++          cardSettings: {
++            ...(baseConfiguration.cardSettings ?? {}),
++            ...(external.cardSettings ?? {}),
++          },
++        }
++      : baseConfiguration;
++  }
++
++  async loadConfiguration(): Promise<AppConfiguration> {
++    return this.initialConfiguration;
++  }
++
++  async saveConfiguration(): Promise<void> {
++    // No-op: external configuration is read-only.
++  }
++
++  async updateConfiguration(): Promise<void> {
++    // No-op: external configuration is read-only.
++  }
++}
++
++const parseExternalConfiguration = (
++  externalConfig: string
++): Partial<AppConfiguration> | null => {
++  try {
++    const config = JSON.parse(externalConfig);
++    const card = config.CARD_CONFIGURATION;
++    if (!card) return null;
++
++    return { cardSettings: parseCardSettings(card) };
++  } catch {
++    console.warn('Failed to parse externalConfig');
++    return null;
++  }
++};
++
++const parseCardSettings = (
++  card: Record<string, any>
++): Partial<CardSettings> => {
++  const settings: Partial<CardSettings> = {};
++
++  if (typeof card.showCardholderName === 'boolean') {
++    settings.holderNameRequired = card.showCardholderName;
++  }
++
++  const addressMode = card.addressVisibility ?? card.addressMode;
++  if (typeof addressMode === 'string') {
++    settings.addressVisibility = addressMode;
++  }
++
++  if (typeof card.showStorePaymentField === 'boolean') {
++    settings.showStorePaymentField = card.showStorePaymentField;
++  }
++
++  if (typeof card.showCvcForStoredCard === 'boolean') {
++    settings.hideCvcStoredCard = !card.showCvcForStoredCard;
++  }
++
++  if (typeof card.showCvc === 'boolean') {
++    settings.hideCvc = !card.showCvc;
++  }
++
++  if (typeof card.kcpFieldVisibility === 'string') {
++    settings.kcpVisibility = card.kcpFieldVisibility;
++  }
++
++  if (typeof card.socialSecurityNumberFieldVisibility === 'string') {
++    settings.socialSecurity = card.socialSecurityNumberFieldVisibility;
++  }
++
++  return settings;
++};
+diff --git a/example/src/hooks/useAppContext.tsx b/example/src/hooks/useAppContext.tsx
+index 2bd1a46..9dfdaf9 100644
+--- a/example/src/hooks/useAppContext.tsx
++++ b/example/src/hooks/useAppContext.tsx
+@@ -8,16 +8,18 @@ import {
+   type PropsWithChildren,
+   useCallback,
+ } from 'react';
+-import AsyncStorage from '@react-native-async-storage/async-storage';
+ import type { AppConfiguration } from '../settings/types';
+ import type { PaymentResponse } from '../api/types';
+ import type { NavigationContainerRef } from '@react-navigation/native';
+ import type { AdyenComponent } from '@adyen/react-native';
++import type { ApiService } from '../api/ApiService';
++import type { ConfigProvider } from '../config/ConfigProvider';
+ import { isSuccess } from '../components/utilities/isSuccess';
+ import { RootStackParamList } from '../router/RootStackNavigator';
+ 
+ type AppContextType = {
+   configuration: AppConfiguration;
++  apiClient: ApiService;
+   save: (config: AppConfiguration) => void;
+   update: (partial: Partial<AppConfiguration>) => void;
+   processResult: (
+@@ -38,46 +40,43 @@ export const useAppContext = () => {
+   return context;
+ };
+ 
+-const storeKey = '@config_storage';
+-
+ type AppContextProp = {
+-  configuration: AppConfiguration;
++  configProvider: ConfigProvider;
++  apiClient: ApiService;
+   onError: (error: Error) => void;
+   navigationRef: NavigationContainerRef<RootStackParamList>;
+ };
+ 
+ const AppContextProvider = (props: PropsWithChildren<AppContextProp>) => {
+-  const [config, setConfig] = useState(props.configuration);
++  const [config, setConfig] = useState(
++    props.configProvider.initialConfiguration
++  );
+   const configRef = useRef(config);
+   configRef.current = config;
+   const { navigationRef } = props;
+ 
+   useEffect(() => {
+-    AsyncStorage.getItem(storeKey)
+-      .then((value) => {
+-        if (value) {
+-          const parsed = JSON.parse(value);
+-          setConfig(parsed);
+-        }
+-      })
++    props.configProvider
++      .loadConfiguration()
++      .then(setConfig)
+       .catch(props.onError);
+-  }, [props.onError]);
++  }, [props.configProvider, props.onError]);
+ 
+   const saveConfiguration = useCallback(
+     async (newConfig = config) => {
+-      await AsyncStorage.setItem(storeKey, JSON.stringify(newConfig));
++      await props.configProvider.saveConfiguration(newConfig);
+       setConfig(newConfig);
+     },
+-    [config]
++    [config, props.configProvider]
+   );
+ 
+   const updateConfiguration = useCallback(
+     async (partial: Partial<AppConfiguration>) => {
++      await props.configProvider.updateConfiguration(partial);
+       const merged = { ...configRef.current, ...partial };
+-      await AsyncStorage.setItem(storeKey, JSON.stringify(merged));
+       setConfig(merged);
+     },
+-    []
++    [props.configProvider]
+   );
+ 
+   const processResult = useCallback(
+@@ -109,6 +108,7 @@ const AppContextProvider = (props: PropsWithChildren<AppContextProp>) => {
+   const appState = useMemo<AppContextType>(
+     () => ({
+       configuration: config,
++      apiClient: props.apiClient,
+       save: saveConfiguration,
+       update: updateConfiguration,
+       processResult,
+@@ -117,6 +117,7 @@ const AppContextProvider = (props: PropsWithChildren<AppContextProp>) => {
+     }),
+     [
+       config,
++      props.apiClient,
+       saveConfiguration,
+       updateConfiguration,
+       processResult,
+diff --git a/example/src/settings/checkoutConfiguration.ts b/example/src/settings/checkoutConfiguration.ts
+index e3d6f7f..044b94f 100644
+--- a/example/src/settings/checkoutConfiguration.ts
++++ b/example/src/settings/checkoutConfiguration.ts
+@@ -4,10 +4,8 @@ import type {
+   ApplePayRecurringPaymentRequest,
+   BinLookupData,
+   Configuration,
+-  StoredPaymentMethod,
+ } from '@adyen/react-native';
+ import { ENVIRONMENT } from '../Configuration';
+-import ApiClient from '../api/APIClient';
+ import type { AppConfiguration } from './types';
+ 
+ export const checkoutConfiguration = (config: AppConfiguration) => {
+@@ -33,25 +31,10 @@ export const checkoutConfiguration = (config: AppConfiguration) => {
+       showRemovePaymentMethodButton:
+         config.dropInSettings?.showRemovePaymentMethodButton ?? true,
+       title: config.dropInSettings?.title,
+-      onDisableStoredPaymentMethod: async (
+-        storedPaymentMethod: StoredPaymentMethod,
+-        resolve: () => void,
+-        reject: () => void
+-      ) => {
+-        const success = await ApiClient.tryRemoveStoredCard(
+-          storedPaymentMethod.id,
+-          config
+-        );
+-        if (success) {
+-          resolve();
+-        } else {
+-          reject();
+-        }
+-      },
+     },
+     card: {
+       holderNameRequired: config.cardSettings?.holderNameRequired,
+-      addressVisibility: config.cardSettings?.addressVisibility ?? 'lookup',
++      addressVisibility: config.cardSettings?.addressVisibility,
+       showStorePaymentField: config.cardSettings?.showStorePaymentField,
+       hideCvcStoredCard: config.cardSettings?.hideCvcStoredCard,
+       hideCvc: config.cardSettings?.hideCvc,
+diff --git a/ios/AdyenModule.m b/ios/AdyenModule.m
+index b1ded3f..ad351c9 100644
+--- a/ios/AdyenModule.m
++++ b/ios/AdyenModule.m
+@@ -120,6 +120,8 @@ RCT_EXTERN_METHOD(validateCardSecurityCode:(NSString *)securityCode
+ 
+ @interface RCT_EXTERN_MODULE(SessionHelper, NSObject)
+ 
++RCT_EXTERN_METHOD(setSdkVersion:(NSString *)sdkVersion)
++
+ RCT_EXTERN_METHOD(createSession:(NSDictionary *)sessionModelJSON
+                   configuration:(NSDictionary *)configurationJSON
+                   resolver:(RCTPromiseResolveBlock)resolve
+diff --git a/ios/Components/Base/BaseModule.swift b/ios/Components/Base/BaseModule.swift
+index a8e1f50..3b7fd6c 100644
+--- a/ios/Components/Base/BaseModule.swift
++++ b/ios/Components/Base/BaseModule.swift
+@@ -6,6 +6,7 @@
+ 
+ import Adyen
+ import Adyen3DS2
++import Foundation
+ import React
+ import UIKit
+ 
+@@ -17,6 +18,20 @@ internal class BaseModule: RCTEventEmitter {
+     internal static var session: AdyenSession?
+     internal weak static var sessionDelegate: SessionErrorDelegate?
+     internal weak static var currentModule: BaseModule?
++    private static let sdkVersionLock = NSLock()
++    private static var sdkVersionStorage: String?
++    internal static var sdkVersion: String? {
++        get {
++            sdkVersionLock.lock()
++            defer { sdkVersionLock.unlock() }
++            return sdkVersionStorage
++        }
++        set {
++            sdkVersionLock.lock()
++            defer { sdkVersionLock.unlock() }
++            sdkVersionStorage = newValue
++        }
++    }
+ 
+     /// Stack of view controllers that have presented payment UI.
+     /// Appended to on each `present(component:)` call; cleared on cleanup.
+diff --git a/ios/Components/SessionHelperModule.swift b/ios/Components/SessionHelperModule.swift
+index 7ffae65..4f92003 100644
+--- a/ios/Components/SessionHelperModule.swift
++++ b/ios/Components/SessionHelperModule.swift
+@@ -20,6 +20,11 @@ internal final class SessionHelperModule: BaseModule, SessionErrorDelegate {
+         EventName.sessionEvents.map(\.rawValue)
+     }
+ 
++    @objc
++    func setSdkVersion(_ sdkVersion: String) {
++        BaseModule.sdkVersion = sdkVersion
++    }
++
+     @objc
+     override func hide(_ success: NSNumber, event: NSDictionary) {
+         super.hide(success, event: event)
+diff --git a/ios/Configuration/AnalyticsParser.swift b/ios/Configuration/AnalyticsParser.swift
+index eff6c48..3e0a62d 100644
+--- a/ios/Configuration/AnalyticsParser.swift
++++ b/ios/Configuration/AnalyticsParser.swift
+@@ -29,10 +29,12 @@ public struct AnalyticsParser {
+     public var configuration: AnalyticsConfiguration {
+         var analytics = AnalyticsConfiguration()
+         analytics.isEnabled = analyticsOn
+-        CheckoutPlatformParams.shared.overrideForCrossPlatform(
+-            platform: .reactNative,
+-            version: adyenSDKVersion
+-        )
++        if let sdkVersion = BaseModule.sdkVersion {
++            CheckoutPlatformParams.shared.overrideForCrossPlatform(
++                platform: .reactNative,
++                version: sdkVersion
++            )
++        }
+         AdyenLogging.isEnabled = verboseLogsOn
+         return analytics
+     }
+diff --git a/ios/Helpers/UIViewHelper.swift b/ios/Helpers/UIViewHelper.swift
+index bf265e2..9e96114 100644
+--- a/ios/Helpers/UIViewHelper.swift
++++ b/ios/Helpers/UIViewHelper.swift
+@@ -10,13 +10,19 @@ extension UIView {
+             if let match = subview as? T {
+                 return match
+             }
+-            if let match = subview.findSubview() as? T {
++            if let match: T = subview.findSubview() {
+                 return match
+             }
+         }
+         return nil
+     }
+ 
++    /// Stops this view and all the views inside it from growing their layout margins with the safe area.
++    func ignoreSafeAreaInLayoutMargins() {
++        insetsLayoutMarginsFromSafeArea = false
++        subviews.forEach { $0.ignoreSafeAreaInLayoutMargins() }
++    }
++
+     var parentViewController: UIViewController? {
+         var responder: UIResponder? = self
+         while let nextResponder = responder?.next {
+diff --git a/ios/Version.swift b/ios/Version.swift
+deleted file mode 100644
+index 4ff79b7..0000000
+--- a/ios/Version.swift
++++ /dev/null
+@@ -1,9 +0,0 @@
+-//
+-// Copyright (c) 2024 Adyen N.V.
+-//
+-// This file is open source and available under the MIT license. See the LICENSE file for more info.
+-//
+-
+-import Foundation
+-
+-internal let adyenSDKVersion = "{SDK_VERSION}"
+diff --git a/ios/Views/CardView/CardComponentViewProxy.swift b/ios/Views/CardView/CardComponentViewProxy.swift
+index bba831c..a59bf61 100644
+--- a/ios/Views/CardView/CardComponentViewProxy.swift
++++ b/ios/Views/CardView/CardComponentViewProxy.swift
+@@ -188,6 +188,37 @@ public final class CardComponentViewProxy: UIStackView {
+         formView.isScrollEnabled = false
+         formView.alwaysBounceVertical = false
+         formView.contentInsetAdjustmentBehavior = .never
++        ignoreSafeArea(scrollView: formView, in: cardView)
++    }
++
++    /// The form is laid out for a full screen: its scroll view is pinned inside the safe area, and the layout
++    /// margins of its views grow with the safe area. Embedded in a page, the card can sit in the bottom safe area
++    /// (the home indicator area). The scroll view was then shorter than the form, which cut off the bottom of the
++    /// form, and when the card mounted at or below the bottom edge of the screen, margins that followed the safe
++    /// area kept its layout from settling, which hung the main thread. The page around the card handles the safe
++    /// area, so the embedded form ignores it.
++    private func ignoreSafeArea(scrollView: UIScrollView, in cardView: UIView) {
++        if let container = scrollView.superview {
++            let guide = container.safeAreaLayoutGuide
++            let pinnedToSafeArea = container.constraints.filter {
++                ($0.firstItem === scrollView && $0.secondItem === guide) || ($0.firstItem === guide && $0.secondItem === scrollView)
++            }
++            NSLayoutConstraint.deactivate(pinnedToSafeArea)
++            NSLayoutConstraint.activate(pinnedToSafeArea.map { constraint in
++                let pinned = NSLayoutConstraint(
++                    item: constraint.firstItem === guide ? container : scrollView,
++                    attribute: constraint.firstAttribute,
++                    relatedBy: constraint.relation,
++                    toItem: constraint.secondItem === guide ? container : scrollView,
++                    attribute: constraint.secondAttribute,
++                    multiplier: constraint.multiplier,
++                    constant: constraint.constant
++                )
++                pinned.priority = constraint.priority
++                return pinned
++            })
++        }
++        cardView.ignoreSafeAreaInLayoutMargins()
+     }
+ 
+     // MARK: - Layout reporting
+diff --git a/package.json b/package.json
+index 1d0c5e6..31e0993 100644
+--- a/package.json
++++ b/package.json
+@@ -49,8 +49,10 @@
+     "typecheck": "tsc",
+     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+     "clean": "git clean -fxd",
+-    "prepare": "./scripts/set-version.sh && bob build",
+-    "start": "rm yarn.lock && yarn && yarn prepare && husky"
++    "prepare": "bob build && node scripts/generate-package-manifest.js",
++    "start": "rm yarn.lock && yarn && yarn prepare && husky && bash ./scripts/credentials.sh",
++    "api-extractor": "api-extractor run",
++    "api-extractor:update": "api-extractor run --local"
+   },
+   "devDependencies": {
+     "@commitlint/cli": "^19.6.0",
+@@ -58,7 +60,8 @@
+     "@eslint/compat": "^1.2.7",
+     "@eslint/eslintrc": "^3.3.3",
+     "@eslint/js": "^9.39.2",
+-    "@expo/config-plugins": "^10.0.2",
++    "@expo/config-plugins": "^57.0.0",
++    "@microsoft/api-extractor": "^7.58.9",
+     "@react-native-community/cli": "15.0.1",
+     "@react-native/babel-preset": "0.85.0",
+     "@react-native/eslint-config": "0.85.0",
+@@ -69,10 +72,10 @@
+     "eslint-config-prettier": "^10.1.1",
+     "eslint-plugin-jest": "^27.0.1",
+     "eslint-plugin-prettier": "^5.5.4",
+-    "expo-module-scripts": "^4.1.0",
++    "expo-module-scripts": "^56.0.0",
+     "husky": "^9.0.11",
+     "jest": "^29.7.0",
+-    "prettier": "^3.8.1",
++    "prettier": "^3.9.5",
+     "react": "19.2.3",
+     "react-native": "0.85.0",
+     "react-native-builder-bob": "^0.41.0",
+@@ -117,7 +120,7 @@
+       "<rootDir>/lib/"
+     ]
+   },
+-  "packageManager": "yarn@4.17.0",
++  "packageManager": "yarn@4.17.1",
+   "codegenConfig": {
+     "name": "AdyenPaymentSpec",
+     "type": "all",
+diff --git a/src/components/__tests__/index.test.ts b/src/components/__tests__/index.test.ts
+new file mode 100644
+index 0000000..0615289
+--- /dev/null
++++ b/src/components/__tests__/index.test.ts
+@@ -0,0 +1,29 @@
++//
++// Copyright (c) 2026 Adyen N.V.
++//
++// This file is open source and available under the MIT license. See the LICENSE file for more info.
++//
++
++import { describe, expect, jest, test } from '@jest/globals';
++
++const mockSetSdkVersion = jest.fn();
++
++jest.mock('react-native', () => ({
++  NativeModules: {
++    SessionHelper: {
++      setSdkVersion: mockSetSdkVersion,
++    },
++  },
++}));
++
++describe('configureSDKVersion', () => {
++  test('should configure the native SDK version', () => {
++    const {
++      configureSDKVersion,
++    } = require('../../modules/base/configureSDKVersion');
++
++    configureSDKVersion('2.0.0-local.1');
++
++    expect(mockSetSdkVersion).toHaveBeenCalledWith('2.0.0-local.1');
++  });
++});
+diff --git a/src/components/utils/startEventListeners.ts b/src/components/utils/startEventListeners.ts
+index 40f5ddc..ebdbebb 100644
+--- a/src/components/utils/startEventListeners.ts
++++ b/src/components/utils/startEventListeners.ts
+@@ -5,6 +5,7 @@ import type {
+   AdyenActionComponent,
+   AdyenError,
+   ApplePayAuthorizationActions,
++  ApplePayAuthorizationResult,
+   ApplePayCouponCodeEvent,
+   ApplePayCouponCodeUpdateRequest,
+   ApplePayPaymentAuthorization,
+@@ -23,7 +24,6 @@ import type {
+ } from '../../core';
+ import { Event } from '../../core';
+ import type { ApplePayModule } from '../../modules/applepay/AdyenApplePay';
+-import type { ApplePayAuthorizationResult } from '../../modules/applepay/ApplePayInternalTypes';
+ import type { RemovesStoredPayment } from '../../modules/dropin/DropInWrapper';
+ import type { AdyenEventListener } from '../../modules/base/EventListenerWrapper';
+ 
+diff --git a/src/core/configurations/ApplePayConfiguration.ts b/src/core/configurations/ApplePayConfiguration.ts
+index b7427ab..95ccf2b 100644
+--- a/src/core/configurations/ApplePayConfiguration.ts
++++ b/src/core/configurations/ApplePayConfiguration.ts
+@@ -234,3 +234,9 @@ export interface ApplePayPaymentAuthorization {
+   /** The selected shipping method, if any. */
+   shippingMethod?: ApplePayShippingMethod;
+ }
++
++/** Result passed to the native `provideAuthorizationResult` bridge method. */
++export interface ApplePayAuthorizationResult {
++  status: 'success' | 'failure';
++  errors?: ApplePayError[];
++}
+diff --git a/src/core/configurations/GooglePayConfiguration.ts b/src/core/configurations/GooglePayConfiguration.ts
+index 88295f3..e2ffd9b 100644
+--- a/src/core/configurations/GooglePayConfiguration.ts
++++ b/src/core/configurations/GooglePayConfiguration.ts
+@@ -1,4 +1,6 @@
+ export interface GooglePayConfiguration {
++  /** Merchant information passed to Google Pay. Android only. */
++  merchantInfo?: GooglePayMerchantInfo;
+   /**  The merchant account to be put in the payment token from Google to Adyen. By default uses value from brands. */
+   merchantAccount?: string;
+   /** One or more card networks that you support, also supported by the Google Pay API. */
+@@ -47,6 +49,14 @@ export interface GooglePayBillingAddressParameters {
+   phoneNumberRequired?: boolean;
+ }
+ 
++/** Merchant information for Google Pay on Android. Does not replace Google Pay registration. */
++export interface GooglePayMerchantInfo {
++  /** Merchant display name requested for the Google Pay payment sheet. */
++  merchantName?: string;
++  /** Google-issued merchant identifier, distinct from the Adyen merchantAccount. */
++  merchantId?: string;
++}
++
+ export type GooglePayBillingAddressFormat = 'MIN' | 'FULL';
+ 
+ export type TotalPriceStatus = 'NOT_CURRENTLY_KNOWN' | 'ESTIMATED' | 'FINAL';
+diff --git a/src/index.ts b/src/index.ts
+index c8738bf..992b3dc 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,3 +1,9 @@
++import { configureSDKVersion } from './modules/base/configureSDKVersion';
++
++const sdkVersion = require('../package.json').version as string;
++
++configureSDKVersion(sdkVersion);
++
+ export * from './components';
+ export * from './core';
+ export * from './hooks';
+diff --git a/src/modules/applepay/AdyenApplePay.ts b/src/modules/applepay/AdyenApplePay.ts
+index 25f4837..005cd26 100644
+--- a/src/modules/applepay/AdyenApplePay.ts
++++ b/src/modules/applepay/AdyenApplePay.ts
+@@ -3,12 +3,12 @@ import { ModuleMock } from '../base/ModuleMock';
+ import { ApplePayWrapper } from './ApplePayWrapper';
+ import type {
+   AdyenComponent,
++  ApplePayAuthorizationResult,
+   ApplePayCouponCodeUpdateRequest,
+   ApplePayShippingContactUpdateRequest,
+   ApplePayShippingMethodUpdateRequest,
+   ConditionalPaymentComponent,
+ } from '../../core';
+-import type { ApplePayAuthorizationResult } from './ApplePayInternalTypes';
+ 
+ export interface ApplePayModule
+   extends AdyenComponent, ConditionalPaymentComponent {
+diff --git a/src/modules/applepay/ApplePayInternalTypes.ts b/src/modules/applepay/ApplePayInternalTypes.ts
+deleted file mode 100644
+index e78a3c1..0000000
+--- a/src/modules/applepay/ApplePayInternalTypes.ts
++++ /dev/null
+@@ -1,7 +0,0 @@
+-import type { ApplePayError } from '../../core';
+-
+-/** Internal result type passed to the native provideAuthorizationResult bridge method. Not part of the public API. */
+-export interface ApplePayAuthorizationResult {
+-  status: 'success' | 'failure';
+-  errors?: ApplePayError[];
+-}
+diff --git a/src/modules/applepay/ApplePayWrapper.ts b/src/modules/applepay/ApplePayWrapper.ts
+index ccc6ad7..73f936c 100644
+--- a/src/modules/applepay/ApplePayWrapper.ts
++++ b/src/modules/applepay/ApplePayWrapper.ts
+@@ -1,5 +1,6 @@
+ import type {
+   AdyenActionComponent,
++  ApplePayAuthorizationResult,
+   ApplePayCouponCodeUpdateRequest,
+   ApplePayShippingContactUpdateRequest,
+   ApplePayShippingMethodUpdateRequest,
+@@ -7,7 +8,6 @@ import type {
+   PaymentAction,
+   PaymentMethod,
+ } from '../../core';
+-import type { ApplePayAuthorizationResult } from './ApplePayInternalTypes';
+ import { PaymentComponentWrapper } from '../base/PaymentComponentWrapper';
+ import type { ApplePayModule } from './AdyenApplePay';
+ import type { PaymentModule } from '../base/PaymentComponentWrapper';
+diff --git a/src/modules/base/configureSDKVersion.ts b/src/modules/base/configureSDKVersion.ts
+new file mode 100644
+index 0000000..b684998
+--- /dev/null
++++ b/src/modules/base/configureSDKVersion.ts
+@@ -0,0 +1,11 @@
++//
++// Copyright (c) 2026 Adyen N.V.
++//
++// This file is open source and available under the MIT license. See the LICENSE file for more info.
++//
++
++import { NativeModules } from 'react-native';
++
++export function configureSDKVersion(sdkVersion: string) {
++  NativeModules.SessionHelper?.setSdkVersion(sdkVersion);
++}

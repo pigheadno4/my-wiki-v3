@@ -2,8 +2,11 @@
 title: "GitHub: Adyen/adyen-react-native"
 type: source
 date_ingested: 2026-10-04
+date_updated: 2026-10-21
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json"
+  - "github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json"
   - "github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json"
   - "github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json"
 tags: [adyen, react-native, mobile-sdk, drop-in, components, sessions, apple-pay, google-pay, github-repository]
@@ -16,6 +19,8 @@ tags: [adyen, react-native, mobile-sdk, drop-in, components, sessions, apple-pay
 Repository: <https://github.com/Adyen/adyen-react-native>
 
 ## Evidence boundary
+
+Latest ingested delta: `@adyen/react-native@2.13.0`, released 2026-10-16, exact SHA `68acfa3ab6976482fd4f9e3a0c075eb649b75d70`. Its 305-file capsule has six added, 43 modified, two deleted and 256 unchanged paths relative to the 301-file `2.12.0` capsule. The following baseline bullets and original implementation sections describe `2.12.0`; newer behavior is qualified in the `2.13.0` section below. Historical evidence is preserved, not replaced.
 
 - The complete retained capsule contains 301 public, production, configuration, documentation, example, and story files. Tests, generated output, binaries, and lockfiles are excluded by policy.
 - The immutable GitHub release, tag, and package record establish `@adyen/react-native@2.12.0`. The tagged tree's `package.json` still contains the release-build placeholder `2.0.0-local.1`, so that local field is not used as the release identity.
@@ -48,6 +53,7 @@ Repository: <https://github.com/Adyen/adyen-react-native>
 
 | Package | Latest ingested release | Exact SHA | Native baselines |
 | --- | --- | --- | --- |
+| `@adyen/react-native` | `2.13.0` (latest ingested) | `68acfa3ab6976482fd4f9e3a0c075eb649b75d70` | iOS `5.26.0`; Android `5.20.0` |
 | `@adyen/react-native` | `2.12.0` | `2912c913266b2d1df73882980303b563ea04ab63` | iOS `5.25.1`; Android `5.19.0` |
 
 This table reports wiki ingest progress, not the latest version currently published upstream.
@@ -108,6 +114,85 @@ Both dated release-note records remain available below; [[changelog-github-adyen
 
 ## Integration guidance
 
+### `2.13.0` additive delta (2026-10-16)
+
+**Scope:** Approved delta from `@adyen/react-native@2.12.0` to `@adyen/react-native@2.13.0`, ingested 2026-10-21 with the explicitly approved focused-reading exception. Changed retained source, release notes, affected prior code and cumulative wiki history were read fully; generated inventories and duplicated diff were verified mechanically. This is not a whole-upstream-repository read or a native build/device/payment test. See [[changelog-github-adyen-react-native]] for the release ledger.
+
+#### Google Pay merchant information and Android build settings
+
+`GooglePayConfiguration` adds optional Android-only `merchantInfo`, whose `merchantName` and `merchantId` are optional strings. The Kotlin parser deserializes that object and sets the native builder only when the key exists; omission preserves the existing configuration. `merchantId` is Google-issued and distinct from Adyen's `merchantAccount`. Supplying this object does not replace Google Pay production registration or merchant verification.
+
+```tsx
+import type { Configuration } from '@adyen/react-native';
+
+const config: Configuration = {
+  environment: 'test',
+  clientKey: 'YOUR_CLIENT_KEY',
+  countryCode: 'NL',
+  amount: { currency: 'EUR', value: 1000 },
+  returnUrl: 'myapp://payment',
+  googlepay: {
+    merchantInfo: { merchantName: 'Example Store' },
+  },
+};
+// Supply config to AdyenCheckout; the merchantInfo addition is Android-only.
+```
+
+Android library defaults change compile SDK 35 -> 36 and target SDK 34 -> 36. The Gradle resolver prefers the consuming root project's overrides, so installing this library does not force an application's own target level. Check app build settings and regression-test wallet/action flows. The upstream Compatibility document's Google Play policy statement is source documentation, not independently verified current policy advice.
+
+#### Apple Pay type export and iOS embedded CardView
+
+The previously internal `ApplePayAuthorizationResult` moves into the publicly exported core configuration types. Its shape is unchanged: `status: 'success' | 'failure'` and optional `ApplePayError[]`. Existing event listeners and Apple Pay bridge methods now reference the public type. This is an export correction, not first-time support for `onAuthorize`, shipping/coupon callbacks or the underlying native method.
+
+```ts
+import type { ApplePayAuthorizationResult } from '@adyen/react-native';
+
+const accepted: ApplePayAuthorizationResult = { status: 'success' };
+// This is a bridge payload, not proof that Adyen authorized/captured a payment.
+```
+
+iOS `findSubview<T>` now preserves the requested generic type through recursion instead of recursively inferring a broader view and casting afterwards. Embedded CardView replaces scroll-view safe-area constraints with container constraints and recursively disables safe-area-expanded layout margins. The implementation comment describes clipped bottom content and a non-settling layout/main-thread hang near the bottom edge. The surrounding application now owns safe-area handling; test inline cards near the home indicator and during mounting/layout changes.
+
+#### Version reporting and dependency ownership
+
+At package import, `src/index.ts` reads `package.json.version` and calls the internal version helper, which forwards it through `SessionHelper.setSdkVersion`. Android stores the value in a volatile field; iOS protects it with a lock. Their analytics parsers use it to identify the React Native platform/version. This replaces native build-time version placeholders; it is not a public merchant API to select an Android/iOS SDK release. The tagged source still has `2.0.0-local.1`; release identity remains the immutable `2.13.0` tag/record, not the local placeholder. The new package-generation script is outside this retained capsule, so published-artifact rewriting is not independently verified here.
+
+The podspec advances iOS `5.25.1` -> `5.26.0`; Gradle advances Android `5.19.0` -> `5.20.0`. These pins now match independently retained [[source-github-adyen-ios]] and [[source-github-adyen-android]] versions, but those histories remain separate. Do not label all native rollup bullets as newly introduced in this wrapper: UPI Smart Intent was already mentioned in the `2.12.0` notes.
+
+The `2.13.0` note repeats the native iOS `5.26.0` CocoaPods sunset notice. This is not evidence that the wrapper has already moved to SPM: the same snapshot README still instructs `pod install` and the wrapper podspec still depends on `Adyen` `5.26.0`. Future native distribution compatibility needs separate evidence.
+
+#### Example changes and production boundaries
+
+- `App` receives an `ApiService` and `ConfigProvider`; checkout flows and payment utilities use the injected client. Configuration can use AsyncStorage with parse-error fallback or an external read-only configuration provider.
+- Stored-method removal moves from shared configuration to `AdvancedCheckout`, where the selected client performs the request and the callback resolves/rejects. The direct API client treats HTTP 204 from `DELETE storedPaymentMethods/{id}` as success.
+- The new Netlify client sends requests to demo backend functions without embedding the direct client's API key in those requests. It explicitly throws for Session-result lookup, stored-method removal, balance checks, order creation and cancellation. The direct client still uses `X-API-Key` on-device: retain it as test/demo evidence, not a production security pattern.
+- Both Sessions examples short-circuit their extra result lookup when `usesDirectSessionResult` is true (as on the Netlify client), or for the existing `PresentToShopper` branch. They display the callback result; that is not independent server-side payment verification or fulfillment proof.
+- Shared example card configuration no longer forces `addressVisibility` to `'lookup'` when absent. This is an example-default change, not a new SDK-wide default.
+
+#### Grounding excerpts for `2.13.0`
+
+> "Merchant information for Google Pay on Android. Does not replace Google Pay registration."
+>
+> `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/core/configurations/GooglePayConfiguration.ts:52`
+
+> `const sdkVersion = require('../package.json').version as string;`
+>
+> `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/index.ts:3`
+
+> `export interface ApplePayAuthorizationResult {`
+>
+> `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/core/configurations/ApplePayConfiguration.ts:239`
+
+> `readonly usesDirectSessionResult = true;`
+>
+> `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/api/NetlifyApiClient.ts:20`
+
+> `throw new Error('tryRemoveStoredCard not supported via Netlify');`
+>
+> `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/api/NetlifyApiClient.ts:95`
+
+### Historical baseline guidance
+
 - Choose Drop-in for the prebuilt payment-method flow and Components when the application owns selection or layout.
 - Keep Session creation, `/paymentMethods`, `/payments`, `/payments/details`, and final result verification on the merchant server according to the selected flow.
 - Register redirect return handling on both platforms and use Continuous Native Generation rather than Expo Go.
@@ -124,6 +209,14 @@ Both dated release-note records remain available below; [[changelog-github-adyen
 
 ## Raw sources
 
+- [2.13.0 release manifest](../../../../raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json) and [[raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/release-notes|release notes]]
+- [2.13.0 snapshot manifest](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json)
+- [2.12.0 to 2.13.0 comparison](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/comparison.json) and [retained diff](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/diff.patch)
+- [Google Pay public configuration](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/core/configurations/GooglePayConfiguration.ts) and [Android mapping](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt)
+- [Apple Pay public types](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/core/configurations/ApplePayConfiguration.ts) and [wallet event routing](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/components/utils/startEventListeners.ts)
+- [CardView layout fix](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Views/CardView/CardComponentViewProxy.swift) and [view-tree lookup](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Helpers/UIViewHelper.swift)
+- [Version bridge](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/modules/base/configureSDKVersion.ts) and [import-time version setup](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/index.ts)
+- [Demo backend adapter](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/api/NetlifyApiClient.ts) and [Session example result handling](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/SessionsDropInCheckout.tsx)
 - Revised release manifest: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json`
 - Revised release notes: `raw/github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/release-notes.md`
 - Snapshot manifest: `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json`

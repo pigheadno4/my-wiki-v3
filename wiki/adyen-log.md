@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-21] ingest | Adyen React Native `2.13.0`
+
+- Approved additive delta from `@adyen/react-native@2.12.0` to `2.13.0`, exact SHA `68acfa3ab6976482fd4f9e3a0c075eb649b75d70`; approved focused reading, generated manifests/diff checked mechanically. All 606 current/prior file hashes/sizes/Git blob IDs verified; six added, 43 modified, two deleted, 256 unchanged.
+- Android Google Pay merchant info, Apple Pay result-type public export, iOS CardView safe-area/recursive lookup fixes, API 36 library defaults and native Android/iOS `5.20.0`/`5.26.0` pins. JavaScript version bridge is analytics metadata, not a dependency selector. Demo Netlify missing operations/direct Session-result path and on-device direct API credentials remain explicitly non-production evidence; native CocoaPods notice does not prove wrapper SPM migration.
+- Concept updated before cumulative source/changelog; complete `2.12.0` history retained. Company/index updated, source count unchanged. No new comparison, SDK build, device/payment execution, commit or push. Details [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]].
+- Validation: five typed pages pass; evidence links resolve, catalog entries are unique and every historical source/changelog body line is preserved in order. GitHub validator retains only the same 12 unrelated errors; zero pending work items. Review record: `tracking/github/repos/adyen/adyen-react-native/ingest-review-2.13.0-2026-10-21.md`.
+
 ## [2026-10-21] ingest | Adyen website C27
 
 - All 50 exact-manifest Marketplace compliance/risk/tax/onboarding and Payout Service foundation/funds references General Docs sources independently approved and promoted. First full-review approvals 41/50; 9 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

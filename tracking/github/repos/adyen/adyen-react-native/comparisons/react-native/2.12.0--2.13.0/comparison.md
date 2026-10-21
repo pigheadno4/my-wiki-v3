@@ -1,0 +1,115 @@
+# GitHub package comparison
+
+- Repository: `adyen/adyen-react-native`
+- Package: `@adyen/react-native`
+- From: `2.12.0` (`2912c913266b2d1df73882980303b563ea04ab63`)
+- To: `2.13.0` (`68acfa3ab6976482fd4f9e3a0c075eb649b75d70`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CONTRIBUTING.md`
+- `adyen-react-native.podspec`
+- `android/build.gradle`
+- `android/dependencies.gradle`
+- `android/gradle.properties`
+- `android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt`
+- `android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt`
+- `android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt`
+- `android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt`
+- `android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt`
+- `android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt`
+- `android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt`
+- `docs/Compatibility.md`
+- `docs/Configuration.md`
+- `example/package.json`
+- `example/src/App.tsx`
+- `example/src/api/APIClient.ts`
+- `example/src/api/ApiService.ts`
+- `example/src/api/NetlifyApiClient.ts`
+- `example/src/components/Checkout/AdvancedCheckout.tsx`
+- `example/src/components/Checkout/PartialPaymentCheckout.tsx`
+- `example/src/components/Checkout/SessionsComponentsCheckout.tsx`
+- `example/src/components/Checkout/SessionsDropInCheckout.tsx`
+- `example/src/components/Checkout/StoredCardsCheckout.tsx`
+- `example/src/components/Checkout/utils/payByID.ts`
+- `example/src/components/Checkout/utils/processPartialPaymentResult.ts`
+- `example/src/components/CustomCard/CseView.tsx`
+- `example/src/components/CustomCard/utils/payWithCard.ts`
+- `example/src/components/ResultView.tsx`
+- `example/src/config/AsyncStorageConfigProvider.ts`
+- `example/src/config/ConfigProvider.ts`
+- `example/src/config/ExternalConfigProvider.ts`
+- `example/src/hooks/useAppContext.tsx`
+- `example/src/settings/checkoutConfiguration.ts`
+- `ios/AdyenModule.m`
+- `ios/Components/Base/BaseModule.swift`
+- `ios/Components/SessionHelperModule.swift`
+- `ios/Configuration/AnalyticsParser.swift`
+- `ios/Helpers/UIViewHelper.swift`
+- `ios/Version.swift`
+- `ios/Views/CardView/CardComponentViewProxy.swift`
+- `package.json`
+- `src/components/__tests__/index.test.ts`
+- `src/components/utils/startEventListeners.ts`
+- `src/core/configurations/ApplePayConfiguration.ts`
+- `src/core/configurations/GooglePayConfiguration.ts`
+- `src/index.ts`
+- `src/modules/applepay/AdyenApplePay.ts`
+- `src/modules/applepay/ApplePayInternalTypes.ts`
+- `src/modules/applepay/ApplePayWrapper.ts`
+- `src/modules/base/configureSDKVersion.ts`
+
+## Upstream changes
+
+- `modified`: `CONTRIBUTING.md`
+- `modified`: `adyen-react-native.podspec`
+- `modified`: `android/build.gradle`
+- `modified`: `android/dependencies.gradle`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt`
+- `modified`: `android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt`
+- `modified`: `docs/Compatibility.md`
+- `modified`: `docs/Configuration.md`
+- `modified`: `example/package.json`
+- `modified`: `example/src/App.tsx`
+- `modified`: `example/src/api/APIClient.ts`
+- `added`: `example/src/api/ApiService.ts`
+- `added`: `example/src/api/NetlifyApiClient.ts`
+- `modified`: `example/src/components/Checkout/AdvancedCheckout.tsx`
+- `modified`: `example/src/components/Checkout/PartialPaymentCheckout.tsx`
+- `modified`: `example/src/components/Checkout/SessionsComponentsCheckout.tsx`
+- `modified`: `example/src/components/Checkout/SessionsDropInCheckout.tsx`
+- `modified`: `example/src/components/Checkout/StoredCardsCheckout.tsx`
+- `modified`: `example/src/components/Checkout/utils/payByID.ts`
+- `modified`: `example/src/components/Checkout/utils/processPartialPaymentResult.ts`
+- `modified`: `example/src/components/CustomCard/CseView.tsx`
+- `modified`: `example/src/components/CustomCard/utils/payWithCard.ts`
+- `modified`: `example/src/components/ResultView.tsx`
+- `added`: `example/src/config/AsyncStorageConfigProvider.ts`
+- `added`: `example/src/config/ConfigProvider.ts`
+- `added`: `example/src/config/ExternalConfigProvider.ts`
+- `modified`: `example/src/hooks/useAppContext.tsx`
+- `modified`: `example/src/settings/checkoutConfiguration.ts`
+- `modified`: `ios/AdyenModule.m`
+- `modified`: `ios/Components/Base/BaseModule.swift`
+- `modified`: `ios/Components/SessionHelperModule.swift`
+- `modified`: `ios/Configuration/AnalyticsParser.swift`
+- `modified`: `ios/Helpers/UIViewHelper.swift`
+- `deleted`: `ios/Version.swift`
+- `modified`: `ios/Views/CardView/CardComponentViewProxy.swift`
+- `modified`: `package.json`
+- `added`: `src/components/__tests__/index.test.ts`
+- `modified`: `src/components/utils/startEventListeners.ts`
+- `modified`: `src/core/configurations/ApplePayConfiguration.ts`
+- `modified`: `src/core/configurations/GooglePayConfiguration.ts`
+- `modified`: `src/index.ts`
+- `modified`: `src/modules/applepay/AdyenApplePay.ts`
+- `deleted`: `src/modules/applepay/ApplePayInternalTypes.ts`
+- `modified`: `src/modules/applepay/ApplePayWrapper.ts`
+- `added`: `src/modules/base/configureSDKVersion.ts`

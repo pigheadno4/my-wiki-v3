@@ -2,8 +2,11 @@
 title: "GitHub changelog: Adyen/adyen-react-native"
 type: source
 date_ingested: 2026-10-04
+date_updated: 2026-10-21
 original_format: github-repo
 raw_files:
+  - "github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json"
+  - "github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json"
   - "github/adyen/adyen-react-native/releases/react-native/2.12.0/2026-10-04/manifest.json"
   - "github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json"
 tags: [adyen, react-native, mobile-sdk, changelog, github-repository]
@@ -12,6 +15,31 @@ tags: [adyen, react-native, mobile-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `Adyen/adyen-react-native`. Cumulative implementation knowledge belongs in [[source-github-adyen-react-native]] and the linked immutable evidence.
+
+## `@adyen/react-native@2.13.0` (2026-10-16)
+
+| Package | From | To | Exact SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@adyen/react-native` | `@adyen/react-native@2.12.0` | `@adyen/react-native@2.13.0` | `68acfa3ab6976482fd4f9e3a0c075eb649b75d70` | Delta, approved focused reading |
+
+**Ingested:** 2026-10-21. All historical `2.12.0` knowledge and both dated release-note records remain preserved.
+
+**Features/fixes:** Android-only optional Google Pay `merchantInfo` (`merchantName`, Google-issued `merchantId`); public export of the existing `ApplePayAuthorizationResult` type; iOS recursive view search and embedded CardView safe-area fixes. JavaScript package import now forwards its version to native analytics instead of native build-time placeholders; this is not a native dependency selector or a new merchant-facing configuration API.
+
+**Dependencies/build:** Android native `5.19.0` -> `5.20.0`; iOS native `5.25.1` -> `5.26.0`. Android library defaults compile 35 -> 36, target 34 -> 36, with consuming-project overrides still authoritative. React Native peer requirement stays `>=0.76.0`, optional Expo `>=52`. The native CocoaPods sunset notice does not establish wrapper SPM support: its README/podspec still use CocoaPods. UPI Smart Intent already appeared in the older wrapper note and is not newly attributed to this release.
+
+**Additional implementation:** Example API/configuration providers are injected, including a Netlify demo backend client and read-only external card settings. Stored-method removal moves into AdvancedCheckout. The Netlify client throws for stored-method removal, balance/order operations and Session-result lookup; Sessions demos bypass their extra lookup in direct-result mode. The direct client still places its API key on-device. These demo paths do not change the server-side credential/verification requirement or prove payment success. The example also stops forcing card address lookup when the setting is absent. Contributor docs/package metadata introduce public TypeScript API reporting, but the generated report/build script and CI are excluded from this capsule. Android 3DS2 version retrieval becomes lazy; ActionFragment property visibility changes are internal, not a new payment feature.
+
+**Migration/testing:** Optional Google Pay settings do not replace registration or Adyen merchant-account selection. Import the Apple Pay result type from the package instead of an internal path. Review consuming Android API-level settings; regression-test both wallets, redirects/actions and iOS embedded cards near the bottom safe area. Do not copy demo credentials, hardcoded stored-card CVV or direct callback fulfillment into production. No SDK build, device or payment execution was performed.
+
+**Evidence/read scope:** Current/prior capsules have 305/301 files: six added, 43 modified, two deleted, 256 unchanged. All 606 file sizes/SHA-256/Git blob IDs and packet/comparison hashes checked. User approved mechanical verification of generated inventories/duplicated diff while changed retained source, notes, affected prior code and cumulative wiki pages were read fully. No evidence gaps or unclassified changes in the packet; tests/CI/generated build output remain outside the reviewed capsule. Updated existing concept first, cumulative source/changelog, company, index and logs; source count unchanged.
+
+### `2.13.0` evidence
+
+- [Release identity](../../../../raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json) and [[raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/release-notes|release notes]]
+- [Exact-SHA snapshot](../../../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json)
+- [Comparison](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/comparison.json) and [retained patch](../../../../tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/diff.patch)
+- [[source-github-adyen-react-native]] - implementation links, code examples, grounding excerpts and historical knowledge
 
 ## `@adyen/react-native@2.12.0` note revision (collected 2026-10-04)
 

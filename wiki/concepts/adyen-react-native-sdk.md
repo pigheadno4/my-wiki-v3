@@ -9,7 +9,17 @@ tags: [adyen, react-native, mobile, sdk, drop-in, components, sessions, apple-pa
 
 `@adyen/react-native` is Adyen's cross-platform wrapper for the native Adyen iOS and Android checkout SDKs. It offers two primary integration choices: Drop-in for a prebuilt payment-method flow and Components for payment-method-specific experiences inside a merchant-owned flow.
 
-## Current baseline
+## Latest ingested delta: `2.13.0`
+
+`@adyen/react-native@2.13.0` at `68acfa3ab6976482fd4f9e3a0c075eb649b75d70` advances the native dependencies to Android `5.20.0` and iOS `5.26.0`. It adds Android-only `googlepay.merchantInfo` with optional `merchantName` and Google-issued `merchantId`; neither replaces Adyen's `merchantAccount` or Google Pay registration. Android library defaults move compile/target SDK levels to 36, but the consuming application controls its own build settings.
+
+The package publicly exports `ApplePayAuthorizationResult` (an existing bridge payload, not a new authorization flow), fixes iOS embedded CardView safe-area constraints/layout margins and recursive subview lookup, and automatically sends its JavaScript package version to native analytics. The version bridge does not select native dependency versions.
+
+The example now injects API/configuration providers. Its Netlify client does not implement stored-method removal, balance checks or partial-payment orders, and its direct Session-result mode skips the example's extra lookup; neither demonstrates production payment verification. The direct example still uses an API key on-device and is not a production credential-handling template. The native iOS CocoaPods sunset note does not mean this wrapper has migrated to SPM: its retained README still uses `pod install`, and its podspec still pins Adyen `5.26.0`.
+
+These are additive findings from [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]]. The following `2.12.0` baseline and native-version limitations remain historical evidence, not the current `2.13.0` dependency pins.
+
+## Historical `2.12.0` baseline
 
 | Field | Value |
 | --- | --- |

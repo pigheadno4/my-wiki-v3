@@ -1,0 +1,66 @@
+# Localization
+
+By default, the React Native library uses a device's locale. To enable necessary translations for iOS, make sure “Localizations” in the project configuration contains all required languages. If the device's locale is not supported, localization fallbacks to `en-US`.
+
+Titles of payment methods are fetched from the Adyen API and localized according to the `shopperLocale` value you set in your [/paymentMethods](https://docs.adyen.com/api-explorer/Checkout/68/post/paymentMethods#request-shopperLocale) or [/sessions](https://docs.adyen.com/api-explorer/Checkout/71/post/sessions#request-shopperLocale) requests.
+
+## Enforcing specific localization
+
+Provide a specific locale to `configuration.locale` for `AdyenCheckout`. 
+
+> [!IMPORTANT]
+> For Session flow `locale` will match value provided by your backend via [shopperLocale](https://docs.adyen.com/api-explorer/Checkout/71/post/sessions#request-shopperLocale) parameter.
+
+## Overriding default values
+
+### iOS
+
+1. Open your iOS folder in Xcode.
+2. Create a new ’Strings’ file with the name `Localizable`. If you are using multiple localizations, make sure you check them all in for the `Localizations.string` in "File Inspector". For each localization, your iOS project will have a corresponding file: `(localization).lproj/Localizable.string`.
+3. Override all necessary strings with desired values for all your localizations. The list of available strings can be found [here](https://github.com/Adyen/adyen-ios/blob/develop/Adyen/Assets/Generated/LocalizationKey.swift).
+
+### Android
+
+1. Open /res/values/strings.xml in "Translations Editor” in Android Studio.
+2. Override all necessary strings with desired values for all your localizations. The list of available strings can be found [here](https://github.com/search?q=repo%3AAdyen%2Fadyen-android+res%2Fvalues%2Fstrings.xml&type=code&branch=main)
+
+## Adding new localizations
+
+Add new locales in Xcode and Android Studio respectively. Provide a translation for all necessary keys.
+
+List of currently available locales:
+
+| Language               | Locale code | Fallback |
+| ---------------------- | ----------- | :------: |
+| Arabic - International | ar          |          |
+| Bulgarian              | bg-BG       |          |
+| Catalan                | ca-ES       |          |
+| Chinese - Simplified   | zh-CN       |          |
+| Chinese - Traditional  | zh-TW       |          |
+| Croatian               | hr-HR       |          |
+| Czech                  | cs-CZ       |          |
+| Danish                 | da-DK       |          |
+| Dutch                  | nl-NL       |          |
+| English - US           | en-US       |    ✱     |
+| Estonian               | et-EE       |          |
+| Finnish                | fi-FI       |          |
+| French                 | fr-FR       |          |
+| German                 | de-DE       |          |
+| Greek                  | el-GR       |          |
+| Hungarian              | hu-HU       |          |
+| Icelandic              | is-IS       |          |
+| Italian                | it-IT       |          |
+| Japanese               | ja-JP       |          |
+| Korean                 | ko-KR       |          |
+| Latvian                | lv-LV       |          |
+| Lithuanian             | lt-LT       |          |
+| Norwegian              | no-NO       |          |
+| Polish                 | pl-PL       |          |
+| Portuguese - Brazil    | pt-BR       |          |
+| Portuguese - Portugal  | pt-PT       |          |
+| Romanian               | ro-RO       |          |
+| Russian                | ru-RU       |          |
+| Slovak                 | sk-SK       |          |
+| Slovenian              | sl-SI       |          |
+| Spanish                | es-ES       |          |
+| Swedish                | sv-SE       |          |

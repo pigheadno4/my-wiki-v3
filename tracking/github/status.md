@@ -5306,6 +5306,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.581/2026-10-15/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.580--5.0.581/comparison.json)
 
+## `github-e435eccac18ae6708ad5`
+
+- Repository: `adyen/adyen-react-native`
+- SHA: `68acfa3ab6976482fd4f9e3a0c075eb649b75d70`
+- Collection date: `2026-10-21`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-react-native/ingest-packets/github-e435eccac18ae6708ad5/packet.md)
+- Review priority: `high`
+- Required reading: `60` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@adyen/react-native@2.13.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/comparison.json)
+
 ## `github-e5ebdcfb6b9b67582191`
 
 - Repository: `stripe/react-stripe-js`

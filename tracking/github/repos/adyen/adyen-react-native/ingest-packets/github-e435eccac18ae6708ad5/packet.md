@@ -1,0 +1,183 @@
+# GitHub ingest packet
+
+- Repository: `adyen/adyen-react-native`
+- Work item: `github-e435eccac18ae6708ad5`
+- Snapshot: `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `@adyen/react-native`
+
+- Version: `2.12.0` -> `2.13.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `256`
+
+### Required reading
+
+- `raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/manifest.json`
+- `raw/github/adyen/adyen-react-native/releases/react-native/2.13.0/2026-10-21/release-notes.md`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/files/ios/Version.swift`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/files/src/modules/applepay/ApplePayInternalTypes.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-08-01-2912c91/manifest.json`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/CONTRIBUTING.md`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/README.md`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/adyen-react-native.podspec`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/build.gradle`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/dependencies.gradle`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/gradle.properties`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/docs/Compatibility.md`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/docs/Configuration.md`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/package.json`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/App.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/api/APIClient.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/api/ApiService.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/api/NetlifyApiClient.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/AdvancedCheckout.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/PartialPaymentCheckout.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/SessionsComponentsCheckout.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/SessionsDropInCheckout.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/StoredCardsCheckout.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/utils/payByID.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/Checkout/utils/processPartialPaymentResult.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/CustomCard/CseView.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/CustomCard/utils/payWithCard.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/components/ResultView.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/config/AsyncStorageConfigProvider.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/config/ConfigProvider.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/config/ExternalConfigProvider.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/hooks/useAppContext.tsx`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/example/src/settings/checkoutConfiguration.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/AdyenModule.m`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Components/Base/BaseModule.swift`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Components/SessionHelperModule.swift`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Configuration/AnalyticsParser.swift`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Helpers/UIViewHelper.swift`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/ios/Views/CardView/CardComponentViewProxy.swift`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/package.json`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/components/utils/startEventListeners.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/core/configurations/ApplePayConfiguration.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/core/configurations/GooglePayConfiguration.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/index.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/modules/applepay/AdyenApplePay.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/modules/applepay/ApplePayWrapper.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/files/src/modules/base/configureSDKVersion.ts`
+- `raw/github/adyen/adyen-react-native/snapshots/2026-10-21-68acfa3/manifest.json`
+- `tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/comparison.json`
+- `tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/comparison.md`
+- `tracking/github/repos/adyen/adyen-react-native/comparisons/react-native/2.12.0--2.13.0/diff.patch`
+
+### Files absent from current snapshot
+
+Snapshot absence is not proof of upstream deletion. `not-listed` refers only to the supplied upstream change inventory.
+
+- `ios/Version.swift`: `upstream-deletion`; upstream: `deleted`
+- `src/modules/applepay/ApplePayInternalTypes.ts`: `upstream-deletion`; upstream: `deleted`
+
+### Upstream changes
+
+- `modified` `.github/actions/setup-android-emulator/action.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/build_lib.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/e2e_test.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/ios_tests.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/npm_publish.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/pr_check.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `.github/workflows/public_api_check.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/run_sonar.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.github/workflows/update_sdk_versions.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.gitignore`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.husky/pre-commit`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.nvmrc`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `renamed` `.yarn/releases/yarn-4.17.1.cjs`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `.yarnrc.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `AGENTS.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CONTRIBUTING.md`: `retained-evidence` (snapshot-file)
+- `modified` `Gemfile`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `README.md`: `retained-evidence` (snapshot-file)
+- `modified` `adyen-react-native.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `android/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `android/dependencies.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `android/gradle.properties`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/AdyenPaymentPackage.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/component/SessionHelperModule.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/component/base/BaseModule.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/configuration/AnalyticsParser.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParser.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/cse/ActionFragment.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/adyenreactnativesdk/cse/ActionModule.kt`: `retained-evidence` (snapshot-file)
+- `added` `android/src/test/java/com/adyenreactnativesdk/component/base/instant/BaseComponentFragmentTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `android/src/test/java/com/adyenreactnativesdk/component/base/instant/InstantFragmentDelegateTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `android/src/test/java/com/adyenreactnativesdk/configuration/GooglePayConfigurationParserTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `android/src/test/java/com/adyenreactnativesdk/cse/ActionFragmentTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `android/src/test/java/com/adyenreactnativesdk/cse/ActionModuleTest.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `android/src/test/resources/robolectric.properties`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `api-extractor.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `docs/Compatibility.md`: `retained-evidence` (snapshot-file)
+- `modified` `docs/Configuration.md`: `retained-evidence` (snapshot-file)
+- `modified` `e2e-tests/helpers/driver.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/scripts/build-android.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/scripts/build-ios.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/scripts/resolve_rn_cli_version.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/scripts/setup.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/scripts/start_appium.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `etc/api/adyen-react-native.api.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/android/app/src/main/java/com/adyenexample/MainActivity.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/android/build.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `example/android/ktlint.gradle`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/index.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `example/index.netlify.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/ios/AdyenExample.xcodeproj/project.pbxproj`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `example/ios/AdyenExampleTests/Modules/CardComponentViewProxyLayoutTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `example/ios/AdyenExampleTests/UIViewHelperTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/ios/AppDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/ios/Podfile.lock`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/package.json`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/App.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/api/APIClient.ts`: `retained-evidence` (snapshot-file)
+- `added` `example/src/api/ApiService.ts`: `retained-evidence` (snapshot-file)
+- `added` `example/src/api/NetlifyApiClient.ts`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/AdvancedCheckout.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/PartialPaymentCheckout.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/SessionsComponentsCheckout.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/SessionsDropInCheckout.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/StoredCardsCheckout.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/utils/payByID.ts`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/Checkout/utils/processPartialPaymentResult.ts`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/CustomCard/CseView.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/CustomCard/utils/payWithCard.ts`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/components/ResultView.tsx`: `retained-evidence` (snapshot-file)
+- `added` `example/src/config/AsyncStorageConfigProvider.ts`: `retained-evidence` (snapshot-file)
+- `added` `example/src/config/ConfigProvider.ts`: `retained-evidence` (snapshot-file)
+- `added` `example/src/config/ExternalConfigProvider.ts`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/hooks/useAppContext.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/settings/checkoutConfiguration.ts`: `retained-evidence` (snapshot-file)
+- `modified` `ios/AdyenModule.m`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Components/Base/BaseModule.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Components/SessionHelperModule.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Configuration/AnalyticsParser.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Helpers/UIViewHelper.swift`: `retained-evidence` (snapshot-file)
+- `deleted` `ios/Version.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Views/CardView/CardComponentViewProxy.swift`: `retained-evidence` (snapshot-file)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `added` `scripts/__tests__/api-report-summary.test.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `scripts/__tests__/post-api-report-comment.test.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `scripts/api-report-summary.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `scripts/generate-package-manifest.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `scripts/post-api-report-comment.js`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `scripts/set-version.sh`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `src/components/__tests__/index.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `src/components/utils/startEventListeners.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/core/configurations/ApplePayConfiguration.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/core/configurations/GooglePayConfiguration.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/index.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/modules/applepay/AdyenApplePay.ts`: `retained-evidence` (snapshot-file)
+- `deleted` `src/modules/applepay/ApplePayInternalTypes.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/modules/applepay/ApplePayWrapper.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/modules/base/configureSDKVersion.ts`: `retained-evidence` (snapshot-file)
+- `modified` `yarn.lock`: `intentional-policy-exclusion` (outside-capsule-policy)
