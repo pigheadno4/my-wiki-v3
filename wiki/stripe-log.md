@@ -6,6 +6,12 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-21] ingest | Stripe React Native `0.82.0`
+
+- Approved serial additive full override `github-6deb9a996085048ef1eb`, SHA `6c2020d4b4c9c2f75c01690df5b084a6c046c585`. One-release focused reading: complete changed retained files/affected prior code, notes and cumulative wiki history; unchanged source/history/inventories and duplicated diff mechanically checked. Expanded list 260 paths/2,273,704 bytes. Current/prior capsules 251/244 files, all 495 hashes/sizes/Git blob IDs checked; seven added, 30 modified, 214 unchanged, 81 classified upstream paths, no gaps.
+- Recorded nullable Adaptive Pricing Currency Selector, incompatible preview props/options, iOS email/Android null-shipping bridge changes, default-phone/appearance/icon mapping and Android lifecycle/font/build fixes. Onramp hint/contact prefill remains distinct from KYC submission. The later raw note attributes contacts to 0.81.0 retrospectively; the retained comparison observes the bridge addition in 0.81.0 -> 0.82.0. All 1,281 prior raw changelog lines retained with 14 insertions.
+- Four existing concepts updated first, then cumulative source/changelog/company/provider index/logs; earlier knowledge and source_count 666 preserved. No new source, supplement, cross-company comparison, SDK/device/payment execution, commit or push. Details [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]]. Next: scoped review/validation, then commit/push only with separate approval.
+
 ## [2026-10-21] ingest | Stripe iOS `26.15.0`
 
 - Approved serial full additive override `github-b1305ecffaa642570d15`, SHA `19c1d05439595535f0722e67e4847aece4faf4b2`, after 26.14.0 completed. Same approved focused-reading exception; eight supplemental files included. Both 300-file snapshots match all 600 hashes/sizes; 27 modified, 273 unchanged; effective full list 319 paths, 180 classified upstream changes.

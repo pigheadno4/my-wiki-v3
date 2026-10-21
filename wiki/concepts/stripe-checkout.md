@@ -177,6 +177,12 @@ PHP `stripe-php@21.3.0` exposes `payment_method_options.card.restrictions.fundin
 
 `stripe@22.6.0` adds `payment_method_options.card.restrictions.funding_types_blocked` to Checkout Session create parameters and response typing, with documented values `credit`, `debit` and `prepaid`. Its generated `permissions.update_shipping_details` comments now limit that setting to `ui_mode=elements`, reinforcing the version boundary on the historical Embedded Checkout guidance above. SDK declaration availability does not establish merchant eligibility or hosted runtime rollout. Source: [[source-github-stripe-node]].
 
+## React Native 0.82.0 Private Preview
+
+`@stripe/stripe-react-native@0.82.0` adds an SDK-owned inline Currency Selector, enabled by creation configuration when Adaptive Pricing is available and exposed as a nullable controller/hook element. Render `CheckoutCurrencySelectorElementView` only for a non-null element; configure appearance through Checkout rather than generic view props. Availability is not universal, and the earlier removed CurrencySelectorElement placeholder is not the same implementation.
+
+The Payment Element view now accepts only its element, not ordinary ViewProps/style; move surrounding layout/accessibility to a parent. Checkout-only Google Pay `testEnv` and save-payment-method opt-in configuration are removed, without removing ordinary PaymentSheet/Platform Pay options. Android gains default-phone and font/shape/embedded-appearance mapping. iOS email updates and Android null shipping clearing now delegate to native, unlike the version-qualified 0.81.0 limitations below. Preview access, backend authority and runtime/eligibility limits remain unchanged. See [[stripe-react-native-sdk]], [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 ## React Native 0.81.0 Private Preview
 
 The native Checkout Session path is separate from web Checkout and ordinary Intent-based PaymentSheet. `@stripe/stripe-react-native@0.81.0` replaces the modal presentation/confirmation stubs present through 0.80.0 with native calls on both platforms. `paymentElement.present()` resolves after requesting presentation, not after dismissal/selection; `confirm()` returns completed/canceled/failed and retains paid/unpaid/noPaymentRequired status, while bridge errors can reject. A completed SDK flow is not proof of paid funds. Keep server creation/pricing/fulfillment authoritative.

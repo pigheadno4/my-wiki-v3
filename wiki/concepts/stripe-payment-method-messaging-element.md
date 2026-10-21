@@ -62,6 +62,10 @@ Direct charge Connect platforms must set `stripeAccount` on the Stripe instance 
 
 Uses Appearance API. `.PaymentMethodMessaging` CSS rule controls layout (e.g., `textAlign`). Variables control color, font size, font family, and spacing.
 
+## React Native 0.82.0 Android Font Fix
+
+The `@stripe/stripe-react-native@0.82.0` release announces the underscore-name validation fix for PaymentSheet and PaymentMethodMessagingElement. The shared retained validator now allows alphanumeric characters and underscores, then resolves the named resource from `android/app/src/main/res/font`; unknown resources still fail. The Messaging font contract documents that filename, while iOS continues to use a PostScript font name. This is not a change to web Elements CSS, BNPL eligibility or a device-tested guarantee. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 ## Legal Notes
 
 Merchants are responsible for compliance with applicable laws, rules, and regulations regarding the promotion of BNPL payment options. Stripe also requires disclosure of its data collection practices to customers.
@@ -72,6 +76,7 @@ Merchants are responsible for compliance with applicable laws, rules, and regula
 
 ## Sources
 
+- [[source-github-stripe-react-native]] - 0.82.0 Android font validation contract/fix announcement; separate from web Elements
 - [[source-stripe-payment-method-messaging-element]] — primary reference: initialization, supported plans, info modal, Connect, Appearance API
 - [[source-stripe-inapp-payment-method-messaging-element]] — mobile overview: iOS + Android, auto-determines BNPL plans, localized messaging
 - [[source-stripe-inapp-display-bnpl-messaging]] — mobile integration guide (beta): iOS UIKit/SwiftUI + Android, configuration/appearance options, Android requires separate `payment-method-messaging` dependency

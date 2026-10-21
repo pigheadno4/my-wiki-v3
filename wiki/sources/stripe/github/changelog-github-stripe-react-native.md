@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/stripe-react-native"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-10-14
+date_updated: 2026-10-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-ce9c1bf/manifest.json"
   - "github/stripe/stripe-react-native/snapshots/2026-10-04-6bbf9d5/manifest.json"
@@ -22,6 +23,32 @@ tags: [stripe, react-native, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-react-native`. Cumulative implementation knowledge belongs in [[source-github-stripe-react-native]] and the linked immutable evidence.
+
+## `@stripe/stripe-react-native@0.82.0` - Change Set `6c2020d` (2026-10-14)
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `@stripe/stripe-react-native` | `@stripe/stripe-react-native@0.81.0` | `@stripe/stripe-react-native@0.82.0` | 2026-10-14 (GitHub publication; raw heading 2026-10-13) | `6c2020d4b4c9c2f75c01690df5b084a6c046c585` | Additive full override, approved focused reading |
+
+**Announced:** iOS native `26.14.0`, Android `23.23.0`; Android font-underscore validation, immediate PaymentSheet closure after JavaScript reload/Activity recreation and optional-provisioning R8 fixes.
+
+**Additional implementation:** Checkout private preview adds the controller/hook's nullable Currency Selector and exported measured view, enabled by configuration when Adaptive Pricing is available. SDK ownership, native availability, one-mount iOS and Activity-scoped Android lifecycle apply. The Payment Element view stops accepting/forwarding generic ViewProps/style; Checkout-only Google Pay testEnv and save-opt-in field/type are removed. iOS email updates and Android null shipping clearing now forward natively; Android gains default-phone/font/shapes/embedded-row mapping and theme-aware payment-option icon loading. Application lifecycle callbacks are unregistered on invalidation and before re-registration. Gradle's TapAndPay exclusion is distinct from the excluded proguard file's R8 warning-suppression hunk.
+
+Onramp adds optional countryHint and wallet contact-prefill fields with Samsung contact collection configuration. E.164 phone is registration input; rawPhone is display/correction only, and contacts are not submitted as KYC by the retained iOS input mapper. Android Onramp mapper and the registration demo are hunk-level evidence, not complete retained implementations. The full retained demo prefills reviewable name/address forms.
+
+> [!warning] Contradiction
+> The later raw changelog adds the contact-prefill/Samsung note under 0.81.0 retrospectively, while the retained 0.81.0 types/bridges lacked it. This exact comparison observes the addition at 0.81.0 -> 0.82.0. Preserve both records; do not silently rewrite the earlier release. See [[source-github-stripe-react-native]] and [[stripe-crypto-onramp]].
+
+**Migration/boundary:** move view layout/accessibility props to a parent, remove obsolete Checkout-only options and null-check the selector. Older mutation limitations remain valid for their original versions. Preview access and backend authority are unchanged; completion/prefill are not payment/KYC proof. No native build/device/payment execution. Native pins do not include iOS 26.15.0/Android 23.24.0 or prove bindings for their later features.
+
+**Scope/updated:** 251/244 current/prior files; seven added, 30 modified, 214 unchanged; all 495 hashes/sizes/Git blob IDs and exact inventories verified, all retained patch hunks checked. Eighty-one upstream changes classified, no gaps. Full list 260 paths/2,273,704 bytes; approved exception fully reads changed retained source/affected prior code, release notes and cumulative wiki history, mechanically checking unchanged files/history/generated evidence. All 1,281 prior raw changelog lines retained with 14 insertions, including the retrospective note. Four existing concepts updated first; cumulative source/changelog/company/index/logs preserve every earlier release and source count. No supplements, commit or push.
+
+**Evidence:**
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/manifest.json`
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/release-notes.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.81.0--0.82.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-stripe-react-native]] - exact source links, five grounding excerpts and version-qualified limits
 
 ## `@stripe/stripe-react-native@0.81.0` - Change Set `1b792fb` (2026-10-06)
 

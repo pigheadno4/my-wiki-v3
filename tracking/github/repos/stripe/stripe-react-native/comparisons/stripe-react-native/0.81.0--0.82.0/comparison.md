@@ -1,0 +1,175 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-react-native`
+- Package: `@stripe/stripe-react-native`
+- From: `0.81.0` (`1b792fbddad9fe758cdc1c5504133bd7e4ddb656`)
+- To: `0.82.0` (`6c2020d4b4c9c2f75c01690df5b084a6c046c585`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `android/build.gradle`
+- `android/gradle.properties`
+- `android/proguard-rules.txt`
+- `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt`
+- `android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt`
+- `android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt`
+- `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`
+- `android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/ReactContextRule.kt`
+- `android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/StripeSdkModuleLifecycleTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`
+- `android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt`
+- `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`
+- `android/src/test/java/com/stripe/android/testing/FakeStripeActivity.kt`
+- `android/src/test/res/font/nunito_400regular.ttf`
+- `e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml`
+- `e2e-tests/android-only/paymentsheet-canceled.yml`
+- `e2e-tests/android-only/paymentsheet-customFlow-canceled.yml`
+- `e2e-tests/checkout-currency-selector.yml`
+- `e2e-tests/checkout-mutations.yml`
+- `e2e-tests/checkout.yml`
+- `e2e-tests/customersheet.yml`
+- `e2e-tests/helpers/checkout-card.yml`
+- `e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml`
+- `e2e-tests/ios-only/paymentsheet-canceled.yml`
+- `e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml`
+- `e2e-tests/payment-sheet-pmo-sfu.yml`
+- `e2e-tests/paymentsheet-basic.yml`
+- `e2e-tests/paymentsheet-customFlow-decoupled.yml`
+- `e2e-tests/paymentsheet-customFlow.yml`
+- `e2e-tests/paymentsheet-decoupled.yml`
+- `etc/stripe-react-native.api.md`
+- `example/src/screens/Checkout/CheckoutCartScreen.tsx`
+- `example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx`
+- `example/src/screens/Checkout/__tests__/playgroundConfig.test.ts`
+- `example/src/screens/Checkout/playgroundConfig.ts`
+- `example/src/screens/HomeScreen.tsx`
+- `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `example/src/screens/Onramp/RegisterCryptoUserScreen.tsx`
+- `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift`
+- `ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `ios/Mappers.swift`
+- `ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h`
+- `ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm`
+- `ios/StripeSdkImpl+Checkout.swift`
+- `ios/StripeSdkImpl.swift`
+- `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `ios/Tests/CheckoutSessionSerializerTests.swift`
+- `ios/Tests/OnrampMappersTests.swift`
+- `package.json`
+- `src/checkout/__tests__/Checkout.test.tsx`
+- `src/checkout/__tests__/CheckoutCurrencySelectorElementView.test.tsx`
+- `src/checkout/__tests__/CheckoutPaymentElementView.test.tsx`
+- `src/checkout/createCheckout.ts`
+- `src/components/CheckoutCurrencySelectorElementView.tsx`
+- `src/components/CheckoutPaymentElementView.tsx`
+- `src/hooks/useCheckout.ts`
+- `src/hooks/useOnramp.tsx`
+- `src/index.tsx`
+- `src/specs/NativeCheckoutCurrencySelectorElement.ts`
+- `src/specs/NativeStripeSdkModule.ts`
+- `src/types/Checkout.ts`
+- `src/types/Onramp.ts`
+- `src/types/PaymentSheet.ts`
+- `src/types/components/PaymentMethodMessagingElementComponent.tsx`
+- `stripe-react-native.podspec`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `android/build.gradle`
+- `modified`: `android/gradle.properties`
+- `modified`: `android/proguard-rules.txt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt`
+- `added`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `modified`: `android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt`
+- `modified`: `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/ReactContextRule.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt`
+- `added`: `android/src/test/java/com/reactnativestripesdk/StripeSdkModuleLifecycleTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt`
+- `modified`: `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`
+- `added`: `android/src/test/java/com/stripe/android/testing/FakeStripeActivity.kt`
+- `added`: `android/src/test/res/font/nunito_400regular.ttf`
+- `modified`: `e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml`
+- `modified`: `e2e-tests/android-only/paymentsheet-canceled.yml`
+- `modified`: `e2e-tests/android-only/paymentsheet-customFlow-canceled.yml`
+- `added`: `e2e-tests/checkout-currency-selector.yml`
+- `modified`: `e2e-tests/checkout-mutations.yml`
+- `modified`: `e2e-tests/checkout.yml`
+- `modified`: `e2e-tests/customersheet.yml`
+- `modified`: `e2e-tests/helpers/checkout-card.yml`
+- `modified`: `e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml`
+- `modified`: `e2e-tests/ios-only/paymentsheet-canceled.yml`
+- `modified`: `e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml`
+- `modified`: `e2e-tests/payment-sheet-pmo-sfu.yml`
+- `modified`: `e2e-tests/paymentsheet-basic.yml`
+- `modified`: `e2e-tests/paymentsheet-customFlow-decoupled.yml`
+- `modified`: `e2e-tests/paymentsheet-customFlow.yml`
+- `modified`: `e2e-tests/paymentsheet-decoupled.yml`
+- `modified`: `etc/stripe-react-native.api.md`
+- `modified`: `example/src/screens/Checkout/CheckoutCartScreen.tsx`
+- `modified`: `example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx`
+- `modified`: `example/src/screens/Checkout/__tests__/playgroundConfig.test.ts`
+- `modified`: `example/src/screens/Checkout/playgroundConfig.ts`
+- `modified`: `example/src/screens/HomeScreen.tsx`
+- `modified`: `example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `modified`: `example/src/screens/Onramp/RegisterCryptoUserScreen.tsx`
+- `modified`: `ios/Checkout/CheckoutConfigurationMapper.swift`
+- `added`: `ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift`
+- `modified`: `ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `modified`: `ios/Mappers.swift`
+- `added`: `ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h`
+- `added`: `ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm`
+- `modified`: `ios/StripeSdkImpl+Checkout.swift`
+- `modified`: `ios/StripeSdkImpl.swift`
+- `modified`: `ios/Tests/CheckoutConfigurationMapperTests.swift`
+- `modified`: `ios/Tests/CheckoutSessionSerializerTests.swift`
+- `modified`: `ios/Tests/OnrampMappersTests.swift`
+- `modified`: `package.json`
+- `modified`: `src/checkout/__tests__/Checkout.test.tsx`
+- `added`: `src/checkout/__tests__/CheckoutCurrencySelectorElementView.test.tsx`
+- `modified`: `src/checkout/__tests__/CheckoutPaymentElementView.test.tsx`
+- `modified`: `src/checkout/createCheckout.ts`
+- `added`: `src/components/CheckoutCurrencySelectorElementView.tsx`
+- `modified`: `src/components/CheckoutPaymentElementView.tsx`
+- `modified`: `src/hooks/useCheckout.ts`
+- `modified`: `src/hooks/useOnramp.tsx`
+- `modified`: `src/index.tsx`
+- `added`: `src/specs/NativeCheckoutCurrencySelectorElement.ts`
+- `modified`: `src/specs/NativeStripeSdkModule.ts`
+- `modified`: `src/types/Checkout.ts`
+- `modified`: `src/types/Onramp.ts`
+- `modified`: `src/types/PaymentSheet.ts`
+- `modified`: `src/types/components/PaymentMethodMessagingElementComponent.tsx`
+- `modified`: `stripe-react-native.podspec`

@@ -1,0 +1,144 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-react-native`
+- Work item: `github-6deb9a996085048ef1eb`
+- Snapshot: `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `high`
+
+## `@stripe/stripe-react-native`
+
+- Version: `0.81.0` -> `0.82.0`
+- Recommendation: `delta` / `high`
+- Unchanged retained files: `214`
+
+### Required reading
+
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/manifest.json`
+- `raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/release-notes.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-14-1b792fb/manifest.json`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/build.gradle`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/gradle.properties`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/example/src/screens/Onramp/CryptoOnrampFlow.tsx`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/Checkout/CheckoutConfigurationMapper.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/Checkout/NativeCheckoutControllerInstance.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/Mappers.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/StripeSdkImpl+Checkout.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/ios/StripeSdkImpl.swift`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/package.json`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/checkout/createCheckout.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/components/CheckoutCurrencySelectorElementView.tsx`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/components/CheckoutPaymentElementView.tsx`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/hooks/useCheckout.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/hooks/useOnramp.tsx`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/index.tsx`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/specs/NativeCheckoutCurrencySelectorElement.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/specs/NativeStripeSdkModule.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/types/Checkout.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/types/Onramp.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/types/PaymentSheet.ts`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/src/types/components/PaymentMethodMessagingElementComponent.tsx`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/files/stripe-react-native.podspec`
+- `raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.81.0--0.82.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.81.0--0.82.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.81.0--0.82.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `android/build.gradle`: `retained-evidence` (snapshot-file)
+- `modified` `android/gradle.properties`: `retained-evidence` (snapshot-file)
+- `modified` `android/proguard-rules.txt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt`: `retained-evidence` (snapshot-file)
+- `added` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt`: `retained-evidence` (snapshot-file)
+- `added` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt`: `retained-evidence` (snapshot-file)
+- `modified` `android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/reactnativestripesdk/ReactContextRule.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/reactnativestripesdk/StripeSdkModuleLifecycleTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/java/com/stripe/android/testing/FakeStripeActivity.kt`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `android/src/test/res/font/nunito_400regular.ttf`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/android-only/paymentsheet-canceled.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/android-only/paymentsheet-customFlow-canceled.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `e2e-tests/checkout-currency-selector.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/checkout-mutations.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/checkout.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/customersheet.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/helpers/checkout-card.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/ios-only/paymentsheet-canceled.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/payment-sheet-pmo-sfu.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/paymentsheet-basic.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/paymentsheet-customFlow-decoupled.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/paymentsheet-customFlow.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `e2e-tests/paymentsheet-decoupled.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `etc/stripe-react-native.api.md`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/src/screens/Checkout/CheckoutCartScreen.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/src/screens/Checkout/__tests__/playgroundConfig.test.ts`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `example/src/screens/Checkout/playgroundConfig.ts`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/src/screens/HomeScreen.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `example/src/screens/Onramp/CryptoOnrampFlow.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `example/src/screens/Onramp/RegisterCryptoUserScreen.tsx`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `ios/Checkout/CheckoutConfigurationMapper.swift`: `retained-evidence` (snapshot-file)
+- `added` `ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Checkout/NativeCheckoutControllerInstance.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Mappers.swift`: `retained-evidence` (snapshot-file)
+- `added` `ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h`: `retained-evidence` (snapshot-file)
+- `added` `ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl+Checkout.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/StripeSdkImpl.swift`: `retained-evidence` (snapshot-file)
+- `modified` `ios/Tests/CheckoutConfigurationMapperTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `ios/Tests/CheckoutSessionSerializerTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `ios/Tests/OnrampMappersTests.swift`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `package.json`: `retained-evidence` (snapshot-file)
+- `modified` `src/checkout/__tests__/Checkout.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `added` `src/checkout/__tests__/CheckoutCurrencySelectorElementView.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `src/checkout/__tests__/CheckoutPaymentElementView.test.tsx`: `intentional-policy-exclusion` (excluded-category:tests)
+- `modified` `src/checkout/createCheckout.ts`: `retained-evidence` (snapshot-file)
+- `added` `src/components/CheckoutCurrencySelectorElementView.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/components/CheckoutPaymentElementView.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/hooks/useCheckout.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/hooks/useOnramp.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `src/index.tsx`: `retained-evidence` (snapshot-file)
+- `added` `src/specs/NativeCheckoutCurrencySelectorElement.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/specs/NativeStripeSdkModule.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/types/Checkout.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/types/Onramp.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/types/PaymentSheet.ts`: `retained-evidence` (snapshot-file)
+- `modified` `src/types/components/PaymentMethodMessagingElementComponent.tsx`: `retained-evidence` (snapshot-file)
+- `modified` `stripe-react-native.podspec`: `retained-evidence` (snapshot-file)

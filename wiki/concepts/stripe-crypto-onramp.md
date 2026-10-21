@@ -114,6 +114,17 @@ Every session status change generates a webhook.
 
 **`performCheckout` last_error codes**: `action_required` (3DS — retry), `missing_kyc`, `missing_document_verification`, `charged_with_expired_quote`, `missing_consumer_wallet` (all retriable); `transaction_limit_reached`, `location_not_supported`, `transaction_failed` (terminal — do not retry).
 
+## React Native 0.82.0 Contact Prefill and Country Hint
+
+`Onramp.Configuration.countryHint` accepts an optional merchant-provided ISO alpha-2 country to help merchant-of-record selection before a KYC region is established; the established region takes precedence. The retained iOS configuration mapper forwards it to coordinator creation; Android forwarding appears in comparison hunks, not a complete retained Onramp mapper. This does not establish backend selection rules or eligibility.
+
+Wallet collection may return optional `kycInfo.email`, normalized E.164 `phone` and original `rawPhone`. Request Apple Pay email/phone via `requiredShippingAddressFields`, with name/address via billing contact fields; Google Pay uses `isEmailRequired` and billing-address phone requirements. Samsung contact collection is opt-in via `samsungPay.collectContactInformation` (documented default false). Use phone for registration only after E.164 validation, and rawPhone for display/correction. The iOS KYC input mapper does not submit these three contact fields with `attachKycInfo`. Android contact-return/configuration changes are hunk-level evidence. Collection, contact prefill and KYC submission are distinct operations.
+
+The retained example now prefills name/address and address-update forms, retaining existing fields when a wallet field is absent and asking for review. A separate registration-screen change shows prefill before registration only in comparison hunks; it is not a fully retained/tested integration recipe. Native pins are Android 23.23.0/iOS 26.14.0: do not infer the newer native KYC API or funding-label changes have React Native bindings.
+
+> [!warning] Contradiction
+> The 0.82.0 raw changelog retrospectively places the Platform Pay contact-prefill/Samsung note under 0.81.0. The earlier retained 0.81.0 bridge/types lack these additions; the exact 0.81.0 -> 0.82.0 comparison observes them. Preserve both raw attributions, not an unsupported first-release claim. See [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 ## React Native 0.75.0 Delta
 
 ### React Native 0.77.0 KYC Typing

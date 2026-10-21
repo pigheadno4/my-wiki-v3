@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-21] ingest | Stripe React Native `0.82.0`
+
+- Approved additive full ingest with focused reading: private-preview currency selector, incompatible view/options, native mutation gaps closed and Onramp contact/hint mapping. Android lifecycle/font/build fixes and retrospective 0.81.0 note attribution remain qualified; older history/source count preserved. Details [[stripe-log]], [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]]. No SDK/device/payment execution, commit or push.
+
 ## [2026-10-21] ingest | Adyen website C26
 
 - Fifty independently approved Marketplace balance/top-up/reporting/reconciliation/component and financial-product overview references documentation sources; first full-review approvals 46/50 and 4 targeted correction reviews. 6 concepts touched (0 new); source_count 1314 = 1300 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-26/`; details [[adyen-log]]. No commit/push.

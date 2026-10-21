@@ -9,7 +9,7 @@ tags: [stripe, react-native, mobile, sdk, payments, apple-pay, google-pay, payme
 
 `@stripe/stripe-react-native` is Stripe's official React Native SDK for building native payment UIs on iOS and Android. It wraps Stripe's native iOS/Android SDKs, provides PCI-compliant card collection (data goes directly to Stripe, not your server), automatic 3DS/SCA handling, and prebuilt UI components including PaymentSheet.
 
-Latest ingested version: **0.81.0**. The cumulative history preserves the legacy `0.65.1` manual capsule and the approved `0.72.0` full baseline.
+Latest ingested version: **0.82.0**. The cumulative history preserves the legacy `0.65.1` manual capsule and the approved `0.72.0` full baseline.
 
 ## Platform requirements
 
@@ -118,6 +118,16 @@ The `0.74.0` snapshot contains an experimental `ConnectNotificationBanner` imple
 
 ## Migration notes
 
+### 0.82.0 Currency Selector and Preview Compatibility
+
+Private-preview Checkout adds `CheckoutCurrencySelectorElementView` and a nullable controller/hook `currencySelectorElement`. Supply `currencySelectorElement: {}` in creation configuration to enable it when Adaptive Pricing is available; render only the SDK-owned non-null element. The wrapper derives availability during controller creation, not a universal merchant capability. React follows native height; iOS permits one mount and detaches on removal/destruction, while Android uses an Activity-scoped presenter. This is distinct from the removed pre-0.76 placeholder.
+
+`CheckoutPaymentElementView` no longer accepts/forwards ordinary ViewProps or caller style: place layout/accessibility wrappers outside it. Checkout-specific `GooglePayConfiguration.testEnv` and `savePaymentMethodOptInBehavior`/its type are removed; ordinary PaymentSheet and Platform Pay test-environment options are separate. iOS previously mapped save opt-in; Android's old declarations had deferred setters, not demonstrated parity. Android now maps Checkout default phone, font, shapes and embedded-row appearance. Theme-aware Android payment-option icons use `loadIcon(isSystemDarkTheme)` with the existing timeout/fallback.
+
+The iOS bridge now calls `updateEmail(email)` and Android forwards nullable shipping addresses, closing the two earlier bridge limitations. Native pins advance to Android `23.23.0`/iOS `26.14.0`, not the later independently ingested native releases. Android lifecycle callbacks are registered through the Application and unregistered on module invalidation, addressing the announced JS-reload/Activity-recreation issue. Font validation accepts underscores; Gradle excludes the private TapAndPay transitive dependency for optional compile-only provisioning, while the R8 warning suppression is comparison-hunk evidence only. No native build, device or payment test establishes recovery in every lifecycle case.
+
+Onramp adds optional `countryHint`, contact-prefill fields `email`/`phone`/`rawPhone`, and Samsung `collectContactInformation`; see [[stripe-crypto-onramp]]. Contact prefill is not KYC submission, and rawPhone is not registration-ready E.164. The later raw changelog attributes the contact additions to 0.81.0, but the retained bridge comparison observes them in 0.81.0 -> 0.82.0. Preserve that distinction and all older behavior in [[source-github-stripe-react-native]] and [[changelog-github-stripe-react-native]].
+
 ### 0.81.0 Checkout and Lifecycle Bridges
 
 Private-preview Checkout now bridges `paymentElement.present()` and `confirm()` on both platforms instead of throwing the earlier not-implemented error. Presentation resolves after requesting the sheet, not after dismissal or selection. Observe the controller/hook session for the selection; confirm only the selected payment option while ready. Confirmation preserves completed/canceled/failed outcomes and paid/unpaid/noPaymentRequired status. Bridge invocation errors reject separately. Completion is not proof of paid funds; fulfill from authoritative server state/events.
@@ -198,5 +208,5 @@ The package root now exports `useCheckout`, `createCheckout` and `CheckoutPaymen
 
 ## Sources
 
-- [[source-github-stripe-react-native]] — cumulative GitHub source through v0.81.0; private-preview confirmation/presentation, lifecycle and credential correlation; older knowledge preserved
+- [[source-github-stripe-react-native]] — cumulative GitHub source through v0.82.0; private-preview currency selector, compatibility/mutation changes and Onramp prefill; older knowledge preserved
 - [[changelog-github-stripe-react-native]] — package-qualified release history and migration impact

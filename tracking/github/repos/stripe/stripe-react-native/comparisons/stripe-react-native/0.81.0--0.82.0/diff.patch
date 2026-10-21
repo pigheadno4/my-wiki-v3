@@ -1,0 +1,4285 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index f260104..add8e0d 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,9 +1,23 @@
+ # CHANGELOG
+ 
++## 0.82.0 - 2026-10-13
++
++**Changes**
++
++* Updated Stripe iOS SDK from 26.13.0 to 26.14.0.
++* Updated Stripe Android SDK from 23.22.0 to 23.23.0.
++
++**Fixes**
++
++* [Fixed] Android: Fixed custom font validation rejecting font resource names containing underscores in PaymentSheet and PaymentMethodMessagingElement. ([#2573](https://github.com/stripe/stripe-react-native/pull/2573))
++* [Fixed] Fixed an issue where PaymentSheet could close immediately on Android after a JavaScript reload and Activity recreation.
++* [Fixed] Android: Fixed R8 build failures when the optional push provisioning dependency is not included. ([#2715](https://github.com/stripe/stripe-react-native/pull/2715))
++
+ ## 0.81.0 - 2026-10-06
+ 
+ **Features**
+ 
++* [Added] Onramp: Expose Platform Pay email, E.164 phone, and raw phone for Link registration prefill on iOS and Android, and add Samsung Pay contact collection configuration.
+ * [Added] Added `financialConnectionsSessionId` to Financial Connections `FinancialConnectionsEvent`. Events are now emitted once the session identifier is available.
+ 
+ **Changes**
+diff --git a/android/build.gradle b/android/build.gradle
+index 6a2cb97..68e7ac0 100644
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -135,6 +135,7 @@ android {
+   // When running tests on bitrise we need to make sure that the test artifacts are inside
+   // the root project directory (in that case example/android), or it won't be picked up.
+   testOptions {
++    unitTests.includeAndroidResources = true
+     unitTests.all { Test test ->
+       def outputRoot = rootProject.layout.buildDirectory.get().asFile
+       test.reports.junitXml.outputLocation.set(new File(outputRoot, "test-results/${test.name}"))
+@@ -174,7 +175,11 @@ dependencies {
+   testImplementation "com.google.android.gms:play-services-wallet:20.0.0"
+ 
+   // Users need to declare this dependency on their own, otherwise all methods are a no-op
+-  compileOnly "com.stripe:stripe-android-issuing-push-provisioning:1.3.0"
++  compileOnly("com.stripe:stripe-android-issuing-push-provisioning:1.3.0") {
++    // play-services-tapandpay is a private Google SDK that apps must provide. AGP 9
++    // resolves compileOnly dependencies for release lint, which fails without it.
++    exclude group: "com.google.android.gms", module: "play-services-tapandpay"
++  }
+ 
+   testImplementation "junit:junit:4.13"
+   testImplementation "com.google.truth:truth:1.4.5"
+diff --git a/android/gradle.properties b/android/gradle.properties
+index b0a00fc..90ce389 100644
+--- a/android/gradle.properties
++++ b/android/gradle.properties
+@@ -3,4 +3,4 @@ StripeSdk_compileSdkVersion=36
+ StripeSdk_targetSdkVersion=36
+ StripeSdk_minSdkVersion=23
+ # Keep StripeSdk_stripeVersion in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/android/gradle.properties
+-StripeSdk_stripeVersion=23.22.0
++StripeSdk_stripeVersion=23.23.0
+diff --git a/android/proguard-rules.txt b/android/proguard-rules.txt
+index 4c37bf5..c57e0dd 100644
+--- a/android/proguard-rules.txt
++++ b/android/proguard-rules.txt
+@@ -9,6 +9,11 @@
+ # play-services-tapandpay is a private Google SDK that must be provided by the app.
+ # Suppress R8 warnings when it is absent (e.g. in the example app build).
+ -dontwarn com.google.android.gms.tapandpay.**
++
++# stripe-android-issuing-push-provisioning is a compileOnly dependency that apps add
++# only when they use push provisioning. Suppress R8 warnings when it is absent.
++-dontwarn com.stripe.android.pushProvisioning.**
++
+ -dontwarn com.samsung.android.sdk.samsungpay.**
+ -keep class com.samsung.android.sdk.** { *; }
+ -keep interface com.samsung.android.sdk.** { *; }
+diff --git a/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt b/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt
+index 72dc861..5694b04 100644
+--- a/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt
++++ b/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementView.kt
+@@ -16,12 +16,14 @@ import androidx.compose.runtime.setValue
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.layout.layout
+ import androidx.compose.ui.layout.onSizeChanged
++import androidx.compose.ui.platform.LocalConfiguration
+ import androidx.compose.ui.platform.LocalDensity
+ import androidx.compose.ui.unit.IntOffset
+ import androidx.compose.ui.unit.dp
+ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.uimanager.ThemedReactContext
+ import com.reactnativestripesdk.utils.KeepJsAwakeTask
++import com.reactnativestripesdk.utils.isDarkTheme
+ import com.reactnativestripesdk.utils.mapFromConfirmationToken
+ import com.reactnativestripesdk.utils.mapFromCustomPaymentMethod
+ import com.reactnativestripesdk.utils.mapFromPaymentMethod
+@@ -334,9 +336,10 @@ class EmbeddedPaymentElementView(
+       }
+     }
+ 
+-    LaunchedEffect(embedded) {
++    val isSystemDarkTheme = LocalConfiguration.current.isDarkTheme()
++    LaunchedEffect(embedded, isSystemDarkTheme) {
+       embedded.paymentOption.collect { opt ->
+-        val optMap = opt?.toWritableMap()
++        val optMap = opt?.toWritableMap(isSystemDarkTheme)
+         val payload =
+           Arguments.createMap().apply {
+             putMap("paymentOption", optMap)
+diff --git a/android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt b/android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt
+index 19612a2..3e2495b 100644
+--- a/android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt
++++ b/android/src/main/java/com/reactnativestripesdk/PaymentOptionDisplayDataMapper.kt
+@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.TextUnit
+ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.WritableMap
+ import com.reactnativestripesdk.utils.mapFromPaymentSheetBillingDetails
++import com.stripe.android.core.reactnative.ReactNativeSdkInternal
+ import com.stripe.android.paymentelement.EmbeddedPaymentElement
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.withContext
+@@ -21,7 +22,8 @@ import kotlinx.coroutines.withTimeout
+  * Serialize Stripe's PaymentOptionDisplayData into a WritableMap
+  * that can be sent over the RN bridge.
+  */
+-suspend fun EmbeddedPaymentElement.PaymentOptionDisplayData.toWritableMap(): WritableMap =
++@OptIn(ReactNativeSdkInternal::class)
++suspend fun EmbeddedPaymentElement.PaymentOptionDisplayData.toWritableMap(isSystemDarkTheme: Boolean): WritableMap =
+   Arguments.createMap().apply {
+     putString("label", label)
+     putString("paymentMethodType", paymentMethodType)
+@@ -41,7 +43,7 @@ suspend fun EmbeddedPaymentElement.PaymentOptionDisplayData.toWritableMap(): Wri
+           val drawable =
+             withTimeout(IMAGE_LOAD_TIMEOUT_MS) {
+               withContext(Dispatchers.IO) {
+-                imageLoader()
++                loadIcon(isSystemDarkTheme)
+               }
+             }
+           getBitmapFromDrawable(drawable)?.let { bitmap ->
+@@ -49,7 +51,7 @@ suspend fun EmbeddedPaymentElement.PaymentOptionDisplayData.toWritableMap(): Wri
+           } ?: ""
+         }
+       } catch (_: Exception) {
+-        // If imageLoader fails or times out, return empty string
++        // If loading the icon fails or times out, return empty string
+         ""
+       }
+     putString("image", imageBase64)
+diff --git a/android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt b/android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt
+index 703961c..249959e 100644
+--- a/android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt
++++ b/android/src/main/java/com/reactnativestripesdk/PaymentSheetAppearance.kt
+@@ -2,7 +2,6 @@ package com.reactnativestripesdk
+ 
+ import android.annotation.SuppressLint
+ import android.content.Context
+-import android.content.res.Configuration
+ import androidx.core.graphics.toColorInt
+ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.ReadableMap
+@@ -12,6 +11,7 @@ import com.reactnativestripesdk.utils.getBooleanOrNull
+ import com.reactnativestripesdk.utils.getDoubleOrNull
+ import com.reactnativestripesdk.utils.getFloatOr
+ import com.reactnativestripesdk.utils.getFloatOrNull
++import com.reactnativestripesdk.utils.isDarkTheme
+ import com.stripe.android.paymentelement.AppearanceAPIAdditionsPreview
+ import com.stripe.android.paymentsheet.PaymentSheet
+ import com.stripe.android.uicore.StripeThemeDefaults
+@@ -517,11 +517,7 @@ private fun dynamicColorFromParams(
+   // First check if it's a nested map { "light": "#RRGGBB", "dark": "#RRGGBB" }
+   if (params.hasKey(key) && params.getType(key) == ReadableType.Map) {
+     val colorMap = params.getMap(key)
+-    val isDark =
+-      (
+-        context.resources.configuration.uiMode
+-          and Configuration.UI_MODE_NIGHT_MASK
+-      ) == Configuration.UI_MODE_NIGHT_YES
++    val isDark = context.resources.configuration.isDarkTheme()
+ 
+     // Pick the hex for current mode, or null
+     val hex =
+@@ -554,9 +550,9 @@ internal fun getFontResId(
+       ?: throw PaymentSheetAppearanceException(
+         "$fontErrorPrefix expected String for font.$key, but received null.",
+       )
+-  if (Regex("[^a-z0-9]").containsMatchIn(fontFileName)) {
++  if (Regex("[^a-zA-Z0-9_]").containsMatchIn(fontFileName)) {
+     throw PaymentSheetAppearanceException(
+-      "$fontErrorPrefix appearance.font.$key should only contain lowercase alphanumeric characters on Android," +
++      "$fontErrorPrefix appearance.font.$key should only contain alphanumeric characters and underscores on Android," +
+         " but received '$fontFileName'. This value must match the filename in android/app/src/main/res/font",
+     )
+   }
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+index 20b1afe..703202d 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkModule.kt
+@@ -32,6 +32,7 @@ import com.reactnativestripesdk.checkout.CheckoutConfigurationMapper
+ import com.reactnativestripesdk.checkout.CheckoutSessionSerializer
+ import com.reactnativestripesdk.checkout.NativeCheckoutControllerInstance
+ import com.reactnativestripesdk.checkout.checkoutErrorCode
++import com.reactnativestripesdk.checkout.checkoutIconContext
+ import com.reactnativestripesdk.customersheet.CustomerSheetManager
+ import com.reactnativestripesdk.pushprovisioning.PushProvisioningProxy
+ import com.reactnativestripesdk.pushprovisioning.TapAndPayProxy
+@@ -103,6 +104,8 @@ class StripeSdkModule(
+   reactContext: ReactApplicationContext,
+ ) : NativeStripeSdkModuleSpec(reactContext) {
+ 
++  private val application = reactContext.applicationContext as Application
++
+   var cardFieldView: CardFieldView? = null
+   var cardFormView: CardFormView? = null
+ 
+@@ -142,6 +145,7 @@ class StripeSdkModule(
+   val eventEmitter: EventEmitterCompat by lazy { EventEmitterCompat(reactApplicationContext) }
+ 
+   override fun invalidate() {
++    application.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks)
+     checkoutControllersInvalidated = true
+     super.invalidate()
+ 
+@@ -1460,12 +1464,14 @@ class StripeSdkModule(
+           val nativeSession = requireNotNull(controller.session.value) {
+             "Checkout did not return a session after configuration."
+           }
+-          val serializedSession = CheckoutSessionSerializer.serialize(nativeSession)
++          val serializedSession =
++            CheckoutSessionSerializer.serialize(nativeSession, reactApplicationContext.checkoutIconContext())
+           val instance = NativeCheckoutControllerInstance(
+             controller = controller,
+             eventEmitter = eventEmitter,
+             scope = scope,
+             initialSession = serializedSession,
++            context = reactApplicationContext,
+           )
+           check(!checkoutControllersInvalidated) { "Stripe SDK was invalidated." }
+           scope.coroutineContext.ensureActive()
+@@ -1474,6 +1480,10 @@ class StripeSdkModule(
+           promise.resolve(
+             Arguments.createMap().apply {
+               putMap("session", serializedSession.copy())
++              putBoolean(
++                "isCurrencySelectorAvailable",
++                params.hasKey("currencySelectorElement") && nativeSession.isCurrencySelectorAvailable,
++              )
+             },
+           )
+         } catch (error: Exception) {
+@@ -1541,18 +1551,7 @@ class StripeSdkModule(
+       val address = params.getMap("address")?.let {
+         CheckoutConfigurationMapper.mapAddress(it)
+       }
+-      // Native Checkout currently requires an address and has no clearing API.
+-      // TODO(porter): Forward null addresses once the Android SDK supports clearing shipping details.
+-      if (address == null) {
+-        Result.failure(
+-          IllegalStateException(
+-            "The installed Stripe Android SDK does not support " +
+-              "CheckoutController.updateShippingAddress(name, address) yet.",
+-          ),
+-        )
+-      } else {
+-        controller.updateShippingAddress(name, address)
+-      }
++      controller.updateShippingAddress(name, address)
+     }
+   }
+ 
+@@ -2158,10 +2157,8 @@ class StripeSdkModule(
+    */
+   private fun preventActivityRecreation() {
+     isRecreatingReactActivity = false
+-    reactApplicationContext.currentActivity?.application?.unregisterActivityLifecycleCallbacks(
+-      activityLifecycleCallbacks
+-    )
+-    reactApplicationContext.currentActivity?.application?.registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
++    application.unregisterActivityLifecycleCallbacks(activityLifecycleCallbacks)
++    application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
+   }
+ 
+   private fun setupComposeCompatView() {
+diff --git a/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt b/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt
+index 4b4cefe..a2dd7f9 100644
+--- a/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt
++++ b/android/src/main/java/com/reactnativestripesdk/StripeSdkPackage.kt
+@@ -8,6 +8,7 @@ import com.facebook.react.module.model.ReactModuleInfo
+ import com.facebook.react.module.model.ReactModuleInfoProvider
+ import com.facebook.react.uimanager.ViewManager
+ import com.reactnativestripesdk.addresssheet.AddressSheetViewManager
++import com.reactnativestripesdk.checkout.CheckoutCurrencySelectorElementViewManager
+ import com.reactnativestripesdk.checkout.CheckoutPaymentElementViewManager
+ import com.reactnativestripesdk.pushprovisioning.AddToWalletButtonManager
+ 
+@@ -62,6 +63,7 @@ class StripeSdkPackage : BaseReactPackage() {
+       AddressSheetViewManager(),
+       EmbeddedPaymentElementViewManager(),
+       CheckoutPaymentElementViewManager(),
++      CheckoutCurrencySelectorElementViewManager(),
+       NavigationBarManager(),
+       PaymentMethodMessagingElementViewManager(),
+     )
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
+index 3c83fa3..ece9abc 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapper.kt
+@@ -2,19 +2,24 @@ package com.reactnativestripesdk.checkout
+ 
+ import android.annotation.SuppressLint
+ import android.content.Context
++import androidx.compose.ui.graphics.Color
+ import androidx.core.graphics.toColorInt
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.bridge.ReadableType
+ import com.reactnativestripesdk.getFontResId
+ import com.reactnativestripesdk.utils.PaymentSheetAppearanceException
+ import com.reactnativestripesdk.utils.forEachKey
++import com.reactnativestripesdk.utils.getBooleanOrNull
+ import com.reactnativestripesdk.utils.getFloatOr
+ import com.reactnativestripesdk.utils.getFloatOrNull
+ import com.reactnativestripesdk.utils.getIntegerList
+ import com.reactnativestripesdk.utils.getStringList
++import com.reactnativestripesdk.utils.isDarkTheme
+ import com.reactnativestripesdk.utils.mapToPreferredNetworks
+ import com.stripe.android.checkout.CheckoutController
++import com.stripe.android.elements.CurrencySelectorElement
+ import com.stripe.android.elements.PaymentElement
++import com.stripe.android.elements.PaymentElement.Configuration.Appearance.Embedded.RowStyle
+ import com.stripe.android.model.PaymentMethod
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import com.stripe.android.uicore.StripeThemeDefaults
+@@ -47,6 +52,9 @@ internal object CheckoutConfigurationMapper {
+         context = context,
+       ),
+     )
++    params.getMap("currencySelectorElement")?.let {
++      configuration.currencySelectorElement(mapCurrencySelectorElement(it, context))
++    }
+ 
+     return MappedCheckoutConfiguration(
+       clientSecret = clientSecret,
+@@ -55,6 +63,76 @@ internal object CheckoutConfigurationMapper {
+     )
+   }
+ 
++  private fun mapCurrencySelectorElement(
++    params: ReadableMap,
++    context: Context,
++  ): CurrencySelectorElement.Configuration {
++    val configuration = CurrencySelectorElement.Configuration()
++    val appearanceParams = params.getMap("appearance") ?: return configuration
++    val appearance = CurrencySelectorElement.Configuration.Appearance()
++    appearanceParams.getFloatOrNull("contentVerticalPadding")?.let(appearance::contentVerticalPaddingDp)
++    mapCurrencySelectorShapes(appearanceParams, appearance)
++    mapCurrencySelectorFont(appearanceParams, appearance, context)
++    mapCurrencySelectorLabel(appearanceParams, appearance)
++    mapCurrencySelectorColors(appearanceParams, appearance, context)
++    return configuration.appearance(appearance)
++  }
++
++  private fun mapCurrencySelectorShapes(
++    params: ReadableMap,
++    appearance: CurrencySelectorElement.Configuration.Appearance,
++  ) {
++    params.getMap("shapes")?.let { shapes ->
++      shapes.getFloatOrNull("cornerRadius")?.let(appearance::cornerRadiusDp)
++      shapes.getFloatOrNull("borderWidth")?.let(appearance::borderWidthDp)
++    }
++  }
++
++  private fun mapCurrencySelectorFont(
++    params: ReadableMap,
++    appearance: CurrencySelectorElement.Configuration.Appearance,
++    context: Context,
++  ) {
++    params.getMap("font")?.let { font ->
++      appearance.fontResId(getFontResId(font, "family", context))
++      font.getFloatOrNull("scale")?.let(appearance::sizeScaleFactor)
++    }
++  }
++
++  private fun mapCurrencySelectorLabel(
++    params: ReadableMap,
++    appearance: CurrencySelectorElement.Configuration.Appearance,
++  ) {
++    params.getString("labelContent")?.let { value ->
++      appearance.labelContent(
++        when (value) {
++          "automatic" -> CurrencySelectorElement.Configuration.Appearance.LabelContent.AUTOMATIC
++          "currencyCode" -> CurrencySelectorElement.Configuration.Appearance.LabelContent.CURRENCY_CODE
++          "amount" -> CurrencySelectorElement.Configuration.Appearance.LabelContent.AMOUNT
++          else -> unsupportedValue("currencySelectorElement.appearance.labelContent", value)
++        },
++      )
++    }
++  }
++
++  private fun mapCurrencySelectorColors(
++    params: ReadableMap,
++    appearance: CurrencySelectorElement.Configuration.Appearance,
++    context: Context,
++  ) {
++    params.getMap("colors")?.let { colors ->
++      val isLight = !context.resources.configuration.isDarkTheme()
++      val palette = colors.getMap(if (isLight) "light" else "dark") ?: colors
++      palette.color("border", isLight)?.let { appearance.borderColor(Color(it)) }
++      palette.color("background", isLight)?.let { appearance.background(Color(it)) }
++      palette.color("selectedBackground", isLight)?.let { appearance.selectedBackground(Color(it)) }
++      palette.color("text", isLight)?.let { appearance.textColor(Color(it)) }
++      palette.color("selectedText", isLight)?.let { appearance.selectedTextColor(Color(it)) }
++      palette.color("textSecondary", isLight)?.let { appearance.textSecondaryColor(Color(it)) }
++      palette.color("danger", isLight)?.let { appearance.dangerColor(Color(it)) }
++    }
++  }
++
+   private fun mapDefaults(params: ReadableMap): CheckoutController.Configuration.Defaults {
+     val defaults = CheckoutController.Configuration.Defaults()
+     params.getMap("billingDetails")?.let {
+@@ -66,8 +144,9 @@ internal object CheckoutConfigurationMapper {
+     if (params.hasKey("email")) {
+       defaults.email(params.getString("email"))
+     }
+-    // TODO(porter): Uncomment when the reviewed native setter ships.
+-    // defaults.phone(params.getString("phone"))
++    if (params.hasKey("phone")) {
++      defaults.phone(params.getString("phone"))
++    }
+     return defaults
+   }
+ 
+@@ -109,10 +188,6 @@ internal object CheckoutConfigurationMapper {
+       configuration.embeddedViewDisplaysMandateText(params.getBoolean("displaysMandateText"))
+     }
+ 
+-    // TODO(porter): Uncomment when the reviewed native setter ships.
+-    // configuration.savePaymentMethodOptInBehavior(
+-    //   mapSavePaymentMethodOptInBehavior(params.getString("savePaymentMethodOptInBehavior")),
+-    // )
+     params.getIntegerList("preferredNetworks")?.let {
+       configuration.preferredNetworks(mapPreferredNetworks(it))
+     }
+@@ -176,10 +251,6 @@ internal object CheckoutConfigurationMapper {
+       params.getString("label")?.let(::label)
+       params.getString("buttonType")?.let { buttonType(mapGooglePayButtonType(it)) }
+       params.getStringList("additionalEnabledNetworks")?.let(::additionalEnabledNetworks)
+-      // TODO(porter): Uncomment when the reviewed native environment initializer ships.
+-      // environment(
+-      //   if (params.getBooleanOr("testEnv", false)) Environment.Test else Environment.Production,
+-      // )
+     }
+ 
+   internal fun mapGooglePayButtonType(
+@@ -236,6 +307,21 @@ internal object CheckoutConfigurationMapper {
+       appearance.colorsDark(mapColors(colors.getMap("dark") ?: colors, isLight = false))
+     }
+     params?.getMap("primaryButton")?.let { appearance.primaryButton(mapPrimaryButton(it, context)) }
++    params?.getMap("font")?.let { font ->
++      val typography = PaymentElement.Configuration.Appearance.Typography()
++      getFontResId(font, "family", context)?.let(typography::fontResId)
++      font.getFloatOrNull("scale")?.let(typography::sizeScaleFactor)
++      appearance.typography(typography)
++    }
++    params?.getMap("shapes")?.let { shapes ->
++      val mapped = PaymentElement.Configuration.Appearance.Shapes()
++      shapes.getFloatOrNull("borderRadius")?.let(mapped::cornerRadiusDp)
++      shapes.getFloatOrNull("borderWidth")?.let(mapped::borderStrokeWidthDp)
++      appearance.shapes(mapped)
++    }
++    params?.getMap("embeddedPaymentElement")?.let {
++      appearance.embeddedAppearance(mapEmbeddedAppearance(it))
++    }
+ 
+     params?.getMap("formInsetValues")?.let { insets ->
+       val defaults = StripeThemeDefaults.formInsets
+@@ -248,10 +334,110 @@ internal object CheckoutConfigurationMapper {
+         ),
+       )
+     }
+-    // TODO(porter): Map root font, shapes, and embedded appearance when their reviewed setters ship.
+     return appearance
+   }
+ 
++  private fun mapEmbeddedAppearance(
++    params: ReadableMap,
++  ): PaymentElement.Configuration.Appearance.Embedded {
++    val embedded = PaymentElement.Configuration.Appearance.Embedded()
++    params.getMap("row")?.let { row ->
++      embedded.rowStyle(mapEmbeddedRowStyle(row))
++    }
++    return embedded
++  }
++
++  private fun mapEmbeddedRowStyle(params: ReadableMap): RowStyle =
++    when (val style = params.getString("style") ?: "flatWithRadio") {
++      "flatWithRadio" -> mapFlatWithRadio(params)
++      "flatWithCheckmark" -> mapFlatWithCheckmark(params)
++      "flatWithDisclosure" -> mapFlatWithDisclosure(params)
++      "floatingButton" -> RowStyle.FloatingButton().apply {
++        params.getFloatOrNull("additionalInsets")?.let(::additionalInsetsDp)
++        params.getMap("floating")?.getFloatOrNull("spacing")?.let(::spacingDp)
++      }
++      else -> unsupportedValue("paymentElement.appearance.embeddedPaymentElement.row.style", style)
++    }
++
++  private fun mapFlatWithRadio(params: ReadableMap): RowStyle.FlatWithRadio {
++    val flat = params.getMap("flat")
++    val radio = flat?.getMap("radio")
++    return RowStyle.FlatWithRadio().apply {
++      flat.getFloatOrNull("separatorThickness")?.let(::separatorThicknessDp)
++      flat?.getMap("separatorInsets")?.getFloatOrNull("left")?.let(::startSeparatorInsetDp)
++      flat?.getMap("separatorInsets")?.getFloatOrNull("right")?.let(::endSeparatorInsetDp)
++      flat.getBooleanOrNull("topSeparatorEnabled")?.let(::topSeparatorEnabled)
++      flat.getBooleanOrNull("bottomSeparatorEnabled")?.let(::bottomSeparatorEnabled)
++      params.getFloatOrNull("additionalInsets")?.let(::additionalVerticalInsetsDp)
++      colorsLight(mapRadioColors(flat, radio, true))
++      colorsDark(mapRadioColors(flat, radio, false))
++    }
++  }
++
++  private fun mapRadioColors(
++    flat: ReadableMap?,
++    radio: ReadableMap?,
++    isLight: Boolean,
++  ): RowStyle.FlatWithRadio.Colors {
++    val colors = if (isLight) RowStyle.FlatWithRadio.Colors.light() else RowStyle.FlatWithRadio.Colors.dark()
++    flat.color("separatorColor", isLight)?.let(colors::separatorColor)
++    radio.color("selectedColor", isLight)?.let(colors::selectedColor)
++    radio.color("unselectedColor", isLight)?.let(colors::unselectedColor)
++    return colors
++  }
++
++  private fun mapFlatWithCheckmark(params: ReadableMap): RowStyle.FlatWithCheckmark {
++    val flat = params.getMap("flat")
++    val checkmark = flat?.getMap("checkmark")
++    return RowStyle.FlatWithCheckmark().apply {
++      flat.getFloatOrNull("separatorThickness")?.let(::separatorThicknessDp)
++      flat?.getMap("separatorInsets")?.getFloatOrNull("left")?.let(::startSeparatorInsetDp)
++      flat?.getMap("separatorInsets")?.getFloatOrNull("right")?.let(::endSeparatorInsetDp)
++      flat.getBooleanOrNull("topSeparatorEnabled")?.let(::topSeparatorEnabled)
++      flat.getBooleanOrNull("bottomSeparatorEnabled")?.let(::bottomSeparatorEnabled)
++      params.getFloatOrNull("additionalInsets")?.let(::additionalVerticalInsetsDp)
++      colorsLight(mapCheckmarkColors(flat, checkmark, true))
++      colorsDark(mapCheckmarkColors(flat, checkmark, false))
++    }
++  }
++
++  private fun mapCheckmarkColors(
++    flat: ReadableMap?,
++    checkmark: ReadableMap?,
++    isLight: Boolean,
++  ): RowStyle.FlatWithCheckmark.Colors {
++    val colors = if (isLight) RowStyle.FlatWithCheckmark.Colors.light() else RowStyle.FlatWithCheckmark.Colors.dark()
++    flat.color("separatorColor", isLight)?.let(colors::separatorColor)
++    checkmark.color("color", isLight)?.let(colors::checkmarkColor)
++    return colors
++  }
++
++  private fun mapFlatWithDisclosure(params: ReadableMap): RowStyle.FlatWithDisclosure {
++    val flat = params.getMap("flat")
++    val disclosure = flat?.getMap("disclosure")
++    return RowStyle.FlatWithDisclosure().apply {
++      flat.getFloatOrNull("separatorThickness")?.let(::separatorThicknessDp)
++      flat?.getMap("separatorInsets")?.getFloatOrNull("left")?.let(::startSeparatorInsetDp)
++      flat?.getMap("separatorInsets")?.getFloatOrNull("right")?.let(::endSeparatorInsetDp)
++      flat.getBooleanOrNull("topSeparatorEnabled")?.let(::topSeparatorEnabled)
++      flat.getBooleanOrNull("bottomSeparatorEnabled")?.let(::bottomSeparatorEnabled)
++      params.getFloatOrNull("additionalInsets")?.let(::additionalVerticalInsetsDp)
++      colorsLight(mapDisclosureColors(flat, disclosure, true))
++      colorsDark(mapDisclosureColors(flat, disclosure, false))
++    }
++  }
++
++  private fun mapDisclosureColors(
++    flat: ReadableMap?,
++    disclosure: ReadableMap?,
++    isLight: Boolean,
++  ): RowStyle.FlatWithDisclosure.Colors {
++    val colors = if (isLight) RowStyle.FlatWithDisclosure.Colors.light() else RowStyle.FlatWithDisclosure.Colors.dark()
++    flat.color("separatorColor", isLight)?.let(colors::separatorColor)
++    disclosure.color("color", isLight)?.let(colors::disclosureColor)
++    return colors
++  }
++
+   internal fun mapThemeMode(style: String): PaymentElement.Configuration.Appearance.ThemeMode =
+     when (style) {
+       "alwaysLight" -> PaymentElement.Configuration.Appearance.ThemeMode.AlwaysLight
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt
+new file mode 100644
+index 0000000..b0b7351
+--- /dev/null
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementView.kt
+@@ -0,0 +1,106 @@
++package com.reactnativestripesdk.checkout
++
++import androidx.activity.ComponentActivity
++import androidx.compose.foundation.layout.Box
++import androidx.compose.foundation.layout.requiredHeight
++import androidx.compose.runtime.Composable
++import androidx.compose.runtime.getValue
++import androidx.compose.runtime.mutableStateOf
++import androidx.compose.runtime.remember
++import androidx.compose.runtime.setValue
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.layout.layout
++import androidx.compose.ui.layout.onSizeChanged
++import androidx.compose.ui.platform.LocalDensity
++import androidx.compose.ui.unit.IntOffset
++import androidx.compose.ui.unit.dp
++import com.facebook.react.bridge.Arguments
++import com.facebook.react.bridge.WritableMap
++import com.facebook.react.uimanager.ThemedReactContext
++import com.facebook.react.uimanager.UIManagerHelper
++import com.facebook.react.uimanager.events.Event
++import com.reactnativestripesdk.StripeAbstractComposeView
++import com.reactnativestripesdk.StripeSdkModule
++import com.stripe.android.elements.CurrencySelectorElement
++import com.stripe.android.paymentelement.CheckoutSessionPreview
++
++/** Displays the Currency Selector Element owned by a registered Checkout controller. */
++@OptIn(CheckoutSessionPreview::class)
++class CheckoutCurrencySelectorElementView(
++  private val reactContext: ThemedReactContext,
++) : StripeAbstractComposeView(reactContext) {
++  private var controllerId: String? = null
++  private var element by mutableStateOf<CurrencySelectorElement?>(null)
++  private var removeObserver: (() -> Unit)? = null
++
++  fun setControllerId(value: String?) {
++    if (controllerId == value) return
++    detach()
++    controllerId = value
++    attach()
++  }
++
++  override fun onAttachedToWindow() {
++    super.onAttachedToWindow()
++    attach()
++  }
++
++  override fun onDetachedFromWindow() {
++    detach()
++    super.onDetachedFromWindow()
++  }
++
++  private fun attach() {
++    if (!isAttachedToWindow || element != null) return
++    val id = controllerId ?: return
++    val module = reactContext.getNativeModule(StripeSdkModule::class.java) ?: return
++    val instance = module.checkoutControllers[id] ?: return
++    val activity = reactContext.currentActivity as? ComponentActivity ?: return
++    element = instance.currencySelectorElement(activity)
++    removeObserver = instance.observeDestruction { detach() }
++  }
++
++  fun detach() {
++    removeObserver?.invoke()
++    removeObserver = null
++    element = null
++  }
++
++  @Composable
++  override fun Content() {
++    val currencySelectorElement = element ?: return
++    val density = LocalDensity.current
++    var heightDp by remember(currencySelectorElement) { mutableStateOf(1.dp) }
++    Box(
++      Modifier
++        .requiredHeight(heightDp)
++        .onSizeChanged { size ->
++          val height = with(density) { size.height.toDp() }
++          if (height != heightDp) {
++            heightDp = height
++            UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)?.dispatchEvent(
++              CheckoutCurrencySelectorHeightEvent(reactContext.surfaceId, id, height.value),
++            )
++          }
++        }
++        .layout { measurable, constraints ->
++          val height = measurable.minIntrinsicHeight(constraints.maxWidth).coerceAtLeast(1)
++          val placeable = measurable.measure(constraints.copy(minHeight = height, maxHeight = height))
++          layout(constraints.maxWidth, placeable.height) {
++            placeable.placeRelative(IntOffset.Zero)
++          }
++        },
++    ) { currencySelectorElement.Content() }
++  }
++}
++
++private class CheckoutCurrencySelectorHeightEvent(
++  surfaceId: Int,
++  viewId: Int,
++  private val height: Float,
++) : Event<CheckoutCurrencySelectorHeightEvent>(surfaceId, viewId) {
++  override fun getEventName() = "topHeightChanged"
++  override fun getEventData(): WritableMap = Arguments.createMap().apply {
++    putDouble("height", height.toDouble())
++  }
++}
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt
+new file mode 100644
+index 0000000..5bf6c66
+--- /dev/null
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutCurrencySelectorElementViewManager.kt
+@@ -0,0 +1,37 @@
++package com.reactnativestripesdk.checkout
++
++import com.facebook.react.module.annotations.ReactModule
++import com.facebook.react.uimanager.ThemedReactContext
++import com.facebook.react.uimanager.ViewGroupManager
++import com.facebook.react.uimanager.annotations.ReactProp
++import com.facebook.react.viewmanagers.CheckoutCurrencySelectorElementViewManagerDelegate
++import com.facebook.react.viewmanagers.CheckoutCurrencySelectorElementViewManagerInterface
++
++@ReactModule(name = CheckoutCurrencySelectorElementViewManager.NAME)
++class CheckoutCurrencySelectorElementViewManager :
++  ViewGroupManager<CheckoutCurrencySelectorElementView>(),
++  CheckoutCurrencySelectorElementViewManagerInterface<CheckoutCurrencySelectorElementView> {
++  companion object {
++    const val NAME = "CheckoutCurrencySelectorElementView"
++  }
++
++  private val delegate = CheckoutCurrencySelectorElementViewManagerDelegate(this)
++  override fun getName() = NAME
++  override fun getDelegate() = delegate
++  override fun createViewInstance(context: ThemedReactContext) = CheckoutCurrencySelectorElementView(context)
++  override fun needsCustomLayoutForChildren() = true
++  override fun getExportedCustomDirectEventTypeConstants() = mutableMapOf(
++    "topHeightChanged" to mutableMapOf("registrationName" to "onHeightChanged"),
++  )
++
++  @ReactProp(name = "controllerId")
++  override fun setControllerId(view: CheckoutCurrencySelectorElementView, value: String?) {
++    view.setControllerId(value)
++  }
++
++  override fun onDropViewInstance(view: CheckoutCurrencySelectorElementView) {
++    view.detach()
++    view.handleOnDropViewInstance()
++    super.onDropViewInstance(view)
++  }
++}
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt
+index d3f7641..70fb55a 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializer.kt
+@@ -1,22 +1,26 @@
+ package com.reactnativestripesdk.checkout
+ 
++import android.content.Context
+ import com.facebook.react.bridge.Arguments
++import com.facebook.react.bridge.ReactApplicationContext
+ import com.facebook.react.bridge.WritableArray
+ import com.facebook.react.bridge.WritableMap
+ import com.reactnativestripesdk.convertDrawableToBase64
+ import com.reactnativestripesdk.toHtmlString
+ import com.reactnativestripesdk.utils.createError
++import com.reactnativestripesdk.utils.isDarkTheme
+ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.checkout.CheckoutController.Session
++import com.stripe.android.core.reactnative.ReactNativeSdkInternal
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import kotlinx.coroutines.CancellationException
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.withContext
+ import kotlinx.coroutines.withTimeoutOrNull
+ 
+-@OptIn(CheckoutSessionPreview::class)
++@OptIn(CheckoutSessionPreview::class, ReactNativeSdkInternal::class)
+ internal object CheckoutSessionSerializer {
+-  suspend fun serialize(session: Session): WritableMap =
++  suspend fun serialize(session: Session, context: Context): WritableMap =
+     Arguments.createMap().apply {
+       putString("id", session.id)
+       putBoolean("livemode", session.livemode)
+@@ -25,7 +29,7 @@ internal object CheckoutSessionSerializer {
+       session.tax?.let { putMap("tax", serializeTax(it)) }
+       putMap("status", serializeStatus(session.status))
+       session.paymentOption?.let {
+-        putMap("paymentOption", serializePaymentOption(it))
++        putMap("paymentOption", serializePaymentOption(it, context))
+       }
+       putInt("minorUnitsAmountDivisor", session.minorUnitsAmountDivisor)
+       session.businessName?.let { putString("businessName", it) }
+@@ -174,15 +178,17 @@ internal object CheckoutSessionSerializer {
+ 
+   private suspend fun serializePaymentOption(
+     paymentOption: Session.PaymentOptionDisplayData,
++    context: Context,
+   ): WritableMap = Arguments.createMap().apply {
+     putString("label", paymentOption.label)
+     putString("paymentMethodType", paymentOption.paymentMethodType)
+     paymentOption.mandateText?.let { putString("mandateHTML", it.toHtmlString()) }
+     paymentOption.billingDetails?.let { putMap("billingDetails", serializeBillingDetails(it)) }
++    val isSystemDarkTheme = context.resources.configuration.isDarkTheme()
+     val imageBase64 = try {
+       withContext(Dispatchers.Default) {
+         withTimeoutOrNull(IMAGE_TIMEOUT_MILLIS) {
+-          val image = withContext(Dispatchers.IO) { paymentOption.imageLoader() }
++          val image = withContext(Dispatchers.IO) { paymentOption.loadIcon(isSystemDarkTheme) }
+           convertDrawableToBase64(image)
+         }
+       }
+@@ -217,3 +223,7 @@ internal object CheckoutSessionSerializer {
+ }
+ 
+ private const val IMAGE_TIMEOUT_MILLIS = 5_000L
++
++/** Use the current host's configuration, or the application's while no activity is available. */
++internal fun ReactApplicationContext.checkoutIconContext(): Context =
++  currentActivity?.takeUnless { it.isDestroyed } ?: this
+diff --git a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+index bba5dcd..2bfa338 100644
+--- a/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
++++ b/android/src/main/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstance.kt
+@@ -5,11 +5,13 @@ import androidx.annotation.MainThread
+ import androidx.lifecycle.Lifecycle
+ import androidx.lifecycle.LifecycleEventObserver
+ import com.facebook.react.bridge.Arguments
++import com.facebook.react.bridge.ReactApplicationContext
+ import com.facebook.react.bridge.UiThreadUtil
+ import com.facebook.react.bridge.WritableMap
+ import com.reactnativestripesdk.EventEmitterCompat
+ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.checkout.CheckoutPresenter
++import com.stripe.android.elements.CurrencySelectorElement
+ import com.stripe.android.elements.PaymentElement
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import kotlinx.coroutines.CompletableDeferred
+@@ -30,6 +32,7 @@ internal class NativeCheckoutControllerInstance(
+   private val eventEmitter: EventEmitterCompat,
+   private val scope: CoroutineScope,
+   initialSession: WritableMap,
++  private val context: ReactApplicationContext,
+ ) {
+   private val serverUpdateCompletions = mutableMapOf<String, CompletableDeferred<Result<Unit>>>()
+   private var controllerId: String? = null
+@@ -48,6 +51,10 @@ internal class NativeCheckoutControllerInstance(
+   /** Reuses the native Payment Element for the lifetime of its activity. */
+   fun paymentElement(activity: ComponentActivity): PaymentElement = getPresenter(activity).paymentElement()
+ 
++  /** Reuses the native Currency Selector Element for the lifetime of its activity. */
++  fun currencySelectorElement(activity: ComponentActivity): CurrencySelectorElement =
++    getPresenter(activity).currencySelectorElement()
++
+   private fun getPresenter(activity: ComponentActivity): CheckoutPresenter {
+     check(!destroyed) { "Checkout controller was destroyed." }
+     if (this.activity !== activity) {
+@@ -115,7 +122,7 @@ internal class NativeCheckoutControllerInstance(
+   private fun sessionStates() =
+     controller.session.combine(controller.isUpdating) { session, _ -> session }
+       .mapLatest { session ->
+-        session?.let { CheckoutSessionSerializer.serialize(it) }
++        session?.let { CheckoutSessionSerializer.serialize(it, context.checkoutIconContext()) }
+       }.filterNotNull()
+ 
+   /** Publishes the current native snapshot before its status or operation result reaches JS. */
+diff --git a/android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt b/android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt
+index 99f47b1..fb2b681 100644
+--- a/android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt
++++ b/android/src/main/java/com/reactnativestripesdk/utils/Extensions.kt
+@@ -1,6 +1,7 @@
+ package com.reactnativestripesdk.utils
+ 
+ import android.content.Context
++import android.content.res.Configuration
+ import android.view.View
+ import android.view.inputmethod.InputMethodManager
+ import com.facebook.react.bridge.Dynamic
+@@ -8,6 +9,9 @@ import com.facebook.react.bridge.ReadableArray
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.bridge.ReadableType
+ 
++internal fun Configuration.isDarkTheme(): Boolean =
++  (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
++
+ fun View.showSoftKeyboard() {
+   post {
+     if (this.requestFocus()) {
+diff --git a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+index 531013b..725f976 100644
+--- a/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
++++ b/android/src/onramp/java/com/reactnativestripesdk/OnrampMappers.kt
+@@ -54,6 +54,7 @@ internal fun mapConfig(
+ 
+   val displayName = configMap.getString("merchantDisplayName") ?: ""
+   val cryptoCustomerId = configMap.getString("cryptoCustomerId")
++  val countryHint = configMap.getString("countryHint")
+   val googlePayConfig = mapGooglePayConfig(configMap.getMap("googlePay"))
+   val samsungPayConfig = mapSamsungPayConfig(configMap.getMap("samsungPay"))
+ 
+@@ -62,6 +63,7 @@ internal fun mapConfig(
+     .publishableKey(publishableKey)
+     .appearance(appearance)
+     .cryptoCustomerId(cryptoCustomerId)
++    .countryHint(countryHint)
+     .apply { googlePayConfig?.let { googlePayConfig(it) } }
+     .apply { samsungPayConfig?.let { samsungPayConfig(it) } }
+     .apply {
+@@ -80,7 +82,7 @@ internal fun mapSamsungPayConfig(params: ReadableMap?): OnrampConfiguration.Sams
+   val merchantName = params.getString("merchantName")
+   val allowedCardBrands = params.getIntegerList("allowedCardBrands")
+ 
+-  return if (allowedCardBrands.isNullOrEmpty()) {
++  val config = if (allowedCardBrands.isNullOrEmpty()) {
+     OnrampConfiguration.SamsungPayConfig(
+       serviceId = serviceId,
+       merchantId = merchantId,
+@@ -94,6 +96,9 @@ internal fun mapSamsungPayConfig(params: ReadableMap?): OnrampConfiguration.Sams
+       allowedCardBrands = mapToPreferredNetworks(allowedCardBrands),
+     )
+   }
++  return config.collectContactInformation(
++    params.hasKey("collectContactInformation") && params.getBoolean("collectContactInformation"),
++  )
+ }
+ 
+ @SuppressLint("RestrictedApi")
+@@ -282,6 +287,10 @@ internal fun mapFromIdType(idType: IdType): String =
+ internal fun mapFromKycInfo(kycInfo: KycInfo): ReadableMap {
+   val result = Arguments.createMap()
+ 
++  kycInfo.email?.let { result.putString("email", it) }
++  kycInfo.phone?.let { result.putString("phone", it) }
++  kycInfo.rawPhone?.let { result.putString("rawPhone", it) }
++
+   kycInfo.firstName?.let { result.putString("firstName", it) }
+   kycInfo.lastName?.let { result.putString("lastName", it) }
+   kycInfo.idNumber?.let { result.putString("idNumber", it) }
+diff --git a/android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt b/android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt
+index 5f524f8..4bfa099 100644
+--- a/android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/PaymentSheetAppearanceTest.kt
+@@ -5,9 +5,12 @@ import android.graphics.Color
+ import androidx.test.core.app.ApplicationProvider
+ import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.ReadableMap
++import com.reactnativestripesdk.utils.PaymentSheetAppearanceException
+ import com.stripe.android.paymentsheet.PaymentSheet
+ import org.json.JSONObject
+ import org.junit.Assert.assertEquals
++import org.junit.Assert.assertThrows
++import org.junit.Assert.assertTrue
+ import org.junit.Test
+ import org.junit.runner.RunWith
+ import org.robolectric.RobolectricTestRunner
+@@ -678,6 +681,66 @@ class PaymentSheetAppearanceTest {
+     assertEquals(expectedAppearance, appearanceFromJson)
+   }
+ 
++  @Test
++  fun testFontFamilyWithUnderscores() {
++    val fontFileName = "nunito_400regular"
++    val fontResId = context.resources.getIdentifier(fontFileName, "font", context.packageName)
++    assertTrue(fontResId != 0)
++
++    val appearanceFromJson = buildAppearanceWithFontFamily(fontFileName)
++
++    val typographyBuilder = PaymentSheet.Typography.Builder()
++    typographyBuilder.fontResId(fontResId)
++
++    val appearanceBuilder = PaymentSheet.Appearance.Builder()
++    appearanceBuilder.typography(typographyBuilder.build())
++
++    assertEquals(appearanceBuilder.build(), appearanceFromJson)
++  }
++
++  @Test
++  fun testFontFamilyMissingResource() {
++    val fontFileName = "missing_font"
++    val error =
++      assertThrows(PaymentSheetAppearanceException::class.java) {
++        buildAppearanceWithFontFamily(fontFileName)
++      }
++
++    assertEquals(
++      "Encountered an error when setting a custom font: Failed to find font: $fontFileName",
++      error.message,
++    )
++  }
++
++  @Test
++  fun testFontFamilyInvalidName() {
++    val fontFileName = "inter-bold"
++    val error =
++      assertThrows(PaymentSheetAppearanceException::class.java) {
++        buildAppearanceWithFontFamily(fontFileName)
++      }
++
++    assertEquals(
++      "Encountered an error when setting a custom font: appearance.font.family should only contain " +
++        "alphanumeric characters and underscores on Android, but received '$fontFileName'. " +
++        "This value must match the filename in android/app/src/main/res/font",
++      error.message,
++    )
++  }
++
++  private fun buildAppearanceWithFontFamily(family: String): PaymentSheet.Appearance {
++    val json =
++      """
++      {
++        "font": {
++          "family": "$family"
++        }
++      }
++      """.trimIndent()
++
++    return buildPaymentSheetAppearance(jsonToMap(json), context)
++  }
++
+   private fun jsonToMap(json: String): ReadableMap {
+     val jsonObject = JSONObject(json)
+     return jsonObjectToMap(jsonObject)
+diff --git a/android/src/test/java/com/reactnativestripesdk/ReactContextRule.kt b/android/src/test/java/com/reactnativestripesdk/ReactContextRule.kt
+new file mode 100644
+index 0000000..77c2ca2
+--- /dev/null
++++ b/android/src/test/java/com/reactnativestripesdk/ReactContextRule.kt
+@@ -0,0 +1,20 @@
++package com.reactnativestripesdk
++
++import com.facebook.react.bridge.BridgeReactContext
++import org.junit.rules.ExternalResource
++import org.robolectric.RuntimeEnvironment
++
++internal class ReactContextRule : ExternalResource() {
++  lateinit var context: BridgeReactContext
++    private set
++
++  override fun before() {
++    context = BridgeReactContext(RuntimeEnvironment.getApplication())
++  }
++
++  override fun after() {
++    context.onHostPause()
++    context.onHostDestroy()
++    context.destroy()
++  }
++}
+diff --git a/android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt b/android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt
+index 6d38ace..b960171 100644
+--- a/android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/ReactNativeCustomerSessionProviderTest.kt
+@@ -1,8 +1,10 @@
+ package com.reactnativestripesdk
+ 
++import com.facebook.react.bridge.BridgeReactContext
+ import com.facebook.react.bridge.JavaOnlyMap
++import com.facebook.react.bridge.JavaScriptModule
++import com.facebook.react.bridge.NativeModule
+ import com.facebook.react.bridge.Promise
+-import com.facebook.react.bridge.ReactApplicationContext
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.modules.core.DeviceEventManagerModule
+ import com.reactnativestripesdk.customersheet.CustomerSheetManager
+@@ -24,13 +26,12 @@ import org.junit.Assert.assertTrue
+ import org.junit.Test
+ import org.junit.runner.RunWith
+ import org.mockito.ArgumentMatchers.any
+-import org.mockito.ArgumentMatchers.anyString
+ import org.mockito.Mockito.doAnswer
+ import org.mockito.Mockito.mock
+ import org.mockito.Mockito.verify
+ import org.mockito.Mockito.verifyNoMoreInteractions
+-import org.mockito.Mockito.`when`
+ import org.robolectric.RobolectricTestRunner
++import org.robolectric.RuntimeEnvironment
+ import org.robolectric.shadows.ShadowLooper
+ import org.robolectric.util.ReflectionHelpers
+ import kotlin.time.Duration.Companion.seconds
+@@ -208,30 +209,35 @@ class ReactNativeCustomerSessionProviderTest {
+     } finally {
+       fixtures.forEach { it.provider.invalidate() }
+       runCurrent()
++      fixtures.forEach { it.context.destroy() }
+     }
+   }
+ 
+   private fun fixture() = Fixture().also { fixtures.add(it) }
+ 
+   private class Fixture {
+-    val context = mock(ReactApplicationContext::class.java)
+-    val module = StripeSdkModule(context)
++    val context: BridgeReactContext = object : BridgeReactContext(RuntimeEnvironment.getApplication()) {
++      override fun <T : NativeModule> getNativeModule(nativeModuleInterface: Class<T>): T? =
++        nativeModuleInterface.cast(module)
++
++      override fun <T : JavaScriptModule> getJSModule(jsInterface: Class<T>): T =
++        requireNotNull(jsInterface.cast(emitter))
++    }
++    val module: StripeSdkModule = StripeSdkModule(context)
+     val ids = mutableListOf<String>()
+     var onEmit: (String) -> Unit = {}
++    private val emitter = object : DeviceEventManagerModule.RCTDeviceEventEmitter {
++      override fun emit(eventName: String, data: Any?) {
++        assertEquals("onCustomerSessionProviderCustomerSessionClientSecret", eventName)
++        val id = (data as ReadableMap).getString("requestId")!!
++        ids.add(id)
++        onEmit(id)
++      }
++    }
+     val provider: ReactNativeCustomerSessionProvider
+     val manager: CustomerSheetManager
+ 
+     init {
+-      val emitter = mock(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+-      `when`(context.getNativeModule(StripeSdkModule::class.java)).thenReturn(module)
+-      `when`(context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)).thenReturn(emitter)
+-      doAnswer {
+-        assertEquals("onCustomerSessionProviderCustomerSessionClientSecret", it.getArgument<String>(0))
+-        val id = it.getArgument<ReadableMap>(1).getString("requestId")!!
+-        ids.add(id)
+-        onEmit(id)
+-        null
+-      }.`when`(emitter).emit(anyString(), any())
+       provider = ReactNativeCustomerSessionProvider(context, CustomerSheet.IntentConfiguration.Builder().build())
+       manager = CustomerSheetManager(context, JavaOnlyMap(), JavaOnlyMap(), mock(Promise::class.java))
+       manager.customerSessionProvider = provider
+diff --git a/android/src/test/java/com/reactnativestripesdk/StripeSdkModuleLifecycleTest.kt b/android/src/test/java/com/reactnativestripesdk/StripeSdkModuleLifecycleTest.kt
+new file mode 100644
+index 0000000..3c301b1
+--- /dev/null
++++ b/android/src/test/java/com/reactnativestripesdk/StripeSdkModuleLifecycleTest.kt
+@@ -0,0 +1,182 @@
++package com.reactnativestripesdk
++
++import android.app.Activity
++import android.os.Bundle
++import android.os.Looper
++import android.view.View
++import com.facebook.react.ReactActivity
++import com.facebook.react.bridge.BridgeReactContext
++import com.facebook.react.bridge.JavaOnlyMap
++import com.google.common.truth.Truth.assertThat
++import com.stripe.android.Stripe
++import com.stripe.android.testing.FakeStripeActivity
++import kotlinx.coroutines.test.runTest
++import org.junit.Test
++import org.junit.runner.RunWith
++import org.robolectric.Robolectric
++import org.robolectric.RobolectricTestRunner
++import org.robolectric.RuntimeEnvironment
++import org.robolectric.Shadows.shadowOf
++import org.robolectric.annotation.LooperMode
++import org.robolectric.util.ReflectionHelpers
++import org.robolectric.util.ReflectionHelpers.ClassParameter
++
++@RunWith(RobolectricTestRunner::class)
++@LooperMode(LooperMode.Mode.PAUSED)
++class StripeSdkModuleLifecycleTest {
++  @Test
++  fun initializingWithoutAnActivityRegistersTheRecreationCallback() = runScenario {
++    val fixture = newModule()
++    assertThat(fixture.context.currentActivity).isNull()
++    fixture.initialize()
++
++    val stripeActivity = stripeActivity()
++    dispatchActivityCreated(reactActivity(), Bundle())
++    dispatchActivityCreated(stripeActivity)
++
++    stripeActivity.finishCalls.awaitItem()
++  }
++
++  @Test
++  fun reinitializingWithoutAnActivityKeepsASingleRegistration() = runScenario {
++    val fixture = newModule(reactActivity())
++    fixture.initialize()
++    fixture.clearHost()
++
++    fixture.initialize()
++    val stripeActivity = stripeActivity()
++    dispatchActivityCreated(reactActivity(), Bundle())
++    dispatchActivityCreated(stripeActivity)
++
++    stripeActivity.finishCalls.awaitItem()
++  }
++
++  @Test
++  fun invalidatingWithoutAnActivityUnregistersTheCallback() = runScenario {
++    val fixture = newModule(reactActivity())
++    fixture.initialize()
++    fixture.clearHost()
++
++    fixture.module.invalidate()
++    val stripeActivity = stripeActivity()
++    dispatchActivityCreated(reactActivity(), Bundle())
++    dispatchActivityCreated(stripeActivity)
++
++    stripeActivity.finishCalls.expectNoEvents()
++  }
++
++  @Test
++  fun invalidatedModuleCannotFinishTheReplacementModulesStripeActivity() = runScenario {
++    val originalHost = reactActivity()
++    val original = newModule(originalHost)
++    original.initialize()
++    original.module.invalidate()
++    original.clearHost()
++
++    val replacement = newModule(originalHost)
++    replacement.initialize()
++    replacement.clearHost()
++    val restoredHost = reactActivity()
++    dispatchActivityCreated(restoredHost, Bundle())
++    replacement.context.onHostResume(restoredHost)
++    replacement.initialize()
++
++    val stripeActivity = stripeActivity()
++    dispatchActivityCreated(stripeActivity)
++
++    stripeActivity.finishCalls.expectNoEvents()
++  }
++
++  @Test
++  fun firstHostCreationDoesNotFinishStripeActivities() = runScenario {
++    newModule(reactActivity()).initialize()
++
++    val stripeActivity = stripeActivity()
++    dispatchActivityCreated(reactActivity())
++    dispatchActivityCreated(stripeActivity)
++
++    stripeActivity.finishCalls.expectNoEvents()
++  }
++
++  private fun runScenario(block: suspend Scenario.() -> Unit) = runTest {
++    val scenario = Scenario()
++    val advancedFraudSignalsEnabled = Stripe.advancedFraudSignalsEnabled
++    try {
++      Stripe.advancedFraudSignalsEnabled = false
++      scenario.block()
++    } finally {
++      try {
++        scenario.destroy()
++      } finally {
++        Stripe.advancedFraudSignalsEnabled = advancedFraudSignalsEnabled
++      }
++    }
++    scenario.ensureAllEventsConsumed()
++  }
++
++  private class Scenario {
++    private val application = RuntimeEnvironment.getApplication()
++    private val fixtures = mutableListOf<ModuleFixture>()
++    private val stripeActivities = mutableListOf<FakeStripeActivity>()
++
++    fun newModule(host: ReactActivity? = null): ModuleFixture {
++      val context = BridgeReactContext(application)
++      return ModuleFixture(context, StripeSdkModule(context)).also {
++        fixtures.add(it)
++        host?.let(context::onHostResume)
++      }
++    }
++
++    fun reactActivity(): ReactActivity = Robolectric.buildActivity(FakeReactActivity::class.java).get()
++
++    fun stripeActivity() = FakeStripeActivity().also { stripeActivities.add(it) }
++
++    fun dispatchActivityCreated(activity: Activity, savedInstanceState: Bundle? = null) {
++      ReflectionHelpers.callInstanceMethod<Unit>(
++        application,
++        "dispatchActivityCreated",
++        ClassParameter.from(Activity::class.java, activity),
++        ClassParameter.from(Bundle::class.java, savedInstanceState),
++      )
++    }
++
++    fun destroy() {
++      fixtures.forEach { it.module.invalidate() }
++      shadowOf(Looper.getMainLooper()).idle()
++      fixtures.forEach {
++        it.clearHost()
++        it.context.destroy()
++      }
++    }
++
++    fun ensureAllEventsConsumed() {
++      stripeActivities.forEach { it.finishCalls.ensureAllEventsConsumed() }
++    }
++  }
++
++  private class ModuleFixture(
++    val context: BridgeReactContext,
++    val module: StripeSdkModule,
++  ) {
++    suspend fun initialize() {
++      val promise = FakePromise()
++      module.initialise(
++        JavaOnlyMap.of("publishableKey", "pk_test_lifecycle", "appInfo", JavaOnlyMap()),
++        promise,
++      )
++      assertThat(promise.resolveCalls.awaitItem().value).isNull()
++      promise.ensureAllEventsConsumed()
++    }
++
++    fun clearHost() {
++      context.onHostPause()
++      context.onHostDestroy()
++      assertThat(context.currentActivity).isNull()
++    }
++  }
++
++  private class FakeReactActivity : ReactActivity() {
++    // These callback tests do not mount React content or initialize its UI.
++    override fun <T : View> findViewById(id: Int): T? = null
++  }
++}
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt
+index 25a9599..e9bf9e6 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutConfigurationMapperTest.kt
+@@ -1,13 +1,17 @@
+ package com.reactnativestripesdk.checkout
+ 
+ import android.content.Context
++import androidx.compose.ui.graphics.Color
+ import androidx.core.graphics.toColorInt
+ import androidx.test.core.app.ApplicationProvider
++import com.facebook.react.bridge.ReadableMap
+ import com.reactnativestripesdk.utils.PaymentSheetAppearanceException
+ import com.reactnativestripesdk.utils.readableArrayOf
+ import com.reactnativestripesdk.utils.readableMapOf
+ import com.stripe.android.checkout.CheckoutController
++import com.stripe.android.elements.CurrencySelectorElement
+ import com.stripe.android.elements.PaymentElement
++import com.stripe.android.elements.PaymentElement.Configuration.Appearance.Embedded.RowStyle
+ import com.stripe.android.model.CardBrand
+ import com.stripe.android.model.PaymentMethod
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+@@ -23,6 +27,39 @@ import org.robolectric.RobolectricTestRunner
+ class CheckoutConfigurationMapperTest {
+   private val context = ApplicationProvider.getApplicationContext<Context>()
+ 
++  @Test
++  fun `map maps currency selector element appearance`() {
++    val mapped = CheckoutConfigurationMapper.map(
++      readableMapOf(
++        "clientSecret" to "cs_test_secret_123",
++        "currencySelectorElement" to readableMapOf(
++          "appearance" to readableMapOf(
++            "contentVerticalPadding" to 8,
++            "shapes" to readableMapOf("cornerRadius" to 12, "borderWidth" to 2),
++            "colors" to readableMapOf("background" to "#112233"),
++            "font" to readableMapOf("scale" to 1.2),
++            "labelContent" to "amount",
++          ),
++        ),
++      ),
++      context,
++    ) {}.configuration
++
++    val configuration = mapped.readField<CurrencySelectorElement.Configuration>(
++      "currencySelectorElementConfiguration",
++    )
++    val appearance = configuration.readField<CurrencySelectorElement.Configuration.Appearance>("appearance")
++    assertEquals(8f, appearance.readField<Float>("contentVerticalPaddingDp"))
++    assertEquals(12f, appearance.readField<Float>("cornerRadiusDp"))
++    assertEquals(2f, appearance.readField<Float>("borderWidthDp"))
++    assertEquals(1.2f, appearance.readField<Float>("sizeScaleFactor"))
++    assertEquals(Color("#112233".toColorInt()), appearance.readField<Color>("background"))
++    assertEquals(
++      CurrencySelectorElement.Configuration.Appearance.LabelContent.AMOUNT,
++      appearance.readField<CurrencySelectorElement.Configuration.Appearance.LabelContent>("labelContent"),
++    )
++  }
++
+   @Test
+   @Suppress("LongMethod")
+   fun `map maps supported configuration fields`() {
+@@ -39,12 +76,26 @@ class CheckoutConfigurationMapperTest {
+               "billingDetails" to contactDetails("US"),
+               "shippingDetails" to contactDetails("CA"),
+               "email" to "jenny@example.com",
++              "phone" to "+15555551234",
+             ),
+           "paymentElement" to
+             readableMapOf(
+               "appearance" to
+                 readableMapOf(
++                  "font" to readableMapOf("scale" to 1.2),
++                  "shapes" to readableMapOf("borderRadius" to 10, "borderWidth" to 2),
+                   "formInsetValues" to readableMapOf("left" to 12, "bottom" to 24),
++                  "embeddedPaymentElement" to readableMapOf(
++                    "row" to readableMapOf(
++                      "style" to "flatWithRadio",
++                      "additionalInsets" to 8,
++                      "flat" to readableMapOf(
++                        "separatorThickness" to 2,
++                        "separatorColor" to readableMapOf("light" to "#112233", "dark" to "#AABBCC"),
++                        "radio" to readableMapOf("selectedColor" to "#445566"),
++                      ),
++                    ),
++                  ),
+                   "colors" to
+                     readableMapOf(
+                       "light" to readableMapOf("primary" to "#112233"),
+@@ -78,6 +129,7 @@ class CheckoutConfigurationMapperTest {
+     assertContactDetails(defaults.readField("billingDetails"), "US")
+     assertContactDetails(defaults.readField("shippingDetails"), "CA")
+     assertEquals("jenny@example.com", defaults.readField<String>("email"))
++    assertEquals("+15555551234", defaults.readField<String>("phone"))
+ 
+     val paymentElement =
+       result.configuration.readField<PaymentElement.Configuration>("paymentElementConfiguration")
+@@ -95,6 +147,27 @@ class CheckoutConfigurationMapperTest {
+     )
+ 
+     val appearance = paymentElement.readField<PaymentElement.Configuration.Appearance>("appearance")
++    val typography = appearance.readField<PaymentElement.Configuration.Appearance.Typography>("typography")
++    assertEquals(1.2f, typography.readField<Float>("sizeScaleFactor"))
++    val shapes = appearance.readField<PaymentElement.Configuration.Appearance.Shapes>("shapes")
++    assertEquals(10f, shapes.readField<Float>("cornerRadiusDp"))
++    assertEquals(2f, shapes.readField<Float>("borderStrokeWidthDp"))
++    val embedded = appearance.readField<PaymentElement.Configuration.Appearance.Embedded>("embeddedAppearance")
++    val row = embedded.readField<RowStyle.FlatWithRadio>("rowStyle")
++    assertEquals(8f, row.readField<Float>("additionalVerticalInsetsDp"))
++    assertEquals(2f, row.readField<Float>("separatorThicknessDp"))
++    assertEquals(
++      "#112233".toColorInt(),
++      row.readField<RowStyle.FlatWithRadio.Colors>("colorsLight").readField<Int>("separatorColor"),
++    )
++    assertEquals(
++      "#AABBCC".toColorInt(),
++      row.readField<RowStyle.FlatWithRadio.Colors>("colorsDark").readField<Int>("separatorColor"),
++    )
++    assertEquals(
++      "#445566".toColorInt(),
++      row.readField<RowStyle.FlatWithRadio.Colors>("colorsLight").readField<Int>("selectedColor"),
++    )
+     assertEquals(
+       PaymentElement.Configuration.Appearance.ThemeMode.AlwaysDark,
+       appearance.readField("themeMode"),
+@@ -149,6 +222,41 @@ class CheckoutConfigurationMapperTest {
+     assertEquals(listOf("card", "link"), mapped.readField("paymentMethodOrder"))
+   }
+ 
++  @Test
++  fun `map maps other embedded row styles`() {
++    val checkmark = mapEmbeddedRow(
++      readableMapOf(
++        "style" to "flatWithCheckmark",
++        "flat" to readableMapOf("checkmark" to readableMapOf("color" to "#112233")),
++      ),
++    ).readField<RowStyle.FlatWithCheckmark>("rowStyle")
++    assertEquals(
++      "#112233".toColorInt(),
++      checkmark.readField<RowStyle.FlatWithCheckmark.Colors>("colorsLight").readField<Int>("checkmarkColor"),
++    )
++
++    val disclosure = mapEmbeddedRow(
++      readableMapOf(
++        "style" to "flatWithDisclosure",
++        "flat" to readableMapOf("disclosure" to readableMapOf("color" to "#445566")),
++      ),
++    ).readField<RowStyle.FlatWithDisclosure>("rowStyle")
++    assertEquals(
++      "#445566".toColorInt(),
++      disclosure.readField<RowStyle.FlatWithDisclosure.Colors>("colorsLight").readField<Int>("disclosureColor"),
++    )
++
++    val floating = mapEmbeddedRow(
++      readableMapOf(
++        "style" to "floatingButton",
++        "additionalInsets" to 6,
++        "floating" to readableMapOf("spacing" to 14),
++      ),
++    ).readField<RowStyle.FloatingButton>("rowStyle")
++    assertEquals(6f, floating.readField<Float>("additionalInsetsDp"))
++    assertEquals(14f, floating.readField<Float>("spacingDp"))
++  }
++
+   @Test
+   fun `map preserves native defaults for missing options`() {
+     val mapped = CheckoutConfigurationMapper.map(baseParams(), context) {}
+@@ -208,6 +316,20 @@ class CheckoutConfigurationMapperTest {
+       "returnURL" to "example://checkout",
+     )
+ 
++  private fun mapEmbeddedRow(row: ReadableMap): PaymentElement.Configuration.Appearance.Embedded =
++    CheckoutConfigurationMapper.map(
++      readableMapOf(
++        "clientSecret" to "cs_test_secret_123",
++        "paymentElement" to readableMapOf(
++          "appearance" to readableMapOf("embeddedPaymentElement" to readableMapOf("row" to row)),
++        ),
++      ),
++      context,
++    ) {}.configuration
++      .readField<PaymentElement.Configuration>("paymentElementConfiguration")
++      .readField<PaymentElement.Configuration.Appearance>("appearance")
++      .readField("embeddedAppearance")
++
+   private fun contactDetails(country: String) =
+     readableMapOf(
+       "name" to "Jenny Rosen",
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt
+index bc3d98c..dc5147e 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutSessionSerializerTest.kt
+@@ -1,6 +1,8 @@
+ package com.reactnativestripesdk.checkout
+ 
++import android.content.Context
+ import androidx.compose.ui.text.AnnotatedString
++import androidx.test.core.app.ApplicationProvider
+ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
+ import kotlinx.coroutines.CompletableDeferred
+@@ -15,10 +17,14 @@ import org.junit.Assert.assertTrue
+ import org.junit.Test
+ import org.junit.runner.RunWith
+ import org.robolectric.RobolectricTestRunner
++import org.robolectric.annotation.Config
++import java.util.concurrent.atomic.AtomicReference
+ 
+ @OptIn(CheckoutSessionPreview::class)
+ @RunWith(RobolectricTestRunner::class)
+ class CheckoutSessionSerializerTest {
++  private val context = ApplicationProvider.getApplicationContext<Context>()
++
+   @Test
+   fun `confirmation results preserve native outcomes and completed payment status`() {
+     val completed = NativeCheckoutFixtures.completedResult()
+@@ -47,7 +53,7 @@ class CheckoutSessionSerializerTest {
+       NativeCheckoutFixtures.completeStatus() to "complete",
+     )
+     for ((status, expected) in statuses) {
+-      val result = CheckoutSessionSerializer.serialize(checkoutSession(status = status))
++      val result = CheckoutSessionSerializer.serialize(checkoutSession(status = status), context)
+       assertEquals("cs_test", result.getString("id"))
+       assertEquals("usd", result.getString("currency"))
+       assertEquals("jenny@example.com", result.getString("email"))
+@@ -74,6 +80,7 @@ class CheckoutSessionSerializerTest {
+   fun `serialize omits unavailable tax`() = runTest {
+     val result = CheckoutSessionSerializer.serialize(
+       checkoutSession(taxStatus = null),
++      context,
+     )
+     assertFalse(result.hasKey("tax"))
+   }
+@@ -85,7 +92,7 @@ class CheckoutSessionSerializerTest {
+       billingDetails = NativeCheckoutFixtures.postalBillingDetails("94103"),
+       mandateText = AnnotatedString("Terms & conditions"),
+     )
+-    val result = CheckoutSessionSerializer.serialize(checkoutSession(paymentOption = option))
++    val result = CheckoutSessionSerializer.serialize(checkoutSession(paymentOption = option), context)
+     val paymentOption = result.getMap("paymentOption")!!
+     val address = paymentOption.getMap("billingDetails")!!.getMap("address")!!
+ 
+@@ -96,6 +103,20 @@ class CheckoutSessionSerializerTest {
+     assertTrue(paymentOption.getString("mandateHTML")!!.contains("&amp;"))
+   }
+ 
++  @Test
++  @Config(qualifiers = "night")
++  fun `serialize requests a dark icon in dark mode`() = runTest {
++    val requestedDarkTheme = AtomicReference<Boolean>()
++    val option = checkoutPaymentOption(
++      imageLoader = { error("Image unavailable") },
++      requestedDarkTheme = requestedDarkTheme,
++    )
++
++    CheckoutSessionSerializer.serialize(checkoutSession(paymentOption = option), context)
++
++    assertEquals(true, requestedDarkTheme.get())
++  }
++
+   @Test
+   fun `canceling image loading cancels serialization`() = runTest {
+     val imageStarted = CompletableDeferred<Unit>()
+@@ -107,7 +128,7 @@ class CheckoutSessionSerializerTest {
+     )
+     var returnedSnapshot = false
+     val serialization = async {
+-      CheckoutSessionSerializer.serialize(checkoutSession(paymentOption = option))
++      CheckoutSessionSerializer.serialize(checkoutSession(paymentOption = option), context)
+       returnedSnapshot = true
+     }
+     imageStarted.await()
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt
+index b54e3f5..3a97cc8 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/CheckoutTestFixtures.kt
+@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
+ import androidx.compose.ui.text.AnnotatedString
+ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.paymentelement.CheckoutSessionPreview
++import java.util.concurrent.atomic.AtomicReference
+ import kotlin.coroutines.intrinsics.startCoroutineUninterceptedOrReturn
+ 
+ @OptIn(CheckoutSessionPreview::class)
+@@ -19,9 +20,11 @@ internal fun checkoutPaymentOption(
+   imageLoader: suspend () -> Drawable,
+   billingDetails: CheckoutController.Session.PaymentOptionDisplayData.BillingDetails? = null,
+   mandateText: AnnotatedString? = null,
++  requestedDarkTheme: AtomicReference<Boolean>? = null,
+ ): CheckoutController.Session.PaymentOptionDisplayData = NativeCheckoutFixtures.paymentOption(
+   // Adapt the suspend loader to the JVM constructor's continuation signature.
+   { continuation -> imageLoader.startCoroutineUninterceptedOrReturn(continuation) },
+   billingDetails,
+   mandateText,
++  requestedDarkTheme,
+ )
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
+index 8bf4980..fb30c39 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutControllerInstanceTest.kt
+@@ -1,7 +1,12 @@
+ package com.reactnativestripesdk.checkout
+ 
++import android.app.Activity
++import android.content.Context
++import android.content.res.Configuration
++import android.content.res.Resources
+ import android.graphics.drawable.ColorDrawable
+ import androidx.activity.ComponentActivity
++import androidx.test.core.app.ApplicationProvider
+ import com.facebook.react.bridge.ReactApplicationContext
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.bridge.WritableMap
+@@ -45,6 +50,7 @@ import org.mockito.Mockito.verify
+ import org.mockito.Mockito.`when`
+ import org.robolectric.Robolectric
+ import org.robolectric.RobolectricTestRunner
++import java.util.concurrent.atomic.AtomicReference
+ 
+ @OptIn(CheckoutSessionPreview::class, ExperimentalCoroutinesApi::class)
+ @RunWith(RobolectricTestRunner::class)
+@@ -135,6 +141,47 @@ class NativeCheckoutControllerInstanceTest {
+     assertEquals("jenny@example.com", fixture.events.last().getMap("session")!!.getString("email"))
+   }
+ 
++  @Test
++  fun `session icons follow the current activity across activity changes`() = withFixture { fixture ->
++    fixture.start()
++    advanceUntilIdle()
++    val requestedDarkTheme = AtomicReference<Boolean>()
++    fun activityWithNightMode(nightMode: Int): Activity {
++      val activity = mock(Activity::class.java)
++      val resources = mock(Resources::class.java)
++      `when`(resources.configuration).thenReturn(Configuration().apply { uiMode = nightMode })
++      `when`(activity.resources).thenReturn(resources)
++      return activity
++    }
++
++    assertEquals(
++      Configuration.UI_MODE_NIGHT_NO,
++      fixture.context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK,
++    )
++    val darkActivity = activityWithNightMode(Configuration.UI_MODE_NIGHT_YES)
++    `when`(fixture.context.currentActivity).thenReturn(darkActivity)
++    fixture.sessions.value = checkoutSession(
++      paymentOption = checkoutPaymentOption(
++        imageLoader = { ColorDrawable() },
++        requestedDarkTheme = requestedDarkTheme,
++      ),
++    )
++    fixture.instance.publishCurrentState()
++    assertEquals(true, requestedDarkTheme.get())
++
++    val lightActivity = activityWithNightMode(Configuration.UI_MODE_NIGHT_NO)
++    `when`(fixture.context.currentActivity).thenReturn(lightActivity)
++    fixture.sessions.value = checkoutSession(
++      email = "new@example.com",
++      paymentOption = checkoutPaymentOption(
++        imageLoader = { ColorDrawable() },
++        requestedDarkTheme = requestedDarkTheme,
++      ),
++    )
++    fixture.instance.publishCurrentState()
++    assertEquals(false, requestedDarkTheme.get())
++  }
++
+   @Test
+   fun `publishes the latest session before returning when serialization changes it`() = withFixture { fixture ->
+     fixture.start()
+@@ -262,13 +309,14 @@ class NativeCheckoutControllerInstanceTest {
+     val sessions = MutableStateFlow<CheckoutController.Session?>(checkoutSession())
+     val updating = MutableStateFlow(false)
+     val events = mutableListOf<ReadableMap>()
++    val context = mock(ReactApplicationContext::class.java)
+     val instance: NativeCheckoutControllerInstance
+ 
+     init {
+       `when`(controller.createPresenter(activity.get())).thenReturn(presenter)
+       `when`(controller.session).thenReturn(sessions)
+       `when`(controller.isUpdating).thenReturn(updating)
+-      val context = mock(ReactApplicationContext::class.java)
++      `when`(context.resources).thenReturn(ApplicationProvider.getApplicationContext<Context>().resources)
+       val emitter = mock(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+       `when`(context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)).thenReturn(emitter)
+       doAnswer { invocation ->
+@@ -282,6 +330,7 @@ class NativeCheckoutControllerInstanceTest {
+         EventEmitterCompat(context),
+         scope,
+         com.facebook.react.bridge.JavaOnlyMap.of("id", "cs_test", "email", "jenny@example.com"),
++        context,
+       )
+     }
+ 
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java
+index 2ef24fe..d1ad1de 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/NativeCheckoutFixtures.java
+@@ -1,10 +1,14 @@
+ package com.reactnativestripesdk.checkout;
+ 
+ import android.graphics.drawable.Drawable;
++import androidx.compose.runtime.Composer;
+ import androidx.compose.ui.text.AnnotatedString;
++import androidx.compose.ui.graphics.painter.Painter;
+ import com.stripe.android.checkout.CheckoutController;
+ import com.stripe.android.checkout.CheckoutController.Session;
++import com.stripe.android.paymentsheet.model.PaymentOptionResource;
+ import java.util.Collections;
++import java.util.concurrent.atomic.AtomicReference;
+ import kotlin.coroutines.Continuation;
+ import kotlin.jvm.functions.Function1;
+ 
+@@ -43,8 +47,23 @@ final class NativeCheckoutFixtures {
+   static Session.PaymentOptionDisplayData paymentOption(
+       Function1<? super Continuation<? super Drawable>, ? extends Object> imageLoader,
+       Session.PaymentOptionDisplayData.BillingDetails billingDetails,
+-      AnnotatedString mandateText) {
+-    return new Session.PaymentOptionDisplayData(imageLoader, "Visa 4242", billingDetails, "card", mandateText);
++      AnnotatedString mandateText,
++      AtomicReference<Boolean> requestedDarkTheme) {
++    PaymentOptionResource resource = new PaymentOptionResource() {
++      @Override
++      public Object load(Boolean isSystemDarkTheme, Continuation<? super Drawable> continuation) {
++        if (requestedDarkTheme != null) {
++          requestedDarkTheme.set(isSystemDarkTheme);
++        }
++        return imageLoader.invoke(continuation);
++      }
++
++      @Override
++      public Painter rememberPainter(Composer composer, int changed) {
++        throw new UnsupportedOperationException("This fixture only loads the icon");
++      }
++    };
++    return new Session.PaymentOptionDisplayData(resource, "Visa 4242", null, billingDetails, "card", mandateText);
+   }
+ 
+   static Session.PaymentOptionDisplayData.BillingDetails postalBillingDetails(String postalCode) {
+diff --git a/android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt b/android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt
+index 061cbf1..56cfde3 100644
+--- a/android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/checkout/StripeSdkModuleCheckoutTest.kt
+@@ -4,9 +4,9 @@ import android.os.Looper
+ import androidx.activity.ComponentActivity
+ import com.facebook.react.bridge.JavaOnlyMap
+ import com.facebook.react.bridge.Promise
+-import com.facebook.react.bridge.ReactApplicationContext
+ import com.facebook.react.bridge.ReadableMap
+ import com.reactnativestripesdk.EventEmitterCompat
++import com.reactnativestripesdk.ReactContextRule
+ import com.reactnativestripesdk.StripeSdkModule
+ import com.stripe.android.checkout.CheckoutController
+ import com.stripe.android.checkout.CheckoutPresenter
+@@ -16,8 +16,10 @@ import kotlinx.coroutines.CoroutineScope
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.SupervisorJob
+ import kotlinx.coroutines.flow.MutableStateFlow
++import kotlinx.coroutines.runBlocking
+ import org.junit.Assert.assertEquals
+ import org.junit.Assert.assertFalse
++import org.junit.Rule
+ import org.junit.Test
+ import org.junit.runner.RunWith
+ import org.mockito.ArgumentCaptor
+@@ -35,10 +37,42 @@ import org.robolectric.annotation.LooperMode
+ @RunWith(RobolectricTestRunner::class)
+ @LooperMode(LooperMode.Mode.PAUSED)
+ class StripeSdkModuleCheckoutTest {
++  @get:Rule
++  internal val contextRule = ReactContextRule()
++
++  @OptIn(CheckoutSessionPreview::class)
++  @Test
++  fun `shipping address updates forward null addresses`() = runBlocking {
++    val module = StripeSdkModule(contextRule.context)
++    val controller = mock(CheckoutController::class.java)
++    `when`(controller.session).thenReturn(MutableStateFlow(checkoutSession()))
++    `when`(controller.isUpdating).thenReturn(MutableStateFlow(false))
++    `when`(controller.updateShippingAddress("Jenny", null)).thenReturn(Result.success(Unit))
++    val controllerId = "controller"
++    module.checkoutControllers[controllerId] = NativeCheckoutControllerInstance(
++      controller,
++      mock(EventEmitterCompat::class.java),
++      CoroutineScope(SupervisorJob() + Dispatchers.Unconfined),
++      JavaOnlyMap(),
++      contextRule.context,
++    )
++    val promise = mock(Promise::class.java)
++
++    module.updateCheckoutShippingAddress(
++      controllerId,
++      JavaOnlyMap.of("name", "Jenny", "address", null),
++      promise,
++    )
++    shadowOf(Looper.getMainLooper()).idle()
++
++    verify(controller).updateShippingAddress("Jenny", null)
++    verify(promise).resolve(null)
++  }
++
+   @OptIn(CheckoutSessionPreview::class)
+   @Test
+   fun `sheet requests resolve after native invocation and reuse the payment element`() {
+-    val context = mock(ReactApplicationContext::class.java)
++    val context = contextRule.context
+     val module = StripeSdkModule(context)
+     val controller = mock(CheckoutController::class.java)
+     val presenter = mock(CheckoutPresenter::class.java)
+@@ -50,6 +84,7 @@ class StripeSdkModuleCheckoutTest {
+       mock(EventEmitterCompat::class.java),
+       CoroutineScope(SupervisorJob() + Dispatchers.Unconfined),
+       JavaOnlyMap(),
++      context,
+     )
+     val controllerId = "controller"
+     module.checkoutControllers[controllerId] = instance
+@@ -60,7 +95,7 @@ class StripeSdkModuleCheckoutTest {
+ 
+     val activity = Robolectric.buildActivity(ComponentActivity::class.java).setup()
+     try {
+-      `when`(context.currentActivity).thenReturn(activity.get())
++      context.onHostResume(activity.get())
+       `when`(controller.createPresenter(activity.get())).thenReturn(presenter)
+       `when`(presenter.paymentElement()).thenReturn(element)
+       val promise = mock(Promise::class.java)
+@@ -87,7 +122,7 @@ class StripeSdkModuleCheckoutTest {
+   @OptIn(CheckoutSessionPreview::class)
+   @Test
+   fun `confirmation invokes native and resolves from the controller callback`() {
+-    val context = mock(ReactApplicationContext::class.java)
++    val context = contextRule.context
+     val module = StripeSdkModule(context)
+     val controller = mock(CheckoutController::class.java)
+     val presenter = mock(CheckoutPresenter::class.java)
+@@ -99,6 +134,7 @@ class StripeSdkModuleCheckoutTest {
+       mock(EventEmitterCompat::class.java),
+       CoroutineScope(SupervisorJob() + Dispatchers.Unconfined),
+       JavaOnlyMap(),
++      context,
+     )
+     module.checkoutControllers["controller"] = instance
+     val missingActivity = mock(Promise::class.java)
+@@ -107,7 +143,7 @@ class StripeSdkModuleCheckoutTest {
+     verify(missingActivity).reject("Failed", "Checkout requires a resumed activity to confirm.")
+     val activity = Robolectric.buildActivity(ComponentActivity::class.java).setup()
+     try {
+-      `when`(context.currentActivity).thenReturn(activity.get())
++      context.onHostResume(activity.get())
+       `when`(controller.createPresenter(activity.get())).thenReturn(presenter)
+       doAnswer {
+         instance.onConfirmationResult(NativeCheckoutFixtures.completedResult())
+@@ -134,7 +170,7 @@ class StripeSdkModuleCheckoutTest {
+ 
+   @Test
+   fun `creation queued before invalidation cannot register afterward`() {
+-    val module = StripeSdkModule(mock(ReactApplicationContext::class.java))
++    val module = StripeSdkModule(contextRule.context)
+     val promise = mock(Promise::class.java)
+     val caller = Thread {
+       module.createCheckout(JavaOnlyMap.of("clientSecret", "cs_test_secret_123"), "controller", promise)
+diff --git a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+index fb36c69..6739c86 100644
+--- a/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
++++ b/android/src/test/java/com/reactnativestripesdk/mappers/OnrampMappersTest.kt
+@@ -286,6 +286,25 @@ class OnrampMappersTest {
+     )
+   }
+ 
++  @Test
++  fun mapSamsungPayConfig_ContactCollectionOptIn() {
++    for (enabled in listOf(false, true)) {
++      for (brands in listOf(readableArrayOf(), readableArrayOf(7, 5))) {
++        val result =
++          mapSamsungPayConfig(
++            readableMapOf(
++              "serviceId" to "service-id",
++              "allowedCardBrands" to brands,
++              "collectContactInformation" to enabled,
++            ),
++          )
++        assertEquals(enabled, result!!.privateField("collectContactInformation"))
++      }
++    }
++    val defaults = mapSamsungPayConfig(readableMapOf("serviceId" to "service-id"))
++    assertEquals(false, defaults!!.privateField("collectContactInformation"))
++  }
++
+   @Test
+   fun mapConfig_WithSamsungPayConfig() {
+     val config =
+@@ -300,6 +319,28 @@ class OnrampMappersTest {
+     assertEquals("service-id", samsungPayConfig.privateField("serviceId"))
+   }
+ 
++  @Test
++  fun mapConfig_WithCountryHint() {
++    val config =
++      readableMapOf(
++        "merchantDisplayName" to "Test",
++        "countryHint" to "DE",
++      )
++
++    val result = mapConfig(config, "pk_test_123")
++
++    assertEquals("DE", result.privateField("countryHint"))
++  }
++
++  @Test
++  fun mapConfig_WithoutCountryHint() {
++    val config = readableMapOf("merchantDisplayName" to "Test")
++
++    val result = mapConfig(config, "pk_test_123")
++
++    assertNull(result.privateField("countryHint"))
++  }
++
+   @Test
+   fun mapConfig_WithAppearance() {
+     val appearance =
+@@ -615,6 +656,10 @@ class OnrampMappersTest {
+         firstName = "Jane",
+         lastName = "Doe",
+         idNumber = "123456789",
++        idType = IdType.SocialSecurityNumber,
++        email = "jane@example.com",
++        phone = "+14155552671",
++        rawPhone = "(415) 555-2671",
+         address =
+           PaymentSheet.Address(
+             city = "San Francisco",
+@@ -635,6 +680,9 @@ class OnrampMappersTest {
+       )
+     val result = mapFromKycInfo(kycInfo)
+ 
++    assertEquals("jane@example.com", result.getString("email"))
++    assertEquals("+14155552671", result.getString("phone"))
++    assertEquals("(415) 555-2671", result.getString("rawPhone"))
+     assertEquals("Jane", result.getString("firstName"))
+     assertEquals("Doe", result.getString("lastName"))
+     assertEquals("123456789", result.getString("idNumber"))
+@@ -688,6 +736,28 @@ class OnrampMappersTest {
+     assertFalse(result.hasKey("birthCountry"))
+     assertFalse(result.hasKey("birthCity"))
+     assertFalse(result.hasKey("nationalities"))
++    assertFalse(result.hasKey("email"))
++    assertFalse(result.hasKey("phone"))
++    assertFalse(result.hasKey("rawPhone"))
++  }
++
++  @Test
++  fun mapFromKycInfo_RawPhoneWithoutNormalizedPhone() {
++    val result = mapFromKycInfo(
++      KycInfo(
++        firstName = null,
++        lastName = null,
++        idNumber = null,
++        idType = IdType.SocialSecurityNumber,
++        dateOfBirth = null,
++        address = null,
++        email = "jane@example.com",
++        rawPhone = "555-2671",
++      ),
++    )
++    assertEquals("jane@example.com", result.getString("email"))
++    assertEquals("555-2671", result.getString("rawPhone"))
++    assertFalse(result.hasKey("phone"))
+   }
+ 
+   @Test
+diff --git a/android/src/test/java/com/stripe/android/testing/FakeStripeActivity.kt b/android/src/test/java/com/stripe/android/testing/FakeStripeActivity.kt
+new file mode 100644
+index 0000000..02c1cb6
+--- /dev/null
++++ b/android/src/test/java/com/stripe/android/testing/FakeStripeActivity.kt
+@@ -0,0 +1,13 @@
++package com.stripe.android.testing
++
++import android.app.Activity
++import app.cash.turbine.Turbine
++
++// Matches the package prefix used by StripeSdkModule's lifecycle callback.
++internal class FakeStripeActivity : Activity() {
++  val finishCalls = Turbine<Unit>()
++
++  override fun finish() {
++    finishCalls.add(Unit)
++  }
++}
+diff --git a/android/src/test/res/font/nunito_400regular.ttf b/android/src/test/res/font/nunito_400regular.ttf
+new file mode 100644
+index 0000000..77a9027
+Binary files /dev/null and b/android/src/test/res/font/nunito_400regular.ttf differ
+diff --git a/e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml b/e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml
+index ec23e55..338121a 100644
+--- a/e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml
++++ b/e2e-tests/android-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml
+@@ -9,7 +9,7 @@ appId: ${APP_ID}
+     timeout: 150000
+ - tapOn: "Trigger timeout"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible: "Close"
+     timeout: 150000
+ - tapOn: "Close"
+ - assertVisible:
+diff --git a/e2e-tests/android-only/paymentsheet-canceled.yml b/e2e-tests/android-only/paymentsheet-canceled.yml
+index 38ea278..41052c8 100644
+--- a/e2e-tests/android-only/paymentsheet-canceled.yml
++++ b/e2e-tests/android-only/paymentsheet-canceled.yml
+@@ -8,7 +8,7 @@ appId: ${APP_ID}
+     text: "Checkout"
+ - tapOn: "Checkout"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible: "Close"
+     timeout: 150000
+ - tapOn: "Close"
+ - assertVisible:
+diff --git a/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml b/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml
+index 1128934..154c1e4 100644
+--- a/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml
++++ b/e2e-tests/android-only/paymentsheet-customFlow-canceled.yml
+@@ -10,7 +10,7 @@ appId: ${APP_ID}
+ - tapOn:
+     text: "Choose payment method"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible: "Close"
+     timeout: 150000
+ - tapOn: "Close"
+ - assertVisible:
+diff --git a/e2e-tests/checkout-currency-selector.yml b/e2e-tests/checkout-currency-selector.yml
+new file mode 100644
+index 0000000..4b71d11
+--- /dev/null
++++ b/e2e-tests/checkout-currency-selector.yml
+@@ -0,0 +1,59 @@
++appId: ${APP_ID}
++---
++- launchApp:
++    clearState: true
++- waitForAnimationToEnd
++- tapOn: 'Accept a payment'
++- scrollUntilVisible:
++    element:
++      text: 'Checkout Sessions.*'
++- tapOn: 'Checkout Sessions.*'
++- extendedWaitUntil:
++    visible: 'Create Checkout Session'
++    timeout: 60000
++- tapOn: 'Reset'
++- scrollUntilVisible:
++    element:
++      text: 'Adaptive Pricing Location'
++    centerElement: true
++- tapOn: 'Adaptive Pricing Location'
++- tapOn: 'Germany (DE)'
++- tapOn: 'Create Checkout Session'
++- extendedWaitUntil:
++    visible: 'Status: ready'
++    timeout: 150000
++- scrollUntilVisible:
++    element:
++      id: 'checkout-currency-selector'
++    timeout: 30000
++- assertVisible:
++    id: 'checkout-currency-selector'
++- runFlow:
++    when:
++      platform: iOS
++    commands:
++      - tapOn:
++          text: '.*Show details'
++          point: '90%,50%'
++      - assertVisible: '.*Hide details'
++      - tapOn:
++          text: '.*Hide details'
++          point: '90%,25%'
++      - assertVisible: '.*Show details'
++- tapOn:
++    text: '.*\$.*'
++- scrollUntilVisible:
++    element:
++      text: 'Status: ready'
++    direction: UP
++    centerElement: true
++    timeout: 60000
++- scrollUntilVisible:
++    element:
++      text: 'Session diagnostics'
++    direction: UP
++    centerElement: true
++- tapOn: 'Session diagnostics'
++- extendedWaitUntil:
++    visible: 'Currency: USD'
++    timeout: 30000
+diff --git a/e2e-tests/checkout-mutations.yml b/e2e-tests/checkout-mutations.yml
+index a427110..f7da81a 100644
+--- a/e2e-tests/checkout-mutations.yml
++++ b/e2e-tests/checkout-mutations.yml
+@@ -26,25 +26,22 @@ appId: ${APP_ID}
+       text: 'Edit email'
+     centerElement: true
+ - tapOn: 'Edit email'
+-- tapOn: 'Email address'
++- tapOn:
++    id: 'checkout-email-input'
+ - eraseText
+ - inputText: 'updated@example.com'
+-- hideKeyboard
+-- tapOn: 'Save email'
+ - runFlow:
+     when:
+       platform: Android
+     commands:
+-      - extendedWaitUntil:
+-          visible: 'updated@example.com'
+-          timeout: 30000
+-- runFlow:
+-    when:
+-      platform: iOS
+-    commands:
+-      - extendedWaitUntil:
+-          visible: 'The installed Stripe iOS SDK does not support CheckoutController.updateEmail yet.'
+-          timeout: 30000
++      - hideKeyboard
++- tapOn: 'Save email'
++- extendedWaitUntil:
++    notVisible: 'Save email'
++    timeout: 30000
++- extendedWaitUntil:
++    visible: 'updated@example.com'
++    timeout: 30000
+ - scrollUntilVisible:
+     element:
+       text: 'Status: ready'
+@@ -76,28 +73,9 @@ appId: ${APP_ID}
+     element:
+       text: 'Clear address'
+ - tapOn: 'Clear address'
+-- runFlow:
+-    when:
+-      platform: iOS
+-    commands:
+-      - extendedWaitUntil:
+-          visible: 'Add shipping address'
+-          timeout: 30000
+-- runFlow:
+-    when:
+-      platform: Android
+-    commands:
+-      - scrollUntilVisible:
+-          element:
+-            text: 'The installed Stripe Android SDK does not support CheckoutController.updateShippingAddress\(name, address\) yet.'
+-          direction: UP
+-          centerElement: true
+-          timeout: 30000
+-      - scrollUntilVisible:
+-          element:
+-            text: '(?s).*510 Townsend St.*'
+-          centerElement: true
+-          timeout: 30000
++- extendedWaitUntil:
++    visible: 'Add shipping address'
++    timeout: 30000
+ - scrollUntilVisible:
+     element:
+       text: 'Select payment method'
+diff --git a/e2e-tests/checkout.yml b/e2e-tests/checkout.yml
+index 0c9af46..e4d4b80 100644
+--- a/e2e-tests/checkout.yml
++++ b/e2e-tests/checkout.yml
+@@ -29,17 +29,6 @@ appId: ${APP_ID}
+     timeout: 150000
+ - assertVisible: 'Classic T-Shirt'
+ - assertVisible: 'Zip-Up Hoodie'
+-- scrollUntilVisible:
+-    element:
+-      text: 'Select payment method'
+-    centerElement: true
+-- tapOn: 'Select payment method'
+-- extendedWaitUntil:
+-    visible: 'Card'
+-    timeout: 60000
+-- tapOn: 'Card'
+-- assertVisible: 'Card number. Supported cards include.*'
+-- tapOn: 'Close'
+ - scrollUntilVisible:
+     element:
+       text: 'Session diagnostics'
+@@ -54,3 +43,13 @@ appId: ${APP_ID}
+ - assertVisible:
+     id: 'checkout-status'
+ - assertVisible: 'Status: ready'
++- scrollUntilVisible:
++    element:
++      text: 'Select payment method'
++    centerElement: true
++- tapOn: 'Select payment method'
++- extendedWaitUntil:
++    visible: 'Card'
++    timeout: 60000
++- tapOn: 'Card'
++- assertVisible: 'Card number. Supported cards include.*'
+diff --git a/e2e-tests/customersheet.yml b/e2e-tests/customersheet.yml
+index af4da8c..be74f0c 100644
+--- a/e2e-tests/customersheet.yml
++++ b/e2e-tests/customersheet.yml
+@@ -10,7 +10,7 @@ appId: ${APP_ID}
+ - tapOn: "Customer Sheet"
+ - tapOn: "Edit payment methods"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible: "Card number. Supported cards include.*"
+     timeout: 150000
+ - tapOn:
+     text: "Card number. Supported cards include.*"
+@@ -29,6 +29,9 @@ appId: ${APP_ID}
+     # Native card labels can end with a Unicode direction marker.
+     text: .*4242.*
+ - tapOn: .*4242.*
++- extendedWaitUntil:
++    visible: "Close"
++    timeout: 150000
+ - tapOn: "Close"
+ - assertVisible:
+     text: "Canceled"
+@@ -37,5 +40,5 @@ appId: ${APP_ID}
+     id: "customer_adapter_switch"
+ - tapOn: .*4242.*
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible: "Close"
+     timeout: 150000
+diff --git a/e2e-tests/helpers/checkout-card.yml b/e2e-tests/helpers/checkout-card.yml
+index 593b0c6..0b50853 100644
+--- a/e2e-tests/helpers/checkout-card.yml
++++ b/e2e-tests/helpers/checkout-card.yml
+@@ -32,7 +32,7 @@ appId: ${APP_ID}
+ - extendedWaitUntil:
+     visible:
+       id: 'checkout-select-payment-method'
+-      text: '.*${CARD_NUMBER.slice(-4)}.*'
++      text: '.*Visa.*'
+     timeout: 30000
+ - scrollUntilVisible:
+     element:
+diff --git a/e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml b/e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml
+index 18df6ed..97872f5 100644
+--- a/e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml
++++ b/e2e-tests/ios-only/local-only/paymentsheet-customFlow-cancel-before-timeout.yml
+@@ -9,7 +9,8 @@ appId: ${APP_ID}
+     timeout: 150000
+ - tapOn: "Trigger timeout"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible:
++      id: "UIButton.Close"
+     timeout: 150000
+ - tapOn:
+     id: "UIButton.Close"
+diff --git a/e2e-tests/ios-only/paymentsheet-canceled.yml b/e2e-tests/ios-only/paymentsheet-canceled.yml
+index 5d7b262..e3ca1e4 100644
+--- a/e2e-tests/ios-only/paymentsheet-canceled.yml
++++ b/e2e-tests/ios-only/paymentsheet-canceled.yml
+@@ -8,7 +8,8 @@ appId: ${APP_ID}
+     text: "Checkout"
+ - tapOn: "Checkout"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible:
++      id: "UIButton.Close"
+     timeout: 150000
+ - tapOn:
+     id: "UIButton.Close"
+diff --git a/e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml b/e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml
+index c3b947e..0be6c22 100644
+--- a/e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml
++++ b/e2e-tests/ios-only/paymentsheet-customFlow-canceled.yml
+@@ -10,7 +10,8 @@ appId: ${APP_ID}
+ - tapOn:
+     text: "Choose payment method"
+ - extendedWaitUntil:
+-    visible: "TEST"
++    visible:
++      id: "UIButton.Close"
+     timeout: 150000
+ - tapOn:
+     id: "UIButton.Close"
+diff --git a/e2e-tests/payment-sheet-pmo-sfu.yml b/e2e-tests/payment-sheet-pmo-sfu.yml
+index 5ac7347..24f045d 100644
+--- a/e2e-tests/payment-sheet-pmo-sfu.yml
++++ b/e2e-tests/payment-sheet-pmo-sfu.yml
+@@ -5,9 +5,6 @@ appId: ${APP_ID}
+ - tapOn: "More payment scenarios"
+ - tapOn: "PaymentSheet with PMO SFU"
+ - tapOn: "Checkout"
+-- extendedWaitUntil:
+-    visible: "TEST"
+-    timeout: 150000
+ - tapOn:
+     text: "Card"
+     optional: true
+@@ -16,6 +13,9 @@ appId: ${APP_ID}
+     optional: true
+ - assertVisible:
+     text: "By providing your card information, you allow Example Inc. to charge your card for future payments in accordance with their terms."
++- extendedWaitUntil:
++    visible: "Card number. Supported cards include.*"
++    timeout: 150000
+ - tapOn:
+     text: "Card number. Supported cards include.*"
+ - inputText: "4242424242424242"
+diff --git a/e2e-tests/paymentsheet-basic.yml b/e2e-tests/paymentsheet-basic.yml
+index cdd34e6..01baad8 100644
+--- a/e2e-tests/paymentsheet-basic.yml
++++ b/e2e-tests/paymentsheet-basic.yml
+@@ -5,9 +5,6 @@ appId: ${APP_ID}
+ - tapOn: "Accept a payment"
+ - tapOn: "Prebuilt UI (single-step)"
+ - tapOn: "Checkout"
+-- extendedWaitUntil:
+-    visible: "TEST"
+-    timeout: 150000
+ - tapOn:
+     text: "Card"
+     optional: true
+@@ -15,6 +12,9 @@ appId: ${APP_ID}
+     text: "New card"
+     optional: true
+ 
++- extendedWaitUntil:
++    visible: "Card number. Supported cards include.*"
++    timeout: 150000
+ - tapOn:
+     text: "Card number. Supported cards include.*"
+ - inputText: "4242424242424242"
+diff --git a/e2e-tests/paymentsheet-customFlow-decoupled.yml b/e2e-tests/paymentsheet-customFlow-decoupled.yml
+index 9372b77..4b9662c 100644
+--- a/e2e-tests/paymentsheet-customFlow-decoupled.yml
++++ b/e2e-tests/paymentsheet-customFlow-decoupled.yml
+@@ -9,12 +9,12 @@ appId: ${APP_ID}
+     timeout: 150000
+ - tapOn:
+     text: "Choose payment method"
+-- extendedWaitUntil:
+-    visible: "TEST"
+-    timeout: 150000
+ - tapOn:
+     text: "Card"
+     optional: true
++- extendedWaitUntil:
++    visible: "Card number. Supported cards include.*"
++    timeout: 150000
+ - tapOn:
+     text: "Card number. Supported cards include.*"
+ - inputText: "4242424242424242"
+diff --git a/e2e-tests/paymentsheet-customFlow.yml b/e2e-tests/paymentsheet-customFlow.yml
+index 6b59a06..70f163f 100644
+--- a/e2e-tests/paymentsheet-customFlow.yml
++++ b/e2e-tests/paymentsheet-customFlow.yml
+@@ -9,12 +9,12 @@ appId: ${APP_ID}
+     timeout: 150000
+ - tapOn:
+     text: "Choose payment method"
+-- extendedWaitUntil:
+-    visible: "TEST"
+-    timeout: 150000
+ - tapOn:
+     text: "Card"
+     optional: true
++- extendedWaitUntil:
++    visible: "Card number. Supported cards include.*"
++    timeout: 150000
+ - tapOn:
+     text: "Card number. Supported cards include.*"
+ - inputText: "4242424242424242"
+diff --git a/e2e-tests/paymentsheet-decoupled.yml b/e2e-tests/paymentsheet-decoupled.yml
+index 62c6b2f..5ef50cb 100644
+--- a/e2e-tests/paymentsheet-decoupled.yml
++++ b/e2e-tests/paymentsheet-decoupled.yml
+@@ -5,15 +5,15 @@ appId: ${APP_ID}
+ - tapOn: "Accept a payment"
+ - tapOn: "Prebuilt UI (deferred intent)"
+ - tapOn: "Checkout"
+-- extendedWaitUntil:
+-    visible: "TEST"
+-    timeout: 150000
+ - tapOn:
+     text: "Card"
+     optional: true
+ - tapOn:
+     text: "New card"
+     optional: true
++- extendedWaitUntil:
++    visible: "Card number. Supported cards include.*"
++    timeout: 150000
+ - tapOn:
+     text: "Card number. Supported cards include.*"
+ - inputText: "4242424242424242"
+diff --git a/etc/stripe-react-native.api.md b/etc/stripe-react-native.api.md
+index 445fe4f..4118c14 100644
+--- a/etc/stripe-react-native.api.md
++++ b/etc/stripe-react-native.api.md
+@@ -987,12 +987,40 @@ export namespace Checkout {
+     }
+     export interface CreateOptions {
+         clientSecret: string;
++        currencySelectorElement?: CurrencySelectorElementConfiguration;
+         defaults?: Defaults;
+         merchantDisplayName?: string;
+         paymentElement?: PaymentElementConfiguration;
+         returnURL: string;
+         style?: UserInterfaceStyle;
+     }
++    export interface CurrencySelectorElementAppearance {
++        colors?: CurrencySelectorElementColorConfiguration | {
++            light: CurrencySelectorElementColorConfiguration;
++            dark: CurrencySelectorElementColorConfiguration;
++        };
++        contentVerticalPadding?: number;
++        font?: Partial<FontConfig>;
++        labelContent?: CurrencySelectorElementLabelContent;
++        shapes?: CurrencySelectorElementShapeConfiguration;
++    }
++    export interface CurrencySelectorElementColorConfiguration {
++        background?: ThemedColor;
++        border?: ThemedColor;
++        danger?: ThemedColor;
++        selectedBackground?: ThemedColor;
++        selectedText?: ThemedColor;
++        text?: ThemedColor;
++        textSecondary?: ThemedColor;
++    }
++    export interface CurrencySelectorElementConfiguration {
++        appearance?: CurrencySelectorElementAppearance;
++    }
++    export type CurrencySelectorElementLabelContent = 'automatic' | 'currencyCode' | 'amount';
++    export interface CurrencySelectorElementShapeConfiguration {
++        borderWidth?: number;
++        cornerRadius?: number;
++    }
+     export interface Defaults {
+         billingDetails?: ContactDetails;
+         email?: string;
+@@ -1010,7 +1038,6 @@ export namespace Checkout {
+         additionalEnabledNetworks?: string[];
+         buttonType?: GooglePayButtonType;
+         label?: string;
+-        testEnv?: boolean;
+     }
+     export interface LinkConfiguration {
+         display?: 'automatic' | 'never';
+@@ -1047,7 +1074,6 @@ export namespace Checkout {
+         preferredNetworks?: CardBrand[];
+         removeSavedPaymentMethodMessage?: string;
+         rowSelectionBehavior?: RowSelectionBehavior;
+-        savePaymentMethodOptInBehavior?: SavePaymentMethodOptInBehavior;
+         termsDisplay?: Record<string, TermsDisplay>;
+     }
+     export interface PaymentOptionDisplayData {
+@@ -1071,7 +1097,6 @@ export namespace Checkout {
+         error: StripeError<ErrorCode>;
+     };
+     export type RowSelectionBehavior = EmbeddedRowSelectionBehavior;
+-    export type SavePaymentMethodOptInBehavior = 'automatic' | 'requiresOptIn' | 'requiresOptOut';
+     export interface Session {
+         businessName?: string;
+         currency: string;
+@@ -1128,6 +1153,7 @@ export namespace Checkout {
+         applyPromotionCode(promotionCode: string): Promise<void>;
+         clearPaymentOption(): Promise<void>;
+         confirm(): Promise<Result>;
++        readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+         readonly error: StripeError<ErrorCode> | null;
+         readonly paymentElement: CheckoutPaymentElement | null;
+         reload(): Promise<void>;
+@@ -1146,6 +1172,7 @@ export interface CheckoutController {
+     applyPromotionCode(promotionCode: string): Promise<void>;
+     clearPaymentOption(): Promise<void>;
+     confirm(): Promise<Checkout.Result>;
++    readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+     destroy(): Promise<void>;
+     readonly paymentElement: CheckoutPaymentElement;
+     removePromotionCode(): Promise<void>;
+@@ -1156,6 +1183,18 @@ export interface CheckoutController {
+     updateShippingAddress(params: Checkout.UpdateShippingAddressParams): Promise<void>;
+ }
+ 
++// @public
++export interface CheckoutCurrencySelectorElement {
++}
++
++// @public
++export function CheckoutCurrencySelectorElementView(input: CheckoutCurrencySelectorElementViewProps): React_2.JSX.Element;
++
++// @public
++export interface CheckoutCurrencySelectorElementViewProps {
++    element: CheckoutCurrencySelectorElement;
++}
++
+ // @public
+ export interface CheckoutPaymentElement {
+     present(): Promise<void>;
+@@ -1165,7 +1204,7 @@ export interface CheckoutPaymentElement {
+ export function CheckoutPaymentElementView(input: CheckoutPaymentElementViewProps): React_2.JSX.Element;
+ 
+ // @public
+-export interface CheckoutPaymentElementViewProps extends ViewProps {
++export interface CheckoutPaymentElementViewProps {
+     element: CheckoutPaymentElement;
+ }
+ 
+@@ -1312,6 +1351,7 @@ type Configuration = {
+     merchantDisplayName: string;
+     appearance: LinkAppearance;
+     cryptoCustomerId?: string;
++    countryHint?: string;
+     googlePay?: GooglePayConfig;
+     samsungPay?: SamsungPayConfig;
+ };
+@@ -2594,6 +2634,9 @@ type KlarnaParams_2 = {
+ 
+ // @public
+ type KycInfo = {
++    email?: string;
++    phone?: string;
++    rawPhone?: string;
+     firstName?: string;
+     lastName?: string;
+     idNumber?: string;
+@@ -3860,6 +3903,7 @@ export enum RowStyle {
+ 
+ // @public
+ type SamsungPayConfig = {
++    collectContactInformation?: boolean;
+     serviceId: string;
+     merchantId?: string;
+     merchantName?: string;
+diff --git a/example/src/screens/Checkout/CheckoutCartScreen.tsx b/example/src/screens/Checkout/CheckoutCartScreen.tsx
+index c8b5153..5b33df8 100644
+--- a/example/src/screens/Checkout/CheckoutCartScreen.tsx
++++ b/example/src/screens/Checkout/CheckoutCartScreen.tsx
+@@ -1,4 +1,5 @@
+ import {
++  CheckoutCurrencySelectorElementView,
+   CheckoutPaymentElementView,
+   useCheckout,
+ } from '@stripe/stripe-react-native';
+@@ -289,6 +290,17 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+           />
+         </View>
+ 
++        {checkout.currencySelectorElement && (
++          <View
++            testID="checkout-currency-selector"
++            style={styles.currencySelector}
++          >
++            <CheckoutCurrencySelectorElementView
++              element={checkout.currencySelectorElement}
++            />
++          </View>
++        )}
++
+         <CartSection title="Items">
+           <View style={styles.card}>
+             {lineItems.length === 0 ? (
+@@ -526,6 +538,7 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+         <View style={styles.editorContent}>
+           <Text style={styles.inputLabel}>Email address</Text>
+           <TextInput
++            testID="checkout-email-input"
+             accessibilityLabel="Email address"
+             autoCapitalize="none"
+             keyboardType="email-address"
+@@ -624,6 +637,12 @@ export default function CheckoutCartScreen({ route, navigation }: Props) {
+             <Text selectable numberOfLines={1} style={styles.monospaceText}>
+               {session.id}
+             </Text>
++            <Text
++              testID="checkout-snapshot-currency"
++              style={styles.diagnosticsMetadata}
++            >
++              Currency: {session.currency.toUpperCase()}
++            </Text>
+           </View>
+           <Text
+             selectable
+@@ -684,6 +703,7 @@ const styles = StyleSheet.create({
+     gap: 12,
+   },
+   statusText: { color: '#697386', fontSize: 12, fontWeight: '700' },
++  currencySelector: { marginHorizontal: 1 },
+   textButton: { color: colors.blurple, fontSize: 14, fontWeight: '700' },
+   headerClose: { color: colors.white, fontSize: 30, lineHeight: 30 },
+   disabled: { opacity: 0.4 },
+@@ -865,6 +885,11 @@ const styles = StyleSheet.create({
+     borderColor: '#D9E2EC',
+   },
+   diagnosticsTitle: { color: colors.slate, fontSize: 15, fontWeight: '700' },
++  diagnosticsMetadata: {
++    color: colors.dark_gray,
++    fontSize: 13,
++    fontWeight: '600',
++  },
+   monospaceText: {
+     color: colors.dark_gray,
+     fontFamily: 'Courier',
+diff --git a/example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx b/example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx
+index 7391ed7..2ba53a4 100644
+--- a/example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx
++++ b/example/src/screens/Checkout/CheckoutPlaygroundScreen.tsx
+@@ -6,7 +6,6 @@ import {
+   ActivityIndicator,
+   Modal,
+   Pressable,
+-  Platform,
+   ScrollView,
+   StyleSheet,
+   Switch,
+@@ -343,11 +342,7 @@ export default function CheckoutPlaygroundScreen() {
+               settings.backendURL
+             );
+       const clientSecret = await createCheckoutSession(
+-        buildSessionParameters(
+-          settings,
+-          customerID,
+-          Platform.OS === 'android' ? 'android' : 'ios'
+-        ),
++        buildSessionParameters(settings, customerID),
+         settings.backendURL
+       );
+       navigation.navigate('CheckoutCartScreen', { clientSecret, settings });
+@@ -654,12 +649,22 @@ export default function CheckoutPlaygroundScreen() {
+             />
+             <View style={styles.availabilityRow}>
+               <Text style={styles.controlLabel}>Currency Selector Element</Text>
+-              <Text style={styles.unavailableText}>Not bridged in RN</Text>
++              <Text
++                style={
++                  settings.adaptivePricingCountry === 'none'
++                    ? styles.unavailableText
++                    : styles.availableText
++                }
++              >
++                {settings.adaptivePricingCountry === 'none'
++                  ? 'Choose a location'
++                  : 'Shown in cart'}
++              </Text>
+             </View>
+           </View>
+           <Text style={styles.helperText}>
+-            The country override still exercises Adaptive Pricing through the
+-            test email convention.
++            Choose a location to enable Adaptive Pricing and show the native
++            Currency Selector Element in the cart.
+           </Text>
+         </Section>
+ 
+@@ -890,6 +895,7 @@ const styles = StyleSheet.create({
+     gap: 12,
+   },
+   unavailableText: { color: '#697386', fontSize: 13, fontWeight: '600' },
++  availableText: { color: colors.blurple, fontSize: 13, fontWeight: '700' },
+   availabilityCard: {
+     borderRadius: 14,
+     padding: 16,
+diff --git a/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts b/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts
+index bfaf3e6..1fe2007 100644
+--- a/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts
++++ b/example/src/screens/Checkout/__tests__/playgroundConfig.test.ts
+@@ -13,7 +13,7 @@ describe('Checkout playground configuration', () => {
+       customer_email: 'jenny@example.com',
+       customer_creation: 'always',
+       automatic_tax: { enabled: true },
+-      payment_method_types: ['card'],
++      allowed_payment_method_types: ['card'],
+       shipping_address_collection: {
+         allowed_countries: ['US', 'CA', 'IE', 'GB'],
+       },
+@@ -29,6 +29,22 @@ describe('Checkout playground configuration', () => {
+         },
+       ],
+     });
++    expect(
++      buildSessionParameters(defaultPlaygroundSettings)
++    ).not.toHaveProperty('payment_method_types');
++    expect(buildSessionParameters(defaultPlaygroundSettings)).toMatchObject({
++      ui_mode: 'mobile_elements',
++      allowed_payment_method_types: ['card'],
++    });
++  });
++
++  it('omits the payment method allowlist for automatic payment methods', () => {
++    expect(
++      buildSessionParameters({
++        ...defaultPlaygroundSettings,
++        automaticPaymentMethods: true,
++      })
++    ).not.toHaveProperty('allowed_payment_method_types');
+   });
+ 
+   it('builds the zero-amount cart scenario', () => {
+@@ -46,12 +62,22 @@ describe('Checkout playground configuration', () => {
+   });
+ 
+   it('uses the Adaptive Pricing test email convention', () => {
++    const settings = {
++      ...defaultPlaygroundSettings,
++      adaptivePricingCountry: 'FR' as const,
++    };
++
++    expect(resolvedEmail(settings)).toBe('test+location_FR@example.com');
++    expect(buildSessionParameters(settings)).toMatchObject({
++      adaptive_pricing: { enabled: true },
++      customer_email: 'test+location_FR@example.com',
++    });
+     expect(
+-      resolvedEmail({
+-        ...defaultPlaygroundSettings,
+-        adaptivePricingCountry: 'FR',
++      checkoutConfiguration({
++        clientSecret: 'cs_test_secret',
++        settings,
+       })
+-    ).toBe('test+location_FR@example.com');
++    ).toMatchObject({ currencySelectorElement: {} });
+   });
+ 
+   it('rejects incompatible server email and customer settings', () => {
+diff --git a/example/src/screens/Checkout/playgroundConfig.ts b/example/src/screens/Checkout/playgroundConfig.ts
+index b659b59..b05be11 100644
+--- a/example/src/screens/Checkout/playgroundConfig.ts
++++ b/example/src/screens/Checkout/playgroundConfig.ts
+@@ -163,12 +163,10 @@ const lineItems = (settings: PlaygroundSettings) =>
+ 
+ export function buildSessionParameters(
+   settings: PlaygroundSettings,
+-  customerID?: string,
+-  platform: 'ios' | 'android' = 'ios'
++  customerID?: string
+ ): object {
+   const params: Record<string, unknown> = {
+-    // Android currently accepts `elements`; iOS uses the preview UI mode.
+-    ui_mode: platform === 'android' ? 'elements' : 'mobile_elements',
++    ui_mode: 'mobile_elements',
+     currency: settings.currency,
+     items: [
+       {
+@@ -192,7 +190,9 @@ export function buildSessionParameters(
+   };
+ 
+   if (!settings.automaticPaymentMethods) {
+-    params.payment_method_types = [...settings.paymentMethodTypes].sort();
++    params.allowed_payment_method_types = [
++      ...settings.paymentMethodTypes,
++    ].sort();
+   }
+   if (settings.automaticTax) {
+     params.automatic_tax = { enabled: true };
+@@ -205,6 +205,9 @@ export function buildSessionParameters(
+       allowed_countries: ['US', 'CA', 'IE', 'GB'],
+     };
+   }
++  if (settings.adaptivePricingCountry !== 'none') {
++    params.adaptive_pricing = { enabled: true };
++  }
+   if (customerID) {
+     params.customer = customerID;
+     if (settings.automaticTax) {
+@@ -273,5 +276,8 @@ export function checkoutConfiguration(
+       },
+       link: { display: settings.linkMode },
+     },
++    ...(settings.adaptivePricingCountry !== 'none'
++      ? { currencySelectorElement: {} }
++      : {}),
+   };
+ }
+diff --git a/example/src/screens/HomeScreen.tsx b/example/src/screens/HomeScreen.tsx
+index d2c00a1..258ac6f 100644
+--- a/example/src/screens/HomeScreen.tsx
++++ b/example/src/screens/HomeScreen.tsx
+@@ -81,18 +81,19 @@ export default function HomeScreen() {
+         merchantCountryCode: 'US',
+         merchantName: 'Onramp Example',
+         existingPaymentMethodRequired: false,
+-        isEmailRequired: false,
++        isEmailRequired: true,
+         allowCreditCards: true,
+         billingAddressConfig: {
+           isRequired: true,
+           format: 'Full',
+-          isPhoneNumberRequired: false,
++          isPhoneNumberRequired: true,
+         },
+       },
+       ...(Platform.OS === 'android' && SAMSUNG_PAY_SERVICE_ID
+         ? {
+             samsungPay: {
+               serviceId: SAMSUNG_PAY_SERVICE_ID,
++              collectContactInformation: true,
+               merchantName: 'Onramp Example',
+             },
+           }
+diff --git a/example/src/screens/Onramp/CryptoOnrampFlow.tsx b/example/src/screens/Onramp/CryptoOnrampFlow.tsx
+index 6e8aeb1..ef3a1b0 100644
+--- a/example/src/screens/Onramp/CryptoOnrampFlow.tsx
++++ b/example/src/screens/Onramp/CryptoOnrampFlow.tsx
+@@ -825,6 +825,30 @@ export default function CryptoOnrampFlow() {
+         }
+ 
+         if (result.kycInfo) {
++          const info = result.kycInfo;
++          setKycInfoInput((previous) => ({
++            ...previous,
++            firstName: info.firstName ?? previous.firstName,
++            lastName: info.lastName ?? previous.lastName,
++            addressLine1: info.address?.line1 ?? previous.addressLine1,
++            addressLine2: info.address?.line2 ?? previous.addressLine2,
++            addressCity: info.address?.city ?? previous.addressCity,
++            addressState: info.address?.state ?? previous.addressState,
++            addressPostalCode:
++              info.address?.postalCode ?? previous.addressPostalCode,
++            addressCountry: info.address?.country ?? previous.addressCountry,
++          }));
++          if (info.address) {
++            const address = info.address;
++            setKycUpdatedAddress((previous) => ({
++              line1: address.line1 ?? previous.line1,
++              line2: address.line2 ?? previous.line2,
++              city: address.city ?? previous.city,
++              state: address.state ?? previous.state,
++              postalCode: address.postalCode ?? previous.postalCode,
++              country: address.country ?? previous.country,
++            }));
++          }
+           Alert.alert(
+             'KYC Info From Platform Pay',
+             formatKycInfoForAlert(result.kycInfo)
+@@ -862,6 +886,10 @@ export default function CryptoOnrampFlow() {
+         merchantCountryCode: 'US',
+         currencyCode: sourceCurrency.toUpperCase(),
+         // Optional: request these billing fields if you'd like Platform Pay to return customer KYC information.
++        requiredShippingAddressFields: [
++          PlatformPay.ContactField.EmailAddress,
++          PlatformPay.ContactField.PhoneNumber,
++        ],
+         requiredBillingContactFields: [
+           PlatformPay.ContactField.Name,
+           PlatformPay.ContactField.PostalAddress,
+@@ -1547,7 +1575,7 @@ function normalizeCountryCodeList(value: string): string[] {
+ 
+ function formatKycInfoForAlert(kycInfo: Onramp.KycInfo): string {
+   const lines: string[] = [
+-    "The following information was gathered from Platform Pay details. In your app, you could use this information to attach KYC details to the user with `attachKYCInfo` if it hasn't already been collected, or pre-fill KYC collection fields in your UI.",
++    'Wallet details have been used to prefill the KYC and address update forms. Review them and complete any missing fields before submitting.',
+     '',
+   ];
+ 
+diff --git a/example/src/screens/Onramp/RegisterCryptoUserScreen.tsx b/example/src/screens/Onramp/RegisterCryptoUserScreen.tsx
+index edafa7c..8692936 100644
+--- a/example/src/screens/Onramp/RegisterCryptoUserScreen.tsx
++++ b/example/src/screens/Onramp/RegisterCryptoUserScreen.tsx
+@@ -1,11 +1,20 @@
+ import React, { useCallback, useState } from 'react';
+-import { StyleSheet, View, ScrollView, Text, TextInput } from 'react-native';
++import {
++  StyleSheet,
++  View,
++  ScrollView,
++  Text,
++  TextInput,
++  Platform,
++  Alert,
++} from 'react-native';
+ import { colors } from '../../colors';
+ import Button from '../../components/Button';
+-import { useOnramp } from '@stripe/stripe-react-native';
++import { useOnramp, useStripe, PlatformPay } from '@stripe/stripe-react-native';
+ 
+ export default function RegisterCryptoOnrampScreen() {
+-  const { registerLinkUser, updatePhoneNumber } = useOnramp();
++  const { registerLinkUser, updatePhoneNumber, collectPaymentMethod } =
++    useOnramp();
+   const [email, setEmail] = useState('');
+   const [phone, setPhone] = useState('');
+   const [country, setCountry] = useState('US');
+@@ -13,6 +22,75 @@ export default function RegisterCryptoOnrampScreen() {
+   const [response, setResponse] = useState<string | null>(null);
+   const [newPhone, setNewPhone] = useState('');
+   const [didRegister, setDidRegister] = useState(false);
++  const { isPlatformPaySupported } = useStripe();
++  const [collectingContact, setCollectingContact] = useState(false);
++
++  const collectContact = async () => {
++    setCollectingContact(true);
++    try {
++      if (!(await isPlatformPaySupported({ googlePay: { testEnv: true } }))) {
++        setResponse('Platform Pay is unavailable on this device.');
++        return;
++      }
++      const result = await collectPaymentMethod(
++        'PlatformPay',
++        Platform.OS === 'ios'
++          ? {
++              applePay: {
++                merchantCountryCode: 'US',
++                currencyCode: 'USD',
++                cartItems: [
++                  {
++                    label: 'Example',
++                    amount: '1.00',
++                    paymentType: PlatformPay.PaymentType.Immediate,
++                  },
++                ],
++                requiredBillingContactFields: [
++                  PlatformPay.ContactField.Name,
++                  PlatformPay.ContactField.PostalAddress,
++                ],
++                requiredShippingAddressFields: [
++                  PlatformPay.ContactField.EmailAddress,
++                  PlatformPay.ContactField.PhoneNumber,
++                ],
++              },
++            }
++          : {
++              googlePay: { currencyCode: 'USD', amount: 100, label: 'Example' },
++            }
++      );
++      if (result.error) {
++        setResponse(result.error.message);
++        return;
++      }
++      const info = result.kycInfo;
++      if (!info) {
++        setResponse(
++          'No contact details were returned. Enter your details below.'
++        );
++        return;
++      }
++      if (info.email) setEmail(info.email);
++      if (info.phone) setPhone(info.phone);
++      if (info.address?.country) setCountry(info.address.country);
++      const name = [info.firstName, info.lastName].filter(Boolean).join(' ');
++      if (name) setFullName(name);
++      if (!info.phone && info.rawPhone) {
++        Alert.alert(
++          'Check phone number',
++          `Wallet phone: ${info.rawPhone}. Enter this number in E.164 format, including its country code.`
++        );
++      }
++      setResponse(
++        'Review the collected details and complete any missing fields before registering.'
++      );
++    } catch (error) {
++      setResponse(String(error));
++    } finally {
++      setCollectingContact(false);
++    }
++  };
+ 
+   const registerUser = useCallback(async () => {
+     setResponse(null);
+@@ -57,6 +135,15 @@ export default function RegisterCryptoOnrampScreen() {
+       style={styles.container}
+     >
+       <View style={styles.infoContainer}>
++        <Button
++          title={
++            collectingContact
++              ? 'Collecting details...'
++              : 'Prefill from Platform Pay'
++          }
++          onPress={collectContact}
++          disabled={collectingContact}
++        />
+         <Text style={styles.infoText}>Enter your user information:</Text>
+         <TextInput
+           style={styles.textInput}
+diff --git a/ios/Checkout/CheckoutConfigurationMapper.swift b/ios/Checkout/CheckoutConfigurationMapper.swift
+index df0a361..c0aeb96 100644
+--- a/ios/Checkout/CheckoutConfigurationMapper.swift
++++ b/ios/Checkout/CheckoutConfigurationMapper.swift
+@@ -43,9 +43,95 @@ enum CheckoutConfigurationMapper {
+             merchantIdentifier: merchantIdentifier,
+             didSelectPaymentOption: didSelectPaymentOption
+         )
++        if let currencySelectorParams = params["currencySelectorElement"] as? NSDictionary {
++            var currencySelectorConfiguration = CurrencySelectorElement.Configuration()
++            currencySelectorConfiguration.appearance = try mapCurrencySelectorAppearance(
++                currencySelectorParams["appearance"] as? NSDictionary
++            )
++            configuration.currencySelectorElement = currencySelectorConfiguration
++        }
+         return configuration
+     }
+ 
++    private static func mapCurrencySelectorAppearance(
++        _ params: NSDictionary?
++    ) throws -> CurrencySelectorElement.Appearance {
++        var appearance = CurrencySelectorElement.Appearance()
++        guard let params else { return appearance }
++
++        if let padding = params["contentVerticalPadding"] as? NSNumber {
++            appearance.contentVerticalPadding = CGFloat(truncating: padding)
++        }
++        if let shapes = params["shapes"] as? NSDictionary {
++            if let radius = shapes["cornerRadius"] as? NSNumber {
++                appearance.cornerRadius = CGFloat(truncating: radius)
++            }
++            if let width = shapes["borderWidth"] as? NSNumber {
++                appearance.borderWidth = CGFloat(truncating: width)
++            }
++        }
++        if let font = params["font"] as? NSDictionary {
++            if let family = font["family"] as? String,
++               let customFont = UIFont(name: family, size: appearance.font.pointSize) {
++                appearance.font = customFont
++            }
++            if let scale = font["scale"] as? NSNumber {
++                appearance.sizeScaleFactor = CGFloat(truncating: scale)
++            }
++        }
++        if let value = params["labelContent"] as? String {
++            appearance.labelContent = switch value {
++            case "automatic": .automatic
++            case "currencyCode": .currencyCode
++            case "amount": .amount
++            default: throw unsupported(value, at: "currencySelectorElement.appearance.labelContent")
++            }
++        }
++        if let colors = params["colors"] as? NSDictionary {
++            mapCurrencySelectorColor(colors, key: "border").map { appearance.border = $0 }
++            mapCurrencySelectorColor(colors, key: "background").map { appearance.background = $0 }
++            mapCurrencySelectorColor(colors, key: "selectedBackground").map { appearance.selectedBackground = $0 }
++            mapCurrencySelectorColor(colors, key: "text").map { appearance.text = $0 }
++            mapCurrencySelectorColor(colors, key: "selectedText").map { appearance.selectedText = $0 }
++            mapCurrencySelectorColor(colors, key: "textSecondary").map { appearance.textSecondary = $0 }
++            mapCurrencySelectorColor(colors, key: "danger").map { appearance.danger = $0 }
++        }
++        return appearance
++    }
++
++    private static func mapCurrencySelectorColor(
++        _ colors: NSDictionary,
++        key: String
++    ) -> UIColor? {
++        let lightPalette = colors["light"] as? NSDictionary
++        let darkPalette = colors["dark"] as? NSDictionary
++        if lightPalette != nil || darkPalette != nil {
++            let light = colorHex(lightPalette?[key], style: "light")
++                ?? colorHex(darkPalette?[key], style: "light")
++            let dark = colorHex(darkPalette?[key], style: "dark")
++                ?? colorHex(lightPalette?[key], style: "dark")
++            guard light != nil || dark != nil else { return nil }
++            return UIColor { traits in
++                UIColor(hexString: traits.userInterfaceStyle == .dark
++                    ? (dark ?? light!)
++                    : (light ?? dark!))
++            }
++        }
++        guard let light = colorHex(colors[key], style: "light"),
++              let dark = colorHex(colors[key], style: "dark") else {
++            return nil
++        }
++        if light == dark { return UIColor(hexString: light) }
++        return UIColor { traits in
++            UIColor(hexString: traits.userInterfaceStyle == .dark ? dark : light)
++        }
++    }
++
++    private static func colorHex(_ value: Any?, style: String) -> String? {
++        if let value = value as? String { return value }
++        return (value as? NSDictionary)?[style] as? String
++    }
++
+     private static func mapDefaults(
+         _ params: NSDictionary?
+     ) -> CheckoutController.Configuration.Defaults {
+@@ -101,24 +187,20 @@ enum CheckoutConfigurationMapper {
+             guard let merchantIdentifier, !merchantIdentifier.isEmpty else {
+                 throw CheckoutConfigurationMapperError.missingMerchantIdentifier
+             }
+-            configuration.applePayConfiguration = PaymentElement.ApplePayConfiguration(
++            configuration.applePayConfiguration = PaymentElement.Configuration.ApplePayConfiguration(
+                 merchantId: merchantIdentifier,
+                 buttonType: try mapApplePayButtonType(applePayParams["buttonType"] as? String)
+             )
+         }
+ 
+         if let linkParams = params["link"] as? NSDictionary {
+-            var linkConfiguration = PaymentElement.LinkConfiguration()
++            var linkConfiguration = PaymentElement.Configuration.LinkConfiguration()
+             if let display = linkParams["display"] as? String {
+                 linkConfiguration.display = try mapLinkDisplay(display)
+             }
+             configuration.linkConfiguration = linkConfiguration
+         }
+ 
+-        if let behavior = params["savePaymentMethodOptInBehavior"] as? String {
+-            configuration.savePaymentMethodOptInBehavior = try mapSavePaymentMethodOptInBehavior(behavior)
+-        }
+-
+         if let appearance = params["appearance"] as? NSDictionary {
+             configuration.appearance = try PaymentSheetAppearance.buildAppearanceFromParams(
+                 userParams: appearance
+@@ -182,17 +264,6 @@ enum CheckoutConfigurationMapper {
+         }
+     }
+ 
+-    private static func mapSavePaymentMethodOptInBehavior(
+-        _ value: String
+-    ) throws -> PaymentElement.SavePaymentMethodOptInBehavior {
+-        switch value {
+-        case "automatic": return .automatic
+-        case "requiresOptIn": return .requiresOptIn
+-        case "requiresOptOut": return .requiresOptOut
+-        default: throw unsupported(value, at: "paymentElement.savePaymentMethodOptInBehavior")
+-        }
+-    }
+-
+     private static func mapPaymentMethodLayout(
+         _ value: String
+     ) throws -> PaymentElement.PaymentMethodLayout {
+@@ -217,7 +288,7 @@ enum CheckoutConfigurationMapper {
+ 
+     private static func mapLinkDisplay(
+         _ value: String
+-    ) throws -> PaymentElement.LinkConfiguration.Display {
++    ) throws -> PaymentElement.Configuration.LinkConfiguration.Display {
+         switch value {
+         case "automatic": return .automatic
+         case "never": return .never
+diff --git a/ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift b/ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift
+new file mode 100644
+index 0000000..d0110d5
+--- /dev/null
++++ b/ios/Checkout/CheckoutCurrencySelectorElementContainerView.swift
+@@ -0,0 +1,98 @@
++import Combine
++import React
++@_spi(ReactNativeSDK) @_spi(STP) import StripePaymentSheet
++import UIKit
++
++/// Hosts the Currency Selector Element owned by a registered Checkout controller.
++@objc(CheckoutCurrencySelectorElementContainerView)
++@MainActor
++public final class CheckoutCurrencySelectorElementContainerView: UIView {
++    @objc public var controllerId: String? {
++        didSet {
++            guard oldValue != controllerId else { return }
++            detach()
++            attach()
++        }
++    }
++    @objc public var onHeightChanged: RCTDirectEventBlock?
++    private var element: CurrencySelectorElement?
++    private var destruction: AnyCancellable?
++    private var sessionObservation: AnyCancellable?
++    private var reportedHeight: CGFloat?
++    private lazy var nativeDelegate = ElementDelegate(view: self)
++
++    override public func didMoveToWindow() {
++        super.didMoveToWindow()
++        if window == nil { detach() } else { attach() }
++    }
++
++    private func attach() {
++        guard window != nil, element == nil, let controllerId,
++              let instance = StripeSdkImpl.shared.checkoutControllers[controllerId],
++              let element = instance.currencySelectorElement else {
++            return
++        }
++        let view = element.uiView
++        guard view.superview == nil else {
++            assertionFailure("A Checkout Currency Selector Element can only be mounted once.")
++            return
++        }
++        self.element = element
++        view.translatesAutoresizingMaskIntoConstraints = false
++        addSubview(view)
++        NSLayoutConstraint.activate([
++            view.topAnchor.constraint(equalTo: topAnchor),
++            view.leadingAnchor.constraint(equalTo: leadingAnchor),
++            view.trailingAnchor.constraint(equalTo: trailingAnchor),
++            view.bottomAnchor.constraint(equalTo: bottomAnchor),
++        ])
++        element.delegate = nativeDelegate
++        destruction = instance.observeDestruction { [weak self] in self?.detach() }
++        sessionObservation = instance.checkout.$session
++            .dropFirst()
++            .sink { [weak self] _ in
++                self?.setNeedsLayout()
++                self?.layoutIfNeeded()
++            }
++        setNeedsLayout()
++    }
++
++    @objc public func detach() {
++        destruction?.cancel()
++        destruction = nil
++        sessionObservation?.cancel()
++        sessionObservation = nil
++        element?.delegate = nil
++        element?.uiView.removeFromSuperview()
++        element = nil
++        reportedHeight = nil
++    }
++
++    override public func layoutSubviews() {
++        super.layoutSubviews()
++        guard let view = element?.uiView, bounds.width > 0 else { return }
++        let size = view.systemLayoutSizeFitting(
++            CGSize(width: bounds.width, height: UIView.layoutFittingCompressedSize.height),
++            withHorizontalFittingPriority: .required,
++            verticalFittingPriority: .fittingSizeLevel
++        )
++        let height = ceil(size.height)
++        if height != reportedHeight {
++            reportedHeight = height
++            onHeightChanged?(["height": height])
++        }
++    }
++}
++
++// Keep Stripe SPI types out of the public Objective-C view interface.
++@MainActor
++private final class ElementDelegate: CurrencySelectorElementDelegate {
++    private weak var view: CheckoutCurrencySelectorElementContainerView?
++
++    init(view: CheckoutCurrencySelectorElementContainerView) { self.view = view }
++
++    func currencySelectorElementDidUpdateHeight(currencySelectorElement: CurrencySelectorElement) {
++        view?.setNeedsLayout()
++        view?.layoutIfNeeded()
++    }
++}
+diff --git a/ios/Checkout/NativeCheckoutControllerInstance.swift b/ios/Checkout/NativeCheckoutControllerInstance.swift
+index 1091eb9..e2937a4 100644
+--- a/ios/Checkout/NativeCheckoutControllerInstance.swift
++++ b/ios/Checkout/NativeCheckoutControllerInstance.swift
+@@ -13,6 +13,7 @@ final class NativeCheckoutControllerInstance {
+     }
+ 
+     let checkout: CheckoutController
++    let currencySelectorElement: CurrencySelectorElement?
+     private(set) lazy var session = CheckoutSessionSerializer.serialize(checkout.session)
+ 
+     private let emitEvent: ([String: Any]) -> Void
+@@ -28,9 +29,11 @@ final class NativeCheckoutControllerInstance {
+ 
+     init(
+         checkout: CheckoutController,
++        currencySelectorElement: CurrencySelectorElement? = nil,
+         emitEvent: @escaping ([String: Any]) -> Void
+     ) {
+         self.checkout = checkout
++        self.currencySelectorElement = currencySelectorElement
+         self.emitEvent = emitEvent
+     }
+ 
+diff --git a/ios/Mappers.swift b/ios/Mappers.swift
+index 2682df3..dc2c982 100644
+--- a/ios/Mappers.swift
++++ b/ios/Mappers.swift
+@@ -1181,6 +1181,26 @@ class Mappers {
+     }
+ 
+ #if canImport(StripeCryptoOnramp)
++    struct OnrampConfiguration {
++        let appearance: LinkAppearance
++        let cryptoCustomerId: String?
++        let countryHint: String?
++    }
++
++    class func mapToOnrampConfiguration(_ params: NSDictionary) -> OnrampConfiguration {
++        let appearance: LinkAppearance = if let appearanceParams = params["appearance"] as? [String: Any?] {
++            mapToLinkAppearance(appearanceParams)
++        } else {
++            LinkAppearance()
++        }
++
++        return OnrampConfiguration(
++            appearance: appearance,
++            cryptoCustomerId: params["cryptoCustomerId"] as? String,
++            countryHint: params["countryHint"] as? String
++        )
++    }
++
+     class func mapToLinkAppearance(_ params: [String: Any?]) -> LinkAppearance {
+         let darkColors = params["darkColors"] as? [String: Any?]
+         let lightColors = params["lightColors"] as? [String: Any?]
+@@ -1289,6 +1309,16 @@ class Mappers {
+     class func mapFromKycInfo(_ kycInfo: KycInfo) -> [String: Any] {
+         var result: [String: Any] = [:]
+ 
++        if let email = kycInfo.email {
++            result["email"] = email
++        }
++        if let phone = kycInfo.phone {
++            result["phone"] = phone
++        }
++        if let rawPhone = kycInfo.rawPhone {
++            result["rawPhone"] = rawPhone
++        }
++
+         if let firstName = kycInfo.firstName {
+             result["firstName"] = firstName
+         }
+diff --git a/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h b/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h
+new file mode 100644
+index 0000000..e658432
+--- /dev/null
++++ b/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.h
+@@ -0,0 +1,4 @@
++#import <React/RCTViewComponentView.h>
++
++@interface CheckoutCurrencySelectorElementViewComponentView : RCTViewComponentView
++@end
+diff --git a/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm b/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm
+new file mode 100644
+index 0000000..658e69b
+--- /dev/null
++++ b/ios/NewArch/CheckoutCurrencySelectorElementViewComponentView.mm
+@@ -0,0 +1,64 @@
++#import "CheckoutCurrencySelectorElementViewComponentView.h"
++#import <react/renderer/components/rnstripe/ComponentDescriptors.h>
++#import <react/renderer/components/rnstripe/EventEmitters.h>
++#import <react/renderer/components/rnstripe/Props.h>
++#import <react/renderer/components/rnstripe/RCTComponentViewHelpers.h>
++#import <React/RCTConversions.h>
++#import <React/RCTFabricComponentsPlugins.h>
++#import "StripeSwiftInterop.h"
++
++using namespace facebook::react;
++
++@interface CheckoutCurrencySelectorElementViewComponentView () <RCTCheckoutCurrencySelectorElementViewViewProtocol>
++@end
++
++@implementation CheckoutCurrencySelectorElementViewComponentView {
++  CheckoutCurrencySelectorElementContainerView *_view;
++}
++
+++ (void)load { [super load]; }
++
++- (instancetype)initWithFrame:(CGRect)frame
++{
++  if (self = [super initWithFrame:frame]) {
++    _props = std::make_shared<const CheckoutCurrencySelectorElementViewProps>();
++    _view = [CheckoutCurrencySelectorElementContainerView new];
++    self.contentView = _view;
++    __weak __typeof(self) weakSelf = self;
++    _view.onHeightChanged = ^(NSDictionary *event) {
++      __typeof(self) strongSelf = weakSelf;
++      if (!strongSelf || !strongSelf->_eventEmitter) { return; }
++      CheckoutCurrencySelectorElementViewEventEmitter::OnHeightChanged payload = {
++        .height = [event[@"height"] doubleValue]
++      };
++      std::static_pointer_cast<const CheckoutCurrencySelectorElementViewEventEmitter>(strongSelf->_eventEmitter)->onHeightChanged(payload);
++    };
++  }
++  return self;
++}
++
++- (void)updateProps:(const Props::Shared &)props oldProps:(const Props::Shared &)oldProps
++{
++  const auto &viewProps = *std::static_pointer_cast<const CheckoutCurrencySelectorElementViewProps>(props);
++  _view.controllerId = RCTNSStringFromString(viewProps.controllerId);
++  [super updateProps:props oldProps:oldProps];
++}
++
+++ (ComponentDescriptorProvider)componentDescriptorProvider
++{
++  return concreteComponentDescriptorProvider<CheckoutCurrencySelectorElementViewComponentDescriptor>();
++}
++
++- (void)prepareForRecycle
++{
++  [super prepareForRecycle];
++  [_view detach];
++  _view.controllerId = nil;
++}
++
++@end
++
++Class<RCTComponentViewProtocol> CheckoutCurrencySelectorElementViewCls(void)
++{
++  return CheckoutCurrencySelectorElementViewComponentView.class;
++}
+diff --git a/ios/StripeSdkImpl+Checkout.swift b/ios/StripeSdkImpl+Checkout.swift
+index cf9317b..3d939a2 100644
+--- a/ios/StripeSdkImpl+Checkout.swift
++++ b/ios/StripeSdkImpl+Checkout.swift
+@@ -39,8 +39,12 @@ extension StripeSdkImpl {
+                     )
+                     let checkout = try await CheckoutController(configuration: configuration)
+                     try Task.checkCancellation()
++                    let currencySelectorElement = configuration.currencySelectorElement == nil
++                        ? nil
++                        : checkout.getCurrencySelectorElement()
+                     let instance = NativeCheckoutControllerInstance(
+                         checkout: checkout,
++                        currencySelectorElement: currencySelectorElement,
+                         emitEvent: { [weak self] update in
+                             self?.emitter?.emitCheckoutControllerDidUpdate(update)
+                         }
+@@ -49,6 +53,7 @@ extension StripeSdkImpl {
+                     instance.start(controllerId: controllerId)
+                     resolve([
+                         "session": instance.session,
++                        "isCurrencySelectorAvailable": currencySelectorElement != nil,
+                     ])
+                 } catch {
+                     reject("Failed", error.localizedDescription, error)
+@@ -82,15 +87,8 @@ extension StripeSdkImpl {
+         resolver resolve: @escaping RCTPromiseResolveBlock,
+         rejecter reject: @escaping RCTPromiseRejectBlock
+     ) {
+-        performCheckoutMutation(controllerId: controllerId, resolver: resolve, rejecter: reject) { _ in
+-            // TODO(porter): Forward email updates once the iOS SDK exposes CheckoutController.updateEmail.
+-            throw NSError(
+-                domain: "StripeReactNativeCheckout",
+-                code: 0,
+-                userInfo: [
+-                    NSLocalizedDescriptionKey: "The installed Stripe iOS SDK does not support CheckoutController.updateEmail yet.",
+-                ]
+-            )
++        performCheckoutMutation(controllerId: controllerId, resolver: resolve, rejecter: reject) { instance in
++            try await instance.checkout.updateEmail(email)
+         }
+     }
+ 
+diff --git a/ios/StripeSdkImpl.swift b/ios/StripeSdkImpl.swift
+index 6ffecb6..fe4c5e7 100644
+--- a/ios/StripeSdkImpl.swift
++++ b/ios/StripeSdkImpl.swift
+@@ -1336,20 +1336,15 @@ public class StripeSdkImpl: NSObject, UIAdaptivePresentationControllerDelegate {
+             return
+         }
+ 
+-        let appearance: LinkAppearance = if let appearanceParams = config["appearance"] as? [String: Any?] {
+-            Mappers.mapToLinkAppearance(appearanceParams)
+-        } else {
+-            LinkAppearance()
+-        }
+-
+-        let cryptoCustomerId = config["cryptoCustomerId"] as? String
++        let configuration = Mappers.mapToOnrampConfiguration(config)
+ 
+         Task {
+             do {
+                 cryptoOnrampCoordinator = try await CryptoOnrampCoordinator.create(
+-                    appearance: appearance,
+-                    cryptoCustomerID: cryptoCustomerId,
+-                    additionalSDKVersions: onrampAdditionalSDKVersions
++                    appearance: configuration.appearance,
++                    cryptoCustomerID: configuration.cryptoCustomerId,
++                    additionalSDKVersions: onrampAdditionalSDKVersions,
++                    countryHint: configuration.countryHint
+                 )
+                 resolve([:])  // Return empty object on success
+             } catch {
+diff --git a/ios/Tests/CheckoutConfigurationMapperTests.swift b/ios/Tests/CheckoutConfigurationMapperTests.swift
+index 9512272..41c3857 100644
+--- a/ios/Tests/CheckoutConfigurationMapperTests.swift
++++ b/ios/Tests/CheckoutConfigurationMapperTests.swift
+@@ -5,6 +5,47 @@ import XCTest
+ 
+ @MainActor
+ final class CheckoutConfigurationMapperTests: XCTestCase {
++    func test_map_mapsCurrencySelectorElementAppearance() throws {
++        let configuration = try CheckoutConfigurationMapper.map(
++            params: [
++                "clientSecret": "cs_test_secret_123",
++                "returnURL": "example://checkout",
++                "currencySelectorElement": [
++                    "appearance": [
++                        "contentVerticalPadding": 8,
++                        "shapes": ["cornerRadius": 12, "borderWidth": 2],
++                        "font": ["family": "Helvetica", "scale": 1.2],
++                        "colors": [
++                            "light": ["background": "#FFFFFF"],
++                            "dark": ["background": "#000000"],
++                        ],
++                        "labelContent": "amount",
++                    ],
++                ],
++            ],
++            merchantIdentifier: nil,
++            didSelectPaymentOption: {}
++        )
++
++        let appearance = try XCTUnwrap(configuration.currencySelectorElement?.appearance)
++        XCTAssertEqual(appearance.contentVerticalPadding, 8)
++        XCTAssertEqual(appearance.cornerRadius, 12)
++        XCTAssertEqual(appearance.borderWidth, 2)
++        XCTAssertEqual(appearance.font.fontName, "Helvetica")
++        XCTAssertEqual(appearance.sizeScaleFactor, 1.2)
++        if case .amount = appearance.labelContent {} else {
++            XCTFail("Expected amount label content")
++        }
++        XCTAssertEqual(
++            appearance.background.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)),
++            UIColor(hexString: "#FFFFFF")
++        )
++        XCTAssertEqual(
++            appearance.background.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark)),
++            UIColor(hexString: "#000000")
++        )
++    }
++
+     func test_map_mapsSupportedConfiguration() throws {
+         var selectionCount = 0
+         let configuration = try CheckoutConfigurationMapper.map(
+@@ -26,7 +67,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+                     ],
+                 ],
+                 "paymentElement": [
+-                    "savePaymentMethodOptInBehavior": "requiresOptOut",
+                     "appearance": ["shapes": ["borderRadius": 12.0]],
+                     "preferredNetworks": [7, 5],
+                     "billingDetailsCollectionConfiguration": [
+@@ -78,11 +118,6 @@ final class CheckoutConfigurationMapperTests: XCTestCase {
+         XCTAssertEqual(paymentElement.applePayConfiguration?.buttonType, .checkout)
+         XCTAssertEqual(paymentElement.linkConfiguration?.display, .never)
+ 
+-        if case .requiresOptOut = paymentElement.savePaymentMethodOptInBehavior {
+-            // Expected.
+-        } else {
+-            XCTFail("Expected requiresOptOut")
+-        }
+         if case .vertical = paymentElement.paymentMethodLayout {
+             // Expected.
+         } else {
+diff --git a/ios/Tests/CheckoutSessionSerializerTests.swift b/ios/Tests/CheckoutSessionSerializerTests.swift
+index 756b1e4..5bedbad 100644
+--- a/ios/Tests/CheckoutSessionSerializerTests.swift
++++ b/ios/Tests/CheckoutSessionSerializerTests.swift
+@@ -52,6 +52,7 @@ final class CheckoutSessionSerializerTests: XCTestCase {
+         let option = CheckoutController.Session.PaymentOptionDisplayData(
+             image: image,
+             label: "Visa 4242",
++            sublabel: nil,
+             billingDetails: billingDetails,
+             paymentMethodType: "card",
+             mandateText: NSAttributedString(string: "Terms & conditions", attributes: [
+diff --git a/ios/Tests/OnrampMappersTests.swift b/ios/Tests/OnrampMappersTests.swift
+index 396e0e2..8d1132d 100644
+--- a/ios/Tests/OnrampMappersTests.swift
++++ b/ios/Tests/OnrampMappersTests.swift
+@@ -7,6 +7,33 @@ import XCTest
+ @_spi(CryptoOnrampAlpha) import StripeCryptoOnramp
+ class OnrampMappersTests: XCTestCase {
+ 
++    func test_mapToOnrampConfiguration_mapsCustomerIdAndCountryHint() {
++        let configuration = Mappers.mapToOnrampConfiguration([
++            "cryptoCustomerId": "ccus_123",
++            "countryHint": "DE",
++        ])
++
++        XCTAssertEqual(configuration.cryptoCustomerId, "ccus_123")
++        XCTAssertEqual(configuration.countryHint, "DE")
++    }
++
++    func test_mapToOnrampConfiguration_omittedPropertiesAreNil() {
++        let configuration = Mappers.mapToOnrampConfiguration([:])
++
++        XCTAssertNil(configuration.cryptoCustomerId)
++        XCTAssertNil(configuration.countryHint)
++    }
++
++    func test_mapToOnrampConfiguration_nullPropertiesAreNil() {
++        let configuration = Mappers.mapToOnrampConfiguration([
++            "cryptoCustomerId": NSNull(),
++            "countryHint": NSNull(),
++        ])
++
++        XCTAssertNil(configuration.cryptoCustomerId)
++        XCTAssertNil(configuration.countryHint)
++    }
++
+     func test_mapToLinkAppearance_fullConfigurationMapsDynamicColorsAndPrimaryButton() {
+         let params: [String: Any?] = [
+             "style": "ALWAYS_DARK",
+@@ -393,10 +420,16 @@ class OnrampMappersTests: XCTestCase {
+                 dateOfBirth: KycInfo.DateOfBirth(day: 15, month: 6, year: 1990),
+                 birthCountry: "FR",
+                 birthCity: "Paris",
+-                nationalities: ["FR", "DE"]
++                nationalities: ["FR", "DE"],
++                email: "jane@example.com",
++                phone: "+14155552671",
++                rawPhone: "(415) 555-2671"
+             )
+         )
+ 
++        XCTAssertEqual(result["email"] as? String, "jane@example.com")
++        XCTAssertEqual(result["phone"] as? String, "+14155552671")
++        XCTAssertEqual(result["rawPhone"] as? String, "(415) 555-2671")
+         XCTAssertEqual(result["firstName"] as? String, "Jane")
+         XCTAssertEqual(result["lastName"] as? String, "Doe")
+         XCTAssertEqual(result["idNumber"] as? String, "123456789")
+@@ -442,6 +475,25 @@ class OnrampMappersTests: XCTestCase {
+         XCTAssertNil(result["birthCountry"])
+         XCTAssertNil(result["birthCity"])
+         XCTAssertNil(result["nationalities"])
++        XCTAssertNil(result["email"])
++        XCTAssertNil(result["phone"])
++        XCTAssertNil(result["rawPhone"])
++    }
++
++    func test_mapFromKycInfo_preservesRawPhoneWithoutNormalizedPhone() {
++        let result = Mappers.mapFromKycInfo(KycInfo(
++            firstName: nil,
++            lastName: nil,
++            idNumber: nil,
++            address: nil,
++            dateOfBirth: nil,
++            email: "jane@example.com",
++            rawPhone: "555-2671"
++        ))
++
++        XCTAssertEqual(result["email"] as? String, "jane@example.com")
++        XCTAssertEqual(result["rawPhone"] as? String, "555-2671")
++        XCTAssertNil(result["phone"])
+     }
+ 
+     func test_mapFromKycInfo_partialAddressOmitsNilFields() {
+diff --git a/package.json b/package.json
+index 8b7edd8..d8f38f6 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@stripe/stripe-react-native",
+-  "version": "0.81.0",
++  "version": "0.82.0",
+   "author": "Stripe",
+   "description": "Stripe SDK for React Native",
+   "main": "lib/commonjs/index",
+@@ -204,6 +204,7 @@
+         "CardForm": "CardFormComponentView",
+         "EmbeddedPaymentElementView": "EmbeddedPaymentElementViewComponentView",
+         "CheckoutPaymentElementView": "CheckoutPaymentElementViewComponentView",
++        "CheckoutCurrencySelectorElementView": "CheckoutCurrencySelectorElementViewComponentView",
+         "NavigationBar": "NavigationBarComponentView",
+         "StripeContainer": "StripeContainerComponentView"
+       }
+diff --git a/src/checkout/__tests__/Checkout.test.tsx b/src/checkout/__tests__/Checkout.test.tsx
+index 64b5991..e52da91 100644
+--- a/src/checkout/__tests__/Checkout.test.tsx
++++ b/src/checkout/__tests__/Checkout.test.tsx
+@@ -48,6 +48,19 @@ beforeEach(() => {
+   create.mockImplementation(async () => ({ session }));
+ });
+ 
++it('keeps one nullable Currency Selector handle for the controller lifetime', async () => {
++  create.mockResolvedValueOnce({ session, isCurrencySelectorAvailable: true });
++  const controller = await createCheckout({
++    ...options,
++    currencySelectorElement: {},
++  });
++  expect(controller.currencySelectorElement).not.toBeNull();
++  expect(controller.currencySelectorElement).toBe(
++    controller.currencySelectorElement
++  );
++  await controller.destroy();
++});
++
+ it('keeps initial snapshots and routes updates and selection to the owning controller', async () => {
+   const selected = jest.fn();
+   const updated = { ...session, email: 'updated@example.com' };
+diff --git a/src/checkout/__tests__/CheckoutCurrencySelectorElementView.test.tsx b/src/checkout/__tests__/CheckoutCurrencySelectorElementView.test.tsx
+new file mode 100644
+index 0000000..f3efde0
+--- /dev/null
++++ b/src/checkout/__tests__/CheckoutCurrencySelectorElementView.test.tsx
+@@ -0,0 +1,47 @@
++import { checkoutSession as session } from '../__fixtures__/session';
++import React from 'react';
++import { fireEvent, render } from '@testing-library/react-native';
++import { CheckoutCurrencySelectorElementView } from '../../components/CheckoutCurrencySelectorElementView';
++import { createCheckout } from '../createCheckout';
++import type { Checkout } from '../../types/Checkout';
++import NativeStripeSdk from '../../specs/NativeStripeSdkModule';
++
++jest.mock('../../events', () => ({
++  addListener: jest.fn(() => ({ remove: jest.fn() })),
++}));
++jest.mock(
++  '../../specs/NativeCheckoutCurrencySelectorElement',
++  () => require('react-native').View
++);
++jest.mock('../../specs/NativeStripeSdkModule', () => ({
++  __esModule: true,
++  default: { createCheckout: jest.fn(), destroyCheckout: jest.fn() },
++}));
++
++it('exposes only available elements and follows their native height', async () => {
++  const options: Checkout.CreateOptions = {
++    clientSecret: 'cs_test_secret',
++    returnURL: 'example://checkout',
++    currencySelectorElement: {},
++  };
++  (NativeStripeSdk.createCheckout as jest.Mock)
++    .mockResolvedValueOnce({ session, isCurrencySelectorAvailable: true })
++    .mockResolvedValueOnce({ session, isCurrencySelectorAvailable: false });
++  const available = await createCheckout(options);
++  const unavailable = await createCheckout(options);
++  expect(unavailable.currencySelectorElement).toBeNull();
++  const { UNSAFE_getByType } = render(
++    <CheckoutCurrencySelectorElementView
++      element={available.currencySelectorElement!}
++    />
++  );
++  const nativeElement = UNSAFE_getByType(require('react-native').View);
++  expect(nativeElement.props.controllerId).toBe(
++    (NativeStripeSdk.createCheckout as jest.Mock).mock.calls[0][1]
++  );
++  fireEvent(nativeElement, 'heightChanged', {
++    nativeEvent: { height: 72 },
++  });
++  expect(nativeElement.props.style).toEqual({ height: 72 });
++  await Promise.all([available.destroy(), unavailable.destroy()]);
++});
+diff --git a/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx b/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx
+index fdcef72..4dcf979 100644
+--- a/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx
++++ b/src/checkout/__tests__/CheckoutPaymentElementView.test.tsx
+@@ -32,34 +32,26 @@ it('routes the controller ID and resets native height when the element changes',
+     .mockResolvedValueOnce({ controllerId: 'controller-2', session });
+   const first = await createCheckout(options);
+   const second = await createCheckout(options);
+-  const { getByTestId, rerender, unmount } = render(
+-    <CheckoutPaymentElementView
+-      testID="element"
+-      element={first.paymentElement}
+-      style={{ height: 999 }}
+-    />
++  const { UNSAFE_getByType, rerender, unmount } = render(
++    <CheckoutPaymentElementView element={first.paymentElement} />
+   );
+-  expect(getByTestId('element').props.controllerId).toBe(
++  const nativeElement = () => UNSAFE_getByType(require('react-native').View);
++  expect(nativeElement().props.controllerId).toBe(
+     (NativeStripeSdk.createCheckout as jest.Mock).mock.calls[0][1]
+   );
+-  expect(getByTestId('element')).toHaveStyle({ width: '100%', height: 1 });
+-  fireEvent(getByTestId('element'), 'heightChanged', {
++  expect(nativeElement().props.style).toEqual({ width: '100%', height: 1 });
++  fireEvent(nativeElement(), 'heightChanged', {
+     nativeEvent: { height: 140 },
+   });
+   expect(configureNext).toHaveBeenCalledWith(
+     LayoutAnimation.Presets.easeInEaseOut
+   );
+-  expect(getByTestId('element')).toHaveStyle({ height: 140 });
+-  rerender(
+-    <CheckoutPaymentElementView
+-      testID="element"
+-      element={second.paymentElement}
+-    />
+-  );
+-  expect(getByTestId('element').props.controllerId).toBe(
++  expect(nativeElement().props.style).toEqual({ width: '100%', height: 140 });
++  rerender(<CheckoutPaymentElementView element={second.paymentElement} />);
++  expect(nativeElement().props.controllerId).toBe(
+     (NativeStripeSdk.createCheckout as jest.Mock).mock.calls[1][1]
+   );
+-  expect(getByTestId('element')).toHaveStyle({ height: 1 });
++  expect(nativeElement().props.style).toEqual({ width: '100%', height: 1 });
+   unmount();
+   await Promise.all([first.destroy(), second.destroy()]);
+   configureNext.mockRestore();
+diff --git a/src/checkout/createCheckout.ts b/src/checkout/createCheckout.ts
+index 01ac58d..81d35ef 100644
+--- a/src/checkout/createCheckout.ts
++++ b/src/checkout/createCheckout.ts
+@@ -1,6 +1,7 @@
+ import type {
+   Checkout,
+   CheckoutController,
++  CheckoutCurrencySelectorElement,
+   CheckoutPaymentElement,
+ } from '../types/Checkout';
+ import type { StripeError } from '../types/Errors';
+@@ -13,6 +14,21 @@ import {
+ } from './CheckoutControllerEventEmitter';
+ 
+ const paymentElementIds = new WeakMap<CheckoutPaymentElement, string>();
++const currencySelectorElementIds = new WeakMap<
++  CheckoutCurrencySelectorElement,
++  string
++>();
++
++/** Resolves a Currency Selector Element owned by a Checkout controller. */
++export function getCheckoutCurrencySelectorElementId(
++  element: CheckoutCurrencySelectorElement
++): string {
++  const id = currencySelectorElementIds.get(element);
++  if (!id) {
++    throw new Error('Currency Selector Element was not created by this SDK.');
++  }
++  return id;
++}
+ 
+ /** Resolves a Payment Element owned by a Checkout controller. */
+ export function getCheckoutPaymentElementId(
+@@ -148,6 +164,9 @@ export async function createCheckoutController(
+           NativeStripeSdk.presentCheckoutPaymentElement(controllerId)
+         ),
+     };
++    const currencySelectorElement = result.isCurrencySelectorAvailable
++      ? {}
++      : null;
+ 
+     controller = {
+       get status() {
+@@ -157,6 +176,7 @@ export async function createCheckoutController(
+         return session!;
+       },
+       paymentElement,
++      currencySelectorElement,
+       updateEmail: (email) =>
+         performOperation(() =>
+           NativeStripeSdk.updateCheckoutEmail(controllerId, email)
+@@ -202,6 +222,9 @@ export async function createCheckoutController(
+       },
+     };
+     paymentElementIds.set(paymentElement, controllerId);
++    if (currencySelectorElement) {
++      currencySelectorElementIds.set(currencySelectorElement, controllerId);
++    }
+     return controller;
+   } catch (error) {
+     subscription.remove();
+diff --git a/src/components/CheckoutCurrencySelectorElementView.tsx b/src/components/CheckoutCurrencySelectorElementView.tsx
+new file mode 100644
+index 0000000..8900db7
+--- /dev/null
++++ b/src/components/CheckoutCurrencySelectorElementView.tsx
+@@ -0,0 +1,35 @@
++import React, { useState } from 'react';
++import { getCheckoutCurrencySelectorElementId } from '../checkout/createCheckout';
++import NativeCheckoutCurrencySelectorElement from '../specs/NativeCheckoutCurrencySelectorElement';
++import type { CheckoutCurrencySelectorElementViewProps } from '../types/Checkout';
++
++/**
++ * Renders the Checkout-owned Currency Selector Element inline and follows its
++ * native height as disclosure and error content changes.
++ *
++ * @remarks
++ * This API is in private preview and can change without notice.
++ *
++ * @CheckoutSessionPrivatePreview
++ */
++export function CheckoutCurrencySelectorElementView({
++  element,
++}: CheckoutCurrencySelectorElementViewProps): React.JSX.Element {
++  const controllerId = getCheckoutCurrencySelectorElementId(element);
++  return <MeasuredElement key={controllerId} controllerId={controllerId} />;
++}
++
++function MeasuredElement({
++  controllerId,
++}: {
++  controllerId: string;
++}): React.JSX.Element {
++  const [height, setHeight] = useState(1);
++  return (
++    <NativeCheckoutCurrencySelectorElement
++      controllerId={controllerId}
++      style={{ height }}
++      onHeightChanged={({ nativeEvent }) => setHeight(nativeEvent.height)}
++    />
++  );
++}
+diff --git a/src/components/CheckoutPaymentElementView.tsx b/src/components/CheckoutPaymentElementView.tsx
+index 31efb3b..8a7d5e2 100644
+--- a/src/components/CheckoutPaymentElementView.tsx
++++ b/src/components/CheckoutPaymentElementView.tsx
+@@ -14,31 +14,21 @@ import type { CheckoutPaymentElementViewProps } from '../types/Checkout';
+  */
+ export function CheckoutPaymentElementView({
+   element,
+-  ...props
+ }: CheckoutPaymentElementViewProps): React.JSX.Element {
+   const controllerId = getCheckoutPaymentElementId(element);
+-  return (
+-    <MeasuredElement
+-      key={controllerId}
+-      controllerId={controllerId}
+-      {...props}
+-    />
+-  );
++  return <MeasuredElement key={controllerId} controllerId={controllerId} />;
+ }
+ 
+ function MeasuredElement({
+   controllerId,
+-  style,
+-  ...props
+-}: Omit<CheckoutPaymentElementViewProps, 'element'> & {
++}: {
+   controllerId: string;
+ }): React.JSX.Element {
+   const [height, setHeight] = useState(1);
+   return (
+     <NativeCheckoutPaymentElement
+-      {...props}
+       controllerId={controllerId}
+-      style={[{ width: '100%' }, style, { height }]}
++      style={{ width: '100%', height }}
+       onHeightChanged={({ nativeEvent }) => {
+         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+         setHeight(nativeEvent.height);
+diff --git a/src/hooks/useCheckout.ts b/src/hooks/useCheckout.ts
+index 6cb64f3..41d41ef 100644
+--- a/src/hooks/useCheckout.ts
++++ b/src/hooks/useCheckout.ts
+@@ -7,12 +7,13 @@ import type { Checkout, CheckoutController } from '../types/Checkout';
+ 
+ type State = Pick<
+   Checkout.UseResult,
+-  'status' | 'session' | 'paymentElement' | 'error'
++  'status' | 'session' | 'paymentElement' | 'currencySelectorElement' | 'error'
+ >;
+ const idle: State = {
+   status: 'idle',
+   session: null,
+   paymentElement: null,
++  currencySelectorElement: null,
+   error: null,
+ };
+ 
+@@ -31,6 +32,7 @@ function stateForController(controller: CheckoutController): State {
+     status: controller.status,
+     session: controller.session,
+     paymentElement: controller.paymentElement,
++    currencySelectorElement: controller.currencySelectorElement,
+     error: null,
+   };
+ }
+diff --git a/src/hooks/useOnramp.tsx b/src/hooks/useOnramp.tsx
+index ccd3157..48516bd 100644
+--- a/src/hooks/useOnramp.tsx
++++ b/src/hooks/useOnramp.tsx
+@@ -423,6 +423,11 @@ export function useOnramp() {
+      *  - To receive Google Pay billing details back as `kycInfo`, ensure that the `GooglePayConfig`
+      *    passed to `configure` has `billingAddressConfig` with `format` set to `Full` and the desired fields
+      *    set to `true`.
++     *  - Request Apple Pay email/phone through `requiredShippingAddressFields`, or Google Pay
++     *    `isEmailRequired` and `billingAddressConfig.isPhoneNumberRequired`, for Link registration prefill.
++     *  - Samsung Pay contact collection requires `samsungPay.collectContactInformation` in `configure`.
++     * Returned fields are optional. Use `phone` for E.164 registration; `rawPhone` is for display/correction only.
++     * Pass collected name/address to `attachKycInfo`, or the address to `presentKycInfoVerification` for updates.
+      * @returns Promise that resolves to an object with displayData, optional kycInfo, or error
+      */
+     collectPaymentMethod: _collectPaymentMethod,
+diff --git a/src/index.tsx b/src/index.tsx
+index 358a3d8..4bcac5f 100644
+--- a/src/index.tsx
++++ b/src/index.tsx
+@@ -45,6 +45,7 @@ export { PaymentMethodMessagingElement } from './components/PaymentMethodMessagi
+ // Checkout private preview
+ export { createCheckout } from './checkout/createCheckout';
+ export { CheckoutPaymentElementView } from './components/CheckoutPaymentElementView';
++export { CheckoutCurrencySelectorElementView } from './components/CheckoutCurrencySelectorElementView';
+ 
+ //connect components
+ export {
+diff --git a/src/specs/NativeCheckoutCurrencySelectorElement.ts b/src/specs/NativeCheckoutCurrencySelectorElement.ts
+new file mode 100644
+index 0000000..5d3512a
+--- /dev/null
++++ b/src/specs/NativeCheckoutCurrencySelectorElement.ts
+@@ -0,0 +1,15 @@
++import type { HostComponent, ViewProps } from 'react-native';
++import type {
++  DirectEventHandler,
++  Double,
++} from 'react-native/Libraries/Types/CodegenTypes';
++import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
++
++export interface NativeProps extends ViewProps {
++  controllerId: string;
++  onHeightChanged?: DirectEventHandler<Readonly<{ height: Double }>>;
++}
++
++export default codegenNativeComponent<NativeProps>(
++  'CheckoutCurrencySelectorElementView'
++) as HostComponent<NativeProps>;
+diff --git a/src/specs/NativeStripeSdkModule.ts b/src/specs/NativeStripeSdkModule.ts
+index 429b1d4..5214849 100644
+--- a/src/specs/NativeStripeSdkModule.ts
++++ b/src/specs/NativeStripeSdkModule.ts
+@@ -50,6 +50,7 @@ type CustomerSheetInitResult = UnsafeObject<{
+ 
+ type CheckoutCreateResult = UnsafeObject<{
+   session: Checkout.Session;
++  isCurrencySelectorAvailable: boolean;
+ }>;
+ 
+ export interface Spec extends TurboModule {
+diff --git a/src/types/Checkout.ts b/src/types/Checkout.ts
+index 2647e30..a0c19fc 100644
+--- a/src/types/Checkout.ts
++++ b/src/types/Checkout.ts
+@@ -1,9 +1,10 @@
+-import type { ViewProps } from 'react-native';
+ import type { CardBrand } from './Common';
+ import type { StripeError } from './Errors';
+ import type {
+   AppearanceParams,
++  FontConfig,
+   PaymentMethodLayout,
++  ThemedColor,
+   TermsDisplay,
+ } from './PaymentSheet';
+ import type { EmbeddedRowSelectionBehavior } from './EmbeddedPaymentElement';
+@@ -27,6 +28,8 @@ export interface CheckoutController {
+   readonly session: Checkout.Session;
+   /** The Payment Element owned by this controller. */
+   readonly paymentElement: CheckoutPaymentElement;
++  /** The Currency Selector Element, or `null` when unavailable. */
++  readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+   /** Updates the customer's email address. Pass `null` to clear it. */
+   updateEmail(email: string | null): Promise<void>;
+   /** Sets or clears the customer's shipping address. */
+@@ -72,11 +75,27 @@ export interface CheckoutPaymentElement {
+  *
+  * @CheckoutSessionPrivatePreview
+  */
+-export interface CheckoutPaymentElementViewProps extends ViewProps {
++export interface CheckoutPaymentElementViewProps {
+   /** The Payment Element owned by Checkout. */
+   element: CheckoutPaymentElement;
+ }
+ 
++/**
++ * A Checkout-owned Currency Selector Element.
++ *
++ * @remarks
++ * This API is in private preview and can change without notice.
++ *
++ * @CheckoutSessionPrivatePreview
++ */
++export interface CheckoutCurrencySelectorElement {}
++
++/** Props for the inline Checkout Currency Selector Element view. */
++export interface CheckoutCurrencySelectorElementViewProps {
++  /** The Currency Selector Element owned by Checkout. */
++  element: CheckoutCurrencySelectorElement;
++}
++
+ /**
+  * Types used by the Checkout private-preview APIs.
+  *
+@@ -109,6 +128,11 @@ export namespace Checkout {
+     style?: UserInterfaceStyle;
+     /** Configuration for the Checkout-owned Payment Element. */
+     paymentElement?: PaymentElementConfiguration;
++    /**
++     * Configuration for Currency Selector Element. Provide this configuration
++     * to enable the element when Adaptive Pricing is available.
++     */
++    currencySelectorElement?: CurrencySelectorElementConfiguration;
+   }
+ 
+   /**
+@@ -142,6 +166,11 @@ export namespace Checkout {
+     readonly session: Session | null;
+     /** The Checkout-owned Payment Element, or `null` before Checkout is ready. */
+     readonly paymentElement: CheckoutPaymentElement | null;
++    /**
++     * The Currency Selector Element, or `null` before Checkout is ready or
++     * when it is unavailable for the Checkout Session.
++     */
++    readonly currencySelectorElement: CheckoutCurrencySelectorElement | null;
+     /** The initialization error when `status` is `error`; otherwise `null`. */
+     readonly error: StripeError<ErrorCode> | null;
+     /** Fetches fresh configuration and replaces the current native controller. */
+@@ -207,6 +236,63 @@ export namespace Checkout {
+     | 'Timeout'
+     | 'Canceled';
+ 
++  /** Configuration for Currency Selector Element. */
++  export interface CurrencySelectorElementConfiguration {
++    /** Customizes the appearance of Currency Selector Element. */
++    appearance?: CurrencySelectorElementAppearance;
++  }
++
++  /** Appearance configuration for Currency Selector Element. */
++  export interface CurrencySelectorElementAppearance {
++    /** Vertical padding inside each currency option, in density-independent pixels. */
++    contentVerticalPadding?: number;
++    /** Font family and scale used throughout the selector. */
++    font?: Partial<FontConfig>;
++    /** Colors used by the selector. */
++    colors?:
++      | CurrencySelectorElementColorConfiguration
++      | {
++          light: CurrencySelectorElementColorConfiguration;
++          dark: CurrencySelectorElementColorConfiguration;
++        };
++    /** Shape configuration for the selector track and selected pill. */
++    shapes?: CurrencySelectorElementShapeConfiguration;
++    /** Content displayed in each currency option. Defaults to `automatic`. */
++    labelContent?: CurrencySelectorElementLabelContent;
++  }
++
++  /** Colors used by Currency Selector Element. */
++  export interface CurrencySelectorElementColorConfiguration {
++    /** Border color for the selector track and selected pill. */
++    border?: ThemedColor;
++    /** Background color of the selector track. */
++    background?: ThemedColor;
++    /** Background color of the selected currency pill. */
++    selectedBackground?: ThemedColor;
++    /** Text color used for unselected currency options. */
++    text?: ThemedColor;
++    /** Text color used for the selected currency option. */
++    selectedText?: ThemedColor;
++    /** Text color used for exchange-rate disclosure. */
++    textSecondary?: ThemedColor;
++    /** Color used for errors shown below the selector. */
++    danger?: ThemedColor;
++  }
++
++  /** Shape configuration for Currency Selector Element. */
++  export interface CurrencySelectorElementShapeConfiguration {
++    /** Corner radius in density-independent pixels. Omit for a capsule shape. */
++    cornerRadius?: number;
++    /** Border width in density-independent pixels. */
++    borderWidth?: number;
++  }
++
++  /** Content displayed in each currency option label. */
++  export type CurrencySelectorElementLabelContent =
++    | 'automatic'
++    | 'currencyCode'
++    | 'amount';
++
+   /**
+    * Known customer details used to prefill Checkout and its elements.
+    * @CheckoutSessionPrivatePreview
+@@ -272,8 +358,6 @@ export namespace Checkout {
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface GooglePayConfiguration {
+-    /** Whether to use the Google Pay test environment. Defaults to `false`. */
+-    testEnv?: boolean;
+     /** An optional label to display with the amount. */
+     label?: string;
+     /** The Google Pay button type. Defaults to `pay`. */
+@@ -305,15 +389,6 @@ export namespace Checkout {
+     display?: 'automatic' | 'never';
+   }
+ 
+-  /**
+-   * Controls the default state of save-payment-method controls.
+-   * @CheckoutSessionPrivatePreview
+-   */
+-  export type SavePaymentMethodOptInBehavior =
+-    | 'automatic'
+-    | 'requiresOptIn'
+-    | 'requiresOptOut';
+-
+   /**
+    * Appearance configuration for Checkout Payment Element.
+    * @CheckoutSessionPrivatePreview
+@@ -346,8 +421,6 @@ export namespace Checkout {
+    * @CheckoutSessionPrivatePreview
+    */
+   export interface PaymentElementConfiguration {
+-    /** Controls how Payment Element asks customers to save payment methods. */
+-    savePaymentMethodOptInBehavior?: SavePaymentMethodOptInBehavior;
+     /** Customizes the appearance of Payment Element. */
+     appearance?: PaymentElementAppearance;
+     /** Preferred networks for co-branded cards. */
+diff --git a/src/types/Onramp.ts b/src/types/Onramp.ts
+index e94c3f7..91cac2d 100644
+--- a/src/types/Onramp.ts
++++ b/src/types/Onramp.ts
+@@ -35,6 +35,12 @@ export type Configuration = {
+   appearance: LinkAppearance;
+   /** The identifier of the Stripe crypto customer object. */
+   cryptoCustomerId?: string;
++  /**
++   * Merchant-provided ISO 3166-1 alpha-2 country code used to help select a merchant
++   * of record before the customer has an established KYC region. An established
++   * KYC region takes precedence. Omit when the country is unknown.
++   */
++  countryHint?: string;
+   /** Google Pay configuration. Required on Android to enable Google Pay as a payment method. */
+   googlePay?: GooglePayConfig;
+   /** Samsung Pay configuration. Required on Android to enable Samsung Pay as a payment method. */
+@@ -80,6 +86,8 @@ export type GooglePayBillingAddressConfig = {
+  * Stripe Android does not package the Samsung Pay SDK transitively.
+  */
+ export type SamsungPayConfig = {
++  /** Request billing address and available name, email, and phone for prefill. Defaults to false. */
++  collectContactInformation?: boolean;
+   /** Samsung Pay in-app service ID assigned to the merchant. */
+   serviceId: string;
+   /** Optional merchant identifier supplied to Samsung Pay. */
+@@ -138,6 +146,8 @@ export type OnrampPlatformPayParams = {
+    * Apple Pay parameters. iOS only.
+    * To receive `kycInfo` back from `collectPaymentMethod`, request Apple Pay billing
+    * `.name` and/or `.postalAddress` via `requiredBillingContactFields`.
++   * Request `.emailAddress` and `.phoneNumber` via `requiredShippingAddressFields`
++   * for optional Link registration prefill details.
+    */
+   applePay?: ApplePayBaseParams & ApplePayPaymentMethodParams;
+ };
+@@ -241,6 +251,12 @@ export type IdType = 'social_security_number' | 'ca_sin' | 'co_nit' | 'ph_tin';
+  * - `idNumber` may be required depending on region/regulatory requirements (for US, this is SSN).
+  */
+ export type KycInfo = {
++  /** Wallet email for Link registration or UI prefill. Not submitted by attachKycInfo. */
++  email?: string;
++  /** Wallet phone normalized to E.164, when possible. Suitable for Link registration; not submitted by attachKycInfo. */
++  phone?: string;
++  /** Original wallet phone for display or correction. Do not pass to registration without validating E.164. Not submitted by attachKycInfo. */
++  rawPhone?: string;
+   /** Customer’s first name, if collected. */
+   firstName?: string;
+   /** Customer’s last name, if collected. */
+@@ -630,7 +646,7 @@ export type CollectPaymentMethodResult =
+   | {
+       /** Display data for the selected payment method. */
+       displayData: PaymentMethodDisplayData;
+-      /** Partial KYC data returned from Platform Pay billing details, when requested. */
++      /** Partial KYC and registration prefill data returned from Platform Pay, when requested. */
+       kycInfo?: KycInfo;
+       error?: undefined;
+     }
+diff --git a/src/types/PaymentSheet.ts b/src/types/PaymentSheet.ts
+index 5730d6b..bed3630 100644
+--- a/src/types/PaymentSheet.ts
++++ b/src/types/PaymentSheet.ts
+@@ -275,7 +275,7 @@ export type FontConfig = {
+    * The font used for regular text. PaymentSheet will attempt to use medium and bold versions of this font if they exist.
+    *
+    * On iOS, this should be the "PostScript name" found in Font Book after installing the font.
+-   * On Android, this should be the name of the font file (containing only lowercase alphanumeric characters) in android/app/src/main/res/font
++   * On Android, this should be the name of the font file (containing only alphanumeric characters and underscores) in android/app/src/main/res/font
+    *
+    * @default The OS's system font
+    */
+diff --git a/src/types/components/PaymentMethodMessagingElementComponent.tsx b/src/types/components/PaymentMethodMessagingElementComponent.tsx
+index ee0da7c..72572ab 100644
+--- a/src/types/components/PaymentMethodMessagingElementComponent.tsx
++++ b/src/types/components/PaymentMethodMessagingElementComponent.tsx
+@@ -30,7 +30,7 @@ export interface PaymentMethodMessagingElementFont {
+    * The font used for the element text.
+    *
+    * On iOS, this should be the "PostScript name" found in Font Book after installing the font.
+-   * On Android, this should be the name of the font file (containing only lowercase alphanumeric characters) in android/app/src/main/res/font
++   * On Android, this should be the name of the font file (containing only alphanumeric characters and underscores) in android/app/src/main/res/font
+    *
+    * @default The OS's system font
+    */
+diff --git a/stripe-react-native.podspec b/stripe-react-native.podspec
+index 2661150..1c0cb78 100644
+--- a/stripe-react-native.podspec
++++ b/stripe-react-native.podspec
+@@ -3,7 +3,7 @@ require_relative 'stripe_spm'
+ 
+ package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
+ # Keep stripe_version in sync with https://github.com/stripe/stripe-identity-react-native/blob/main/stripe-identity-react-native.podspec
+-stripe_version = '26.13.0'
++stripe_version = '26.14.0'
+ 
+ if ENV['RCT_NEW_ARCH_ENABLED'] == '0'
+   raise 'stripe-react-native requires the React Native new architecture. Use RCT_NEW_ARCH_ENABLED=1 in your Podfile.'

@@ -2211,6 +2211,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-android/releases/stripe-android/23.22.0/2026-10-13/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-android/comparisons/stripe-android/23.21.0--23.22.0/comparison.json)
 
+## `github-6deb9a996085048ef1eb`
+
+- Repository: `stripe/stripe-react-native`
+- SHA: `6c2020d4b4c9c2f75c01690df5b084a6c046c585`
+- Collection date: `2026-10-21`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-react-native/snapshots/2026-10-21-6c2020d/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-react-native/ingest-packets/github-6deb9a996085048ef1eb/packet.md)
+- Review priority: `high`
+- Required reading: `46` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@stripe/stripe-react-native@0.82.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.82.0/2026-10-21/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.81.0--0.82.0/comparison.json)
+
 ## `github-6f28a665749d03e55161`
 
 - Repository: `stripe/stripe-cli`
