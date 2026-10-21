@@ -16,6 +16,15 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-balance-updates]] — 2026-09-15 pilot Marketplace Balance webhook orientation for scoped balance-change alerts and setting inheritance; notifications are distinct from underlying money movement.
+
+
+- [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] — 2026-09-15 pilot Marketplace-path Balance webhook settings guide for GET, condition-preserving PATCH, inactive state and DELETE; removing the last condition broadens alerts, with all-versus-any compound logic unresolved.
+
+
+- [[source-adyen-docs-marketplaces-webhook-types]] — 2026-09-15 Marketplace webhook-family/type catalog across configuration, payment-method, transfer, balance, negative warnings and reports, with deprecated Payment webhooks and request-versus-movement boundaries.
+
+
 - [[source-adyen-docs-platforms-balance-updates-use-cases]] — pilot Platforms Balance webhook TEST setting and event examples for three target scopes, with threshold-unit and payload-identity limits (captured 2026-09-15).
 
 

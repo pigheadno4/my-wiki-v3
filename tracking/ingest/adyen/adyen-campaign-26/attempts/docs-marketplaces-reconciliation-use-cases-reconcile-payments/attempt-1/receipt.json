@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-reconciliation-use-cases-reconcile-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Reconcile Marketplace payments\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/reconciliation-use-cases/reconcile-payments\"\nraw_files:\n  - \"adyen/docs/marketplaces/reconciliation-use-cases/reconcile-payments/2026-09-15.md\"\ntags: [adyen, marketplaces, reconciliation, payments, reports]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] Marketplace worked example traces a payment from merchant-account lifecycle rows in the Payment accounting report to split bookings on balance-platform accounts in the Balance Platform Accounting Report. It uses two reports scheduled daily and selected rows from an illustrative EUR 100 payment; it does not document a completed reconciliation for a live account. [[adyen-reporting]]\n\n## Key takeaways\n\n- The example moves through `Received`, `Authorized` and `SentForSettle`. The page describes the latter as captured funds booked to balance accounts according to splits in the payment or capture request. Booking date marks account booking; value date marks funds becoming available and is usually later. See raw lines 19\u201333.\n- The Payment accounting report shows payment-lifecycle events and their booking timestamps. The sample PSP reference `F2FTV3THPB9Z2C33` and merchant reference `UUID1` join to the balance-platform report; its `SentForSettle` row also carries distinct modification references. The shown columns and rows are selected illustrations. See raw lines 39\u201360.\n- The Balance Platform Accounting Report shows separate account/split rows and a `received` \u2192 `authorised` \u2192 `captured` capture progression. The example credits EUR 97.00 to a user's balance account and EUR 3.00 commission to the liable balance account, and debits EUR 2.57 in fees from a platform fees account. Its 2023-01-18 booking and 2023-01-20 value dates support this example's T+2 description, not a general availability promise. See raw lines 62\u201385.\n- **Sample column-label conflict:** prose says `Balance (BC)` contains these amounts, while the displayed header labels that register `Balance (PC)`; `BC` appears there as `Platform Payment Cost Currency`. Verify the actual report schema before mapping this sample's prose to exported columns. See raw lines 66\u201376.\n- For individual payment status and ledger updates, the page recommends API responses and webhooks; for funds across payments, it recommends daily Balance Platform Accounting Report reconciliation. These examples do not prove settlement, bank receipt, or a completed reconciliation for any actual payment. See raw lines 88\u201392.\n\n## Detail locators\n\n- **Purpose, report cadence and payment state/booking/value dates:** raw lines 15\u201333.\n- **Payment accounting event and reference grain:** raw lines 37\u201360.\n- **Balance-platform status, account/split and value-date rows, plus column-label conflict:** raw lines 62\u201386.\n- **Individual transaction versus daily funds-reconciliation recommendation:** raw lines 88\u201398.\n\n## Related\n\n- [[adyen-reporting]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-reconciliation-use-cases-reconcile-payments|Parallel Platforms-path worked example]]\n- [[source-adyen-docs-marketplaces-reports-and-fees-balance-platform-accounting-report|Balance Platform Accounting Report reference]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/reconciliation-use-cases/reconcile-payments/2026-09-15|Adyen Marketplace payment reconciliation example \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Here we explain how to track a payment in your balance platform using the two most relevant reports, scheduled on a daily cadence.",
+      "location": "raw line 19, Reconcile payments"
+    },
+    {
+      "text": "The **booking date** indicates the moment when the payment is booked to the balance accounts.",
+      "location": "raw line 29, Payment flow and reporting"
+    },
+    {
+      "text": "Note that the report snippets here show only select columns and rows for illustration.",
+      "location": "raw line 46, Track a payment"
+    },
+    {
+      "text": "For balance platform payments, amounts are reported in the **Balance (BC)** column when Status is Captured.",
+      "location": "raw line 67, Balance Platform Accounting Report"
+    },
+    {
+      "text": "We recommend that you use API responses and webhooks to track individual payment transactions, and update your ledgers accordingly.",
+      "location": "raw line 92, Recommendations"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-docs-marketplaces-reconciliation-use-cases-reconcile-payments-reporting-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-payments]] \u2014 2023-modified, 2026-09-15-captured Marketplace worked example joining payment-accounting lifecycle rows to split account bookings in Balance Platform Accounting, with distinct booking/value dates and a sample column-label conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/reconciliation-use-cases/reconcile-payments/2026-09-15.md",
+  "raw_sha256": "f057eb24fb7cc68bf818c858e5d23e96851b5e4298afcbb2dc0c8b8270a337bd",
+  "status": "candidate_ready"
+}

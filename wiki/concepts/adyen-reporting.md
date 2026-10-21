@@ -19,6 +19,60 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases]] — 2026-09-15 Marketplace reconciliation navigation hub for report/process prerequisites and first-year, payment, transfer, fee and balance-verification child guides; detailed grains remain in those guides.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-transfers]] — 2026-09-15 Marketplace Accounting Report guide for internal versus bank transfer categories, Transfer/Transaction ID booking, signed two-sided rows, references and Statement alternative; no bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-payout-reconciliation]] — 2026-09-15 Marketplace routing guide for scheduled-payout transaction breakdowns, on-demand/CashOut ledger matching, amount-basis differences and payout-status webhooks; booked status is not beneficiary-bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-prepare-reports-generate-download-reports]] — 2026-09-15 Marketplace-path guide to role-gated scheduled or manual balance-platform report generation, report-created URL and authenticated download; disabling automatic generation deletes its schedule.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-first-year-focus]] — 2026-09-15 Marketplace first-year reporting/reconciliation planning hub distinguishing product/finance and SMB-user needs, early cross-functional requirements and child use-case routes; detailed report grains remain in linked guides.
+
+
+- [[source-adyen-docs-marketplaces-reports-and-fees-statement-report]] — 2026-09-15 daily Marketplace Balance Platform statement field guide for starting/ending balances, pending versus completed IDs and booking/value dates; zero-to-zero accounts are omitted, and rows do not prove bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-reports-and-fees-balance-report]] — 2026-09-15 Marketplace daily opening/closing account-currency balance snapshots, nonzero-or-movement row selection and platform-timezone/CET options; sample and field-table timezone headers differ.
+
+
+- [[source-adyen-docs-marketplaces-prepare-reports]] — 2026-09-15 Marketplace guide to aligned report periods/time zones, role-gated columns, payment/modification/split reference joins and complete TEST-report checks; Classic Funds Destination applies only to upgrade reconciliation.
+
+
+- [[source-adyen-docs-marketplaces-reports-and-fees-fee-report]] — 2026-09-15 Marketplace monthly Balance Platform Fee Report for user/liable incurred-fee groups, optional account columns and invoice comparison; row location does not establish billing debit or transaction-level booking.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] — 2026-09-15 Marketplace SMB-user transaction, payout and dispute reporting options, separating UI components from Accounting/Payout report grains and financial from non-financial dispute events; example arithmetic and Balance (BC)/(PC) labels conflict.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-liable-account-summary]] — 2026-09-15 Marketplace role-gated liable-account dashboard for period/account/currency balance and category aggregates, with transaction-report detail and invoice timezone/fee-scope limits.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-verify-balances]] — 2026-09-15 Marketplace worked guide to daily account/currency balance snapshots, value-dated Accounting Report Balance (PC) sums, and conditional negative-balance compensation/warning evidence; warning sample timestamps conflict with stated thresholds.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-payments]] — 2023-modified, 2026-09-15-captured Marketplace worked example joining payment-accounting lifecycle rows to split account bookings in Balance Platform Accounting, with distinct booking/value dates and a sample column-label conflict.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-first-year-focus-platform-level-reporting]] — 2026-09-15 Marketplace first-year guide to monthly, transaction, user and invoice reporting methods, with liable-account and report-grain joins, blended-pricing scope and sample-formula limits.
+
+
+- [[source-adyen-docs-marketplaces-reports-and-fees-payout-report]] — 2026-09-15 Marketplace scheduled-sweep Payout Report guide for account/currency and transaction rows, rolling balance and distinct booking/value/payout dates; prose/sample grain and CEST/CET wording differ, and booked rows do not prove bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-reports-and-fees-balance-platform-accounting-report]] — 2023-modified, 2026-09-15-captured Marketplace daily/interactive Balance Platform Accounting Report field and event guide for liable/user accounts, CET booking window, pending-versus-booked IDs, value dates and split types; sample chargeback amount and payout/top-up IDs conflict.
+
+
+- [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-fees]] — 2026-09-15-captured Marketplace-path worked example joining per-payment fees, daily aggregate Processing fees and monthly invoice adjustments across Payment accounting, Settlement detail and Balance Platform Accounting reports.
+
+
+- [[source-adyen-docs-marketplaces-reports-and-fees]] — 2023-modified, 2026-09-15-captured Marketplace report/fee-selection hub for combined monthly account/platform reconciliation, split-line joins, liable fallback and fee-location differences.
+
+
 - [[source-adyen-docs-issuing-generate-download-reports]] — 2021-modified, 2026-09-15-captured Balance Platform report guide for scheduled/manual generation, role-gated access, report-created download URLs and CSV/Accounting TSV retrieval; deselecting automatic generation deletes its schedule.
 
 

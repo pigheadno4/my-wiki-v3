@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-transfer-transactions-track-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Track Marketplace transactions with the Transfers API\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/transfer-transactions/track-api\"\nraw_files:\n  - \"adyen/docs/marketplaces/transfer-transactions/track-api/2026-09-15.md\"\ntags: [adyen, marketplaces, transactions, transfers, balance-accounts]\n---\n\n## Overview\n\nThis pinned Marketplace guide explains on-demand **transaction** queries through the Transfers API's `/transactions` endpoint. A transaction row describes a balance-account credit or debit related to a payment, internal transfer or external payout. Queries can cover a balance platform, account holder or balance account. This is recorded ledger state, not evidence that a beneficiary bank received a payout. See [[adyen]] and [[adyen-platforms]] (raw lines 15\u201336).\n\n## Key takeaways\n\n- The stated integration scope is Adyen for Platforms, Issuing or Payouts. The API credential needs **TransferService Webservice Retrieve role**, and the source balance account must have transfers enabled (raw lines 21\u201327).\n- GET `/transactions` requires at least one of `balancePlatform`, `accountHolderId` or `balanceAccountId`, plus ISO 8601 `createdSince` and `createdUntil`. Optional `limit`, `sortOrder`, `cursor` and `paymentInstrumentId` refine the query. The response's `data` holds matching transactions and `_links` can provide a cursor for pagination. GET `/transactions/{id}` reads one transaction (raw lines 38\u201354, 226\u2013229, 354).\n- **Positive** `amount.value` adds funds to that balance account; **negative** deducts them. Incoming/outgoing rows can result from external or internal transfers. `pending` means an incoming credit is not yet added or an outgoing debit is reserved; `booked` means the corresponding balance-account credit or deduction occurred. Use `valueDate` for availability/deduction and `bookingDate` for recorded pending/reserved state, especially around bank cutoffs (raw lines 356\u2013368, 539\u2013548).\n- The examples show bank-payout debit, payment credit, and internal-transfer debit/credit shapes with transfer references and separate booking/value dates. Their identifiers and amounts are **not** a reconciled pair: the list response has EUR-suffixed transaction IDs beside USD amounts, and its illustrated internal outgoing **-10000 USD** and incoming **+1000 USD** have different transfer IDs. Do not infer a matched two-sided transfer from those rows (raw lines 231\u2013352, 379\u2013537).\n- The TEST curl example includes a bare `accountHolder` query fragment and date-only values despite the parameter table's ISO 8601 date-time examples. Use the stated parameter descriptions and current API contract before constructing requests; the sample is illustrative, not a validated query (raw lines 44\u201366). A booked bank-payout debit confirms deduction from the balance account, not beneficiary-bank receipt (raw lines 362\u2013375, 379\u2013416).\n\n## Detail locators\n\n- Requirements and list-query parameters: raw lines 19\u201354.\n- TEST request/response, pagination and sample discrepancies: raw lines 56\u2013354.\n- Signed direction and pending/booked semantics: raw lines 356\u2013368.\n- External/internal example shapes and booking/value date definitions: raw lines 370\u2013548.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-platform-internal-transfers]]\n- [[adyen-reporting]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/transfer-transactions/track-api/2026-09-15|Pinned transaction API guide]]\n",
+  "quotes": [
+    {
+      "text": "You can query transactions for your whole balance platform, a particular account holder, or balance account.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "You must include at least one of the following in your request",
+      "location": "raw line 46, GET /transactions parameter table"
+    },
+    {
+      "text": "Has a positive",
+      "location": "raw line 362, Identify incoming and outgoing funds"
+    },
+    {
+      "text": "Has a negative",
+      "location": "raw line 362, Identify incoming and outgoing funds"
+    },
+    {
+      "text": "Funds are always deducted at the booked stage for outgoing transfers.",
+      "location": "raw line 548, Booking and value dates"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-transactions-track-api-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-transfer-transactions-track-api]] \u2014 2026-09-15 Marketplace Transfers API transaction-query guide for scoped/paged balance-account rows, signed incoming/outgoing amounts, pending/booked and booking/value dates; sample IDs and internal amounts conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sample transaction IDs carry EUR suffixes beside USD amounts, and internal outgoing/incoming rows differ in amount and transfer ID (raw lines 231\u2013352); do not reconcile them as a matched pair.",
+          "Bookable balance-account debit is not beneficiary-bank receipt; sample curl also departs from documented query format (raw lines 44\u201366, 379\u2013416)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/transfer-transactions/track-api/2026-09-15.md",
+  "raw_sha256": "d53cd6cc0c3f554cf52e60daa622735560c9ae61f3c9a074b611adaa3b1608d6",
+  "status": "candidate_ready"
+}

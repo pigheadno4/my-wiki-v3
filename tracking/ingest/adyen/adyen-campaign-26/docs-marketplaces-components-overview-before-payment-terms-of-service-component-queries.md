@@ -1,0 +1,7 @@
+# Q1 — Purpose and prerequisite
+
+The page introduces Accept and Manage Terms of Service components for legal-document display, acceptance, status and signed-copy UI (raw lines 25–33). The Onboarding components work only with legal entities created using Legal Entity Management API v3 or v4, and the Terms components cover only their document part of API-only onboarding; other onboarding calls remain necessary (raw lines 23–27). Forward route: [[index]] → [[adyen-index]] → [[adyen-platform-components]] → [[source-adyen-docs-marketplaces-components-overview-before-payment-terms-of-service-component]] → [[raw/adyen/docs/marketplaces/components-overview/before-payment/terms-of-service-component/2026-09-15]].
+
+# Q2 — Version and outcome boundary
+
+Guidance may differ by library version (raw line 35). The pinned section says **4.0.x documentation is not yet available** and points to **3.32.x** for current integration steps; this page supplies no 4.0.x session, callback or API integration procedure (raw lines 37–45). A component description is not evidence of accepted terms for a specific user/version, signed-document availability or verified onboarding. Forward route: [[index]] → [[adyen-index]] → [[adyen-platform-components]] → [[source-adyen-docs-marketplaces-components-overview-before-payment-terms-of-service-component]] → [[raw/adyen/docs/marketplaces/components-overview/before-payment/terms-of-service-component/2026-09-15]].

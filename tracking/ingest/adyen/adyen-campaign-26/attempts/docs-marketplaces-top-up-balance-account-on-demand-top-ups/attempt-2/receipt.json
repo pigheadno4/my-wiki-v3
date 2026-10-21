@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-top-up-balance-account-on-demand-top-ups",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Top up a Marketplace balance account on demand\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/top-up-balance-account/on-demand-top-ups\"\nraw_files:\n  - \"adyen/docs/marketplaces/top-up-balance-account/on-demand-top-ups/2026-09-15.md\"\ntags: [adyen, marketplaces, top-ups, balance-accounts, checkout-api, direct-debit]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Marketplace guide describes a manually requested, one-off payment funded by a user to increase that user's balance-account balance. Funding may use the user's verified bank-account transfer instrument or another payment method. A Checkout payment request and its illustrated authorization response are distinct from the later balance-account credit, whose progress and failure the guide routes to top-up webhooks. This is a user-funded top-up, not a platform-liable internal transfer or a payout. [[adyen-platforms]]\n\n## Key takeaways\n\n- The guide requires Checkout API credentials, webhook reception, and Support enablement for on-demand top-ups. For verified-bank funding, the user's `receiveFromPlatformPayments` and `receiveFromTransferInstrument` capabilities must be allowed with valid verification status, and the bank account must be in the SEPA zone, UK, or US. Other methods require allowed, verification-valid `receiveFromPlatformPayments`. These stated conditions do not establish an individual user's eligibility. See raw lines 21\u201352.\n- Initiate the one-off payment with Checkout POST `/payments`, not `/sessions`. The verified-bank route lists US `ach`/USD, SEPA `sepadirectdebit`/EUR, and UK `directdebit_GB`/GBP, using the verified `transferInstrumentId`. The test request uses Checkout v72; it is illustrative rather than evidence of live acceptance. See raw lines 110\u2013133 and 152\u2013216.\n- The `splits` array identifies a `TopUp` amount and target balance-account ID, with separate transaction-fee split item(s). Fee amounts need not be specified when the payment is made because they are not yet known. The request tables mark `splits` required for this top-up route, while explicitly saying omission books funds to the platform liable account and classifies them as a regular payment. Top-up classification supports separate reconciliation and the guide's US-user 1099-K treatment statement. See raw lines 54\u201361, 122\u2013150, and 220\u2013247.\n- Verified-bank direct debit has regional conditions: the SEPA user first accepts a mandate; for each UK BACS top-up the user confirms debit authorization, ownership and sole signatory status, and receives advance email notice. The marketplace must email advance notice for each top-up; the page says a user may file a chargeback if they did not receive notification at least 10 days before the charge. Its notice field separately describes a due date two business days after initiation. Treat both as source statements requiring operational reconciliation; the page gives no parallel US mandate procedure. See raw lines 63\u2013108.\n- Both illustrated payment responses show `resultCode: Authorised`; the guide directs status tracking through top-up webhooks from request receipt and authorization through funds added or failure. Authorization alone is not booked-credit proof. See raw lines 193\u2013216, 762\u2013786.\n\n## Detail locators\n\n- **Purpose, credential/webhook/capability gates and regional bank limit:** raw lines 15\u201352.\n- **Reporting classification and booking instructions:** raw lines 54\u201361, 122\u2013150, 220\u2013247.\n- **SEPA mandate and UK BACS confirmation/notice:** raw lines 63\u2013108.\n- **Payment routes and examples:** raw lines 110\u2013216, 218\u2013782.\n- **Asynchronous tracking:** raw lines 784\u2013786.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups|Parallel Platforms-path on-demand top-up guide]]\n- [[adyen-platform-internal-transfers|Internal fund transfers are a separate route]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/top-up-balance-account/on-demand-top-ups/2026-09-15|Adyen Marketplace on-demand top-up guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can submit requests to manually top-up your users' balance accounts when needed. In this case, you create a one-off payment funded by your user, that increases the balance in their balance account.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "You cannot initiate a top-up using a [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) request.",
+      "location": "raw line 114, Make a top-up request"
+    },
+    {
+      "text": "If you do not include a splits array, the funds are booked to your liable account, and classified as a regular payment.",
+      "location": "raw line 133, Transfer instrument request table"
+    },
+    {
+      "text": "According to scheme rules, your users may file a chargeback when they do not receive a notification at least 10 days before a charge.",
+      "location": "raw line 89, BACS Direct Debit"
+    },
+    {
+      "text": "These webhooks also inform you if the payment failed.",
+      "location": "raw line 786, Get updates when a top-up is triggered"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-docs-marketplaces-top-up-balance-account-on-demand-top-ups-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-top-up-balance-account-on-demand-top-ups]] \u2014 2026-09-15 Marketplace user-funded Checkout `/payments` on-demand top-up guide for verified-bank or other-method funding, TopUp split booking, region/capability/direct-debit gates and asynchronous credit tracking.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/top-up-balance-account/on-demand-top-ups/2026-09-15.md",
+  "raw_sha256": "e43ecef47ede216695a0f59925efc876f29355f1bc774e55d4c6aaf1bf235da9",
+  "status": "candidate_ready"
+}

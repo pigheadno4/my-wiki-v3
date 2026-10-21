@@ -1,0 +1,9 @@
+# Retrieval checks — docs-marketplaces-reconciliation-use-cases-reconcile-payments
+
+Q1. What does this guide reconcile, and which report fields/identifiers are prerequisites for its worked join?
+
+A1. It follows a merchant-account payment into balance-platform split bookings using daily Payment accounting and Balance Platform Accounting reports (raw lines 17–19, 39–42). The worked payment uses PSP reference `F2FTV3THPB9Z2C33` and merchant reference `UUID1`, with modification references in the payment-accounting `SentForSettle` row and corresponding balance-platform rows; account identity, status/type, booking and value dates distinguish the split records (raw lines 44–60, 62–85). Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-payments]] → [[raw/adyen/docs/marketplaces/reconciliation-use-cases/reconcile-payments/2026-09-15]].
+
+Q2. Does the sample's T+2 or `Balance (BC)` prose establish a universal availability schedule or a safe export-column mapping?
+
+A2. No. T+2 is the EUR 100 example's 2023-01-18 booking to 2023-01-20 value date (raw lines 69, 77–85), not a general schedule. The prose assigns captured amounts to `Balance (BC)`, but the displayed table header puts the balance register at `Balance (PC)` and uses `BC` for `Platform Payment Cost Currency` (raw lines 66–76); verify the actual export schema. The page recommends APIs/webhooks for individual status and daily report reconciliation for total funds; selected sample rows are not proof a live reconciliation ran (raw lines 46, 88–92). Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-payments]] → [[raw/adyen/docs/marketplaces/reconciliation-use-cases/reconcile-payments/2026-09-15]].

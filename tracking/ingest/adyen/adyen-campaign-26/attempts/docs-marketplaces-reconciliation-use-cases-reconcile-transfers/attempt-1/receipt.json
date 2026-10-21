@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-reconciliation-use-cases-reconcile-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Reconcile Marketplace fund transfers\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/reconciliation-use-cases/reconcile-transfers\"\nraw_files:\n  - \"adyen/docs/marketplaces/reconciliation-use-cases/reconcile-transfers/2026-09-15.md\"\ntags: [adyen, marketplaces, reconciliation, transfers, payouts]\n---\n\n## Overview\n\nThis pinned Marketplace guide uses the **Balance Platform Accounting Report** to track internal balance-account transfers and payouts from an account holder's balance account to an external bank account or other transfer instrument. It identifies internal transfers as `Category: internal` / `Type: internalTransfer`, and payouts as `Category: bank` / `Type: bankTransfer`. This is balance-platform accounting evidence, not beneficiary-bank receipt evidence. See [[adyen]] and [[adyen-reporting]] (raw lines 15\u201333).\n\n## Key takeaways\n\n- **Transfer Id** links a transfer's pending credit/debit events. A populated **Transaction Id** on a `booked` row marks a booked balance change; without it, the guide says no money movement has yet taken place. Match the Transaction Id to the Transfer Id for the relevant event. **Balance (PC)** holds the signed balance change (raw lines 24\u201333).\n- For a specific payout, search **Description**, **Reference** or **Reference For Beneficiary**; for a specific internal transfer, use **Reference For Beneficiary**. These values come from request/sweep configuration and are available in transfer created/updated webhooks or Customer Area. The guide recommends populating `description`, `reference` and `referenceForBeneficiary` even though optional, to support reconciliation (raw lines 35\u201342).\n- The EUR 15.00 internal-transfer example shows sender `-15.00` and recipient `+15.00` booked **Balance (PC)** rows. Their **Transfer Ids differ by balance-account leg**, while the booked **Transaction Id** is the same in both sample rows; use the account, sign, status and IDs together rather than assuming one transfer ID across both legs. The table records booking and value dates with **CEST** timezone labels (raw lines 44\u201355).\n- A Balance Platform Statement Report is an alternative payout-tracking route for accounts with a balance change on a given day and the contributing events (raw lines 57\u201359). A booked `bankTransfer` accounting row records platform-side movement; it does not independently show a beneficiary bank's final credit or exclude a later return.\n\n## Detail locators\n\n- Internal versus bank transfers, Transfer/Transaction IDs and booked-state meanings: raw lines 15\u201333.\n- Specific-transfer reference lookup and webhook routes: raw lines 35\u201342.\n- Signed two-sided internal-transfer example and CEST dates: raw lines 44\u201355.\n- Statement Report alternative: raw lines 57\u201359.\n\n## Related\n\n- [[adyen]]\n- [[adyen-reporting]]\n- [[adyen-platforms]]\n- [[adyen-platform-internal-transfers]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/reconciliation-use-cases/reconcile-transfers/2026-09-15|Pinned transfer-reconciliation guide]]\n",
+  "quotes": [
+    {
+      "text": "Funds move from an account holder's balance account to their external bank account or other transfer instrument.",
+      "location": "raw line 21, opening payout definition"
+    },
+    {
+      "text": "Funds move between balance accounts.",
+      "location": "raw line 22, opening internal-transfer definition"
+    },
+    {
+      "text": "If a transfer doesn't have a Transaction Id, no money movement has taken place yet.",
+      "location": "raw line 29, Track a transfer"
+    },
+    {
+      "text": "*internal* for an internal transfer, or *bank* for a payout.",
+      "location": "raw line 30, Track a transfer"
+    },
+    {
+      "text": "it is important that your integration populates the `description`, `reference`, and `referenceForBeneficiary` fields",
+      "location": "raw line 42, specific-transfer reconciliation guidance"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-reconcile-transfers-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-reconciliation-use-cases-reconcile-transfers]] \u2014 2026-09-15 Marketplace Accounting Report guide for internal versus bank transfer categories, Transfer/Transaction ID booking, signed two-sided rows, references and Statement alternative; no bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The worked internal transfer has distinct Transfer Ids per balance-account leg but a shared booked Transaction Id (raw lines 50\u201355); do not assume one Transfer Id across both sides.",
+          "Booked bankTransfer report rows are platform-side accounting, not independent beneficiary-bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/reconciliation-use-cases/reconcile-transfers/2026-09-15.md",
+  "raw_sha256": "e01236dd1ad137bd6822e3495c9d79901126ffd0ff9246f3bfb2cc7cfe595d3b",
+  "status": "candidate_ready"
+}

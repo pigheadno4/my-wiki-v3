@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-components-overview-after-payment-transactions-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace Transaction components\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/components-overview/after-payment/transactions-component\"\nraw_files:\n  - \"adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, ui-components, transactions, refunds]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path guide describes Platform Experience Transactions Overview and Transaction Details components for a marketplace user's portal. They render balance-account transaction lists, insights, details, filtered CSV export and an optional role-gated refund action. The page still states an Adyen for Platforms integration prerequisite; the Marketplace URL is not a separate product or refund guarantee. See [[adyen]] and [[adyen-platform-components]].\n\n## Key takeaways\n\n- **Access and integration:** A Balance Platform API key needs the Adyen-assigned **Transactions Overview Component: View** role to create a server-side Session Authentication API `POST /sessions` token. Its policy scopes the resource to an `accountHolderId` with `type: accountHolder`, sets `product: platform`, and includes View in roles. The session request also takes `allowOrigin`; LIVE supports HTTPS only. The client initializes the library and supplies an `onSessionCreate` callback to retrieve or refresh the session. The documented curl endpoint is TEST. Country/region, browser and language availability come from linked component-library guidance and the listed locales (raw lines 44\u201357, 221\u2013286, 337\u2013350, 879\u2013893).\n- **Transaction grain and limits:** Overview lists transactions for a selected balance account and period, shows available/reserved balances, and computes Insights period result and incoming/outgoing totals for the selected currency and filters. Its time range uses the selected balance account's timezone; the default is last 180 days. Filters include transaction type, currency and exact PSP reference, with other filters still applying. CSV export is only the first 100 matching transactions, not a complete ledger. Details shows summary, references and refund information, plus timeline when available; it can appear as the default modal or on a separate page (raw lines 59\u2013167).\n- **Refund action:** **Transactions Overview Component: Manage Refunds** must be assigned to the API credential and included in the session request. A user can submit a full or partial payment refund through the component when the payment method supports it; multiple partial requests are described within the original payment amount cap. The component calls Adyen's API and displays a refund status message/label, with the refund transaction linked to its payment record after issue/processing. A click, submitted request, or UI label alone is not proof of final refund settlement or shopper receipt (raw lines 178\u2013216).\n- **Version and customization:** Features can vary by component-library version. npm or script/stylesheet embedding is shown; the latter calls for version-specific SRI hashes. Optional locale, appearance and data customization lets the marketplace extend displayed records through `dataCustomization` and `onDataRetrieve`; custom field names should start with an underscore and returned records must retain source data. `availableTranslations` is deprecated in favor of on-demand CDN locale loading (raw lines 36\u201338, 291\u2013893).\n\n## Detail locators\n\n- Requirements, roles and CSV export bound: pinned raw lines 44\u201357.\n- Overview/Insights, account balance, first-100 CSV export, filters and account timezone: pinned raw lines 59\u2013153.\n- Details and refund flow: pinned raw lines 155\u2013216.\n- Server-scoped session, TEST example, allowed origin and role policy: pinned raw lines 221\u2013286.\n- Library loading, initialization, SRI and deprecated option: pinned raw lines 288\u2013481.\n- Customization and supported languages: pinned raw lines 482\u2013893.\n\n## Related\n\n- [[adyen-platform-components]] \u2014 main Platform Experience component concept.\n- [[adyen-platforms]] \u2014 platform and marketplace context.\n- [[source-adyen-docs-platforms-components-overview-after-payment-transactions-component]] \u2014 parallel Platforms-path Transactions component guide.\n- [[adyen-reporting]] \u2014 separate report and reconciliation evidence context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15|Marketplace Transaction components, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You must have the Adyen for Platforms integration.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md:50"
+    },
+    {
+      "text": "an export button allows users to generate a CSV file containing the first 100 transactions that match the applied filters.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md:70"
+    },
+    {
+      "text": "The specified time is determined by the time zone of the selected balance account.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md:111"
+    },
+    {
+      "text": "The refund feature requires the **Transactions Overview Component: Manage Refunds** role to be assigned to your API credential and included in the session request.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md:180"
+    },
+    {
+      "text": "On live, only the HTTPS protocol is supported.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md:240"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-transaction-components-link",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-components-overview-after-payment-transactions-component]] \u2014 2026-09-15 Marketplace-path Platform Experience Transactions Overview/Details guide for account-holder-scoped sessions, balance-account views, first-100 CSV export and role-gated refund requests; UI status is not final refund proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace-path page explicitly requires Adyen for Platforms; component features vary by library version, and request/status display does not prove refund settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/components-overview/after-payment/transactions-component/2026-09-15.md",
+  "raw_sha256": "98bf07867f01b84f53e287f4e2acc23fb72d91a7487e485f3f750252769ce988",
+  "status": "candidate_ready"
+}

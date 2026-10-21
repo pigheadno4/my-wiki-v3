@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-balance-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: Balance types\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/balance-types\"\nraw_files:\n  - \"adyen/docs/marketplaces/balance-types/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, balance-accounts, balances]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Marketplaces guide defines five balance types **per currency** in a balance account: **Balance/current**, **Available**, **Pending**, **Pending available**, and **Reserved**. It gives viewing routes and example timelines for future settlement, holds and negative spendable amounts. These are balance categories and illustrations, not evidence of a particular payment's settlement, a completed transfer, payout or bank receipt. [[adyen-platforms]]\n\n## Categories and viewing routes\n\n- **Balance/current** is described as the sum of already settled transactions. **Pending** sums transactions that will settle later and can be positive or negative. **Reserved** includes authorised outgoing-transfer funds not yet booked plus blocked funds, with Capital repayment and current-balance payout collateral as examples. **Available** is the balance available for transfers; **Pending available** is the balance expected to become available after pending settlement. Keep settled, pending, reserved and transfer-available states separate. See [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 19\u201330]].\n- A balance account can hold one or multiple currencies. The source points to GET `/balanceAccounts/{id}`, `balancePlatform.balanceAccount.balance.updated` and Customer Area **Balance accounts > Balances** for all per-currency balances. It says configurable balance-change notifications can inform a decision to top up or transfer internally to avoid negative balances; the page does not show that any such movement happened. See [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 32\u201340]].\n\n## Formula and example conflict\n\n- The printed **Available** formula is the lower of current balance and **current minus the sum of pending and reserved balances**. This conflicts with the examples. On January 1, Example 1 gives current **EUR 100**, pending **EUR 20**, reserved **EUR 30**, and Available **EUR 70**; the literal lower-of formula yields **EUR 50**. Example 2 gives current **EUR 50**, pending **EUR -70**, reserved **EUR 0**, and Available **EUR -20**; the literal formula yields **EUR 50**. See [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 23\u201325, 58\u201364, 72\u201386]].\n- The printed **Pending available** formula is the lower of pending and pending plus available. In Example 2, Pending **EUR -70** and Available **EUR -20** would yield **EUR -90** from that literal formula, but the table shows Pending available **EUR -70**. Example 3 separately shows Pending **EUR 50** versus Pending available **EUR 20** when current/available is **EUR -30**. Neither printed formula can be used as an unqualified executable balance or payout-control rule from this snapshot alone. See [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 26\u201328, 78\u201386, 90\u2013104]].\n- Example 1 illustrates a settled incoming EUR 100, a later EUR 20 settlement, and a EUR 30 refund hold that reduces Available before the refund settles. The tables are illustrative per-user-account dates, not a universal sequence or a reconciliation record for a specific payment. See [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 48\u201368]].\n\n## Detail locators\n\n- Per-currency categories, literal formulas and reserve components: [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 19\u201330]].\n- Balance-change notification and API/webhook/Customer Area read routes: [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 32\u201340]].\n- Example 1 timeline and Example 2/3 formula conflicts: [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|raw lines 42\u2013104]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 platform balance-account context.\n- [[source-adyen-docs-platforms-balance-types]] \u2014 related Platforms-path balance-type snapshot with its own raw evidence.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/balance-types/2026-09-15|Marketplace balance types (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "For each currency, a balance account consists of the balance types described in the following table.",
+      "location": "raw/adyen/docs/marketplaces/balance-types/2026-09-15.md:19"
+    },
+    {
+      "text": "The sum of transactions that have already been [settled](/marketplaces/settle-funds).",
+      "location": "raw/adyen/docs/marketplaces/balance-types/2026-09-15.md:23"
+    },
+    {
+      "text": "The available balance is equal to the lower of the following values:- The current balance",
+      "location": "raw/adyen/docs/marketplaces/balance-types/2026-09-15.md:24"
+    },
+    {
+      "text": "The pending available balance is equal to the lower of the following:- The pending balance",
+      "location": "raw/adyen/docs/marketplaces/balance-types/2026-09-15.md:27"
+    },
+    {
+      "text": "Although the current balance is positive, the available balance is negative because the future balance change (the refund) is already being considered.",
+      "location": "raw/adyen/docs/marketplaces/balance-types/2026-09-15.md:86"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-balance-types-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-types]] \u2014 2026-09-15 Marketplace per-currency balance-type definitions and viewing routes, with unresolved Available and Pending available formula-versus-example conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Literal Available and Pending available lower-of formulas conflict with worked tables; do not implement calculations or payout controls from this snapshot alone (raw lines 23\u201328, 58\u201364, 78\u201386)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/balance-types/2026-09-15.md",
+  "raw_sha256": "b8f60e54886a8eeccf57760ba5d06e74d564029cc7ef92939cf579e3cffbf5ad",
+  "status": "candidate_ready"
+}

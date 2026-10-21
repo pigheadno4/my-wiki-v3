@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-marketplaces-components-overview-after-payment-pay-by-link-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace Platform Experience Pay by Link components\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/components-overview/after-payment/pay-by-link-component\"\nraw_files:\n  - \"adyen/docs/marketplaces/components-overview/after-payment/pay-by-link-component/2026-09-15.md\"\ntags: [adyen, marketplaces, platform-components, pay-by-link]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path [[adyen]] guide covers Platform Experience Pay by Link components embedded in a platform user portal: an Overview for creating, monitoring, filtering and sharing links, and Details for inspecting, copying or expiring a link. It is a component integration and link-management guide, not evidence of payment settlement or beneficiary receipt. The page requires an Adyen for Platforms integration and warns that features vary by library version. See [[adyen-platform-components]].\n\n## Key takeaways\n\n- **Access and scope:** A Balance Platform API key needs the applicable Pay By Link Component roles assigned by Adyen: View for link visibility, View PII for shopper information, Manage Links for creation/deactivation, and Manage Settings for themes/settings. The server creates a Session authentication token using an allowed origin, account-holder resource, role policy and `product: platform`; the client supplies a session create/refresh callback. Live origins require HTTPS. The account holder must have a store linked to a business line whose sales channels include `payByLink` or `eCommerce`. See raw lines 45\u201365 and 251\u2013319.\n- **Link setup and lifecycle:** A store is selected for link creation (automatically if there is only one). The user must provide a shopper terms-and-conditions URL and confirm compliance before the first link; the created link's details cannot be changed. Links remain searchable in the component list for up to 90 days. User-set expiry is at most 70 days; without one, the page states expiry after 24 hours. The component does not automatically email shoppers. Overview groups Active/Payment pending and Completed/Expired links; Payment pending is not a confirmed payment. A single-use link expires after its first successful payment, while an Open link can take multiple payments until deactivated/canceled. See raw lines 56\u201360, 69\u2013160 and 182\u2013196.\n- **Money-flow boundary:** A shopper payment through a component-created link follows the store split configuration; if the store has no split configuration, the page says all funds go to the platform liable balance account by default. The component does not alter existing split logic. A link marked Completed is a link/payment-processing state, not independent proof of settlement or payout. See raw lines 61, 71 and 125\u2013144.\n- **Per-store settings and form validation:** Component terms and theme are configured per store and do not carry to links created through the API or Customer Area. Optional `fieldsConfig` can prefill, lock or hide creation fields, but hidden required fields still validate and need valid `data`; individual address subfields cannot be hidden. The field table labels `value` as a string while its examples use numbers, so check the versioned API/component contract before relying on that type. See raw lines 220\u2013235 and 647\u2013840.\n- **Integration details:** The page shows npm or script/stylesheet setup, version-specific SRI for the latter, component initialization and callbacks, localization and CSS customization. It marks `availableTranslations` deprecated and states `environment` defaults to test. These examples describe UI wiring, not a successful live payment. See raw lines 321\u2013645 and 843\u2013863.\n\n## Detail locators\n\n- Component purpose, requirements, roles, expiry, split fallback and store prerequisites: pinned raw lines 15\u201365.\n- Overview status meanings, filters and time-zone rule; Details actions: pinned raw lines 69\u2013178.\n- Creation and per-store terms/theme: pinned raw lines 182\u2013235.\n- Server session policy, origin, role and account-holder scope: pinned raw lines 237\u2013319.\n- Installation, initialization, callbacks, version and localization: pinned raw lines 321\u2013645.\n- `fieldsConfig`, visibility, validation, examples and supported languages: pinned raw lines 647\u2013863.\n\n## Related\n\n- [[adyen-platform-components]] \u2014 reciprocal Platform Experience component concept.\n- [[source-adyen-docs-platforms-components-overview-after-payment-pay-by-link-component]] \u2014 same dated guide under the Platforms path.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/components-overview/after-payment/pay-by-link-component/2026-09-15|Marketplace Pay by Link components, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The guidance and features available may differ based on the library version in use.",
+      "location": "line 37, Pay by Link components introduction"
+    },
+    {
+      "text": "If a store does not have a split configuration, all funds are sent to the liable balance account by default.",
+      "location": "line 61, Requirements / Limitations"
+    },
+    {
+      "text": "The payment process has been started, but the transaction has not been confirmed as successful or failed.",
+      "location": "line 131, Payment Links Overview component / Status"
+    },
+    {
+      "text": "once created you will no longer be able to change the details of the payment link.",
+      "location": "line 193, How to create a payment link through components"
+    },
+    {
+      "text": "Validation still runs on **hidden** fields. You must provide valid values via `data` for any required fields you hide.",
+      "location": "line 840, Usage tips"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-pay-by-link-component-route",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-components-overview-after-payment-pay-by-link-component]] \u2014 2026-09-15 Marketplace-path Platform Experience Pay by Link component guide for portal link management, role/store setup, link states and split-routing boundary.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/components-overview/after-payment/pay-by-link-component/2026-09-15.md",
+  "raw_sha256": "8c9abdc5603b018061ece8b8c2693b4f28e800020c02401a2039369dfd662c85",
+  "status": "candidate_ready"
+}

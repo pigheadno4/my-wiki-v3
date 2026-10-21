@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-top-up-balance-account-scheduled-top-ups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Configure Marketplace pull sweeps for balance-account top-ups\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/top-up-balance-account/scheduled-top-ups\"\nraw_files:\n  - \"adyen/docs/marketplaces/top-up-balance-account/scheduled-top-ups/2026-09-15.md\"\ntags: [adyen, marketplaces, top-ups, sweeps, balance-accounts]\n---\n\n## Overview\n\nThis pinned Marketplace guide describes a **pull sweep** that can trigger a direct-debit top-up from a user's **verified transfer instrument** into that user's balance account. Sweeps can be conditioned on timing and/or available-balance thresholds, but the page's concrete API example configures a **balance-triggered** sweep, not a fixed-time cron request. A created configuration or triggered request does not prove funds were added. See [[adyen]] and [[adyen-platforms]] (raw lines 15\u201324, 39\u201359, 61\u2013107).\n\n## Key takeaways\n\n- The guide requires Adyen for Platforms, Configuration API credentials, Configuration/Transfer/Transaction webhooks, the user's **receiveFromTransferInstrument** capability, and Support enablement. Scheduled top-ups are limited to account holders with verified bank accounts in the **EU, UK and US**, using the corresponding standard **SEPA, BACS or ACH** debit rails (raw lines 26\u201337).\n- A sweep belongs to the user's balance account. `type: pull` directs funds **from** the specified verified transfer instrument **into** that account; `schedule.type: balance` in the shown request evaluates the available-balance trigger. The source lists `counterparty.transferInstrumentId` linked to the account holder's legal entity, `counterparty.merchantAccount`, matching `currency`, `triggerAmount`, and `sweepAmount` in the POST `/balanceAccounts/{balanceAccountId}/sweeps` request (raw lines 39\u201374).\n- The TEST example triggers below **EUR 5,000** (`triggerAmount.value: 500000`) and requests a fixed **EUR 1,000** pull (`sweepAmount.value: 100000`). These are threshold and transfer amount, not a guarantee that the balance stays above EUR 5,000 during asynchronous bank debit processing (raw lines 76\u2013107).\n- The response gives a sweep ID and defaults its status to **active**. A PATCH to `/balanceAccounts/{balanceAccountId}/sweeps/{sweepId}` can change that status; the `balancePlatform.balanceAccountSweep.created` webhook confirms sweep creation. When conditions are met, Adyen initiates an incoming top-up transfer and transfer/transaction webhooks report its authorization, added-funds outcome or failure. Distinguish configuration creation, transfer initiation, authorization and booked balance-account credit (raw lines 53\u201359, 463\u2013500).\n- The opening discusses pre-defined fixed schedules, but the provided parameter table and payload set `schedule.type: balance` only. Consult the relevant current API contract before deriving fixed-time schedule fields from this example (raw lines 19\u201324, 63\u2013107).\n\n## Detail locators\n\n- Product, region, verified-bank, capability and webhook gates: raw lines 15\u201337.\n- Sweep directions/conditions and Configuration API parameters: raw lines 39\u201374.\n- TEST threshold/top-up payload and active response: raw lines 76\u2013107, 463\u2013492.\n- Creation versus resulting transfer/webhook states: raw lines 494\u2013505.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-marketplaces-top-up-balance-account-top-up-webhooks]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/top-up-balance-account/scheduled-top-ups/2026-09-15|Pinned scheduled top-up guide]]\n",
+  "quotes": [
+    {
+      "text": "Set up a pull sweep to trigger a direct debit from a verified transfer instrument.",
+      "location": "raw line 17, opening"
+    },
+    {
+      "text": "Scheduled top-ups are only supported for account holders with verified bank accounts in the EU, the UK, and the US.",
+      "location": "raw line 36, Requirements limitations"
+    },
+    {
+      "text": "For scheduled top-ups, the direction is set to *pull*",
+      "location": "raw line 45, Sweep type"
+    },
+    {
+      "text": "When the conditions for a sweep are met, it triggers a top-up request from a transfer instrument for the specified sweep amount.",
+      "location": "raw line 51, Sweeps"
+    },
+    {
+      "text": "By default, sweeps are created with an **active** status.",
+      "location": "raw line 465, Create a pull sweep response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-scheduled-topups-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-top-up-balance-account-scheduled-top-ups]] \u2014 2026-09-15 Marketplace Configuration API pull-sweep guide for verified-bank, region-gated balance-triggered top-ups; default-active configuration precedes asynchronous transfer/credit outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Page introduces timing/fixed schedules, but its shown request only specifies schedule.type=balance with a threshold; do not derive fixed-time fields from it (raw lines 19\u201324, 63\u2013107).",
+          "Sweep created/active and top-up initiated do not prove funds credited; transfer/transaction webhooks report later outcome (raw lines 53\u201359, 463\u2013500)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/top-up-balance-account/scheduled-top-ups/2026-09-15.md",
+  "raw_sha256": "c4eaa298b17c14930d15cea61c03bba3d7b45e273e4914e873a1a8e9ad96c666",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-balance-updates-use-cases",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Marketplace balance webhook example use cases\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/balance-updates/use-cases\"\nraw_files:\n  - \"adyen/docs/marketplaces/balance-updates/use-cases/2026-09-15.md\"\ntags: [adyen, marketplaces, balance-accounts, webhooks, examples]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Marketplace page gives Configuration API **TEST examples** of Balance webhook settings and matching balance-update events for three threshold-alert scopes. Balance webhooks are marked **limited availability / pilot**; the page says processes and documentation may change. These are example configurations and event shapes, not proof of a live balance, completed transfer or bank receipt. [[adyen-platforms]]\n\n## Key takeaways\n\n- To alert when any balance account's **current balance** is below USD 5,000, the first example targets a `balancePlatform`, uses `conditions.balanceType: balance` and `lessThan`, and sets `value: 500000`. To alert when any account of a particular user reaches or falls below USD 5,000, the second targets that `accountHolder` and uses `lessThanOrEqual`. The target scopes are distinct. See raw lines 26\u201345 and 97\u2013116.\n- For **available balance** below a threshold on six users' foreign-currency accounts, the page instructs a separate setting for **each** `balanceAccount`, with its account ID and currency. Its JPY prose says below JPY 1,000, but the example sets `value: 100000` and shows `available: 95000`. This page does not explain that scale; the separate Adyen currency guide says JPY has zero decimal minor units. Do not copy the JPY number as a validated JPY 1,000 threshold without checking the current Balance webhook API contract. See raw lines 169\u2013188, 197\u2013213, 219\u2013234; [[source-adyen-docs-development-resources-currency-codes]] raw lines 164\u2013172.\n- All three illustrated events use `balancePlatform.balanceAccount.balance.updated`, `environment: test`, a setting ID, currency, and `balances` containing available, pending, reserved and balance values. The account-holder and individually targeted account examples show `accountHolderId`, but the displayed event data do **not** show a `balanceAccountId`, even for the account-targeted example. Do not infer a particular account solely from these sample payloads. See raw lines 72\u201395, 143\u2013167 and 215\u2013239.\n- Each example supplies one condition, so these examples do not resolve multi-condition matching behavior or establish that a configured alert will always fire. The related configuration guide owns subscription, role, limit and update rules. See raw lines 32\u201374, 103\u2013145 and 175\u2013217; [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]].\n\n## Detail locators\n\n- **Pilot caveat and page purpose:** raw lines 15\u201324.\n- **Platform-wide current-balance threshold and TEST event:** raw lines 26\u201395.\n- **Account-holder current-balance threshold and TEST event:** raw lines 97\u2013167.\n- **Per-account available-balance settings, JPY mismatch and TEST event:** raw lines 169\u2013239.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-balance-updates-use-cases|Parallel Platforms-path use-case examples]]\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook|Balance webhook setup and condition rules]]\n- [[source-adyen-docs-development-resources-currency-codes|Adyen currency minor-unit reference]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/balance-updates/use-cases/2026-09-15|Adyen Marketplace balance webhook use cases \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "I want to get notified if the balance drops below USD 5000 in any of the balance accounts in my balance platform.",
+      "location": "raw line 30, Any current balance drops below a limit"
+    },
+    {
+      "text": "I want to be notified if the current balance reaches or drops below USD 5000 in any of my user's balance accounts.",
+      "location": "raw line 101, Current balance of a specific user drops below a limit"
+    },
+    {
+      "text": "Using the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview), create a webhook setting for **each of the balance accounts**, specifying the following parameters and values:",
+      "location": "raw line 177, Available balance of a specific balance account drops below a limit"
+    },
+    {
+      "text": "I want to get notified when the available balance on six of my users' balance accounts, which hold foreign currencies, drop below 1000 in their respective currencies.",
+      "location": "raw line 173, Available balance of a specific balance account drops below a limit"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-docs-marketplaces-balance-updates-use-cases-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-updates-use-cases]] \u2014 2026-09-15 pilot Marketplace Balance webhook TEST examples for platform, account-holder and individual-account thresholds; JPY 1,000 prose versus 100000 setting needs verification, and sample account-target event omits balanceAccountId.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/balance-updates/use-cases/2026-09-15.md",
+  "raw_sha256": "6c0b1c0e54cced14d53c53ff642745b43f0e4853d5e321946677c9515f60f0c5",
+  "status": "candidate_ready"
+}

@@ -18,6 +18,48 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-top-up-balance-account]] — 2026-09-15 Marketplace overview defining user/liable balance-account top-ups as incoming external transfers and routing scheduled, on-demand and webhook detail; initiation is not booked-credit proof.
+
+
+- [[source-adyen-docs-marketplaces-transfer-transactions]] — 2026-09-15 Marketplace-path balance-platform tracking hub for transfer statuses, webhook/API routes and failed/refused/returned handling; booked source debit is not recipient-bank proof.
+
+
+- [[source-adyen-docs-marketplaces-balance-updates]] — 2026-09-15 Marketplace pilot Balance webhook overview for platform/holder/account notification scope, subscription/settings route and inheritance; all-versus-any compound-condition wording remains unresolved.
+
+
+- [[source-adyen-docs-marketplaces-balance-updates-use-cases]] — 2026-09-15 pilot Marketplace Balance webhook TEST examples for platform, account-holder and individual-account thresholds; JPY 1,000 prose versus 100000 setting needs verification, and sample account-target event omits balanceAccountId.
+
+
+- [[source-adyen-docs-marketplaces-balance-updates-configure-balance-webhook]] — 2026-09-15 Marketplace pilot Balance webhook setup for platform/account-holder/account scopes, role and 20-by-20 limits; condition all-versus-any wording conflicts.
+
+
+- [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] — 2026-09-15 pilot Marketplace-path balance-notification setting lifecycle for platform, holder or account targets; clearing a final condition widens alerts and is distinct from inactive or DELETE.
+
+
+- [[source-adyen-docs-marketplaces-transfer-transactions-track-webhooks]] — 2026-09-15 Marketplace-path Transaction webhook guide for booked balance-account debits/credits across internal/external transfers, distinct from Transfer status and bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-top-up-balance-account-scheduled-top-ups]] — 2026-09-15 Marketplace Configuration API pull-sweep guide for verified-bank, region-gated balance-triggered top-ups; default-active configuration precedes asynchronous transfer/credit outcome.
+
+
+- [[source-adyen-docs-marketplaces-transfer-transactions-track-api]] — 2026-09-15 Marketplace Transfers API transaction-query guide for scoped/paged balance-account rows, signed incoming/outgoing amounts, pending/booked and booking/value dates; sample IDs and internal amounts conflict.
+
+
+- [[source-adyen-docs-marketplaces-view-transfers-details]] — 2019-modified, 2026-09-15-captured Marketplace Customer Area/Transfers API guide for list/detail transfer reads, status/event inspection and webhook tracking; list-query examples conflict with stated filters and booked bank example does not prove receipt.
+
+
+- [[source-adyen-docs-marketplaces-view-payout-transfers-details]] — 2026-09-15 Marketplace-path Customer Area/Transfers API guide to payout-transfer lists, details and instruction-only confirmation letters, with list-request example conflicts.
+
+
+- [[source-adyen-docs-marketplaces-top-up-balance-account-top-up-webhooks]] — 2026-09-15 Marketplace scheduled/on-demand top-up webhook guide for separate incoming credit and outgoing fee legs, transfer stages and booked transaction events; fee sample IDs conflict.
+
+
+- [[source-adyen-docs-marketplaces-top-up-balance-account-on-demand-top-ups]] — 2026-09-15 Marketplace user-funded Checkout `/payments` on-demand top-up guide for verified-bank or other-method funding, TopUp split booking, region/capability/direct-debit gates and asynchronous credit tracking.
+
+
+- [[source-adyen-docs-marketplaces-balance-types]] — 2026-09-15 Marketplace per-currency balance-type definitions and viewing routes, with unresolved Available and Pending available formula-versus-example conflicts.
+
+
 - [[source-adyen-docs-marketplaces-payment-methods]] — 2026-09-15 Marketplace payment-method family catalog and Customer Area add/manage routes; listed support does not prove merchant configuration, channel availability or payment success.
 
 

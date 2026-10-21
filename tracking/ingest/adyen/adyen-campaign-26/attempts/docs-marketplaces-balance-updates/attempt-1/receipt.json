@@ -1,0 +1,71 @@
+{
+  "job_id": "docs-marketplaces-balance-updates",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace: Track balance updates\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/balance-updates\"\nraw_files:\n  - \"adyen/docs/marketplaces/balance-updates/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, balance-accounts, balance-webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace overview describes Adyen's **limited-availability / pilot** Balance webhook for configured notifications about balance changes. It routes from subscription in Customer Area to scoped settings creation and explains platform, account-holder and balance-account setting inheritance. The snapshot is a notification overview, not evidence that this pilot is currently available to an account, an event was delivered, or a payment, refund, payout or bank receipt occurred. See [[adyen]], [[adyen-platforms]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- **Scope and purpose:** The page gives payments, payouts, refunds and chargebacks as examples of activity that can change a user's available balance; they are examples, not a universal posting schedule or amount rule. Notifications can target all balance accounts of a platform, all accounts of a particular account holder, or one balance account. The platform defines trigger criteria. Balance webhooks remain labeled pilot and the processes/documentation may change (raw lines 19\u201332).\n- **Two setup steps:** Subscribe to **Balance webhook** in Customer Area and obtain its webhook ID, then create settings with `POST /balancePlatforms/{id}/webhooks/{id}/settings` using that ID and criteria. A platform target covers its accounts, an account-holder target covers a specific user's accounts, and an account target covers one. Detailed roles, security fields and limits belong to the linked configuration guide, not this overview (raw lines 34\u201345, 59\u201367).\n- **Inheritance and condition conflict:** The page states higher-resource settings are inherited by connected balance accounts and more-granular settings override higher-level settings: account holder over platform, balance account over holder/platform. It says a balance webhook is sent when **all** configured conditions match. The related [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] captures a `status: active` row saying **any** condition can trigger alongside its own all-condition row. The snapshot therefore leaves compound-condition Boolean behavior unresolved; do not infer an automatic control decision from one interpretation alone (this raw lines 47\u201357; related source raw lines 88\u201390).\n- **Event boundary:** A configured rule or matching notification concerns a balance-change alert. It neither causes nor independently proves a particular underlying transfer, refund, payout, settlement or bank credit. The linked management guide distinguishes modifying, deactivating and deleting a setting; this overview itself gives no event-delivery guarantee (raw lines 24\u201326, 59\u201367).\n\n## Detail locators\n\n- Pilot status, example balance-change causes and three target scopes: pinned raw lines 19\u201332.\n- Customer Area subscription, webhook ID and settings POST: pinned raw lines 34\u201345.\n- All-condition wording and platform/holder/account inheritance-override table: pinned raw lines 47\u201357.\n- Configuration and management next-step routes: pinned raw lines 59\u201367.\n- Cross-page all-versus-any warning: [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] raw lines 88\u201390.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main platform and Marketplace balance-account context.\n- [[adyen-webhooks]] \u2014 asynchronous notification handling.\n- [[source-adyen-docs-platforms-balance-updates]] \u2014 parallel Platforms-path overview.\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 detailed setup and unresolved condition wording.\n- [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] \u2014 Marketplace-path settings lifecycle, including condition removal.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/balance-updates/2026-09-15|Marketplace Track balance updates, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/2026-09-15.md:20"
+    },
+    {
+      "text": "You subscribe to the **Balance webhook**",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/2026-09-15.md:38"
+    },
+    {
+      "text": "POST [/balancePlatforms/{id}/webhooks/{id}/settings]",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/2026-09-15.md:40"
+    },
+    {
+      "text": "meets all the conditions you set",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/2026-09-15.md:47"
+    },
+    {
+      "text": "Settings you configure on a more granular level override the settings you configure on higher-level resources.",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/2026-09-15.md:51"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-balance-updates-platform-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-updates]] \u2014 2026-09-15 Marketplace pilot Balance webhook overview for platform/holder/account notification scope, subscription/settings route and inheritance; all-versus-any compound-condition wording remains unresolved.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Overview says all configured conditions; related configuration guide also says any for active settings. No live availability or event-delivery proof."
+        ]
+      },
+      {
+        "update_id": "c26-marketplace-balance-updates-webhooks-link",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-updates]] \u2014 2026-09-15 pilot Marketplace Balance webhook orientation for scoped balance-change alerts and setting inheritance; notifications are distinct from underlying money movement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Multi-condition semantics are unresolved across captured overview and configuration wording."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/balance-updates/2026-09-15.md",
+  "raw_sha256": "93172198214a2d3a1426168a4da77a446b65ba471528157a37c6cf33a009b955",
+  "status": "candidate_ready"
+}

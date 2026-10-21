@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-marketplaces-top-up-balance-account-top-up-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace top-up webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/top-up-balance-account/top-up-webhooks\"\nraw_files:\n  - \"adyen/docs/marketplaces/top-up-balance-account/top-up-webhooks/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, top-ups, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Marketplace-path guide explains the webhook stages for topping up a user's balance account through scheduled pull sweeps or on-demand payment requests. It belongs under [[adyen-platforms]]. A received or authorised transfer is a stage, while the guide associates a captured transfer and transaction.created booked event with the balance-account credit; the examples do not establish external funding finality or any bank receipt.\n\n## Key takeaways\n\n- Requirements name Adyen for Platforms and subscriptions to Standard, Transfer and Transaction webhooks, with a server able to receive and accept them. Standard AUTHORISATION applies when the request triggers a direct debit or payment authorisation; Transfer webhooks report incoming balance-account transfers/payments. See raw lines 21\u201336.\n- Scheduled pull-sweep top-ups use an incoming `platformPayment` transfer of type `capture`. The illustrative EUR 5,000 threshold triggers a EUR 1,000 credit to the user's first balance account. Transfer-created `received` and transfer-updated `authorised` precede transfer-updated `captured` with a `transactionId`; the credited transaction.created sample has `status: booked`. See raw lines 38\u201357, 123\u2013125 and 205\u2013337.\n- On-demand top-ups originate in payment requests and incur transaction fees. The guide says to expect webhook legs for each involved balance account and each `splits` entry in POST `/payments`. The example credits EUR 1,000 to the first user balance account and deducts EUR 3.44 in fees from the second. See raw lines 341\u2013350.\n- The on-demand credit leg is incoming `category: topUp`, `type: capture`, `platformPaymentType: TopUp`; the fee leg is outgoing `category: platformPayment`, `type: capture`, `platformPaymentType: PaymentFee`. Each has received, authorised and captured transfer stages, followed by a booked transaction.created sample when credited or deducted. Use the payment, modification, transfer and transaction references to reconcile the separate legs; do not treat a payment request or an AUTHORISATION alone as the booked credit. See raw lines 354\u2013367, 523\u2013664 and 666\u2013675, 839\u2013955.\n- The fee example conflicts internally: prose and transfer payload identify the second balance account (`BA...02`) for the EUR 3.44 deduction, but the final fee transaction.created sample identifies the first (`BA...01`), and its transaction ID repeats the top-up credit sample ID. Its value date also precedes its booking date. Treat these TEST sample identifiers/dates as inconsistent examples, not a matching rule. See raw lines 345\u2013350, 693\u2013705, 913\u2013927 and 943\u2013976.\n\n## Detail locators\n\n- Scheduled webhook field values and lifecycle: raw lines 38\u2013339.\n- On-demand credit leg, payment references and booked event: raw lines 341\u2013664.\n- On-demand fee leg and booked-event sample conflict: raw lines 666\u2013978.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-top-up-balance-account-top-up-webhooks]]\n- [[source-adyen-docs-platforms-top-up-balance-account-scheduled-top-ups]]\n- [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/top-up-balance-account/top-up-webhooks/2026-09-15|Marketplace top-up webhook guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a top-up is triggered in your marketplace, Adyen sends two kinds of webhooks:",
+      "location": "raw lines 21\u201326, Types of webhooks"
+    },
+    {
+      "text": "When the funds are credited to your user's balance account, Adyen sends a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **captured** and the `transactionId`.",
+      "location": "raw line 207, Scheduled top-up captured"
+    },
+    {
+      "text": "On-demand top-ups are initiated using payment requests. Just like other payments processed by your marketplace, they incur transaction fees. Adyen sends separate webhooks for the top-up amount, and for the transaction fees incurred by the top-up.",
+      "location": "raw line 343, On-demand top-ups"
+    },
+    {
+      "text": "Your server receives webhooks for each balance account involved and each split of the total top-up amount specified in the `splits` array of your POST [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 350, On-demand top-ups"
+    },
+    {
+      "text": "When the funds are deducted from your user's balance account, Adyen sends a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **captured** and the `transactionId`.",
+      "location": "raw line 841, Transaction fee request booked"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-docs-marketplaces-top-up-balance-account-top-up-webhooks-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-top-up-balance-account-top-up-webhooks]] \u2014 2026-09-15 Marketplace scheduled/on-demand top-up webhook guide for separate incoming credit and outgoing fee legs, transfer stages and booked transaction events; fee sample IDs conflict.\n",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Fee transaction.created example names first balance account although prose and fee transfer use second, and repeats credit transaction ID (raw lines 345\u2013350, 693\u2013705, 943\u2013976)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/top-up-balance-account/top-up-webhooks/2026-09-15.md",
+  "raw_sha256": "dcf534c34a149296d2f382c4e764d1349b8609ce3301fc8e3d73b3c1b6227f4d",
+  "status": "candidate_ready"
+}

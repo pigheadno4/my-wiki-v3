@@ -1,0 +1,70 @@
+{
+  "job_id": "docs-marketplaces-balance-updates-manage-balance-webhook",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace: Manage Balance webhook settings\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/balance-updates/manage-balance-webhook\"\nraw_files:\n  - \"adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, webhooks, balance-accounts, configuration]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path guide explains how to list, inspect, update, deactivate or delete **Balance webhook settings** using the Configuration API. Adyen labels Balance webhooks **limited availability / pilot** and warns the process and documentation may change. A setting controls notifications for balance changes in a target scope; it is distinct from the webhook subscription, an actual balance movement or a payout. See [[adyen]], [[adyen-webhooks]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Read and address settings:** GET `/balancePlatforms/{id}/webhooks/{id}/settings` lists settings and conditions; append `/{settingId}` to inspect one. The path requires a balance-platform ID and Balance webhook ID, plus a setting ID for single-setting operations. The TEST examples show a platform-wide target and a specific liable balance account; the PATCH field table also lists account-holder scope. The example IDs and USD thresholds do not establish live account state (raw lines 26\u2013119, 121\u2013147).\n- **PATCH replaces the condition set being kept:** PATCH the same single-setting path to change a setting, with `type: balance` marked required. Supported target types are `balancePlatform`, `accountHolder` and `balanceAccount`; the table also lists currency, status, four balance types (`available`, `balance`, `pending`, `reserved`), comparison operators and value. To add a condition, send both retained and new conditions. To remove one, omit it while sending every condition to keep. Removing the last condition causes notifications for **all** balance changes in the target account(s), rather than stopping notifications (raw lines 121\u2013220, 243\u2013245).\n- **Stop and delete differ:** PATCH `status: inactive` temporarily suppresses notifications even if thresholds match. DELETE the setting path to permanently stop notifications for its conditions. This guide does not describe a restore-after-delete operation. Do not equate deleting the setting, marking it inactive, and clearing its conditions (raw lines 224\u2013263).\n- **Compound-condition ambiguity:** This page's `status: active` row says any condition may trigger, while the related Platforms configuration guide's `conditions` row says all configured conditions must match; its own active row also says any. The snapshot therefore does not settle the Boolean behavior of a multi-condition setting. A stored setting or successful PATCH is not evidence that a webhook was delivered or that funds moved (this raw lines 139\u2013141; [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] raw lines 88\u201390).\n\n## Detail locators\n\n- Pilot warning and Configuration API scope: pinned raw lines 15\u201324.\n- GET-all and GET-one paths, IDs and TEST response examples: pinned raw lines 26\u2013119.\n- PATCH path and field/target/condition table: pinned raw lines 121\u2013147.\n- Retain-all-desired-conditions PATCH examples: pinned raw lines 149\u2013220.\n- Inactive PATCH, last-condition all-changes effect, permanent DELETE: pinned raw lines 224\u2013263.\n- Related all-versus-any condition conflict: [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] raw lines 88\u201390; this raw lines 139\u2013141.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 main asynchronous notification concept.\n- [[adyen-platforms]] \u2014 platform/account-holder/balance-account context.\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]] \u2014 parallel Platforms-path settings guide.\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] \u2014 initial subscription and condition-language conflict.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15|Marketplace manage Balance webhook settings, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md:20"
+    },
+    {
+      "text": "You receive a balance webhook if any of the conditions in this setting are met.",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md:139"
+    },
+    {
+      "text": "You must send the conditions you want to keep in the update request.",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md:195"
+    },
+    {
+      "text": "If you remove the only existing condition set from the webhook setting, you will receive updates for *all* balance changes in the specified balance account(s).",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md:245"
+    },
+    {
+      "text": "If you want to permanently stop receiving webhooks for the specified conditions, send a DELETE",
+      "location": "raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md:249"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-manage-balance-webhook-link",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] \u2014 2026-09-15 pilot Marketplace-path Balance webhook settings guide for GET, condition-preserving PATCH, inactive state and DELETE; removing the last condition broadens alerts, with all-versus-any compound logic unresolved.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide says active triggers on any condition, whereas related configuration guidance also says all must match; do not assume compound Boolean semantics."
+        ]
+      },
+      {
+        "update_id": "c26-marketplace-balance-settings-platform-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] \u2014 2026-09-15 pilot Marketplace-path balance-notification setting lifecycle for platform, holder or account targets; clearing a final condition widens alerts and is distinct from inactive or DELETE.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Pilot settings and sample balances are not event-delivery or money-movement proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15.md",
+  "raw_sha256": "12104d4df4036476cee2a722cb83732621d4a2bbcbe12882a9a941940a42ed0d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Retrieval checks — docs-marketplaces-balance-updates-manage-balance-webhook
+
+Q1. How does a Marketplace inspect and update a pilot Balance webhook setting?
+
+A1. Route: [[index]] → [[adyen-index]] → [[adyen-webhooks]] → [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] → [[raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15]]. The Configuration API guide is marked limited-availability/pilot. GET the settings collection with balance-platform and webhook IDs, or append a setting ID for one setting; PATCH that setting path with `type: balance` and desired scope/currency/status/conditions (raw lines 19–28, 77–119, 121–147). Target types are platform, account holder or balance account. Adding a condition requires sending retained plus new entries; removal requires retaining wanted entries in the array (raw lines 155–220).
+
+Q2. What happens when conditions are cleared, a setting is inactive or deleted, and is compound logic settled?
+
+A2. Route: [[index]] → [[adyen-index]] → [[adyen-webhooks]] → [[source-adyen-docs-marketplaces-balance-updates-manage-balance-webhook]] → [[raw/adyen/docs/marketplaces/balance-updates/manage-balance-webhook/2026-09-15]]. Removing the only condition causes updates for all changes in the target account(s), while PATCH `status: inactive` temporarily stops that setting's notices and DELETE permanently stops notices for it (raw lines 224–263). This page says active may trigger if any condition matches, but the related Platforms configuration guide says all must match in its conditions row and any in its status row; the multi-condition rule is unresolved (this raw lines 139–141; [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]] raw lines 88–90). No example proves actual webhook delivery or funds movement.

@@ -15,6 +15,9 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-capital-component]] — 2026-09-15 Marketplace-path Platform Experience Capital component guide for conditional financing offers, required actions, grant status and repayment display; UI does not prove funding or repayment.
+
+
 - [[source-adyen-docs-capital-keeping-records]] — 2024-modified, 2026-09-15-captured Capital service-record retention and categories, with API-only UI screenshot exception and UK/Ireland vulnerability-record scope; not legal advice or retention proof.
 
 

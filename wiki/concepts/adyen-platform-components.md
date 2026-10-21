@@ -15,6 +15,51 @@ Component availability depends on product, region, user role, and each child gui
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-components-overview-during-payment]] — 2026-09-15 short Marketplace-path during-payment navigation page linking Checkout components and the component library; no implementation or outcome proof.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-before-payment]] — 2026-09-15 Marketplace before-payment Onboarding component hub linking Individual Legal Entity, Terms of Service and Transfer Instrument child guides; card text is navigation, not verification or payout proof.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment]] — 2026-09-15 Marketplace after-payment component hub linking Transactions, Payouts, Reports, Disputes, Pay by Link and Capital child guides; navigation does not prove financial or dispute outcomes.
+
+
+- [[source-adyen-docs-marketplaces-build-user-dashboards]] — 2026-09-15 Marketplace-path Platform Experience dashboard hub routing Transactions, Payouts, Reports, Disputes and Pay by Link child component guides.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-before-payment-terms-of-service-component]] — 2026-09-15 Marketplace Accept/Manage Terms of Service component overview for LEM v3/v4 entities; 4.0.x integration details are a placeholder pointing to 3.32.x, with other onboarding API steps still required.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-before-payment-individual-legal-entity-component]] — 2026-09-15 Marketplace Individual Legal Entity onboarding-component overview for LEM v3/v4 entities, Create/Manage Individual functions and API-only-flow boundaries; captured v4.0.x section lacks integration steps and refers to v3.32.x.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-capital-component]] — 2026-09-15 Marketplace-path Capital Overview/Offer UI guide for required disclosures, eligible offer/action/status and term-sheet views; credit-after-information versus approval-and-signature wording conflicts.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-before-payment-transfer-instrument-component]] — 2026-09-15 Marketplace Configuration/Management bank-instrument UI guide for LEM v3/v4, legal-entity/role-scoped onboarding sessions, conditional US/CA property and submission events; other onboarding and verification outcomes remain separate.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-reports-component]] — 2026-09-15 Marketplace Platform Experience Reports Overview guide for account-holder-scoped Payout report CSV access, automatic-payout coverage limits, UTC filters, session role and versioned UI customization.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-pay-by-link-component]] — 2026-09-15 Marketplace-path Platform Experience Pay by Link component guide for portal link management, role/store setup, link states and split-routing boundary.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-payouts-component]] — 2026-09-15 Marketplace-path Platform Experience Payouts Overview/Details guide for role-scoped automatic-payout reporting, account/UTC+0 filters, report-coverage limits and versioned integration; UI is not bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-transactions-component]] — 2026-09-15 Marketplace-path Platform Experience Transactions Overview/Details guide for account-holder-scoped sessions, balance-account views, first-100 CSV export and role-gated refund requests; UI status is not final refund proof.
+
+
+- [[source-adyen-docs-marketplaces-components-overview-after-payment-disputes-component]] — 2026-09-15 Marketplace Disputes Overview/Management component guide for account-holder-scoped views and conditional chargeback defense/acceptance, with version, split-access, upload and refund limits.
+
+
+- [[source-adyen-docs-marketplaces-checkout-components]] — 2026-09-15 Marketplace-path Web Components/Sessions checkout guide for payment-server, client and webhook roles, redirect handling and test-to-live conditions; UI/session result is not split booking or payout proof.
+
+
+- [[source-adyen-docs-marketplaces-components-overview]] — 2026-09-15 Marketplace UI component-suite inventory, including legal-entity/Terms of Service before-payment routes, server role-bearing sessions, regional/product limits and future cashout/Capital-update roadmap; UI is not outcome proof.
+
+
 - [[source-adyen-docs-issuing-components-overview-after-payment-transactions-component]] — 2026-09-15 Issuing-path copy of the Platform Experience Transactions Overview/Details guide; its stated prerequisite is Adyen for Platforms, with platform-scoped session and role-gated refunds.
 
 

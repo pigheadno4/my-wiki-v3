@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-reports-and-fees-balance-platform-accounting-report",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Marketplace Balance Platform Accounting Report\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/reports-and-fees/balance-platform-accounting-report\"\nraw_files:\n  - \"adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, reporting, reconciliation]\n---\n\n## Overview\n\nThis 2023-modified Marketplace field guide, captured 2026-09-15, describes the daily **Balance Platform Accounting Report** for balance changes across all balance accounts in the platform, including the marketplace liable account and user accounts. The ordinary report can be generated on a schedule or manually for one day. The manually generated **Interactive Report** uses the same kind of data but can cover multiple dates and filter account holder, balance account, event Category, Type and Status. [[adyen]] [[adyen-reporting]]\n\n## Key takeaways\n\n- Use report rows to reconcile processed payments, internal transfers, bank-payout balance entries, fees/costs and invoice deductions. For current individual payment state, the guide recommends API responses and webhooks, then daily fund reconciliation with this report. A `bankTransfer` booked row shows a balance-account debit/credit, not independent evidence that the beneficiary bank received funds (raw lines 19\u201340, 61\u201396).\n- The guide calls **Transfer Id** a pending debit/credit flow: initiated and then authorized/refused events share it. Refunds start a new flow with a new Transfer Id unlinked to the original payment. **Transaction Id** identifies a booked debit/credit; use Transfer Id to associate its booking with the pending flow. Do not equate `received` or `authorised` with booked movement (raw lines 50\u201357, 231\u2013235).\n- Category/Type/Status distinguish bank, internal, platform-payment, issued-card, grants, top-up and other events. Event status updates appear on their status-update day. The guide maps `internal/internalTransfer/booked` to source debit and target credit, and `bank/bankTransfer/booked` to a balance-account debit or credit. `platformPayment` capture/refund/chargeback and `topUp` have separate maps; use the raw tables for each type/status rather than treating all rows as settled sales or completed payouts (raw lines 59\u2013199).\n- **Value-date accounting:** Booking Date is when an event took place; Value Date is when the actual balance is credited/debited or available. It can precede, equal or follow booking date. Generated daily reports select balance mutations by Booking Date from 00:00 to next-day 00:00 for the selected day in **Central European Time (CET)**; individual rows also carry Booking/Value Date TimeZone columns. Balance accounts with no transactions are omitted, so report coverage does not mean a zero-activity account has a row (raw lines 200\u2013220, 228\u2013246).\n- Standard columns include platform/account-holder/balance-account IDs, Transfer and Transaction IDs, Category/Status/Type, booking/value dates, account and payment currencies, Received/Reserved/Balance register mutations, counterparty account and PSP references. Customer Area can add optional columns including Exchange Rate, Event Id, Capital/Managed Risk fields and **Platform Payment Split Type**. The snapshot marks the additional **Issued Card Scheme Fee** and currency columns \u201cDo not use this column.\u201d Column presence/fee granularity depends on configured report and acquirer data (raw lines 216\u2013347).\n- Split types identify the purpose and booking destination of a transaction split: `BalanceAccount` is user share; `Commission` is marketplace commission to the liable balance account; fee, VAT, remainder, surcharge and top-up types use their specified account. The field supports split-line reconciliation; it does not by itself prove a split request was executed in a live payment (raw lines 349\u2013371).\n- **Sample inconsistencies:** chargeback prose says EUR 60 but its chargeback rows show EUR 10.97 (raw lines 391\u2013404). The `Top-ups` rows reuse the payout example's Transfer Id `3JTRKZ5VXL07G5UY`, remain `received` with blank Transaction Ids, yet one shows `Balance (PC): 100.00` (raw lines 425\u2013435); do not infer a reliable payout/top-up join or booked top-up from those rows. The report examples are illustrative, not proof of actual account outcomes.\n\n## Detail locators\n\n- Scope, generation, use cases and transfer/transaction definitions: raw lines 17\u201357. Category/Type/Status maps: lines 59\u2013199. Value dates and report window: lines 200\u2013220.\n- Standard and optional columns, availability and split types: raw lines 222\u2013371. Worked capture, refund, chargeback, internal transfer, bank payout and top-up rows: lines 373\u2013435.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-reporting]] \u2014 report and reconciliation concept.\n- [[adyen-platforms]] \u2014 Marketplace/platform account context.\n- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] \u2014 separate Platforms-path guide.\n- [[source-adyen-docs-platforms-prepare-reports-generate-download-reports]] \u2014 existing Platforms-path report-generation route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15|Marketplace Balance Platform Accounting Report \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The **Balance Platform Accounting Report** is a daily report that tracks all balance changes on all balance accounts in your balance platform, including liable accounts and the accounts of your users.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md:19"
+    },
+    {
+      "text": "If a payment or transfer doesn't have a Transaction Id, no money movement has taken place yet.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md:55"
+    },
+    {
+      "text": "The report contains all events on the day the status update took place.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md:67"
+    },
+    {
+      "text": "Value dates are not always in the future.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md:204"
+    },
+    {
+      "text": "The generated report includes the balance mutations with a **Booking Date** for all the accounts for your balance platform between opening (00:00 AM) and closing (00:00 AM the next day) for your selected day in Central European Time (CET).",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md:220"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-bpar-source-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-reports-and-fees-balance-platform-accounting-report]] \u2014 2023-modified, 2026-09-15-captured Marketplace daily/interactive Balance Platform Accounting Report field and event guide for liable/user accounts, CET booking window, pending-versus-booked IDs, value dates and split types; sample chargeback amount and payout/top-up IDs conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A booked bank-transfer row records balance-account movement, not independent beneficiary-bank receipt; individual outcome tracking also uses API/webhook evidence.",
+          "Sample chargeback prose says EUR 60 versus EUR 10.97 rows; top-up rows reuse a payout Transfer Id and show Balance (PC) +100 while remaining received with blank Transaction Ids. Do not derive a join or completed top-up from those examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/reports-and-fees/balance-platform-accounting-report/2026-09-15.md",
+  "raw_sha256": "66ff7bc063d6039a79b147a6959f70a5fd09704639552e2453546efec50297ac",
+  "status": "candidate_ready"
+}

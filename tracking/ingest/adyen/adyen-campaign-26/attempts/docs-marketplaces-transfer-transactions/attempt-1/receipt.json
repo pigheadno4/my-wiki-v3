@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-transfer-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Track Adyen Marketplace balance-platform transactions and transfers\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/transfer-transactions\"\nraw_files:\n  - \"adyen/docs/marketplaces/transfer-transactions/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, transfers, transactions, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path tracking hub says that each fund movement on the balance platform results in a transaction. It routes readers to real-time Transfers/Transactions webhooks or on-demand Transfers API tracking and summarizes transfer lifecycle states. It describes balance-platform reconciliation signals, not a payment-initiation or payout-execution endpoint; source-account deduction, a transaction row or a report entry does not independently prove recipient-bank credit. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The transfer-lifecycle table says `authorised` means a valid request with funds reserved; `booked` means funds deducted from the **source balance account**; `failed` means initiation failed, for example insufficient funds; `refused` means clearing-system or recipient-bank rejection; and `returned` means funds were sent but returned by the receiving bank. `booked` is not a bank-receipt or irreversible-finality guarantee. See raw lines 21-31.\n- For tracking, this hub links a real-time Transfers and Transactions webhook guide and an on-demand Transfers API guide. It provides no endpoint parameters, correlation-key specification or full transaction-status schema itself; follow the child guides for those details. See raw lines 33-47.\n- For `failed` or `refused`, the page states that funds are not deducted from the balance account and advises notifying the user and checking bank-account details or balance status. This is a diagnostic step, not automatic retry authorization. See raw lines 49-53.\n- A receiving bank can return a transfer **several days after initiation**. In that case Adyen says it sends `balancePlatform.transfer.updated` with `returned`, credits the original balance account, and records a **separate** Balance Platform Accounting Report entry. Continue monitoring after any prior source-side debit; the page does not state a fixed return deadline or bank-receipt proof. See raw lines 55-61.\n\n## Detail locators\n\n- `# Track transactions`, raw lines 15-19: balance-platform movement/transaction framing and tracking purpose.\n- `## Transfer lifecycle`, raw lines 21-31: status definitions and source-versus-bank boundary.\n- `## Choose a tracking method`, raw lines 33-47: webhook and Transfers API child routes.\n- `## Handle exceptions`, raw lines 49-61: failed/refused non-deduction, possible later return, original-account credit and separate accounting-report entry.\n- `## See also`, raw lines 63-66: payout reconciliation and transfer-detail navigation.\n\n## Related\n\n- [[adyen-platforms]] \u2014 owning modern Platforms/Marketplace context.\n- [[source-adyen-docs-marketplaces-transfer-transactions-track-webhooks]] \u2014 separately pinned webhook method guide.\n- [[source-adyen-docs-marketplaces-transfer-transactions-track-api]] \u2014 separately pinned Transfers API query guide.\n- [[source-adyen-docs-platforms-transfer-transactions]] \u2014 separately pinned Platforms-path tracking hub.\n- [[adyen-reporting]] \u2014 report context; this hub alone does not define accounting report row grain.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/transfer-transactions/2026-09-15|Adyen Marketplace track-transactions hub, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Every fund movement in your balance platform results in a transaction.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "The funds have been successfully deducted from the source balance account.",
+      "location": "raw line 28, Transfer lifecycle, booked"
+    },
+    {
+      "text": "The funds were sent but were returned by the receiving bank.",
+      "location": "raw line 31, Transfer lifecycle, returned"
+    },
+    {
+      "text": "When a transfer has the status **failed** or **refused**, the funds are not deducted from the balance account.",
+      "location": "raw line 53, Failed and refused transfers"
+    },
+    {
+      "text": "A transfer can be returned by the recipient bank several days after it was initiated.",
+      "location": "raw line 57, Returned transfers"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplaces-transfer-transactions-platforms-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-transfer-transactions]] \u2014 2026-09-15 Marketplace-path balance-platform tracking hub for transfer statuses, webhook/API routes and failed/refused/returned handling; booked source debit is not recipient-bank proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This Marketplace-path source concerns modern Adyen for Platforms balance-platform movements, not the legacy Online Payout API or Classic Platforms.",
+          "A booked source-account debit can precede recipient-bank return; there is no retry permission or bank-credit proof in this hub."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/transfer-transactions/2026-09-15.md",
+  "raw_sha256": "4bba2d275e03acb8ea001c6b556614e9037aac8a9a4c9e219f2ae5686759396e",
+  "status": "candidate_ready"
+}

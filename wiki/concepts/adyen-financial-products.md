@@ -15,6 +15,12 @@ The 2023-modified landing page captured 2026-09-15 supplies orientation and link
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-financial-products]] — 2023-modified, 2026-09-15-captured Marketplace financial-products hub for Business accounts, Capital, Issuing and Payouts; product-specific eligibility and activation remain in child guides.
+
+
+- [[source-adyen-docs-marketplaces-compliance-financial-products]] — 2023-modified, 2026-09-15-captured Marketplace financial-products compliance-guideline hub mapping conditional review and product/region-scoped UI, statements, support, complaints, pricing, reporting, records and France topics; expressly not legal advice.
+
+
 - [[source-adyen-docs-platforms-compliance-financial-products-keeping-records]] — 2024-modified, 2026-09-15-captured financial-products service-record retention and example categories, with UK/Ireland vulnerable-customer categorization; not legal advice or proof of actual retention/delivery.
 
 

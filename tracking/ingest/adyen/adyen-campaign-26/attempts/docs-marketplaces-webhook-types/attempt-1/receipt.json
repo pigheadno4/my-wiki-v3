@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-webhook-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace webhook structures and types\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/webhook-types\"\nraw_files:\n  - \"adyen/docs/marketplaces/webhook-types/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, webhooks, transfers, balances]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Marketplace catalog maps webhook families, common envelope fields, event `type` and object-specific meanings in [[adyen-webhooks]]. It is an asynchronous event routing reference, not proof that a subscription is active, a message was delivered, funds booked, or a payout reached a bank. The Marketplace's account holders, balance accounts, users, liable account and bank counterparties remain distinct evidence objects.\n\n## Key takeaways\n\n- The page says webhooks may follow resource creation/update, request initiation or balance-account fund movement. The usual body has `data`, `environment` (`test`/`live`) and `type`; `data` varies by event and some types have `data.status`. Its account-holder-created JSON is a TEST example, not an actual delivered event. The opening subscription list names Configuration, Payment method, Transfer, Negative balance warning and Report; a later **Balance webhooks** section is also present. Treat the list and section as a coverage inconsistency rather than assuming Balance is unavailable. See raw lines 19\u201377 and 164\u2013170.\n- Configuration events include account-holder, balance-account, platform-/account-scoped managed payout schedule, managed payout **execution**, custom sweep, payment-instrument and optionally enabled risk-signal changes. Managed execution `succeeded` means a payout was **initiated** and yields a resulting `transferId`; `skipped` means conditions were unmet, while `failed` gives a reason and may recur until its cause is resolved. A custom sweep created/updated/deleted event concerns schedule configuration, not execution or bank receipt. Some managed-payout event link labels visibly contain a space after `balancePlatform.`; consult the linked schema for exact identifiers. See raw lines 79\u2013132.\n- Payment-method webhooks distinguish processed creation requests from add-request removal scheduling and actual removal; the scheduled-for-removal row says an add request will be removed in **30 days** unless missing KYC information is provided. These concern the payment-method request lifecycle, not a completed shopper payment. See raw lines 133\u2013141.\n- Transfer `balancePlatform.transfer.created` reports a request to credit/debit a balance account; `.updated` reports changed request status. The classification table distinguishes payment/capture, refund and chargeback (`category=platformPayment` with separate types), bank payout (`category=bank,type=bankTransfer,counterparty.transferInstrumentId`), internal transfer (`category=internal,type=internalTransfer,counterparty.balanceAccountId`), and third-party bank transfer (`category=bank,type=bankTransfer,counterparty.bankAccount`). These event labels must not be treated as interchangeable or as final settlement/bank receipt. See raw lines 143\u2013162.\n- Balance `balancePlatform.balanceAccount.balance.updated` reports a balance change. The negative-balance warning is for a marketplace balance account negative **more than 20 days** with a **scheduled** automatic transfer from the marketplace liable account; it does not establish that the transfer happened. Report `balancePlatform.report.created` means generated and ready to download, not that its rows were reconciled. The page explicitly deprecates Payment webhooks in favor of Transfer webhooks; legacy status examples should not be used as the current event path. See raw lines 164\u2013199.\n\n## Detail locators\n\n- Trigger categories, opening subscription list, envelope and TEST example: raw lines 19\u201377.\n- Configuration resource, managed/custom payout and risk event tables: raw lines 79\u2013132.\n- Payment-method request/removal events: raw lines 133\u2013141.\n- Transfer event types and category/type/counterparty classifications: raw lines 143\u2013162.\n- Balance, negative warning, report readiness and deprecated Payment webhook families: raw lines 164\u2013199.\n- Payout and internal-transfer scenario routes: raw lines 201\u2013211.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-webhooks]] \u2014 canonical asynchronous webhook concept.\n- [[adyen-platforms]] \u2014 modern Marketplace balance-platform context.\n- [[source-adyen-docs-platforms-webhook-types]] \u2014 separate Platforms URL and related catalog.\n- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 payout-specific transfer and bank status.\n- [[source-adyen-docs-marketplaces-internal-fund-transfers-internal-transfer-webhooks]] \u2014 internal account-to-account event detail.\n\n## Related raw API references\n\n- The page links type-specific API Explorer webhook schemas; consult them for exact identifiers and payload fields, especially rendered managed-payout labels containing spaces.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/webhook-types/2026-09-15|Marketplace webhook structures and types \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Some webhook types also include a `data.status` field that informs you of the outcome of the event.",
+      "location": "raw/adyen/docs/marketplaces/webhook-types/2026-09-15.md:33"
+    },
+    {
+      "text": "The information contained in the `data` object varies and depends on the webhook type.",
+      "location": "raw/adyen/docs/marketplaces/webhook-types/2026-09-15.md:45"
+    },
+    {
+      "text": "A payout was successfully initiated based on the execution times in the managed payout schedule.",
+      "location": "raw/adyen/docs/marketplaces/webhook-types/2026-09-15.md:108"
+    },
+    {
+      "text": "an automatic transfer from your marketplace's liable balance account is scheduled",
+      "location": "raw/adyen/docs/marketplaces/webhook-types/2026-09-15.md:178"
+    },
+    {
+      "text": "Payment webhooks are deprecated. Use the [transfer webhooks](#transfer-webhooks) instead.",
+      "location": "raw/adyen/docs/marketplaces/webhook-types/2026-09-15.md:190"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-webhook-types-reciprocal",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-webhook-types]] \u2014 2026-09-15 Marketplace webhook-family/type catalog across configuration, payment-method, transfer, balance, negative warnings and reports, with deprecated Payment webhooks and request-versus-movement boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening subscription list omits Balance (raw lines 25\u201331), but the page has a Balance webhooks section (lines 164\u2013170).",
+          "Managed-payout event link labels include a space after balancePlatform. (raw lines 100\u2013110); use linked API schema for exact identifiers."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/webhook-types/2026-09-15.md",
+  "raw_sha256": "ab03ddb3d9f6a058ec500c488f74b1f1697973e1888018bfe158946fd3e9b506",
+  "status": "candidate_ready"
+}

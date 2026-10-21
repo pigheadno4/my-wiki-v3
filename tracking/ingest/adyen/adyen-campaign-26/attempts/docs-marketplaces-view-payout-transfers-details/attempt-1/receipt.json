@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-marketplaces-view-payout-transfers-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace payout transfer details\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/view-payout-transfers-details\"\nraw_files:\n  - \"adyen/docs/marketplaces/view-payout-transfers-details/2026-09-15.md\"\ntags: [adyen, marketplaces, payouts, transfers, customer-area]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path [[adyen]] guide explains how an Adyen for Platforms operator views payout-related transfer records in Customer Area or with the Transfers API and obtains a bank-transfer confirmation letter. It recommends webhooks for recurring transfer tracking. A balance-platform transfer records funds credited or debited to a balance account; a list can include bank and internal transfers, so a viewed record must be interpreted by its own type and state. See [[adyen-platforms]].\n\n## Key takeaways\n\n- **Prerequisites and sequence:** The guide requires an Adyen for Platforms integration and the `TransferService Webservice Retrieve role` for API reads. Customer Area transfer viewing requires the Balance platform base role; downloading a letter requires the Download transfer confirmation letter role, and unmasked letter PII additionally requires View bank transfers PII. Payout-related transfers are initiated by a payout schedule, cashout or on-demand request, then authorized by Adyen and booked; initiation or authorization alone does not establish booking or bank receipt. See pinned raw lines 19\u201345.\n- **List and inspect:** Customer Area uses Balances > Transfers and shows one balance platform at a time, with date/status/reference filters; the page illustrates a Failed + Bank transfer filter to investigate rejected payouts. `GET /transfers` returns matching data and pagination links, with creation-time and account-holder/balance-account filters. For a particular transfer, search Customer Area by ID/description or call `GET /transfers/{id}`. The response highlights amount/currency, direction, events, reference and status such as received, authorised or booked. See pinned raw lines 47\u201382, 263\u2013268 and 475\u2013650.\n- **List-request contradiction:** The query table states that `createdSince` and `createdUntil` must be less than six months apart, and the text says to provide at least one unique identifier. Its example prose instead describes May 2025 to May 2026, while the test curl request uses a one-day interval and no account-holder or balance-account identifier. Do not treat the examples as an executable validation of those stated requirements; check the versioned Transfers API contract. See pinned raw lines 74\u201398.\n- **Transfer identity and bank boundary:** The list response samples one `bankTransfer` and one `internalTransfer`, while the detailed `GET /transfers/{id}` example is an `internalTransfer`. A `booked` balance-account debit and the example's estimated arrival time are not evidence that a beneficiary bank credited funds. For a booked bank transfer, an authorized Customer Area user can download a PDF letter; it confirms that Adyen sent the instruction to carry out the transfer, not that the beneficiary received it. Without View bank transfers PII, letter PII is masked. See pinned raw lines 270\u2013473, 642\u2013740 and 754\u2013779.\n- **Example boundary:** Curl samples use test Balance Platform Transfers API v4. SDK snippets identify library versions and contain placeholders, so treat them as illustrative and verify request syntax and roles against the linked API reference. See pinned raw lines 91\u2013260 and 500\u2013640.\n\n## Detail locators\n\n- Transfer lifecycle, viewing channels and roles: pinned raw lines 19\u201345.\n- Customer Area listing, failure filter and API list-request constraints/examples: pinned raw lines 47\u201398.\n- SDK list samples, pagination and bank/internal response examples: pinned raw lines 101\u2013473.\n- Customer Area search, single-transfer API call, response fields and internal-transfer example: pinned raw lines 475\u2013736.\n- Letter meaning, contents, PII/role gates and download procedure: pinned raw lines 738\u2013779.\n\n## Related\n\n- [[adyen-platforms]] \u2014 reciprocal platform concept.\n- [[source-adyen-docs-platforms-view-payout-transfers-details]] \u2014 same dated guide under the Platforms path.\n- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 separate webhook states for payout tracking and return.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/view-payout-transfers-details/2026-09-15|Marketplace payout transfer details, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can only see results from one **Balance platform** at a time.",
+      "location": "line 56, View a list of transfers / Customer Area"
+    },
+    {
+      "text": "This date must be less than 6 months from the `createdUntil` date.",
+      "location": "line 76, View a list of transfers / Transfers API query table"
+    },
+    {
+      "text": "You must provide at least one of the unique identifiers in your request.",
+      "location": "line 82, View a list of transfers / Transfers API"
+    },
+    {
+      "text": "The response contains all the details of the transfer.",
+      "location": "line 642, View a specific transfer / Transfers API"
+    },
+    {
+      "text": "confirms that Adyen has sent the instruction to carry out the transfer.",
+      "location": "line 740, Download a transfer confirmation letter"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-payout-transfer-details-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-view-payout-transfers-details]] \u2014 2026-09-15 Marketplace-path Customer Area/Transfers API guide to payout-transfer lists, details and instruction-only confirmation letters, with list-request example conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/view-payout-transfers-details/2026-09-15.md",
+  "raw_sha256": "5017481520db6437268d1eb9ad3862a58cdd2012e0ff64c1d17d7f0c50514da6",
+  "status": "candidate_ready"
+}

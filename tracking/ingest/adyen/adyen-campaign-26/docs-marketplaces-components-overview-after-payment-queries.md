@@ -1,0 +1,7 @@
+# docs-marketplaces-components-overview-after-payment — worker retrieval checks
+
+Q1. What is the after-payment component hub for, and what prerequisites does it establish?
+A. It is a Marketplace Platform Experience navigation page for users' post-payment transaction/balance and payout views, plus business-financing UI (raw lines 15–21). It links Transactions, Payouts, Reports, Disputes, Pay by Link and Capital child guides (lines 23–57), with the parent component-library route at lines 59–61. This hub itself does not define a session role, product eligibility or completed setup; consult each child guide. Route: [[index]] → [[adyen-index]] → [[adyen-platform-components]] → [[source-adyen-docs-marketplaces-components-overview-after-payment]] → [[raw/adyen/docs/marketplaces/components-overview/after-payment/2026-09-15]].
+
+Q2. What limits claims based on the hub's feature descriptions?
+A. The hub advertises report filtering/download, dispute defense or acceptance, payment-link management and Capital application/progress views (raw lines 35–57), but contains no account-specific events or final status evidence. A displayed payout balance, dispute control or qualified-grant view does not itself prove bank receipt, dispute success, financing grant or repayment. The child guides own role, region, version and lifecycle restrictions. Route: [[index]] → [[adyen-index]] → [[adyen-platform-components]] → [[source-adyen-docs-marketplaces-components-overview-after-payment]] → [[raw/adyen/docs/marketplaces/components-overview/after-payment/2026-09-15]].

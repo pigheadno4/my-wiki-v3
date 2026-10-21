@@ -1,0 +1,7 @@
+# Retrieval checks — docs-marketplaces-reconciliation-use-cases-first-year-focus-platform-user-level-reporting
+
+Q1. What SMB-user views and build routes does the guide propose? Answer: Transaction/fee history for sales review (Transactions Overview Component or daily Balance Platform Accounting Report), gross-to-net payout explanation (Payout Component or daily Payout Report), and dispute/chargeback action plus impact (Disputes Component or financial chargeback entries in the Accounting Report). Report-based custom delivery requires generation, ingestion and more engineering; components provide embedded UI. Raw lines 19–25, 27–52, 54–76, 78–100.
+
+Q2. What evidence and example boundaries matter? Answer: Accounting Report chargeback entries cover financial events only, not non-financial RFIs/fraud alerts/case lifecycle; its linked standard column is Balance (PC) while this guide says Balance (BC). The transaction template's 100 payment less 2 fees cannot yield its shown 820 Net Payout, which matches a separate daily summary. A component status or payout report row does not prove bank receipt or final dispute resolution. The Marketplace POS-element example does not establish in-person eligibility. Raw lines 27–42, 64–69, 78–111.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-marketplaces-reconciliation-use-cases-first-year-focus-platform-user-level-reporting]] → [[raw/adyen/docs/marketplaces/reconciliation-use-cases/first-year-focus/platform-user-level-reporting/2026-09-15]].

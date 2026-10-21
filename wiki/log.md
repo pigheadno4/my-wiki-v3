@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-21] ingest | Adyen website C26
+
+- Fifty independently approved Marketplace balance/top-up/reporting/reconciliation/component and financial-product overview references documentation sources; first full-review approvals 46/50 and 4 targeted correction reviews. 6 concepts touched (0 new); source_count 1314 = 1300 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-26/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-21] ingest | Adyen website C25
 
 - Fifty independently approved Marketplace payment/split/fee/FX/settlement/payout/cash-out/internal-transfer references documentation sources; first full-review approvals 42/50 and 8 targeted correction reviews. 5 concepts touched (0 new); source_count 1264 = 1250 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-25/`; details [[adyen-log]]. No commit/push.

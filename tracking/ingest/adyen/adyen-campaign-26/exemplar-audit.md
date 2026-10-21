@@ -1,0 +1,9 @@
+# C26 coordinator full-read exemplar audit
+
+**PASS** — 2026-10-21. Coordinator fully read all three predetermined raw snapshots and compared each final promoted source and both fixed query answers. No material final-sample failure required expansion.
+
+- `docs-marketplaces-balance-types`: all 116 lines. Five per-currency categories, reserve constituents, viewing routes and Available/Pending available formula-versus-example conflicts are retained. Both answers and final source pass.
+- `docs-marketplaces-reports-and-fees-balance-platform-accounting-report`: all 435 lines, including every column and worked row. Daily versus Interactive scope, CET booking window, Transfer/Transaction identity, value dates, optional/do-not-use columns, category/type/status and split grain, chargeback amount discrepancy and top-up received/blank-transaction-ID sample conflict are retained. The bounded attempt-2 Related-link correction passed independent review. Both answers and final source pass.
+- `docs-marketplaces-top-up-balance-account-on-demand-top-ups`: all 786 lines, including all versioned SDK examples. User-funded one-off payment, conditional bank capabilities and regions, Support enablement, mandate and BACS notice, POST payments versus sessions, TopUp and fee splits, omitted-split liable fallback and authorization versus later credit/failure remain distinct. The source preserves the 10-day notice versus two-business-day due-date tension. Independent attempt-2 review corrected the notice obligation before promotion. Both answers and final source pass.
+
+All reads used the exact manifest pins. Examples establish historical document content, not live eligibility, legal compliance, executed top-up or bank receipt. Final close verifies every raw hash and retrieval route across the entire campaign.

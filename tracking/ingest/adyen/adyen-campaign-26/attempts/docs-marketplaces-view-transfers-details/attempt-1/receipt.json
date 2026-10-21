@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-view-transfers-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"View Marketplace transfer details\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/view-transfers-details\"\nraw_files:\n  - \"adyen/docs/marketplaces/view-transfers-details/2026-09-15.md\"\ntags: [adyen, marketplaces, transfers, balance-accounts]\n---\n\n## Overview\n\nThis pinned Marketplace guide covers viewing **payment-related, internal and bank transfer records** through Customer Area or the Transfers API. A transfer's initiation and authorization precede capture for payment-related events or booking for other events. For recurring tracking and reconciliation, the guide recommends webhooks; list/detail reads inspect recorded state. See [[adyen]] and [[adyen-platforms]] (raw lines 15\u201333).\n\n## Key takeaways\n\n- An Adyen for Platforms integration is required. The API credential needs **TransferService Webservice Retrieve role**; Customer Area viewing needs **Balance platform base role** (raw lines 35\u201343).\n- Customer Area **Balances \u2192 Transfers** lists one balance platform at a time and offers date/status/reference filtering, including PSP payment reference for payment-related transfers. A transfer ID opens its details; search can use ID or description (raw lines 45\u201369, 476\u2013493).\n- GET `/transfers` lists records with `createdSince` and `createdUntil` and optional account/holder and pagination filters; the response has `data` and pagination `_links`. The prose requires a date interval **less than six months** and at least one unique identifier. **Source example conflict:** its prose example spans May 2025 to May 2026, while curl uses May 2026 to May 2026 and supplies no account/holder identifier. Do not treat those examples as a validated request contract (raw lines 71\u2013100, 264\u2013270).\n- GET `/transfers/{id}` reads one transfer's amount, direction, event history, reference and current status, such as `received`, `authorised`, or `booked` (raw lines 495\u2013509, 643\u2013651).\n- The TEST list response mixes a **bankTransfer** and an **internalTransfer**. The bank example is `booked` yet carries `reason: counterpartyAccountNotFound` and only an estimated arrival tracking event; neither `booked` nor that estimate proves beneficiary-bank receipt. Inspect the relevant event and bank-return evidence separately (raw lines 273\u2013390). The specific-transfer example shows an internal transfer's booked accounting event with a transaction ID, not a payout (raw lines 653\u2013737).\n\n## Detail locators\n\n- Status sequence, roles, Customer Area filters: raw lines 19\u201369.\n- List-query bounds, source example conflicts, response and pagination: raw lines 71\u2013474.\n- Single-transfer lookup and recorded-state fields: raw lines 476\u2013651.\n- Booked internal-transfer example: raw lines 653\u2013737.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-platform-internal-transfers]]\n- [[adyen-reporting]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/view-transfers-details/2026-09-15|Pinned transfer-details guide]]\n",
+  "quotes": [
+    {
+      "text": "Track transfers by listening to [webhooks]",
+      "location": "raw line 21, Best practice"
+    },
+    {
+      "text": "TransferService Webservice Retrieve role",
+      "location": "raw line 42, Requirements"
+    },
+    {
+      "text": "This date must be less than 6 months from the `createdUntil` date.",
+      "location": "raw line 77, GET /transfers parameters"
+    },
+    {
+      "text": "You must provide at least one of the unique identifiers in your request.",
+      "location": "raw line 83, GET /transfers guidance"
+    },
+    {
+      "text": "The current status of the transfer. For example: **received**, **authorised**, or **booked**.",
+      "location": "raw line 651, GET /transfers/{id} response fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-view-transfers-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-view-transfers-details]] \u2014 2019-modified, 2026-09-15-captured Marketplace Customer Area/Transfers API guide for list/detail transfer reads, status/event inspection and webhook tracking; list-query examples conflict with stated filters and booked bank example does not prove receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "GET /transfers prose limits date range to under six months and requires an identifier, but examples span a year in prose or omit the identifier in curl (raw lines 77\u2013100).",
+          "Illustrative bank transfer is booked with counterpartyAccountNotFound reason and estimated arrival; do not infer beneficiary-bank receipt (raw lines 273\u2013390)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/view-transfers-details/2026-09-15.md",
+  "raw_sha256": "8b7070538070e997811567474ea4ac3134a79a7ab5470a6957f98bd3b3e39b7b",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-marketplaces-transfer-transactions-track-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace transaction webhooks for balance-account transfers\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/transfer-transactions/track-webhooks\"\nraw_files:\n  - \"adyen/docs/marketplaces/transfer-transactions/track-webhooks/2026-09-15.md\"\ntags: [adyen, marketplaces, transactions, transfers, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path [[adyen]] guide describes `balancePlatform.transaction.created` webhooks for funds debited from or credited to a user's balance account in external or internal transfers. Transaction webhooks mark balance-account fund movements; Transfer webhooks report transfer status changes. The page lists Adyen for Platforms, Issuing or Payouts as integration types despite its Marketplace URL. See [[adyen-platforms]].\n\n## Key takeaways\n\n- **Event grain and setup:** A transfer-status webhook can be sent for every status change, whereas this transaction webhook is sent only when transfer funds are credited or debited at a balance account. The page requires a supported integration, Standard and Transaction webhook subscriptions, and a server able to receive and accept webhooks; Transfer webhook subscription is optional here and provides complementary status context. In samples, `data.id` identifies a transaction event and `data.transfer.id` identifies its related transfer. Neither a request nor a status webhook alone proves a balance booking. See pinned raw lines 15\u201339.\n- **Outgoing debit:** For an external bank payout or an internal balance-account transfer, the guide illustrates `POST /transfers`, followed by `balancePlatform.transaction.created` after booking. Its negative sample `amount.value` belongs to the named source balance account and its account holder; the external sample has bank category data and the internal sample has internal category data. Balance-account debit is distinct from beneficiary-bank credit. See pinned raw lines 40\u2013207.\n- **Incoming credit:** The guide covers incoming external/top-up and internal transfer bookings. Its positive sample amounts and target `balanceAccount` identify the receiving side. The incoming-external prose describes a booked incoming third-party transfer, but its sample `transfer.categoryData.type` is `platformPayment` and contains payment PSP references; do not use that payload as a canonical bank top-up schema without checking the separate API/webhook reference. See pinned raw lines 209\u2013327.\n- **Sample identity and outcome boundaries:** Outgoing external/internal samples reuse one illustrative transaction `data.id` while showing different `transfer.id` values; incoming external/internal samples also reuse a transaction ID. Treat those IDs as examples, not a cross-event join. The displayed `status: booked` records a balance-account mutation, not a bank payout arrival, final settlement, card outcome or legal fund ownership. This page does not define payout failures/returns; follow its payout-webhook route for that lifecycle. See pinned raw lines 87\u2013127, 168\u2013207, 230\u2013327 and 329\u2013338.\n\n## Detail locators\n\n- Transaction versus Transfer webhook meaning, integration and subscription requirements: pinned raw lines 15\u201339.\n- Outgoing external request/debit sample and fields: pinned raw lines 40\u2013127; outgoing internal request/debit sample: lines 129\u2013207.\n- Incoming external credit description and `platformPayment` example: pinned raw lines 209\u2013272; incoming internal credit: lines 274\u2013327.\n- Related API, payout status and reconciliation routes: pinned raw lines 329\u2013338.\n\n## Related\n\n- [[adyen-platforms]] \u2014 reciprocal platform concept.\n- [[source-adyen-docs-platforms-transfer-transactions-track-webhooks]] \u2014 same dated guide under the Platforms path.\n- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 payout Transfer webhook status, tracing and return route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/transfer-transactions/track-webhooks/2026-09-15|Marketplace transaction webhook guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "transaction webhooks are only sent when the funds from the transfer are credited or debited from the balance account.",
+      "location": "line 21, Track transactions with webhooks introduction"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model/), [Issuing](/issuing/account-structure-resources/issuing-enterprise/), or [Payouts](/payouts/payout-service/) integration.",
+      "location": "line 27, Requirements / Integration type"
+    },
+    {
+      "text": "After the transfer is [**booked** ](/marketplaces/payout-webhooks/#payout-transfer-booked), Adyen sends a [balancePlatform.transaction.created]",
+      "location": "line 75, Outgoing external transactions"
+    },
+    {
+      "text": "After an incoming third-party transfer is [**booked** ](/business-accounts/third-party-transfer-webhooks/#incoming-bank-transfer-booked)to your user's balance account",
+      "location": "line 218, Incoming external transactions"
+    },
+    {
+      "text": "\"type\": \"platformPayment\"",
+      "location": "line 250, Incoming external transaction webhook example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-transaction-webhook-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-transfer-transactions-track-webhooks]] \u2014 2026-09-15 Marketplace-path Transaction webhook guide for booked balance-account debits/credits across internal/external transfers, distinct from Transfer status and bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/transfer-transactions/track-webhooks/2026-09-15.md",
+  "raw_sha256": "cabaac75cf84246e5374a8617e247ff024cd943d436395309bdc2c42f338b8ee",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-components-overview-after-payment-disputes-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace dispute components\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/components-overview/after-payment/disputes-component\"\nraw_files:\n  - \"adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, components, disputes]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path [[adyen]] guide describes the Disputes Overview and Dispute Management [[adyen-platform-components|Platform Experience components]] for a platform user's portal. They show chargebacks, Requests for Information (RFIs), fraud alerts and dispute status, and let an eligible user accept or defend a chargeback with evidence. The components handle the related Adyen API calls, while marketplace chargeback-split configuration remains unchanged (raw lines 25\u201340, 60\u201370, 132\u2013167).\n\n## Key takeaways\n\n- **Access and limitations:** An Adyen for Platforms integration and Balance Platform API key with **Disputes Component: Manage** role are required for Session authentication; the Adyen contact assigns that credential role (raw lines 44\u201356). Account holders can view disputes created in the component on or after May 22, 2025. Action or submitted-defense-document access requires both that the account holder is the sole non-liable account holder referenced by original-payment splits **and** that it received at least one `BalanceAccount` split in the corresponding payment or capture. These are component-access conditions, not general chargeback ownership rules. The page limits documents to 2 MB and listed PDF/image formats, image files to 10 MB and listed image formats, and says refunds are unsupported (lines 52\u201354).\n- **Views and scope:** Overview offers Chargebacks, Fraud alerts and Ongoing & closed tabs for a selected balance account/time period; filters include balance account, opening time, payment method and reason. The time filter uses the selected balance account's timezone and defaults to the last 30 days (raw lines 60\u2013130). Management shows a selected dispute's status, reason/code, dates and references, normally in an Overview modal but optionally on a separate page (lines 132\u2013152). A component display does not change the marketplace's split-chargeback logic (line 70).\n- **Action and outcome:** Accepting a chargeback confirms its disputed amount will not return to the balance account. Defending submits a reason and supporting evidence to card schemes for review; it does not guarantee a win (raw lines 148\u2013167). An RFI does not withdraw funds at that stage and need not become a chargeback, whereas a chargeback means funds have been or soon will be withdrawn. `Pending` means the issuer is reviewing a defense; `Won` and `Lost` are later statuses, and some payment-method disputes are never defendable and start/end `Lost` (lines 193\u2013236).\n- **Session and version:** The platform backend creates the Session authentication token with `allowOrigin`, `product: platform`, and account-holder-scoped `policy.resources`, then sends the entire session object to the front end for refresh and component initialization. Live `allowOrigin` supports HTTPS only. From library v1.6.0, the session policy must include **Disputes Component: Manage** to let users process disputes (raw lines 240\u2013310). The library's `onSessionCreate` callback refreshes authentication; `onDisputeAccept` and `onDisputeDefend` concern successful component requests, not scheme adjudication (lines 353\u2013503). Version, language, browser and country support must be checked for the integration; `availableTranslations` is deprecated (lines 36\u201338, 55\u201356, 355\u2013399, 887\u2013904).\n- **Customization:** Optional locale, CSS and `dataCustomization` allow additional fields, icons, links and buttons. Custom keys should start with an underscore, retrieval callbacks should retain received data, and custom translations must be supplied for applicable locales; the detailed field schema and examples are at raw lines 504\u2013904.\n\n## Detail locators\n\n- Credential/access constraints, upload limits and refund exclusion: raw lines 44\u201356.\n- Tab purposes, balance-account timezone/filter values and Management flow: raw lines 60\u2013167.\n- RFI/chargeback status and defense boundaries: raw lines 193\u2013236.\n- Server Session API, v1.6.0 role, front-end installation/init/callbacks: raw lines 240\u2013503; customization and language table: lines 504\u2013904.\n\n## Evidence boundary\n\nThis is a version-dependent embedded UI guide. A session token, rendered dispute, successful defense-submission callback or `Pending` status does not prove a final dispute outcome, returned funds or payout. The access rule depends on specific original-payment/capture splits; the component does not override those split rules. The document/image size wording overlaps for image formats, so apply the relevant upload category and version guidance rather than assuming a universal size for every file (raw lines 52\u201354). It is separate from Classic Platforms dispute tooling.\n\n## Related\n\n- [[adyen-platform-components]] \u2014 parent embedded-component concept.\n- [[adyen-platforms]] \u2014 modern Marketplace/Platforms model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15|Pinned Marketplace dispute-component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Account holders can view disputes created in this component on or after May 22, 2025.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md:52"
+    },
+    {
+      "text": "They receive at least one split of type `BalanceAccount` in the corresponding payment or capture.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md:53"
+    },
+    {
+      "text": "Currently this component does not support refunds.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md:54"
+    },
+    {
+      "text": "Accepting a chargeback confirms the disputed amount will not be returned to the balance account.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md:151"
+    },
+    {
+      "text": "From library **v1.6.0**, set this to **Disputes Component: Manage** role in your request to enable users to process disputes through the components.",
+      "location": "raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md:269"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-dispute-components-source",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-components-overview-after-payment-disputes-component]] \u2014 2026-09-15 Marketplace Disputes Overview/Management component guide for account-holder-scoped views and conditional chargeback defense/acceptance, with version, split-access, upload and refund limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace and existing Platforms dispute-component guides overlap; retain distinct canonical URL and raw provenance without a duplicate concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/components-overview/after-payment/disputes-component/2026-09-15.md",
+  "raw_sha256": "739fd5e8b1931e98cfd6bf4a9388b8c784b017bbcc069b5e56b37a47478ef56c",
+  "status": "candidate_ready"
+}

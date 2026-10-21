@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-balance-updates-configure-balance-webhook",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Configure Adyen Marketplace balance webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/balance-updates/configure-balance-webhook\"\nraw_files:\n  - \"adyen/docs/marketplaces/balance-updates/configure-balance-webhook/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, balance-accounts, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Marketplace-path guide describes a pilot Balance webhook setup for notifications about balance changes on a platform, a specified account holder's balance accounts, or one balance account. It belongs under [[adyen-platforms]]. An alert rule or delivered notification is balance-change monitoring, not proof of a particular transfer's booking, settlement, payout or bank receipt.\n\n## Key takeaways\n\n- **Limited availability:** Balance webhooks are in pilot and processes/documentation may change. Subscribe to the Balance webhook in Customer Area, configure its destination/security there, then use the Configuration API and the saved webhook ID to create settings. The guide requires a Configuration API credential with Balance Platform BCL role and a Customer Area Merchant technical integrator or Merchant admin role. See raw lines 19\u201339 and 41\u201375.\n- POST `/balancePlatforms/{id}/webhooks/{id}/settings` with `type: balance`, `target.type` and `target.id`, `currency`, and `status`. Targets are `balancePlatform`, `accountHolder`, or `balanceAccount`; an account-holder target covers its balance accounts. `active` enables and `inactive` suppresses notifications for that setting. Save the returned setting ID to manage the setting or match an event. See raw lines 73\u201390 and 125\u2013146.\n- Each Balance webhook supports at most 20 settings, each with at most 20 condition sets. Optional conditions choose `available`, `balance`, `pending`, or `reserved` balance type, one of four greater/less comparisons, and a currency-specific threshold value. With no conditions, the guide says updates are sent for all balance changes within the specified target. See raw lines 39 and 90\u201396.\n- **Condition conflict:** The `status` description says an active setting sends if **any** condition is met; the `conditions` description says a balance change must meet **all** set conditions. The page does not resolve the disagreement. Do not assume multi-condition AND/OR behavior from this guide alone. See raw lines 88\u201390.\n- Customer Area setup includes webhook URL, encryption protocol, Basic authentication and HMAC key; the HMAC key must be copied when generated because the guide says it cannot be copied later. Accept each received webhook. The example sets an available-balance threshold below USD 5,000 on a liable balance account; it is a configuration example, not evidence of an actual balance change. See raw lines 45\u201371, 98\u2013149.\n- Troubleshooting examples cover duplicate conditions (`1047_002`), unknown target account (`1047_404`) and invalid currency (`1047_001`). The latter two \u201cresend POST\u201d solution links point to a PATCH endpoint and include a setting ID; treat those links as an internal documentation inconsistency and verify the intended request before implementation. See raw lines 151\u2013244.\n\n## Detail locators\n\n- Pilot status, role gates, scope and 20-by-20 limits: raw lines 19\u201339.\n- Customer Area subscription/security and Configuration API fields: raw lines 41\u201396.\n- Liable-account threshold example and setting ID: raw lines 98\u2013149.\n- Error payloads and remedy-link discrepancy: raw lines 151\u2013244.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook]]\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/balance-updates/configure-balance-webhook/2026-09-15|Marketplace balance-webhook configuration guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "You can create maximum 20 webhook settings per balance webhook. In each webhook setting, you can configure maximum 20 sets of conditions in the `conditions` array.",
+      "location": "raw line 39, Requirements"
+    },
+    {
+      "text": "**active**: You receive a balance webhook if any of the conditions in this setting are met.",
+      "location": "raw line 88, status table row"
+    },
+    {
+      "text": "To trigger the webhook, the balance change must meet *all* the conditions you set.",
+      "location": "raw line 90, conditions table row"
+    },
+    {
+      "text": "If you don't specify any conditions, you will receive updates for *all* balance changes in the specified balance account(s).",
+      "location": "raw line 90, conditions table row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-docs-marketplaces-balance-updates-configure-balance-webhook-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-balance-updates-configure-balance-webhook]] \u2014 2026-09-15 Marketplace pilot Balance webhook setup for platform/account-holder/account scopes, role and 20-by-20 limits; condition all-versus-any wording conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 88 says any condition; line 90 says all conditions. No resolution in this guide.",
+          "Raw lines 214\u2013215 and 243\u2013244 label resend POST but link a PATCH settings endpoint."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/balance-updates/configure-balance-webhook/2026-09-15.md",
+  "raw_sha256": "9f4d8484e2cc965057c7d8f4f538c730a19264fb57c690ba22fd127f4222500b",
+  "status": "candidate_ready"
+}

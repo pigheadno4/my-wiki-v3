@@ -1,0 +1,7 @@
+# Retrieval checks — docs-marketplaces-reconciliation-use-cases-verify-balances
+
+Q1. How can a Marketplace verify balance positions? Answer: Use the Balance Platform Balance Report for a chosen day's opening/closing positions by account holder, balance account and currency, or filter Balance Platform Accounting to the account and sum Balance (PC) mutations. The worked payment's received/authorised rows have zero Balance (PC) on booking date; the captured split becomes available on value date, with separate user, liable commission and fee-account rows. Raw lines 21–69.
+
+Q2. What negative-balance and timing boundaries matter? Answer: Refunds/chargebacks can create negative balances; the page says at month-end after more than 30 days Adyen compensates from the platform liable account via an internal transfer, with Accounting Report description and Transfer webhooks. Optional warning defaults to after 20 days and can be changed through Support. The TEST sample's 2024-10-19 deficit, 2024-10-22 warning creation and 2024-12-01 scheduled compensation do not match a demonstrated over-20-day warning or exact 30-day interval. Payouts/transfers use only available balance; historical snapshots, warning, or top-up request do not prove current availability or bank receipt. Raw lines 71–129.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-marketplaces-reconciliation-use-cases-verify-balances]] → [[raw/adyen/docs/marketplaces/reconciliation-use-cases/verify-balances/2026-09-15]].

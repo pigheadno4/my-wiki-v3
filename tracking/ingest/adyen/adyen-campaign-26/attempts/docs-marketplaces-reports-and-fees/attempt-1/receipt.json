@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-reports-and-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Marketplace reports and fee types\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/reports-and-fees\"\nraw_files:\n  - \"adyen/docs/marketplaces/reports-and-fees/2026-09-15.md\"\ntags: [adyen, marketplaces, reporting, reconciliation, fees]\n---\n\n## Overview\n\nThis pinned Marketplace reporting hub explains which **Adyen account** and **balance platform** reports serve financial reconciliation and how payment splits and fees appear across them. Reports can be scheduled or generated on demand. A complete **monthly** financial reconciliation needs a combination of account and platform reports; some narrower tasks use one report. This catalog is a route to report-specific definitions, not evidence that a particular merchant's books reconcile. See [[adyen]] and [[adyen-reporting]] (raw lines 15\u201334).\n\n## Key takeaways\n\n- **Adyen account scope:** the Received payment details report covers individual payment interactions and statuses; **Payment accounting** is required for full reconciliation and covers payment lifecycle events and associated fees, but excludes balance-platform charges for payouts, fund transfers and KYC checks. **Settlement details** is optional for full reconciliation and includes payment funds/costs, monthly-invoice balance adjustments, and one-off inbound wire deposits. The **Monthly invoice** is required for fee and adjustment totals for the preceding month (raw lines 38\u201347).\n- **Balance platform scope:** the **Balance Platform Accounting Report** is required for full reconciliation. Its daily or interactive view tracks balance changes and individual account-holder/balance-account events across liable and user accounts. The **Balance Report** gives daily opening/closing balances across all accounts; the **Statement Report** covers accounts with a balance change that day and events including scheduled or on-demand payouts (raw lines 49\u201357).\n- Payment or capture **split instructions** determine account-holder credits/debits. Accounting Report splits appear as separate `Category = platformPayment` lines, joinable by matching `Psp Payment Psp Reference`. Without split instructions, Adyen credits or debits the **liable account**; the page uses a partial refund with omitted splits as a debit example (raw lines 59\u201365).\n- Fees are deducted from settlement and default to the platform liable balance account. Captured-funds transaction fees (Interchange, Scheme, Markup, Commission) appear in the Balance Platform Accounting Report and the Adyen-account payment/settlement reports. Processing fees can arise from instructions without balance-booked funds and are detailed in Payment accounting; monthly invoice and Settlement details carry broader totals and adjustments. Report location varies by fee type and region; the fee table marks FanF and Merchant Location Fee **US-only** (raw lines 67\u201393).\n- A report row, webhook match, or invoice line alone is not proof of complete reconciliation, a successful payout, or beneficiary-bank receipt. Use the linked report's exact grain, dates, account scope and fields for a specific accounting question (raw lines 30\u201378).\n\n## Detail locators\n\n- Account-versus-platform report selection and monthly requirement: raw lines 30\u201357.\n- Split line matching and liable fallback: raw lines 59\u201365.\n- Fee locations, charge basis and US-only entries: raw lines 67\u201393.\n- Report preparation and reconciliation next steps: raw lines 95\u2013111.\n\n## Related\n\n- [[adyen]]\n- [[adyen-reporting]]\n- [[adyen-platforms]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/reports-and-fees/2026-09-15|Pinned reports and fees hub]]\n",
+  "quotes": [
+    {
+      "text": "For complete financial reconciliation over a period of a month, you need to use a combination of Adyen account reports and balance platform reports.",
+      "location": "raw line 32, Report types"
+    },
+    {
+      "text": "This report does not contain balance platform transaction charges",
+      "location": "raw line 45, Payment accounting report"
+    },
+    {
+      "text": "This report covers all balance accounts in your balance platform, including liable accounts and the accounts of your users.",
+      "location": "raw line 55, Balance Platform Accounting Report"
+    },
+    {
+      "text": "If you do not provide split payment instructions, Adyen credits or debits the amount from your liable account.",
+      "location": "raw line 65, Split instructions in reports"
+    },
+    {
+      "text": "Processing fees can exist for transactions that do not have funds to book to balance accounts.",
+      "location": "raw line 76, Fee types"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplace-reports-fees-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-reports-and-fees]] \u2014 2023-modified, 2026-09-15-captured Marketplace report/fee-selection hub for combined monthly account/platform reconciliation, split-line joins, liable fallback and fee-location differences.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A report catalog or isolated row does not prove completed reconciliation, payout or bank receipt.",
+          "Payment accounting excludes balance-platform payout, transfer and KYC charges; full monthly reconciliation spans multiple report scopes (raw lines 32, 45\u201355)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/reports-and-fees/2026-09-15.md",
+  "raw_sha256": "0e28307885630e2f4a3ffe68fd76b8ff145102fc2d779aad047f2fa892891455",
+  "status": "candidate_ready"
+}

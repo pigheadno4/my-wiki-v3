@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-reports-and-fees-payout-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace Balance Platform Payout Report\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/reports-and-fees/payout-report\"\nraw_files:\n  - \"adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, reporting, payouts, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path [[adyen]] Balance Platform Payout Report guide belongs under [[adyen-reporting]] for modern [[adyen-platforms]] scheduled payout sweeps. It calls the report daily and available to platforms with daily, weekly or monthly payout schedules. Data is said to arrive shortly after daily processing, around 2:00 AM CEST, covering payouts processed midnight-to-midnight CEST and their debit/credit transactions. A day with no processed payouts yields an empty report (raw lines 15\u201327).\n\n## Key takeaways\n\n- **Scope and grain:** The report identifies paid-out account holders and contributing transactions. Filter by Account Holder, Balance Account and Currency to inspect a particular account (raw lines 21\u201331). The prose says \u201cone record line per account, per currency,\u201d but the sample displays multiple capture rows and a negative booked `bankTransfer` row for the same account/currency. Treat the exact row grain as ambiguous in this snapshot; the transaction-level sample must not be compressed into one aggregate row (lines 31, 49\u201368).\n- **Available balance and rolling carry:** Scheduled payout calculation considers the existing balance and expected future debits/credits. Pending refunds or chargebacks can be withheld, leaving a nonzero rolling balance carried into the next report (raw lines 33\u201335). To investigate those pending transactions, use the Balance Platform Accounting Report and filter transfers whose booking date precedes the payout date while value date follows it (line 37). The sample's positive capture rows and negative booked payout rows are illustrative account-ledger entries, not beneficiary-bank receipts (lines 49\u201368).\n- **Clocks and identifiers:** The report window and approximate availability are described in CEST; the Payout Date column is defined as the CET date on which payout is **initiated**. Booking Date means the booking time and Value Date means when funds are available; each has its own timezone column (raw lines 21\u201325, 89\u201392, 117). This page does not reconcile CEST/CET daylight-saving wording. `Transfer Id` identifies a pending debit/credit, while `Transaction Id` identifies a completed debit/credit in the balance ledger; neither ID alone proves external bank credit (lines 87\u201388).\n- **Retrieval and columns:** Customer Area can generate automatically by schedule or manually for a date. The page lists frequency as daily, weekly or monthly while also calling the report daily; the CSV filename pattern is `balanceplatform_payout_report_YYYY_MM_DD.csv` (raw lines 19, 29, 39\u201341). Standard columns include account holder/balance account, currency, category/type/status, signed `Balance (PC)`, `Rolling Balance (PC)`, references, PSP payment references and Payout Date. Optional columns include PSP modification references, Store, Payment Method, Managed Risk Blocked Amount and Platform Payment Split Type. Customer Area settings may produce additional columns absent from the linked sample (lines 43\u201345, 70\u2013133).\n\n## Detail locators\n\n- Report eligibility, CEST window, empty-day behavior, filters and rolling-balance investigation: raw lines 15\u201341.\n- Illustrative multiple capture and booked bank-transfer rows: raw lines 43\u201368; compare the row-grain statement at line 31.\n- Standard column definitions and distinct ID/date/account fields: raw lines 70\u2013117; optional columns: lines 119\u2013133.\n\n## Evidence boundary\n\nThis report supports balance-platform payout reconciliation for scheduled sweeps. It does not cover every on-demand or CashOut movement merely because a user balance account changed. A booked bank-transfer row and payout-initiation date are platform-ledger evidence, not independent proof of beneficiary bank receipt. Preserve the source's one-line-versus-multiple-row and CEST-versus-CET wording instead of inferring a settled reporting grain or timezone conversion. The sample is illustrative, and report configuration may add fields.\n\n## Related\n\n- [[adyen-reporting]] \u2014 reporting and reconciliation concept.\n- [[adyen-platforms]] \u2014 modern Marketplace balance-platform context.\n- [[source-adyen-docs-platforms-reports-and-fees-balance-platform-accounting-report]] \u2014 existing Platforms-path accounting-report route for booking/value-date detail.\n- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 separate transfer and bank-status events.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15|Pinned Marketplace Payout Report guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The **Balance Platform Payout Report** is a daily report available for platforms that have scheduled payouts (sweeps) configured on a daily, weekly, or monthly basis.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md:19"
+    },
+    {
+      "text": "If no payouts are processed on a given day, Adyen generates an empty report.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md:27"
+    },
+    {
+      "text": "We generate one record line per account, per currency.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md:31"
+    },
+    {
+      "text": "the amount is withheld from the payout amount.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md:35"
+    },
+    {
+      "text": "The date in the CET timezone on which the payout is initiated.",
+      "location": "raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md:117"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-payout-report-reporting-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-reports-and-fees-payout-report]] \u2014 2026-09-15 Marketplace scheduled-sweep Payout Report guide for account/currency and transaction rows, rolling balance and distinct booking/value/payout dates; prose/sample grain and CEST/CET wording differ, and booked rows do not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace and existing Platforms Payout Report guides overlap; preserve this canonical URL and raw provenance without a duplicate concept.",
+          "Prose says one line per account/currency, whereas sample has multiple transaction rows for the same account/currency; CEST report timing and CET Payout Date wording are not reconciled."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/reports-and-fees/payout-report/2026-09-15.md",
+  "raw_sha256": "71284d67c771186a2b3c68598444db09ca1348fd0cd59eee3796e1304bb79f63",
+  "status": "candidate_ready"
+}

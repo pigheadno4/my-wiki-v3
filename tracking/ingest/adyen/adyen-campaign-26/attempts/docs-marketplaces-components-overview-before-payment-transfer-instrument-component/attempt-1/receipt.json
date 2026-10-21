@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-components-overview-before-payment-transfer-instrument-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace Transfer Instrument components\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/components-overview/before-payment/transfer-instrument-component\"\nraw_files:\n  - \"adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, ui-components, onboarding, transfer-instruments, verification]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Marketplace guide covers **Transfer Instrument Configuration** and **Transfer Instrument Management** components within [[adyen-platform-components]]. They provide bank-account entry, verification workflow and management UI in an API-only onboarding flow. They cover transfer instruments only; the marketplace must integrate other onboarding steps separately. UI submission or a displayed verification status does not by itself establish approved transfer-instrument capability, payout execution or beneficiary-bank receipt.\n\n## Key takeaways\n\n- Onboarding components are compatible only with legal entities created under **Legal Entity Management API v3 or v4**; this is separate from the component-library version, whose features may differ. The page requires Adyen for Platforms, a LEM API key for Session Authentication API, supported language/browser versions, prior API-only onboarding steps and review of verification guidance. Adyen recommends the components within API-only onboarding but explicitly keeps other onboarding API calls necessary. See raw lines 23\u201353.\n- **Configuration** collects bank-account information and offers permission-based instant verification or document upload for Adyen validation. **Management** lists transfer instruments with verification statuses/errors and supports adding and deleting accounts; its callback table also has an edit action. The page says changes apply immediately, but that wording concerns component account management and does not demonstrate that an instrument is verified or a payout reached the bank. See raw lines 57\u201385 and 192\u2013202.\n- The marketplace server creates a Session Authentication API `POST /sessions` using its LEM key. The request includes `allowOrigin` (HTTPS only in live), `product=onboarding`, a `legalEntity` resource and the ID of the legal entity that has the marketplace contractual relationship and owns the bank account (individual-owner entity for sole proprietorships). Policy roles are `transferInstrumentConfiguration` and/or `transferInstrumentManagement` for the relevant component. The session response reaches the frontend through a token-fetch/refresh callback. Do not exchange a legal-entity-scoped session for arbitrary user or platform access. See raw lines 98\u2013151 and 180\u2013204.\n- The front end installs `@adyen/kyc-components`, imports the component and sets environment, token callback, locale and root legal-entity ID. The Configuration property table marks `openBankingPartnerConfigId` required for **US/CA** and describes open-banking partner branding; optional settings concern intra-region cross-border payout-account selection and local-versus-IBAN format only where applicable. These settings do not prove regional payout route or account eligibility. The page lists test and live component environments and supported locales. See raw lines 152\u2013234 and 605\u2013633.\n- The host application must listen to component events. Configuration's `complete` indicates the user finished submission/UI interaction; Management's `add`, `edit` and `remove` reflect user actions. The sample `complete` data contains bank details but several null verification fields, so neither that callback nor an example account ID proves final verification. Follow the actual resource/status before relying on an instrument for payout. See raw lines 562\u2013603.\n\n## Detail locators\n\n- LEM v3/v4 compatibility, component scope, version variance and prerequisites: raw lines 23\u201353.\n- Configuration and Management user interfaces: raw lines 57\u201385.\n- Server session, allowed origin, product, legal-entity resource and roles: raw lines 87\u2013151.\n- Package install, component properties and US/CA/optional settings: raw lines 152\u2013234.\n- HTML/React/Vue and CSS customization examples: raw lines 236\u2013561.\n- Event callbacks, sample submission data and supported locales: raw lines 562\u2013638.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platform-components]] \u2014 canonical component-suite concept.\n- [[adyen-platforms]] \u2014 modern platform and legal-entity context.\n- [[source-adyen-docs-marketplaces-onboard-users-components]] \u2014 broader onboarding component route.\n- [[source-adyen-docs-platforms-components-overview-before-payment-transfer-instrument-component]] \u2014 separate Platforms URL for the related guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15|Marketplace Transfer Instrument components \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "only compatible with legal entities created with v3 or v4",
+      "location": "raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md:23"
+    },
+    {
+      "text": "the Transfer Instrument components only cover functionality related to transfer instruments",
+      "location": "raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md:27"
+    },
+    {
+      "text": "the legal entity that has the contractual relationship with your marketplace and owns the bank account",
+      "location": "raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md:109"
+    },
+    {
+      "text": "For US, CA",
+      "location": "raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md:187"
+    },
+    {
+      "text": "when the user has finished their interaction",
+      "location": "raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md:568"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c26-marketplaces-transfer-instrument-components-reciprocal",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-components-overview-before-payment-transfer-instrument-component]] \u2014 2026-09-15 Marketplace Configuration/Management bank-instrument UI guide for LEM v3/v4, legal-entity/role-scoped onboarding sessions, conditional US/CA property and submission events; other onboarding and verification outcomes remain separate.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/components-overview/before-payment/transfer-instrument-component/2026-09-15.md",
+  "raw_sha256": "4d9c1df9f7a4e55b1969dde33e433fc2ebf6f826ff408a3db0b1c170c63e7ea7",
+  "status": "candidate_ready"
+}

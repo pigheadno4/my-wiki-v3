@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-marketplaces-components-overview-after-payment-payouts-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace payout reporting components\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/components-overview/after-payment/payouts-component\"\nraw_files:\n  - \"adyen/docs/marketplaces/components-overview/after-payment/payouts-component/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, ui-components, payout-reporting]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path Platform Experience guide covers embedding **Payouts Overview** and **Payout Details** reporting components in a platform user's portal. They display completed automatic-payout records, captured funds, adjustments, net payouts and remaining balance by balance account. The components read reporting data; they do not initiate a payout or independently establish that a beneficiary bank received funds. Feature guidance can vary by library version. [[adyen]] [[adyen-platform-components]]\n\n## Key takeaways\n\n- Prerequisites are an **Adyen for Platforms** integration, Balance Platform API key for the Session Authentication API, and Adyen-assigned **Payouts Overview Component: View** role on that credential. Configure generation of the Balance Platform Payout report; check applicable language, country/region and browser support. The report coverage described here is for **automatic payouts with a default settlement delay**; manual payouts, pass-through payouts and sales-day payout T+0 are excluded. See raw lines 36-56.\n- **Payouts Overview** lists completed automatic payouts for a selected balance account and period, with captured funds, aggregated adjustments and net payout in that balance account's currency. **Payout Details** provides the breakdown and any remaining balance, embedded as a modal by default or mounted separately. The period filter is UTC+0 and defaults to Last 30 days. See raw lines 60-118.\n- The raw calls net payout the final amount credited to the user's bank account (line 66), but a component display or completed label is **reporting UI**, not independent bank-statement or transfer-outcome proof. Keep captured funds, adjustment aggregation, net payout and bank receipt separate.\n- The platform **server** creates a Session Authentication `POST /sessions` token with `allowOrigin`, `product: platform`, and `policy.resources` scoped to the relevant `accountHolderId`/`accountHolder` plus the Payouts Overview view role. On live, `allowOrigin` supports HTTPS only. The front end loads the library and uses `onSessionCreate` to retrieve and refresh the whole session object; the component's default environment is test unless set to live. See raw lines 147-197, 251-262 and 319-368.\n- The Payout Details initializer takes a balance-account `id` and ISO `date`; `onRecordSelection` can pass balance account ID/date from overview for separate detail display. The standalone JavaScript sample omits a comma between its `id` and `date` properties (raw lines 362-366), so it is illustrative rather than copy-ready. Library selection, optional SRI when embedding CDN assets, customization and localization are version-specific implementation details in raw lines 199-818; `availableTranslations` is deprecated (raw line 259).\n\n## Detail locators\n\n- Opening and `## Requirements`, raw lines 15-56: purpose, version caveat, role/API/report setup and automatic-payout coverage limits.\n- `## Payouts Overview component` and `## Payout Details component`, raw lines 60-118: account/currency grain, adjustments, remaining balance, modal/separate display, UTC+0 filters.\n- `## 1. Create an authentication session from your server`, raw lines 147-197: server-side credential, role, scoped policy, product and origin.\n- `## 2. Install component library` and `## 3. Initialize components`, raw lines 199-398: npm/CDN options, versioned SRI, callback, default test environment, per-component fields and sample syntax defect.\n- Optional localization, appearance and data customization, raw lines 400-796; supported languages, raw lines 798-814.\n\n## Related\n\n- [[adyen-platform-components]] \u2014 owning Platform Experience component concept.\n- [[adyen-platforms]] \u2014 Marketplace route within Adyen for Platforms.\n- [[source-adyen-docs-platforms-components-overview-after-payment-payouts-component]] \u2014 separately pinned Platforms-path guide; its own raw governs its claims and locators.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/components-overview/after-payment/payouts-component/2026-09-15|Adyen Marketplace payout components guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The payout components enable payout reporting within a portal's user interface (UI) with minimal engineering effort.",
+      "location": "raw line 27, opening"
+    },
+    {
+      "text": "It does not support manual payouts, pass-through payouts, or sales day payout T+0.",
+      "location": "raw line 53, Requirements"
+    },
+    {
+      "text": "The **Payouts Overview** component shows a list of automatic payouts completed for a specific balance account within a specified time period.",
+      "location": "raw line 62, Payouts Overview component"
+    },
+    {
+      "text": "The specified time is based on the UTC+0 time zone.",
+      "location": "raw line 101, Available filters / Time period"
+    },
+    {
+      "text": "To make this API request, your API key must have the **Payouts Overview Component: View** role in your Customer Area.",
+      "location": "raw line 153, Create an authentication session from your server"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplaces-payouts-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-platform-components.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-components-overview-after-payment-payouts-component]] \u2014 2026-09-15 Marketplace-path Platform Experience Payouts Overview/Details guide for role-scoped automatic-payout reporting, account/UTC+0 filters, report-coverage limits and versioned integration; UI is not bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source is a Marketplace-path Adyen for Platforms component guide, not a Classic Platforms or payout-initiation API.",
+          "The raw describes net payout as bank credited, but the reporting UI does not independently establish beneficiary bank receipt.",
+          "The standalone Payout Details sample at raw lines 362-366 lacks a comma between `id` and `date`; treat it as illustrative."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/components-overview/after-payment/payouts-component/2026-09-15.md",
+  "raw_sha256": "8622bef06994ec811ed1abe468fc26b0b43880704d6298b4ca7310e65ae0d3cc",
+  "status": "candidate_ready"
+}
