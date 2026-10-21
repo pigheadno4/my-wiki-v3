@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-verification-overview-capabilities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace user capabilities\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/verification-overview/capabilities\"\nraw_files:\n  - \"adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md\"\ntags: [adyen, marketplaces, account-holders, capabilities, verification]\n---\n\n## Overview\n\nThis 2024-modified Marketplace-route Adyen for Platforms guide, captured 2026-09-15, explains account-holder capabilities: default or additional requests, KYC verification status, and separate `requested`, `allowed` and `enabled` settings. A capability is usable only when allowed and enabled; requesting it can prompt further checks. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Adyen usually configures default capabilities during design; they are automatically requested when account holders are created. A nondefault capability must be requested separately and may trigger additional KYC checks (raw lines 19\u201327). `requested: true` records the request, not verification approval or usability.\n- Base capabilities cover receiving platform split payments, receiving/sending between balance accounts, and transfers to/from verified bank-account instruments. The between-balance-account capabilities are only required across different account holders; `receiveFromTransferInstrument` is only required for top-ups and its request triggers upfront verification (raw lines 29\u201335).\n- Optional financial-product sections list Business Account, Issuing and Capital capabilities only if the business offers those products. `issueBankAccount` enables `receiveFromThirdParty` and `sendToThirdParty` by default; Issuing includes card issue/use, ATM/restricted-use levels, and a LEM API v3 transfer-instrument-level `sendToTransferInstrument` verification qualifier; Capital has `getGrantOffers` and `receiveGrants` (raw lines 37\u201392). The Issuing level amounts are dated per-card/per-day thresholds, not proof of current eligibility or an enabled card (raw lines 70\u201383).\n- Verification status can be read in `balancePlatform.accountHolder.created/updated` webhooks or GET `/accountHolders/{id}`. First-time `pending` normally has requested true, allowed false; re-verification after changed data can show `pending` while allowed true. `valid` sets allowed true. Ordinary `invalid` sets allowed false with problems/remediation data, and `rejected` is final and cannot be repaired by updating data or uploading documents (raw lines 94\u2013108).\n- There is a consequential `invalid` exception: after previously successful verification, changed or missing user data can revert the status to `invalid` while allowed remains true during a specific remediation deadline. The user must supply the required information in that period; the page does not specify a universal duration (raw lines 107, 120). Thus status alone must be read with the current `allowed` setting and deadline context.\n- The API capability object exposes `requested`, `allowed` and `enabled`. `enabled` is a platform access control; changing it does not trigger verification or stop a request. A capability can be used only when **both** `allowed` and `enabled` are true, including during any permitted re-verification or deadline window (raw lines 110\u2013121).\n\n## Detail locators\n\n- Default/additional request and KYC trigger: raw lines 19\u201327. Base capability names and conditional use: raw lines 29\u201335. Conditional financial-product names, LEM v3 qualifier and Issuing levels: raw lines 37\u201392.\n- Status update routes and `pending`/`valid`/`invalid`/`rejected` distinctions: raw lines 94\u2013108. Requested/allowed/enabled settings and deadline exception: raw lines 110\u2013121.\n\n## Related\n\n- [[adyen-platforms]] \u2014 broader account-holder and balance-platform model for this Marketplace route.\n- [[source-adyen-docs-platforms-verification-overview-capabilities]] \u2014 related Platforms capability guide; consult it separately for its own snapshot.\n- [[adyen-classic-platforms]] \u2014 older Classic model, with different resources and verification workflow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15|Marketplace user capabilities, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If a user needs a specific capability that is not part of their default configuration, you must [request the additional capability](/marketplaces/manage-account-holders#request-capability).",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md:21"
+    },
+    {
+      "text": "It is possible that requesting additional capabilities prompts additional [KYC checks](/marketplaces/verification-overview) on your users.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md:23"
+    },
+    {
+      "text": "This means that the user is still allowed to use capability while Adyen performs the checks.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md:105"
+    },
+    {
+      "text": "This status is final and any errors cannot be resolved by updating data or uploading documents.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md:108"
+    },
+    {
+      "text": "Note that this capability can only be used if it is both enabled and allowed.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md:121"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-marketplaces-capabilities-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-verification-overview-capabilities]] \u2014 2024-modified, 2026-09-15-captured Marketplace capability guide for default/additional requests, allowed/enabled gates, conditional product lists and deadline/re-verification exceptions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "An `invalid` status can retain allowed true during a remediation deadline after earlier valid verification; do not flatten all invalid states to unusable. `rejected` is final. Issuing levels and product capability availability are dated/conditional, not account-specific eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/verification-overview/capabilities/2026-09-15.md",
+  "raw_sha256": "c04d60c46920ebdc41daa39cab1e76b6acc6bab692ae83d062d96503954022d5",
+  "status": "candidate_ready"
+}

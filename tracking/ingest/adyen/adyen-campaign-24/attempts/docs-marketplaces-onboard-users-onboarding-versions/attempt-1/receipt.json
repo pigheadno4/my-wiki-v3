@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-onboard-users-onboarding-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces onboarding versions and v2-to-v4 update\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/onboard-users/onboarding-versions\"\nraw_files:\n  - \"adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, onboarding, versioning, verification]\n---\n\n## Overview\n\nThis 2025-modified, 2026-09-15-captured **Marketplaces / Adyen for Platforms** guide explains onboarding versions spanning Legal Entity Management (LEM) API, Hosted onboarding and KYC checks, then gives **v2-to-v4** update steps for hosted and API-only onboarding. It recommends updating but says immediate update is not required and describes advance notice before a version sunset. The page contains an unresolved **v4-versus-v3 latest-stable wording conflict**, so its version claims are dated source statements, not a current-version determination. [[adyen-platforms]]\n\n## Version and sunset boundaries\n\n- A new onboarding version can contain breaking changes in LEM API, Hosted onboarding or KYC checks, and need not change all three. The page calls some newly required existing data points and verification-error strings **non-breaking**, while a breaking API change gets a new LEM version. It says API changes are backward but not forward compatible. See [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 19\u201347]].\n- Older versions may remain usable without new updates until a sunset. The page says Adyen gives approximately **6\u201312 months** notice before sunset; after a specified LEM API sunset date, that version is unusable. Both API-only and hosted integrations must update before their API version sunsets. Release candidates are preview API-only and subject to change. See [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 31, 51\u201367]].\n- The top calls **v4** the latest stable onboarding version (raw line 19) and the update steps use LEM **v4** (raw lines 69\u201377); a later hosted-only sunset paragraph calls **v3** the latest stable (raw line 67). The capture does not reconcile this conflict.\n\n## v2-to-v4 migration\n\n- Updating involves Adyen-contact discussion, a server move to LEM v4, feature review, testing and a separate go-live step. For users onboarded in an older version, newly available verification deadlines do **not** automatically attach to capabilities already invalid there; ToS acceptance is described as backfilled, but new capability requests require additional ToS documents. Version update alone does **not immediately trigger** new verification checks; the page says those start when a user changes data or has a required data review. See [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 69\u201388]].\n- Hosted onboarding built on LEM v2 continues there until the integration update, after which it automatically uses LEM v4. Hosted and API-only implementations must handle required-review notifications, verification deadlines, new error/webhook shape, required data and validation changes, business-line `service` replacing deprecated `capability`, and source-of-funds inputs for issuing/business accounts. The API-only list also points to transfer-instrument changes and optional components. See [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 90\u2013146]].\n- `sendToTransferInstrument` verification is described at **both transfer-instrument and associated legal-entity levels**. The hosted section says a verified instrument can work independently of another instrument\u2019s verification state; the API-only section qualifies that user capability status appears only at legal-entity level until a data update or required review. These statements are specific to the migration descriptions and do not prove a given transfer can execute. See [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 102\u2013104, 128\u2013130]].\n- The page asks teams to contact Adyen to enable all new features in **TEST**, then test major integration features and error handling before go-live (raw lines 148\u2013150). This is preparation, not proof of live activation, KYC approval or financial outcomes.\n\n## Transfer-instrument wording conflict\n\nThis update guide says the new `/transferInstruments` **`type` field** specifies IBAN versus local account (raw line 134). The separately pinned [[source-adyen-docs-marketplaces-manage-transfer-instruments|Marketplaces transfer-instrument guide]] says the top-level `type` is **`bankAccount`** and bank-location-specific identification is inside `bankAccount.accountIdentification` ([[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|related raw lines 52\u201358, 72\u201376]]). These captured descriptions do not identify one unambiguous versioned request shape; use the matching LEM API Explorer operation/version before implementation.\n\n## Detail locators\n\n- Version model, compatibility, release candidates and sunset: [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 19\u201367]].\n- Update steps, older-user deadlines/ToS and delayed verification reruns: [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 69\u201388]].\n- Hosted versus API-only v4 work and TEST enablement: [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|raw lines 90\u2013150]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms onboarding and verification context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15|Marketplaces onboarding versions (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "The latest stable onboarding version is v4.",
+      "location": "raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "See [here](#update-v3) for more information about how to update to onboarding v3, the latest stable onboarding version.",
+      "location": "raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md:67"
+    },
+    {
+      "text": "Note that after updating your onboarding version, verification checks are not immediately triggered for your users.",
+      "location": "raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md:88"
+    },
+    {
+      "text": "The capability **sendToTransferInstrument** is now validated at both the transfer instrument resource and associated legal entity level.",
+      "location": "raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md:104"
+    },
+    {
+      "text": "The new [type](https://docs.adyen.com/api-explorer/legalentity/latest/post/transferInstruments#request-type) field specifies whether the bank account is an IBAN or local account.",
+      "location": "raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md:134"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-onboarding-versions-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-onboard-users-onboarding-versions]] \u2014 2025-modified, 2026-09-15-captured Marketplace v2-to-v4 hosted/API-only onboarding update guide, preserving delayed reverification, sunset gates and conflicting latest-stable/type wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Same raw calls v4 latest stable at line 19 and v3 latest stable at line 67; do not present either as current without versioned reconciliation.",
+          "Raw line 134 says top-level transfer-instrument type specifies IBAN/local, while related Marketplace transfer-instrument raw lines 52\u201358 and 72\u201376 use top-level bankAccount with nested accountIdentification type."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/2026-09-15.md",
+  "raw_sha256": "8cec022ced0d3ef5341f140469e77d6d7591830ad3a683370a93acb6baefa635",
+  "status": "candidate_ready"
+}

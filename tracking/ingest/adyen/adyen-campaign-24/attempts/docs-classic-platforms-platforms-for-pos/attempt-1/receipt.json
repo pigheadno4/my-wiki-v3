@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-platforms-for-pos",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms point of sale\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/platforms-for-pos\"\nraw_files:\n  - \"adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md\"\ntags: [adyen, classic-platforms, point-of-sale, stores, terminals, split-payments]\n---\n\n## Overview\n\nThis 2021-modified Classic Adyen for Platforms guide, captured 2026-09-15, describes in-person payments on behalf of Classic account holders: subscribe to store notifications, create a store, wait for its Active status, assign/board a terminal, then split POS payment funds between a holder account and the platform's liable account. It directs new implementations to a separate new-integration guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- Before processing POS payments, have a Terminal API integration and work with Adyen Support to enable store creation for requested countries, currencies, MCCs and payment methods (raw lines 28\u201343, 109\u2013113). Subscribe to `ACCOUNT_HOLDER_STORE_STATUS_CHANGE` and ensure the notification endpoint accepts/tests notifications; HMAC is optional in the shown subscription fields (raw lines 45\u2013107). The prose calls this a Terminal API endpoint but its concrete request is Notification API v6 `/createNotificationConfiguration`; confirm the applicable endpoint rather than copying the prose label (raw lines 49\u201362).\n- Add `accountHolderDetails.storeDetails` in Classic `/createAccountHolder` or `/updateAccountHolder`, with the store address, phone, merchant account, MCC, name and reference; a new business holder also needs `businessDetails.taxId`, and an existing holder needs it unless already present (raw lines 115\u2013133). The sample response shows `Pending`; wait for a store-status-change notification with new status `Active` before POS processing (raw lines 218\u2013253). Pending or an example Active payload is not actual activation for a particular store.\n- A holder store needs at least one assigned terminal. The guide routes selection/order, Customer Area or Terminal Management API assignment, terminal configuration, shipping to the physical store and boarding (raw lines 275\u2013294). Those setup steps do not themselves establish payment acceptance.\n- Split a POS payment through store-level automatic split configuration or per-transaction instructions in the Terminal API payment request or at capture; API instructions override the automatic split for the transaction (raw lines 296\u2013307). The Terminal API route uses `SaleToAcquirerData` split API v1 with total and item counts matching transaction amount/items; `MarketPlace`/`VAT` go to the specified account, while `Commission`/`PaymentFee` go to the platform liable account, and `MarketPlace` needs a split reference (raw lines 335\u2013353). The example of a successful terminal response does not prove a booked split or payout (raw lines 388\u2013405).\n- If final split amounts are unknown at payment time, the guide calls for manual capture and a later `/payments/{paymentPspReference}/captures` request; it also names tipping and partial authorizations. Enabling manual POS capture applies to **all** POS account holders (raw lines 407\u2013417). The capture response distinguishes authorization and capture PSP references and `status: received`; use the CAPTURE webhook for outcome (raw lines 872\u2013880). The capture example is USD 80 but its NodeJS JavaScript request uses EUR; do not treat that sample currency as an authoritative template (raw lines 432\u2013445, 640\u2013660).\n\n## Detail locators\n\n- Classic scope, prerequisites and Support enablement: raw lines 19\u201343. Store-notification subscription, API example and test: raw lines 45\u2013107. Store payload, business tax ID, Pending response and Active webhook gate: raw lines 109\u2013273. Terminal assignment/boarding: raw lines 275\u2013294.\n- Automatic versus API split override: raw lines 296\u2013307. Terminal API split fields and account destinations: raw lines 311\u2013353. Terminal payment result: raw lines 388\u2013405. Manual capture scope, split request and sample-language/version details: raw lines 407\u2013870. Received response and CAPTURE webhook: raw lines 872\u2013880.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older account-holder/account model.\n- [[source-adyen-docs-classic-platforms-processing-payments]] \u2014 Classic split-payment accounting and capture context.\n- [[source-adyen-docs-classic-platforms-configure-notifications]] \u2014 Classic notification configuration.\n- [[adyen-platforms]] \u2014 separate newer balance-platform model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15|Classic Platforms for POS, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md:19"
+    },
+    {
+      "text": "Have a [Terminal API integration with Adyen](/point-of-sale/get-started).",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md:32"
+    },
+    {
+      "text": "Before processing point-of-sale (POS) payments, wait until you receive an `ACCOUNT_HOLDER_STORE_STATUS_CHANGE` notification showing that the new status of the store is **Active**.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md:253"
+    },
+    {
+      "text": "Any split instructions that you send through the API overrides the automatic split.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md:303"
+    },
+    {
+      "text": "Listen to the [CAPTURE webhook](/point-of-sale/capturing-payments#capture-webhook) to learn the outcome of the request.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md:880"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-classic-platforms-for-pos-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-platforms-for-pos]] \u2014 2021-modified, 2026-09-15-captured Classic POS guide for Support-enabled store creation, Active webhook gate, terminal assignment, split override and CAPTURE outcome tracking.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Store creation response Pending is not POS activation; wait for Active notification. Manual capture applies to all POS account holders, and capture status received needs CAPTURE webhook outcome. Subscription prose calls the endpoint Terminal API while its example uses Notification API v6; the USD capture example has a NodeJS EUR mismatch."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/platforms-for-pos/2026-09-15.md",
+  "raw_sha256": "272d3e4c5b591fe3986dee847bebe15c3561594fee33befa43843fadec507d27",
+  "status": "candidate_ready"
+}

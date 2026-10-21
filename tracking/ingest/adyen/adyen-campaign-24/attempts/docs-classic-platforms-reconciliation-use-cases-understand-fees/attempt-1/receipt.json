@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-reconciliation-use-cases-understand-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: reconcile fees\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/reconciliation-use-cases/understand-fees\"\nraw_files:\n  - \"adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md\"\ntags: [adyen, classic-platforms, reconciliation, fees]\n---\n\n## Overview\n\nThis Classic Adyen for Platforms fee-reconciliation guide (last modified 2021-07-23; captured 2026-09-15) explains how to reconcile fees debited from the **platform's liable account**. Adyen says it deducts fees from settlement and identifies complementary report grains: Settlement details for settled transactions, Payment accounting for transaction-related fees including unsettled items, Marketplace Payments accounting for platform account entries, and the monthly payment-processing invoice for period totals. The page directs new implementations to a different, newer integration guide; its Classic report formulas and account names should not be transplanted to the current balance-platform ledger. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The monthly invoice accounts for fees already deducted in the reports, may include rebates, and carries only remaining fee debits or rebate credits through settlement as `InvoiceDeduction` rows. Avoid adding all invoice fees again to already-deducted report fees.\n- The guide offers three cross-checks for a matched report period: (1) Settlement details gross credits minus gross debits minus its `XASTransfer` net amount settled to platform accounts; (2) Settlement details commission, markup, scheme fees and interchange columns plus `Fee` and, if present, `InvoiceDeduction` rows; (3) Marketplace Payments accounting `Fee` plus `InvoiceDeduction` rows. Reports may use different generation periods/time zones, so align both before comparing.\n- Its selected-row example computes **EUR 9.72** in fees: EUR 9.40 from transaction fee columns plus EUR 0.32 from a Settlement details `Fee` row. The Marketplace Payments accounting table records the same fee as a **\u2212EUR 9.72** `Fee` debit, so compare the debit magnitude or apply consistent signs; the signed raw row is not literally equal to the positive total. The Payment accounting example traces EUR 0.32 processing fees across four EUR 0.08 rows, including a refused transaction; settled-only views would miss that item.\n- Match Payment PSP/merchant references between the Marketplace Payments accounting and Settlement details reports to attribute settled payments and refunds, then use Payment accounting for remaining processing fees. The page shows selected rows and columns, so its example does not prove any particular platform's complete fee ledger or actual settlement.\n\n## Detail locators\n\n- Raw lines 19\u201333 define Classic scope, liable-account fee flow, report purposes and invoice adjustment.\n- Raw lines 35\u201356 give period/time-zone checks and three total-fee formulas.\n- Raw lines 58\u201398 give selected Marketplace Payments accounting and Settlement details rows, references and the EUR 9.72 calculation.\n- Raw lines 100\u2013114 trace EUR 0.32 in Payment accounting, including a refused transaction; lines 116\u2013123 route to report references.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic platform and liable-account context.\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 separate current Platforms model.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15|Adyen Classic Platforms fee reconciliation, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen deducts fees from settlement and debits them from your platform's liable account.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md:23"
+    },
+    {
+      "text": "contains a breakdown of all transaction-related fees, including those that have not settled.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md:26"
+    },
+    {
+      "text": "Any outstanding debits for fees or credits for rebates outlined in the monthly invoice will be debited or credited from the settlement.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md:33"
+    },
+    {
+      "text": "Reports are generated at different periods and can be based on different time zones; if reconciliation fails, mismatches in reporting periods or time zones are the common causes.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md:44"
+    },
+    {
+      "text": "The *Total fees* in the 3 computations should match.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md:56"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-classic-fees-source",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-reconciliation-use-cases-understand-fees]] \u2014 2021-modified, 2026-09-15-captured Classic liable-account fee reconciliation across settlement, marketplace and payment-accounting reports, with invoice and signed-debit example boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Worked Marketplace Payments accounting Fee row is \u2212EUR 9.72, while the three total-fee formulas are discussed as positive EUR 9.72; normalize sign when comparing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/understand-fees/2026-09-15.md",
+  "raw_sha256": "2709b9f203b6b7c8de3844cc16e8921e2830762c2859f9d4029999d365a78109",
+  "status": "candidate_ready"
+}

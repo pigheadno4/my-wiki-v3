@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-test-verification-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace: test verification errors\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/test-verification-errors\"\nraw_files:\n  - \"adyen/docs/marketplaces/test-verification-errors/2026-09-15.md\"\ntags: [adyen, marketplaces, verification, testing]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path guide describes **TEST-environment** simulation of failed verification checks and remediation for Adyen for Platforms or Issuing integrations. It uses Legal Entity Management API request headers, an account holder linked to the affected legal entity, account-holder webhooks or object GETs for errors, then a separate PATCH with a test resolution code. It does not establish a live user's KYC outcome, enabled capability, payout eligibility or payment result. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The prerequisites include Legal Entity Management API credentials, a Configuration API web-service credential if inspecting errors by API, and subscription to `balancePlatform.accountHolder.updated` for failed-verification updates. The guide says TEST checks pass by default **when required fields and documents are provided**; the test header forces a failure scenario. This is not a production verification guarantee.\n- For a forced failure, send **one suberror code at a time** in `x-requested-verification-code` on Legal Entity Management API `POST /legalEntities`, `POST /documents`, or `POST /transferInstruments`. The header is **TEST-only** and **cannot be used with hosted onboarding**. The illustrated codes are `1_3004` for individual name/residence, `1_3008` for an incomplete ID image, and `1_7002` for an invalid bank-account number.\n- Create an account holder for the legal entity under test, or for the legal entity owning the document or transfer instrument. Read errors via `balancePlatform.accountHolder.updated` or a GET for the affected object. The examples show parent `verificationErrors`, nested `subErrors` and `remediatingActions`; a sample account holder can have `status: Active` while `sendToTransferInstrument.allowed` is false and `verificationStatus` is invalid. Do not equate account-holder Active with a usable capability.\n- To simulate successful remediation in TEST, send `x-requested-verification-code: 0_0001` with a PATCH to the corresponding legal entity, document or transfer instrument. The page says this resolves associated suberrors **if the error handling is successful**. It does not prove that a real person's data or document was accepted.\n- Treat the language and webhook payloads as examples. The transfer-instrument webhook sample has missing JSON commas and a different nesting of `transferInstruments` from the other samples; it cannot be copied verbatim as valid JSON or taken as a definitive schema. The document-remediation curl example uses an `SE...` path ID, unlike the document-ID placeholder used elsewhere, so verify IDs against the actual object.\n\n## Detail locators\n\n- Raw lines 19\u201347 define TEST behavior, credentials/webhook prerequisites, allowed POST targets, one-code limit and hosted-onboarding exclusion.\n- Raw lines 49\u20131161 contain the legal-entity, document and transfer-instrument forced-failure examples and versioned TEST SDK snippets.\n- Raw lines 1162\u20131174 require the owning account holder and describe webhook/GET checks; lines 1175\u20131505 show object errors and webhook examples, including the malformed transfer-instrument sample near the end.\n- Raw lines 1507\u20131520 define the conditional `0_0001` remediation flow; lines 1521\u20132529 contain corresponding PATCH examples, including the document path-ID mismatch.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main platform concept for this Marketplace-path test guide.\n- [[adyen]] \u2014 provider context.\n- [[adyen-issuing]] \u2014 also named in the integration prerequisites.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15|Adyen Marketplace verification-error TEST scenarios, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In your test environment, all verification checks are passed by default when the required fields and documents are provided.",
+      "location": "raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15.md:21"
+    },
+    {
+      "text": "Note that requested verification codes cannot be used with hosted onboarding.",
+      "location": "raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15.md:39"
+    },
+    {
+      "text": "You can include one code at a time in your request header. Requested verification codes can only be used in your test environment.",
+      "location": "raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15.md:47"
+    },
+    {
+      "text": "For error tests for documents or transfer instruments, you need to [create an account holder](/marketplaces/onboard-users) for the legal entity who owns the resource.",
+      "location": "raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15.md:1166"
+    },
+    {
+      "text": "If your error handling is successful, the requested verification code resolves any suberrors associated with the legal entity, document, or transfer instrument.",
+      "location": "raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15.md:1519"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplace-test-verification-errors-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-test-verification-errors]] \u2014 2026-09-15 Marketplace-path TEST guide for forced legal-entity/document/transfer-instrument suberrors, owner account-holder checks and conditional remediation; hosted onboarding excluded.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The transfer-instrument webhook example has malformed JSON and inconsistent transferInstruments nesting; document-remediation curl uses an SE-prefixed path ID."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/test-verification-errors/2026-09-15.md",
+  "raw_sha256": "2b5b1ff748d44998461ee842ce0c094c8ea446b98bf1612c2830fc8a7a3a3a5f",
+  "status": "candidate_ready"
+}

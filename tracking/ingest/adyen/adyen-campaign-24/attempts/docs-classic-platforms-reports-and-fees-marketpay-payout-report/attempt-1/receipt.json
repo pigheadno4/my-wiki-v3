@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-classic-platforms-reports-and-fees-marketpay-payout-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms Marketpay Payout Report\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/reports-and-fees/marketpay-payout-report\"\nraw_files:\n  - \"adyen/docs/classic-platforms/reports-and-fees/marketpay-payout-report/2026-09-15.md\"\ntags: [adyen, classic-platforms, payouts, reporting, reconciliation]\n---\n\n## Overview\n\nThe Marketpay Payout Report is a Classic Platforms CSV for reconciling each account holder's automatic payout with included debit and credit transactions. It is available only for automatic payouts and describes payouts initiated within the day. This is Classic account-holder/account reporting, distinct from modern balance-platform payout reports. See [[adyen]] and [[adyen-classic-platforms]]. A reported payout or `Payout` record is not, by itself, evidence of beneficiary-bank receipt; Classic payout notifications and returns require separate tracking.\n\n## Key takeaways\n\n- The report uses the configured reporting time zone. Filter by **Account Holder**, **Account**, and **Currency** to identify transactions for a particular account. The page says it generates one record line per account per currency, while its structure section says each line is a separate entry and its record-type table includes transaction types; read the row's `Record Type` rather than assuming every entry is a payout summary.\n- Pending refunds or chargebacks can withhold an amount from payout, leaving a non-zero `Rolling Balance` on that account's payout line. The remaining balance carries into the next report for reconciliation; it is not a lost amount or proof of a later payout.\n- The file pattern is `marketpay_payout_YYYY_MM_DD.csv`; Customer Area subscription can be Daily, Weekly, or Monthly. The first line names the report, the second is the header, and subsequent lines are entries. Key columns include account-holder/account identifiers, several distinct payment/modification/payout references, booking date and report time zone, currency, amount and rolling balance.\n- Record types distinguish settled credits, reversed or failed credits/debits, refunds, chargebacks and reversals, inter-account `FundTransfer`, `Payout`, and `VirtualAccountPayoutReturned`. For `TransferBalance`, earlier report versions include payment costs; on new platforms it covers credits/debits not booked because of missing split instructions/reference or a technical issue, with other postings such as payment costs under separate types including `Fee`. This is a version/lifecycle distinction, not a universal mapping.\n- `DeprecatedManualCorrected` remains for existing platforms and is replaced for new platforms by `ManualCorrectionCredited` and `ManualCorrectionDebited`. The asterisked new `Fee`, deposit correction, invoice deduction, merchant pay-in/reversal and manual-correction types are enabled by default for new platforms; existing platforms are told to contact Support to enable them. A report row states an accounting classification in this snapshot, not successful external settlement or bank credit.\n\n## Detail locators\n\n- Report purpose, time-zone effect, automatic-payout-only scope, filters, withheld amount and rolling-balance carry: raw lines 15\u201327. Filename, subscription, frequency and sample link: lines 29\u201335.\n- File structure and full column definitions, including distinct PSP references and amount meanings: lines 37\u201366. All record-type definitions and old/new-platform accounting qualification: lines 68\u201396.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/account and payout model.\n- [[source-adyen-docs-classic-platforms-reports-and-fees]] \u2014 Classic report selection hub.\n- [[source-adyen-docs-classic-platforms-payouts-payout-notifications]] \u2014 separate payout-status and possible bank-return tracking.\n- [[source-adyen-docs-classic-platforms-prepare-reports]] \u2014 report configuration and reconciliation joins.\n\n## Related raw API references\n\n- The raw page links to the time-zone setting, automatic-payout guide, sample CSV and reconciliation use cases; their linked contents are separate evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/reports-and-fees/marketpay-payout-report/2026-09-15|Adyen Docs: Marketpay Payout Report (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Use this report to reconcile each account holder's payout against debit and credit transactions.",
+      "location": "raw line 17, # Marketpay Payout Report"
+    },
+    {
+      "text": "The\u00a0Marketpay Payout Report is only available for [Automatic payouts](/classic-platforms/payouts) and provides information about automatic payouts that were initiated within the day.",
+      "location": "raw line 23, # Marketpay Payout Report"
+    },
+    {
+      "text": "The rolling balance is added to the balance of the next report, so you can use these reports to make a full reconciliation.",
+      "location": "raw line 27, # Marketpay Payout Report"
+    },
+    {
+      "text": "For new platforms, the TransferBalance only contains the aggregate amount of credits and debits that could not have been booked due to missing split instructions, missing split reference, or a technical issue.",
+      "location": "raw line 87, ## Record types"
+    },
+    {
+      "text": "This record type is used by default in new platforms. For existing platforms, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable the new record types.",
+      "location": "raw line 96, ## Record types"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-classic-marketpay-payout-report-reciprocal",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-reports-and-fees-marketpay-payout-report]] \u2014 2026-09-15 Classic automatic-payout CSV reconciliation reference for account-holder/account/currency, rolling balances and version-qualified record types; payout rows do not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/reports-and-fees/marketpay-payout-report/2026-09-15.md",
+  "raw_sha256": "cfaf0ce15cf891e430cab1dcf678abf3d3d8d35c4f828cf19b7abc88c7325c41",
+  "status": "candidate_ready"
+}

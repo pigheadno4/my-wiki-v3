@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-manage-reserve-account",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace reserve account\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-reserve-account\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md\"\ntags: [adyen, marketplaces, reserve-account, collateral, transfers]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-route Adyen for Platforms guide defines the platform **reserve account** as a balance account linked to the liable account holder. It supplies collateral for user-balance deficits caused by transfers initiated by the platform or its users, and is distinct from the **reserved compensation account** for refund/chargeback deficits. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- A reserve account enables transfers that would make a user's balance account negative. It is liable-account-holder-linked, rather than an ordinary user balance account; the reserved compensation account has a different purpose, covering negative balances caused by refunds or chargebacks (raw lines 19\u201321). A platform configured to pay out users' **current balance** is one example of needing reserve collateral if later balance changes become negative (raw line 23).\n- When a transfer request would create a negative user balance, Adyen checks whether the reserve account has enough available funds. If insufficient, the transfer request fails. If sufficient, Adyen blocks collateral equal to the transfer-caused negative balance, then processes the transfer; collateral is unblocked when the user account receives enough funds to compensate the negative balance (raw lines 25\u201332). A request or collateral block alone is not proof of completed payout or beneficiary-bank receipt.\n- The guide recommends monitoring the reserve account's available balance. Its listed ways to increase it are internal transfer from another balance account, receiving split-payment funds into the reserve account, and topping up the reserve account (raw lines 34\u201342). These are funding routes, not evidence that a particular reserve was funded or that a transfer succeeded.\n\n## Detail locators\n\n- Reserve ownership/purpose, reserved-compensation distinction and current-balance payout example: raw lines 19\u201323. Collateral check, failure, block/process/release sequence: raw lines 25\u201332. Monitoring and three funding routes: raw lines 34\u201342.\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern balance-platform and Marketplace route.\n- [[source-adyen-docs-platforms-manage-reserve-account]] \u2014 related Platforms reserve-account guide; retain this Marketplace source's own snapshot.\n- [[source-adyen-docs-platforms-payout-amount]] \u2014 current-balance payout cap and collateral conditions.\n- [[adyen-classic-platforms]] \u2014 older account model with separate negative-balance rules.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15|Marketplace reserve account, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The reserve account of your platform is a type of balance account that is linked to the liable account holder.",
+      "location": "raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md:19"
+    },
+    {
+      "text": "The reserve account is different from the [reserved compensation account](/platforms/manage-liable-accounts#reserved-compensation-account).",
+      "location": "raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md:21"
+    },
+    {
+      "text": "The reserve account must have enough funds to cover for the negative balance, otherwise the transfer request fails.",
+      "location": "raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md:29"
+    },
+    {
+      "text": "The amount of the collateral is equal to the negative balance caused by the transfer request.",
+      "location": "raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md:30"
+    },
+    {
+      "text": "When the user's balance account receives enough funds to compensate the negative balance, Adyen unblocks the collateral.",
+      "location": "raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md:32"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-marketplaces-reserve-account-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-reserve-account]] \u2014 2026-09-15 Marketplace reserve-account guide for liable-holder-linked collateral against transfer-caused negative user balances, distinct from refund/chargeback compensation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Insufficient available reserve funds cause the proposed negative-balance transfer to fail. The reserve account covers transfer-caused deficits, unlike the reserved compensation account for refund/chargeback deficits; collateral blocking is not payout or bank-receipt proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-reserve-account/2026-09-15.md",
+  "raw_sha256": "c8199e902525061f1e847d179ea830ed6c2f86028e77627a67f105264c60c01e",
+  "status": "candidate_ready"
+}

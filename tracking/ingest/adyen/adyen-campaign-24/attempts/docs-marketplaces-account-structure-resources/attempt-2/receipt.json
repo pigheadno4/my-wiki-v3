@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-account-structure-resources",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Marketplace: account structure and resources\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/account-structure-resources\"\nraw_files:\n  - \"adyen/docs/marketplaces/account-structure-resources/2026-09-15.md\"\ntags: [adyen, marketplaces, account-structure, balance-platform]\n---\n\n## Overview\n\nThis Marketplace-path account-structure guide (last modified 2021-11-03; captured 2026-09-15) distinguishes the marketplace's **company and merchant accounts** in Adyen's payment-processing platform from its **balance platform** and associated account holders and balance accounts. Merchant accounts process payments for users; the balance platform accounts for incoming split funds, user balances, internal movement and payouts. The described resources and possible flows are architecture guidance, not proof that a particular marketplace has opened accounts, verified users, executed splits or paid out funds. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- An Adyen account includes a company account connecting one or more merchant accounts. Merchant accounts configure payment methods, processing currencies, risk rules and reports; multiple accounts may be useful for different acquiring regions and payment methods, though the page says one is usually enough.\n- Merchant accounts connect to a **balance platform**, which the guide calls the accounting system for business funds flow. For a sale, it can split incoming funds between the marketplace and the user (a third-party seller, service provider or contractor). The default statement is a separate balance platform for each acquiring region. The page then makes a special case for a global marketplace with multiregional sellers who transfer funds to each other: **one balance platform for all acquiring regions**, with **no additional financial products** for users. Do not apply the default and special case simultaneously.\n- Depending on the marketplace's business model and use case, the user resources to create include an **account holder** carrying capabilities, linked to that user's **main legal entity and balance account**; the user's balance account holds that user's funds. A transfer instrument is identified here as a verified bank account for payout. This separates user identity/capabilities, held funds and external destination.\n- The marketplace's own **liable account holder** represents its business; its **liable balance account** holds its funds and may be debited when user balance accounts go negative because of refunds or chargebacks. The page says Adyen creates the listed platform/liable resources. A negative-balance liability possibility is not evidence of an actual debit or settlement.\n- Management API or Customer Area manages company/merchant processing resources, while Configuration API or Customer Area manages the balance-platform resources; these are distinct scopes.\n\n## Detail locators\n\n- Raw lines 19\u201343 describe company/merchant accounts, their processing role and management routes.\n- Raw lines 45\u201357 describe balance-platform fund accounting, split/onboarding/payout/internal-transfer uses.\n- Raw lines 59\u201362 give the conditional multiregion single-platform rule and product restriction.\n- Raw lines 64\u201377 define user account holder, legal-entity link, user balance account, liable resources and their management route.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main Platforms concept for Marketplace route.\n- [[adyen]] \u2014 provider context.\n- [[adyen-classic-platforms]] \u2014 separate Classic resource model.\n- [[adyen-index]] \u2014 provider navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15|Adyen Marketplace account structure, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you sign up for an Adyen account, you receive a **company account** and one or more **merchant accounts**.",
+      "location": "raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15.md:23"
+    },
+    {
+      "text": "You must have a separate balance platform for each region in which you acquire payments.",
+      "location": "raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15.md:47"
+    },
+    {
+      "text": "You must have a single balance platform for all your acquiring regions.",
+      "location": "raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15.md:61"
+    },
+    {
+      "text": "An account holder must be linked to your user's balance account and [main legal entity](/marketplaces/account-structure-resources/legal-entity-management).",
+      "location": "raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15.md:68"
+    },
+    {
+      "text": "Funds can be deducted from this account if your users' balance accounts incur negative balances due to refunds and chargebacks.",
+      "location": "raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15.md:75"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplace-account-structure-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-account-structure-resources]] \u2014 2021-modified, 2026-09-15-captured Marketplace resource map for merchant processing accounts, user/liable balance-platform accounts and the conditional multiregion single-platform restriction.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "General separate-balance-platform-per-acquiring-region wording has a conditional single-platform exception for global marketplaces whose multiregional sellers transfer to each other; that exception also prohibits additional financial products."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/account-structure-resources/2026-09-15.md",
+  "raw_sha256": "0f62118dd191d4b0fbc587591c14507d19400aa410b7ab119cdea230155e63b4",
+  "status": "candidate_ready"
+}

@@ -15,6 +15,45 @@ The Classic overview explicitly directs a new implementation to a separate new-i
 
 ## Sources
 
+- [[source-adyen-docs-classic-platforms-reconciliation-use-cases-transactions-scheduled-payouts]] — 2026-09-15 Classic scheduled-payout reconciliation example using account-holder/account Marketpay Payout rows; selected rows and initiated payouts are not bank-receipt proof.
+
+
+- [[source-adyen-docs-classic-platforms-reports-and-fees-marketpay-balance-report]] — 2023-modified, 2026-09-15-captured Classic Marketpay Balance Report reference for CET, daily/weekly/monthly frequency and per-account/currency available/pending minor-unit balances; report rows are not payout or bank-receipt proof.
+
+
+- [[source-adyen-docs-classic-platforms-reconciliation-use-cases-reconcile-accounts-receivable]] — 2023-modified, 2026-09-15-captured Classic Settlement details report example for batch net amount to platform accounts, `XASTransfer` and per-account ledger route; illustrative rows are not actual settlement or bank-receipt proof.
+
+
+- [[source-adyen-docs-classic-platforms-tax-forms]] — 2023-modified, 2026-09-15-captured Classic US 1099-K retrieval guide for direct-payout/threshold scope, dated 2024 gross-volume threshold and server-side Base64-to-PDF delivery flow.
+
+
+- [[source-adyen-docs-classic-platforms-reconciliation-use-cases-build-transactional-ledger]] — 2023-modified, 2026-09-15-captured Classic account-level accounting-ledger guide for split/liable rows, fees, balance comparison and aged-negative-balance compensation.
+
+
+- [[source-adyen-docs-classic-platforms-split-configuration-for-stores]] — 2021-modified, 2026-09-15-captured Classic POS/partner-store automatic commission rules, liable fallback, API override, and asynchronous account-holder-store attachment.
+
+
+- [[source-adyen-docs-classic-platforms-reconciliation-use-cases-understand-fees]] — 2021-modified, 2026-09-15-captured Classic liable-account fee reconciliation across settlement, marketplace and payment-accounting reports, with invoice and signed-debit example boundaries.
+
+
+- [[source-adyen-docs-classic-platforms-platforms-for-partners]] — 2023-modified, 2026-09-15-captured Classic partner-arrangement ecommerce guide for direct scheme-linked sub-merchants, SAQ A/KYC and Active-store gates, allowed origins and single-store routing.
+
+
+- [[source-adyen-docs-classic-platforms-reports-and-fees-marketpay-payout-report]] — 2026-09-15 Classic automatic-payout CSV reconciliation reference for account-holder/account/currency, rolling balances and version-qualified record types; payout rows do not prove bank receipt.
+
+
+- [[source-adyen-docs-classic-platforms-platforms-for-pos]] — 2021-modified, 2026-09-15-captured Classic POS guide for Support-enabled store creation, Active webhook gate, terminal assignment, split override and CAPTURE outcome tracking.
+
+
+- [[source-adyen-docs-classic-platforms-release-notes]] — 2018–2023 Classic release history captured 2026-09-15: v5 asynchronous outcomes and notification fields, v6 payout-method and webhook-field migrations, dated KYC/funds/report changes, `ownerDateOfBirth` deprecation, and the 2022 new-versus-existing integration boundary.
+
+
+- [[source-adyen-docs-classic-platforms-reports-and-fees]] — 2023-modified, 2026-09-15-captured Classic report/fee selection hub distinguishing Adyen-account payment/invoice reports from account-holder/liable platform reports and scheduled-payout-only Marketpay Payout.
+
+- [[source-adyen-docs-classic-platforms-reports-and-fees-marketplace-payments-accounting-report]] — 2023-modified, 2026-09-15-captured Classic account-entry ledger/report schema for pending and available balances, payout/fee record types, and dated column/label discrepancies.
+
+
+
 - [[source-adyen-docs-classic-platforms-api]] — 2019-modified, 2026-09-15-captured Classic Platforms API Explorer directory for Account, Fund, notification configuration and delivery, and hosted onboarding references; new implementations are directed elsewhere.
 
 

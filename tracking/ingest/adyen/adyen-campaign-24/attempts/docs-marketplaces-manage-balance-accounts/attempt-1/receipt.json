@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-manage-balance-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces manage balance accounts\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-balance-accounts\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, balance-accounts, configuration-api]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Marketplaces guide covers creation, lookup, update and permanent closure of a **user balance account** with the Balance Platform Configuration API and Customer Area. The balance account is an API resource containing information about funds held by a user and is attached to an account holder. These operations sit within the broader onboarding and verification process; creating the resource is not proof that verification, payments or payouts are enabled. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- To create a user balance account manually, POST `/balanceAccounts` with the account holder ID to attach it to. Retain the returned balance-account `id` for subsequent view, update or close operations. The TEST example response shows an `active` status and zero balances, but is illustrative rather than proof of a live account or its funds (raw lines 23\u201327, 227\u2013254).\n- To view accounts and available balances, Customer Area can show one balance platform at a time or search by balance-account ID. The API provides a paginated GET `/accountHolders/{id}/balanceAccounts`, GET `/balanceAccounts/{id}` with balances, and GET `/balanceAccounts/{id}/paymentInstruments` for associated cards. These are distinct resource lookups; a balance account is not itself the account holder or card (raw lines 256\u2013278).\n- PATCH `/balanceAccounts/{id}` updates an account. The worked request changes only its description; do not infer other mutable fields from that example (raw lines 280\u2013471).\n- Closing is **permanent** and requires an empty/zero balance account. If funds remain, the guide directs the platform to pay out or transfer the remaining balance first; then PATCH the account status to `Closed`. Permanent account-holder deactivation is a separate route when the contractual relationship ends. The page does not show a closure request or confirmation response, and a payout/transfer instruction is not proof funds have moved (raw lines 473\u2013482).\n\n## Detail locators\n\n- Resource purpose and verification/onboarding context: raw lines 15\u201321. Creation endpoint, TEST SDK examples, returned ID and illustrative balances/status: lines 23\u2013254.\n- Customer Area navigation and paginated/detail/payment-instrument GETs: lines 256\u2013278. PATCH description example across SDKs: lines 280\u2013471.\n- Permanent close prerequisite, transfer/payout route, `Closed` status, and separate account-holder deactivation: lines 473\u2013482.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platforms]] \u2014 modern Platforms model and Marketplace route.\n- [[source-adyen-docs-marketplaces]] \u2014 marketplace integration overview.\n- [[source-adyen-docs-platforms-manage-balance-accounts]] \u2014 separate Platforms-path guide; do not silently merge its details into this source.\n- [[adyen-classic-platforms]] \u2014 separate legacy integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15|Marketplace balance-account management \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A [balance account](/marketplaces/account-structure-resources/) is an API resource that contains information about the funds held by your user. To manage the balance accounts use the [Configuration API](https://docs.adyen.com/api-explorer/balanceplatform/latest/overview).",
+      "location": "raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md:19"
+    },
+    {
+      "text": "1. Make a POST [/balanceAccounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/balanceAccounts) request using the account holder ID you want to attach the balance account to.",
+      "location": "raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md:27"
+    },
+    {
+      "text": "* GET [/accountHolders/{id}/balanceAccounts](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/\\(id\\)/balanceAccounts): get a list of the balance accounts of an account holder. This endpoint returns a paginated list of balance accounts.",
+      "location": "raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md:276"
+    },
+    {
+      "text": "To update a balance account, make a `PATCH` [/balanceAccounts/{id}](https://docs.adyen.com/api-explorer/balanceplatform/latest/patch/balanceAccounts/\\(id\\)) request. The following example shows how to update the description of a balance account.",
+      "location": "raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md:282"
+    },
+    {
+      "text": "1. Check if the balance account has [zero balance](#view-balance-accounts). You can only close empty balance accounts, so if there are funds left, you must [pay out](/marketplaces/managed-payouts) or [transfer](/marketplaces/internal-fund-transfers) any remaining balance.",
+      "location": "raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md:479"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplace-balance-accounts-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-balance-accounts]] \u2014 2026-09-15 Marketplace Configuration API/Customer Area guide for user balance-account creation, lookup, update and permanent zero-balance closure; account-holder deactivation is separate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Permanent closure requires an empty balance account; the guide routes remaining funds to payout or transfer before status `Closed`, without demonstrating those funds moved.",
+          "A sample `active` response or API resource creation does not establish completed onboarding, verification or live capability."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-balance-accounts/2026-09-15.md",
+  "raw_sha256": "6756be4ee4b6e8ee1352f1c6e748037444fc37acc40c4df43e0ca548c45842a4",
+  "status": "candidate_ready"
+}

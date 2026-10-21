@@ -1,0 +1,9 @@
+# docs-marketplaces-onboard-users-components — retrieval checks
+
+Q1. What do Marketplace onboarding components provide, and what compatibility and integration work remain?
+
+These prebuilt UI components let a marketplace collect user data; the component can create its relevant resource, avoiding the platform's own API call for that resource (raw lines 17–21). They only work with legal entities created through Legal Entity Management API v3 or v4 (line 19). Adyen recommends them for API-only onboarding, but they cover only some functionality and other API calls remain necessary; they may also help hosted-onboarded users manage submitted data in the marketplace UI (lines 23–29). Choose component and library version because features/guidance vary (lines 31–33). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-onboard-users-components]] → [[raw/adyen/docs/marketplaces/onboard-users/components/2026-09-15]].
+
+Q2. Does the component catalog prove accepted terms, verified bank details, or completed onboarding?
+
+No. The page links the individual legal-entity UI for data/documents/status, Terms of Service UI for review/acceptance/status/copies, and transfer-instrument UI for bank-account entry and verification paths (raw lines 35–53). It is an overview of component purposes and separate guides. Resource creation and displayed status are not evidence of passed KYC, acceptance by a particular person, capability activation, bank verification or payout. The page expressly says components cover only certain functionality and other API-only calls remain (lines 21–23), and library versions can differ (lines 31–33). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-onboard-users-components]] → [[raw/adyen/docs/marketplaces/onboard-users/components/2026-09-15]].

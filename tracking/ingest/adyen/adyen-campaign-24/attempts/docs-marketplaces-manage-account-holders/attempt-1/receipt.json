@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-manage-account-holders",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace: Manage account holders\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-account-holders\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-account-holders/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, account-holders, capabilities]\n---\n\n## Overview\n\nThis Marketplace-path Balance Platform guide (last modified 2023-03-28; captured 2026-09-15) treats the account holder as the marketplace user's Configuration API resource, linked to legal entities, balance accounts and capabilities. It covers lookup, primary-balance-account updates, suspension/reactivation/closure, capability controls and Customer Area KYC views. It uses modern `/accountHolders/{id}` and related Balance Platform routes, distinct from Classic Account API account holders. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Account holders cannot be deleted. Customer Area and GET `/accountHolders/{id}` show status, linked legal entities/balance accounts, documents and capabilities; paginated list routes cover marketplace account holders and an account holder's balance accounts. Searching an individual main legal entity by name or email needs the **View account holders PII** role. The liable account holder belongs to the company's legal entity. See raw lines 19\u201373 and 218\u2013271.\n- PATCH `/accountHolders/{id}` can update fields such as `primaryBalanceAccount`. Setting `status=suspended` temporarily disables payout capabilities; when suspended through the API, related balance accounts and payment instruments remain active. Status changes are reported through `balancePlatform.accountHolder.updated` webhooks, including Adyen-initiated changes. See raw lines 273\u2013290, 468\u2013485 and 704\u2013713.\n- Reactivation by API uses `status=active` only from `suspended`; the page says an account holder suspended by Adyen cannot be reactivated through the API. Permanent closure requires empty balance accounts, then closing non-primary accounts before the primary account, then closing the account holder. If funds remain, the guide routes to payout or internal transfer before closure; the described sequence is not evidence those movements occurred. See raw lines 714\u2013718 and 942\u2013956.\n- A capability response separates `requested`, `allowed`, `enabled`, `verificationStatus` and `problems`. An additional capability can be requested through Customer Area or PATCH with `requested=true` and `requestedLevel` if required; the example response is `requested=true`, `allowed=false`, `pending`, so request is not approval. Customer Area requests and enable/disable edits require **Manage account holder capabilities** role; PATCH `enabled` toggles platform use separately from Adyen's `allowed` decision. See raw lines 958\u20131024, 1268\u20131326 and 1569\u20131591.\n- **Example mismatches:** The additional-capability prose calls the example `receivePayment`, while most request/response payloads use `receivePayments`; Python/Ruby examples use `withdrawFromAtm` instead. In the disable-capability API example, the request targets `sendToTransferInstrument`, but the displayed response names `receivePayments`. Use these snippets as illustrations, not a verified one-to-one request/response trace. See raw lines 1020\u20131044, 1196\u20131242 and 1328\u20131345, 1569\u20131591.\n- Customer Area provides a capability audit log with a **View capabilities audit trail** role. KYC summary/timeline distinguishes awaiting data, in review, verified, unsuccessful and rejected; the page says rejected is final and cannot be remedied by data/document updates. KYC document access requires **View KYC documents** and **Download KYC documents** roles and has a privacy boundary. These views do not establish live verification or payout for a specific account holder. See raw lines 1593\u20131671.\n\n## Detail locators\n\n- Account-holder identity, view/search, liable holder and API list routes: raw lines 19\u2013271.\n- Primary-account update, suspend/reactivate and status webhooks: raw lines 273\u2013945.\n- Zero-balance and ordered permanent closure: raw lines 946\u2013956.\n- Capability view/request/enable controls and response examples: raw lines 958\u20131591.\n- Capability audit, KYC statuses, document roles and views: raw lines 1593\u20131671.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main concept for this Marketplace-path Balance Platform resource.\n- [[adyen-index]] \u2014 provider index.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15|Manage account holders, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Account holders are the main API resource that represent users of your marketplace integration.",
+      "location": "raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15.md:19"
+    },
+    {
+      "text": "Account holders cannot be deleted.",
+      "location": "raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15.md:23"
+    },
+    {
+      "text": "Related balance accounts and payment instruments remain active when you use the API to suspend an account holder.",
+      "location": "raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15.md:485"
+    },
+    {
+      "text": "If Adyen suspended the account holder, you cannot reactivate them with the API.",
+      "location": "raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15.md:716"
+    },
+    {
+      "text": "This status is final and any errors cannot be resolved by updating data or uploading documents.",
+      "location": "raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15.md:1649"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplace-manage-account-holders-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-account-holders]] \u2014 2023-modified, 2026-09-15-captured Marketplace-path Balance Platform account-holder lifecycle, capability and KYC-view guide; retains closure/reactivation limits and payload-example mismatches.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Disable-capability request and shown response name different capabilities; request-capability examples also differ in capability key."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-account-holders/2026-09-15.md",
+  "raw_sha256": "88756708b6b9d9425de1b2fde022154fa04deed25b74b4e8e43a959c87965dcb",
+  "status": "candidate_ready"
+}

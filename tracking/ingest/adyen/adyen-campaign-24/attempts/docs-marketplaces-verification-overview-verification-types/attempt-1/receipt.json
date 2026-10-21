@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-verification-overview-verification-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces upfront and staggered verification\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/verification-overview/verification-types\"\nraw_files:\n  - \"adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, verification, onboarding, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 **Marketplaces / Adyen for Platforms** page contrasts **upfront** and **staggered** collection of user-verification data. It says staggered verification is the Marketplace default and upfront can be enabled, while a separately captured general Platforms guide gives different default/eligibility advice. The page describes verification choices and conditional permissions, not a specific account holder\u2019s KYC approval, enabled capability, payout or bank receipt. [[adyen-platforms]]\n\n## Verification paths\n\n- **Upfront** requires full verification before payments and payouts. Collect all required information at onboarding, then Adyen verifies it after account-holder creation; the guide says no new information is needed solely on reaching a higher tier. To enable upfront for an account holder, POST `/legalEntities` or PATCH `/legalEntities/{id}` with `verificationPlan: upfront` in the LEM API. A request to set the plan is not an approved capability. See [[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|raw lines 19\u201330]].\n- **Staggered**, described here as the default, starts with a minimum determined by volume, country/region and other factors. Higher-tier movement requires additional information and Adyen checks to enable or continue account-holder payouts. On moving up, payouts are **temporarily disallowed** until required data is provided and verified; Adyen reports the change and needed data by webhook. See [[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|raw lines 19\u201324, 32\u201338]].\n- Four tiers depend on country, legal-entity type and processed amount, but high-risk capability requests or triggered checks can also move a holder to a higher tier. The currency table uses AUD, USD, CAD, NZD, SGD and HKD for the listed countries, and EUR for `Other`; it gives **no numeric tier thresholds**. See [[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|raw lines 40\u201356]].\n\n## Cross-page scope conflict\n\nThis Marketplace page says **staggered is applied by default** and upfront can be enabled (raw line 24). The separate [[source-adyen-docs-platforms-verification-overview-verification-types|general Platforms verification-types source]] says platforms should collect data **upfront** and **only payment facilitators** can request staggered through an Adyen contact ([[raw/adyen/docs/platforms/verification-overview/verification-types/2026-09-15|related raw lines 24, 30\u201332]]). Both captures are dated 2026-09-15 and do not explain whether this is a model-specific entitlement difference or inconsistent guidance. Do not infer an individual platform\u2019s staggered eligibility from either overview alone.\n\n## Detail locators\n\n- Upfront/staggered definitions, Marketplace default and LEM plan setting: [[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|raw lines 15\u201330]].\n- Tier payout interruption, webhook, non-volume triggers and currencies: [[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|raw lines 32\u201356]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms verification model.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|Marketplace verification types (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "* Upfront: users must complete full verification before they can process payments and receive payouts through your platform.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md:21"
+    },
+    {
+      "text": "A staggered verification approach is applied to your users by default. You can also enable upfront verification if necessary.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md:24"
+    },
+    {
+      "text": "To enable upfront verification for an account holder, make a POST [/legalEntities](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities) or PATCH [/legalEntities/{id}](https://docs.adyen.com/api-explorer/legalentity/latest/patch/legalEntities/\\(id\\)) request, and set the [verificationPlan](https://docs.adyen.com/api-explorer/legalentity/3/post/legalEntities#request-verificationPlan) parameter to **upfront**.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md:30"
+    },
+    {
+      "text": "their payouts are temporarily disallowed until they complete additional verification checks.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md:38"
+    },
+    {
+      "text": "Processing volume is not the only factor in a user being moved to a higher tier.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md:44"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-verification-types-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-verification-overview-verification-types]] \u2014 2026-09-15 Marketplace upfront/staggered KYC guide with tier payout interruption and local-currency table; its staggered-default claim conflicts with general Platforms payment-facilitator-only guidance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace raw line 24 says staggered default; separate Platforms verification-types raw lines 24 and 30\u201332 advise upfront and restrict staggered requests to payment facilitators. Same-date snapshots do not reconcile this eligibility distinction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15.md",
+  "raw_sha256": "a4b2ecef8d30d8b8ff120324b5366f6876cca084fd335ff350dadf18d0571ac2",
+  "status": "candidate_ready"
+}

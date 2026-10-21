@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-integration-checklist",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Integration and go-live checklist | Adyen Marketplaces\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/integration-checklist\"\nraw_files:\n  - \"adyen/docs/marketplaces/integration-checklist/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, integration, go-live]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] Marketplace-path checklist routes a marketplace through designing an Adyen for Platforms integration, preparing account structure and credentials, onboarding users, processing and splitting payments, paying out, reconciling, and a separate go-live transition. Its balance-platform, legal-entity, account-holder and transfer-instrument model belongs with [[adyen-platforms]], not the older Classic Platforms account structure or Account API. The page says to design the implementation with an Adyen implementation manager before building (raw lines 23\u201325).\n\n## Key takeaways\n\n- The checklist identifies company and merchant accounts, a balance platform, account holders and balance accounts, legal entities, transfer instruments and business lines as the core resource types (raw **Review your account structure**, lines 29\u201344). It distinguishes Balance Platform credentials for Configuration/Transfers/FX/session work, company-scope LEM credentials for legal entities and onboarding sessions, and company credentials for Checkout/Management payment work (raw **Generate and test your API keys**, lines 60\u201372). Test calls and samples at lines 74\u20131034 check those integrations; example HTTP 200 or `Authorised` results do not establish a particular live marketplace's verification, split, capture, payout or bank receipt.\n- Set up server webhook endpoints and acknowledgments, Customer Area webhook configuration and HMAC protection (raw **Set up webhooks**, lines 1036\u20131042). For onboarding, Adyen describes hosted and API-only routes and says it needs to verify user information before processing payments for users and paying them out (raw **Onboard and verify users**, lines 1068\u20131075). The hosted route creates legal entities, an account holder, a hosted link and balance accounts, then receives verification updates; the API-only route also lists a transfer instrument representing a payout bank account that Adyen must verify before payout, Terms of Service acceptance, capability/verification updates and possibly additional documents (raw lines 1095\u20131135). The guide qualifies business-line creation by route and offering; see those steps rather than assuming it is universal.\n- The payment section requires an online payments integration and checkout UI, then directs incoming funds and fees to user balance accounts and the platform liable balance account through split instructions, including authorization/capture, refund and chargeback routes (raw **Process payments**, lines 1137\u20131156). Payout, internal-transfer, webhook and report routes are separate (lines 1158\u20131191); a balance-account movement or report is not proof of external bank receipt.\n- Going live requires applying for a live account; test-account setup is not automatically replicated. The guide then calls for live credentials and endpoints plus end-to-end checks of legal entities, account holders/balance accounts, payments including declines, payouts, verification errors, webhooks and reports (raw **Go live**, lines 1193\u20131228). This checklist is a test plan, not evidence those checks passed.\n\n## Detail locators\n\n- Test-only Configuration API, LEM v3 and Checkout v72 calls, SDK-language/version examples and responses: raw lines 74\u20131034. The curl Checkout payload contains a rendered `{hint:...}` token in its `amount.value` (lines 713\u2013718), so that displayed snippet should not be copied as literal JSON.\n- Component session, package, initialization and customization steps: raw **Integrate components**, lines 1044\u20131066.\n- Managed versus custom payout, internal transfer and report-download routes: raw lines 1158\u20131191.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-platform model and related source routes.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/integration-checklist/2026-09-15|Integration and go-live checklist, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you start building your integration, make sure that you have already [designed your implementation](/marketplaces/get-started#scope-and-design-your-implementation) with your Adyen implementation manager.",
+      "location": "raw/adyen/docs/marketplaces/integration-checklist/2026-09-15.md, Integration and go-live checklist, line 25"
+    },
+    {
+      "text": "Every Adyen for Platforms integration must have at least the following resource types:",
+      "location": "raw/adyen/docs/marketplaces/integration-checklist/2026-09-15.md, Review your account structure, line 33"
+    },
+    {
+      "text": "Create a transfer instrument, the resource that represents the user's payout bank account. Adyen must verify ths bank account before you can pay out to it.",
+      "location": "raw/adyen/docs/marketplaces/integration-checklist/2026-09-15.md, API-only onboarding, line 1123"
+    },
+    {
+      "text": "To make sure that the pay-in, settlement, and payout processes run smoothly, you must book the incoming funds and fees to the correct balance accounts. This means that you have to include information on how to split the funds between your users' balance accounts and your platform's liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/integration-checklist/2026-09-15.md, Start processing online payments, line 1145"
+    },
+    {
+      "text": "The setup from your test Adyen for Platforms account is *not* replicated to your live Adyen for Platforms account automatically.",
+      "location": "raw/adyen/docs/marketplaces/integration-checklist/2026-09-15.md, Go live, line 1198"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-integration-checklist-platforms-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-integration-checklist]] \u2014 2023-modified, 2026-09-15-captured Marketplace-path Adyen for Platforms integration/go-live checklist for balance-platform resources, credentials, onboarding, split payments, payouts, reconciliation and separate live setup.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/integration-checklist/2026-09-15.md",
+  "raw_sha256": "c3a141be58176478019b4ec7e84cdad9f17bc75da6138f477b3008807d5f7cb9",
+  "status": "candidate_ready"
+}

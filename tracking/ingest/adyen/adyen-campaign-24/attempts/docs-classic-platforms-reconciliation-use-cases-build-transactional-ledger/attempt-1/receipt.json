@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-reconciliation-use-cases-build-transactional-ledger",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms transactional ledger\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/reconciliation-use-cases/build-transactional-ledger\"\nraw_files:\n  - \"adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md\"\ntags: [adyen, classic-platforms, reconciliation, ledger, reports, negative-balances]\n---\n\n## Overview\n\nThis 2023-modified Classic Adyen for Platforms guide, captured 2026-09-15, explains building a transaction ledger by account holder and account from the Marketplace Payments accounting report. It covers credits, debits, fee and payout rows, then compares calculated balances with the MarketPay balance report. New implementations are directed to a separate integration guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The Marketplace Payments accounting report shows financial activity within the Classic platform: payment/transfer credits and refund, chargeback, transfer, fee and payout debits. Filter or group by **Account holder** and **Account** to reconstruct each account's transaction history; the page's selected rows are an illustration rather than a complete report (raw lines 19\u201327, 39\u201366).\n- Split instructions at payment or capture produce account-specific report rows: a two-account payment yields two credit rows, and a split refund yields separate debit rows. If split instructions are absent, Adyen credits/debits the platform liable account instead; a partial refund without split instructions debits the liable account and aggregate entries use `TransferBalance`. All transaction fees are deducted from the liable account and total fees appear as `Fee` (raw lines 29\u201337). The account receiving a sale or refund effect follows these Classic split instructions, not an inferred modern balance-account model.\n- Calculate an account balance by tracking all its credits, debits and payouts in the Marketplace Payments accounting report, or inspect available balances in the separate MarketPay balance report, including the liable account (raw lines 68\u201372). The worked rows produce EUR 78.28 liable, EUR 0 for AccountHolder_1 and EUR 72 for AccountHolder_2, but are selected illustrative rows, not proof of a live reconciliation (raw lines 45\u201364, 82\u201394). A `Payout` report row is not itself evidence of recipient-bank credit.\n- Refunds or chargebacks can make a Classic account negative; payout or balance transfer cannot, because only available balance can be paid/transferred. Adyen permits negative balances for up to 30 days and, at month end if an account has remained negative for **more than 30 days**, compensates by debiting the platform liable account. That compensation appears as a `FundTransfer` row; the page also points to account-holder top-ups as an alternative to have holders cover their negative balances (raw lines 74\u201380).\n\n## Detail locators\n\n- Classic scope, Marketplace Payments report purpose and activity types: raw lines 19\u201327. Split-credit/debit grain, liable fallback and Fee: raw lines 29\u201337. Selected ledger columns/rows and grouped summary: raw lines 39\u201366.\n- Balance calculation versus MarketPay balance report: raw lines 68\u201372. Negative-balance cause, 30-day/month-end liable compensation, `FundTransfer` and available-balance restriction: raw lines 74\u201380. Selected balance-report example: raw lines 82\u201394.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older account-holder/account money-flow model.\n- [[source-adyen-docs-classic-platforms-reconciliation-use-cases]] \u2014 Classic reconciliation hub.\n- [[source-adyen-docs-classic-platforms-processing-payments]] \u2014 Classic split instruction and refund behavior.\n- [[adyen-platforms]] \u2014 separate newer balance-platform model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15|Classic transactional ledger, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md:19"
+    },
+    {
+      "text": "If you split a payment between two accounts, the split is reflected in two separate rows that credits each account with the specified split amount.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md:33"
+    },
+    {
+      "text": "If you do not provide instructions for the split instructions, Adyen credits or debits the amount to or from your liable account.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md:35"
+    },
+    {
+      "text": "All the transaction fees are deducted from your liable account.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md:37"
+    },
+    {
+      "text": "Note that negative balances only occur as a result of refunds or chargebacks.",
+      "location": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md:80"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-classic-transactional-ledger-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-reconciliation-use-cases-build-transactional-ledger]] \u2014 2023-modified, 2026-09-15-captured Classic account-level accounting-ledger guide for split/liable rows, fees, balance comparison and aged-negative-balance compensation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Missing split instructions can book to the liable account; all transaction fees are deducted there. A negative balance after refunds/chargebacks can transfer to the liable account at month end after more than 30 days. Selected rows and Payout records do not prove bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15.md",
+  "raw_sha256": "eabf78dd5767b5155bd87bf691d2d1b1e59343e59fb1265a2ea6cda4192c0a63",
+  "status": "candidate_ready"
+}

@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-20] ingest | Adyen website C24
+
+- All 50 exact-manifest Classic reports/reconciliation/release/partner/POS and Marketplace foundation/onboarding/verification references General Docs sources independently approved and promoted. First full-review approvals 47/50; 3 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 2 concepts, including 0 new concept(s). Classic versus Marketplace versus modern Platforms scope, resource ownership, money direction, verification cohorts/deadlines, roles/capabilities/consent, API/environment/version scope, asynchronous lifecycle results, report grains and submission versus verification/payment/settlement/payout/bank receipt remain distinct. Original reviews, attempts and bounded correction evidence retained. Platform guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 1214 = 1200 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-24/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-20] ingest | Adyen website C23
 
 - All 50 exact-manifest Issuing card-data/PIN and Classic Platforms foundations, verification, payments/funds/payouts and risk references General Docs sources independently approved and promoted. First full-review approvals 43/50; 7 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

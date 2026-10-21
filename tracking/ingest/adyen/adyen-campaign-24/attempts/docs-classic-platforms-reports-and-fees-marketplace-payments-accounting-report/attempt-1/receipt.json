@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-reports-and-fees-marketplace-payments-accounting-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Marketplace Payments accounting report\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/reports-and-fees/marketplace-payments-accounting-report\"\nraw_files:\n  - \"adyen/docs/classic-platforms/reports-and-fees/marketplace-payments-accounting-report/2026-09-15.md\"\ntags: [adyen, classic-platforms, reporting, reconciliation, ledger]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured **Classic Adyen for Platforms** page defines the Marketplace Payments accounting report for financial status changes, events and modifications across marketplace/platform payments. It proposes the report for a transactional ledger across platform accounts and for reconciling fees debited from the platform's liable account. This is a Classic account-holder/account report, not a modern Balance Platform report. [[adyen]] [[adyen-classic-platforms]] (raw lines 15\u201325)\n\n## Key takeaways\n\n- The report is a default subscription at hourly or daily frequency. The daily filename is `marketplace_payments_accounting_report_YYYY_MM_DD.csv`; the hourly filename adds `hourly` and `HH_UTC`. The page says the platform's time-zone setting affects report data, so the period and time-zone basis must be checked when reconciling rows. (raw lines 19\u201333)\n- Each line below the header is a separate entry, rather than a whole-payment summary. The columns identify marketplace, account holder and account; carry separate action, payment, modification, payout and chargeback PSP references; and include booking date/time-zone, main amount/currency, record type and balance currency. The Payment PSP reference may be empty for a non-payment action. Use the individual column definitions for joins and the sample only as an example. (raw lines 35\u201369)\n- `Record Type` identifies whether an entry changes the pending balance, available `Balance (BC)`, or both. `PendingCredit` is a captured payment still unavailable for payout because Adyen has not received funds; `Credited` moves settled funds into available balance. `PendingDebit` is an initiated refund before deduction; `Debited` records the deduction. Failed/reversed credit or debit, chargeback, second chargeback and fund-transfer records have distinct effects in the table. Do not equate a pending booking with settled, payable funds. (raw lines 66\u201369, 85\u2013109)\n- Bank-account `Payout` and `VirtualAccountPayoutReturned` rows differ from card `PayoutInitiated`, `PaidOut` and `PayoutFailed`. A card `PayoutInitiated` row deducts available balance at initiation and must not be read as a completed payout or bank receipt. `PendingFundTransfer` is limited to beneficiary-setup accounts. (raw lines 107\u2013114)\n- `TransferBalance` has a version boundary: older report versions include payment costs in the aggregate; for new platforms it is limited to credits/debits that could not be booked because split instructions/reference were missing or a technical issue occurred. The table's prose calls the separate payment-cost type `Fee`, while the immediately following record-type row is labeled `NewFee`. Preserve both labels as a source discrepancy rather than silently normalizing them. The `NewFee`, deposit correction, invoice deduction, merchant pay-in/reversal and manual-correction types are default for new platforms; existing platforms must contact Support to enable them. (raw lines 115\u2013125)\n- **Dated California column difference:** This report's column table still describes `Refund terms` as California-bank-payout \u201cRight To Refund\u201d text (raw line 73). The fully read Classic release notes state under **2022-03-14 \u2014 Reports** that Adyen removed that text from the column for California bank payouts (release-note raw lines 412\u2013416). Thus the table is not evidence that the text remains populated in a later report. The captured pages leave the column's exact later value unspecified.\n- The report specifies booked platform/account balances and record meanings. It does not by itself prove that any particular payment settled, a payout completed, or a bank received funds.\n\n## Detail locators\n\n- Raw lines 49\u201379: full column types and definitions, including account identifiers, different PSP references, `Pending (BC)`, `Balance (BC)`, conditional exchange rate, payout bank details and reserved columns.\n- Raw lines 85\u2013125: full record-type/affected-balance matrix, including reversal, chargeback and liable-account adjustment types and the Support opt-in note.\n- Classic release-note raw lines 356\u2013366: 2022-04-11 addition of chargeback references and 2022-04-04 UTC hourly-generation fix; lines 412\u2013416: California `Refund terms` text removal; lines 459\u2013463: 2022-02-21 card-payout booking-duplication fix. These dated changes do not establish a live report configuration.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/account model.\n- [[source-adyen-docs-classic-platforms-reports-and-fees]] \u2014 parent report selection and fees catalog.\n- [[source-adyen-docs-classic-platforms-release-notes]] \u2014 dated report changes. Fully read counterpart: [[raw/adyen/docs/classic-platforms/release-notes/2026-09-15|Classic Platforms release notes, captured 2026-09-15]].\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/reports-and-fees/marketplace-payments-accounting-report/2026-09-15|Marketplace Payments accounting report, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The Marketplace Payments accounting report includes financial status changes, events, and modifications for all the payments across your marketplace or platform including full bookkeeping.",
+      "location": "primary raw line 23, introduction"
+    },
+    {
+      "text": "Under the header line, each line in the report is a separate entry.",
+      "location": "primary raw line 43, Structure > Entries"
+    },
+    {
+      "text": "Pending balance, reflects pending debits or credits.",
+      "location": "primary raw line 68, Columns > Pending (BC)"
+    },
+    {
+      "text": "In previous versions of the report, this amount includes payment costs.",
+      "location": "primary raw line 116, Record types > TransferBalance"
+    },
+    {
+      "text": "This record type is used by default in new platforms. For existing platforms, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to enable the new record types.",
+      "location": "primary raw line 125, Record types footnote"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-marketplace-payments-accounting-report-source",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-classic-platforms-reports-and-fees]] \u2014 2023-modified, 2026-09-15-captured Classic report/fee selection hub distinguishing Adyen-account payment/invoice reports from account-holder/liable platform reports and scheduled-payout-only Marketpay Payout.",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-reports-and-fees-marketplace-payments-accounting-report]] \u2014 2023-modified, 2026-09-15-captured Classic account-entry ledger/report schema for pending and available balances, payout/fee record types, and dated column/label discrepancies.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Report raw line 73 describes California Right To Refund text, but the 2022-03-14 Classic release note says it was removed from Refund terms (release-note raw lines 412\u2013416).",
+          "Report raw lines 116\u2013117 use Fee in prose and NewFee as the record-type label; preserve both without resolving the naming difference."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/reports-and-fees/marketplace-payments-accounting-report/2026-09-15.md",
+  "raw_sha256": "bd796ee0abbfbf1dcf66ab2839b83f714e365aa782aeff3cd8bb11fea0b99daa",
+  "status": "candidate_ready"
+}

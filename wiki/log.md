@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-20] ingest | Adyen website C24
+
+- Fifty independently approved Classic reports/reconciliation/release/partner/POS and Marketplace foundation/onboarding/verification references documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 2 concepts touched (0 new); source_count 1214 = 1200 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-24/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-20] ingest | Stripe Android `23.24.0`
 
 - Approved additive full override with focused reading: preview annotation migration, four method declarations/support announcements and restricted KYC delegation. UI/test-mode announcements, excluded implementation and retrospective Identity notes remain qualified; all older history and source count preserved. Details [[stripe-log]], [[source-github-stripe-android]] and [[changelog-github-stripe-android]]. No SDK/device/payment execution, commit or push.

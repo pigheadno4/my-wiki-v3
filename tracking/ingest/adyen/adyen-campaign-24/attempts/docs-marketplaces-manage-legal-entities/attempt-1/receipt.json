@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-manage-legal-entities",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: manage legal entities\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-legal-entities\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, legal-entities, onboarding, verification]\n---\n\n## Overview\n\nThis 2024-modified page, captured 2026-09-15, describes creating, viewing, and updating individual or organization legal-entity resources for users on an Adyen Balance Platform. The resource holds identity and tax details plus associations with other entities; Adyen uses its details for verification. It is a Marketplaces guide within [[adyen-platforms]], issued by [[adyen]]. Its operations are part of onboarding and verification, not evidence that a particular user passed verification or obtained a capability.\n\n## Key takeaways\n\n- Use Legal Entity Management API v3 to manage the resources. The stated prerequisite is a Legal Entity Management web-service user with **Manage LegalEntities via API** and **Balance Platform BCL Legal Entity role**. Minimum creation information depends on the user's location and entity type. Create an individual or organization with POST `/legalEntities`; retain the generated legal-entity ID for account-holder creation, viewing, updating, and hosted onboarding. See raw lines 19\u201343 and 373\u2013400.\n- View a legal entity through Customer Area, the API, or hosted onboarding. API retrieval uses GET `/legalEntities/{id}`; each associated entity needs its own GET by the returned `legalEntityId`. For individual and sole-proprietorship records, Customer Area redacts listed personally identifiable information unless the user has the **View account holders PII data** role. See raw lines 403\u2013436 and 593\u2013626.\n- Update changed account-holder details through Customer Area/hosted onboarding or PATCH `/legalEntities/{id}`. The Customer Area path requires **Manage account holders and legal entities**. API PATCH updates only supplied parameters. Hosted onboarding requires an onboarding link and redirects the user to its returned URL. Updating legal-entity details reruns verification checks. See raw lines 628\u2013651 and 972\u2013981.\n- A main legal entity's type can be changed through hosted onboarding or, for API-only onboarding, PATCH plus additional required information. All verification checks rerun. Only the main entity's type can change; an incorrect associated entity type requires a new legal entity. The API-only direct type change supports individual\u2194organization; organization\u2192sole proprietorship uses a subsequent association step. The page lists retained resources and migrated name/country fields, and says to PATCH again for remaining details such as the complete address. See raw lines 983\u20131013, 1029\u20131036, and 1227\u20131247.\n\n## Detail locators\n\n- Creation request/response examples in several languages: raw lines 41\u2013400. The US organization data is illustrative.\n- Viewing routes, redaction, associated-entity lookup, and hosted onboarding: raw lines 403\u2013626.\n- Updating routes and request examples: raw lines 628\u2013981.\n- Entity-type changes, retained/migrated fields, API examples, and follow-up PATCH: raw lines 983\u20131247.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platforms]] \u2014 modern Adyen for Platforms and Marketplace route.\n- [[source-adyen-docs-platforms-manage-legal-entities]] \u2014 separate Platforms URL for a closely related LEM v3 guide; keep source provenance distinct.\n- [[adyen-classic-platforms]] \u2014 legacy Classic Platforms resource model, distinct from this Balance Platform legal entity.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15|Manage legal entities \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A legal entity is an API resource that describes an individual or an organization on your Balance Platform.",
+      "location": "raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md:19"
+    },
+    {
+      "text": "To manage legal entities, use the [Legal Entity Management API](https://docs.adyen.com/api-explorer/legalentity/3/overview).",
+      "location": "raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md:23"
+    },
+    {
+      "text": "The minimum required information for creating a legal entity depends on the location and entity type that you are onboarding.",
+      "location": "raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md:39"
+    },
+    {
+      "text": "Only parameters passed in the request body are updated.",
+      "location": "raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md:651"
+    },
+    {
+      "text": "You can only change the type of the main legal entity. If the type of an [associated legal entity](/marketplaces/onboard-users/onboarding-steps) is incorrect, you need to create a new legal entity.",
+      "location": "raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md:992"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-manage-legal-entities-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-legal-entities]] \u2014 2024-modified, 2026-09-15-captured Marketplaces Legal Entity Management API v3 guide for create/view/update and main-entity type changes, with role, region, redaction and verification-rerun boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-legal-entities/2026-09-15.md",
+  "raw_sha256": "15870fdca88ad4a9b047662c2735f27de3b54f5e784ff79a7ae1aca395f1a041",
+  "status": "candidate_ready"
+}

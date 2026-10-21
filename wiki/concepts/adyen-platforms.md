@@ -11,9 +11,120 @@ Adyen for Platforms is Adyen's current platform-integration overview for commerc
 
 ## Evidence boundary
 
+The separate [[source-adyen-docs-marketplaces|Marketplaces guide]] is a route within Adyen for Platforms for a branded marketplace that processes online payments only; its buyers recognize the marketplace brand, while the platform processes on behalf of its users and can split funds before payout. This guide does not identify legal seller, merchant of record or fund ownership for a specific payment. Its dated regional footnote about in-person payments does not override the marketplace online-only criterion. Keep this modern route separate from [[adyen-classic-platforms|Classic Platforms]].
+
+
 The landing page does not define the detailed legal-entity/account-holder/balance/liable/reserve/transfer-instrument model, API roles, verification capabilities or status transitions. A platform and its users are distinct actors, but “on behalf of” does not identify a merchant of record, legal seller, payee or fund owner for a particular transaction. Country and acquiring-region lists are dated and distinct; the Channel Islands and Isle of Man are excluded for in-person payments and store creation. Issuing, business accounts and Capital are separate optional products with additional availability and verification. The page is not proof of onboarding approval, payment authorization, split execution, payout or bank receipt.
 
 ## Sources
+
+- [[source-adyen-docs-marketplaces-onboard-users-onboarding-steps]] — 2026-09-15 Marketplace onboarding-step filter export with Hosted/v4 selected but location and entity filters missing; no concrete requirements result is present.
+
+
+- [[source-adyen-docs-marketplaces-account-structure-resources-legal-entity-management]] — 2026-09-15 Marketplace LEM resource orientation for user legal entities, transfer instruments and supporting documents as verification inputs before payment, payout or financial-product capabilities.
+
+
+- [[source-adyen-docs-marketplaces-manage-access]] — 2023-modified, 2026-09-15-captured Marketplace Customer Area/team-access overview for admin email activation, role-assigned team users and separate payment/balance/financial-product credential routes; navigation is not operation-level grant proof.
+
+
+- [[source-adyen-docs-marketplaces-manage-reserve-account]] — 2026-09-15 Marketplace reserve-account guide for liable-holder-linked collateral against transfer-caused negative user balances, distinct from refund/chargeback compensation.
+
+
+- [[source-adyen-docs-marketplaces-manage-liable-accounts]] — 2026-09-15 Marketplace-owned main, incorrect-split and compensation liable-account roles, including failed-destination fallback and conditional negative-balance remedy timing.
+
+
+- [[source-adyen-docs-marketplaces-onboard-users-components]] — 2024-modified, 2026-09-15-captured Marketplace onboarding-component overview for LEM v3/v4 legal entities and individual, Terms of Service and transfer-instrument UI routes; components cover only part of API-only onboarding.
+
+
+- [[source-adyen-docs-marketplaces-manage-access-webservice-roles]] — 2023-modified, 2026-09-15-captured Marketplace-path balance-platform credential role matrix for BCL/PCI, optional Issuing and version-qualified Transfers API permissions.
+
+
+- [[source-adyen-docs-marketplaces-verification-overview-verification-types]] — 2026-09-15 Marketplace upfront/staggered KYC guide with tier payout interruption and local-currency table; its staggered-default claim conflicts with general Platforms payment-facilitator-only guidance.
+
+
+- [[source-adyen-docs-marketplaces-account-structure-resources]] — 2021-modified, 2026-09-15-captured Marketplace resource map for merchant processing accounts, user/liable balance-platform accounts and the conditional multiregion single-platform restriction.
+
+
+- [[source-adyen-docs-marketplaces-account-structure-resources-marketplace-structure]] — 2026-09-15 Marketplace account/resource example for EU/US merchant and balance platforms, user and liable resources, and NL payment-to-payout flow; cross-region seller transfers require a single platform and exclude extra financial products.
+
+
+- [[source-adyen-docs-marketplaces-account-structure-resources-financial-products]] — 2026-09-15 Marketplace account-resource example for optional products, with mutually exclusive regional-platform versus cross-region-seller-transfer constraints and distinct user balance-account roles.
+
+
+- [[source-adyen-docs-marketplaces-kyc-verification-codes]] — 2021-modified, 2026-09-15-captured Marketplace-path Platforms/Issuing verification-code taxonomy, capability-problem retrieval routes and parent-action object/array example conflict.
+
+
+- [[source-adyen-docs-marketplaces-verification-requirements-reference-additional-products]] — 2023-modified, 2026-09-15-captured Marketplace reference for financial-product FATCA/CRS self-certification, business-account industry codes and source-of-funds fields, with a US-business-bank-account exception and new-industry approval contact.
+
+
+- [[source-adyen-docs-marketplaces-account-holder-status]] — 2026-09-15 Marketplace account-holder status guide for active/suspended/closed states, Adyen-only reversal and inheritance, and conditional post-settlement split routing by pay-in block; no transaction or payout proof.
+
+
+- [[source-adyen-docs-marketplaces-onboard-users]] — 2024-modified, 2026-09-15-captured Marketplace Hosted versus API-only onboarding route, with hosted country/entity and instant-bank limits, v3/v4 features and resource-creation component option.
+
+
+- [[source-adyen-docs-marketplaces-manage-balance-accounts]] — 2026-09-15 Marketplace Configuration API/Customer Area guide for user balance-account creation, lookup, update and permanent zero-balance closure; account-holder deactivation is separate.
+
+
+- [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service]] — 2023-modified, 2026-09-15-captured Marketplace-path balance-platform web-service/LEM credential guide for roles, test/live separation, API-key versus basic-auth rotation and credential deactivation; possession is not a role-grant or operation proof.
+
+
+- [[source-adyen-docs-marketplaces-onboard-users-onboarding-versions]] — 2025-modified, 2026-09-15-captured Marketplace v2-to-v4 hosted/API-only onboarding update guide, preserving delayed reverification, sunset gates and conflicting latest-stable/type wording.
+
+
+- [[source-adyen-docs-marketplaces-kyc-insights]] — 2026-09-15 Marketplace-path KYC dashboard guide for role-gated daily cohort metrics, first-attempt/median-time definitions and historical error counts.
+
+
+- [[source-adyen-docs-marketplaces-verification-overview]] — 2023-modified, 2026-09-15-captured Marketplace capability-verification overview for creation, data changes, tier moves and data reviews, with v3/v4 adjustable deadlines and asynchronous webhooks.
+
+
+- [[source-adyen-docs-marketplaces-verification-overview-data-review-process]] — 2023-modified, 2026-09-15-captured Marketplace-path periodic data-review guide for review-required webhook/deadline, v3/v4 proactive eligibility, user confirmation and later valid/invalid result; confirmation alone is not verification approval.
+
+
+- [[source-adyen-docs-marketplaces-verification-overview-capabilities]] — 2024-modified, 2026-09-15-captured Marketplace capability guide for default/additional requests, allowed/enabled gates, conditional product lists and deadline/re-verification exceptions.
+
+
+- [[source-adyen-docs-marketplaces-onboard-users-customize-hosted-onboarding]] — 2024-modified, 2026-09-15-captured Marketplace/Platforms/Issuing hosted-onboarding theme, locale, settings, TEST-bank and sensitive internal-debug guide; UI state is not verification approval.
+
+
+- [[source-adyen-docs-marketplaces-kyc-verification-codes-remediating-actions]] — 2021-modified, 2026-09-15-captured Marketplace-path Platforms/Issuing remediation-code catalog, including parent/suberror placement, conditional missing-data messages and unresolved duplicate `2_198` mapping.
+
+
+- [[source-adyen-docs-marketplaces-onboard-users-terms-of-service]] — 2026-09-15 Marketplace custom-onboarding Terms of Service guide for requirement webhook, type lookup, document presentation, authorized individual acceptance and TEST/LIVE type distinction.
+
+
+- [[source-adyen-docs-marketplaces-kyc-verification-codes-general-verification-errors]] — 2023-modified, 2026-09-15-captured Marketplace-path general KYC error-code lookup for Platforms/Issuing, including possible suberrors, missing-data/contract groups and two mismatched code-link anchors; no account-specific verification proof.
+
+
+- [[source-adyen-docs-marketplaces-manage-account-holders]] — 2023-modified, 2026-09-15-captured Marketplace-path Balance Platform account-holder lifecycle, capability and KYC-view guide; retains closure/reactivation limits and payload-example mismatches.
+
+
+- [[source-adyen-docs-marketplaces-manage-transfer-instruments]] — 2023-modified, 2026-09-15-captured Marketplace LEM API/Customer Area guide separating user bank instruments from liable-account company payout accounts, verification state, stable update IDs and irreversible delete effects.
+
+
+- [[source-adyen-docs-marketplaces-manage-legal-entities]] — 2024-modified, 2026-09-15-captured Marketplaces Legal Entity Management API v3 guide for create/view/update and main-entity type changes, with role, region, redaction and verification-rerun boundaries.
+
+
+- [[source-adyen-docs-marketplaces-verification-requirements]] — 2023-modified, 2026-09-15-captured Marketplace user-verification guide for country, entity, minors and optional financial-product conditions, including base-integration versus product-check wording.
+
+
+- [[source-adyen-docs-marketplaces-integration-checklist]] — 2023-modified, 2026-09-15-captured Marketplace-path Adyen for Platforms integration/go-live checklist for balance-platform resources, credentials, onboarding, split payments, payouts, reconciliation and separate live setup.
+
+
+- [[source-adyen-docs-marketplaces-get-started]] — 2022-modified, 2026-09-15-captured Marketplace integration sequence from sales fit/design through test and separately configured live account.
+
+
+- [[source-adyen-docs-marketplaces-kyc-verification-codes-sub-errors]] — 2023-modified, 2026-09-15-captured Marketplace-path KYC suberror catalog for Platforms/Issuing integrations, including the `1_5052` setup stop and sample-array wording conflict.
+
+
+- [[source-adyen-docs-marketplaces-test-verification-errors]] — 2026-09-15 Marketplace-path TEST guide for forced legal-entity/document/transfer-instrument suberrors, owner account-holder checks and conditional remediation; hosted onboarding excluded.
+
+
+- [[source-adyen-docs-marketplaces-verification-requirements-document-requirements]] — 2023-modified, 2026-09-15-captured Marketplaces-path conditional verification-document catalog; product/version and file/recency gates, with an unresolved photo-ID file-count mismatch.
+
+
+- [[source-adyen-docs-marketplaces]] — 2026-09-15 Marketplaces route of Adyen for Platforms: branded online-only marketplace model, onboarding/verification, split payments, payout choices, dated region lists and optional financial products.
+
 
 - [[source-adyen-docs-platforms-us-tax-forms]] — 2026-09-15 US direct-payout 1099-K filing-scope and platform retrieval/PDF-delivery guide with a 2025 AND-versus-OR threshold conflict and role gates; title also mentions 1099-NEC but body details only 1099-K, and instructions do not prove filing or delivery.
 
@@ -369,6 +480,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 
 - [[source-adyen-docs-platforms-verification-requirements-data-formats-per-country]] — 2024-modified, 2026-09-15-captured country/entity data-format reference for Adyen for Platforms and issuing, with onboarding-version and document-verification exceptions.
+
+- [[source-adyen-docs-marketplaces-verification-requirements-data-formats-per-country]] — 2023-modified, 2026-09-15-captured Marketplace-path country/entity data-format reference for Platforms or issuing integrations; country/field-specific separator rules, onboarding-version qualifiers and document-verification exceptions.
+
 
 
 - [[source-adyen-docs-platforms-get-started]] — 2022-modified, 2026-09-15-captured Platforms onboarding overview from Adyen contact/design through test integration, live application and separately replicated live setup; no activation or money-movement proof.

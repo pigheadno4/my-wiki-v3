@@ -1,0 +1,9 @@
+# Retrieval checks — docs-marketplaces-integration-checklist
+
+## Q1 — What is the checklist for, and what must a Marketplace integration prepare before live operation?
+
+It routes a Marketplace-path Adyen for Platforms integration from design with an Adyen implementation manager (raw lines 23–25) through balance-platform account resources (29–44), distinct API credentials (60–72), webhooks (1036–1042), hosted or API-only onboarding and user verification (1068–1135), online payments and split booking (1137–1156), payouts/transfers/reports (1158–1191), and a separate live-account transition (1193–1228). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-integration-checklist]] → [[raw/adyen/docs/marketplaces/integration-checklist/2026-09-15]].
+
+## Q2 — What verification and go-live boundaries prevent treating examples or checklist steps as completed payments or payouts?
+
+The page says Adyen must verify users before processing their payments or paying them out (raw lines 1068–1075); its API-only onboarding list says a transfer instrument's bank account must be verified before payout (1122–1123), and it routes status/capability changes and possible documents separately (1132–1135). Payment splits book funds/fees to user versus platform liable balance accounts (1143–1156), whereas payout webhooks and bank payout are separate steps (1158–1167). Test calls and example responses (74–1034) do not establish live execution; test setup is not copied automatically into live, which needs an applied-for account, credentials, endpoint changes and end-to-end checks (1193–1228). The displayed Checkout curl amount contains a rendering token, so its JSON at lines 713–718 is not literal copy-ready syntax. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-integration-checklist]] → [[raw/adyen/docs/marketplaces/integration-checklist/2026-09-15]].

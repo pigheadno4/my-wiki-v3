@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-platforms-for-partners",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic partner platform requirements\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/platforms-for-partners\"\nraw_files:\n  - \"adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md\"\ntags: [adyen, classic-platforms, partners, ecommerce, stores, pci]\n---\n\n## Overview\n\nThis 2023-modified Classic guide, captured 2026-09-15, applies **only** to a partner arrangement for Adyen for Platforms. Unlike the ordinary platform model, the partner platform cannot process payments on behalf of its sub-merchants; Adyen establishes a direct sub-merchant relationship with card schemes. The platform onboards each sub-merchant, collects ecommerce SAQ A evidence, creates a store, and routes payments through that store. Integrations built after 2022-08-01 are directed to a separate newer guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- For ecommerce, each sub-merchant needs SAQ A and an online store to establish the direct scheme connection. POS sub-merchants also need stores but the guide says they do **not** complete SAQ A because the POS terminals establish the card-network connection and PCI requirements (raw lines 19\u201330). The platform must arrange store creation with Adyen Support, supplying countries, currencies, MCCs and payment methods (raw lines 40\u201356). This dated source does not independently establish current PCI compliance.\n- Create the Classic account holder first and collect website address and phone for later store details. Before adding an ecommerce store, make sure the sub-merchant completed SAQ A and passed KYC verification (raw lines 58\u201371, 146\u2013152). HOP includes SAQ A automatically; a custom onboarding flow must request `/getPciQuestionnaireUrl` and use the result to send the holder to the questionnaire (raw lines 73\u2013100).\n- The custom SAQ A URL is one-time and must be used within 15 seconds; successful redirect starts a 30-minute session. A late redirect or reload returns HTTP 401 and requires another URL. Verification status arrives through `ACCOUNT_HOLDER_VERIFICATION`, including the shown `PCI_VERIFICATION` example; verify successful SAQ A provision and KYC before continuing (raw lines 98\u2013144). The prose calls the response field `redirectURL` but its JSON example uses `redirectUrl`; confirm the API spelling before parsing (raw lines 98\u2013112).\n- Subscribe to `ACCOUNT_HOLDER_STORE_STATUS_CHANGE`, add `storeDetails` using Classic `/updateAccountHolder`, including address, phone, merchant account, MCC, store name/reference, web address and `shopperInteraction: Ecommerce` (raw lines 146\u2013204). The example response is `Pending`; wait for a status-change webhook with new status `Active` **before any payment processing** (raw lines 206\u2013243).\n- If a sub-merchant takes payments from its own domain, add that domain to allowed origins (raw lines 265\u2013267). Route `/payments` with the appropriate sub-merchant `store` ID; a payment can split funds across multiple account holders, but can be processed through only **one** store (raw lines 269\u2013279). The test `/payments` body with three splits is an example, not proof of authorization, booking, payout or bank receipt (raw lines 281\u2013330).\n\n## Detail locators\n\n- Partner-only identity, direct scheme relationship, ecommerce/POS SAQ A distinction and five-step sequence: raw lines 19\u201338. Support configuration and account-holder prerequisites: raw lines 40\u201371.\n- Hosted versus custom questionnaire, one-time URL/session/401, webhook and casing mismatch: raw lines 73\u2013144. Store create fields, Pending response and Active webhook gate: raw lines 146\u2013263. Allowed origins, single-store routing and example splits: raw lines 265\u2013330.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older account-holder/account model; partner terms here are narrower.\n- [[source-adyen-docs-classic-platforms-platforms-for-pos]] \u2014 separate POS-store path and SAQ A distinction.\n- [[source-adyen-docs-classic-platforms-onboard-users-hosted-onboarding-page]] \u2014 hosted onboarding route.\n- [[adyen-platforms]] \u2014 newer balance-platform model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15|Classic partner platform requirements, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The content on this page only applies when you have a partner arrangement for Adyen for Platforms.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md:19"
+    },
+    {
+      "text": "On your partner platform, you cannot process payments on behalf of your sub-merchants.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md:23"
+    },
+    {
+      "text": "However, they do not have to complete the SAQ A.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md:30"
+    },
+    {
+      "text": "Make sure that each sub-merchant has completed the SAQ A and has passed the KYC verification process before you add a store.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md:71"
+    },
+    {
+      "text": "You can split payments across multiple account holders, but you can only process a payment through a single store.",
+      "location": "raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md:277"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-classic-partner-platform-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-platforms-for-partners]] \u2014 2023-modified, 2026-09-15-captured Classic partner-arrangement ecommerce guide for direct scheme-linked sub-merchants, SAQ A/KYC and Active-store gates, allowed origins and single-store routing.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This partner arrangement says the platform cannot process on behalf of sub-merchants. Ecommerce SAQ A is required before store creation; POS store users are exempt in this guide. The questionnaire response uses `redirectURL` in prose versus `redirectUrl` in JSON. Pending store or sample payment request is not activation or financial outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/platforms-for-partners/2026-09-15.md",
+  "raw_sha256": "7b7fb94c8e3400b04bf2f2b0fac8b66225f3dc4569a02722e9b810f9c6ffb203",
+  "status": "candidate_ready"
+}

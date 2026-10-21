@@ -1,0 +1,9 @@
+# C24 Classic transactional-ledger retrieval checks
+
+## Q1 — Which report and grain build the Classic platform ledger?
+
+Use the Marketplace Payments accounting report and group/filter by Account holder and Account, retaining credits from payments/transfers and debits from refunds, chargebacks, transfers, fees and payouts (raw lines 19–27, 45–66). Payment/capture split instructions generate account-specific rows; absent split instructions route credits/debits to the liable account and aggregate as `TransferBalance`, while all fees debit the liable account as `Fee` (raw lines 29–37). The MarketPay balance report gives separate available-balance views (raw lines 68–72). Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-reconciliation-use-cases-build-transactional-ledger]] → [[raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15]].
+
+## Q2 — How are negative balances handled, and what do sample rows fail to prove?
+
+Refunds/chargebacks can make an account negative, but payouts/transfers are limited to available balance (raw lines 74–80). Adyen allows negative balances up to 30 days; at month end after more than 30 negative days, it compensates from the platform liable account and records a `FundTransfer`. The page mentions holder top-up as an alternative (raw lines 76–78). Its selected ledger/balance rows illustrate accounting, not a completed live reconciliation, and a `Payout` row does not prove beneficiary-bank receipt (raw lines 39–64, 82–94). Forward route: [[index]] → [[adyen-index]] → [[adyen-classic-platforms]] → [[source-adyen-docs-classic-platforms-reconciliation-use-cases-build-transactional-ledger]] → [[raw/adyen/docs/classic-platforms/reconciliation-use-cases/build-transactional-ledger/2026-09-15]].

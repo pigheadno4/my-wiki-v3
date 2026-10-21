@@ -1,0 +1,9 @@
+# docs-marketplaces-account-structure-resources-legal-entity-management — retrieval checks
+
+Q1. Which Legal Entity Management resources does the Marketplace page require for user verification, and what does each represent?
+
+The page says marketplace users must be verified before processing payments, payout or financial-product provision, and legal entities plus associated resources supply Adyen the information for those checks (raw lines 19–21). It names a legal entity with user identity/business/tax details, a transfer instrument described as a verified bank account for payouts, and supporting documents for checking legal-entity or instrument information (lines 23–29). It routes resource management through the LEM API (line 31). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-account-structure-resources-legal-entity-management]] → [[raw/adyen/docs/marketplaces/account-structure-resources/legal-entity-management/2026-09-15]].
+
+Q2. Does creating these resources or seeing the term 'verified bank account' establish approved verification, payment capability or a successful payout?
+
+No. The page says creation **provides information to Adyen to verify users** (raw line 21); it does not give a verification outcome or transaction evidence. Its transfer-instrument definition describes the intended verified bank-account role (line 28), while supporting documents exist to verify supplied data (line 29). The guide has only LEM API and related-page routes after the definitions (lines 31–38), so check separate verification/capability and payout evidence before concluding an individual user is enabled. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-account-structure-resources-legal-entity-management]] → [[raw/adyen/docs/marketplaces/account-structure-resources/legal-entity-management/2026-09-15]].

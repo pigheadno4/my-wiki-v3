@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-verification-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces verification process overview\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/verification-overview\"\nraw_files:\n  - \"adyen/docs/marketplaces/verification-overview/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, verification, capabilities, onboarding]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured **Marketplaces / Adyen for Platforms** page explains how Adyen verifies marketplace users and controls the actions they may perform through **account-holder capabilities**. The page says to check capability settings to determine whether a particular user can use an action; requesting a capability, sending data or seeing an example status is not verification approval. [[adyen-platforms]]\n\n## Triggers and gates\n\n- Marketplace default capabilities are requested when a new account holder is created; a nondefault capability needs a separate request and can require more verification. Adyen checks asynchronously and sends verification updates through webhooks. A successful check allows the capability; a `rejected` verification status does not. See [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 30\u201340, 165\u2013180]].\n- Changing data after capabilities are allowed causes reverification. Adyen **may** set a deadline after a failed check; previously allowed capabilities can continue during an active deadline, then are disallowed if the issues remain unresolved. The page says `balancePlatform.accountHolder.updated` fires for **capability-related account-holder changes**, not legal-entity data changes alone. See [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 44\u201352, 182\u2013196]].\n- In **staggered verification**, moving to a higher tier **disallows payout-related capabilities**. For accepting-payment capabilities, the page says Adyen **might in the future** add a deadline that would permit continued use while extra data is supplied; do not treat that future option as an existing guaranteed grace period. See [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 56\u201360, 198\u2013212]].\n- Periodic or proactive data review triggers checks on the main legal entity and associated people/entities. The review is finalized only when the user **confirms the data and resolves all verification errors**. Previously allowed capabilities can continue during an active deadline, but failure to confirm or resolve errors disallows them. See [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 64\u201372, 214\u2013225]].\n\n## Deadline and evidence boundaries\n\n- Verification deadlines are described as available only in **Legal Entity Management API v3/v4**. The table lists standard **30-day** and **60-day** capability groups, but Adyen can shorten or remove a standard deadline after monitoring/verification. A deadline is the final date for required information and documents to be **submitted and verified**, and an active deadline can preserve only capabilities previously allowed. See [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 74\u2013106]]. The table is general to the listed verification events; it does not override the page\u2019s higher-tier future-tense caveat for accepting payments.\n- Customer Area account-holder details or Balance Platform API `GET /accountHolders/{id}` show deadlines; the sample response has 2022 example dates, `verificationStatus: invalid` with `allowed`/`enabled` shown as string values, and an error. Treat it as an illustration, not current account state or an operation schema guarantee. See [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 106\u2013161]].\n\n## Detail locators\n\n- Identity, capability checking and initial/change/tier/review triggers: [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 15\u201372]].\n- Versioned, adjustable deadlines and dated response example: [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 74\u2013161]].\n- Asynchronous workflows, webhooks and trigger-specific outcomes: [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|raw lines 165\u2013225]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms verification and capability model.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/verification-overview/2026-09-15|Marketplaces verification process (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Based on the results of the verification checks, Adyen decides if a user can perform any action on your marketplace. These actions are known as [*capabilities* ](/marketplaces/verification-overview/capabilities).",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/2026-09-15.md:21"
+    },
+    {
+      "text": "These capabilities are requested every time you onboard a new user and create an account holder for them.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/2026-09-15.md:38"
+    },
+    {
+      "text": "Data changes to the legal entity of the account holder do not trigger webhooks.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/2026-09-15.md:52"
+    },
+    {
+      "text": "When a user moves to a higher tier, the capabilities related to paying out are disallowed.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/2026-09-15.md:58"
+    },
+    {
+      "text": "The review is only considered finalized when the user has both confirmed the data **and** resolved all verification errors.",
+      "location": "raw/adyen/docs/marketplaces/verification-overview/2026-09-15.md:72"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-verification-overview-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-verification-overview]] \u2014 2023-modified, 2026-09-15-captured Marketplace capability-verification overview for creation, data changes, tier moves and data reviews, with v3/v4 adjustable deadlines and asynchronous webhooks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Higher-tier payout capabilities are disallowed; the accepting-payment deadline is described as a possible future addition (raw lines 56\u201360, 198\u2013212), despite general 30/60-day deadline tables.",
+          "Legal-entity data changes alone do not trigger balancePlatform.accountHolder.updated; it is sent for capability-related account-holder changes (raw line 52)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/verification-overview/2026-09-15.md",
+  "raw_sha256": "88e657749b30b475288f596e984c5a98c49b0d010b87c7d2b839beccbedb5e85",
+  "status": "candidate_ready"
+}

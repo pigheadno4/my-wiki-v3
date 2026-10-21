@@ -21,6 +21,10 @@ This 2026-09-15 Adyen Platforms snapshot compares upfront and staggered collecti
 - There are four tiers, determined by user country, legal-entity type and processed amount. Triggered verification checks or requests for high-risk capabilities may also cause a move to a higher tier. The processed-amount currency is AUD for Australia, USD for the United States, CAD for Canada, NZD for New Zealand, SGD for Singapore, HKD for Hong Kong, and EUR for other countries/regions. Currency assignments are not threshold values.
 - The page names no API credential or role and provides no account-specific eligibility or current verification result. Linked required-information, capability and verification-overview pages own detailed requirements and statuses.
 
+## Marketplace-path qualification
+
+The separately captured [[source-adyen-docs-marketplaces-verification-overview-verification-types|Marketplace verification-types guide]] says staggered verification is applied **by default** to its users and upfront can be enabled ([[raw/adyen/docs/marketplaces/verification-overview/verification-types/2026-09-15|Marketplace raw line 24]]). This general Platforms page instead recommends upfront and says **only payment facilitators** can request staggered through an Adyen contact ([[raw/adyen/docs/platforms/verification-overview/verification-types/2026-09-15|Platforms raw lines 24, 30–32]]). Both are 2026-09-15 snapshots; neither explains whether this difference reflects integration-model eligibility or inconsistent guidance. Keep the Marketplace path and this general Platforms guidance separate, and do not infer a specific business's staggered eligibility without its applicable program terms.
+
 ## Detail locators
 
 - Two collection modes, payment/payout condition, and upfront recommendation versus automatic receive-payments request: raw lines 19–24. Upfront account-holder sequence: lines 26–28. Payment-facilitator eligibility and Adyen-contact request: lines 30–34.

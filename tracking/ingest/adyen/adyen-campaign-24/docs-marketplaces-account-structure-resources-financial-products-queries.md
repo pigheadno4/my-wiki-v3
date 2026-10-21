@@ -1,0 +1,9 @@
+# docs-marketplaces-account-structure-resources-financial-products — attempt 1 retrieval checks
+
+## Q1. Which resources belong to the marketplace versus each user in the financial-products example?
+
+The example offers card issuing, business accounts and Capital (raw lines 19–25, 36–40). Marketplace-owned resources include company, merchant and regional balance-platform accounts, liable holder/balance, regional legal entities and an optional grant account (raw lines 42–63). User resources include account holders per operating country, a funds-holding balance account, separate instrument-linked balance account(s), verified-bank transfer instruments for payouts, optional payment instruments and KYC legal entities (raw lines 65–80). These are illustrative resource relationships, not created or approved resources. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-account-structure-resources-financial-products]] → [[raw/adyen/docs/marketplaces/account-structure-resources/financial-products/2026-09-15]].
+
+## Q2. Can a global marketplace with multiregional sellers transferring to one another use this regional optional-products arrangement?
+
+Under the captured page’s specific condition, **no**: such a marketplace must have **one balance platform across acquiring regions** and **cannot offer additional financial products** (raw lines 31–34). The example that follows uses EU/US regional balance platforms for an optional-products scenario (raw lines 36–57), so it must not be combined with that cross-region-seller-transfer case. The page’s resource diagram and example do not prove current eligibility, granted products, a payout or bank receipt. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-account-structure-resources-financial-products]] → [[raw/adyen/docs/marketplaces/account-structure-resources/financial-products/2026-09-15]].

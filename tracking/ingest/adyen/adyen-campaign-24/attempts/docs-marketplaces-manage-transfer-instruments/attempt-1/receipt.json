@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-manage-transfer-instruments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: Manage transfer instruments\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-transfer-instruments\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, transfer-instruments, payouts]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured **Marketplaces / Adyen for Platforms** guide treats a transfer instrument as a resource representing an **external bank account** for funds sent to or received from outside the marketplace. It separates **users\u2019 bank accounts** from the marketplace company\u2019s **payout accounts**, which are transfer instruments connected to its **liable account** for settlement to its own bank. A resource response or valid status is not proof that a payout reached a bank. [[adyen-platforms]]\n\n## API management and verification\n\n- The guide lists Legal Entity Management API and Customer Area credential/role prerequisites. Its requirement table names `Manage LegalEntities via API`, `Balance Platform BCL Legal Entity role`, `Manage account holders & legal entities`, and `Merchant manage bank accounts` for payout-account management. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 28\u201346]]. The table is formatting-imperfect, so confirm actual grants before relying on an operation.\n- A user transfer instrument is created with `POST /transferInstruments`, `type: bankAccount`, the `legalEntityId` of the entity contractually related to the platform and owning that bank account (the individual owner for a sole proprietorship), and a bank-account object whose identification fields depend on bank location. The example uses a **TEST** Legal Entity Management **v3** endpoint and language-specific SDK versions; later GET/PATCH/DELETE examples use **TEST v4**. These are examples, not live configuration. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 48\u201358, 60\u2013341, 377\u2013529, 549\u2013815, 839\u2013985]].\n- Creation returns a unique transfer-instrument `id`; the example response shows `sendToTransferInstrument` **requested true, allowed false, verificationStatus pending**. Creation and update instructions both say to inspect `problems` for bank-verification issues. A 200 update response retains the same ID so existing payout schedules and transfers can continue targeting it, but check verification status and actual transfer outcome separately. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 344\u2013375, 816\u2013837]].\n- GET by ID returns bank-account and verification details per the guide; PATCH by ID sends only fields being modified, with bank-location-specific `accountIdentification`. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 377\u2013559]].\n\n## Deletion and payout-account boundary\n\n- `DELETE /transferInstruments/{id}` is **not undoable**. Re-adding the same bank account requires a **new transfer instrument**, and future scheduled or on-demand payouts that still target the deleted ID **fail**. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 839\u2013987]].\n- Customer Area in this guide manages **only the marketplace\u2019s own payout accounts**, not user transfer instruments. A company payout account is usable when its status is **valid** after verification. For rotation, the guide says to add the replacement first, update managed/custom schedules and on-demand references, verify the new instrument is receiving funds, then delete the old one; edits take effect instantly. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 989\u20131018]]. A displayed status or planned rotation does not establish bank receipt.\n\n## Detail locators\n\n- Resource identity, ownership classes, API/Customer Area roles and create inputs: [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 15\u201358]].\n- TEST v3 creation examples and pending capability response: [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 60\u2013375]].\n- TEST v4 GET/PATCH examples, unchanged ID and bank-verification problems: [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 377\u2013837]].\n- DELETE consequences and company payout-account Customer Area/rotation flow: [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 839\u20131018]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms resource and payout context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|Manage transfer instruments (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A transfer instrument is an API resource that represents an external bank account.",
+      "location": "raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md:19"
+    },
+    {
+      "text": "* **Your payout accounts**: These are your own company's bank accounts that you add to your marketplace. Adyen uses these accounts to settle funds to you. In an Adyen for Platforms integration, these are the transfer instruments that are connected to your liable account.",
+      "location": "raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md:24"
+    },
+    {
+      "text": "Unique identifier of the legal entity that has the contractual relationship with your platform and owns the bank account. For sole proprietorships, this is the legal entity ID of the individual owner.",
+      "location": "raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md:57"
+    },
+    {
+      "text": "You cannot undo a delete request. If you need the same account added back, [create a new transfer instrument](#create-a-transfer-instrument). Any future scheduled or on-demand payouts that use the deleted ID will fail.",
+      "location": "raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md:987"
+    },
+    {
+      "text": "The Customer Area is only available to manage your marketplace's payout accounts, not your users' transfer instruments.",
+      "location": "raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md:993"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-manage-transfer-instruments-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-transfer-instruments]] \u2014 2023-modified, 2026-09-15-captured Marketplace LEM API/Customer Area guide separating user bank instruments from liable-account company payout accounts, verification state, stable update IDs and irreversible delete effects.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Deletion cannot be undone; future scheduled or on-demand payouts targeting the deleted transfer-instrument ID fail (raw line 987).",
+          "Examples mix TEST LEM v3 create with TEST v4 GET/PATCH/DELETE and multiple SDK versions; do not generalize one version to the entire guide."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15.md",
+  "raw_sha256": "79dacb87ab639bcfe5334178477b19e27d5308dcfc709516bc3159874bf041f3",
+  "status": "candidate_ready"
+}

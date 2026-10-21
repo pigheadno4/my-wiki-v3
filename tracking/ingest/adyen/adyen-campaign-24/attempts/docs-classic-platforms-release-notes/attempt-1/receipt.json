@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-release-notes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms release notes, 2018\u20132023\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/release-notes\"\nraw_files:\n  - \"adyen/docs/classic-platforms/release-notes/2026-09-15.md\"\ntags: [adyen, classic-platforms, release-notes, api-versions, notifications]\n---\n\n## Overview\n\nThis 2026-09-15 capture is a dated change log for **Classic Adyen for Platforms**, with entries from 2018-12-27 through 2023-06-05. It groups API, notification, hosted-onboarding, Customer Area, KYC, report and general changes. Entries describe changes at their release dates and sometimes distinguish API or notification versions; they are not a current feature or eligibility guarantee. The 2022-08-01 entry directs new integrations to upgraded Adyen for Platforms documentation and existing integrations to the Classic guide. [[adyen]] [[adyen-classic-platforms]]\n\n## Consequential changes by period\n\n- **2018-12-27, API v5 and Classic notifications v5:** Create, update and delete requests became asynchronous, so integrations need notification webhooks for outcomes; business account-holder creation requires `country`; `/verify` became `/checkAccountHolder`. KYC codes became more granular, and v5 added payout-method deletion and optional HMAC signing for notifications. Notification types gained root `error` and `content.invalidFields` fields. These are v5 migration changes, not blanket claims for every API version (raw lines 1629\u20131672).\n- **2019:** The log records Customer Area manual payouts and fund transfers, report changes, verification and payout fixes, and notification corrections. It removed the End of Month Balance Report in favor of the MarketPay Balance Report (2019-01-17), disallowed beneficiary setup from a suspended source account (2019-03-25), and changed KYC re-suspension timing after a deadline-related unsuspension to 42 days (2019-04-23). Same-holder transfers stopped increasing processed volume (2019-09-16); they became possible regardless of payout status (2019-10-29). Those separate entries do not establish that all other transfer gates are absent (raw lines 1146\u20131628).\n- **2020-08-05, API/notification v6:** API verification response names moved from `verification.bankAccounts`/`bankAccountUUID` to `verification.payoutMethods`/`payoutMethodCode`; v6 notification fields changed in parallel, including `content.bankAccountUUID` to `content.payoutMethodCode`. Selected notifications removed `content.pspReference` in favor of root `pspReference`; payout notifications removed `content.amount` in favor of `content.amounts`. The same date introduced payout-return reasons and confirmed-payout detail fields. Preserve version and event-type context when parsing historical payloads (raw lines 1039\u20131085).\n- **2020\u20132021 money and verification behavior:** The log added liable-account threshold notifications, configurable verification profiles, legal-arrangement data in Account API v6, account-holder top-ups, and more HOP controls (raw lines 898\u20131139). A 2021-02-15 split validation change rejects local-payment-method splits whose amounts do not sum to the payment amount, after earlier acceptance caused settlement problems (raw lines 910\u2013914). On 2021-09-27 the default handling of existing funds and new payments for suspended or closed account holders remained refunding, with support-enabled automatic transfer to the liable account as an option; refunds and chargebacks became liable-account deductions by default, and only active holders could receive payouts (raw lines 796\u2013817). The 2021-10-25 payout notification improvement distinguished successfully processed card payouts as `Confirmed` and failures as `Failed`; this release note alone does not prove final bank receipt (raw lines 752\u2013756).\n- **2022:** The 2022-02-21 API entry deprecated `ownerDateOfBirth` and specified `yyyy-mm-dd` for integrations still sending it. The year also brought HOP and KYC collection fixes, upfront document collection as an enablement option, report booking corrections, Customer Area suspension action, and country-specific bank-data rules (raw lines 91\u2013599). The 2022-08-01 entry explicitly separated upgraded infrastructure documentation for new integrations from the Classic guide for existing integrations (raw lines 171\u2013175). Changes requiring Support or platform configuration are conditional, for example local-timezone payout scheduling for new integrations and opt-in for existing ones (raw lines 310\u2013316).\n- **2023 entries:** Croatia HRK bank accounts ceased to be supported after EUR became the sole official currency there; US residents had to enter full nine-digit SSN/TIN on HOP. Later entries concern HOP shareholder roles, signatory data, missing-role warnings and Cyprus company-number length. The latest listed entry is 2023-06-05 even though the file was captured 2026-09-15; do not infer post-2023 product status from this ledger (raw lines 37\u201389).\n\n## Detail locators\n\n- Category definitions and API Diff Tool: raw lines 19\u201331. Newest 2023 entries and regional/identity changes: lines 37\u201389.\n- 2022 HOP, API, KYC, payout and report changes, including deprecation and upgraded-infrastructure boundary: lines 91\u2013599.\n- 2021 releases: lines 603\u2013961; suspended/closed holder funds-direction change: lines 796\u2013817; split validation: lines 910\u2013914.\n- 2020 releases and exact API/notification v6 field migrations/removals: lines 963\u20131144, especially 1039\u20131085.\n- 2019 releases, including transfers, beneficiary restrictions, verification, reports and v5 fixes: lines 1146\u20131628. Initial 2018 v5 breaking and notification changes: lines 1629\u20131672.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-classic-platforms]] \u2014 Classic model and source index.\n- [[adyen-platforms]] \u2014 separate upgraded Platforms model named in the 2022 release note.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/release-notes/2026-09-15|Classic Platforms release notes \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "* All create, update, and delete requests are now handled [asynchronously](/classic-platforms/migrating-to-v5#async). Your integration must use notification webhooks to get the outcome of your requests.",
+      "location": "raw/adyen/docs/classic-platforms/release-notes/2026-09-15.md:1635"
+    },
+    {
+      "text": "We renamed `verification.bankAccounts` to `verification.payoutMethods` and `verification.bankAccounts.bankAccountUUID` to `verification.payoutMethods.payoutMethodCode` in the response of the [/createAccountHolder](https://docs.adyen.com/api-explorer/Account/createAccountHolder), [/updateAccountHolder](https://docs.adyen.com/api-explorer/Account/updateAccountHolder), [/getAccountHolder](https://docs.adyen.com/api-explorer/Account/getAccountHolder), and [/uploadDocument](https://docs.adyen.com/api-explorer/Account/uploadDocument) endpoints.",
+      "location": "raw/adyen/docs/classic-platforms/release-notes/2026-09-15.md:1048"
+    },
+    {
+      "text": "* We removed `content.amount` from the [ACCOUNT\\_HOLDER\\_PAYOUT](https://docs.adyen.com/api-explorer/#/NotificationService/latest/post/ACCOUNT_HOLDER_PAYOUT) notification. Use the `content.amounts` array instead.",
+      "location": "raw/adyen/docs/classic-platforms/release-notes/2026-09-15.md:1085"
+    },
+    {
+      "text": "These changes do not affect payouts. Only active account holders are allowed to get payouts.",
+      "location": "raw/adyen/docs/classic-platforms/release-notes/2026-09-15.md:817"
+    },
+    {
+      "text": "The upgraded Adyen for Platforms infrastructure's [documentation](/adyen-for-platforms-model) is now available for new integrations. If you have already integrated with our system, refer to the [classic integration guide](/classic-platforms).",
+      "location": "raw/adyen/docs/classic-platforms/release-notes/2026-09-15.md:175"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-classic-release-notes-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-release-notes]] \u2014 2018\u20132023 Classic release history captured 2026-09-15: v5 asynchronous outcomes and notification fields, v6 payout-method and webhook-field migrations, dated KYC/funds/report changes, `ownerDateOfBirth` deprecation, and the 2022 new-versus-existing integration boundary.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is a dated Classic release ledger, not current evidence that a feature, regional eligibility or API version remains available.",
+          "The v5/v6 field changes and 2021 suspended/closed-account handling are version- or date-specific; do not generalize them to modern Platforms or infer bank receipt from payout notifications."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/release-notes/2026-09-15.md",
+  "raw_sha256": "4a508b73163b739ac8ede969a930691a844670b4c09271f13911e532ae60aaf1",
+  "status": "candidate_ready"
+}

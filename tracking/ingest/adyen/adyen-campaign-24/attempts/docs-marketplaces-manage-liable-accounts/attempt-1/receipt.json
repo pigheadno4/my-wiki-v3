@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-manage-liable-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: Manage liable balance accounts\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-liable-accounts\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, liable-accounts, balance-accounts]\n---\n\n## Overview\n\nThis 2026-09-15 **Marketplaces / Adyen for Platforms** guide distinguishes three **marketplace-owned liable balance accounts**: the **main liable balance account**, **reserved incorrect splits account**, and **reserved compensation account**. These hold or route the marketplace\u2019s funds; they are not user balance accounts, and the guide does not show a particular payment, transfer or payout completing. [[adyen-platforms]]\n\n## Account roles and money flow\n\n- **Main liable balance account:** holds most marketplace funds; transaction commissions are booked there. The marketplace may also use it to pay users\u2019 transaction fees or transfer funds to users to correct balances. See [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|raw lines 25\u201327]].\n- **Reserved incorrect splits account:** if a split targets a nonexistent balance account, or one unable to receive because it or its holder is closed/suspended or the holder lacks the receive-funds capability, Adyen books those funds to this marketplace account. The page points to a later **internal transfer** from that account to correct balances; the fallback booking is not proof that the intended user received funds. See [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|raw lines 29\u201337]].\n- **Reserved compensation account:** covers negative user/marketplace balance accounts caused by refunds or chargebacks. The captured rule says Adyen allows a negative balance for **up to 30 days**; if it remains negative for **more than 30 days**, Adyen debits this reserved account on the **first day of the following month**. That debit can leave the reserved account negative, which the marketplace must offset by top-up or an internal transfer from another balance account. See [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|raw lines 39\u201345]]. This timing is source-described, not a transaction-specific compensation record.\n\n## Detail locators\n\n- Account ownership and the three account names: [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|raw lines 15\u201323]].\n- Main commission/fee/correction routing and incorrect-split destination conditions: [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|raw lines 25\u201337]].\n- Negative-balance compensation timing and deficit remedy: [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|raw lines 39\u201345]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms balance and split context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15|Manage liable balance accounts (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Liable balance accounts are balance accounts that belongs to your marketplace and hold your marketplace's funds.",
+      "location": "raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md:19"
+    },
+    {
+      "text": "All your commissions from transactions made on your marketplace are booked to this account.",
+      "location": "raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md:27"
+    },
+    {
+      "text": "In such cases, we book these funds to your reserved incorrect splits account.",
+      "location": "raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md:37"
+    },
+    {
+      "text": "If a balance account has a negative balance for more than 30 days, Adyen compensates this by debiting your reserved compensation account on the first day of the following month.",
+      "location": "raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md:43"
+    },
+    {
+      "text": "You must then offset this negative balance by [topping up this account](/platforms/top-up-balance-account/), or [transferring funds internally](/platforms/internal-fund-transfers) from another balance account.",
+      "location": "raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md:45"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-manage-liable-accounts-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-liable-accounts]] \u2014 2026-09-15 Marketplace-owned main, incorrect-split and compensation liable-account roles, including failed-destination fallback and conditional negative-balance remedy timing.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Incorrect split destination fallback books funds to the marketplace reserved incorrect splits account when the target is missing, closed/suspended, or lacks receive capability (raw lines 31\u201337); this is not receipt by the intended user.",
+          "Reserved compensation debit follows a negative balance lasting more than 30 days and occurs on the first day of the following month (raw line 43); the reserved account itself can become negative (raw line 45)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-liable-accounts/2026-09-15.md",
+  "raw_sha256": "d0fed8b9ee4f46f628ca20dd433799069ca89c5d629995ff49a990d6b93f55c5",
+  "status": "candidate_ready"
+}

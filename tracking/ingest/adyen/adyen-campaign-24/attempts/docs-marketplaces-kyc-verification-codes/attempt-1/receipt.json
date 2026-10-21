@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-kyc-verification-codes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace-path verification codes\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/kyc-verification-codes\"\nraw_files:\n  - \"adyen/docs/marketplaces/kyc-verification-codes/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, issuing, kyc, verification-codes]\n---\n\n## Overview\n\nThis 2021-modified, 2026-09-15-captured Marketplace-path guide explains verification errors and remediating codes found in account-holder capability `problems` in API responses or webhooks. Its stated integration scope is Adyen for Platforms or Adyen Issuing; the Marketplace URL alone does not make it a Classic Platforms API guide. It describes how to inspect codes and routes to three separate catalogs, not proof that a legal entity is verified or that a suggested action succeeded. See [[adyen]] and [[adyen-platforms]] for provider and current-platform context.\n\n## Key takeaways\n\n- Three distinct layers serve different purposes: a general error code broadly describes the failed check; a linked suberror identifies a more specific cause; a remediating-action code offers a possible solution. Adyen says it sends an action for every error whenever possible, not invariably. Use the suberror codes to design verification-error handling or test scenarios.\n- To view codes by API request, the page requires a Configuration API web-service credential; to view them in Customer Area, it requires the **Manage account holder capabilities** role. The Customer Area account-holder **Capabilities** tab shows enabled, allowed and verification-status information. API inspection uses GET `/accountHolders/{id}`; `balancePlatform.accountHolder.created` and `.updated` webhooks are another route. Account-holder ID/reference and linked legal-entity ID are search keys, not the same object.\n- For API-only onboarding, the guide recommends choosing error flows that fit the use case and development resources and building for all possible verification codes to provide accurate user feedback. This is a design recommendation, not a guarantee that every error has a remediating action or that remediation approves a capability.\n- In the `problems` array, `entity.id` identifies the legal entity with the error. Each `verificationErrors` entry has type (`invalidInput` or `dataMissing`), general code/message, possibly common `remediatingActions`, and `subErrors` with their own type/code/message/actions. The prose calls common `remediatingActions` an object, but the sample shows an array; this snapshot does not settle the field's runtime shape. Check the applicable API schema or observed payload before parsing.\n- The sample's general `1_30`, suberrors `1_3001` and `1_3000`, nested actions `1_300` and `1_301`, and `verificationStatus: invalid` illustrate distinct code roles and one outcome. The linked remediating-action, general-error and suberror catalogs own the full code lookups. The sample does not show approval after remediation.\n\n## Detail locators\n\n- Purpose, three code layers, possible-action qualifier and prerequisites: raw lines 15\u201335. Customer Area and Configuration API/webhook inspection routes: lines 37\u201361.\n- API-only recommendation and problems-array field description: lines 63\u201381. Example payload, including common-action prose/example shape mismatch and `verificationStatus`: lines 83\u2013144. Detailed catalog and test routes: lines 146\u2013164.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 Platforms and Marketplace integration context.\n- [[source-adyen-docs-marketplaces-kyc-verification-codes-remediating-actions]] \u2014 Marketplace-path action-code lookup.\n- [[source-adyen-docs-marketplaces-kyc-verification-codes-general-verification-errors]] \u2014 Marketplace-path general error-code lookup.\n- [[source-adyen-docs-marketplaces-kyc-verification-codes-sub-errors]] \u2014 Marketplace-path specific suberror lookup.\n- [[source-adyen-docs-platforms-kyc-verification-codes]] \u2014 separately pinned Platforms-path overview.\n\n## Related raw API references\n\n- The raw page links to Configuration API account-holder responses, account-holder webhooks and verification testing; their live schema and behavior require separate authority.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/kyc-verification-codes/2026-09-15|Adyen Docs: Verification codes (2026-09-15 snapshot; page last modified 2021-01-19)]]\n",
+  "quotes": [
+    {
+      "text": "When a verification error occurs, Adyen uses specific verification codes. These codes provide information such as which checks failed and what your users can do to fix the errors.",
+      "location": "raw line 19, # Verification codes"
+    },
+    {
+      "text": "Whenever possible, Adyen sends a remediating action for every error.",
+      "location": "raw line 21, # Verification codes"
+    },
+    {
+      "text": "You have an [Adyen for Platforms](/adyen-for-platforms-model/) or [Adyen Issuing](/issuing) integration.",
+      "location": "raw line 33, ## Requirements"
+    },
+    {
+      "text": "This object is sent when there is a common remediating action in the suberrors.",
+      "location": "raw line 80, ## Problems array example; sample at lines 98\u2013103 renders an array"
+    },
+    {
+      "text": "Using all the codes allows you to resolve issues for your users by providing them with more information about errors and what they need to do next.",
+      "location": "raw line 67, ## Recommendations for API-only onboarding"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-verification-codes-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-kyc-verification-codes]] \u2014 2021-modified, 2026-09-15-captured Marketplace-path Platforms/Issuing verification-code taxonomy, capability-problem retrieval routes and parent-action object/array example conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Marketplace-path and Platforms-path catalogs separately pinned; the common remediatingActions shape is ambiguous between this page's prose and sample."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/kyc-verification-codes/2026-09-15.md",
+  "raw_sha256": "6dc8307a62cfd433575ef11f2c18feb09389a7aaa3f6ff9944e90cf17e719c10",
+  "status": "candidate_ready"
+}

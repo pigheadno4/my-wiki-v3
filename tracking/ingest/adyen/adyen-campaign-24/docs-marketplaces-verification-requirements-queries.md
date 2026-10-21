@@ -1,0 +1,9 @@
+# docs-marketplaces-verification-requirements — attempt 1 retrieval checks
+
+## Q1. What determines verification inputs for a Marketplace user, and who is the main entity?
+
+The guide says to collect and submit required user information based on operating country/region, legal-entity type and offered financial products (raw lines 19–25). The user contracting with the marketplace is the **main legal entity**; linked owners or other associated entities need their own information where applicable (raw lines 65–69). The snapshot’s country/entity matrix and entity-specific rules are at raw lines 73–308; minor onboarding adds LEM v3/v4, age, region and representative conditions (raw lines 37–63). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-verification-requirements]] → [[raw/adyen/docs/marketplaces/verification-requirements/2026-09-15]].
+
+## Q2. Does “no additional requirements” waive verification or establish Business Account, Issuing or Capital eligibility?
+
+No. That sentence is under the base integration `Requirements` heading (raw line 29), while the page requires user verification data (raw lines 19–25) and separately describes product-specific checks and capabilities (raw lines 309–315). Business accounts have dated country/entity limits and additional data, with US flow obligations/exclusions (raw lines 317–348); card issuing has different region/entity/data and capability-level conditions (raw lines 350–373); Capital is invite-only and described as having no **additional** checks (raw lines 375–384). This snapshot is not approval, current-law advice, account opening, card issuance or a Capital offer. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-verification-requirements]] → [[raw/adyen/docs/marketplaces/verification-requirements/2026-09-15]].

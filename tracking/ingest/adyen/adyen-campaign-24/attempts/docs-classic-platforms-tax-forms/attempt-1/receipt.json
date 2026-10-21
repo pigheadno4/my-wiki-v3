@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-classic-platforms-tax-forms",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms 1099-K tax forms\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/tax-forms\"\nraw_files:\n  - \"adyen/docs/classic-platforms/tax-forms/2026-09-15.md\"\ntags: [adyen, classic-platforms, tax-forms, 1099-k, us]\n---\n\n## Overview\n\nThis 2023-modified Classic Adyen for Platforms guide, captured 2026-09-15, describes retrieving a US sub-merchant's 1099-K as Base64 content through Classic Account API `/getTaxForm` and delivering a decoded PDF. It states a historical **2024** federal gross-volume threshold; the page directs new integrations to a different guide and does not establish current tax law or filing status for any entity. [[adyen]] [[adyen-classic-platforms]]\n\n## Key takeaways\n\n- The page frames Adyen's US 1099-K filing scope as US-based merchants/sub-merchants to whom it pays out directly **and** who cross the processed-volume threshold; some states have their own requirements (raw lines 19\u201328). It states that for **2024** the federal gross processed-volume threshold is USD 5,000 per calendar year, with state thresholds varying. Gross volume is before fees, chargebacks and refunds (raw lines 30\u201333). These dated claims are not a current threshold determination or tax advice.\n- To provide a digital form, show a platform UI link/button, make a **server-side** POST `/getTaxForm` with `accountHolderCode`, `formType` such as `1099-K`, and applicable `year`, then decode the returned Base64 `content` and provide a PDF to the sub-merchant (raw lines 35\u201357, 74\u201383). The table also returns `contentType`, for example `application/pdf` (raw lines 74\u201379).\n- The page says a form is generated only for sub-merchants meeting its volume or transaction threshold; querying a holder below threshold returns an error (raw line 59). The guide's Account API v6 TEST curl uses year 2019 solely as an example (raw lines 61\u201372); it does not show that an actual 2019, 2024 or current form exists for a particular holder. A response containing Base64 content is a retrieval artifact, not proof that the PDF was delivered to the sub-merchant or filed with a tax authority.\n\n## Detail locators\n\n- Classic-only scope, historical filing subject/condition and 2024 gross threshold: raw lines 19\u201333. UI-to-server-request-to-PDF flow: raw lines 35\u201345.\n- Request parameters, below-threshold error and test v6 example: raw lines 47\u201372. Response fields and decoding/delivery: raw lines 74\u201383.\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 older account-holder/account model.\n- [[source-adyen-docs-platforms-us-tax-forms]] \u2014 separate newer Platforms tax-form guide; do not transfer its conditions or API into this Classic source.\n- [[adyen-platforms]] \u2014 newer balance-platform model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/tax-forms/2026-09-15|Classic 1099-K form guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/tax-forms/2026-09-15.md:19"
+    },
+    {
+      "text": "To which they pay out directly.",
+      "location": "raw/adyen/docs/classic-platforms/tax-forms/2026-09-15.md:25"
+    },
+    {
+      "text": "For 2024, Adyen is required to file 1099-K forms for all merchants and sub-merchants with a gross processed volume at or above the federal threshold of USD\u00a05,000 per calendar year.",
+      "location": "raw/adyen/docs/classic-platforms/tax-forms/2026-09-15.md:31"
+    },
+    {
+      "text": "A tax form is only generated for sub-merchants that hit the volume or transaction [threshold](#threshold).",
+      "location": "raw/adyen/docs/classic-platforms/tax-forms/2026-09-15.md:59"
+    },
+    {
+      "text": "From your server, make a POST [/getTaxForm](https://docs.adyen.com/api-explorer/Account/latest/post/getTaxForm) request",
+      "location": "raw/adyen/docs/classic-platforms/tax-forms/2026-09-15.md:51"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-classic-tax-forms-source-route",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-tax-forms]] \u2014 2023-modified, 2026-09-15-captured Classic US 1099-K retrieval guide for direct-payout/threshold scope, dated 2024 gross-volume threshold and server-side Base64-to-PDF delivery flow.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The USD 5,000 federal threshold is explicitly for 2024; state thresholds vary and the snapshot is not current tax advice. `/getTaxForm` errors below threshold; retrieval is not proof of filing or PDF delivery."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/tax-forms/2026-09-15.md",
+  "raw_sha256": "a0ca07c628190d96f02e3d1bf467d0e10e1c2624a086413019fcf83db77b37dd",
+  "status": "candidate_ready"
+}

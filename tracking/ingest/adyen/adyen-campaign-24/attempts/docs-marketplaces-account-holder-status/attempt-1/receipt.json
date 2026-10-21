@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-account-holder-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces account-holder status\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/account-holder-status\"\nraw_files:\n  - \"adyen/docs/marketplaces/account-holder-status/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, account-holders, status, splits]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace guide describes an account holder's overall standing, Adyen-initiated status inheritance, and how payment split destinations are handled after settlement. It belongs to the modern [[adyen-platforms]] route from [[adyen]], not the legacy Classic Platforms model. These documented state and routing rules do not prove a particular user's verification, capability grant, settlement or payout.\n\n## Key takeaways\n\n- The page says account holders become **active** after onboarding and verification, and the status table calls active the initial account-holder/balance-account status. The platform can use Configuration API to move an account holder to **suspended** or **closed**. Suspension temporarily disables the resource and blocks payouts; closed permanently disables it and all capabilities and is not editable. **Inactive** applies only to a newly created payment instrument. See raw lines 19\u201338.\n- Adyen can independently suspend or close for suspected or confirmed risk, fraud or terms issues. Customer Area can show the Adyen status reason and `balancePlatform.accountHolder.updated` webhooks deliver updates. Only Adyen can reverse an Adyen-initiated suspension. Adyen suspension also suspends related balance accounts; Adyen closure closes related balance accounts and payment instruments. Depending on the reason, capability effects can extend to all account holders sharing the legal entity. See raw lines 40\u201358.\n- The reason tables are **general guidelines** and explicitly allow case-specific differences. Suspected fraud lists payout blocks at account-holder level; suspected risk or terms can block payouts alone or both pay-ins and payouts and may inherit at legal-entity level. Closure disallows all capabilities, with inheritance varying by reason. Consult the actual reason and capability state for a particular case. See raw lines 60\u201385.\n- Split instructions direct funds after settlement, so the guide says payment processing is not directly impacted by account-holder status. A split to a suspended holder settles to that holder's balance account if pay-ins are not also blocked. If the suspended holder's pay-in capability is blocked, or the holder is closed, the split instead settles to the liable account holder's **Reserved Incorrect Splits Account**. These are conditional routing descriptions, not proof of authorization, settlement or payout in a specific payment. See raw lines 87\u201393.\n\n## Detail locators\n\n- Account-holder, balance-account and payment-instrument statuses: raw lines 19\u201338.\n- Adyen-initiated update, reason notification and status inheritance: raw lines 40\u201358.\n- Reason/capability/inheritance guideline tables: raw lines 60\u201385.\n- Post-settlement split routing for suspended versus closed holders: raw lines 87\u201393.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platforms]] \u2014 modern Platforms and Marketplaces route.\n- [[source-adyen-docs-marketplaces-manage-account-holders]] \u2014 separate suspension, reactivation and closure procedure.\n- [[source-adyen-docs-platforms-account-holder-status]] \u2014 distinct Platforms URL with closely related status guidance.\n- [[adyen-classic-platforms]] \u2014 legacy Classic Platforms resource model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/account-holder-status/2026-09-15|Account holder status \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "An account holder's status represents their overall standing on your marketplace.",
+      "location": "raw/adyen/docs/marketplaces/account-holder-status/2026-09-15.md:19"
+    },
+    {
+      "text": "The resource is temporarily disabled and payouts are blocked.",
+      "location": "raw/adyen/docs/marketplaces/account-holder-status/2026-09-15.md:34"
+    },
+    {
+      "text": "Adyen-initiated account holder suspensions can only be reversed by Adyen.",
+      "location": "raw/adyen/docs/marketplaces/account-holder-status/2026-09-15.md:49"
+    },
+    {
+      "text": "When Adyen closes an account holder, the related balance accounts and payment instruments get closed.",
+      "location": "raw/adyen/docs/marketplaces/account-holder-status/2026-09-15.md:56"
+    },
+    {
+      "text": "If the funds are split to an account holder that is **suspended**, but the pay-in capabilities are also blocked, the split amount will settle in your Liable Account holder's \"Reserved Incorrect Splits Account\" balance account.",
+      "location": "raw/adyen/docs/marketplaces/account-holder-status/2026-09-15.md:92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-marketplaces-account-holder-status-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-account-holder-status]] \u2014 2026-09-15 Marketplace account-holder status guide for active/suspended/closed states, Adyen-only reversal and inheritance, and conditional post-settlement split routing by pay-in block; no transaction or payout proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/account-holder-status/2026-09-15.md",
+  "raw_sha256": "c53524774c04dcc9614d429460a75c1ac2852343222726ff1eaad2f6ee46b571",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-manage-access-webservice-roles",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace web service roles for API credentials\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-access/webservice-roles\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md\"\ntags: [adyen, marketplaces, api-credentials, roles, transfers, issuing]\n---\n\n## Overview\n\nThis 2023-modified Marketplace-route Adyen for Platforms guide, captured 2026-09-15, maps frequently used web service roles on a balance-platform API credential to Configuration API, Transfers API and optional Issuing actions. Adyen assigns default company-account roles, but specific functions may require enabling additional roles in Customer Area. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The guide requires an Adyen for Platforms integration and a **Balance Platform API key** for Configuration and Transfers APIs. Web service roles determine requests a particular credential may perform; default role assignment at company-account creation does not imply every listed permission is present (raw lines 19\u201328). The displayed `ws...@BalancePlatform...` identifier is an example format, not a credential to use.\n- **Balance Platform BCL role** permits creation, update and deletion of balance-platform resources such as account holders, balance accounts and transfer instruments. **Balance Platform BCL PCI role** permits unmasking/viewing PAN and CVV/CVC in a POST `/paymentInstruments` response and additionally requires BCL role enabled (raw lines 34\u201341). This is a sensitive-data permission description, not authorization to reveal card data outside an approved integration.\n- If the integration includes Issuing, **Bank SCA Webservice Role** manages SCA device registration. **Bank Manage TransactionRules role** manages platform risk-engine rules, but the guide says BCL already includes all its permissions (raw lines 43\u201350). Issuing inclusion is conditional; a role listing does not establish that product access is enabled.\n- For fund transfers, **Bank Transfer Initiation Webservice role** can initiate transfers **only with Transfers API v1**. **TransferService Webservice Initiate role** initiates transfers, and **TransferService Webservice Retrieve role** views initiated transfers (raw lines 53\u201361). The v1-only role must not be generalized to later Transfers API versions. Role possession alone does not prove a transfer was submitted or booked.\n\n## Detail locators\n\n- Credential role model, default versus additional roles, integration/API key prerequisites: raw lines 19\u201328. Balance-platform BCL and PCI dependency/sensitive response: raw lines 34\u201341.\n- Optional Issuing SCA/risk-rule roles and BCL inclusion: raw lines 43\u201350. Transfers roles and v1-only initiation qualifier: raw lines 53\u201361.\n\n## Related\n\n- [[adyen-platforms]] \u2014 balance-platform model for this Marketplace route.\n- [[source-adyen-docs-marketplaces-manage-access-api-credentials-web-service]] \u2014 credential setup and lifecycle.\n- [[adyen-issuing]] \u2014 optional Issuing product, with separate eligibility and card-data requirements.\n- [[adyen-classic-platforms]] \u2014 separate older account/API model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15|Marketplace web service roles, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "API credentials use web service (ws) roles to define exactly which actions you can perform.",
+      "location": "raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md:19"
+    },
+    {
+      "text": "You must have a [Balance Platform API key](/marketplaces/manage-access/api-credentials-web-service?tab=create-ws_1)",
+      "location": "raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md:28"
+    },
+    {
+      "text": "To use this role, you must also have the Balance Platform BCL role enabled.",
+      "location": "raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md:41"
+    },
+    {
+      "text": "All the permissions granted by this role are included in the Balance Platform BCL role.",
+      "location": "raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md:50"
+    },
+    {
+      "text": "This is only available for Transfers API [v1](https://docs.adyen.com/api-explorer/transfers/1/overview).",
+      "location": "raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md:59"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-docs-marketplaces-webservice-roles-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-access-webservice-roles]] \u2014 2023-modified, 2026-09-15-captured Marketplace-path balance-platform credential role matrix for BCL/PCI, optional Issuing and version-qualified Transfers API permissions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "BCL PCI depends on BCL and exposes sensitive PAN/CVV/CVC in a specific response. Bank Transfer Initiation role is Transfers API v1-only; a listed or default role does not prove grant or execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-access/webservice-roles/2026-09-15.md",
+  "raw_sha256": "ac9f8a6edb1222f4bc44e829a80ff97d8ad56e328429de930e075d3eb560c853",
+  "status": "candidate_ready"
+}

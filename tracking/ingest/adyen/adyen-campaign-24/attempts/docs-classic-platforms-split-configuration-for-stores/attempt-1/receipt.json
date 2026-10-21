@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-classic-platforms-split-configuration-for-stores",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic Platforms: Automatic store split configuration\"\ntype: source\ndate_ingested: 2026-10-20\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/classic-platforms/split-configuration-for-stores\"\nraw_files:\n  - \"adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md\"\ntags: [adyen, classic-platforms, stores, split-payments, pos]\n---\n\n## Overview\n\nThis 2021-modified, 2026-09-15-captured guide is for **Classic Adyen for Platforms**, not the newer Marketplace/Platforms split-configuration API. For a store-based integration, a Customer Area split configuration can apply commission fees automatically to payments processed through that store after it is attached to a Classic account-holder store. The page directs new implementations to a different new-integration guide. [[adyen-classic-platforms]]\n\n## Scope and prerequisites\n\n- The guide says **stores are available only for Classic point-of-sale and partner-platform integrations** in this context; a platform must use stores, have Support enable split configuration, and give its Customer Area user `Manage split configuration settings`. A listed `ecommerce` channel condition does not remove the stated store/integration prerequisite. See [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 78\u201386]].\n- Create a named split configuration in Customer Area and retain its UUID. Add rules with channel, scheme/payment method, currency, fixed fee and variable fee; the channel/scheme/currency combination must be unique for each rule. See [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 84\u2013104]].\n- Attach the UUID and `virtualAccount` (the holder\u2019s `accountCode` for the split amount) in `storeDetails` through Classic Account API `/updateAccountHolder`. The examples use a **TEST** Account API **v6** endpoint for a new or existing store. The request is **asynchronous**: rely on `ACCOUNT_HOLDER_UPDATED` notification for the final result before treating the store update as effective. See [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 106\u2013171]].\n\n## Rule routing and fallback\n\n- A rule has a fixed fee, percentage fee or both, plus defined channel, currency and payment-method conditions. A transaction must meet **all** conditions. If no rule matches, **all funds go to the liable account**; the guide recommends a catchall `any` rule. See [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 28\u201342]].\n- When multiple rules match, the priority order is **currency, payment method, funding source, channel**. The worked examples at raw lines 55\u201376 illustrate selection and a commission amount sent to the liable account; they are not a live split or settlement record. See [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 46\u201376]].\n- Split instructions in a **payment or capture API request override** the store automatic split for that transaction. After a successful store create/update, the source says Adyen evaluates transactions processed through it; request submission alone does not prove this transition or funds movement. See [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 42\u201344, 169\u2013171]].\n\n## Detail locators\n\n- Classic scope, rule conditions, no-match liable fallback and API override: [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 15\u201344]].\n- Priority hierarchy, examples and integration/role prerequisites: [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 46\u201382]].\n- Customer Area UUID, Classic Account API v6 TEST examples, destinations and asynchronous notification: [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|raw lines 84\u2013171]].\n\n## Related\n\n- [[adyen-classic-platforms]] \u2014 Classic account-holder/store context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15|Automatic store split configuration (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page is for classic Adyen for Platforms integrations.",
+      "location": "raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md:19"
+    },
+    {
+      "text": "if none of the rules apply to the transaction, then all the funds will go to the liable account.",
+      "location": "raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md:42"
+    },
+    {
+      "text": "Any split instruction that you send through the API overrides the automatic split.",
+      "location": "raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md:44"
+    },
+    {
+      "text": "Stores are currently available only for [point of sale](/classic-platforms/platforms-for-pos) and [partner platforms](/classic-platforms/platforms-for-partners) integrations.",
+      "location": "raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md:80"
+    },
+    {
+      "text": "Requests using [/updateAccountHolder](https://docs.adyen.com/api-explorer/Account/updateAccountHolder) are processed asynchronously.",
+      "location": "raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md:169"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c24-classic-store-split-configuration-source-link",
+        "target_path": "wiki/concepts/adyen-classic-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-classic-platforms-split-configuration-for-stores]] \u2014 2021-modified, 2026-09-15-captured Classic POS/partner-store automatic commission rules, liable fallback, API override, and asynchronous account-holder-store attachment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "If no configuration rule matches, all transaction funds go to the liable account (raw line 42).",
+          "Store availability is stated for Classic POS and partner-platform integrations only (raw line 80), and `/updateAccountHolder` notification is needed for final update result (raw line 169)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/classic-platforms/split-configuration-for-stores/2026-09-15.md",
+  "raw_sha256": "1d89d5a1f6a7b28f89779b50a4bfa437e0ae13d3134be3db3306c140c9c7da2e",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,13 @@
+--- wiki/sources/adyen/source-adyen-docs-marketplaces-manage-transfer-instruments.md
++++ wiki/sources/adyen/source-adyen-docs-marketplaces-manage-transfer-instruments.md
+@@ -20,6 +20,10 @@
+ - Creation returns a unique transfer-instrument `id`; the example response shows `sendToTransferInstrument` **requested true, allowed false, verificationStatus pending**. Creation and update instructions both say to inspect `problems` for bank-verification issues. A 200 update response retains the same ID so existing payout schedules and transfers can continue targeting it, but check verification status and actual transfer outcome separately. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 344–375, 816–837]].
+ - GET by ID returns bank-account and verification details per the guide; PATCH by ID sends only fields being modified, with bank-location-specific `accountIdentification`. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 377–559]].
+ 
++## Versioned `type` wording conflict
++
++The separately pinned [[source-adyen-docs-marketplaces-onboard-users-onboarding-versions|Marketplaces onboarding-versions guide]] says its v4 `/transferInstruments` **`type` field** distinguishes IBAN from a local account (related raw line 134). This management guide instead labels the instrument's top-level `type` **`bankAccount`** (raw lines 52–58), with `usLocal` or `iban` under `bankAccount.accountIdentification.type` in its **TEST v3 create** and **TEST v4 update** examples (raw lines 67–80, 566–577). The two dated pages do not resolve whether the migration sentence names a different field path or a version-specific request shape. Use the API Explorer operation for the exact LEM version before constructing a request; neither example proves a live or verified instrument.
++
+ ## Deletion and payout-account boundary
+ 
+ - `DELETE /transferInstruments/{id}` is **not undoable**. Re-adding the same bank account requires a **new transfer instrument**, and future scheduled or on-demand payouts that still target the deleted ID **fail**. See [[raw/adyen/docs/marketplaces/manage-transfer-instruments/2026-09-15|raw lines 839–987]].
