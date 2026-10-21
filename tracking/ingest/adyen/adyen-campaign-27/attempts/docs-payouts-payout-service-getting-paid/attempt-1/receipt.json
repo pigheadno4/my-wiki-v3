@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-getting-paid",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service: Getting paid\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/getting-paid\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/getting-paid/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, balance-platform, transfer-instruments]\n---\n\n## Overview\n\nThis [[adyen]] Payout Service guide, last modified 2024-06-06 and captured 2026-09-15, explains how funds from payments processed for a merchant move from its merchant account to its balance platform and are held in its balance account before payout to its company bank payout account (a transfer instrument). Scheduled and on-demand payouts are the two routes. It belongs under [[adyen-payouts]], while its Payout Service/balance-platform model is distinct from the legacy Online Payout API described elsewhere in that concept. A request, schedule or processing estimate does not prove beneficiary bank receipt.\n\n## Key takeaways\n\n- The page requires a **Payouts integration**. Managing payout accounts in Customer Area requires **Merchant manage bank accounts**. The company's payout account is a transfer instrument; it can be created for a first account or additional currencies and used once its status is **valid** after verification. The source describes bank-login verification as instant, but a valid status is still the stated use gate. See raw lines 23\u201356.\n- Editing a transfer instrument takes effect instantly. Deleting it stops future payouts to that instrument and **cannot be undone**; schedules and on-demand payouts still referencing the deleted ID fail. For rotation, the page instructs adding a new instrument, updating dependent schedules/requests, verifying receipt on the new one, then deleting the old. See raw lines 58\u201368.\n- The guide distinguishes Regular, Instant, Fast, Wire, Cross-border and Internal priorities; higher priority may incur higher fees. Cross-border can involve intermediary delays, lifting fees and beneficiary receipt below the instructed amount. Its \u201cInstant\u201d description is geographically scoped to US, Australia, UK and SEPA, not a general arrival guarantee. See raw lines 70\u201386.\n- Cut-off times, settlement delays, amount bounds and priorities vary by recipient location and currency. Before/after cut-off examples are illustrative. The SEPA wire example uses a 16:30 PM ET cut-off, while the table lists SEPA EUR Wire at 16:55 CET; do not reconcile these into a single operational cut-off. Consult the dated table and current provider settings before relying on a time or limit. See raw lines 88\u2013155.\n- To receive both local and cross-border payouts at one bank account, the guide says to create two transfer instruments with distinct account-identification types: local and `numberAndBic`. Local payouts are within the same country/currency; cross-border supports only `crossBorder` priority here, with a stated exception for USD to US banks when the legal entity is in Canada or Hong Kong. Arrival times are not guaranteed, and correspondent-bank fees/geographic restrictions may apply. See raw lines 215\u2013287.\n- Recipient-country/region and currency/priority/account-format tables are snapshot-specific (raw lines 157\u2013213 and 246\u2013287). The bank account data in the success/failure tables is **TEST-environment only**, for POST `/transfers` test flows; examples include return and failure reason codes, not live recipient instructions or real payout outcomes. See raw lines 289\u2013435.\n\n## Evidence boundary\n\nThe page opens with a link to separate third-party bank/card payout guides (raw lines 19\u201321). Its principal \u201cgetting paid\u201d flow is the company's own payment proceeds to its payout-account transfer instrument, so references to a \u201cuser's account\u201d in the priority paragraph (raw line 72) do not redefine the principal owner or authorize third-party disbursement by this page. The source does not establish current integration approval, payout eligibility, a live priority SLA, booking, final bank credit or bank receipt.\n\n## Detail locators\n\n- Own-account funds path, requirements, verification and irreversible deletion: raw lines 19\u201368.\n- Priorities and dated cut-off table: raw lines 70\u2013155.\n- Supported destination regions and local/cross-border formats: raw lines 157\u2013287.\n- TEST payout and return/failure account fixtures: raw lines 289\u2013435.\n\n## Related\n\n- [[adyen-payouts]]\n- [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/getting-paid/2026-09-15|Payout Service getting-paid guide, 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "The funds from the payments that Adyen processes for you are sent from your merchant account to your balance platform.",
+      "location": "raw line 23, Getting paid"
+    },
+    {
+      "text": "Scheduled and on-demand payouts move funds from your balance account to your transfer instrument.",
+      "location": "raw line 30, Getting paid"
+    },
+    {
+      "text": "You cannot undo the deletion of a transfer instrument.",
+      "location": "raw line 68, Edit or remove a payout account"
+    },
+    {
+      "text": "As a result, the beneficiary may receive a lower amount than the instructed value.",
+      "location": "raw line 84, Payout priority"
+    },
+    {
+      "text": "The arrival time of the payout cannot be guaranteed.",
+      "location": "raw line 240, Cross-border payouts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-docs-payouts-payout-service-getting-paid-payouts-source",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-getting-paid]] \u2014 2024-modified, 2026-09-15-captured Payout Service guide for merchant proceeds to company balance/payout account, scheduled/on-demand routes, irreversible instrument deletion, regional priorities and TEST fixtures; separate from legacy Payout API.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "SEPA wire cut-off example says 16:30 PM ET while table says 16:55 CET (raw lines 98\u2013101, 139); do not infer one cut-off.",
+          "Principal flow is merchant/company proceeds, despite raw line 72 saying user's account; third-party payout guides are separate."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/getting-paid/2026-09-15.md",
+  "raw_sha256": "a79bc8232e9f362d22ae7fc8773298bdf5dbfed3e5538e9556ab4e413ddda688",
+  "status": "candidate_ready"
+}

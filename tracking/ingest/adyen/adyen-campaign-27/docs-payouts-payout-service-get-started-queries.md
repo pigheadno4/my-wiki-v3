@@ -1,0 +1,7 @@
+# Q1 — Purpose and onboarding prerequisites
+
+This page is the Adyen **Payout Service** getting-started route, requiring contact to register interest, business-model/country discovery and use-case design of funding, payout method and counterparties (raw lines 19–56). After that design, an Adyen contact provides TEST Transfers API and Customer Area credentials; the integrator builds and tests in TEST, then contacts Adyen for LIVE setup (raw lines 58–99). This is a Transfers API path, distinct from the legacy Payout API within the payout concept. Forward route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-get-started]] → [[raw/adyen/docs/payouts/payout-service/get-started/2026-09-15]].
+
+# Q2 — TEST/LIVE and outcome boundary
+
+TEST setup/configuration is **not replicated** to LIVE; it must be reproduced and tested in LIVE, with the go-live checklist followed (raw lines 101–107). The page offers no universal eligible country, funding source, counterparty, request fields or final transfer state; those are designed with Adyen and routed to separate guides (raw lines 45–56, 109–113). Contact, test credentials, local testing or a LIVE account request do not prove account approval, payout booking or beneficiary-bank receipt. Forward route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-get-started]] → [[raw/adyen/docs/payouts/payout-service/get-started/2026-09-15]].

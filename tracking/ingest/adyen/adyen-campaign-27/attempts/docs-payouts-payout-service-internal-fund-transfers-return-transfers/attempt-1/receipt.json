@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-internal-fund-transfers-return-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service: return an internal push transfer\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/internal-fund-transfers/return-transfers\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/internal-fund-transfers/return-transfers/2026-09-15.md\"\ntags: [adyen, payout-service, internal-transfers, returns, balance-accounts]\n---\n\n## Overview\n\nThis Payout Service-path guide (last modified 2020-09-11; captured 2026-09-15) describes returning funds from a destination balance account to the source balance account of an **original internal push transfer**. The return uses that incoming transfer's ID and is handled as a modification of the same transfer, rather than a newly initiated internal transfer. It does not describe an external bank payout or a general reversal for pull transfers. See [[adyen]] and [[adyen-platform-internal-transfers]].\n\n## Key takeaways\n\n- **Prerequisites and direction:** The guide requires an accepting server with the Transfer webhook added, Support enablement of transfers for the balance account from which funds are returned, and a Transfers API credential with **TransferService Webservice Initiate**. If the two balance accounts belong to different account holders, the holder of the account returning funds needs `sendToBalanceAccount`; the original sender's holder needs `receiveFromBalanceAccount`. These are directional gates, not interchangeable capabilities.\n- **Return request:** POST `/transfers/{transferId}/returns` uses the original **incoming** transfer ID from the webhook. The request's `amount` supplies currency and value matching the original transfer; `reference` is an optional unique return reference in the source table. The EUR 100 test example and language-library samples illustrate the request rather than proving a live movement; consult raw lines 43-290 for exact request shape and versions.\n- **Response and tracking:** The response has its own return-request `id`, a `transferId` pointing back to the original incoming transfer, and a status. The guide shows `authorised` and notes that `Declined` can indicate a wrong transfer ID in the URL. It directs operators to Transfer webhooks for subsequent return status **and failure** and to Customer Area for viewing the return. An authorised response alone is not booked-return or recipient-balance evidence.\n\n## Detail locators\n\n- Scope, push-only restriction and role/capability/webhook prerequisites: pinned raw lines 15-38.\n- Endpoint, matching amount, optional reference and TEST examples with SDK versions: pinned raw lines 39-290.\n- Return-request versus original-transfer IDs, decline clue and webhook follow-up: pinned raw lines 293-314.\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 main internal balance-account movement concept and reciprocal source route.\n- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-internal-transfer-webhooks]] \u2014 Payout Service-path event detail for internal legs and nested returns.\n- [[source-adyen-docs-platforms-internal-fund-transfers-return-transfers]] \u2014 separately captured Platforms-path return guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/internal-fund-transfers/return-transfers/2026-09-15|Payout Service internal push-transfer return guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Note that returning funds in this way only works if the original internal transfer was a push transfer.",
+      "location": "line 21, introduction"
+    },
+    {
+      "text": "The account holder of the balance account where the funds are returned from must have the **sendToBalanceAccount** capability.",
+      "location": "line 31, Requirements"
+    },
+    {
+      "text": "The account holder of the balance account where the funds are returned to must have the **receiveFromBalanceAccount** capability.",
+      "location": "line 32, Requirements"
+    },
+    {
+      "text": "Object containing the currency and value of the transfer. These must be the same as in the original transfer.",
+      "location": "line 49, Initiate a return amount table"
+    },
+    {
+      "text": "The webhooks provide the status of the request and also inform you if the request failed.",
+      "location": "line 312, Get updates on the status of the return"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-internal-return-transfer-source-route",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-return-transfers]] \u2014 2020-modified, 2026-09-15-captured Payout Service guide for equal-amount returns of original internal push transfers by incoming ID, conditional cross-holder capabilities and webhook failure/outcome tracking; authorised response is not booked-return proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Payout Service path and original push-transfer return scope distinct from external bank payouts and new transfer initiation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/return-transfers/2026-09-15.md",
+  "raw_sha256": "1896bb2d6b210f5e821a9b8b2b77ce2a3c0e634a3361253b81ea1ed06ba4fe8e",
+  "status": "candidate_ready"
+}

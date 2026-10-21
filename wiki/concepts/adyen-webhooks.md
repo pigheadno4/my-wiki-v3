@@ -16,6 +16,9 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-webhook-types]] — 2026-09-15 Payout Service webhook-envelope and configuration/Transfer type guide, including internal-versus-bank transfer identifiers and request-status boundaries.
+
+
 - [[source-adyen-docs-marketplaces-balance-updates]] — 2026-09-15 pilot Marketplace Balance webhook orientation for scoped balance-change alerts and setting inheritance; notifications are distinct from underlying money movement.
 
 

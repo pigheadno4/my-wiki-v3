@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-balance-updates-use-cases",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service balance-webhook setting use cases\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/balance-updates/use-cases\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/balance-updates/use-cases/2026-09-15.md\"\ntags: [adyen, payout-service, balance-webhooks, balance-platform, pilot]\n---\n\n## Overview\n\nThis Payout Service page (modified and captured 2026-09-15) gives **example** Configuration API settings and test `balancePlatform.balanceAccount.balance.updated` events for thresholds at balance-platform, account-holder and individual balance-account scope. It marks balance webhooks as a **limited-availability pilot** whose processes and documentation may change. These examples show notification configuration, not a payout request, booked transfer, bank receipt or live feature access. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- **Scope and conditions differ:** The first example targets a `balancePlatform` and uses USD `balance` `lessThan` 500000 for any account's current balance dropping below the stated USD 5000. The second targets an `accountHolder` and uses USD `balance` `lessThanOrEqual` 500000, including equality at the stated USD 5000. The third targets each specific `balanceAccount` separately, uses `available` rather than current `balance`, and uses `lessThan`. Preserve the target, balance type, comparator and currency together; the examples are not interchangeable.\n- **Event interpretation:** The sample events have `environment: test` and distinguish `balances.available`, `pending`, `reserved` and `balance`. Their values illustrate threshold matching for the configured metric, not movement of funds or delivery of a notification in a live account.\n- **JPY example conflict:** The third use case describes an available-balance threshold below **1000** in each foreign currency and labels the event \u201cbelow JPY 1000,\u201d yet its JPY setting uses `conditions.value: 100000` and the sample event uses `balances.available: 95000`. The page does not reconcile those figures. The separate Adyen currency-code reference lists JPY with zero decimals and says JPY 10 is submitted as 10 minor units for its stated API scope; this raises a concrete unit concern but does not, by itself, establish the correct balance-webhook setting. Verify JPY units and intended threshold with Adyen before using this example.\n\n## Detail locators\n\n- Pilot notice and example-only scope: pinned raw lines 15-24.\n- Platform-wide current-balance example and TEST webhook: pinned raw lines 26-95.\n- Account-holder current-balance example with inclusive threshold: pinned raw lines 97-167.\n- Per-balance-account available-balance example and JPY numerical conflict: pinned raw lines 169-239.\n- Separate Adyen currency reference for JPY zero-decimal/minor-unit context: [[source-adyen-docs-development-resources-currency-codes]], pinned raw lines 83 and 166-172.\n\n## Related\n\n- [[adyen-payouts]] \u2014 Payout Service parent concept and reciprocal route.\n- [[adyen-currencies-and-fx]] \u2014 currency-unit reference; balance-webhook JPY example requires clarification.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/balance-updates/use-cases/2026-09-15|Payout Service balance-webhook use cases, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "line 20, Limited availability"
+    },
+    {
+      "text": "I want to get notified if the balance drops below USD 5000 in any of the balance accounts in my balance platform.",
+      "location": "line 30, Any current balance drops below a limit"
+    },
+    {
+      "text": "I want to be notified if the current balance reaches or drops below USD 5000 in any of my user's balance accounts.",
+      "location": "line 101, Current balance of a specific user"
+    },
+    {
+      "text": "I want to get notified when the available balance on six of my users' balance accounts, which hold foreign currencies, drop below 1000 in their respective currencies.",
+      "location": "line 173, Available balance of a specific balance account"
+    },
+    {
+      "text": "**100000**",
+      "location": "line 188, conditions.value in JPY use case"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-balance-webhook-use-cases-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-balance-updates-use-cases]] \u2014 2026-09-15 Payout Service pilot balance-webhook threshold examples for balance-platform, holder and account scope; JPY narrative, numeric setting and sample event conflict and need unit clarification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Third JPY use case says below JPY 1000, but sets 100000 and shows available 95000; do not normalize or present the example as a production-ready threshold."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/balance-updates/use-cases/2026-09-15.md",
+  "raw_sha256": "dd9ae7966d40229430da3354d3aabb7c9475fe835d8a50e85b0153bf00d4469c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-getting-paid-transfer-routes
+
+Q1. What does this guide calculate, and what is required to do so?
+
+A1. It calculates available bank transfer routes by country/region or recipient counterparty before sending funds to a new recipient (raw lines 19–21, 34–48, 359–372). The page requires an Adyen for Platforms integration and a Configuration API credential with the Balance Platform BCL role (raw lines 23–30). For `POST /transferRoutes/calculate`, provide balance platform, currency and bank category plus country or counterparty; `balanceAccountId` is required when the counterparty contains a transfer instrument ID (raw lines 38–48, 363–372). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-routes]] → [[raw/adyen/docs/payouts/payout-service/getting-paid/transfer-routes/2026-09-15]].
+
+Q2. Does a returned route or the Payout Service URL establish transfer execution, bank receipt, or universal eligibility?
+
+A2. No. The result lists supported currency, priority and additional route requirements, with country included for a counterparty response; bank or regulatory limits can affect the eventual transfer (raw lines 19–21, 301–355, 716–779). The responses are examples, and route calculation is not a transfer or receipt. Although this guide sits under a Payout Service URL, it expressly requires a Platforms integration and links onward to Platforms custom payouts, so its prerequisite should not be generalized to all Payout Service paths (raw lines 29–30, 782–790). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-routes]] → [[raw/adyen/docs/payouts/payout-service/getting-paid/transfer-routes/2026-09-15]].

@@ -1,0 +1,22 @@
+{
+  "job_id": "docs-payouts-payout-service-getting-paid",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full 445-line pinned raw read and SHA-256 matched; accepted receipt, candidate and suggestions agree, all five quotes are exact at their locators, and the payouts concept route exists. The entry preserves the own-company proceeds flow, irreversible transfer-instrument deletion, cut-off conflict and TEST fixture boundary. Two material cross-border qualifications need repair: raw line 236 explicitly says USD payouts to US bank accounts are NOT supported when the legal entity is in Canada or Hong Kong, whereas the candidate calls this only a 'stated exception'; and raw line 219 says to use numberAndBic for a cross-border instrument on the same bank account, while the country-format table at lines 283\u2013287 says IBAN is required for some cross-border destinations. The source entry currently presents the first instruction without the table conflict, which can mislead format selection.",
+  "required_changes": [
+    "Change the cross-border takeaway to state explicitly that USD payouts to US bank accounts are unsupported when the legal entity is in Canada or Hong Kong (raw line 236), without implying a supported exception.",
+    "Preserve both raw claims about account-identification type: line 219 says create a separate numberAndBic instrument for receiving both local and cross-border payouts at one bank account, but lines 283\u2013287 list IBAN-required and IBAN-optional cross-border destinations. Flag the unresolved scope/format tension and direct format selection to the applicable destination requirements rather than asserting numberAndBic universally.",
+    "Carry the cross-border exclusion and account-format tension into Q2 and the reciprocal suggestion warnings; keep the existing ownership, lifecycle, cut-off and TEST qualifications."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c27-docs-payouts-payout-service-getting-paid-payouts-source",
+      "verdict": "rejected",
+      "reason": "The reciprocal route is appropriate, but its warning list should retain the source's explicit Canada/Hong Kong USD-to-US exclusion and line-219 versus lines-283\u2013287 account-format tension before promotion."
+    }
+  ],
+  "reviewer_identity": "c27-rdocs-payouts-payout-service-getting-paid",
+  "reviewer_model": "gpt-6-sol"
+}

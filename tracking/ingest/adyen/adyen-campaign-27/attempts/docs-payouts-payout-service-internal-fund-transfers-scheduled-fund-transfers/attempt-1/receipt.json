@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-internal-fund-transfers-scheduled-fund-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service scheduled internal transfers\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md\"\ntags: [adyen, payout-service, platforms, internal-transfers, sweeps]\n---\n\n## Overview\n\nThis 2020-modified, 2026-09-15-captured [[adyen]] Payout Service guide describes balance-account **sweeps** that schedule internal transfers between balance accounts. It routes through [[adyen-platform-internal-transfers]] because the configured balance account pushes funds to another balance account or pulls from one based on schedule and amount conditions (raw lines 15\u201335). Despite the Payout Service path and some \u201cpayout\u201d language, the core operation here is internal account-to-account movement, separate from a transfer instrument or external bank payout.\n\n## Key takeaways\n\n- **Prerequisites and ownership:** The source calls for an Adyen for Platforms integration; a Transfers API credential with **TransferService Webservice Initiate** role; Customer Area **Initiate internal transfers** and **Balance platform base** roles; accepted/subscribed Transfer webhooks; and Support enablement for the source balance account (raw lines 37\u201354). Only when the involved balance accounts belong to *different* account holders does the sender need `sendToBalanceAccount` and the receiver `receiveFromBalanceAccount` capability (lines 51\u201353). The described create call itself is a Balance Platform Configuration API `/balanceAccounts/{balanceAccountId}/sweeps` endpoint (lines 124\u2013150); the guide does not reconcile that with its Transfers API credential-role wording.\n- **Direction, schedule and amounts:** `push` moves funds out of the configured balance account to a specified destination; `pull` brings them in from a specified source. The API example defaults to push, uses `counterparty.balanceAccountId`, a currency matching the balances, and a `cron` expression evaluated in the configured balance account's timezone (raw lines 25\u201335, 124\u2013150). Customer Area offers full available, maintain-balance and fixed-amount options (lines 60\u2013123). Without optional amount objects, the schedule transfers all available balance when evaluated; `triggerAmount` gates execution, `targetAmount` retains a minimum and requires trigger strictly greater than target, while fixed `sweepAmount` requires trigger at least sweep amount (lines 464\u2013477). The USD/EUR figures and TEST endpoint are examples, not actual transfer evidence.\n- **Configuration versus execution:** The response provides a sweep ID and default `active` status, which may be patched; `balancePlatform.balanceAccountSweep.created` or `.updated` webhooks concern schedule configuration (raw lines 425\u2013460, 480\u2013499). A condition being met triggers a transfer **request**, not immediate booked movement (line 35). For a resulting internal transfer, separate outgoing and incoming webhook series progress through `received`, `authorised`, `booked` or failure. Customer Area shows two entries, one debited and one credited (lines 831\u2013837).\n- **Material example conflicts:** The dynamic-description section switches from internal `counterparty.balanceAccountId` to `transferInstrumentId` in its sample and discusses beneficiary-bank statements and a Payout Report, which are external-payout cues (raw lines 134\u2013140, 501\u2013540, 824\u2013829). It also names `remittanceForBeneficiary` where the earlier parameter table uses `referenceForBeneficiary` (lines 136\u2013137, 507). The Customer Area balance-account field is described as a transfer-instrument ID (lines 83\u201386). Keep the core internal-transfer route and do not infer the destination type or field equivalence from those mixed examples.\n\n## Detail locators\n\n- Internal sweep purpose, direction and conditional role/capability/source setup: raw lines 15\u201354.\n- Customer Area setup and USD maintenance illustration: raw lines 56\u2013123. API account-to-account fields and versioned TEST samples: lines 124\u2013424.\n- Created/active response and schedule webhook: raw lines 425\u2013460; amount controls and EUR illustration: lines 464\u2013499.\n- Description placeholders, destination/field mismatch and bank-statement language: raw lines 501\u2013829; resulting two-sided internal transfer statuses: lines 831\u2013837.\n\n## Evidence boundary\n\nA created or active sweep is configuration, not proof that its condition was met or a transfer booked. Even a booked internal debit/credit pair remains inside balance-platform accounts and is not a beneficiary-bank receipt. The mixed transfer-instrument and bank-description examples conflict with the page's stated balance-account destination; this source does not establish an external bank payout, a particular destination's validity or live eligibility.\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 internal movement concept.\n- [[adyen-platforms]] \u2014 required current platform integration.\n- [[source-adyen-docs-marketplaces-internal-fund-transfers-scheduled-fund-transfers]] \u2014 separate Marketplace-path sweep guide.\n- [[adyen-payouts]] \u2014 distinct generic payout route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15|Pinned Payout Service scheduled internal-transfer guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The type dictates the direction of the funds: push to push funds out of the balance account to a destination that you specify, or pull to pull funds in to the balance account from a source that you specify.",
+      "location": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:27"
+    },
+    {
+      "text": "If the balance accounts involved in the transfer *do not belong to the same account holder*, check the capabilities of the account holders:",
+      "location": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:51"
+    },
+    {
+      "text": "using the time zone of the balance account.",
+      "location": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:139"
+    },
+    {
+      "text": "By default, all the available balance in the balance account is transferred according to the schedule that you specified.",
+      "location": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:466"
+    },
+    {
+      "text": "For every internal transfer request that results from a sweep, Adyen sends multiple [webhooks](/payouts/payout-service/internal-fund-transfers/internal-transfer-webhooks) to your server:",
+      "location": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md:833"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payout-service-scheduled-internal-transfers-source",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-scheduled-fund-transfers]] \u2014 2020-modified, 2026-09-15-captured Payout Service account-to-account sweep guide for direction, roles, account-time-zone cron and amount gates, with separate configuration/execution webhooks; optional examples drift into bank-payout fields.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Payout Service URL and bank-oriented optional samples do not change the core internal balance-account-to-balance-account operation.",
+          "The page names a Transfers API Initiate credential role but uses a Balance Platform Configuration API sweep-create endpoint; preserve both without substituting one authorization for another.",
+          "Dynamic description says remittanceForBeneficiary and transferInstrumentId while the core table says referenceForBeneficiary and balanceAccountId."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/internal-fund-transfers/scheduled-fund-transfers/2026-09-15.md",
+  "raw_sha256": "4649de0a2755e3d7add56db7dd977c20aa941bc821dbf3d9fcd0501c36dbc4a6",
+  "status": "candidate_ready"
+}

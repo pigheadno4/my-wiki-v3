@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-manage-account-holder-risk",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace account-holder risk management with Score\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/manage-account-holder-risk\"\nraw_files:\n  - \"adyen/docs/marketplaces/manage-account-holder-risk/2026-09-15.md\"\ntags: [adyen, marketplaces, score, account-holder-risk, payouts]\n---\n\n## Overview\n\nThis Adyen Marketplace **Score** guide describes reviewing account-holder risk cases and configuring rules or actions in Customer Area after signals of possible fraud or unusual activity. Its raw metadata says last modified 2020-12-22 and it was captured 2026-09-15; the page also describes an October 31, 2026 planned Score enablement. Treat the rollout as a dated statement, not proof of access for a specific marketplace. A signal, score, queue label or example webhook does not itself establish fraud, verification, payout execution or funds receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Roles and availability:** The guide assigns **Merchant Marketplace Risk** to case review and direct action, and **Merchant Marketplace Risk Admin** to risk rules and automated actions. It says Score is included by default for marketplaces created after October 2024 and describes planned enablement for Adyen for Platforms merchants beginning October 31, 2026. Verify actual access for the relevant platform rather than projecting the rollout from this snapshot.\n- **Rule effects and cases:** Rules can change the risk score at a selected impact level or choose the automated action **None**, **Bump KYC tier**, or **Disable payouts**. An automated-actions log records actions for review. Flagged risk signals become open cases; the dashboard distinguishes open, reviewed and suspicious queues and shows balance-platform users, signals, volume and scores. A configured rule or log is not proof that a particular payout completed.\n- **Direct actions and false positives:** A reviewer can mark a case Reviewed or Suspicious, block or re-enable payouts, suspend an account, add high-risk KYC values from **confirmed fraudulent users**, or trust linked accounts. Queue classification, payout control and account suspension are distinct. An irrelevant signal can be muted for a week, month, year or indefinitely. Excluding an irrelevant KYC value from linked-account matching is **permanent and cannot be undone**. The high-risk-list section also describes individual/CSV additions for specified KYC attributes; see the raw for exact scope.\n- **Conditional webhook and identifiers:** Receiving `balancePlatform.score.triggered` requires a server that accepts webhooks, subscription to Configuration webhooks and Adyen-contact enablement. The sample payload is marked `environment: test`. Its `data.id` is a score calculation/recalculation identifier that changes each calculation, while `data.accountHolder.id` is the separate account-holder identifier. The example's score, status and `automatedActions` are illustrative.\n\n## Detail locators\n\n- Purpose, Customer Area roles and dated rollout: pinned raw lines 15-29.\n- Rule configuration, score impact and actions log: pinned raw lines 31-62.\n- Cases, direct actions and confirmed-fraud qualifier: pinned raw lines 64-99.\n- Muting, irreversible linked-identity exclusion and high-risk-list additions: pinned raw lines 100-157.\n- Webhook prerequisites and example identity: pinned raw lines 159-204.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main platform concept and reciprocal route.\n- [[adyen-risk-management]] \u2014 broader payment-risk concept; Score account-holder cases have their own workflow.\n- [[source-adyen-docs-platforms-manage-account-holder-risk]] \u2014 separately captured Platforms-path counterpart.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/manage-account-holder-risk/2026-09-15|Marketplace Score account-holder risk guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Score is included by default if you created your marketplace after October 2024. Starting October 31, 2026, Adyen will enable Score for all merchants who have integrated Adyen for Platforms.",
+      "location": "line 29, Requirements"
+    },
+    {
+      "text": "Select the automated action you want to take: **None**, **Bump KYC tier** or **Disable payouts**.",
+      "location": "line 56, Set up automated actions"
+    },
+    {
+      "text": "* Add KYC values to the high risk list. Only add KYC values from confirmed fraudulent users.",
+      "location": "line 97, Take direct action"
+    },
+    {
+      "text": "This action cannot be undone and is permanent.",
+      "location": "line 126, Exclude values from linked accounts"
+    },
+    {
+      "text": "This ID changes for every score calculation and recalculation, and does not appear in your Customer Area.",
+      "location": "line 173, Example webhook"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-score-account-holder-risk-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-manage-account-holder-risk]] \u2014 2020-modified, 2026-09-15-captured Marketplace Score guide for role-gated account-holder cases, risk rules, payout controls, permanent identity exclusions and conditional webhooks; dated rollout and flags are not access or fraud proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep Marketplace and Platforms paths distinct; neither Score case labels nor test webhook examples prove fraud, verification, payout execution or funds receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/manage-account-holder-risk/2026-09-15.md",
+  "raw_sha256": "5d7a0f0de86a3f280db9e2eb04487b85d3794d5bd489e69c3cf507d28c5723ae",
+  "status": "candidate_ready"
+}

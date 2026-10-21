@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payouts-payout-service-enterprise-accounts-account-statements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service enterprise-account CAMT.053 statements\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/enterprise-accounts/account-statements\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/enterprise-accounts/account-statements/2026-09-15.md\"\ntags: [adyen, payout-service, enterprise-accounts, camt053, reporting]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payout Service guide covers CAMT.053 ISO 20022 account statements for an enterprise account. A statement summarizes account activity over a configured daily or monthly period for reconciliation and user transaction reporting; linked Adyen-issued-card activity can appear when the card shares the balance account. This is distinct from a Marketplace or Platforms Balance Platform Statement Report. See [[adyen-reporting]].\n\n## Key takeaways\n\n- **Product and access gates:** The guide requires a Payouts integration and enterprise account. An Adyen contact must enable the feature and configure its statement settings. The balance-platform Report user API key needs the Merchant Report Download role, and the server must receive/accept the subscribed `balancePlatform.report.created` webhook. Required settings choose daily, monthly or both timeframe and value-date or booking-date transaction basis; BAI codes and an extra summarized daily file are optional, while transaction summary is included by default. These are setup requirements, not proof of a particular account's eligibility or produced file. See pinned raw lines 23\u201345.\n- **Availability and retrieval:** Adyen automatically generates statements and sends `balancePlatform.report.created` with `balanceAccount`, `fileName` and `downloadUrl`; download is a separate authenticated GET to that URL. The webhook example is live, whereas the curl example targets test and a different filename, so treat them as independent illustrations rather than one executed flow. A notification or URL does not establish that the file was fetched or its contents reconciled. See pinned raw lines 47\u201391.\n- **Statement grain and balances:** A CAMT.053 file can contain multiple `<Stmt>` blocks; each block represents one account and one currency and identifies its reporting period. Balance blocks can report either booked opening/closing codes (`OPBD`/`CLBD`) or available ones (`OPAV`/`CLAV`) depending on configuration. Standard `<Ntry>` records are booked credit/debit entries with booking and value dates, and transaction details carry the Adyen transfer ID and platform/beneficiary references for matching. Do not equate available, booked and recipient-bank balances. See pinned raw lines 95\u2013265.\n- **Classification and aggregation:** Each entry has an ISO 20022 Bank Transaction Code; the guide maps Transfers API category/type/priority and direction to domain/family/subfamily codes, including bank, internal, top-up and issued-card cases. Optional BAI codes add another classification, including booked versus returned/rejected mappings. If enabled, an additional daily summarized CAMT.053 file replaces per-transaction entries with one `<Ntry>` per BAI-code group and date-only fields; use the detailed file for transaction-level reconciliation. See pinned raw lines 324\u2013537.\n- **Evidence boundary:** The sample XML is illustrative and shows an opening booked balance and one entry; its omission of other elements should not override the element definitions or selected configuration. A booked statement entry records enterprise-account activity, not proof of external beneficiary-bank receipt or final accounting sign-off. See pinned raw lines 267\u2013322.\n\n## Detail locators\n\n- CAMT.053 purpose, Payout Service/enterprise-account requirements and configurable settings: pinned raw lines 15\u201345.\n- Automatic generation, report-created fields and example GET: pinned raw lines 47\u201391.\n- XML hierarchy, group header, account/currency statement, balances, entries, summaries and transfer references: pinned raw lines 95\u2013265.\n- Example XML and ISO/Transfers API code mapping: pinned raw lines 267\u2013407.\n- Optional BAI mapping and standard versus summarized statement grain: pinned raw lines 409\u2013537.\n\n## Related\n\n- [[adyen-reporting]] \u2014 reciprocal reporting concept; this source is specifically Payout Service enterprise-account CAMT.053.\n- [[adyen-business-accounts]] \u2014 nearby account-product context, not an interchangeable statement format.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/enterprise-accounts/account-statements/2026-09-15|Payout Service enterprise-account statements, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You must have a [Payouts](/payouts/payout-service) integration and an [enterprise account](/payouts/payout-service/enterprise-accounts).",
+      "location": "line 29, Requirements / Integration type"
+    },
+    {
+      "text": "Download the account statement by making a GET request to the URL included in the `downloadUrl` field.",
+      "location": "line 82, Download an account statement"
+    },
+    {
+      "text": "This block represents one account and one currency. A file can contain multiple statements.",
+      "location": "line 142, Account statement elements / Statement block"
+    },
+    {
+      "text": "Depending on the configuration, Adyen reports either booked balances (`OPBD`, `CLBD`) or available balances (`OPAV`, `CLAV`).",
+      "location": "line 176, Account statement elements / Balances"
+    },
+    {
+      "text": "One `<Ntry>` for each BAI code group.",
+      "location": "line 481, (Optional) Summarized account statement / comparison table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payout-service-enterprise-statements-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-enterprise-accounts-account-statements]] \u2014 2026-09-15 Payout Service enterprise-account CAMT.053 guide for account/currency statement grain, booked or available balances, ISO/optional BAI codes and aggregated daily file.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/enterprise-accounts/account-statements/2026-09-15.md",
+  "raw_sha256": "de210abbcfcb38182a714e354231994fa3eaa0d40c179aabe474b4c4c1771b84",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Retrieval checks — docs-marketplaces-us-tax-forms-edelivery-consent
+
+Q1. Whose 1099-K e-delivery consent does this guide address, and what must the Marketplace implement before registering it?
+
+A1. The page's filing/mail context is US-based users paid out directly by Adyen, and electronic-only delivery requires express user consent registered with Adyen (raw lines 19–23). It calls for a Marketplace integration, LEM API key, a preference UI that presents rights and continued-access information, and platform responsibility for electronic delivery/access; no webhook is needed for these endpoints (raw lines 25–43). Its dated provider cutoff is December 31, 11:59 p.m. Eastern Time in the tax year (raw line 45). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-us-tax-forms-edelivery-consent]] → [[raw/adyen/docs/marketplaces/us-tax-forms-edelivery-consent/2026-09-15]].
+
+Q2. Does `US1099k: true` or a successful set response prove that Adyen filed or the marketplace delivered a form, and how is the preference managed?
+
+A2. No. The guide says to check the legal entity's existing preference before showing the UI, then call Adyen when consent is allowed or revoked (raw lines 47–72, 231–244). `US1099k` defaults false; true makes the marketplace responsible for delivery/access when forms become available (raw lines 217–221). The worked set call uses `US1099k: true`; a 200 No Content indicates that registration request succeeded, while the page does not show a false revocation request or any filing/delivery receipt (raw lines 258–279, 458–460). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-us-tax-forms-edelivery-consent]] → [[raw/adyen/docs/marketplaces/us-tax-forms-edelivery-consent/2026-09-15]].

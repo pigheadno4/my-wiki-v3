@@ -1,0 +1,7 @@
+# Q1 — Purpose and configuration route
+
+The Payout Service page explains the `description` passed to the recipient bank and the optional `referenceForBeneficiary` on payout statements; **most**, not all, banks show the description (raw lines 19–21). Adyen Support can set defaults and a transfer request can override a default (raw line 32). The matrix must be read for the exact country, currency and priority because allowed characters, accepted lengths and visible lengths differ (raw lines 34–207). Forward route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-statement]] → [[raw/adyen/docs/payouts/payout-service/getting-paid/transfer-statement/2026-09-15]].
+
+# Q2 — Visibility and receipt boundary
+
+Some regions combine the two fields under a shared visible limit and truncate overlong text (raw lines 21–30). Accepted API characters do not imply bank-statement visibility: PLN regular lists 0 visible for both fields, EUR instant reference 0, and SGD wire both 0 (raw lines 85–90, 105–110, 202–205). AUD fast lists a larger bank display capacity than Adyen's accepted maximum (raw lines 169–176). The tables are a dated route reference, not proof of route enablement, actual displayed text or beneficiary-bank receipt. Forward route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-statement]] → [[raw/adyen/docs/payouts/payout-service/getting-paid/transfer-statement/2026-09-15]].

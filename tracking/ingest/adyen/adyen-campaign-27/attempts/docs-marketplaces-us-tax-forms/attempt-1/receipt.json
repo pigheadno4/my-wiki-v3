@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-us-tax-forms",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace US tax-form retrieval and distribution\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/us-tax-forms\"\nraw_files:\n  - \"adyen/docs/marketplaces/us-tax-forms/2026-09-15.md\"\ntags: [adyen, marketplaces, us, tax-forms, reporting]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path page describes Adyen's stated US 1099-K filing scope for users **to whom Adyen pays out directly** and the marketplace's routes to retrieve and distribute generated PDF forms. Its title and description also mention 1099-NEC, but the body supplies 1099-K criteria and retrieval only. Its tax-year thresholds and availability are dated source claims, not current tax advice or evidence that a particular form was filed, retrieved, consented to or delivered. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Direct-payout and tax-year scope:** The page says Adyen files 1099-K with the IRS for US-based users it pays out directly, and some states require filing. For **2025**, it states a federal threshold of **USD 20,000 gross processed volume and 200 transactions combined per calendar year**, while state thresholds vary. Gross volume is measured before fees, chargebacks and refunds; `splits.type=TopUp` transactions are excluded. A later sentence says Adyen only generates a form when the volume **or** transaction threshold is met. The page does not reconcile this **and/or** conflict; neither phrase should be treated as a resolved filing trigger.\n- **Availability and user delivery:** Adyen says prior-tax-year forms become available in the third week of January, giving 2025 forms in January 2026 as an example. The marketplace can retrieve available forms in Customer Area or through the API and distribute a PDF copy. The text says no form is available below its threshold, but that statement inherits the unresolved threshold wording. Retrieval instructions do not prove actual filing or delivery.\n- **Access routes:** Customer Area download requires **Download tax form** plus either **Balance platform admin** or **Balance platform base**, followed by selection of the processing merchant account and account holder. API retrieval covers tax years **2022 onward** and requires a Balance Platform API key with **Download Tax Form via Tax Api**. The guide says a user-facing button or link should trigger retrieval for that account holder.\n- **API result:** `GET /accountHolders/{id}/taxForms` uses account-holder ID and required `formType=US1099k` and `year=YYYY`; `legalEntity` is shown as optional in the parameter table. The response contains Base64-encoded PDF content, which the marketplace decodes and provides to the user. Its TEST request and response are examples, not a real filing or delivery. A separately linked guide addresses paperless-delivery consent.\n\n## Detail locators\n\n- Direct-payout scope, dated 2025 threshold, gross basis and TopUp exclusion: pinned raw lines 15-28.\n- Prior-year availability, threshold conflict and distribution: pinned raw lines 30-34.\n- Customer Area roles/navigation and API credential/role: pinned raw lines 36-61.\n- Endpoint, parameters, Base64 PDF response and provision to user: pinned raw lines 63-95.\n- Separate paperless-delivery-consent route: pinned raw lines 97-99.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main platform model and reciprocal source route.\n- [[source-adyen-docs-platforms-us-tax-forms]] \u2014 separately captured Platforms-path counterpart.\n- [[source-adyen-docs-marketplaces-us-tax-forms-edelivery-consent]] \u2014 paperless-delivery-consent guide, a distinct step.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/us-tax-forms/2026-09-15|Marketplace US tax forms page, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In the US, Adyen is required to file a **1099-K tax form** with the Internal Revenue Service (IRS) for any US-based user to which Adyen pays out directly.",
+      "location": "line 21, introduction"
+    },
+    {
+      "text": "For 2025, Adyen is required to file 1099-K forms for all US-based users with a gross processed volume at or above the federal threshold of USD 20,000 and 200 transactions combined per calendar year.",
+      "location": "line 24, introduction"
+    },
+    {
+      "text": "Adyen only generates a 1099-K tax form for user accounts that meet the volume or transaction [threshold](#threshold).",
+      "location": "line 34, Retrieve tax forms for your users"
+    },
+    {
+      "text": "You can use the [/taxForms](https://docs.adyen.com/api-explorer/balanceplatform/latest/get/accountHolders/\\(id\\)/taxForms) endpoint to get forms for the tax year 2022 and later.",
+      "location": "line 54, API"
+    },
+    {
+      "text": "The response contains the tax form as a Base64-encoded binary.",
+      "location": "line 82, API"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplace-us-tax-forms-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-us-tax-forms]] \u2014 2026-09-15 Marketplace-path US direct-payout 1099-K filing-scope and platform retrieval/PDF-delivery guide; 2025 AND-versus-OR threshold wording conflicts, and title's 1099-NEC lacks body procedure.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Historical US tax-year and direct-payout scope only; the raw states both AND and OR threshold formulations and does not settle which controls."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/us-tax-forms/2026-09-15.md",
+  "raw_sha256": "a6714a02bffca4a99bfa71f816760fcb9c6b175e3733fbe6faad4629ca1aa7bd",
+  "status": "candidate_ready"
+}

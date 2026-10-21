@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payouts-payout-service-webhook-types",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Webhook structure and types for payouts | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/webhook-types\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/webhook-types/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, webhooks, transfers]\n---\n\n## Overview\n\nThis Payout Service guide, captured 2026-09-15, describes the general webhook envelope and the configuration and Transfer event types shown for account holders, balance accounts, sweeps, internal transfers, and third-party bank payouts. It is a type and routing reference, not evidence that a particular webhook was subscribed to or delivered, or that a transfer settled or reached a bank. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The general body has `data`, `environment` (`test` or `live`), and `type`. The `data` shape varies by type; some types also have `data.status`. The account-holder creation JSON is a test example, not evidence of a real account or delivered notification (raw lines 26\u201338, 42\u201378).\n- Configuration types listed here report successful creation/update of account holders and balance accounts, and creation/deletion/update of balance-account sweeps. The section's introductory sentence also mentions payment instruments, but this captured table does not enumerate payment-instrument types (raw lines 80\u201392).\n- `balancePlatform.transfer.created` represents creation of a request to credit or deduct funds from a platform balance account, with the triggering event in its content; `balancePlatform.transfer.updated` marks a request status change. These event labels alone do not establish funds movement or beneficiary-bank receipt (raw lines 70\u201378, 94\u2013101).\n- For the Transfer webhooks in this guide, identify internal transfer with `category=internal`, `type=internalTransfer`, and counterparty `balanceAccountId`; a third-party payout to a bank account uses `category=bank`, `type=bankTransfer`, and counterparty `bankAccount`. The table does not specify further status values or a settlement timeline (raw lines 103\u2013109).\n\n## Detail locators\n\n- Webhook envelope and test example: raw lines 26\u201368.\n- General event distinctions and `data.status` qualifier: raw lines 70\u201378.\n- Configuration type table: raw lines 80\u201392.\n- Transfer types and internal-versus-bank classification: raw lines 94\u2013109.\n\n## Related\n\n- [[adyen-webhooks]]\n- [[adyen-platform-internal-transfers]]\n- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-internal-transfer-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/webhook-types/2026-09-15|Pinned Payout Service webhook types guide]]\n",
+  "quotes": [
+    {
+      "text": "The information contained in the `data` object varies and depends on the webhook type.",
+      "location": "line 36"
+    },
+    {
+      "text": "Some webhook types also include a `data.status` field that informs you of the outcome of the event.",
+      "location": "line 78"
+    },
+    {
+      "text": "Configuration webhooks inform your system about events that occur with account holders, balance accounts, and payment instruments.",
+      "location": "line 82"
+    },
+    {
+      "text": "A transfer request was created to credit funds to or deduct funds from a balance account in your platform.",
+      "location": "line 100"
+    },
+    {
+      "text": "A transfer request's status changed.",
+      "location": "line 101"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "reciprocal-payout-service-webhook-types",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-webhook-types]] \u2014 2026-09-15 Payout Service webhook-envelope and configuration/Transfer type guide, including internal-versus-bank transfer identifiers and request-status boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/webhook-types/2026-09-15.md",
+  "raw_sha256": "d93029b9f472b6bf84436f3543d80ec625b15741abc727613bc51f5a8c53aa62",
+  "status": "candidate_ready"
+}

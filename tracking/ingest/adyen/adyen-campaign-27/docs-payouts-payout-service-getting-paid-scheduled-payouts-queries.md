@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-getting-paid-scheduled-payouts
+
+Q1. What must be in place to configure a custom scheduled payout, and when does the schedule initiate a transfer?
+
+A1. The guide requires a Payouts integration, Transfers API Initiate role, Customer Area base/configure roles, the user's sendToTransferInstrument capability, and the account holder and transfer instrument linked to the same legal entity (raw lines 23–38). A balance-account schedule selects the destination instrument and amount/balance, trigger, frequency, timing and priority conditions; only when all conditions are met is a transfer request triggered (raw lines 40–95). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-getting-paid-scheduled-payouts]] → [[raw/adyen/docs/payouts/payout-service/getting-paid/scheduled-payouts/2026-09-15]].
+
+Q2. Does the USD 150 monthly example or a triggered sweep prove a USD 250 trigger, debit, bank arrival, or statement-reference display?
+
+A2. No. The example says payout only above USD 250 but its shown fields omit the minimum-balance trigger (raw lines 73, 101–117). Schedule setup and `transfer.created` report a request, while transfer updates track status and `transaction.created` reports the balance-account debit (raw lines 119–139); bank receipt is later. The guide's beneficiary reference field is route-dependent: the related [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-statement]] matrix shows zero visible characters for some currency/priority routes (scheduled-payout raw line 88; statement raw lines 85–90, 105–110). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-getting-paid-scheduled-payouts]] → [[raw/adyen/docs/payouts/payout-service/getting-paid/scheduled-payouts/2026-09-15]].

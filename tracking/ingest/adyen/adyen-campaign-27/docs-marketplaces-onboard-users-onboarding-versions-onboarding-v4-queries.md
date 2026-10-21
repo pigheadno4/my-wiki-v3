@@ -1,0 +1,9 @@
+# Retrieval checks — docs-marketplaces-onboard-users-onboarding-versions-onboarding-v4
+
+## Q1 — What does the Marketplace onboarding v4 page change, and which methods does it cover?
+
+It is a 2025-modified overview of v4 changes, with separate versioning and LEM API Diff Tool routes for fuller comparisons (raw lines 15–33). It limits residential/registered PO-box use (35–47), changes the LEM document DELETE response to 404 and adds low-quality-ID upload validation (49–75), and applies new legal-entity/legal-arrangement name/address validations to both hosted and API-only onboarding (77–191). Entity and country conditions follow at lines 193–416. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-onboard-users-onboarding-versions-onboarding-v4]] → [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/onboarding-v4/2026-09-15]].
+
+## Q2 — Which qualifications prevent universal eligibility or payment conclusions?
+
+Underage users aged 13–18 can be onboarded with a representative only in particular regions (raw lines 193–195); unincorporated-partnership support began in v3, applies only to selected regions and uses LEM API only (197–199). The general registration-number-before-payment statement (201–203) has country/organization exceptions such as New Zealand `registrationNumberAbsent: true` (301–305). EU and UK financial-report inputs are conditioned on offering business accounts (271–285, 378–390), while Singapore Singpass may be required and has a separate-document option (347–360). Country/error tables are dated snapshot guidance, not proof of current legal rules, user verification, enabled payment capability or actual payment. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-onboard-users-onboarding-versions-onboarding-v4]] → [[raw/adyen/docs/marketplaces/onboard-users/onboarding-versions/onboarding-v4/2026-09-15]].

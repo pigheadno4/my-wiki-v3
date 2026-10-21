@@ -19,6 +19,9 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-enterprise-accounts-account-statements]] — 2026-09-15 Payout Service enterprise-account CAMT.053 guide for account/currency statement grain, booked or available balances, ISO/optional BAI codes and aggregated daily file.
+
+
 - [[source-adyen-docs-marketplaces-reconciliation-use-cases]] — 2026-09-15 Marketplace reconciliation navigation hub for report/process prerequisites and first-year, payment, transfer, fee and balance-verification child guides; detailed grains remain in those guides.
 
 

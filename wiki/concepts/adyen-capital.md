@@ -15,6 +15,9 @@ The landing page lists supported regions with specific inclusions and exclusions
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-compliance-financial-products-user-interface-capital-requirements]] — 2023-modified, 2026-09-15-captured Marketplace Capital-specific UI guideline for offers, KYC/terms, insights/security and Ireland precontract disclosures; not legal advice or grant proof.
+
+
 - [[source-adyen-docs-marketplaces-components-overview-after-payment-capital-component]] — 2026-09-15 Marketplace-path Platform Experience Capital component guide for conditional financing offers, required actions, grant status and repayment display; UI does not prove funding or repayment.
 
 

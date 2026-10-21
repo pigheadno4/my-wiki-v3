@@ -1,0 +1,9 @@
+# C27 coordinator full-read exemplar audit
+
+**PASS** — 2026-10-21. Coordinator fully read all three predetermined pinned raw snapshots and compared the final promoted source and both fixed query answers. No material final-sample failure required expansion.
+
+- `docs-payouts-payout-service-get-started`: all 113 lines. Contact and use-case design, funding/counterparty scope, TEST Transfers API and Customer Area access, testing and LIVE setup are retained. TEST configuration does not replicate to LIVE; Payout Service remains distinct from the legacy Payout API. Source and Q1/Q2 pass.
+- `docs-payouts-payout-service-getting-paid-payout-webhooks`: all 1,547 lines, including every sample and return-code row. Integration/subscription gates, received/reserved/booked accounting, post-debit internal review, failed review tracking versus top-level booked state, sample amount inconsistency, local ETA exclusions, FPS/ACH tracing, instant credited tracking, failed/returned debit reversal, permanent instrument blocking/422 and table retry tension remain distinct. Source and Q1/Q2 pass; provider webhook confirmation is distinguished from independent bank evidence.
+- `docs-marketplaces-compliance-financial-products-customer-complaints`: all 155 lines. Complaint definition and dissatisfaction exception, support and records, general 5/10-business-day expectations, category-specific escalation and responder ownership, additional UK/Ireland 5/15/35-day procedures, BACS response and DISP wording are retained as dated nonlegal guidance. Source and Q1/Q2 pass.
+
+Exact manifest hashes remain immutable. Final close exhaustively verifies every campaign hash and retrieval route. This audit establishes faithful historical retrieval, not provider operations, current legal requirements or successful funds movement.

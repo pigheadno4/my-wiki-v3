@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-us-tax-forms-edelivery-consent",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Marketplace US 1099-K paperless-delivery consent\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/us-tax-forms-edelivery-consent\"\nraw_files:\n  - \"adyen/docs/marketplaces/us-tax-forms-edelivery-consent/2026-09-15.md\"\ntags: [adyen, marketplaces, us-tax-forms, 1099-k, electronic-delivery, consent]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Marketplace guide describes checking and registering a US user's preference for **electronic-only delivery of Form 1099-K** through Legal Entity Management (LEM) API calls. Its stated context is US-based users to whom Adyen pays out directly. If the user consents to paperless delivery, the marketplace takes responsibility for electronic delivery and continued access when forms become available. A registered preference is not evidence that a form was generated, filed, delivered or received. [[adyen-platforms]]\n\n## Key takeaways\n\n- The captured page describes Adyen filing 1099-K for its US direct-payout users and mailing forms to their legal entities' Adyen-registered addresses. To avoid Adyen's print/mail charges for electronic-only delivery, the marketplace obtains **express user consent** and registers it with Adyen. The stated registration cutoff is **December 31 at 11:59 p.m. Eastern Time in the relevant tax year**. These are dated provider statements, not current tax-law or filing determinations. See raw lines 19\u201323 and 33\u201345.\n- Preconditions are an Adyen for Platforms marketplace integration and LEM API key; no webhook is needed for the described endpoints. The marketplace must provide a client preference UI with rights/continued-access information and handle electronic form delivery and access. The linked IRS Publication 1179 is an external rules route, not a compliance finding here. See raw lines 25\u201343.\n- The workflow checks the existing setting before loading the preferences page, displays it, then calls Adyen when the user allows or revokes consent. Both check and registration are API-only, unavailable through Customer Area. Use the account holder's legal-entity ID: the owner's individual legal entity for a sole proprietorship or the organization entity for an organization. See raw lines 47\u201372 and 231\u2013244.\n- Check with `POST /legalEntities/{id}/checkTaxElectronicDeliveryConsent`; the `US1099k` response boolean defaults to `false`, while `true` means the marketplace owes electronic delivery/access. Register with `POST /legalEntities/{id}/setTaxElectronicDeliveryConsent`; the worked request sets `US1099k: true`. The narrative mentions revocation but does not show a `false` registration request. A `200 No Content` response is described as successful registration, not proof of form delivery. See raw lines 68\u201372, 217\u2013221, 231\u2013266 and 458\u2013460.\n- The step introduction contains an apparent `1009-K` typo; the title, surrounding statements and `US1099k` field identify the intended 1099-K route. The examples use a TEST endpoint and versioned SDKs, not live filing or delivery evidence. See raw lines 47\u201349, 76\u2013215 and 268\u2013456.\n\n## Detail locators\n\n- **Direct-payout tax-form and delivery-responsibility scope:** raw lines 15\u201323.\n- **Integration, credentials, no-webhook statement, UI/rights and dated deadline:** raw lines 25\u201345.\n- **Check-before-display workflow and legal-entity ID:** raw lines 47\u201372 and 231\u2013244.\n- **Check response, default, set request and registration result:** raw lines 217\u2013266 and 458\u2013460.\n- **TEST/versioned examples:** raw lines 76\u2013215 and 268\u2013456.\n\n## Related\n\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-us-tax-forms-edelivery-consent|Parallel Platforms-path consent guide]]\n- [Provide tax forms (US only)](https://docs.adyen.com/marketplaces/us-tax-forms) \u2014 linked delivery guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/us-tax-forms-edelivery-consent/2026-09-15|Adyen Marketplace US e-delivery consent guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "In the United States (US), Adyen is required to file a **1099-K** tax form with the Internal Revenue Service (IRS) for any US-based user to which Adyen pays out directly.",
+      "location": "raw line 19, Register consent for paperless delivery of tax forms"
+    },
+    {
+      "text": "you must gather your users' express consent to receive the forms in electronic format only, and register that consent with Adyen.",
+      "location": "raw line 21, Register consent for paperless delivery of tax forms"
+    },
+    {
+      "text": "their consent for electronic delivery of tax forms must be registered with Adyen by 11:59 pm Eastern Time, on December 31 in the year for which the user wants their tax forms electronically delivered.",
+      "location": "raw line 45, Meeting Adyen (and IRS) electronic delivery requirements"
+    },
+    {
+      "text": "You can only check a user's paperless delivery consent preference using the API. This feature is not available through the Customer Area.",
+      "location": "raw line 62, Check a user's electronic delivery consent preference"
+    },
+    {
+      "text": "If the value for `US1099k` is **true**, your platform is responsible for [providing electronic delivery](/marketplaces/us-tax-forms) of, and access to, 1099-K tax form(s) when they become available.",
+      "location": "raw line 217, Check a user's electronic delivery consent preference"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-docs-marketplaces-us-tax-forms-edelivery-consent-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-us-tax-forms-edelivery-consent]] \u2014 2026-09-15 Marketplace US direct-payout 1099-K electronic-only consent guide for client preference UI, LEM check/set calls, revocation route and dated registration deadline; platform delivery/access remains separate from consent registration.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/us-tax-forms-edelivery-consent/2026-09-15.md",
+  "raw_sha256": "45da9d993ed4d44a1c6c080a7f0aa178c7d97c426f11faca6ff367d6a506dced",
+  "status": "candidate_ready"
+}

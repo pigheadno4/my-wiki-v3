@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-internal-fund-transfers-internal-transfer-webhooks
+
+Q1. Which webhook events track an internal Payout Service-path transfer between balance accounts?
+
+A1. Route: [[index]] → [[adyen-index]] → [[adyen-platform-internal-transfers]] → [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-internal-transfer-webhooks]] → [[raw/adyen/docs/payouts/payout-service/internal-fund-transfers/internal-transfer-webhooks/2026-09-15]]. The platform server receives/accepts webhooks and subscribes to Transfer webhooks in TEST Customer Area; created and updated events appear as separate outgoing source-account and incoming target-account sets, identified by `category: internal`, `type: internalTransfer` and direction (raw lines 19–50). The scheduled/on-demand example progresses from received to authorised reservation to booked source debit/target credit; request is a TEST Transfers API v4 internal balance-account transfer, not a bank payout (raw lines 52–76, 371–881).
+
+Q2. How is a return represented, and what do the examples fail to prove?
+
+A2. Route: [[index]] → [[adyen-index]] → [[adyen-platform-internal-transfers]] → [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-internal-transfer-webhooks]] → [[raw/adyen/docs/payouts/payout-service/internal-fund-transfers/internal-transfer-webhooks/2026-09-15]]. Return updates contain nested `events[].modification` stages received, authorised and booked on the original transfer, with two account-side booked updates; the top-level transfer status can remain booked before the return is booked (raw lines 883–1455). The request example uses EUR value 10000 while webhook examples show 1000, and return leg IDs shift between sample sections (raw lines 58–76, 382–509, 905–1455). Do not treat these TEST payloads as one reconciled ledger or proof of external bank receipt.

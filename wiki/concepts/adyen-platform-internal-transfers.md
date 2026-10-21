@@ -15,6 +15,21 @@ The overview does not define currency, timing, role, failure or booked-status ru
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers]] — 2020-modified, 2026-09-15-captured Payout Service overview for scheduled or on-demand balance-account-to-balance-account movement and webhook/detail routes; orientation does not prove execution.
+
+
+- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-return-transfers]] — 2020-modified, 2026-09-15-captured Payout Service guide for equal-amount returns of original internal push transfers by incoming ID, conditional cross-holder capabilities and webhook failure/outcome tracking; authorised response is not booked-return proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-on-demand-fund-transfers]] — 2020-modified, 2026-09-15-captured Payout Service on-demand Customer Area/Transfers API internal balance-account guide for source debit, destination credit, conditional holder capabilities and two-sided booked-webhook evidence; detailed example is push-only.
+
+
+- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-internal-transfer-webhooks]] — 2026-09-15 Payout Service-path Transfer-webhook guide for two-sided internal balance-account received/authorised/booked legs and nested return modifications; TEST request/event amounts and IDs differ.
+
+
+- [[source-adyen-docs-payouts-payout-service-internal-fund-transfers-scheduled-fund-transfers]] — 2020-modified, 2026-09-15-captured Payout Service account-to-account sweep guide for direction, roles, account-time-zone cron and amount gates, with separate configuration/execution webhooks; optional examples drift into bank-payout fields.
+
+
 - [[source-adyen-docs-marketplaces-internal-fund-transfers]] — 2020-modified, 2026-09-15-captured Marketplace orientation to liable/user balance-account transfers, distinct external bank payouts and scheduled/on-demand/return/webhook process routes.
 
 

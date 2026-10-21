@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-getting-paid-payout-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service bank-payout webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/getting-paid/payout-webhooks\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md\"\ntags: [adyen, payout-service, platforms, bank-payouts, webhooks]\n---\n\n## Overview\n\nThis 2023-modified Payout Service guide, captured 2026-09-15, explains **Transfer webhooks** for a payout from a platform balance account to a user's external bank account. The source is under **Payout Service**, distinct from the legacy Payout API covered by [[adyen-payouts]] and from Marketplace/Platforms-specific guides. `balancePlatform.transfer.created` reports an outgoing request; `balancePlatform.transfer.updated` reports reservation, balance-account debit, bank-side tracking, credit, failure or return. The examples are TEST payloads, not evidence that an actual beneficiary bank received funds. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Prerequisite: a Payout Service integration, a server able to receive/accept webhooks, and Customer Area subscriptions to **Transfer** and **Transaction** webhooks. Identify this payout stream with `category: bank`, `direction: outgoing` from the source balance account, and `type: bankTransfer`. The guide's detailed examples are Transfer `created`/`updated` events (raw lines 19\u201359).\n- **Request and reservation:** `transfer.created` with `status: received` identifies initiation; `transfer.updated` `authorised` means the amount is reserved on the user's source balance account. Insufficient available funds can produce `refused` / `notEnoughBalance`, and the page instructs adding funds and sending a **new** transfer request. None of these states proves a debit or bank receipt (raw lines 60\u2013230).\n- **Booked debit:** `transfer.updated` `status: booked`, outgoing direction and an accounting `events.transactionId` show deduction from the source balance account. The guide explicitly says booked is **not final**: instant bank transfers may fail and regular/wire transfers may return. A later `tracking.status: pending` with `type: internalReview` can occur after that debit; passing review yields instant `credited` tracking or a non-instant ETA, while failed review yields `tracking.status: failed`, `type: internalReview`, `reason: refusedForRegulatoryReasons`. The failed-review TEST payload still has top-level `status: booked`/`reason: approved`, so distinguish tracking outcome from top-level accounting state and do not infer a reversal from that example (raw lines 325\u2013334, 434\u2013581, 583\u2013704).\n- **Bank rejection and return:** `status: failed` follows external-bank rejection when automatic retries are unsuccessful; for instant transfers with end-to-end confirmation, it is the bank rejection state. `status: returned` reports funds returned by the counterparty bank, with reason and transaction ID. The failed and returned examples show positive accounting balance mutations after earlier debit, but their sample IDs and balances are not a general retry or timing promise (raw lines 706\u2013829, 1227\u20131347).\n- **Tracking versus confirmation:** an `estimatedArrivalTime` is an estimate of beneficiary-bank credit and may differ from actual arrival. At this snapshot the page says ETA is available for local payouts, excluding instant and cross-border. A `tracingData` event provides rail-specific network identifiers (UK GBP FPS `fpid`, US USD ACH `traceNumber`) when funds leave Adyen, useful to investigate delayed/missing transfers; tracing is not credit confirmation. For completed **instant** priority, `tracking.status: credited`/`type: confirmation` is the guide's bank-credit signal, stronger than `booked` or ETA, though it remains provider webhook evidence rather than an independent bank statement (raw lines 830\u20131113, 1115\u20131225).\n- **Returned-transfer reasons:** `networkReason` gives network `code`, `description` and `namespace`, mapped to Adyen `reason`; FPS/ACH returns occur after funds left Adyen and can follow a tracing event. Temporary reasons may allow a new route/later retry, but the guide says permanent reasons block the transfer instrument and further requests fail HTTP 422 until bank details change. The table still says \u201ccheck ... and retry\u201d for `counterpartyAccountClosed` and `counterpartyAccountBlocked`; do **not** interpret that table as permission to retry a blocked instrument without resolving the permanent issue. Consult actual reason and transfer-instrument state (raw lines 1349\u20131547).\n- **TEST example discrepancies:** the failed-review payload has `amount.value: 1000` but its first `received` mutation is `-10000`, then later `+1000`/`-1000` (raw lines 585\u2013704). Its top-level booked/approved state coexists with failed internal-review tracking. These sample details must not be used as a universal amount or terminal-status calculation.\n\n## Detail locators\n\n- Integration/webhook setup and payout identifiers: raw lines 19\u201359. Initiation, reservation, insufficient-balance refusal and new request: lines 60\u2013324.\n- Booked debit, internal review pending/passed/failed and sample mismatch: lines 325\u2013705. External-bank failed state: lines 706\u2013829.\n- ETA, tracing coverage, instant credited confirmation, returned state, network reasons and blocked-instrument retry boundary: lines 830\u20131547.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platforms]] \u2014 balance-platform context; Payout Service is a distinct integration route.\n- [[adyen-payouts]] \u2014 legacy Payout API concept, distinct from this Payout Service Transfer-webhook flow.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 separate Platforms-path payout webhook guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15|Payout Service bank-payout webhooks \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When funds are transferred (paid out) from a balance account to your user's bank account, Adyen sends [Transfer webhooks](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/overview) to inform you of the progress and status changes of the transfer request.",
+      "location": "raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md:19"
+    },
+    {
+      "text": "This status is not final. Instant payouts may be rejected by the counterparty's bank and thus [fail](#payout-failed), and regular and wire transfers may be [returned](#payout-returned) by the counterparty's bank.",
+      "location": "raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md:334"
+    },
+    {
+      "text": "Estimated Time of Arrival is currently available for all local payouts. It is *not* available for instant or cross-border payouts.",
+      "location": "raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md:836"
+    },
+    {
+      "text": "If a transfer with `priority` **instant** is completed, then Adyen sends a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook event to confirm that the funds have been credited.",
+      "location": "raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md:1113"
+    },
+    {
+      "text": "Adyen blocks subsequent transfer attempts when a reason code indicates a permanent issue.",
+      "location": "raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md:1353"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payoutservice-webhooks-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-getting-paid-payout-webhooks]] \u2014 2023-modified, 2026-09-15-captured Payout Service Transfer-webhook guide for source-account debit versus bank tracking, instant credit, failure/return and blocked-instrument limits; distinct from legacy Payout API and Marketplace/Platforms routes.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Payout Service Transfer webhooks are not the legacy Payout API webhook model; booked debits and ETA/tracing are not beneficiary-bank receipt.",
+          "Failed internal-review sample retains top-level booked/approved and has 1000 amount versus -10000 received mutation; use nested tracking outcome and do not derive a universal reversal or amount rule.",
+          "Permanent-reason blocked transfer instruments cause HTTP 422 on new requests, despite the return-code table's generic retry phrasing for closed/blocked bank accounts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/getting-paid/payout-webhooks/2026-09-15.md",
+  "raw_sha256": "26b3e9b54f3d912f6edb80a96603ea508230279928a9c779fb727648146b3568",
+  "status": "candidate_ready"
+}

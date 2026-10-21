@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-balance-updates-configure-balance-webhook
+
+Q1. What does this Payout Service-path page configure, and what access/setup does it require?
+
+A1. It configures a limited-availability/pilot Balance webhook for balance-platform, account-holder or account-level balance changes, by subscribing in Customer Area and setting conditions through Configuration API (raw lines 19–30, 41–75). The API credential needs Balance Platform BCL, the Customer Area user Merchant technical integrator or Merchant admin; caps are 20 settings per webhook and 20 condition sets per setting (raw lines 32–39). The page documents receiver URL/security, HMAC and webhook ID setup (raw lines 47–71). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-payouts-payout-service-balance-updates-configure-balance-webhook]] → [[raw/adyen/docs/payouts/payout-service/balance-updates/configure-balance-webhook/2026-09-15]].
+
+Q2. Can this snapshot determine multi-condition matching or copy its test cURL as the exact settings call?
+
+A2. No. The active-status row says **any** condition triggers, while the conditions row says **all** must match; absence of conditions broadens alerts to all changes in the target account(s) (raw lines 88–90). The prose names nested POST `/balancePlatforms/{id}/webhooks/{id}/settings`, but the TEST cURL points only to `/bcl/v2/balancePlatforms` (raw lines 75, 98–123). Troubleshooting also says “resend POST” while linking PATCH-style URLs (raw lines 181, 212–215, 241–244). Configuration or a sample response is not evidence of delivered events or payout/bank outcomes. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-payouts-payout-service-balance-updates-configure-balance-webhook]] → [[raw/adyen/docs/payouts/payout-service/balance-updates/configure-balance-webhook/2026-09-15]].

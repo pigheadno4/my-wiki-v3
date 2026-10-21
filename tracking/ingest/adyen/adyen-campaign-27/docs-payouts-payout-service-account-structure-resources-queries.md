@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-account-structure-resources
+
+Q1. Which accounts and resources support this Payout Service with Payments example, and how do shopper funds reach a payout source?
+
+A1. The business has a company account and one or more merchant accounts for payment processing (raw lines 25–40). Its merchant accounts link to a balance platform; Adyen's contact sets up balance accounts, an account holder linked to one legal entity, and a verified own-bank transfer instrument, plus the business legal entity (raw lines 44–56). In the OnlineStore example, shopper payment is processed in a merchant account and settled into the business's balance account, where it remains until payout (raw lines 58–99). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-account-structure-resources]] → [[raw/adyen/docs/payouts/payout-service/account-structure-resources/2026-09-15]].
+
+Q2. Does the three-merchant/one-balance example define Platforms user/liable ownership, or does `POST /transfers` prove beneficiary receipt?
+
+A2. No. The named accounts and one EU balance platform are an example for the merchant's own business (raw lines 58–81), not a universal resource count or user/liable allocation. After payment settlement, the guide lists transfer requests to the merchant's own verified instrument, a third-party bank account, or a third-party card (raw lines 83–103). A request is a later step than settlement into the source balance account and does not establish booking, external delivery or bank/card receipt. Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-account-structure-resources]] → [[raw/adyen/docs/payouts/payout-service/account-structure-resources/2026-09-15]].

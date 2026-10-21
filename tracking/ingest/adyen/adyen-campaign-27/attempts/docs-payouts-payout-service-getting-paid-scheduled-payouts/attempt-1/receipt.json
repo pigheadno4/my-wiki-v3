@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-getting-paid-scheduled-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service custom payout schedules\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/getting-paid/scheduled-payouts\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/getting-paid/scheduled-payouts/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, schedules, balance-accounts]\n---\n\n## Overview\n\nThis 2022-modified, 2026-09-15-captured [[adyen]] Payout Service guide configures **custom scheduled payouts** from a balance account to a verified bank-account transfer instrument. A schedule defines when and how much to transfer, possibly retaining a balance or waiting for a minimum trigger. When all conditions are met it **initiates a transfer request**; schedule creation or triggering does not itself prove debit, payout completion, or bank receipt. Bank-method and region cutoff times affect expected arrival. This is separate from legacy Online Payout API staged review. [[adyen-payouts]]\n\n## Key takeaways\n\n- The page requires a Payouts integration, a Transfers API credential with **TransferService Webservice Initiate**, Customer Area **Balance platform base** and **Configure scheduled payouts** roles, the user's **sendToTransferInstrument** capability, and account holder and transfer instrument linked to the same legal entity. Transfer/transaction webhook subscription is offered for tracking, and route calculation is recommended to reduce failure risk. See raw lines 23\u201338.\n- In Customer Area, create a schedule for a balance account, select **Pay out to another account** and a transfer instrument, and configure currency, all available/fixed/maintained balance behavior, optional minimum trigger, frequency/timing and transfer priority. Weekly/monthly schedules require a day. Higher priority incurs higher fees. The date/time, balance/amount and trigger conditions jointly govern initiation. See raw lines 40\u201395.\n- The example describes USD 150 at the start of each month only if balance exceeds USD 250, but its displayed field table does **not** show a minimum-balance trigger; do not infer that the shown configuration by itself enforces USD 250. See raw lines 73 and 101\u2013117.\n- The guide calls the beneficiary reference a statement identifier, but bank-visible characters vary by route and can be zero in the related [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-statement]] matrix. Configuring a reference is not proof of its display. See raw line 88 and that source's route-specific matrix.\n- After a sweep triggers a transfer request, use Customer Area or Transfer webhooks for transfer status, and Transaction webhooks for the balance-account debit. The `event` array carries prior transfer events and `sequenceNumber` counts webhooks; neither schedule setup nor `transfer.created` alone proves funds were deducted. See raw lines 119\u2013141. Scheduled-transfer details can show upcoming and completed entries (raw lines 143\u2013159).\n\n## Detail locators\n\n- **Requirements, roles, capability and same-legal-entity condition:** raw lines 23\u201338.\n- **Schedule conditions and Customer Area configuration:** raw lines 40\u201395.\n- **Example and omitted trigger field:** raw lines 101\u2013117.\n- **Transfer versus transaction webhook tracking:** raw lines 119\u2013141.\n- **Customer Area schedule detail view:** raw lines 143\u2013159.\n\n## Related\n\n- [[adyen-payouts]]\n- [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-statement]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/getting-paid/scheduled-payouts/2026-09-15|Adyen custom payout schedules \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The schedule automatically initiates a payout from a balance account to your bank account based on a pre-defined frequency, trigger amount, and source or destination.",
+      "location": "raw line 19, Configure custom payout schedules"
+    },
+    {
+      "text": "TransferService Webservice Initiate role",
+      "location": "raw line 30, Requirements table"
+    },
+    {
+      "text": "sendToTransferInstrument",
+      "location": "raw line 35, Requirements table"
+    },
+    {
+      "text": "Make sure that the account holder and transfer instrument are linked to the same legal entity.",
+      "location": "raw line 36, Requirements table"
+    },
+    {
+      "text": "When all the conditions of the payout schedule are met, a transfer request is triggered automatically.",
+      "location": "raw line 51, How it works"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payout-service-scheduled-payouts-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-getting-paid-scheduled-payouts]] \u2014 2022-modified, 2026-09-15-captured Payout Service Customer Area guide for role/capability-gated custom balance-account sweeps to a verified bank instrument; a configured or triggered schedule is not debit or bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The example says payout occurs only above USD 250 but its field table omits the minimum-balance trigger. The guide's bank-statement reference description is route-dependent; related statement matrix includes zero-visible-character routes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/getting-paid/scheduled-payouts/2026-09-15.md",
+  "raw_sha256": "7776e8181b3490203f9ed9e5c58b46f1e502f9f032acc4bf15364caef4071147",
+  "status": "candidate_ready"
+}

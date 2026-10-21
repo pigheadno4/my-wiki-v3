@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-payout-lifecycle",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service payout lifecycle\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/payout-lifecycle\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/payout-lifecycle/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, transfers, webhooks, lifecycle]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payout Service guide separates accounting events for a transfer out of a balance account from later tracking of delivery to a counterparty bank account or card. A received request, reserved amount, and booked debit are different states; booking alone does not prove the beneficiary received funds. The guide covers regular and optionally reviewed payout flows, later internal screening, bank/card-specific tracking, and returns. This Transfers API lifecycle is distinct from the legacy Online Payout API described in [[adyen-payouts]].\n\n## Key takeaways\n\n- In the regular flow, a valid request yields a `balancePlatform.transfer.created` webhook with `status: received`; invalid parameters can produce only an API error, without a webhook. Sufficient funds lead to reservation and `authorised`; insufficient funds lead to `refused`. Booking deducts funds and creates a transaction, with `transfer.updated: booked` and `transaction.created`. See raw lines 27\u201344.\n- An **optional** `review` object on `POST /transfers` adds team approval: initial `received`/`pending`, then approved `authorised`, customer cancellation, or cancellation after 30 days without action (`approvalExpired`). Approved payouts then proceed to booking/debit. This is a Payout Service request option, not an inherited legacy staged-review requirement. See raw lines 48\u201363.\n- After booking, a tracking webhook can report `pending` for Adyen manual screening. Failed internal review freezes funds and prevents external payout; the bank also screens incoming funds. Card-network `accepted` means accepted for processing, not cardholder receipt, and card-scheme checks can later yield `refused`. See raw lines 65\u2013103.\n- For instant bank payouts in the guide's SEPA/UK/US scope, `credited` follows counterparty-bank acceptance, while a failed instant connection or bad payout data requires a later retry or correction and retry. For non-instant bank payouts, `estimatedArrivalTime` is an estimate that can be revised if a batch is delayed, not credit confirmation. See raw lines 105\u2013132.\n- The return section says non-instant payouts may be **returned** after counterparty-bank screening: `transfer.updated: returned` carries a reason and `transaction.created` credits the source balance account. Its \u201ccannot fail\u201d wording belongs to that post-dispatch bank-return distinction; it must not erase the earlier request rejection, insufficient-funds refusal, or internal-review failure paths. See raw lines 31\u201339, 89\u201399 and 136\u2013149.\n\n## Detail locators\n\n- **Regular accounting flow and webhook split:** raw lines 23\u201344.\n- **Optional team approval, cancellation and 30-day expiry:** raw lines 48\u201363.\n- **Post-booking tracking and internal review:** raw lines 65\u2013103.\n- **Instant credit/failure versus non-instant ETA/batching:** raw lines 105\u2013132.\n- **Bank return and balance-account credit:** raw lines 136\u2013149.\n\n## Related\n\n- [[adyen-payouts]]\n- [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/payout-lifecycle/2026-09-15|Adyen Payout Service payout lifecycle \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If there are any issues with the parameters, we reject the payout request without triggering any webhooks. You receive an error message in the API response.",
+      "location": "raw line 34, Accounting events / Regular flow"
+    },
+    {
+      "text": "If there are enough funds, we reserve the payout amount on your balance account and authorize the payout.",
+      "location": "raw line 38, Accounting events / Regular flow"
+    },
+    {
+      "text": "You can create an additional review requirement for your payout by including the `review` object in your POST `/transfers` request.",
+      "location": "raw line 50, Accounting events / Approval flow"
+    },
+    {
+      "text": "After a payout reaches the **booked** `status`, the funds are deducted from your balance account.",
+      "location": "raw line 67, Tracking events"
+    },
+    {
+      "text": "Payouts that do not have an **instant** `priority` cannot fail, but they can be returned by the counterparty's bank.",
+      "location": "raw line 140, Payout returned"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payout-service-lifecycle-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] \u2014 2026-09-15 Payout Service Transfers API lifecycle separating received/authorised/booked accounting events from optional review, post-booking screening, bank/card tracking and bank returns; distinct from the legacy Payout API.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The return section says non-instant payouts cannot fail but can be returned; read this within its post-dispatch bank-screening context, since earlier API rejection, insufficient-funds refusal and internal-review failure are explicitly documented."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/payout-lifecycle/2026-09-15.md",
+  "raw_sha256": "dac59f5f98b6a7e45d11ce134341ab111659b391c138a13df4ad1390e04b12e3",
+  "status": "candidate_ready"
+}

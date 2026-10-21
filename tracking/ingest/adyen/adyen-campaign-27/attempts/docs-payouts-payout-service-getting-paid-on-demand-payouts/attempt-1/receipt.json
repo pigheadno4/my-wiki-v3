@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-getting-paid-on-demand-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service on-demand bank payouts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/getting-paid/on-demand-payouts\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/getting-paid/on-demand-payouts/2026-09-15.md\"\ntags: [adyen, payout-service, balance-platform, on-demand-payouts, transfers]\n---\n\n## Overview\n\nThis 2020-modified guide, captured 2026-09-15, describes **Payout Service** on-demand payouts outside a regular schedule: funds move from a balance-platform source balance account toward an account holder's linked transfer instrument, such as a verified bank payout account. A platform can create a request in Customer Area or use Transfers API `POST /transfers`. This is a modern balance-platform bank-transfer path, distinct from the legacy Online Payout API and from an internal balance-account transfer. Request creation or HTTP acceptance does not prove source booking or beneficiary-bank receipt. [[adyen]] [[adyen-financial-products]]\n\n## Key takeaways\n\n- The stated integration prerequisite is an Adyen balance platform. For the Customer Area route, the requirements table lists **Configure scheduled payouts** and **Initiate payouts to transfer instruments** roles, although its label says \u201cmanage sweep configurations\u201d; do not infer the same human UI roles are an API credential contract. Configure a webhook-receiving server, contact Support to configure a default transfer description, and consider regional bank cutoffs. Calculating available transfer routes before submission is a **recommendation** to reduce delay/failure risk, not listed as a required request field. See raw lines 17-36.\n- Customer Area selection names the source balance account, counterparty type `transferInstrument`, destination transfer-instrument ID, currency, amount and priority. The API field table marks `amount`, `balanceAccountId`, `category: bank`, `counterparty.transferInstrumentId` and `priority` required. The destination instrument must be linked to the account holder's legal entity. Priority affects speed **and fees**; optional `reference` stays internal, while `referenceForBeneficiary` is sent to the recipient and transfer webhooks. Description/beneficiary reference limits depend on bank geography, instrument and priority. See raw lines 40-66 and 87-100.\n- Customer Area confirmation creates a **payout request**; its Transfers tab is then used to check whether the transfer was booked. The API describes an HTTP 2XX response with a transfer request `id`, not bank credit. The EUR 150 \u201cInstant\u201d Customer Area example and `amount.value: 60000`, EUR, `fast` TEST API v4 example are separate illustrations, not evidence of an instant arrival or a single reconciled transfer. See raw lines 64-85, 106-126 and 424.\n- An optional API `review` can request **one** additional approval with `review.numberOfApprovalsRequired: 1`; a team member must approve before Adyen continues processing. HTTP 2XX after requesting review does not show that the review occurred or funds moved. See raw lines 428-436 and 801-807.\n- Track the request through Customer Area or `balancePlatform.transfer.created`/`updated` status events and `balancePlatform.transaction.created` for a balance-account deduction; acknowledge webhooks. These are distinct event grains, and a source debit is not beneficiary-bank receipt. See raw lines 809-831.\n- The sample 422/`1063_101` block follows one or more prior bank returns. The page distinguishes retryable **temporary** return reasons from **permanent/final** reasons; it expressly says **do not retry** a final status and only retry where the return code recommends retry. Its later \u201cfix\u201d bullets say contact Adyen to update bank details then make a new transfer request; read that step under the prior return-reason restriction, not as blanket retry permission. See raw lines 833-867.\n\n## Detail locators\n\n- Opening and `## Requirements`, raw lines 15-32: product path, UI roles, webhooks, default description, regional cutoff and recommended route check.\n- `## 1. Make a transfer request`, raw lines 34-424: Customer Area and Transfers API routes, source/destination identities, required and optional fields, TEST/versioned examples and acceptance.\n- `### Trigger additional reviews`, raw lines 428-807: single optional approval, request examples and approval gate.\n- `## 2. Track the status of the transfer`, raw lines 809-831: Customer Area and Transfer/Transaction webhook tracking.\n- `## Troubleshooting`, raw lines 833-867: prior-return block, temporary versus final reason and conditional retry.\n\n## Related\n\n- [[adyen-financial-products]] \u2014 modern product-family context for payouts.\n- [[adyen-platforms]] \u2014 balance-platform model; this guide is under the Payout Service path.\n- [[adyen-payouts]] \u2014 legacy Online Payout API concept, distinct from this Transfers API flow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/getting-paid/on-demand-payouts/2026-09-15|Adyen Payout Service on-demand payouts guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "On-demand payouts let you trigger payments to transfer instruments, such as your [payout account](/payouts/payout-service/getting-paid#payout-account), outside a regular schedule.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "This resource must be linked to the account holder's [legal entity](https://docs.adyen.com/api-explorer/legalentity/latest/post/legalEntities).",
+      "location": "raw line 96, API field table, counterparty.transferInstrumentId"
+    },
+    {
+      "text": "If the transfer request is successful, you receive an **HTTP 2XX** response containing an `id` of the transfer request.",
+      "location": "raw line 424, API request response"
+    },
+    {
+      "text": "Additional reviews require a member of your team to verify a payout before Adyen processes it.",
+      "location": "raw line 430, Trigger additional reviews"
+    },
+    {
+      "text": "If the reason indicates a final status, do not retry the transfer. Only retry payouts that have return reason codes that are recommended to be retried.",
+      "location": "raw line 861, Troubleshooting solution"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-on-demand-financial-products-reciprocal",
+        "target_path": "wiki/concepts/adyen-financial-products.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-getting-paid-on-demand-payouts]] \u2014 2020-modified, 2026-09-15-captured Payout Service balance-platform on-demand bank-transfer guide for Customer Area/Transfers API requests, optional one-person review, asynchronous tracking and return-reason-gated retry; request/booking is not bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Payout Service uses balance-platform Transfers API and must stay distinct from the legacy Online Payout API under `adyen-payouts` and from internal balance-account transfers.",
+          "The raw's later generic 'retry' fix bullet is constrained by its prior instruction not to retry a final return reason; do not promote unconditional replay.",
+          "Customer Area 'Instant' EUR 150 and TEST API v4 `fast` request with `amount.value: 60000` in EUR are separate examples, not one outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/getting-paid/on-demand-payouts/2026-09-15.md",
+  "raw_sha256": "90c4ef3ae815ab757ab3d27a330c2b10f5921edd774ff59d084179c930744090",
+  "status": "candidate_ready"
+}

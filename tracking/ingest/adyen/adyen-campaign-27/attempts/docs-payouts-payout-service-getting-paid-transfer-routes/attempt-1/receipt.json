@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-getting-paid-transfer-routes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen transfer route calculation\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/getting-paid/transfer-routes\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/getting-paid/transfer-routes/2026-09-15.md\"\ntags: [adyen, platforms, payout-service, transfer-routes, bank-payouts]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] guide explains how an **Adyen for Platforms** integration can calculate available bank transfer routes before sending funds to a new recipient. A recipient bank or regulator may limit supported priorities or transfer amounts, so Adyen recommends a route calculation to reduce failures. Despite its Payout Service URL, the page explicitly requires a Platforms integration and its next-step links lead to Platforms custom payouts; do not assume that this prerequisite applies to every Payout Service path. [[adyen-platforms]] [[adyen-payouts]]\n\n## Key takeaways\n\n- The Configuration API credential needs the **Balance Platform BCL role**. The guide uses `POST /transferRoutes/calculate` with `balancePlatform`, `currency`, `category: bank`, and either `country` or a `counterparty` containing a third-party bank account or transfer instrument. `priorities` is optional. For a counterparty by `transferInstrumentId`, `balanceAccountId` is conditionally required. See raw lines 23\u201348 and 359\u2013372.\n- The returned `transferRoutes` identify supported currency and priority plus route-specific requirements; counterparty results also identify country. The illustrative responses show amount, address, account-identification and payment-instrument requirements, but their figures and available routes are examples, not universal limits. See raw lines 301\u2013355 and 716\u2013779.\n- This lookup informs route selection; it does not send a transfer, reserve/debit funds, guarantee payout success, or establish bank receipt. Bank/regulatory constraints may still govern the eventual payout. See raw lines 19\u201321, 301\u2013305 and 716\u2013721.\n\n## Detail locators\n\n- **Country/region request and TEST examples:** raw lines 34\u2013299.\n- **Country/region route response example:** raw lines 301\u2013355.\n- **Counterparty request and conditional source balance account:** raw lines 359\u2013714.\n- **Counterparty route response example and Platforms next steps:** raw lines 716\u2013790.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-payouts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/getting-paid/transfer-routes/2026-09-15|Adyen transfer routes \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To prevent transfer failures due to such limitations, we recommend that you calculate the available transfer routes before sending funds to a new recipient.",
+      "location": "raw line 21, Transfer routes"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model) integration.",
+      "location": "raw line 29, Requirements table"
+    },
+    {
+      "text": "Balance Platform BCL role",
+      "location": "raw line 30, Requirements table"
+    },
+    {
+      "text": "Required if `counterparty` contains a **transferInstrumentId**.",
+      "location": "raw line 372, Calculate transfer routes by counterparty"
+    },
+    {
+      "text": "Each transfer route specifies:",
+      "location": "raw line 716, Calculate transfer routes by counterparty response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-transfer-routes-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-routes]] \u2014 2023-modified, 2026-09-15-captured Platforms-prerequisite Configuration API guide to calculating bank transfer routes by country or counterparty before a payout; route results and example limits are not transfer or bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The URL is under Payout Service, but this guide explicitly requires an Adyen for Platforms integration and links to Platforms custom payouts; avoid generalizing the prerequisite to every Payout Service path."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/getting-paid/transfer-routes/2026-09-15.md",
+  "raw_sha256": "1ac4ac84041b40ea53d03c53c40edcb00f1709914aef70ce3923f962f92beec9",
+  "status": "candidate_ready"
+}

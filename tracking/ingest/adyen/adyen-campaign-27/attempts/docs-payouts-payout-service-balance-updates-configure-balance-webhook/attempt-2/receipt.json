@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payouts-payout-service-balance-updates-configure-balance-webhook",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Payout Service path: configure balance webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/balance-updates/configure-balance-webhook\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/balance-updates/configure-balance-webhook/2026-09-15.md\"\ntags: [adyen, payout-service, platforms, balance-accounts, webhooks, configuration]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] page sits under the **Payout Service** documentation path but describes **balance-platform Balance webhook** subscription in Customer Area and condition settings through the Configuration API. It is marked **limited availability / pilot**. A setting may target the entire balance platform, one account holder's balance accounts, or one balance account. This configures alerts; it is not evidence of a live balance, completed payout, bank receipt or applicability to legacy Payout API webhooks. [[adyen-platforms]]\n\n## Key takeaways\n\n- Subscribe to and enable the Balance webhook under Customer Area's **Platforms** tab, configure the receiver URL/security and retain its webhook ID. The guide calls for Basic authentication, an HMAC key and acceptance of delivered events. The Configuration API credential needs the **Balance Platform BCL role**, while the Customer Area user needs **Merchant technical integrator** or **Merchant admin**. It states a maximum of 20 settings per Balance webhook and 20 condition sets per setting. See raw lines 19\u201371 and 149.\n- Settings use POST `/balancePlatforms/{id}/webhooks/{id}/settings` with balance-platform and webhook IDs. The table marks `type=balance`, `target` type/id, `currency` and `status` required; `conditions` is optional. Targets are `balancePlatform`, `accountHolder`, or `balanceAccount`. No conditions means changes across all target account(s); `inactive` suppresses messages even if conditions match. Record the returned setting ID for later management or event matching. See raw lines 73\u201396 and 125\u2013147.\n- **Condition-wording conflict:** the `status=active` row says a webhook is sent if **any** condition matches, while the `conditions` row says **all** configured conditions must match. The page does not resolve multi-condition Boolean behavior. The documented `conditions.balanceType` values are `available`, `balance` (the sum of settled transactions), `pending`, and `reserved`, with greater/less-than comparison variants; `current` is descriptive wording, not a listed enum value. See raw lines 88\u201396.\n- The USD 5,000 available-balance example is a TEST illustration for a liable balance account, not a default threshold or proof of its funds. The prose gives the nested settings POST route, but the cURL example points only to `/bcl/v2/balancePlatforms`, so it is not a complete settings URL. Troubleshooting illustrates duplicate condition `1047_002`, unknown account `1047_404` and invalid currency `1047_001`; later \u201cresend POST\u201d wording links PATCH-style settings URLs. Verify the current API route before implementation. See raw lines 75, 98\u2013147 and 151\u2013244.\n\n## Detail locators\n\n- **Pilot scope, subscription and target options:** raw lines 15\u201330.\n- **Roles, 20-by-20 limits and Customer Area receiver setup:** raw lines 32\u201371.\n- **Settings route, fields and all-versus-any conflict:** raw lines 73\u201396.\n- **TEST liable-account threshold, shortened cURL path and setting ID:** raw lines 98\u2013149.\n- **Error examples and method/link inconsistencies:** raw lines 151\u2013244.\n\n## Related\n\n- [[adyen-platforms]]\n- [[adyen-payouts]] \u2014 Payout Service documentation path, separate from legacy Payout API\n- [[source-adyen-docs-platforms-balance-updates-configure-balance-webhook|Parallel Platforms-path balance webhook guide]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/balance-updates/configure-balance-webhook/2026-09-15|Adyen Payout Service path balance webhook configuration \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "To receive these webhooks, you must subscribe to the [Balance webhook](https://docs.adyen.com/api-explorer/balance-webhooks/latest/overview) in your [Customer Area](https://ca-test.adyen.com/).",
+      "location": "raw line 26, Configure balance webhooks"
+    },
+    {
+      "text": "You can create maximum 20 webhook settings per balance webhook. In each webhook setting, you can configure maximum 20 sets of conditions in the `conditions` array.",
+      "location": "raw line 39, Requirements"
+    },
+    {
+      "text": "To trigger the webhook, the balance change must meet *all* the conditions you set. If you don't specify any conditions, you will receive updates for *all* balance changes in the specified balance account(s).",
+      "location": "raw line 90, Configure the balance webhook"
+    },
+    {
+      "text": "In the response, take note of the `id` of the balance webhook setting.",
+      "location": "raw line 125, Configure the balance webhook"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-docs-payouts-payout-service-balance-updates-configure-balance-webhook-platforms-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-balance-updates-configure-balance-webhook]] \u2014 2026-09-15 Payout Service-path pilot Balance webhook setup for balance-platform targets, Customer Area/Configuration API roles and 20-by-20 limits; all-versus-any condition wording and example endpoint/method links conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/balance-updates/configure-balance-webhook/2026-09-15.md",
+  "raw_sha256": "754e27861813507a07c2c90a88d52a27489b104ab3f30d6d50da952fb86c726f",
+  "status": "candidate_ready"
+}

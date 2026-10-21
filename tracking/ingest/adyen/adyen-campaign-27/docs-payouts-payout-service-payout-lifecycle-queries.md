@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-payout-lifecycle
+
+Q1. Which events show request receipt, reserved funds, booked debit and optional review in the Payout Service lifecycle?
+
+A1. A valid request yields transfer.created `received`, while bad request parameters can return an API error without a webhook (raw lines 31–34). Sufficient balance yields `authorised` and a reserve; insufficient balance yields `refused` (raw lines 36–39). Booking deducts the balance and creates a transaction, signaled by transfer.updated `booked` and transaction.created (raw lines 41–44). An optional `review` object adds team approval/cancellation or 30-day expiry before booking (raw lines 48–63); it is separate from the legacy Online Payout API. Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] → [[raw/adyen/docs/payouts/payout-service/payout-lifecycle/2026-09-15]].
+
+Q2. Does `booked`, card `accepted` or a non-instant ETA prove receipt, and how do failures or returns differ?
+
+A2. No. `booked` means a balance-account debit; later tracking can be `pending` during Adyen review, `failed` if screening blocks external payout, `credited` for a successful instant bank arrival, `accepted` for card-network processing, or an ETA for non-instant bank payout (raw lines 65–103, 109–132). A card acceptance can later be refused by scheme checks (raw line 103). After non-instant dispatch, a bank return creates a `returned` event and a new credit transaction (raw lines 136–149). The return section's “cannot fail” wording does not override earlier rejection/refusal/internal-review failure (raw lines 31–39, 89–99, 140). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] → [[raw/adyen/docs/payouts/payout-service/payout-lifecycle/2026-09-15]].

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-balance-updates-manage-balance-webhook",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage Adyen Payout Service balance webhook settings\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/balance-updates/manage-balance-webhook\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/balance-updates/manage-balance-webhook/2026-09-15.md\"\ntags: [adyen, payout-service, balance-webhooks, configuration-api]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payout Service-path guide explains how to view, PATCH, deactivate and DELETE pilot Balance webhook settings through the Configuration API. It routes under [[adyen-payouts]] and concerns notification coverage, not a payout or balance movement. The pilot notice says processes and documentation may change.\n\n## Key takeaways\n\n- GET `/balancePlatforms/{id}/webhooks/{id}/settings` lists settings for a balance platform and webhook; GET the same path plus `/{settingId}` reads one setting and its conditions. The examples return `type: balance`, target resource, currency, `status` and `conditions`. See raw lines 26\u2013119.\n- PATCH `/balancePlatforms/{id}/webhooks/{id}/settings/{id}` to update a setting. The guide marks `type: balance` required and describes optional target scopes `balancePlatform`, `accountHolder`, `balanceAccount`, currency, status and threshold conditions. Its active-status row says any condition can trigger; the page itself does not define how to reconcile compound conditions beyond that row. See raw lines 121\u2013147.\n- **Preserve wanted conditions in PATCH:** Adding a set means sending both existing and new condition sets; removing one means excluding it while resending each condition to keep. Removing the **only** existing condition broadens the setting to updates for **all** balance changes in the target balance account(s), rather than silencing it. See raw lines 155\u2013195 and 243\u2013245.\n- To stop delivery for a setting temporarily, PATCH `status: inactive`; to permanently stop notifications for the specified conditions, DELETE the setting by platform, webhook and setting IDs. Neither action is a transfer or payout reversal. See raw lines 224\u2013263.\n- **Example scope warning:** The GET detail example uses setting `BWHS...01` with a `balancePlatform` target (raw lines 102\u2013118), while the PATCH \u201cadd conditions\u201d sample reuses that setting ID but supplies a `balanceAccount` target (raw lines 161\u2013185). The guide does not explain whether changing target is intended; do not treat this as evidence that adding a condition leaves scope unchanged. The sample curl lines also end in a bare `-d` for GET/DELETE (raw lines 33\u201338, 92\u201397, 258\u2013263), so they are not copy-ready shell commands.\n\n## Evidence boundary\n\nSetting status or deletion concerns which Balance webhooks are emitted. A configuration read or accepted PATCH/DELETE does not prove that any particular underlying balance change, booking, settlement, payout or bank credit occurred. This guide is a pilot snapshot, not a current availability assertion.\n\n## Detail locators\n\n- Pilot and GET list/detail routes: raw lines 19\u2013119.\n- PATCH fields and retain-condition behavior: raw lines 121\u2013220.\n- Inactive, no-condition broadening and DELETE: raw lines 224\u2013263.\n\n## Related\n\n- [[adyen-payouts]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-platforms-balance-updates-manage-balance-webhook]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/balance-updates/manage-balance-webhook/2026-09-15|Payout Service balance-webhook management guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Balance webhooks are in pilot phase. Some of the processes and documentation may change as the feature evolves.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "To add a new set of conditions to a balance webhook setting, send both the existing and the new condition set in the `conditions` array.",
+      "location": "raw line 157, Add a new set of conditions"
+    },
+    {
+      "text": "You must send the conditions you want to keep in the update request.",
+      "location": "raw line 195, Remove a set of conditions"
+    },
+    {
+      "text": "If you remove the only existing condition set from the webhook setting, you will receive updates for *all* balance changes in the specified balance account(s).",
+      "location": "raw line 245, Remove all conditions"
+    },
+    {
+      "text": "To temporarily stop receiving webhooks for the specified conditions, set the `status` of the webhook setting to **inactive**.",
+      "location": "raw line 226, Deactivate a setting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-docs-payouts-payout-service-balance-updates-manage-balance-webhook-payouts-source",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-balance-updates-manage-balance-webhook]] \u2014 2026-09-15 pilot Payout Service Balance webhook Configuration API lifecycle for reading, PATCHing, deactivating and deleting settings; dropping the last condition broadens notifications.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw GET setting BWHS...01 targets balancePlatform (lines 102\u2013118), but PATCH add-conditions example reuses ID with balanceAccount target (lines 161\u2013185); scope change is unexplained.",
+          "Raw GET/DELETE curl examples end in bare -d (lines 33\u201338, 92\u201397, 258\u2013263); do not copy as working commands."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/balance-updates/manage-balance-webhook/2026-09-15.md",
+  "raw_sha256": "2374c82f4a19522a79b134ddb12ced1b07fcb7e55c31f3e1f9570f4a3dd73598",
+  "status": "candidate_ready"
+}

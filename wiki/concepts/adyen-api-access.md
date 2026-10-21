@@ -26,6 +26,9 @@ These snapshot statements do not prove current merchant or user eligibility, suc
 Adyen's 2026-09-15 mTLS guide adds a client certificate to API-key authentication for supported APIs using a company-level API credential. The merchant keeps the private key, links the certificate subject DN to the credential, and presents the leaf plus full CA chain at an mTLS endpoint. Linking is a cutover: supported-API requests with that credential fail without the certificate. The guide excludes merchant-level and balance-platform credentials and identifies separate supported/unsupported APIs and endpoints; see the source for scope and regions. This TLS client certificate is distinct from the JWE card-encryption certificate, whose retained EC/RSA sample conflict remains unresolved.
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-manage-access-api-credentials-web-service]] — 2022-modified, 2026-09-15-captured Payout Service balance-platform web service credential guide covering company-level setup, roles, test/live keys, rotation and deactivation; access documentation only.
+
+
 - [[source-adyen-docs-account-user-roles]] — 2026-09-15 Customer Area user-role catalog for human permissions and role-group assignment, including API-credential management; distinct from an API credential's own roles and account scope.
 
 

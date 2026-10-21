@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-settle-funds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service settlement to balance platform\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/settle-funds\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md\"\ntags: [adyen, payout-service, settlement, balance-platform]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payout Service guide explains how payment proceeds move from merchant accounts into configured balance-platform accounts after fees. It covers merchant-to-platform settlement, within the broader [[adyen-financial-products]] Payout Service route, rather than an onward disbursement to a beneficiary bank (raw lines 17\u201328).\n\n## Key takeaways\n\n- **Availability before transfer:** Store payments first arrive pending in a merchant account. After its configured settlement delay (T+2 by default), funds become available there; Adyen then deducts payment fees (raw lines 23\u201324). T+2 is a documented default, not a promise for every configuration.\n- **Batch and report grain:** Adyen groups the remaining amount into payable batches according to the configured settlement frequency, which can create multiple batches per day. A Settlement Details Report can be generated per batch and includes transactions, fees, refunds, chargebacks and other balance modifications (raw lines 25\u201326).\n- **Destination and movement:** Each payable batch settles as one internal transfer to the balance platform, into the balance account configured for that merchant account (raw lines 27\u201328). This step is distinct from an external payout request or beneficiary-bank receipt.\n- **Illustration and source mismatch:** The two-branch hotel example sends EUR 285 net from the EUR merchant account and SEK 380 net from the SEK merchant account to their respective configured balance accounts (raw lines 30\u201368). Its intermediate line says \u201cEUR 400.00\u201d becomes available in the SEK merchant account, although the guest payment, SEK fee and net batch are stated in SEK. Treat that as an unresolved currency inconsistency in the example, not a currency-conversion rule (raw lines 43, 48, 57\u201368).\n\n## Detail locators\n\n- Six-step pending \u2192 available \u2192 fees \u2192 payable batch/report \u2192 internal transfer \u2192 configured balance account flow: raw lines 21\u201328.\n- Hotel branch currencies, customer payments and settlement-delay illustration: raw lines 30\u201348.\n- Per-account fees, net batches and destination balance accounts: raw lines 50\u201368.\n\n## Evidence boundary\n\nThis document describes the configured settlement flow and an illustrative calculation. It does not establish a particular merchant's configured delay or frequency, prove that an actual batch booked, or prove an onward payout or receipt by an external beneficiary. Keep merchant-account availability, the internal transfer into a platform balance account and any later payout as separate states. The example's SEK/EUR mismatch remains visible rather than silently repaired.\n\n## Related\n\n- [[adyen-financial-products]] \u2014 Payout Service product-family route.\n- [[source-adyen-docs-payouts-payout-service]] \u2014 Payout Service landing and downstream guide navigation.\n- [[source-adyen-docs-payouts-payout-service-getting-paid-on-demand-payouts]] \u2014 separate on-demand bank-transfer request and tracking.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15|Pinned Payout Service settlement guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains the flow of funds from your merchant account to your balance platform.",
+      "location": "raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md:19"
+    },
+    {
+      "text": "After the configured settlement delay (T+2 by default), these funds become available in your merchant account.",
+      "location": "raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md:23"
+    },
+    {
+      "text": "Adyen aggregates the remaining funds into payable batches based on your configured settlement frequency to the balance platform.",
+      "location": "raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md:25"
+    },
+    {
+      "text": "Adyen settles the funds from each payable batch to your balance platform as a single internal transfer.",
+      "location": "raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md:27"
+    },
+    {
+      "text": "EUR 400.00 becomes available",
+      "location": "raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md:48"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payout-service-settle-funds-source",
+        "target_path": "wiki/concepts/adyen-financial-products.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-settle-funds]] \u2014 2026-09-15 Payout Service guide for fee-net payable-batch internal settlement from merchant accounts to configured balance-platform accounts; example carries an unresolved SEK/EUR mismatch and does not establish beneficiary-bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The hotel example states EUR 400.00 available in the SEK merchant account at raw line 48, while the input payment and later fee/net amounts are SEK (lines 43, 57\u201368); do not normalize the source or infer a conversion.",
+          "This internal merchant-to-balance-platform settlement is separate from onward Payout Service beneficiary disbursement and bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/settle-funds/2026-09-15.md",
+  "raw_sha256": "3143249b94f7bc1c31c36d52bd2acb007b7b37c5e34ba455d79eec94b623ee1e",
+  "status": "candidate_ready"
+}

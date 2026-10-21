@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-account-structure-resources",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service account structure and fund flow\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/account-structure-resources\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/account-structure-resources/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, account-structure, balance-platform]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payout Service guide explains **payouts combined with payment processing for the merchant's own business**. Adyen company and merchant accounts handle that business's payments; a linked balance platform manages the merchant's balance account and related account-holder, legal-entity and verified bank-account transfer-instrument resources. In the guide's example, shopper payments process through one of the business's merchant accounts, settle into its balance account, and remain there until a later payout request to its own instrument or a third-party bank account/card. This is an illustrative merchant funding model, not a general allocation of platform-user or liable balances in [[adyen-platforms]]. [[adyen-payouts]]\n\n## Key takeaways\n\n- The company account represents the business entity and contains one or more merchant accounts; merchant accounts process its payments and configure methods/currencies. For payouts with payments, the merchant account links to a balance platform. The Management API is named for managing company/merchant resources. See raw lines 25\u201342.\n- Adyen says its contact sets up balance-platform resources: a balance account holding funds available for payouts, an account holder specifying permitted actions and linked to **one legal entity**, and a transfer instrument representing **the business's verified bank account**. The contact also sets up the legal entity with business information for verification. The text allows multiple balance accounts, although it says one suffices for most use cases. See raw lines 44\u201356.\n- The OnlineStoreLLC example has one company account, three country-organized merchant accounts, one EU balance platform with one account holder and balance account, plus a legal entity with a verified bank-account instrument. These counts and regions are examples, not required topology or proof of live eligibility. See raw lines 58\u201381.\n- In that example, a shopper payment is processed in a merchant account, then **settled** into the business's balance account. Only **after settlement** does the page route to `POST /transfers` for payout to its transfer instrument or to a third-party bank account or card. Requesting a transfer is distinct from its booking, beneficiary credit or bank/card receipt. See raw lines 83\u2013103.\n\n## Detail locators\n\n- **Company/merchant accounts and linked balance platform:** raw lines 25\u201346.\n- **Balance account, account holder, instrument and legal entity:** raw lines 48\u201356.\n- **Illustrative multi-merchant resource topology:** raw lines 58\u201381.\n- **Payment settlement to balance and subsequent payout destinations:** raw lines 83\u2013103.\n\n## Related\n\n- [[adyen-payouts]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/account-structure-resources/2026-09-15|Adyen Payout Service account structure \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you sign up for an Adyen account, you receive a **company account** and one or more **merchant accounts**.",
+      "location": "raw line 27, Your Adyen account"
+    },
+    {
+      "text": "In an Adyen Payouts integration, your merchant accounts are connected to your balance platform.",
+      "location": "raw line 46, Balance platform"
+    },
+    {
+      "text": "An account holder must be linked to a single legal entity resource.",
+      "location": "raw line 53, Balance platform resources"
+    },
+    {
+      "text": "**Transfer instrument**: your verified bank account where you can pay out funds from sales that Adyen processed for you.",
+      "location": "raw line 54, Balance platform resources"
+    },
+    {
+      "text": "After the funds are settled, you can make a POST [/transfers](https://docs.adyen.com/api-explorer/transfers/latest/post/transfers) request to:",
+      "location": "raw line 99, Flow of funds"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c27-payout-service-account-structure-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-account-structure-resources]] \u2014 2026-09-15 Payout Service merchant-account/balance-platform resource guide for payment settlement into the business's balance account before own-bank or third-party bank/card transfer requests; example topology is not Platforms user/liable ownership or receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The account-holder, balance-account and verified-instrument example represents the payout merchant's business; do not map those resources automatically to separate Platforms users or liable accounts. A POST /transfers request is not booked debit or recipient receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/account-structure-resources/2026-09-15.md",
+  "raw_sha256": "fbbd77a1193cdae112a627551e635c47b5fcb0a7892c100ca091065bc42069b4",
+  "status": "candidate_ready"
+}

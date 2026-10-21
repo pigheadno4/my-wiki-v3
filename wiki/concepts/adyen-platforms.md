@@ -18,6 +18,42 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — 2026-09-15 Marketplace-path brand-specific IC/MCC classification and conditional industry-approval contact guide; pinned export lacks the promised accepted-code values and proves no approval or business-account eligibility.
+
+
+- [[source-adyen-docs-marketplaces-verification-requirements-reference-additional-products-industry-codes]] — 2026-09-15 Marketplace IC/MCC selection and conditional approval-contact reference; pinned export omits the accepted-code list, so it cannot establish code or business-account eligibility.
+
+
+- [[source-adyen-docs-payouts-payout-service-balance-updates]] — 2026-09-15 Payout Service-path pilot Balance webhook overview for platform/holder/account scopes, subscription/settings route and inheritance/override hierarchy; compound-condition all-versus-any wording remains unresolved in linked setup guidance.
+
+
+- [[source-adyen-docs-marketplaces-us-tax-forms]] — 2026-09-15 Marketplace-path US direct-payout 1099-K filing-scope and platform retrieval/PDF-delivery guide; 2025 AND-versus-OR threshold wording conflicts, and title's 1099-NEC lacks body procedure.
+
+
+- [[source-adyen-docs-payouts-payout-service-balance-updates-configure-balance-webhook]] — 2026-09-15 Payout Service-path pilot Balance webhook setup for balance-platform targets, Customer Area/Configuration API roles and 20-by-20 limits; all-versus-any condition wording and example endpoint/method links conflict.
+
+
+- [[source-adyen-docs-payouts-payout-service-balance-types]] — 2026-09-15 Payout Service-path per-currency balance-type definitions and viewing routes, with unresolved Available and Pending available formula-versus-example conflicts; not payout or bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-identify-account-holder-risk]] — 2026-09-15 Marketplace Score overview for platform-user signals, weighted scores, linked-account grouping, marketplace-selected controls and limited device-data pilot; future rollout and high scores are not enablement or fraud proof.
+
+
+- [[source-adyen-docs-marketplaces-manage-account-holder-risk]] — 2020-modified, 2026-09-15-captured Marketplace Score guide for role-gated account-holder cases, risk rules, payout controls, permanent identity exclusions and conditional webhooks; dated rollout and flags are not access or fraud proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-routes]] — 2023-modified, 2026-09-15-captured Platforms-prerequisite Configuration API guide to calculating bank transfer routes by country or counterparty before a payout; route results and example limits are not transfer or bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-us-tax-forms-edelivery-consent]] — 2026-09-15 Marketplace US direct-payout 1099-K electronic-only consent guide for client preference UI, LEM check/set calls, revocation route and dated registration deadline; platform delivery/access remains separate from consent registration.
+
+
+- [[source-adyen-docs-marketplaces-onboard-users-onboarding-versions-onboarding-v4]] — 2025-modified, 2026-09-15-captured Marketplace-path onboarding v4 change guide for hosted/API-only field validation, entity/country exceptions, LEM document responses and verification-error routing; no approval or capability proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-getting-paid-payout-webhooks]] — 2023-modified, 2026-09-15-captured Payout Service Transfer-webhook guide for source-account debit versus bank tracking, instant credit, failure/return and blocked-instrument limits; distinct from legacy Payout API and Marketplace/Platforms routes.
+
+
 - [[source-adyen-docs-marketplaces-top-up-balance-account]] — 2026-09-15 Marketplace overview defining user/liable balance-account top-ups as incoming external transfers and routing scheduled, on-demand and webhook detail; initiation is not booked-credit proof.
 
 
