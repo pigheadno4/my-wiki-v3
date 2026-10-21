@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-managed-payouts-use-managed-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Use managed payouts for marketplaces\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/managed-payouts/use-managed-payouts\"\nraw_files:\n  - \"adyen/docs/marketplaces/managed-payouts/use-managed-payouts/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, managed-payouts]\n---\n\n## Overview\n\nThis pinned Adyen Marketplace guide explains how a platform uses managed payout schedules configured with its Adyen contact and applies them to users' balance accounts. It covers viewing, applying, updating, deactivating, deleting, and testing schedules through Customer Area or the Configuration API. It is schedule configuration guidance, not evidence of a transfer, payout execution, or bank receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The Configuration API credential needs the **Bank Scheduled Payouts Merchant Role**; Customer Area users need the **Balance platform base role** and **Configure scheduled payouts** role. Subscribe to Configuration and Scheduled payout webhooks; the user needs the `sendToTransferInstrument` capability. A balance account can have only one schedule per currency, and each schedule supports one location and currency (raw lines 27\u201347).\n- Managed payout schedules do not override pass-through or sales-day settlement delays of T+7 or more. Funds are paid out only once settled (raw line 47).\n- A platform can view its platform-level schedules, then apply one to a user's balance account by automatic application, Configuration API, or Customer Area. The API application supplies `balancePlatformPayoutScheduleId` and `transferInstrumentId`; optional account-level fields can override defaults. A successful application returns an account-level schedule and a created webhook; it does not establish payout or bank-receipt success (raw lines 49\u201374, 193\u2013205, 333\u2013406).\n- Automatic application requires enablement through an Adyen contact and applies to **new** balance accounts with matching currency and location. It cannot automatically apply to accounts associated with existing legal entities; use Customer Area or Configuration API for those. Eligibility also depends on the active account, default currency, non-liable sole account holder, one eligible verified transfer instrument, and country match, with the documented Eurozone exception for euro schedules. If those conditions are unmet, application stays pending and retries after account or instrument updates. Closing-time and rail validation can instead produce fallback or failure (raw lines 207\u2013257).\n- Customer Area and API let a platform view and modify an account-level schedule. Managed schedules display estimated payout arrival, while custom schedules display transfer initiation time. The API PATCH leaves omitted fields unchanged. Platform-level deactivation and deletion require an Adyen contact (raw lines 434\u2013446, 499\u2013560, 585\u2013649).\n- **Deactivation instruction conflict:** the guide calls account-level deactivation temporary and says to make a PATCH request, but its concrete deactivation curl uses `-X DELETE` and HTTP 204, matching the following deletion section. Do not treat that DELETE example as a verified safe way to temporarily deactivate; resolve the operation before use (raw lines 585\u2013649).\n- In TEST, a created-schedule webhook or API HTTP 200 checks application, not a completed payout. An active schedule blocks balance-account `timeZone` changes with HTTP 422 / 30_021 until deletion; a US schedule with a CA transfer instrument fails country matching. The listed bank details are for TEST (raw lines 651\u2013691).\n\n## Detail locators\n\n- Platform schedule listing and identifiers: raw lines 49\u2013191.\n- Automatic application, conditions, retries, closing-time and reachability behavior: raw lines 207\u2013257.\n- Customer Area application fields and Configuration API request/response: raw lines 258\u2013406.\n- View, update, deactivate and delete account-level schedules: raw lines 407\u2013649.\n- TEST scenarios and test bank details: raw lines 651\u2013691.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/managed-payouts/use-managed-payouts/2026-09-15|Pinned managed payouts guide]]\n",
+  "quotes": [
+    {
+      "text": "After you have configured managed payouts with your Adyen contact, you can manage them",
+      "location": "raw line 19, opening guidance"
+    },
+    {
+      "text": "You can only apply one payout schedule per currency on each balance account.",
+      "location": "raw line 41, Requirements \u2192 Limitations"
+    },
+    {
+      "text": "Managed payout schedules cannot be automatically applied to balance accounts associated with existing legal entities.",
+      "location": "raw line 211, Automatic application"
+    },
+    {
+      "text": "If any of the previous conditions are not fulfilled, the application remains pending.",
+      "location": "raw line 243, Conditions for automatic application"
+    },
+    {
+      "text": "You must delete the schedule before changing the `timeZone` of a balance account.",
+      "location": "raw line 660, Testing table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-managed-payouts-use-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-managed-payouts-use-managed-payouts]] \u2014 Marketplace managed payout schedule application and account-level lifecycle (webpage, 2026-10-21)",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source raw lines 585\u2013616 conflict: temporary deactivation prose says PATCH, but the example uses DELETE/HTTP 204; do not infer the example safely deactivates."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/managed-payouts/use-managed-payouts/2026-09-15.md",
+  "raw_sha256": "cf09c7738254fc060ce08af3bdea9f1f4dec20689741ec65669279c688635162",
+  "status": "candidate_ready"
+}

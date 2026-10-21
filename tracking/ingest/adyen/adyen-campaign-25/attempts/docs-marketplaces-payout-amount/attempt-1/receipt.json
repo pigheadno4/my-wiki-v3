@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-payout-amount",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces payout amount calculation\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/payout-amount\"\nraw_files:\n  - \"adyen/docs/marketplaces/payout-amount/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, payouts, balance-accounts, reserve-account]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Marketplace guide explains the maximum amount available for a scheduled or on-demand payout to a user, based on that user's balance account. In [[adyen-platforms]], the default cap is available balance; an alternative platform-wide current-balance configuration can use the platform reserve account as collateral against future negative user balances. A cap calculation or collateral block is not evidence that a bank payout was executed or received.\n\n## Key takeaways\n\n- The payout must be no greater than the maximum Adyen calculates. Only one configuration can be active at a time, and it applies to all balance accounts in the platform. By default, the maximum equals the user's **available balance**; the alternative maximum equals the user's **current balance**, meaning already-settled funds, and requires Adyen contact and sufficient available funds in the platform reserve account. The reserve is distinct from the user's payout-source balance account. See raw lines 19\u201343 and 95\u2013104.\n- For the default available-balance cap, Adyen sums settled funds for current balance and future changes reflected in reserved and pending balances. A zero or positive net future change leaves the cap at current balance; a negative net reduces the cap. Its USD 100 current and USD -20 future example yields USD 80 available. The prose says to \u201csubtract\u201d a negative sum, which if read literally would yield USD 120; use the example's reduction rather than claiming that phrase is an unambiguous signed-arithmetic formula. See raw lines 47\u201393.\n- Under the enabled current-balance alternative, if current equals available, the page says Adyen pays current. If current exceeds available, Adyen checks the platform reserve account, blocks the difference as collateral when its available funds suffice, then processes the payout; insufficient reserve funds cause the payout to fail. In the illustration, USD 1000 current and USD 800 available require USD 200 reserve collateral. This describes provider handling, not proof of an individual payout or beneficiary-bank credit. See raw lines 95\u2013155.\n- Collateral is gradually unblocked as incoming funds compensate the user's negative available balance. If that balance stays negative for 30 days, Adyen says it transfers the remaining collateral from the platform reserve account to the user's balance account and sends an internal-transfer webhook. This is an internal collateral movement, distinct from the earlier user bank payout. The examples show partial and full compensation, not a universal release timetable before that condition. See raw lines 157\u2013224.\n- Adyen recommends checking the user's balance before initiating a payout through Balance Platform API GET `/balanceAccounts/{id}`, Customer Area, or balance webhooks. The page links managed, scheduled custom and on-demand payout guides but does not specify their bank routing, returns, retries or receipt evidence. See raw lines 226\u2013238.\n\n## Detail locators\n\n- Purpose, prerequisites and platform-wide default/current configuration choice: raw lines 17\u201345.\n- Available-balance method, three future-change examples and signed-wording tension: raw lines 47\u201393.\n- Current-balance reserve sufficiency and payout failure branch: raw lines 95\u2013124.\n- USD 1000/800/200 reserve example: raw lines 128\u2013155.\n- Collateral release, 30-day internal transfer and examples: raw lines 157\u2013224.\n- Pre-payout balance checks and payout route links: raw lines 226\u2013238.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platforms]] \u2014 canonical modern platform payout and balance-account concept.\n- [[source-adyen-docs-platforms-payout-amount]] \u2014 separate Platforms URL for the corresponding calculation guide.\n- [[source-adyen-docs-marketplaces-manage-reserve-account]] \u2014 platform reserve-account context.\n- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 payout transfer and bank status evidence.\n- [[adyen-platform-internal-transfers]] \u2014 separate internal transfer route for later collateral movement.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/payout-amount/2026-09-15|Marketplace payout amount \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The maximum payout amount is the available balance.",
+      "location": "raw/adyen/docs/marketplaces/payout-amount/2026-09-15.md:40"
+    },
+    {
+      "text": "Your platform can use only one of these configurations at a time. The same configuration applies to all balance accounts in your platform.",
+      "location": "raw/adyen/docs/marketplaces/payout-amount/2026-09-15.md:43"
+    },
+    {
+      "text": "The available balance for the balance sweep at T is the current balance minus future balance changes, or USD\u00a080.",
+      "location": "raw/adyen/docs/marketplaces/payout-amount/2026-09-15.md:93"
+    },
+    {
+      "text": "If your reserve account does not have enough funds, the payout fails.",
+      "location": "raw/adyen/docs/marketplaces/payout-amount/2026-09-15.md:122"
+    },
+    {
+      "text": "If your user's balance remains negative for 30 days, Adyen transfers the remaining amount of the collateral from your reserve account to your user's balance account.",
+      "location": "raw/adyen/docs/marketplaces/payout-amount/2026-09-15.md:198"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-payout-amount-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-payout-amount]] \u2014 2026-09-15-captured Marketplace payout-cap guide for default available versus platform-wide current-balance configuration, reserve collateral/failure and later release or 30-day internal transfer; calculation is not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 57 says subtract negative future changes, while its USD 100 plus USD -20 example yields USD 80 at lines 90\u201393; preserve the example's reduction and flag the signed-arithmetic wording tension."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/payout-amount/2026-09-15.md",
+  "raw_sha256": "a8efd115a81987e5608cae70ddea3615dd9080dae2658422cabca7797c504a6c",
+  "status": "candidate_ready"
+}

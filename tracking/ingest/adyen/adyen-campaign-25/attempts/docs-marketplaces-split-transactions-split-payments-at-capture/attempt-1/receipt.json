@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-split-transactions-split-payments-at-capture",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace split payments at capture\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/split-transactions/split-payments-at-capture\"\nraw_files:\n  - \"adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, split-payments, capture]\n---\n\n## Overview\n\nThis 2023-modified Marketplace-path guide, captured 2026-09-15, explains how a marketplace using [[adyen]] can supply or change split instructions when capturing a payment on behalf of users. It belongs under [[adyen-platforms]]: the user balance account, marketplace liable balance account, payment authorization, capture, balance booking and eventual payout are separate roles or stages (raw lines 19\u201325, 51\u201380, 593\u2013666).\n\n## Key takeaways\n\n- The guide requires Checkout API credentials, a server that accepts standard webhooks with transfer or transaction webhook subscription, and manual capture enabled or a capture delay; capture-time splitting works only for payment methods supporting separate captures (raw lines 27\u201345). The marketplace posts to `/payments/{paymentPspReference}/captures` using the authorization `pspReference`, with a `splits` array. The capture request has a different `pspReference` (lines 51\u201359, 593\u2013599).\n- Capture-time instructions can override payment-request splits, but the guide recommends payment-time instructions because methods without delayed capture might otherwise book incorrectly. If the capture amount differs from authorization, splits **must** be present in the capture request; without them all funds go to the marketplace's liable balance account. `Surcharge` and `Tip` are unsupported in capture-time splits (lines 25, 39\u201349, 1674\u20131678).\n- `BalanceAccount` directs sale value to the named user's balance account; `Commission` books the marketplace's commission to its liable account; `PaymentFee` can charge a specified balance account. The table also describes `Remainder`, `TopUp` and other fee types; `amount.currency` is required for conversion, `reference` for `BalanceAccount`, and `TopUp` is unsupported in a `/sessions` request. The USD 80 example allocates USD 76 sale and USD 4 commission, with transaction fees charged to a user account; these are illustrative values, not a default allocation (raw lines 61\u2013122).\n- A capture response with `status: received` does not establish capture or booking. Listen for the `CAPTURE` outcome and the per-split transfer and transaction webhooks to distinguish received, authorised, captured and booked balance movements (raw lines 593\u2013666, 674\u2013990, 991\u20131640). The guide's test samples distinguish payment PSP reference from capture modification PSP reference.\n- The API validates split format but **not** the destination balance accounts. A nonexistent destination or one attached to a closed account holder can cause the full transaction **and fees** to book to the marketplace's liable balance account despite a successful transaction; a later internal fund transfer is the documented correction route (raw lines 646\u2013650). Split references aid reconciliation; absent references aggregate entries in reports (lines 1674\u20131676).\n\n## Detail locators\n\n- Request fields, conditional values and versioned Checkout test/library samples: raw lines 51\u2013591; the curl URL uses Checkout test v72, while individual language snippets specify separate library versions. Their credentials, IDs and amounts are examples.\n- Capture receipt and target-account failure: raw lines 593\u2013650. Transfer/transaction webhook stages for sale, fee and commission legs: lines 652\u20131640.\n- Additional fee splitting, FX remainder, chargeback, top-up and reporting-reference routes: raw lines 1641\u20131678.\n\n## Evidence boundary\n\nThe snapshot is a Marketplace guide within the modern Platforms model, not Classic Platforms or a proof of a specific marketplace's seller, merchant of record, fund ownership, capture, settlement, payout or bank receipt. The examples have internal inconsistencies: the narrative charges fees to the user's sale account, while the fee webhook uses a second user balance account (lines 74\u201379, 1006\u20131034); the NodeJS example uses EUR where the narrative and other examples use USD (lines 74\u201379, 331\u2013338); the commission transaction sample shows a negative amount and user account IDs despite describing a credit to the marketplace liable account (lines 1594\u20131638). Treat these sample payloads as illustrative and use actual webhook/report evidence for a real ledger.\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern platform and Marketplace route.\n- [[adyen-payment-capture]] \u2014 authorization and capture outcome boundary.\n- [[adyen-platform-internal-transfers]] \u2014 corrective transfer route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15|Pinned Marketplace capture-time split guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can also override the split instructions you provided in the payment request if you send different split instructions in your capture request.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md:25"
+    },
+    {
+      "text": "Before you start, you must [enable manual capture](/point-of-sale/capturing-payments#enable-manual-capture) or [set up a capture delay](/point-of-sale/capturing-payments#delayed-automatic-capture).",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md:37"
+    },
+    {
+      "text": "When the capture amount differs from the original authorization amount, you must provide split instructions in your capture request. If you do not provide split instructions for such captures, then all funds are booked to your liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md:47"
+    },
+    {
+      "text": "The split types **Surcharge** and **Tip** are not supported when you split a payment at capture.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md:49"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md:648"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-split-capture-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-split-transactions-split-payments-at-capture]] \u2014 2023-modified, 2026-09-15-captured Marketplace guide to capture-time split override, partial-capture and invalid-destination liable-account fallbacks, plus per-split webhook tracking; sample payloads are internally inconsistent and do not prove booked funds.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Marketplace and existing Platforms capture-time guides substantially overlap; retain distinct canonical URL and raw provenance, with no new concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/split-transactions/split-payments-at-capture/2026-09-15.md",
+  "raw_sha256": "ecfd8b4f51d45f6b6cec2b4e9d4ab3f7a6dce8e230e00cfd505dab2e81d3ce26",
+  "status": "candidate_ready"
+}

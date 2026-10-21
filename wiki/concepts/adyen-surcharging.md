@@ -27,6 +27,9 @@ The guide says surcharges cannot be applied to authorization adjustments or over
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-surcharge]] — 2023-modified, 2026-09-15-captured Marketplace-path pilot online-card surcharge guide for user/liable booking, API-only eligibility, compliance limits, split-field example discrepancy and transfer/report reconciliation.
+
+
 - [[source-adyen-docs-platforms-in-person-payments-surcharge-configuration]] — 2026-09-15 Platforms guide to automatic in-person surcharge rules and a single user-balance-account `Surcharge` split item in a Terminal API payment request.
 
 

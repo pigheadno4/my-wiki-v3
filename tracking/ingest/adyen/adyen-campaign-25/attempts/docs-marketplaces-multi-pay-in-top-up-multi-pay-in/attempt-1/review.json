@@ -1,0 +1,20 @@
+{
+  "job_id": "docs-marketplaces-multi-pay-in-top-up-multi-pay-in",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full 1,015-line pinned raw read and SHA-256 matched; receipt, candidate and suggestions agree, all five quotes occur at their stated lines, and the multi pay-in route is valid. The source correctly preserves liable-to-multi-pay-in direction, USD 2.40 versus 10000 response mismatch, and authorisation versus booked debit/credit. A second material source contradiction is missing: prose specifies balancePlatform.transfer.updated for authorised and booked status changes (raw lines 500, 581, 793, 872), yet every corresponding illustrated webhook envelope has type balancePlatform.transfer.created (lines 573, 669, 864, 959). This can mislead a reader choosing webhook subscriptions or event dispatch from the examples; the raw route alone does not prevent that wrong selection because it presents conflicting contracts.",
+  "required_changes": [
+    "Add a concise warning in the candidate near the webhook-event summary that status-change prose says balancePlatform.transfer.updated while the authorised/booked sample envelopes say balancePlatform.transfer.created; do not infer the event type from those samples without current contract verification. Keep the existing amount discrepancy and booking boundary. Update Q2 and the reciprocal suggestion warning to carry the same conflict."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c25-multi-pay-in-top-up-source",
+      "verdict": "rejected",
+      "reason": "Retain the reciprocal route, but add the status-change prose versus sample envelope event-type conflict to warnings before promotion."
+    }
+  ],
+  "reviewer_identity": "c25-rdocs-marketplaces-multi-pay-in-top-up-multi-pay-in",
+  "reviewer_model": "gpt-6-sol"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-internal-fund-transfers-return-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace internal push-transfer returns\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/internal-fund-transfers/return-transfers\"\nraw_files:\n  - \"adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, internal-transfers, returns, balance-accounts]\n---\n\n## Overview\n\nThis 2020-modified, 2026-09-15-captured [[adyen]] Marketplace guide explains returning funds mistakenly moved between balance accounts to the sender of the original **internal push transfer**. The return is a modification of that original transfer in [[adyen-platform-internal-transfers]], not a fresh internal transfer or an external bank payout. It uses the original incoming transfer ID; an authorised return request is not evidence that both balance-account legs have booked.\n\n## Key takeaways\n\n- This return path works only when the original internal transfer was a **push**. The server must receive and accept webhooks with Transfer webhook added in Customer Area; Support must enable transfers for the balance account **where funds are returned from**. The API credential needs Transfers API access and **TransferService Webservice Initiate** role. If the two balance accounts belong to different account holders, the returning-account holder needs `sendToBalanceAccount`, and the original source/return-recipient holder needs `receiveFromBalanceAccount`. Those capability checks are stated conditionally for different holders, not as universal same-holder requirements. See raw lines 17\u201337.\n- POST `/transfers/{transferId}/returns` uses the ID of the **original incoming transfer** from the webhooks. The request table marks `amount` required and says currency and value must be the same as the original transfer; `reference` is an optional unique return reference. Thus the page describes an equal-amount return, not a partial-return procedure. The EUR 100 example targets the TEST Balance Platform Transfers API v4 endpoint, and the SDK snippets are versioned examples rather than live-operation proof. See raw lines 39\u2013291.\n- The response `id` is the return-request ID, whereas `transferId` is the original incoming transfer ID provided in the URL. The prose describes `Authorised`, and the sample JSON uses lowercase `authorised`; `Declined` **can** indicate a wrong URL ID, not necessarily the only cause. These are request states, not confirmation of booked return movement. See raw lines 293\u2013308.\n- Track the return and possible failure with the linked internal-transfer webhooks, or view it in Customer Area. The separate webhook guide describes nested return-modification states and the two account views at booking. This page itself supplies no booked webhook payload, bank receipt, retry rule or proof of a specific transfer. See raw lines 310\u2013314 and [[source-adyen-docs-marketplaces-internal-fund-transfers-internal-transfer-webhooks]].\n\n## Detail locators\n\n- Push-only original transfer and same-transfer modification: raw lines 17\u201321.\n- Webhook, Support, conditional cross-holder capability and credential gates: raw lines 23\u201337.\n- Original incoming ID, matching amount/currency and TEST request examples: raw lines 39\u2013291.\n- Return-request versus original-transfer IDs, Authorised/Declined qualification and tracking: raw lines 293\u2013314.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platform-internal-transfers]] \u2014 canonical internal balance-account movement concept.\n- [[adyen-platforms]] \u2014 modern platform context.\n- [[source-adyen-docs-marketplaces-internal-fund-transfers-internal-transfer-webhooks]] \u2014 return modification and booked account-leg evidence.\n- [[source-adyen-docs-platforms-internal-fund-transfers-return-transfers]] \u2014 separate Platforms URL for the related guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15|Marketplace internal push-transfer return \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Returning the funds is then handled as a modification of that same internal transfer.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md:19"
+    },
+    {
+      "text": "returning funds in this way only works if the original internal transfer was a push transfer.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md:21"
+    },
+    {
+      "text": "If the balance accounts involved in the internal funds transfer *do not belong to the same account holder*",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md:29"
+    },
+    {
+      "text": "These must be the same as in the original transfer.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md:49"
+    },
+    {
+      "text": "If **Declined**, this can indicate that you used the wrong transfer ID in the URL.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md:296"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-internal-return-reciprocal",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-internal-fund-transfers-return-transfers]] \u2014 2020-modified, 2026-09-15-captured Marketplace Transfers API guide for an equal-amount return of an original internal push transfer by incoming ID, with conditional cross-holder capabilities and webhook outcome tracking.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/internal-fund-transfers/return-transfers/2026-09-15.md",
+  "raw_sha256": "b1bdab47a77857773ded7195bfad0fbdabdfd0da006c1a78dedcca20de188cf6",
+  "status": "candidate_ready"
+}

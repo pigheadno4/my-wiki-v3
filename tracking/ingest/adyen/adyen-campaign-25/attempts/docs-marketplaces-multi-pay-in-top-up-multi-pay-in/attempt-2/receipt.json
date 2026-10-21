@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-marketplaces-multi-pay-in-top-up-multi-pay-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Top up a Marketplace multi pay-in account\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/multi-pay-in/top-up-multi-pay-in\"\nraw_files:\n  - \"adyen/docs/marketplaces/multi-pay-in/top-up-multi-pay-in/2026-09-15.md\"\ntags: [adyen, marketplaces, multi-pay-in, internal-transfers]\n---\n\n## Overview\n\nThis pinned Marketplace guide describes an **internal** top-up from the platform's liable balance account to its multi pay-in account. A pay-in partner may withhold funds from payments or offset bank payout costs, leaving less in multi pay-in than the platform intends to allocate to users; the platform can fill that difference from its liable account. This is balance-account funding, not a new partner bank deposit, user allocation, external payout, or bank receipt. See [[adyen]] and [[adyen-multi-pay-in]].\n\n## Key takeaways\n\n- The operation requires Transfers API credentials and transfer or transaction webhook subscriptions. POST `/transfers` with `amount`, source `balanceAccountId` set to the **liable balance account**, `counterparty.balanceAccountId` set to the **multi pay-in account**, and `category: internal`. Optional `description` and `reference` help identify webhook/report entries (raw lines 21\u201346).\n- The TEST request illustrates **USD 2.40** (`value: 240`) moving from liable to multi pay-in. Its example response unexpectedly shows `amount.value: 10000`, not 240; do not use that response as arithmetic proof of the requested top-up (raw lines 46\u201370, 352\u2013388).\n- The API response uses `status: authorised` for the guide's successful authorization example; a non-authorised result may be `refused` with `reason: notEnoughBalance`. Authorization alone does not prove booked movement. Follow the transfer and transaction webhooks (raw lines 352\u2013402).\n- The outgoing liable-account leg and incoming multi-pay-in leg have separate `internalTransfer` webhook records. The source account is `outgoing`; the destination account is `incoming`. Both pass through `received`, `authorised`, and `booked`. The liable-account booked transfer and transaction evidence shows debit; the multi-pay-in booked transfer and transaction evidence shows credit (raw lines 406\u2013427, 431\u2013711, 713\u20131001).\n- `balancePlatform.transfer.created` identifies each leg, `balancePlatform.transfer.updated` reports status changes, and `balancePlatform.transaction.created` reports booked debit and credit. The examples are TEST illustrations, not proof that a particular live top-up completed. **Webhook type conflict:** status-change prose calls the authorised and booked events `balancePlatform.transfer.updated`, but those illustrated webhook envelopes carry `type: balancePlatform.transfer.created`; verify the current event contract before dispatching on an example type (raw lines 500, 573, 581, 669, 793, 864, 872, 959).\n\n## Detail locators\n\n- Funding reason, prerequisites, request fields and TEST request: raw lines 15\u201370.\n- API response and refusal example: raw lines 352\u2013392.\n- Webhook types and outgoing liable leg: raw lines 394\u2013711.\n- Incoming multi pay-in leg and booked credit: raw lines 713\u20131001.\n\n## Related\n\n- [[adyen]]\n- [[adyen-multi-pay-in]]\n- [[adyen-platform-internal-transfers]]\n- [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/multi-pay-in/top-up-multi-pay-in/2026-09-15|Pinned multi pay-in top-up guide]]\n",
+  "quotes": [
+    {
+      "text": "top up the balance of your multi pay-in account from your liable balance account by making an internal transfer.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "The unique identifier of your liable balance account.",
+      "location": "raw line 40, request fields"
+    },
+    {
+      "text": "The unique identifier of your multi pay-in account.",
+      "location": "raw line 41, request fields"
+    },
+    {
+      "text": "If the `status` is not **authorised**",
+      "location": "raw line 390, API response guidance"
+    },
+    {
+      "text": "Notifies you when the funds debited from your liable balance account and are credited to your multi pay-in account.",
+      "location": "raw line 402, balance-change webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-multi-pay-in-top-up-source",
+        "target_path": "wiki/concepts/adyen-multi-pay-in.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-multi-pay-in-top-up-multi-pay-in]] \u2014 2026-09-15 Marketplace guide to internal liable-account-to-multi-pay-in top-up, request fields and two-sided booked-event tracking; sample response amount conflicts with the request.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "TEST request amount.value is 240 (raw lines 46\u201370), but illustrative API response amount.value is 10000 (lines 352\u2013388); do not reconcile them as one proven transaction.",
+          "Authorised/received is not booked debit or credit.",
+          "Status-change prose names balancePlatform.transfer.updated for authorised/booked (raw lines 500, 581, 793, 872), but corresponding sample envelopes say balancePlatform.transfer.created (lines 573, 669, 864, 959); verify current event contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/multi-pay-in/top-up-multi-pay-in/2026-09-15.md",
+  "raw_sha256": "6cd6c3204cdac082a5dcafb1e251a92700d5ebabc574284a30f2ac3c5acefb03",
+  "status": "candidate_ready"
+}

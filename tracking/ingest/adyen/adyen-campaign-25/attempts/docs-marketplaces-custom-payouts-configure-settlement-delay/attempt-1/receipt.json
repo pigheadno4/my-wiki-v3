@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-custom-payouts-configure-settlement-delay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Configure a Marketplace balance-account settlement delay\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/custom-payouts/configure-settlement-delay\"\nraw_files:\n  - \"adyen/docs/marketplaces/custom-payouts/configure-settlement-delay/2026-09-15.md\"\ntags: [adyen, marketplaces, balance-accounts, settlement-delay]\n---\n\n## Overview\n\nThis pinned Marketplace guide explains how a platform overrides its merchant-account transaction settlement-delay default for a **specific user's balance account** through the Configuration API. The setting governs after how many **business days** funds in a settlement batch become available; configuring it is distinct from scheduling a payout or proving a transfer or bank receipt. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- The Configuration API credential needs the **Balance Platform BCL role**. Subscribe to `balancePlatform.balanceAccount.created` and `.updated` Configuration webhooks. An Account Manager must enable custom sales-day settlement delay for the marketplace (raw lines 21\u201331).\n- Custom settlement delay is unavailable on a balance account with a **managed payout schedule**. A value of **1 day** requires previous Adyen approval (raw line 30).\n- When creating an account, POST `/balanceAccounts`; when changing an existing account, PATCH `/balanceAccounts/{id}`. Include `platformPaymentConfiguration.settlementDelayDays`, whose documented values are integers **1\u201320** or `null` for default. The guide's TEST example sets **3** business days (raw lines 33\u201364).\n- `platformPaymentConfiguration.salesDayClosingTime` is conditionally required. It uses `HH:MM` with hours **00\u201307** and minutes **00**, default **00:00**. If a specific closing time was previously configured, include it on balance-account updates or it resets to default (raw lines 40\u201346). This makes a delay-only PATCH potentially change the sales-day cutoff.\n- The API response reflects the requested `platformPaymentConfiguration` on the account; a created or updated Configuration webhook follows application. These confirm configuration state, not actual settlement completion, payout initiation, booked transfer or bank receipt (raw lines 268\u2013321).\n\n## Detail locators\n\n- Scope, roles, webhook setup, approval and managed-schedule limit: raw lines 15\u201331.\n- POST/PATCH fields, settlement-day range and closing-time reset: raw lines 33\u201348.\n- TEST PATCH example and account response: raw lines 50\u2013292.\n- Created/updated account webhook examples: raw lines 294\u2013321.\n\n## Related\n\n- [[adyen]]\n- [[adyen-platforms]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/custom-payouts/configure-settlement-delay/2026-09-15|Pinned settlement-delay guide]]\n",
+  "quotes": [
+    {
+      "text": "You can configure a different settlement delay for specific balance accounts",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "You can only specify a settlement delay of **1** day with previous approval from Adyen.",
+      "location": "raw line 30, Requirements limitations"
+    },
+    {
+      "text": "You cannot use custom settlement delay on a balance account with a [managed payout schedule]",
+      "location": "raw line 30, Requirements limitations"
+    },
+    {
+      "text": "If you have previously configured a specific closing time, you must include this parameter whenever you update the balance account.",
+      "location": "raw line 46, salesDayClosingTime field"
+    },
+    {
+      "text": "After the new settlement delay is applied to the balance account, we send one of the following webhooks to your server:",
+      "location": "raw line 296, Webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-settlement-delay-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-custom-payouts-configure-settlement-delay]] \u2014 2026-09-15 Marketplace Configuration API guide for per-balance-account settlement-delay override, 1-day approval and managed-schedule limits, plus conditional closing-time preservation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Previously configured non-default salesDayClosingTime must be included on balance-account update or it resets to 00:00 (raw lines 45\u201346).",
+          "Configuration response/webhooks do not prove settlement or payout execution."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/custom-payouts/configure-settlement-delay/2026-09-15.md",
+  "raw_sha256": "bb502542ae95a40362a1dffa5fdb088737b4c586a83ca9c42de9173b182f799d",
+  "status": "candidate_ready"
+}

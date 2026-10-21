@@ -1,0 +1,20 @@
+{
+  "job_id": "docs-marketplaces-multi-pay-in-receive-funds",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Full 360-line pinned raw read and SHA-256 matched; candidate, accepted receipt and suggestions agree; all five quotes are exact at their stated lines, Q1/Q2 route through the existing multi pay-in concept, and the partner-bank-to-staging-account boundary is preserved. One material reconciliation contradiction is omitted: the booked Transfer sample's nested accounting event has transactionId 1WT1N05XXY7P9XGB (raw line 282), while data.transactionId is EVJN42272224222B5JB8BRC84N686ZUSD (line 296), matching the later Transaction webhook data.id (line 315). A reader trying to join booked transfer and transaction events could select the incompatible nested ID; the raw page itself presents both without resolving their meaning.",
+  "required_changes": [
+    "Add a concise warning near the booked-transfer/Transaction evidence summary distinguishing the conflicting nested event.transactionId from top-level data.transactionId and the Transaction webhook ID (raw lines 282, 296, 315). Do not infer a universal join-key rule from this TEST sample; retain the existing authorised-status and bad top-up-link warnings. Carry the same discrepancy into Q2 and the reciprocal suggestion warnings."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c25-marketplace-multipayin-receive-source-route",
+      "verdict": "rejected",
+      "reason": "Keep the reciprocal source route, but add the booked sample's conflicting transactionId fields to its warnings before promotion."
+    }
+  ],
+  "reviewer_identity": "c25-rdocs-marketplaces-multi-pay-in-receive-funds",
+  "reviewer_model": "gpt-6-sol"
+}

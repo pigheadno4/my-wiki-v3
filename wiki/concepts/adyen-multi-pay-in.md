@@ -15,7 +15,16 @@ The overview requires Checkout/Transfers API credentials, transfer and/or transa
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-multi-pay-in-receive-funds]] — 2026-09-15 Marketplace guide to allowlisted pay-in-partner bank payouts into the Adyen-held multi pay-in account, incoming bank/transaction webhook evidence and later allocation boundary; authorized example's top-level status conflicts with its prose.
+
+
+- [[source-adyen-docs-marketplaces-multi-pay-in-top-up-multi-pay-in]] — 2026-09-15 Marketplace guide to internal liable-account-to-multi-pay-in top-up, request fields and two-sided booked-event tracking; sample response amount conflicts with the request.
+
+
 - [[source-adyen-docs-platforms-multi-pay-in]] — 2026-09-15 service overview, prerequisites, 24-hour allocation rule, account role and refund boundary.
+
+- [[source-adyen-docs-marketplaces-multi-pay-in]] — 2026-09-15 Marketplace-path service overview for partner proceeds, Adyen-held source account, 24-hour allocation, liable split default and partner-owned customer refunds; refund illustration mixes EUR and USD.
+
 
 ## Related
 

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-marketplaces-multi-pay-in-refunds",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Refund third-party multi pay-in payments in Adyen Marketplaces\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/multi-pay-in/refunds\"\nraw_files:\n  - \"adyen/docs/marketplaces/multi-pay-in/refunds/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, multi-pay-in, refunds, split-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path guide covers refunds of payments processed by a third-party pay-in provider but settled into a marketplace user's Adyen balance account. The marketplace initiates a Checkout API refund that deducts funds from user and/or platform balance accounts and returns funds to the multi pay-in account. The pay-in partner is separately responsible for sending the money to the user's customer; the page says to establish that partner-side process before initiating at Adyen. An Adyen refund request or booked balance movement does not prove the customer received the refund. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Use the original payment PSP reference from the API response or authorization/transfer webhooks in POST `/payments/{paymentPspReference}/refunds`. The request specifies `amount` and `merchantAccount`; `amount.value` equals the captured amount for a full refund or is less for a partial one, while `amount.currency` matches the authorization currency. The outcome arrives asynchronously through a `REFUND` webhook. See raw lines 23-39 and 779.\n- Refund `splits` can specify deductions from user or platform balance accounts. The field table marks `account`, `amount.value` and `type` Required for each split item, with `reference` required for `BalanceAccount`; it also covers commission, Adyen-fee and remainder types and conditional split `amount.currency` for a different deduction currency. However, the TEST curl example's `Commission` split omits `account`, while its `BalanceAccount` split includes `account` and `reference`. The table/example conflict is unresolved; do not treat the example as proof of the table's per-item requiredness or as a validated request. The guide strongly recommends explicit splits for partial refunds. See raw lines 39, 43-60 and 67-96.\n- The no-`splits` example is framed for a **full** refund equal to the original payment amount when the authorization included split instructions: it reuses the authorization ratio, **not** capture instructions. If authorization had no splits, the full amount is debited from the marketplace's liable balance account. Do not generalize that example to partial refunds. See raw lines 501-511.\n- The API validates split format but **not** the named balance accounts. A nonexistent balance account or one whose account holder is closed causes the full transaction and fees to book to the marketplace's liable balance account, even when the transaction appears successful. Correcting balances requires a separate internal transfer. See raw lines 781-785.\n- Track the `REFUND` request outcome separately from transfer and transaction webhooks. The examples depict outgoing refund deductions from the user's account and the platform's liable commission account, followed by an incoming `internalTransfer` credit to the multi pay-in account; `received` and `authorised` are intermediate statuses, while `refunded`/`booked` and transaction-created events document the respective balance postings. No such leg proves the pay-in partner refunded the customer. See raw lines 787-813, 969-971, 1100-1118, 1412-1424 and 1666-1702.\n- API v72 and library snippets use TEST examples. Their amounts and identities are illustrative and inconsistent across sections: the request example refunds USD 8,000 minor units (raw lines 67-96), while the later user-deduction and multi pay-in webhook examples show USD 39,600 and 40,000 (raw lines 833-835 and 1444-1446); the booked incoming-transfer section repeats a `received` description (raw lines 1569-1572). Do not join those samples as one reconciled ledger or infer a live outcome.\n\n## Detail locators\n\n- Opening and `## Refund a payment`, raw lines 15-41: third-party versus Adyen/partner roles, original PSP reference, required request fields, captured-amount and authorization-currency constraints.\n- `### Tab: Refund with split instructions (recommended)`, raw lines 43-499: split field matrix, fee/commission types and TEST API v72/library examples.\n- `### Tab: Use split instructions from payment authorization`, raw lines 501-778: full-refund conditions, authorization-versus-capture ratio and liable-account fallback.\n- `### Troubleshooting`, raw lines 781-785: format-only validation, invalid destination fallback and separate internal correction.\n- `## Track fund movements`, raw lines 787-1702: three example legs, transfer and transaction webhook statuses, and differing example values/identities.\n\n## Related\n\n- [[adyen-platforms]] \u2014 Marketplace route within the current Adyen for Platforms model.\n- [[source-adyen-docs-platforms-multi-pay-in-refunds]] \u2014 separately pinned Platforms-path refund guide; its own raw controls its claims and locators.\n- [[adyen-platform-internal-transfers]] \u2014 separate balance-account correction path, not automatic refund completion.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/multi-pay-in/refunds/2026-09-15|Adyen Marketplace multi pay-in refunds guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can initiate a refund for third-party payments using the [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview). The funds are deducted from your balance accounts and transferred to your multi pay-in account.",
+      "location": "raw line 19, opening"
+    },
+    {
+      "text": "Sending the refund amount to your user's customer is your pay-in partner's responsibility. Make sure that you have a process in place in their system before initiating a refund at Adyen.",
+      "location": "raw line 21, opening"
+    },
+    {
+      "text": "The funds are deducted according the split instructions in the payment authorization, *not* the capture.",
+      "location": "raw line 503, Tab: Use split instructions from payment authorization"
+    },
+    {
+      "text": "If the payment authorization didn't contain split instructions, the full refund amount is debited from your liable balance account.",
+      "location": "raw line 509, Tab: Use split instructions from payment authorization"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw line 783, Troubleshooting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplaces-multi-pay-in-refunds-platforms-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-multi-pay-in-refunds]] \u2014 2026-09-15 Marketplace-path third-party multi pay-in refund guide for Adyen balance deductions, authorization-ratio and liable fallback, asynchronous fund events and partner-owned customer repayment.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is the Marketplace-path source under Adyen for Platforms, not a Classic Platforms capability or independent financial-outcome proof.",
+          "The no-splits authorization-ratio example is expressly full-refund scoped; the original request and webhook example amounts are inconsistent.",
+          "The split field table marks `account` Required for each item, but the TEST Commission split omits `account` (raw lines 49 and 78-85); this example-versus-table requirement is unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/multi-pay-in/refunds/2026-09-15.md",
+  "raw_sha256": "9b09b15c9ab1fa4f9d98365d7851e370cc9fb5c79628a15cd5e49591e55ab657",
+  "status": "candidate_ready"
+}

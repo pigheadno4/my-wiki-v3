@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-split-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace split transactions between balance accounts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/split-transactions\"\nraw_files:\n  - \"adyen/docs/marketplaces/split-transactions/2026-09-15.md\"\ntags: [adyen, marketplaces, split-transactions, balance-accounts, payments]\n---\n\n## Overview\n\nThis 2024-modified Marketplace-route Adyen for Platforms guide, captured 2026-09-15, explains how transaction-specific split instructions book payment, capture and refund amounts and fees among user balance accounts and the marketplace liable balance account. It also points to chargeback booking logic. This is the modern balance-account model, not Classic `accountCode` splitting. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Supply split instructions in each relevant authorization, capture and refund request, or use an applicable split-configuration profile. If neither a profile nor API instructions are provided, the **whole transaction amount and fees** are booked to the marketplace's liable balance account (raw lines 19\u201321). A split instruction lacking an `account` also books that split amount to the liable balance account, subject to each split type's required fields (raw lines 96\u2013118).\n- The guide names `/payments` and `/sessions` for authorization, `/payments/{paymentPspReference}/amountUpdates` for authorization amount updates, `/payments/{paymentPspReference}/captures` for capture and `/payments/{paymentPspReference}/refunds` for refund splits (raw lines 23\u201337). Splitting at capture is possible only for payment methods supporting **separate captures** (raw line 31). These are request points for intended booking, not proof of authorization, capture, settlement or payout completion.\n- For payment/refund API requests, use a `splits` array with an object per portion of the full transaction amount. A `BalanceAccount` split books to a user's balance account and the table marks `account`, `amount` and `reference` required; `Commission` books marketplace commission to the liable balance account and requires `amount`. Other types route individual or aggregate fees, VAT, conversion remainder, surcharge and user top-up funds, with their per-type required/recommended fields in the raw table (raw lines 69\u201381, 96\u2013118). Do not assume every fee type has the same required fields or recipient.\n- Potential chargeback booking is configured on the original authorization or capture request through `platformChargebackLogic`, distinct from payment/refund `splits`. It can allocate the disputed amount and chargeback fees (raw lines 62\u201367, 83\u201394). This describes a prospective booking instruction, not that a chargeback occurred.\n- The document says funds can be split across any number of balance accounts within the marketplace and lists sale, commission, transaction fees, conversion remainder and top-up as payment portions, versus sale refund, refunded commission, refund fees and conversion remainder for refunds (raw lines 39\u201367). Account and liable destinations must be specified according to the split type; a sample transaction is not evidence that the intended balance accounts were credited or debited.\n\n## Detail locators\n\n- Need for booking instructions and whole-transaction liable fallback: raw lines 19\u201321. Endpoints and separate-capture condition: raw lines 23\u201337. Payment, refund and chargeback booking categories: raw lines 39\u201367.\n- `splits` array and chargeback-logic placement: raw lines 69\u201394. Split type, per-type required fields and missing-account liable fallback: raw lines 96\u2013118.\n\n## Related\n\n- [[adyen-platforms]] \u2014 Marketplace balance-account model.\n- [[adyen-automatic-split-configuration]] \u2014 profile-based alternative and request precedence.\n- [[source-adyen-docs-marketplaces-manage-liable-accounts]] \u2014 liable account destinations and failure fallback.\n- [[adyen-classic-platforms]] \u2014 separate older account-code model.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/split-transactions/2026-09-15|Marketplace split transactions, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you do not provide any split instructions in a split configuration profile or through and API request, the whole transaction amount and fees are booked to your liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/2026-09-15.md:21"
+    },
+    {
+      "text": "Splitting payments at capture is only possible for payment methods that support [separate captures](/online-payments/capture).",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/2026-09-15.md:31"
+    },
+    {
+      "text": "Each object in the `splits` array represents one set of split instructions, and defines how to book a specific part of the transaction.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/2026-09-15.md:75"
+    },
+    {
+      "text": "include a `platformChargebackLogic` object in your authorization or capture request.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/2026-09-15.md:85"
+    },
+    {
+      "text": "If you do not specify an `account` in your split instructions, the split amount is booked to your liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/2026-09-15.md:102"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-docs-marketplaces-split-transactions-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-split-transactions]] \u2014 2024-modified, 2026-09-15-captured Marketplace transaction-split guide for payment/capture/refund arrays, chargeback logic, split-type fields and liable-account fallback.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "No split profile/API instructions sends whole amount and fees to the liable balance account; a missing account on an individual split also falls back there, subject to required fields. Capture-time splitting requires a payment method supporting separate captures. Instructions are not settlement/payout proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/split-transactions/2026-09-15.md",
+  "raw_sha256": "8de85a0e1b4aae97a6966b5d440c9334efc89fbc4892c473f56c552d66cee9f0",
+  "status": "candidate_ready"
+}

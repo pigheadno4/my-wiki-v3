@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-custom-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace-path custom payouts to user bank accounts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/custom-payouts\"\nraw_files:\n  - \"adyen/docs/marketplaces/custom-payouts/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, custom-payouts, transfers, bank-accounts]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured Marketplace-path overview routes a user's funds from the user's balance account to that user's verified bank account through scheduled or on-demand custom payout requests. It contrasts managed payouts with platform-controlled settlement delay, cadence and API initiation. Sending funds to third-party bank accounts is a separate Business Accounts product with additional verification. See [[adyen]] and [[adyen-platforms]]; the Marketplace path does not make this a Classic Platforms account payout. The page describes request routes and conditions, not an executed payout or beneficiary-bank receipt.\n\n## Key takeaways\n\n- Requirements include an Adyen for Platforms integration, a Transfers API credential with **TransferService Webservice Initiate role**, a Customer Area user with **Initiate payouts to transfer instruments**, and the user's `sendToTransferInstrument` capability. The account holder and bank-account transfer instrument must link to the same legal entity. To use the same bank account for both local and cross-border payouts, the guide says to create separate transfer instruments with local and `numberAndBic` identification. Transfer and Transaction webhooks are available to track movement; possession of a role or capability is not evidence of a specific payout.\n- Local payouts are described as within the same country and currency, with route-dependent `regular`, `fast`, `instant` and `wire` priorities. Cross-border payouts use only `crossBorder` priority. The cross-border prose instructs POST `/transfers` with `NumberAndBicAccountIdentification`, account number/IBAN and BIC, but the route matrix requires `iban` for some destinations and offers it as an option for others. Its CZK-to-Slovakia example also exceeds the cross-border matrix's listed EUR/GBP/USD currencies. Use the applicable route/contract rather than resolving these discrepancies from this snapshot.\n- The guide excludes USD cross-border payouts to Canadian or Hong Kong users with US bank accounts. Correspondent-bank routes can have uncertain arrival times, lifting fees and restrictions on non-domestic bank accounts; its hosted-onboarding example limits adding such accounts to EU/EEA, Switzerland or UK residents. These are dated route descriptions, not current user eligibility.\n- Cutoff, settlement-delay and amount limits vary by location, currency, priority and local timezone. Before-cutoff processing is described as *typical*, while later requests shift processing; neither promises bank receipt. The narrative SEPA wire example uses a 16:30 **ET** cutoff, whereas the table says 16:55 **CET** for SEPA wire. Check the current route and time zone before planning a payout. A higher-priority choice incurs higher fees per the guide.\n- The TEST section supplies successful and unsuccessful `POST /transfers` bank fixtures by country, currency and priority, with return or failure reason codes. Use those details only in TEST. Some successful test rows use `cashout`, which is absent from this page's four local priorities and sole cross-border priority; a fixture is not live route availability or completion proof. The page links separate schedule, on-demand, payout-webhook and internal-transfer guides for detailed flows.\n\n## Detail locators\n\n- Purpose, managed/custom distinction, Business Accounts boundary and three custom routes: raw lines 15\u201333. Roles, capability, same-entity and dual-instrument setup: lines 35\u201348.\n- Local/cross-border priorities, exceptions, arrival and fee qualifications: lines 50\u201380. Country/currency/format matrices, including cross-border IBAN-versus-numberAndBic and EUR/GBP/USD rows: lines 82\u2013123.\n- Cutoff explanation, narrative examples and location/currency/priority/time-zone/amount matrix: lines 125\u2013192. Priority descriptions: lines 194\u2013201. TEST-only fixtures, `cashout` rows and return/failure reason codes: lines 203\u2013349. Child routes: lines 351\u2013367.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 modern balance-platform model.\n- [[source-adyen-docs-platforms-custom-payouts]] \u2014 separately pinned Platforms-path overview with the same general route.\n- [[source-adyen-docs-marketplaces-managed-payouts]] \u2014 alternative managed-payout route.\n- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] \u2014 separate review and cancellation process, not established by this overview.\n\n## Related raw API references\n\n- The raw page links to Transfers API, custom schedule/on-demand, webhook and Business Accounts guides; their detailed current behavior and approval/return rules require separate authority.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/custom-payouts/2026-09-15|Adyen Docs: Custom payouts (2026-09-15 snapshot; page last modified 2023-02-09)]]\n",
+  "quotes": [
+    {
+      "text": "Scheduled custom and on-demand payouts are bank transfer requests that move funds from your user's balance account to their bank account.",
+      "location": "raw line 33, # Custom payouts"
+    },
+    {
+      "text": "Make sure that the account holder and transfer instrument are linked to the same legal entity.",
+      "location": "raw line 47, ## Requirements"
+    },
+    {
+      "text": "We do not support USD payouts to Canadian users with a US bank account.",
+      "location": "raw line 69, ### Cross-border payouts"
+    },
+    {
+      "text": "The arrival time of the payout cannot be guaranteed.",
+      "location": "raw line 74, ### Cross-border payouts"
+    },
+    {
+      "text": "Only use these bank account details in your TEST environment.",
+      "location": "raw line 211, ### Tab: Successful flow"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-custom-payouts-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-custom-payouts]] \u2014 2023-modified, 2026-09-15-captured Marketplace-path custom-payout overview for verified user-bank scheduled/on-demand transfers, role/capability and country/priority limits, with cross-border format and cutoff-table conflicts; request paths do not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Cross-border prose versus route matrix and SEPA cutoff example versus table conflict; preserve dated qualifiers and verify a current account-specific route before use."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/custom-payouts/2026-09-15.md",
+  "raw_sha256": "0747517c99a9ef7373ae2427de5275deaee0cee635fd9ea68586f53eb90867e0",
+  "status": "candidate_ready"
+}

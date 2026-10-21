@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-payment-methods-add-payment-methods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace: Request payment methods\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/payment-methods/add-payment-methods\"\nraw_files:\n  - \"adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, payment-methods, customer-area]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace guide explains how a platform requests payment methods that its user can accept for a merchant account in the TEST or LIVE Customer Area. Adyen may contact the requester about additional requirements before adding a method. The guide describes a merchant-account request and later store-level webhook event, not proof that a method is already configured or usable. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Prerequisites and scope:** The guide requires an Adyen online-payments integration and checkout UI, the Customer Area **Change payment methods** role, and a **Payment method webhook** subscription. A method must support the relevant currency and integration. Its currency is set by default for that method type; contact Adyen Support if the implementation needs a different currency (raw lines 21\u201332).\n- **Request path:** In the TEST or LIVE Customer Area, switch to the merchant account, open **Payments > Payment methods**, choose **Request payment methods**, filter by location/type, select methods, apply them to **This merchant account**, provide prompted information, review, and submit. Submission is a request; Adyen says external factors can delay availability and methods typically appear within a day, so it recommends requesting at least one day before opening (raw lines 19, 30\u201331, 35\u201348).\n- **Asynchronous outcome:** The webhook section recommends Management webhooks because adding a method to the user's store is asynchronous; after addition it says Adyen sends `paymentMethod.created`. Its illustrative TEST Visa payload has `merchantId`, `storeId`, `data.result: SUCCESS`, and `type: visa`. The earlier requirements table calls for a \u201cPayment method webhook,\u201d while this section calls Management-webhook subscription a recommendation; the page does not resolve whether these names specify the same subscription setting (raw lines 28\u201329, 50\u201373).\n- **Failure and retry boundary:** Correct an immediate submission error before resubmitting. The page separately warns that a rare post-submission failure may have no automated alert without webhook subscription, and says to wait 24 hours before trying again in that case. A submitted request or example success event does not demonstrate a specific account's payment-method availability or payment acceptance (raw lines 75\u201379).\n\n## Detail locators\n\n- Merchant-account purpose, prerequisites, support/currency limits and typical availability: pinned raw lines 17\u201332.\n- TEST/LIVE Customer Area request sequence: pinned raw lines 35\u201348.\n- Asynchronous store-level Management webhook and illustrative Visa payload: pinned raw lines 50\u201373.\n- Immediate error versus later silent failure and 24-hour retry instruction: pinned raw lines 75\u201379.\n- Related management paths: pinned raw lines 81\u201385.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main marketplace/platform integration context.\n- [[source-adyen-docs-marketplaces-payment-methods-manage-payment-methods-api]] \u2014 managing configured methods by Management API; a separate operation.\n- [[adyen-webhooks]] \u2014 general event-handling route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15|Add payment methods, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can request the payment methods your user can accept in your Customer Area.",
+      "location": "raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md:19"
+    },
+    {
+      "text": "You must have an [online payments integration and a checkout UI](/online-payments/build-your-integration) with Adyen.",
+      "location": "raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md:27"
+    },
+    {
+      "text": "You can only configure and use payment methods that are [supported for your currency and integration](/marketplaces/payment-methods#supported-payment-methods).",
+      "location": "raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md:30"
+    },
+    {
+      "text": "After the payment method has been added to your store, Adyen sends a [paymentMethod.created](https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/paymentMethod.created) webhook.",
+      "location": "raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md:54"
+    },
+    {
+      "text": "If this happens, you must wait 24 hours before trying again.",
+      "location": "raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md:79"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-add-payment-methods-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-payment-methods-add-payment-methods]] \u2014 2026-09-15 Marketplace merchant-account payment-method request guide for role, currency/integration, asynchronous store webhook, availability and 24-hour post-submission retry boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requirements table names a Payment method webhook, while the later section recommends Management webhooks for store-level paymentMethod.created; the exact subscription equivalence is unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15.md",
+  "raw_sha256": "a6072842410818be2ea9bf1b40ac415da048ebd117962f39265bd1e7c9084fe1",
+  "status": "candidate_ready"
+}

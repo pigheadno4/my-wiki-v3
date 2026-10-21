@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-custom-payouts-on-demand-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace on-demand payouts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/custom-payouts/on-demand-payouts\"\nraw_files:\n  - \"adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, custom-payouts, bank-transfers]\n---\n\n## Overview\n\nThis 2020-modified Marketplace-path guide, captured 2026-09-15, describes triggering an off-schedule bank payout from a user's balance account to that user's verified transfer instrument through Customer Area or Transfers API `POST /transfers`. It is a modern [[adyen-platforms]] flow from [[adyen]], not a third-party bank transfer: that separate route uses Adyen business accounts and additional verification (raw lines 15\u201327, 46\u201348). Regional/method cutoff times affect expected bank arrival; this guide does not promise an arrival time.\n\n## Key takeaways\n\n- Prerequisites are an Adyen for Platforms integration; the Transfers API `TransferService Webservice Initiate role` for API calls or Customer Area `Initiate payouts to transfer instruments` role for that route; accepted transfer webhooks; an allowed `sendToTransferInstrument` capability; and Support enablement of transfers for the source balance account plus a default transfer description (raw lines 29\u201344). From LEM API v3, capability verification is per transfer instrument, independent of the legal entity's other instruments. Calculate available transfer routes before a request as recommended, because country, currency and counterparty constrain priority availability.\n- The bank-category request identifies the debited source `balanceAccountId`, amount/currency, destination `counterparty.transferInstrumentId` linked to the account holder's legal entity, and transfer `priority`, which affects speed and fees (raw lines 99\u2013112). Internal `reference`, recipient-facing `description` and `referenceForBeneficiary` serve distinct purposes; Customer Area gives beneficiary-reference maxima of 35 characters for IBAN and 15 otherwise, while description limits depend on country and priority (lines 70\u201374, 110\u2013112). The Customer Area EUR 150 Instant and API EUR 600 Fast examples are illustrative and test scoped (lines 82\u201397, 114\u2013141).\n- HTTP 2XX with a transfer ID confirms the transfer request, not debit or bank credit (raw line 436). A list of `priorities` lets Adyen try the next available route if the earlier priority has no route; this is route selection within that request, not a retry policy for a returned or failed payout (lines 440\u2013446, 474\u2013538). Its sample response remains `status: received`, `reason: pending`.\n- Optional `review.numberOfApprovalsRequired` currently permits `1`, and a team member must approve before Adyen continues processing (raw lines 542\u2013550, 916\u2013921). A future `executionDate.date` must be within 30 days in ISO YYYY-MM-DD; optional timezone uses a tz identifier with `Europe/Amsterdam` stated as default. The guide separately describes a 00:00\u201303:00 processing window based by default on the Balance Platform timezone (lines 925\u2013944). A future-dated request remains `received/pending` until funds and any approval are checked; Adyen attempts processing once, and an error such as insufficient funds ends `failed` with a webhook. Before that date, a separate `/transfers/cancel` request can cancel it (lines 929\u2013978).\n- Use transfer-created/updated and transaction-created webhooks, with Customer Area, to track status and balance-account debit; `sequenceNumber` counts transfer updates and the event array retains earlier events (raw lines 980\u20131003). A prior bank return can block later payouts with `1063_101`; inspect return reason, do not retry final return codes, and retry only where recommended. The page's corrective route updates the user's bank details through Hosted Onboarding or LEM transfer instrument API before a new on-demand payout attempt (lines 1011\u20131039).\n\n## Detail locators\n\n- Roles, capability, Support setup, cutoff and route preparation: raw lines 19\u201344. Customer Area/request field definitions and versioned test SDK examples: lines 46\u2013436.\n- Priority fallback and pending response: raw lines 440\u2013538; one-person review and versioned test examples: lines 542\u2013921.\n- Future execution, one-attempt failure, cancellation, status webhooks and returned-bank-account block: raw lines 925\u20131039.\n\n## Evidence boundary\n\nThe source balance account belongs to the user's platform balance structure and the counterparty is that user's transfer instrument; it does not authorize sending to arbitrary third parties. A request ID, `received/pending` response, booked debit or illustrative instant priority does not prove the beneficiary bank received funds. The page lists a scheduled-payout `balanceAccountSweepExecution` webhook among payout updates (raw line 992); treat that route as scheduled-payout context rather than proof of this on-demand transfer. The described date/timezone defaults and role availability are dated snapshot guidance, not live configuration evidence. Keep this Transfers API flow separate from [[adyen-payouts|legacy Online Payout API]] and Classic Platforms payouts.\n\n## Related\n\n- [[adyen-platforms]] \u2014 current marketplace/platform integration.\n- [[adyen-platform-internal-transfers]] \u2014 different balance-to-balance movement.\n- [[adyen-payouts]] \u2014 separate legacy Online Payout API concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15|Pinned Marketplace on-demand payout guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "On-demand payouts give you the flexibility to trigger a payout off-schedule.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md:25"
+    },
+    {
+      "text": "From LEM API v3, this capability is verified at the level of the transfer instrument, such as a bank account.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md:41"
+    },
+    {
+      "text": "When you specify multiple priorities, Adyen first attempts the transfer using the first option in the list. If that route is unavailable, Adyen automatically retries the transfer using the next available priority.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md:446"
+    },
+    {
+      "text": "Adyen attempts to process the payout only one time. In case of any errors, such as having insufficient funds in the balance account, the payout request ends with `status` **failed**.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md:936"
+    },
+    {
+      "text": "If the reason indicates a final status, do not retry the transfer. Only retry payouts that have return reason codes that are recommended to be retried.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md:1033"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-on-demand-payouts-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-custom-payouts-on-demand-payouts]] \u2014 2020-modified, 2026-09-15-captured Marketplace guide to role/capability-gated off-schedule user bank payouts, route-priority fallback, optional review/future-date one-attempt failure and bank-return retry limits; request or debit is not bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace and existing Platforms on-demand payout guides overlap; keep this canonical URL and raw provenance distinct, with no duplicate concept."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/2026-09-15.md",
+  "raw_sha256": "0a07d5d924ef8c74ed475cf8fd22461d821b8da5e34c01f6357f3814b05fdbc3",
+  "status": "candidate_ready"
+}

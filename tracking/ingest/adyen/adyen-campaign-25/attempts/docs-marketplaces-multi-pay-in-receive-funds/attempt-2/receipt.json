@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-multi-pay-in-receive-funds",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Marketplace multi pay-in: receive partner funds\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/multi-pay-in/receive-funds\"\nraw_files:\n  - \"adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, multi-pay-in, bank-transfers]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace guide describes receiving a third-party acquirer or PSP **pay-in partner's payout** as an incoming bank transfer into a multi pay-in account linked to the platform. The guide says Adyen creates and legally holds that account solely for the users' benefit; it holds their funds **before** the platform allocates them to user balance accounts. A received partner transfer or credit to this staging account is not proof of a particular payment's allocation, a user balance-account credit, payout, or shopper refund. [[adyen]] [[adyen-multi-pay-in]]\n\n## Key takeaways\n\n- Set the multi pay-in account as the pay-in partner's payout account. Adyen allowlists the partner's bank account and automatically rejects bank transfers from other accounts. The snapshot gives region/currency-dependent account-number formats: EUR Netherlands/eurozone and GBP UK IBANs, and US USD account number plus routing number; these are examples, not current availability promises (raw lines 17\u201335).\n- Subscribe in Customer Area to desired `balancePlatform.transfer.created`, `balancePlatform.transfer.updated`, and `balancePlatform.transaction.created` webhooks. Incoming partner funds are identified as `category: bank`, `direction: incoming` relative to the multi pay-in account, and `type: bankTransfer` (raw lines 37\u201359).\n- The USD 100 TEST examples present `received` on transfer creation, `authorised` in an update, then `booked` with `transactionId`; a booked Transaction webhook identifies the credited multi pay-in account and related transfer. These examples concern a **partner bank payout into the Adyen-held staging account**, not an internal transfer from that account to users. Distinguish notification of incoming funds from booked account credit and later allocation (raw lines 59\u2013123, 127\u2013202, 206\u2013342).\n- **Example inconsistencies:** the \u201cTransfer authorized\u201d prose promises a transfer.updated `status: authorised` and its nested accounting event has that status, but the example's top-level `data.status` remains `received` (raw lines 127\u2013129, 176\u2013200). In the booked TEST Transfer example, nested `events[].transactionId` is `1WT1N05XXY7P9XGB`, while top-level `data.transactionId` is `EVJN42272224222B5JB8BRC84N686ZUSD`; the subsequent Transaction webhook's `data.id` matches the latter (raw lines 282, 296, 315). The page does not resolve the IDs' semantics, so do not infer a universal join-key rule from this sample.\n- The final next-step links route to separate allocation and refund guides. The snapshot labels a \u201cTop up multi pay-in account\u201d link with the refunds URL, so that link text is not a reliable top-up route (raw lines 344\u2013360).\n\n## Detail locators\n\n- Pay-in partner, Adyen-held account, allowlisting and dated account-number formats: raw lines 17\u201335. Webhook subscription and incoming-bank identifiers: lines 37\u201359.\n- USD 100 TEST received, authorized, booked and transaction payloads, including status inconsistency: lines 59\u2013342. Next-step navigation: lines 344\u2013360.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-multi-pay-in]] \u2014 multi pay-in concept and allocation boundary.\n- [[source-adyen-docs-platforms-multi-pay-in-receive-funds]] \u2014 separate Platforms-path receipt guide.\n- [[source-adyen-docs-marketplaces-multi-pay-in-payments]] \u2014 Marketplace allocation of third-party payments.\n- [[source-adyen-docs-marketplaces-multi-pay-in-refunds]] \u2014 Marketplace refund route.\n- [[adyen-platforms]] \u2014 modern platform context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15|Marketplace multi pay-in receive funds \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Multi pay-in accounts are created and legally held by Adyen solely for your users' benefit. This account holds their funds before you allocate them to their balance accounts in your balance platform.",
+      "location": "raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md:23"
+    },
+    {
+      "text": "We add the bank account of your pay-in partner to an allowlist, and automatically rejects any other bank transfers to your multi pay-in account.",
+      "location": "raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md:27"
+    },
+    {
+      "text": "Notifies you that the funds are credited to your multi pay-in account.",
+      "location": "raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md:45"
+    },
+    {
+      "text": "When the transfer request is authorized, we send you a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **authorised**.",
+      "location": "raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md:129"
+    },
+    {
+      "text": "When the funds are credited to your multi pay-in account, we send you a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **booked** and the `transactionId`.",
+      "location": "raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md:208"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-multipayin-receive-source-route",
+        "target_path": "wiki/concepts/adyen-multi-pay-in.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-multi-pay-in-receive-funds]] \u2014 2026-09-15 Marketplace guide to allowlisted pay-in-partner bank payouts into the Adyen-held multi pay-in account, incoming bank/transaction webhook evidence and later allocation boundary; authorized example's top-level status conflicts with its prose.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The incoming partner payout and booked credit belong to the multi pay-in staging account; they do not prove allocation into users' balance accounts.",
+          "In the authorized webhook example, prose and nested event say authorised but top-level data.status remains received. In the booked TEST Transfer example, nested events[].transactionId differs from top-level data.transactionId, which matches the Transaction webhook data.id; do not infer a universal join-key rule. The next-step top-up link points to /refunds."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15.md",
+  "raw_sha256": "fc6ff35b942c41645aab44a0fe0d410ec030fd24ff20a94a6ae0a67a0103dd32",
+  "status": "candidate_ready"
+}

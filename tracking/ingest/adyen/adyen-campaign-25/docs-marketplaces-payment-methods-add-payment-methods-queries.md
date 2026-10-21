@@ -1,0 +1,9 @@
+# Retrieval checks — docs-marketplaces-payment-methods-add-payment-methods
+
+Q1. How does a Marketplace request a payment method for a user, and what prerequisites limit it?
+
+A1. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-payment-methods-add-payment-methods]] → [[raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15]]. In TEST or LIVE Customer Area, switch to the merchant account and use **Payments > Payment methods > Request payment methods**, select/filter methods, apply to **This merchant account**, complete prompted information and submit (raw lines 35–48). The guide requires an online integration and checkout UI, **Change payment methods** role, Payment method webhook subscription, and currency/integration support. Default method currency is type-specific; a different currency calls for Adyen Support (raw lines 21–32). Submission can lead to further requirements; availability is typically within a day but may be delayed (raw lines 19, 30–31).
+
+Q2. What proves that a request was added, and what happens if submission fails?
+
+A2. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-payment-methods-add-payment-methods]] → [[raw/adyen/docs/marketplaces/payment-methods/add-payment-methods/2026-09-15]]. The page says adding the method to a user's store is asynchronous and recommends Management webhooks; after addition it sends `paymentMethod.created`, illustrated by a TEST Visa event with merchantId/storeId/result SUCCESS (raw lines 50–73). A request submission alone does not establish addition. Correct an immediate submit error before resubmitting. For the rare later failure with no automated alert when unsubscribed, the page says wait 24 hours before trying again (raw lines 75–79). The requirements table's “Payment method webhook” and later Management-webhook wording are not explicitly reconciled (raw lines 28–29, 50–54).

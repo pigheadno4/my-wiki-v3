@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-custom-payouts-transfer-routes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces custom payout transfer routes\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/custom-payouts/transfer-routes\"\nraw_files:\n  - \"adyen/docs/marketplaces/custom-payouts/transfer-routes/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, custom-payouts, transfer-routes]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured Marketplace-path Adyen for Platforms guide uses the Configuration API to calculate available **bank-payout** transfer routes before sending funds to a user's transfer instrument or other bank counterparty. A bank or regulator may constrain priority, amount or recipient details; Adyen recommends a route calculation for a new recipient to reduce transfer failures. A calculated route is a pre-transfer response, not a payout request, booked transfer or bank receipt. [[adyen]] [[adyen-platforms]] (raw lines 15\u201321)\n\n## Key takeaways\n\n- **Access:** The page requires an Adyen for Platforms integration and a Configuration API credential with the **Balance Platform BCL role**. Both lookup forms call `POST /transferRoutes/calculate` with `balancePlatform`, a three-character transfer `currency`, and `category: bank`. The documented `priorities` array is optional and selects priorities to calculate. (raw lines 23\u201330, 32\u201348, 359\u2013372)\n- **Country/region lookup:** Supply the counterparty's two-character ISO `country` code. The response's `transferRoutes` entries each give a supported currency and priority and any additional route requirements. The Netherlands/USD TEST example illustrates regular, cross-border and wire priorities, with illustrative amount, address, bank-identification and payment-instrument requirements; it is not a universal limit or route-availability guarantee. (raw lines 36\u201350, 54\u201371, 301\u2013357)\n- **Specific-counterparty lookup:** Supply a `counterparty` object with a third-party bank account or transfer instrument instead of only a country. `balanceAccountId`, the source balance-account ID, is **conditionally required when `counterparty` contains `transferInstrumentId`**. The response adds counterparty country to currency, priority and any requirements. The EUR/Netherlands instant-and-wire response is illustrative, including distinct min/max and bank-identification rules per route. (raw lines 359\u2013374, 378\u2013401, 716\u2013780)\n- Returned routes and requirements must be assessed for the intended recipient and transfer, then a separate scheduled or on-demand payout flow applies. This page does not establish available funds, the user's payout capability, current bank acceptance, execution timing, transfer booking or receipt at the beneficiary bank. The examples use TEST endpoints and SDK versions, not live-account outcomes. (raw lines 19\u201321, 52\u2013299, 376\u2013714, 782\u2013785)\n\n## Detail locators\n\n- Raw lines 42\u201348: country/region request-field table; 56\u2013299: Checkout-independent Configuration API TEST/curl and version-labeled SDK examples; 301\u2013357: country response and route-requirement shapes.\n- Raw lines 365\u2013372: counterparty request-field table and source-account condition; 378\u2013714: TEST/curl and SDK examples using bank-account IBAN; 716\u2013780: counterparty response and per-route requirements.\n- Raw lines 782\u2013785: separate custom scheduled and on-demand payout guides.\n\n## Related\n\n- [[adyen-platforms]] \u2014 existing Adyen for Platforms concept.\n- [[source-adyen-docs-marketplaces-custom-payouts]] \u2014 Marketplace custom-payout overview.\n- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] \u2014 parallel Platforms-path route-calculation guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/custom-payouts/transfer-routes/2026-09-15|Marketplace transfer routes, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Sending funds to transfer instruments can have additional requirements or limitations.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "To prevent transfer failures due to such limitations, we recommend that you calculate the available transfer routes before sending funds to a new recipient.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model) integration.",
+      "location": "raw line 29, Requirements > Integration type"
+    },
+    {
+      "text": "Required if `counterparty` contains a **transferInstrumentId**.",
+      "location": "raw line 372, Calculate transfer routes by counterparty > balanceAccountId"
+    },
+    {
+      "text": "In the response, note the `transferRoutes` object, which includes all transfer routes supported by a counterparty.",
+      "location": "raw line 716, Calculate transfer routes by counterparty > response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplaces-custom-payout-transfer-routes-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] \u2014 2023-modified, 2026-09-15-captured Platforms Configuration API guide to calculate bank-payout route priorities and requirements by country or counterparty before a separate payout request.",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-custom-payouts-transfer-routes]] \u2014 2023-modified, 2026-09-15-captured Marketplace-path Configuration API lookup for bank-payout route priorities and requirements by country or counterparty; calculation precedes separate payout execution.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/custom-payouts/transfer-routes/2026-09-15.md",
+  "raw_sha256": "525aec6f0580b643af85aa5a05312a486836078ca1ee2f2e15cfbf6621a33f00",
+  "status": "candidate_ready"
+}

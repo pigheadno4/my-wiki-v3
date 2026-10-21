@@ -18,6 +18,99 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-payment-methods]] — 2026-09-15 Marketplace payment-method family catalog and Customer Area add/manage routes; listed support does not prove merchant configuration, channel availability or payment success.
+
+
+- [[source-adyen-docs-marketplaces-payment-methods-manage-payment-methods-customer-area]] — 2026-09-15 Marketplace merchant-account Customer Area guide for configured-method list/details, activation, country/region edits and conditional inactive-unused 90-day deletion; currency change routes to Support.
+
+
+- [[source-adyen-docs-marketplaces-payment-methods-add-payment-methods]] — 2026-09-15 Marketplace merchant-account payment-method request guide for role, currency/integration, asynchronous store webhook, availability and 24-hour post-submission retry boundaries.
+
+
+- [[source-adyen-docs-marketplaces-cash-out-instantly]] — 2020-modified, 2026-09-15-captured Marketplace CashOut overview for pending-balance funding, conditional instant-payout/fee legs, later settlement repayment, bank-return and cooldown limits; an internal example date conflict prevents exact repayment timing inference.
+
+
+- [[source-adyen-docs-marketplaces-settle-funds]] — 2026-09-15 Marketplace-path sales-day net-settlement guide for captured batches, contractual/custom delays, method-specific pass-through exceptions and 30-day reversal; settled balance is not bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-settle-funds-pass-through-settlement]] — 2020-modified, 2026-09-15-captured deprecated Marketplace pass-through settlement guide for scheme/method-dependent batches, working-day timing, adjustments, payment-level reconciliation and existing-account revert PATCH; default/revert text does not establish new-integration eligibility.
+
+
+- [[source-adyen-docs-marketplaces-custom-payouts-configure-settlement-delay]] — 2026-09-15 Marketplace Configuration API guide for per-balance-account settlement-delay override, 1-day approval and managed-schedule limits, plus conditional closing-time preservation.
+
+
+- [[source-adyen-docs-marketplaces-settle-funds-configure-closing-time]] — 2026-09-15 Marketplace balance-account local sales-day cutoff guide for 00:00–07:00 hourly settings, conditional settlement delay and method-schedule exceptions; sample timing values conflict.
+
+
+- [[source-adyen-docs-marketplaces-custom-payouts-scheduled-payouts-view-custom-payout-executions]] — 2026-09-15-captured Marketplace guide for role-gated custom-schedule execution records, success-to-transfer ID, skip/failure reasons and optional disabling; execution is distinct from bank receipt, and sample fields/codes conflict.
+
+
+- [[source-adyen-docs-marketplaces-payment-methods-manage-payment-methods-api]] — 2026-09-15 Marketplace merchant-level Management API guide to list/read/update configured payment-method settings, with support/availability constraints and 90-day disabled-method deletion.
+
+- [[source-adyen-docs-marketplaces-payment-methods-manage-payment-methods]] — 2026-09-15 Marketplace overview routing merchant-account payment-method listing, detail, region/currency edits and user activation to Customer Area or Management API procedures.
+
+
+
+- [[source-adyen-docs-marketplaces-managed-payouts-view-payout-executions]] — 2026-09-15 Marketplace-path managed-schedule execution read for Sent/Not sent/Failed, reason codes and success-to-transfer ID; TEST skip/result and failure-code examples conflict, and execution is not bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-request]] — 2020-modified, 2026-09-15-captured Marketplace `/cashouts` request guide for pending-balance availability, optional instrument payout and fee, capability/route checks, asynchronous webhooks and failure reversal; request/response examples conflict on instrument placement and fee amount.
+
+
+- [[source-adyen-docs-marketplaces-payout-amount]] — 2026-09-15-captured Marketplace payout-cap guide for default available versus platform-wide current-balance configuration, reserve collateral/failure and later release or 30-day internal transfer; calculation is not bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-payout-descriptions]] — 2026-09-15 Marketplace descriptor guide for scheduled placeholders, static on-demand text, originator-name setup and route-specific accepted versus visible characters; submission does not prove bank display or payout.
+
+
+- [[source-adyen-docs-marketplaces-custom-payouts-on-demand-payouts-approve-cancel-payouts]] — 2020-modified, 2026-09-15-captured Marketplace-path Transfers API guide for pending on-demand payout review, 500-ID approve/cancel batches, 30-day expiry and webhook review states; approval does not prove bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-custom-payouts]] — 2023-modified, 2026-09-15-captured Marketplace-path custom-payout overview for verified user-bank scheduled/on-demand transfers, role/capability and country/priority limits, with cross-border format and cutoff-table conflicts; request paths do not prove bank receipt.
+
+
+- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-webhooks]] — 2020-modified, 2026-09-15-captured Marketplace cashout webhook guide for four transfer legs, optional fee and bank payout, repayment timing, and distinct booked/credited evidence; TEST sample envelopes and request shape differ.
+
+
+- [[source-adyen-docs-marketplaces-custom-payouts-on-demand-payouts]] — 2020-modified, 2026-09-15-captured Marketplace guide to role/capability-gated off-schedule user bank payouts, route-priority fallback, optional review/future-date one-attempt failure and bank-return retry limits; request or debit is not bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-transaction-fees]] — 2023-modified, 2026-09-15-captured Marketplace fee-allocation guide for liable/user booking, granular-over-aggregate split precedence, per-split reconciliation and inconsistent test examples.
+
+
+- [[source-adyen-docs-marketplaces-multi-pay-in-refunds]] — 2026-09-15 Marketplace-path third-party multi pay-in refund guide for Adyen balance deductions, authorization-ratio and liable fallback, asynchronous fund events and partner-owned customer repayment.
+
+
+- [[source-adyen-docs-marketplaces-payout-webhooks]] — 2023-modified, 2026-09-15-captured Marketplace bank-payout Transfer webhook guide for request/reservation/booking versus bank tracking, credit, failure and return; includes insufficient-balance and blocked-bank-account limits.
+
+
+- [[source-adyen-docs-marketplaces-custom-payouts-scheduled-payouts]] — 2022-modified, 2026-09-15-captured Marketplace custom balance-account sweep guide for verified-bank transfer-instrument payouts, condition/role gates, route priorities and distinct configuration, execution, transfer and debit evidence; no bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-managed-payouts-use-managed-payouts]] — Marketplace managed payout schedule application and account-level lifecycle (webpage, 2026-10-21)
+
+
+- [[source-adyen-docs-marketplaces-split-transactions-split-payments-at-capture]] — 2023-modified, 2026-09-15-captured Marketplace guide to capture-time split override, partial-capture and invalid-destination liable-account fallbacks, plus per-split webhook tracking; sample payloads are internally inconsistent and do not prove booked funds.
+
+
+- [[source-adyen-docs-marketplaces-split-transactions-split-payments-at-authorization]] — 2023-modified, 2026-09-15-captured Marketplace online authorization-time split guide for user/liable booking, valid-capability and destination fallbacks, webhook tracking and capture override; sample leg identities differ.
+
+
+- [[source-adyen-docs-marketplaces-multi-pay-in-payments]] — 2026-09-15 Marketplace-path guide to per-payment third-party multi pay-in allocation, split destinations/fee default, separate transfer and transaction legs, accounting-report reconciliation and later payout routing; TEST samples conflict on a user account ID and commission sign.
+
+
+- [[source-adyen-docs-marketplaces-split-transactions-split-chargebacks]] — 2023-modified, 2026-09-15-captured Marketplace disputed-amount booking guide for liable/user/ratio options, capture-over-payment precedence, invalid-target liable fallback and split-grain webhook tracking; samples have currency/account/status inconsistencies.
+
+
+- [[source-adyen-docs-marketplaces-managed-payouts]] — 2022-modified, 2026-09-15-captured Marketplace managed-payout schedule overview for local same-country/currency balance-account payouts, Adyen-contact setup, settlement-delay limits and estimated ETAs; configuration is not execution or bank-receipt proof.
+
+
+- [[source-adyen-docs-marketplaces-split-transactions]] — 2024-modified, 2026-09-15-captured Marketplace transaction-split guide for payment/capture/refund arrays, chargeback logic, split-type fields and liable-account fallback.
+
+
+- [[source-adyen-docs-marketplaces-process-payments]] — 2023-modified, 2026-09-15-captured Marketplace online-payment overview for valid receive capability, user/liable split booking, full-liable fallbacks, illustrative USD pay-in-to-payout and webhook routes.
+
+
 - [[source-adyen-docs-marketplaces-onboard-users-onboarding-steps]] — 2026-09-15 Marketplace onboarding-step filter export with Hosted/v4 selected but location and entity filters missing; no concrete requirements result is present.
 
 
@@ -191,6 +284,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 - [[source-adyen-docs-platforms-custom-payouts-transfer-routes]] — 2023-modified, 2026-09-15-captured Platforms Configuration API guide to calculate bank-payout route priorities and requirements by country or counterparty before a separate payout request.
 
+- [[source-adyen-docs-marketplaces-custom-payouts-transfer-routes]] — 2023-modified, 2026-09-15-captured Marketplace-path Configuration API lookup for bank-payout route priorities and requirements by country or counterparty; calculation precedes separate payout execution.
+
+
 
 - [[source-adyen-docs-platforms-top-up-balance-account-on-demand-top-ups]] — 2026-09-15 Platforms user-funded Checkout `/payments` top-up guide for verified-bank or other-method funding, TopUp split booking, capability/direct-debit gates and asynchronous status tracking.
 
@@ -318,6 +414,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 
 - [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] — 2026-09-15 Platforms Checkout refund split-booking guide covering explicit debits, authorization-ratio fallback, liable-account fallback and asynchronous refund/transfer evidence.
+
+- [[source-adyen-docs-marketplaces-split-transactions-split-refunds]] — 2026-09-15 Marketplace-path Checkout split-refund guide for explicit user/liable deductions, full-refund authorization-ratio and invalid-target liable fallbacks, and asynchronous per-split booking evidence; examples have a fee transfer-ID mismatch, fee/commission account mismatches and a repeated booked transaction ID.
+
 
 
 - [[source-adyen-docs-platforms-multi-pay-in-payments]] — 2026-09-15 third-party multi pay-in payment-allocation guide for per-payment Checkout requests, split destinations/fee default, transfer/transaction event legs, accounting-report reconciliation and later payout routing; examples do not prove funds movement.

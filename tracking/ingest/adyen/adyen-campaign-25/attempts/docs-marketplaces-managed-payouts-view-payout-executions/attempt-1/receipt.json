@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-managed-payouts-view-payout-executions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"View Marketplace managed-payout executions\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/managed-payouts/view-payout-executions\"\nraw_files:\n  - \"adyen/docs/marketplaces/managed-payouts/view-payout-executions/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, managed-payouts, payout-executions, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path guide explains how to view each execution of a managed payout schedule on a balance account in Customer Area or through the Configuration API. An execution is a payout initiated by a schedule. The guide distinguishes creation, skip and initiation failure, then routes a successful execution's `transferId` to separate transfer-webhook tracking. See [[adyen]] and [[adyen-platforms]] for provider and modern balance-platform context. `Sent` or `succeeded` execution is not proof of bank credit.\n\n## Key takeaways\n\n- API viewing requires a Configuration API credential with **Bank Scheduled Payouts Merchant Role**. Customer Area viewing requires **Balance platform base role** and **Configure scheduled payouts**. The guide calls for Configuration and Transfer webhook subscriptions to track executions and ensuing fund movements. These are access/tracking gates, not payout-result evidence.\n- In Customer Area, find the account holder, balance account and managed schedule, then its **Events** tab. A managed schedule specifies estimated payout arrival; a custom schedule specifies the transfer schedule. The UI labels are **Sent** for a successfully created/sent payout, **Not sent** when payout conditions are unmet, and **Failed** when an error prevented schedule send. A low balance can cause a non-actionable skip, while a closed/suspended external account or disabled transfer capability can cause repeated failures until the cause is fixed.\n- The scoped GET `/balanceAccounts/{balanceAccountId}/payoutSchedules/{id}/executions` returns `payoutScheduleExecutions`. A `succeeded` result has `resultDetails.transferId`; `skipped` and `failed` have reason codes. The published table includes skips for no balance, threshold, disabled configuration or Adyen block, and failures for reserve collateral, route, counterparty, account hierarchy, transfer instrument, capability, route-limit, amount and address conditions. Use the exact reason for a given execution rather than equating every missed payout with insufficient balance.\n- Configuration webhooks use `balancePlatform.balanceAccountPayoutScheduleExecution.succeeded`, `.skipped` or `.failed`. The skipped TEST example's webhook type and `noBalanceToPayOut` reason indicate a skip, but its `data.result` says `failed`; this snapshot does not resolve that mismatch. The failed example gives `counterpartyBlocked`, whereas the preceding reason-code table lists `counterpartyAccountBlocked`; do not normalize either code without observed payload or current schema.\n- A successful execution creates a funds transfer. Follow Transfer webhooks for later authorized, captured and possible bank-return states on the user balance-account-to-bank route. The TEST fixture table is for testing managed schedules only; it does not establish live payout eligibility or bank receipt. The testing matrix includes apparent locale/type anomalies (for example `HU` with `hkLocal` and `IR` paired with an Irish IBAN), so do not treat fixture labels as current bank-format authority.\n\n## Detail locators\n\n- Purpose, role/webhook prerequisites and Customer Area path/statuses: raw lines 15\u201357. Scoped Configuration API read and example execution results: lines 59\u2013109.\n- Success webhook and transfer ID: lines 111\u2013143. Skipped/failed reason table: lines 145\u2013168. Skipped sample result/type mismatch: lines 172\u2013199; failed reason-code mismatch: lines 201\u2013228. Separate Transfer webhook lifecycle and bank-return route: lines 230\u2013234. TEST scenarios and bank details: lines 236\u2013282.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 modern platform balance-account and payout context.\n- [[source-adyen-docs-marketplaces-managed-payouts]] \u2014 managed-payout model and schedule scope.\n- [[source-adyen-docs-platforms-managed-payouts-view-payout-executions]] \u2014 separately pinned Platforms-path guide.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 separate transfer status and bank-return evidence route.\n\n## Related raw API references\n\n- The raw page links to Configuration API executions and webhook schemas plus payout Transfer webhooks; those linked references own current endpoint contracts and later bank status.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/managed-payouts/view-payout-executions/2026-09-15|Adyen Docs: View payout executions (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "A payout initiated by a payout schedule is called an execution.",
+      "location": "raw line 19, # View payout executions"
+    },
+    {
+      "text": "A managed payout schedule specifies the estimated arrival time of the payout, while a custom schedule specifies the transfer schedule.",
+      "location": "raw line 42, ## View payout schedule executions in Customer Area"
+    },
+    {
+      "text": "The payout was successfully created and sent.",
+      "location": "raw line 55, ### Execution event statuses and reasons"
+    },
+    {
+      "text": "The payout schedule could not be sent because an error occurred.",
+      "location": "raw line 57, ### Execution event statuses and reasons"
+    },
+    {
+      "text": "When a managed payout execution is successful, it triggers a funds transfer.",
+      "location": "raw line 232, ### Track fund movements"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-managed-payout-executions-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-managed-payouts-view-payout-executions]] \u2014 2026-09-15 Marketplace-path managed-schedule execution read for Sent/Not sent/Failed, reason codes and success-to-transfer ID; TEST skip/result and failure-code examples conflict, and execution is not bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The skipped webhook example says result failed; the failed example's counterpartyBlocked reason differs from counterpartyAccountBlocked in the table. Do not infer the runtime enum from these samples alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/managed-payouts/view-payout-executions/2026-09-15.md",
+  "raw_sha256": "31be06e12b7fe73cc22c9349d25b675eeaaec700a2de785814c1b44483608912",
+  "status": "candidate_ready"
+}

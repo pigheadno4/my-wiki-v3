@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-settle-funds-pass-through-settlement",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace pass-through settlement\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/settle-funds/pass-through-settlement\"\nraw_files:\n  - \"adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, settlement, deprecated]\n---\n\n## Overview\n\nThis 2020-modified Marketplace guide, captured 2026-09-15, describes **pass-through settlement**: payment proceeds reach settlement batches when schemes or payment methods send funds to Adyen, so one sales day's payments can settle across multiple business days and each batch can mix sales days. The page explicitly says this model is **deprecated and unavailable to new integrations after July 1, 2025**. It is a balance-account settlement model, not proof of an external payout or bank receipt. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Scheme/payment-method funding timing determines when sales enter a settlement batch; after a batch closes, Adyen says it settles those funds on the next business day. Its daily-frequency illustration spreads one Monday sales day across January 2\u20137 and mixes sales days in a settlement. Treat those dates as an illustration, not a fixed settlement schedule for a payment (raw lines 19\u201331).\n- Refunds, chargebacks and other adjustments are added or subtracted before settlement when they occur, potentially on a different date from the sale. Available funds settle on working days Monday\u2013Friday, excluding bank holidays; a capture-day bank holiday extends the delay (raw lines 33\u201339).\n- This model does not support reconciliation by sales-day totals. To reconcile individual payments, track them in Balance Platform Accounting Reports, rather than treating batch day or payout date as a sales-day total (raw lines 21\u201323).\n- The page says pass-through is enabled by default on a balance account and documents a Configuration API PATCH `/balanceAccounts/{id}` to revert an existing account from sales-day settlement: `platformPaymentConfiguration.salesDayClosingTime: \"00:00\"` with `settlementDelayDays: null`. The TEST curl uses `/bcl/v2`; the returned balance account shows the closing time without a settlement-delay field. Its parameter table states an integer `settlementDelayDays` enables sales-day settlement and closing time allows 00:00\u201307:00 on the hour. This dated configuration example does **not** override the explicit post\u2013July 1, 2025 new-integration deprecation or establish live eligibility for an account (raw lines 41\u201362, 278\u2013305).\n- A configured balance account, a received scheme batch or the illustrative next-business-day settlement statement does not itself demonstrate a particular payment settled, available balance, user payout or bank receipt. Use payment-level accounting and the separate payout evidence for those outcomes (raw lines 21\u201339, 278\u2013305).\n\n## Detail locators\n\n- Deprecation, scheme/method timing, batch composition, adjustments, working-day timing and payment-level reconciliation: raw lines 17\u201339.\n- Existing-account revert PATCH and versioned TEST/SDK examples: lines 41\u2013276. Response, closing-time and settlement-delay fields: lines 278\u2013305.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platforms]] \u2014 modern platform/Marketplace settlement context.\n- [[source-adyen-docs-platforms-settle-funds-pass-through-settlement]] \u2014 separate Platforms-path guide.\n- [[source-adyen-docs-platforms-settle-funds]] \u2014 sales-day settlement alternative.\n- [[adyen-classic-platforms]] \u2014 distinct legacy integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15|Marketplace pass-through settlement \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The pass-through settlement model is deprecated and will not be available for new integrations after **July 1, 2025**.",
+      "location": "raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md:19"
+    },
+    {
+      "text": "With pass-through settlement, sales funds are settled according to the timelines of schemes and payment methods involved in the transaction.",
+      "location": "raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md:21"
+    },
+    {
+      "text": "The pass-through settlement model does not allow for reconciliation based on day totals.",
+      "location": "raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md:23"
+    },
+    {
+      "text": "After the settlement batch closes, Adyen settles the funds on the next business day.",
+      "location": "raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md:27"
+    },
+    {
+      "text": "Pass-through settlement is enabled by default on a balance account.",
+      "location": "raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md:43"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-pass-through-settlement-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-settle-funds-pass-through-settlement]] \u2014 2020-modified, 2026-09-15-captured deprecated Marketplace pass-through settlement guide for scheme/method-dependent batches, working-day timing, adjustments, payment-level reconciliation and existing-account revert PATCH; default/revert text does not establish new-integration eligibility.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide says pass-through is deprecated and unavailable for new integrations after July 1, 2025 while also saying enabled by default and documenting an existing-account revert PATCH; do not infer current new-integration availability.",
+          "Balance-account settlement timing or configuration does not establish payout or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/settle-funds/pass-through-settlement/2026-09-15.md",
+  "raw_sha256": "ef080a9df7f12741519324513e916034d481fbb10bc3bd0fd84cc8326c91894b",
+  "status": "candidate_ready"
+}

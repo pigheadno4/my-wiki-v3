@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-payout-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: Payout transfer webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/payout-webhooks\"\nraw_files:\n  - \"adyen/docs/marketplaces/payout-webhooks/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, payouts, transfer-webhooks]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] Marketplaces guide describes Transfer webhook events for an outgoing bank payout from a user's balance account toward a counterparty bank account. It covers the transfer request, balance-account reservation/debit, bank tracking, failure, credit confirmation and return. It is webhook guidance and test illustration, not proof that a particular transfer reached a beneficiary bank. [[adyen-platforms]]\n\n## Key takeaways\n\n- The page lists a **payout service integration**, a server that receives and accepts webhooks, and Customer Area subscriptions to **Transfer and Transaction webhooks**. Identify payout Transfer webhooks by `category=bank`, `direction=outgoing`, `type=bankTransfer`. `balancePlatform.transfer.created` announces an initiated outgoing request; `balancePlatform.transfer.updated` reports later status changes. Created payload fields include amount, reference, beneficiary reference, user's source balance account, holder and counterparty transfer instrument. See [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 19\u201369]].\n- `authorised` means the amount is **reserved** on the user's balance account. If funds are insufficient, the guide says the transfer is `refused` with `reason=notEnoughBalance`; it does not complete, and a **new transfer request** is needed after adding funds. `booked` means funds have been **deducted** from the source balance account and carries an accounting `events.transactionId`. Booked is explicitly **not final**: an instant payout may fail after bank rejection, and a regular/wire payout may be returned. See [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 138\u2013232, 325\u2013334]].\n- After booking, an internal review can appear as `trackingData.status=pending` with `type=internalReview` even while top-level transfer status remains `booked` in the example. Failed review carries `reason=refusedForRegulatoryReasons` in the tracking event; the guide directs users to Support. For a passed review, it describes instant-priority tracking `credited` confirmation or an `estimatedArrivalTime` for other priorities; the estimate can deviate from actual arrival and is described as available for local, not instant or cross-border payouts. See [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 434\u2013706, 830\u2013836, 1111\u20131226]].\n- `tracing` events carry network-specific IDs for investigating delayed or missing funds (UK GBP FPS `fpid`, US USD ACH `traceNumber`). An external-bank rejection after unsuccessful automatic retries can produce transfer `failed`; a later bank return yields `returned`. Return payloads can include `networkReason` with code, description and namespace. Tracing and estimated arrival are investigation aids, not bank-receipt confirmation. See [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 706\u2013830, 950\u2013974, 1227\u20131372]].\n- Some return reasons are temporary, while permanent account issues can cause Adyen to block later requests to that bank account with HTTP **422**. The source's reason table offers code-specific remedial actions, including retry suggestions for some account-detail codes, but it does **not** map each listed code to temporary/permanent status or override the stated blocked-instrument rule. Check the actual reason and account state before any new request. See [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 1349\u20131355, 1532\u20131547]].\n\n## Identity and example boundary\n\nThe worked sections use a **EUR 100.00** third-party-bank payout as illustration. Distinguish transfer `data.id`, individual `events[].id`, accounting `events.transactionId`, merchant `reference`, beneficiary `referenceForBeneficiary`, and network tracing IDs. The failed-review sample changes the amount to EUR 10.00 and shows `categoryData.type=bank` versus the common `bankTransfer`, so the examples are not a single guaranteed event trace. A top-level `reason=approved` in a sample does not negate a later tracking failure or returned status. See [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 58, 579\u2013706, 1227\u20131530]].\n\n## Detail locators\n\n- Event prerequisites and payout identification; request creation and source/counterparty fields: [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 15\u2013138]].\n- Reservation, refusal, booking, internal review and bank-failure states: [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 138\u2013830]].\n- ETA limits, UK/US tracing, instant confirmation, bank return and 422 block: [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|raw lines 830\u20131547]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms and Marketplace balance-account/payout route.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 related Platforms-path guide; keep paths and examples distinct.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15|Marketplace payout transfer webhooks (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "which informs your server that an outgoing transfer is initiated from a balance account in your marketplace.",
+      "location": "raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15.md:23"
+    },
+    {
+      "text": "If you receive this reason, the transfer does not complete. Add sufficient funds to the balance account and send a new transfer request.",
+      "location": "raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15.md:230"
+    },
+    {
+      "text": "This status is not final. Instant payouts may be rejected by the counterparty's bank and thus [fail](#payout-failed), and regular and wire transfers may be [returned](#payout-returned) by the counterparty's bank.",
+      "location": "raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15.md:334"
+    },
+    {
+      "text": "Estimated Time of Arrival is currently available for all local payouts. It is *not* available for instant or cross-border payouts.",
+      "location": "raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15.md:836"
+    },
+    {
+      "text": "Adyen blocks subsequent transfer attempts when a reason code indicates a permanent issue.",
+      "location": "raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15.md:1353"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-payout-webhooks-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 2023-modified, 2026-09-15-captured Marketplace bank-payout Transfer webhook guide for request/reservation/booking versus bank tracking, credit, failure and return; includes insufficient-balance and blocked-bank-account limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Booked balance debit and ETA/tracing are not beneficiary receipt (raw lines 325\u2013334, 830\u2013836, 950\u2013974).",
+          "Permanent-return issues can block new transfer requests with HTTP 422; the reason table's retry suggestions do not establish a universal safe retry (raw lines 1349\u20131355, 1532\u20131547)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/payout-webhooks/2026-09-15.md",
+  "raw_sha256": "567a81357d1a59132f2e60b9bb9d1f4798a92a29f37576c72ece94aa9c10df8e",
+  "status": "candidate_ready"
+}

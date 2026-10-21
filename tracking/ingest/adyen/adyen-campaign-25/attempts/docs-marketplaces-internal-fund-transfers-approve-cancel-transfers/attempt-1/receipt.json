@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-internal-fund-transfers-approve-cancel-transfers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace approve or cancel transfers\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/internal-fund-transfers/approve-cancel-transfers\"\nraw_files:\n  - \"adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, internal-transfers, transfer-review]\n---\n\n## Overview\n\nThis 2020-modified Marketplace guide, captured 2026-09-15, describes an optional additional-review gate for a transfer initiated with a `review` object in POST `/transfers`. A designated team member approves or cancels the pending request before Adyen processes it. Approval authorizes the request and lets processing continue; cancellation or no decision within 30 days fails the request. This guide is routed from the internal-fund-transfer section, but its detailed webhook JSON examples are outgoing `category: bank` / `type: bankTransfer`; their balances and event sequence are not evidence of a completed internal balance-account transfer. [[adyen]] [[adyen-platform-internal-transfers]]\n\n## Key takeaways\n\n- Prerequisites: assign the web service API key the **TransferService Approval role** and subscribe to **Transfer Webhooks**. The guide says the platform chooses permitted team reviewers by assigning the required API role in Customer Area (raw lines 19\u201330). Initiation includes the `review` object; the request remains pending until review (lines 38\u201348).\n- POST `/transfers/approve` or `/transfers/cancel` with an array of one or more `transferIds`, maximum 500 per request. The examples use the TEST Balance Platform API `/btl/v4` endpoint; SDK snippets show idempotency-key options. A successful request returns HTTP 200, while status/outcome details come from transfer webhooks (raw lines 52\u201375, 77\u2013259, 261\u2013287, 289\u2013468).\n- An approval authorizes the transfer request and Adyen continues processing. Cancellation fails it and stops further processing; no reviewer action within 30 days of initiation also fails it. Do not equate approval, HTTP 200, or an `authorised` webhook with a booked internal transfer or external bank receipt (raw lines 40\u201348, 259, 468, 565\u2013571).\n- `balancePlatform.transfer.created` with `status: received`, `reason: pending`, and `review.numberOfApprovalsRequired: 1` identifies the illustrated pending review. `balancePlatform.transfer.updated` reports the illustrated approved `authorised` / `approved` or canceled `cancelled` / `unknown` states. The guide also says webhooks report expiry after 30 days (raw lines 470\u2013495, 565\u2013571, 653\u2013660).\n- **Scope warning:** the three sample webhook payloads use `category: bank`, `categoryData.type: bankTransfer`, `type: bankTransfer`, `direction: outgoing`, and TEST environment. Their EUR 10000 amounts, reserved/received mutations, account IDs and statuses illustrate review reporting for bank transfers, not the internal-transfer two-leg booking sequence; consult the separate internal-transfer webhook guide for that flow (raw lines 501\u2013562, 577\u2013650, 666\u2013736).\n\n## Detail locators\n\n- Review rationale, roles, trigger, decisions and 30-day deadline: raw lines 17\u201350. Approval request, TEST/SDK examples and HTTP response: lines 52\u2013259. Cancellation request and response: lines 261\u2013468.\n- Webhook event types and pending/approved/canceled field combinations: lines 470\u2013495, 563\u2013571, 653\u2013660. Bank-scoped TEST JSON examples: lines 501\u2013562, 577\u2013650, 666\u2013736.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platform-internal-transfers]] \u2014 internal balance-account transfer concept and evidence boundary.\n- [[source-adyen-docs-marketplaces-internal-fund-transfers-scheduled-fund-transfers]] \u2014 scheduled internal transfers.\n- [[source-adyen-docs-platforms-internal-fund-transfers-approve-cancel-transfers]] \u2014 separate Platforms-path review guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15|Marketplace approve or cancel transfers \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "To decrease the risk of unintentional or malicious transfers in your marketplace, you can trigger additional reviews for transfers.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that your web service API key has the following role:- **TransferService Approval role**",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md:29"
+    },
+    {
+      "text": "If the reviewer takes no action within 30 days after initiating the transfer request, then the transfer fails and Adyen can no longer processes the request.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md:48"
+    },
+    {
+      "text": "An array containing the unique identifiers of the transfers that you decide to approve. You can include one or more `transferIds` in the request, up to a maximum of 500.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md:58"
+    },
+    {
+      "text": "Adyen sends a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook to inform your server that a pending transfer was approved.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md:565"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-transfer-review-source-route",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-internal-fund-transfers-approve-cancel-transfers]] \u2014 2020-modified, 2026-09-15-captured Marketplace optional transfer-review guide for approval, cancellation, 30-day expiry and webhooks; example payloads are bank transfers, not internal two-leg booking proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide is under internal fund transfers, but the detailed review webhook payloads are bank-scoped TEST examples; do not generalize their account mutations or event sequence to internal booked transfers.",
+          "Approval authorizes continued processing; HTTP 200 or authorised review status is not evidence of completed internal movement or bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/internal-fund-transfers/approve-cancel-transfers/2026-09-15.md",
+  "raw_sha256": "73545b78337ba3a44d1e20de816ad80028cbf16665414abdd240c3287124574d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-currency-conversion-refunds-your-user",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Book an FX refund remainder to a marketplace user\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/currency-conversion/refunds/your-user\"\nraw_files:\n  - \"adyen/docs/marketplaces/currency-conversion/refunds/your-user/2026-09-15.md\"\ntags: [adyen, marketplaces, currency-conversion, refunds]\n---\n\n## Overview\n\nThis pinned Marketplace guide describes refunding a captured, currency-converted online payment while booking the exchange-rate remainder to the **user's balance account**. The customer paid in the processing currency; the user received the payment in the settlement currency. On refund, the customer's processing-currency amount stays fixed, while the user's settlement-currency debit can differ from the original credit. This is a **limited-availability pilot** in the captured page, whose processes may change; current availability needs confirmation with Adyen. See [[adyen]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- The example customer paid **PLN 201.74**, while the user sold goods for and received **CZK 1000.00**. A refund can leave a currency-conversion remainder. Booking it to the user means crediting the customer the original PLN amount and debiting the user for the original settlement amount plus the remainder; the guide gives a **CZK 32.31** additional user debit in its adjusted-amount example (raw lines 24\u201337, 585\u2013643).\n- Prerequisites include an online payments integration and Checkout UI, Checkout API credentials, standard webhooks plus transfer or transaction webhooks, the listed account-holder capabilities, configured merchant currencies, and a **captured** payment before refund. Option 2 also needs Foreign Exchange API credentials, **Read FX rates role**, and Support enablement for the merchant account (raw lines 39\u201357).\n- **Option 1:** POST `/payments/{paymentPspReference}/refunds` using the original processing-currency `amount` and original settlement-currency `splits.amount`. Add a `Remainder` split directed to the user's balance account, without specifying the remainder amount. In the example those are PLN 201.74 and CZK 1000.00 respectively (raw lines 69\u201376, 80\u2013117).\n- **Option 2:** Ask the Foreign Exchange API `/rates/calculate` for `splitRefund` with source processing-currency refund amount, settlement target currency, and `exchangeSide: sell`. Use its `targetAmount` as the adjusted settlement-currency `splits.amount` in the Checkout refund, and route any mismatch with a `Remainder` split to the user's balance account. The example's adjusted user debit is **CZK 1032.31** for the fixed **PLN 201.74** customer credit (raw lines 546\u2013661).\n- The guide says split amounts are guaranteed and mismatches or miscalculations go to the named `Remainder` balance account; it points to the Balance Platform Accounting Report for reconciliation (raw line 661). The example Checkout response has `status: received`; receipt of a refund request is not evidence of completed customer credit, final booking, settlement, or payout (raw lines 510\u2013544, 1095\u20131129).\n- The sample `/rates/calculate` curl has a missing comma between `sourceAmount.currency` and `value` (raw lines 607\u2013611). Treat it as an illustrative example, not a copyable JSON request. Other language samples are TEST examples, while that FX curl uses a live endpoint (raw lines 86\u2013117, 599\u2013617); choose the actual authorized environment and current API contract before implementation.\n\n## Detail locators\n\n- Pilot warning, money direction, requirements, and two options: raw lines 15\u201376.\n- Original-amount refund request and `received` response: raw lines 80\u2013544.\n- Rate calculation parameters, adjusted amount, refund splits and `received` response: raw lines 546\u20131129.\n\n## Related\n\n- [[adyen]]\n- [[adyen-currencies-and-fx]]\n- [[adyen-platforms]]\n- [[adyen-index]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/currency-conversion/refunds/your-user/2026-09-15|Pinned FX refund guide]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "The refund amount is fixed in the processing currency",
+      "location": "raw line 35, Booking options"
+    },
+    {
+      "text": "Your payment must be captured before you can initiate the refund.",
+      "location": "raw line 57, Requirements"
+    },
+    {
+      "text": "You do not need to specify the amount of the remainder.",
+      "location": "raw line 74, Option 1"
+    },
+    {
+      "text": "Any mismatch or miscalculation is booked to the balance account you specify in the split item with type **Remainder**.",
+      "location": "raw line 661, Option 2 refund request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-fx-refund-user-source",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-currency-conversion-refunds-your-user]] \u2014 2026-09-15-captured limited-availability Marketplace FX-refund guide for booking the processing/settlement-currency remainder to the user's balance account, using original or FX-adjusted refund splits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's /rates/calculate curl omits a comma between sourceAmount.currency and value (raw lines 607\u2013611); do not copy as valid JSON.",
+          "Illustrated Checkout status `received` is not completion proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/currency-conversion/refunds/your-user/2026-09-15.md",
+  "raw_sha256": "d69d5f5f03f54e2bed6d1f0db0c0c0a03f4d1b24b51e45f231e18bc1abbac80e",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-payout-descriptions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace payout descriptions\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/payout-descriptions\"\nraw_files:\n  - \"adyen/docs/marketplaces/payout-descriptions/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, payouts, transfer-descriptions]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path [[adyen]] guide describes how payout descriptors are submitted, passed through clearing, and potentially shown on users' beneficiary-bank statements in the modern [[adyen-platforms]] model. `description` and `referenceForBeneficiary` can be sent through Transfers API or Customer Area, but network rules and the receiving bank determine what is displayed (raw lines 15\u201327). A submitted descriptor is not evidence of a booked payout or bank receipt.\n\n## Key takeaways\n\n- A descriptor may include an originator name, remittance text and bank/clearing identifiers. Depending on region, the originator is Adyen's or the marketplace's legal entity. Where the marketplace's name is used, it can provide a Doing Business As name through hosted onboarding or Legal Entity Management API, then must contact Adyen to set that name as originator (raw lines 29\u201335). This name does not settle legal seller or fund ownership for an individual transfer.\n- Managed and custom scheduled payouts can use static text or dynamic placeholders in `description` or `referenceForBeneficiary`; an Adyen contact can configure them at balance-platform level. The placeholder table covers balance account/account holder IDs, references and descriptions. `$transferReference` represents a 15-character generated reference for managed payouts or a 30-character one for custom schedules; `$shortTransferReference` is only for custom scheduled payouts and is 15 characters (raw lines 37\u201360). For custom schedules, balance-account descriptor settings override balance-platform settings; an unconfigured descriptor uses the stated default (line 69).\n- The page recommends `$shortTransferReference` for reconciliation through Customer Area, confirmation letters, the Balance Platform Payout Report and bank statements (raw lines 62\u201367). Its broad \u201cprovided by all banks\u201d wording is qualified by the page's own route table showing zero statement visibility for some accepted fields; appearance or location on a particular statement cannot be guaranteed from that recommendation (lines 131\u2013138, 149\u2013158, 246\u2013255).\n- On-demand Transfers API payouts and Cashout requests require static strings in each request; scheduled placeholders are unsupported. The guide names `/transfers` and `/cashouts` and recommends a unique internal reference in the description for reconciliation (raw lines 71\u201376). These are separate payout products, with their own request and outcome requirements.\n- Allowed characters, submitted maximum and statement-visible length vary by counterparty region, currency and priority. They are distinct columns in the tables: for example, PLN regular descriptions and beneficiary references are accepted yet show zero visible characters; SEPA EUR instant beneficiary reference and SGD wire fields also show zero. Australia AUD fast lists 280 statement characters while Adyen accepts only 140 for description and 80 for beneficiary reference (raw lines 78\u2013255). Check the exact route instead of treating the table's largest visible number as a submission limit.\n\n## Detail locators\n\n- Descriptor journey and originator/remittance components: raw lines 15\u201335.\n- Scheduled payout placeholders, transfer-reference lengths, reconciliation paths, precedence and default: raw lines 37\u201369.\n- On-demand/Cashout static-string rule: raw lines 71\u201376.\n- Country/currency/priority acceptance and visibility tables: Europe lines 78\u2013187, North America lines 189\u2013211, Asia Pacific lines 213\u2013255.\n\n## Evidence boundary\n\nThe beneficiary bank decides what appears on its customer's statement; Adyen's accepted request text may be shortened, omitted or displayed elsewhere (raw lines 23\u201327, 78\u2013255). The \u201call banks\u201d statement for the short reference conflicts with zero-visibility table rows, so bank-specific display must be checked against actual statement evidence. This page does not verify a live marketplace's descriptor setup, payout execution, bank credit or legal payee. Keep scheduled, on-demand and Cashout configuration distinct from Classic Platforms payouts.\n\n## Related\n\n- [[adyen-platforms]] \u2014 current marketplace/platform context.\n- [[source-adyen-docs-marketplaces-custom-payouts-on-demand-payouts]] \u2014 on-demand payout request and status route.\n- [[source-adyen-docs-marketplaces-managed-payouts]] \u2014 managed payout context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15|Pinned Marketplace payout-description guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The beneficiary bank receives the information and determines how much of it to display on the your user's bank statement.",
+      "location": "raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15.md:27"
+    },
+    {
+      "text": "Only for [custom scheduled payouts](/marketplaces/custom-payouts/scheduled-payouts): The 15-character Adyen-generated reference for the resulting transfer.",
+      "location": "raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15.md:58"
+    },
+    {
+      "text": "the setting on balance account-level takes precedence.",
+      "location": "raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15.md:69"
+    },
+    {
+      "text": "Placeholders are not supported for these on-demand requests.",
+      "location": "raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15.md:73"
+    },
+    {
+      "text": "0 Adyen accepts a description in the transfer request, but it does not appear in bank statements.",
+      "location": "raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15.md:135"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-payout-descriptions-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-payout-descriptions]] \u2014 2026-09-15 Marketplace descriptor guide for scheduled placeholders, static on-demand text, originator-name setup and route-specific accepted versus visible characters; submission does not prove bank display or payout.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace and Platforms descriptor guides overlap; retain separate canonical URL and raw provenance without a new concept.",
+          "The page's broad all-banks short-reference statement is qualified by its zero-visible statement rows."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/payout-descriptions/2026-09-15.md",
+  "raw_sha256": "5458811935478c4e50cd4292664d3e4f78104d6d53356a7c0dd40357937387bd",
+  "status": "candidate_ready"
+}

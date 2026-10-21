@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-cash-out-instantly-cashout-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace cashout webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/cash-out-instantly/cashout-webhooks\"\nraw_files:\n  - \"adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, cashout, transfers, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace snapshot describes balance-platform Transfer and Transaction webhooks for a cashout requested on behalf of a marketplace user. It separates the user's balance-account funding, optional fee debit, optional transfer-instrument payout, and later cashout repayment. The example is a TEST Balance Platform API v4 request advancing EUR 1,000 of sales funds before their scheduled settlement, with an optional EUR 10 fee. See [[adyen]] and [[adyen-platforms]].\n\n## Key takeaways\n\n- **Four distinct legs:** `cashoutFunding` is an incoming internal transfer into the user's balance account; `cashoutFee` is an outgoing internal debit only if a fee is specified; `bankTransfer` is an outgoing bank-category transfer to the user's transfer instrument only if one is specified; and `cashoutRepayment` is an outgoing internal debit of the advanced funds when the original sales funds settle. Identify them by transfer `category`, `direction`, and `type` (raw lines 19\u201324, 39\u201374).\n- **Subscription and status evidence:** The server must receive and accept webhooks, and the marketplace must subscribe to Transfer and Transaction webhooks in Customer Area. The guide names `balancePlatform.transfer.created`, `balancePlatform.transfer.updated`, and `balancePlatform.transaction.created`. Its separate-leg examples progress through received, authorised, and booked accounting events; a booked transaction records a balance-account debit or credit. For the optional instant-priority bank payout, a later transfer update with `tracking.status: credited` is distinct from the booked debit. These illustrative TEST events are not independent proof of a particular beneficiary bank receipt (raw lines 26\u201337, 117\u20131121).\n- **Repayment timing and sample conflict:** The opening says the repayment transfer is triggered on the originally scheduled settlement date, while the detailed section says its transfer request is created on cashout day and the amount is deducted when sales funds settle. Treat creation versus debit timing as unresolved by this snapshot. The repayment narrative calls for `transfer.updated` authorised/booked notices, but both adjacent sample envelopes retain `balancePlatform.transfer.created` and top-level `status: received` while nested events advance. Do not construct a universal top-level state machine from those payloads (raw lines 24, 1124\u20131416).\n- **Other sample limits:** The fee prose says its value date is when the fee is sent to the platform's liable balance account, while its booked payload uses `counterparty.balanceAccountId: CashOutFunding`; this is not an unambiguous liable-account destination. The Marketplace request example places `transferInstrumentId` directly in the body, whereas the otherwise closely parallel Platforms cashout-webhook example nests it in `counterparty`; neither illustrative webhook page settles the accepted request schema. The source gives no failure, return, retry or bank-receipt sequence (raw lines 78\u2013115, 553\u2013664, 1122\u20131416).\n\n## Detail locators\n\n- Transfer legs, webhook types, subscription requirements, and category/direction/type mapping: pinned raw lines 19\u201374.\n- TEST EUR 1,000 cashout, EUR 10 fee, scheduled settlement example and v4 request: pinned raw lines 78\u2013115.\n- Funding transfer and transaction event examples: pinned raw lines 117\u2013408.\n- Fee debit, liable-account wording and booked payload: pinned raw lines 409\u2013700.\n- Optional instant bank transfer, booked debit and later credited tracking: pinned raw lines 701\u20131121.\n- Repayment timing and inconsistent sample envelopes: pinned raw lines 1124\u20131416.\n\n## Related\n\n- [[adyen-platforms]] \u2014 main platform and marketplace money-movement context.\n- [[adyen-webhooks]] \u2014 general webhook handling.\n- [[source-adyen-docs-platforms-cash-out-instantly-cashout-webhooks]] \u2014 closely parallel Platforms-path snapshot; request-body examples differ.\n- [[source-adyen-docs-platforms-payout-webhooks]] \u2014 separate payout status, failure, return and bank-tracking route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15|Marketplace webhooks for cashouts, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you request a cashout for a user in your marketplace, you trigger the following transfer events:",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md:19"
+    },
+    {
+      "text": "If you specified a transfer instrument, an outgoing transfer is triggered to pay out the funds from your user's balance account to their transfer instrument.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md:23"
+    },
+    {
+      "text": "You subscribed to the **Transfer webhooks** and **Transaction webhooks**",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md:37"
+    },
+    {
+      "text": "with a `tracking` object and `tracking.status`: **credited**.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md:1008"
+    },
+    {
+      "text": "This transfer is created on the same date as the cashout request, but the cashout amount is deducted when the sales funds are settled.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md:1126"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-cashout-webhooks-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-webhooks]] \u2014 2020-modified, 2026-09-15-captured Marketplace cashout webhook guide for four transfer legs, optional fee and bank payout, repayment timing, and distinct booked/credited evidence; TEST sample envelopes and request shape differ.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Repayment creation/trigger timing and sample top-level webhook envelopes conflict with narrative; fee destination and Platforms-path request example also differ."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-webhooks/2026-09-15.md",
+  "raw_sha256": "19e24177f07a846958df0452d32169ddb8a20c3361f3395d52ff328f25b854cd",
+  "status": "candidate_ready"
+}

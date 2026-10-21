@@ -16,6 +16,27 @@ Where Adyen converts a transaction amount between currencies, it describes an FX
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-currency-conversion]] — 2023-modified, 2026-09-15-captured Marketplace pilot FX overview distinguishing acceptance and settlement currencies and routing to separate payment/refund guides; no account-specific eligibility or financial-outcome proof.
+
+
+- [[source-adyen-docs-marketplaces-currency-conversion-refunds]] — 2023-modified, 2026-09-15-captured limited-availability Marketplace FX-refund overview for original processing-currency customer credit, settlement-currency user debit, rate-plus-markup remainder and user/marketplace booking choice with liable default.
+
+
+- [[source-adyen-docs-marketplaces-currency-conversion-payments]] — 2026-09-15-captured limited-availability Marketplace FX-payment orientation defining processing versus settlement currencies and routing fixed-user versus fixed-customer price guides.
+
+
+- [[source-adyen-docs-marketplaces-currency-conversion-refunds-your-platform]] — 2026-09-15-captured pilot Marketplace FX-refund guide reusing original processing/settlement amounts and routing the remainder to the platform liable balance account; one sentence mislabels the recipient as customer.
+
+
+- [[source-adyen-docs-marketplaces-currency-conversion-payments-fix-processing-currency]] — 2023-modified, 2026-09-15-captured Marketplace pilot guide for fixed customer processing amount, FX-calculated user settlement split and remainder booking; example amounts/units conflict and split destinations need actual booking verification.
+
+
+- [[source-adyen-docs-marketplaces-currency-conversion-payments-fix-settlement-currency]] — 2023-modified, 2026-09-15-captured Marketplace pilot guide for fixed user settlement-currency goods amount, calculated shopper processing amount and explicit remainder booking; FX example buy/sell fields conflict.
+
+
+- [[source-adyen-docs-marketplaces-currency-conversion-refunds-your-user]] — 2026-09-15-captured limited-availability Marketplace FX-refund guide for booking the processing/settlement-currency remainder to the user's balance account, using original or FX-adjusted refund splits.
+
+
 - [[source-adyen-docs-business-accounts-compliance-guidelines-foreign-exchange-fees]] — 2026-09-15-captured cross-region FX rate/fee disclosure guideline and variable, fixed and intermediary-fee examples; no-legal-advice boundary and inconsistent fixed-fee table.
 
 

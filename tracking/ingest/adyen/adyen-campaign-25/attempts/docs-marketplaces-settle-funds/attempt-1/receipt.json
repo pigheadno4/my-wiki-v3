@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-settle-funds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace-path sales-day fund settlement\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/settle-funds\"\nraw_files:\n  - \"adyen/docs/marketplaces/settle-funds/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, settlement, balance-accounts, payouts]\n---\n\n## Overview\n\nThis Marketplace-path guide explains when payment funds become available in user and platform balance accounts. Adyen describes processing user transactions through a merchant account, splitting the funds and settling them into the corresponding balance accounts. Sales-day batches use captured funds and net adjustments; balance-account settlement is separate from a subsequent payout to a bank. See [[adyen]] and [[adyen-platforms]] for provider and modern balance-platform context. The page is a dated timing model, not evidence of a particular capture, settled balance or bank receipt.\n\n## Key takeaways\n\n- The normal sales-day model batches funds captured during a 24-hour sales day, by default 00:00\u201323:59 in the balance account's local time zone. A later sales-day closing time can be configured. The batches settle after the sales day according to settlement-delay days, independently of when schemes or payment methods transfer their funds to Adyen. The page's Monday-to-Wednesday two-business-day example is illustrative, not a promise for every account or holiday.\n- Settlement is net: transaction costs, refunds, chargebacks, settlement reversals and other adjustments such as balance transfers reduce the user's sales amount. Adjustments enter as they occur, so a current batch can contain items related to a different sales day. Do not equate a capture amount with an eventual available balance or payout amount.\n- The default delay is contractual and varies by region and payment method. Managed payouts use an Adyen-optimized delay aligned with the contractual estimated arrival time; custom payouts can override the default waiting period with a custom delay before funds become available to scheduled or on-demand requests. The examples depend on sales-day cutoff, business days and bank holidays. Adyen says it settles available funds on working days, excluding bank holidays. The example table contains timing shorthand and one final five-day row without a time zone; use contract and account-specific settings rather than deriving a universal timestamp.\n- Pass-through settlement is deprecated and unavailable for new integrations **except** listed payment methods/variants: Afterpay, `alipay_sg_pos`, Clearpay, `maestro_USA`, and PayPal. Their funds follow the payment-method schedule rather than sales-day closing time. This exception does not reinstate pass-through for other methods.\n- If Adyen has not received funds within 30 days after capture, it subtracts them from the current settlement batch as a settlement reversal. A balance credit or earlier batch estimate therefore does not prove the funds will remain available, or that a later bank payout succeeds.\n\n## Detail locators\n\n- Merchant-account-to-split-balance path and pass-through deprecation/method exceptions: raw lines 15\u201331. Sales-day definition, captured batch and net calculation: lines 33\u201359.\n- Contractual delay, managed versus custom treatment, business-day and holiday examples: lines 61\u201393. Thirty-day reversal: lines 95\u201397. Closing-time and custom-delay child routes: lines 99\u2013107.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 modern balance-platform and Marketplace model.\n- [[source-adyen-docs-platforms-settle-funds]] \u2014 separately pinned Platforms-path settlement guide.\n- [[source-adyen-docs-platforms-settle-funds-pass-through-settlement]] \u2014 separate deprecated method-schedule model.\n- [[source-adyen-docs-platforms-settle-funds-configure-closing-time]] \u2014 balance-account closing-time configuration.\n\n## Related raw API references\n\n- The raw page links to Marketplace payment flow, managed/custom payout and observed-bank-holiday references; current account settings and holiday dates need their own authority.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/settle-funds/2026-09-15|Adyen Docs: Settle funds (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "These funds are split among your users and your marketplace, and then settled in the corresponding [balance accounts](/marketplaces/account-structure-resources).",
+      "location": "raw line 19, # Settle funds"
+    },
+    {
+      "text": "The [pass-through settlement model](/marketplaces/settle-funds/pass-through-settlement) is deprecated and not available for new integrations",
+      "location": "raw line 27, ## Requirements; named method exceptions continue through line 31"
+    },
+    {
+      "text": "Adyen assigns all funds captured within a sales day to settlement batches related to that sales day.",
+      "location": "raw line 41, ## How fund settlement works"
+    },
+    {
+      "text": "The adjustments are included as they occur. This means that some adjustments in your current settlement batch could be related to a batch from a different sales day.",
+      "location": "raw line 59, ## Settlement calculation"
+    },
+    {
+      "text": "If Adyen does not receive the funds within 30 days after a payment's capture, we subtract those funds from the current settlement batch.",
+      "location": "raw line 97, ## Settlement reversal"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-settle-funds-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-settle-funds]] \u2014 2026-09-15 Marketplace-path sales-day net-settlement guide for captured batches, contractual/custom delays, method-specific pass-through exceptions and 30-day reversal; settled balance is not bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/settle-funds/2026-09-15.md",
+  "raw_sha256": "84030726038e5cedae309f588ddd9eb05b88886d0016c608819c2538c261a8c7",
+  "status": "candidate_ready"
+}

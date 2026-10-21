@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-surcharge",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Surcharge | Adyen Marketplaces\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/surcharge\"\nraw_files:\n  - \"adyen/docs/marketplaces/surcharge/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, surcharge, online-payments, pilot]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] Marketplace-path guide describes a **pilot** API-only online-card surcharge in [[adyen-surcharging]] and the Adyen for Platforms balance-account model. A marketplace must have agreements with its users about how payment acceptance fees are charged; the users may pass those costs to customers. By default, the customer-paid surcharge is booked to the platform's liable balance account, while an explicit `Surcharge` split can book it to a user's balance account. This is distinct from platform commission and underlying payment fees (raw lines 15\u201321, 324\u2013354).\n\n## Key takeaways\n\n- The documented route requires Adyen for Platforms with API-only online card payments using raw or encrypted card data, an API key with the Checkout webservice role, and a server receiving Standard webhooks; Transfer and Transaction webhooks are available for fund tracking. The pilot may be restricted and the page directs platforms to their Adyen contact. Collecting raw card data requires full PCI compliance according to the guide (raw **Requirements** and **Get card details**, lines 23\u201335, 55\u201370). These snapshot requirements are not proof of enrollment, live eligibility or compliance.\n- The platform server calls `/cardDetails`, uses returned card brand, funding source, commercial-card flag and issuer country to decide whether a surcharge is permitted and calculate its amount, then discloses the amount before `/payments`. The feature does not automate global compliance enforcement; the snapshot cites EEA-issued consumer cards used in the EEA and US debit cards as examples of prohibited surcharges. Applicable legal, local and scheme rules need separate current verification (raw **Compliance**, **How it works**, **Get card details**, lines 37\u201353, 290\u2013322).\n- `/payments` includes `surcharge.value` and sets `amount.value` to the original transaction amount plus the surcharge. A `type: Surcharge` split can direct the surcharge to a user's balance account; otherwise the page states a liable-account default. The illustrated EUR 400 payment allocates EUR 394 to user goods/services, EUR 2 surcharge to that user's balance account, EUR 4 platform commission, and transaction fees to the user (raw lines 324\u2013354, 360\u2013419). **Source discrepancy:** the surcharge split-field table marks `amount.currency` required (line 341), but its illustrated split amount objects contain only `value` (for example lines 394\u2013407); confirm the actual API contract before copying this example.\n- The pilot guide says a surcharge cannot be added to authorization adjustments or overcaptures, and the amount cannot exceed what was shown at purchase (raw lines 32\u201335). A `/payments` response example with `resultCode: Authorised` is not captured balance-account credit. For a `Surcharge` split, the page describes a separate incoming transfer tracked through `transfer.created` received, `transfer.updated` authorised and captured with a `transactionId`, and `transaction.created` booked; samples are in the test environment and are not proof of an actual payout or bank receipt (raw lines 1092\u20131125, 1142\u20131441).\n\n## Detail locators\n\n- Versioned test `/cardDetails` snippets and card-characteristic response: raw lines 74\u2013322; `/payments` samples and result: lines 356\u20131112. Library versions vary by language and are sample labels.\n- Per-split webhook identification uses `category: platformPayment`, `direction: incoming`, `type: payment`, and `platformPaymentType: Surcharge`; transfer updates retain previous events and `sequenceNumber` (raw lines 1114\u20131138).\n- The page recommends a Surcharge Amount column in PAR/SDR and says a `Surcharge` split generates extra BPAR/BPSR lines (raw **Reports and reconciliation**, lines 1444\u20131454). These rows support reconciliation of balance-platform activity, not external bank receipt.\n\n## Related\n\n- [[adyen-surcharging]] \u2014 surcharge concept and other channel-specific source routes.\n- [[adyen-platforms]] \u2014 balance-platform and user/liable account context.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/surcharge/2026-09-15|Surcharge, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "By default, the surcharge amount on a payment is booked to your liable balance account. However, you can book this amount directly to your user's balance account.",
+      "location": "raw/adyen/docs/marketplaces/surcharge/2026-09-15.md, Surcharge, line 21"
+    },
+    {
+      "text": "The surcharge feature is in pilot, and restrictions may apply. Reach out to your Adyen contact to be part of the pilot.",
+      "location": "raw/adyen/docs/marketplaces/surcharge/2026-09-15.md, Requirements, line 32"
+    },
+    {
+      "text": "The Adyen surcharge feature does not include automated global compliance enforcement.",
+      "location": "raw/adyen/docs/marketplaces/surcharge/2026-09-15.md, Compliance, line 43"
+    },
+    {
+      "text": "3. Calculate the value you need to pass in the `amount.value` field in your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request by adding the surcharge amount to the original transaction amount.",
+      "location": "raw/adyen/docs/marketplaces/surcharge/2026-09-15.md, Make a payment with a surcharge, line 332"
+    },
+    {
+      "text": "When the funds are credited to your user's balance account, Adyen sends a [balancePlatform.transfer.updated](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.updated) webhook with `status` **captured** and the `transactionId`.",
+      "location": "raw/adyen/docs/marketplaces/surcharge/2026-09-15.md, Incoming transfer captured, line 1298"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-surcharge-link",
+        "target_path": "wiki/concepts/adyen-surcharging.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-surcharge]] \u2014 2023-modified, 2026-09-15-captured Marketplace-path pilot online-card surcharge guide for user/liable booking, API-only eligibility, compliance limits, split-field example discrepancy and transfer/report reconciliation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source marks surcharge split amount.currency required, while example split amounts omit currency; source entry flags this discrepancy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/surcharge/2026-09-15.md",
+  "raw_sha256": "63139f5b2d5a9aa5401863dcad49c819a62d832a0ba8f0356e78fb6c1cfed17b",
+  "status": "candidate_ready"
+}

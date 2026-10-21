@@ -1,0 +1,7 @@
+# Retrieval checks — docs-marketplaces-multi-pay-in-receive-funds
+
+Q1. Who receives the third-party partner payout, and what setup identifies it? Answer: The platform sets an Adyen-created, Adyen-legally-held multi pay-in account as its pay-in partner's payout account; Adyen allowlists that partner bank account and rejects other bank transfers. Incoming bank events are `category: bank`, `direction: incoming`, `type: bankTransfer`, with Transfer and Transaction webhook subscriptions available. Raw lines 17–57.
+
+Q2. What evidence and conflict boundaries matter? Answer: Received/authorized transfer notifications precede a booked credit to the multi pay-in account; a booked Transfer event with transactionId and a booked Transaction event identify that staging-account credit, **not** allocation to user accounts. In the TEST authorized example the prose and nested accounting event say `authorised` but top-level `data.status` is `received`. The booked Transfer sample's nested `events[].transactionId` (`1WT1N05XXY7P9XGB`) differs from top-level `data.transactionId` (`EVJN42272224222B5JB8BRC84N686ZUSD`), which matches the later Transaction webhook `data.id`; the page does not establish a universal join key. The next-step top-up label links to /refunds. Raw lines 59–65, 127–129, 176–200, 206–208, 282, 295–308, 315, 344–360.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-multi-pay-in]] → [[source-adyen-docs-marketplaces-multi-pay-in-receive-funds]] → [[raw/adyen/docs/marketplaces/multi-pay-in/receive-funds/2026-09-15]].

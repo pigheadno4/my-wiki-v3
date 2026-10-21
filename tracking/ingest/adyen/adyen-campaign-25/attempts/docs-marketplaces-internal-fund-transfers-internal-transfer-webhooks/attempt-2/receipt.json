@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-marketplaces-internal-fund-transfers-internal-transfer-webhooks",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Marketplaces internal transfer webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/internal-fund-transfers/internal-transfer-webhooks\"\nraw_files:\n  - \"adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, internal-transfers, transfer-webhooks]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Marketplace guide explains Transfer webhooks for moving funds between balance accounts in [[adyen-platform-internal-transfers]]. An internal transfer has an outgoing source-account view and incoming target-account view. The guide shows received, authorised and booked stages, then return modifications of the original transfer. Its TEST payloads illustrate event interpretation, not a specific live transfer or bank payout.\n\n## Key takeaways\n\n- Subscribe to **Transfer webhooks** in test Customer Area and accept them on your server. The page lists `balancePlatform.transfer.created` for a future transfer and `balancePlatform.transfer.updated` for status changes; it separately labels the Payment-webhook route deprecated. Identify this flow by `category=internal`, `type=internalTransfer`, and outgoing source versus incoming target `direction`. Each event has separate source and target webhook views. See raw lines 19\u201354.\n- For an on-demand or scheduled internal transfer, the initiated `created` view has `status=received` and negative source versus positive target `balances.received`. The authorised `updated` view reserves the amount with negative source versus positive target `balances.reserved`. The booked `updated` view records the balance-account movement, with negative source versus positive target `balances.balance` in the examples. These are stages of internal balance-account movement, not beneficiary-bank receipt. See raw lines 371\u2013885.\n- Returning funds is described as a modification of the original transfer. Initiation and authorisation appear as `balancePlatform.transfer.updated` events with nested `modification.type=return`, `direction=outgoing` from the original recipient and `status=received` or `authorised`; booked return gives two account views, outgoing from the original recipient and incoming to the original sender. The original transfer's top-level `status` can still read `booked` while the nested return modification advances, so inspect the modification rather than treating that top-level field as the return result. See raw lines 887\u20131459.\n- Example values are illustrative. The TEST transfer request uses EUR 10000 while webhook samples use EUR 1000, and examples vary transfer/event identifiers. Do not reconcile them as one exact transaction trace. The return example's zero balances are its example state, not a universal balance rule. See raw lines 56\u201374, 375\u2013430, 909\u20131029 and 1174\u20131459.\n\n## Detail locators\n\n- Current Transfer webhook types, two account views, subscription and deprecated Payment-webhook pointer: raw lines 19\u201336.\n- Internal identifiers and three lifecycle stages: raw lines 38\u201354.\n- TEST transfer request and SDK examples: raw lines 56\u2013369.\n- Received, authorised and booked source/target payloads: raw lines 371\u2013885.\n- Return request and received/authorised modifications: raw lines 887\u20131170.\n- Booked return's two account views: raw lines 1174\u20131459.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platform-internal-transfers]] \u2014 canonical internal balance-account transfer concept.\n- [[adyen-platforms]] \u2014 modern balance-platform context.\n- [[source-adyen-docs-platforms-internal-fund-transfers-internal-transfer-webhooks]] \u2014 separate Platforms URL with related guide; preserve both source routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15|Marketplace internal-transfer webhooks \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When you initiate an internal transfer between balance accounts in your marketplace, Adyen sends two kinds of webhooks:",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md:23"
+    },
+    {
+      "text": "Webhooks for the source balance account where you initiate the transfer as an **outgoing** request.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md:30"
+    },
+    {
+      "text": "The transfer is [authorized](#internal-push-transfer-authorized). This indicates that the funds are reserved.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md:51"
+    },
+    {
+      "text": "the funds have been pushed from the source balance account to the target balance account.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md:685"
+    },
+    {
+      "text": "The webhooks show that the return is handled as a modification of the original transfer.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md:905"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-internal-transfer-webhooks-reciprocal",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-internal-fund-transfers-internal-transfer-webhooks]] \u2014 2026-09-15-captured Marketplace Transfer-webhook guide for two-sided internal balance-account received, authorised and booked stages and nested return modifications; TEST examples have amount mismatch and do not prove bank payout.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "TEST request is EUR 10000 (raw lines 68\u201370) but webhook payloads show EUR 1000 (for example raw lines 398\u2013400); do not reconcile examples as one exact transfer."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/internal-fund-transfers/internal-transfer-webhooks/2026-09-15.md",
+  "raw_sha256": "4300f007cb5bc90d361c4b7848ccbd1479634195494a238066a632a1e4e9db88",
+  "status": "candidate_ready"
+}

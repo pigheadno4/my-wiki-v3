@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-marketplaces-custom-payouts-scheduled-payouts-view-custom-payout-executions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"View Adyen Marketplace custom payout schedule executions\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions\"\nraw_files:\n  - \"adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, custom-payouts, scheduled-payouts, sweep-executions]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Marketplace guide shows how to inspect each execution of a custom payout schedule on a user's balance account in [[adyen-platforms]]. Customer Area and Configuration API expose whether a scheduled attempt was sent, skipped or failed; a successful execution gives a resulting transfer ID. Execution success starts a separate funds-transfer lifecycle from the balance account to the user's bank-account transfer instrument and does not itself prove bank receipt.\n\n## Key takeaways\n\n- Viewing executions through the Configuration API requires **Bank Scheduled Payouts Merchant Role**. Customer Area viewing requires **Balance platform base role** and **Configure scheduled payouts**. The page calls for Configuration and Transfer webhooks to track both execution and subsequent funds movement. In Customer Area, navigate account holder \u2192 balance account \u2192 **Scheduled transfers** \u2192 custom schedule \u2192 **Events** for next payout and past execution dates/statuses. A managed schedule shows estimated arrival; a custom schedule shows transfer schedule. See raw lines 19\u201347.\n- Customer Area labels are **Sent** (payout created and sent), **Not sent** (conditions unmet, such as insufficient balance), and **Failed** (error). The page mentions closed/suspended external bank account and disabled send-to-transfer-instrument capability due to missing KYC checks as possible failure causes, and says failures continue until the root cause is resolved. These are schedule attempt labels, not a beneficiary-bank credit confirmation. See raw lines 49\u201357.\n- Configuration API GET `/balanceAccounts/{balanceAccountId}/sweeps/{id}/executions` returns a `sweepExecutions` array. Its TEST sample has `succeeded` plus `resultDetails.transferId`, `skipped` plus reason codes, and `failed` plus a reason; the successful transfer ID routes to later Transfer webhooks. Configuration webhook types `balancePlatform.balanceAccountSweepExecution.succeeded`, `.skipped` and `.failed` report execution result, sweep and execution IDs, and transfer ID or reason. See raw lines 59\u2013149 and 174\u2013213.\n- Skip reasons include no balance, minimum threshold, disabled configuration and manual Adyen block. Failure reasons in the table include insufficient reserve collateral, no route, blocked/invalid counterparty, inactive hierarchy, missing instrument or capability, amount/route limits and invalid address. A failure may be marked final; for example a permanently closed counterparty can disable the custom schedule, and the failed webhook's boolean `sweepConfigurationDisabled` reports this. Do not treat every failed execution as automatically disabling the schedule. See raw lines 147\u2013213.\n- The samples have schema/value tensions: API response example uses `sweepDisabled: \"true\"`, while webhook prose/payload uses boolean `sweepConfigurationDisabled: true`; the table/API example gives `counterpartyAccountBlocked`, but failed webhook example gives `counterpartyBlocked`. Sample webhook `timestamp` also precedes its `triggeredAt`; do not infer a real event order or canonical enum/field name from those illustrative payloads. Verify the applicable API/webhook schema and actual message. See raw lines 70\u2013110, 128\u2013143, 153\u2013170 and 217\u2013235.\n- After `succeeded`, use Transfer webhooks to observe authorization, capture and possible bank return for the separate payout transfer. A `Sent` UI label, sweep success, or transfer initiation alone is not bank receipt. See raw lines 238\u2013242 and [[source-adyen-docs-marketplaces-payout-webhooks]].\n\n## Detail locators\n\n- Purpose, access roles, webhook subscriptions and Customer Area Events path: raw lines 17\u201347.\n- UI Sent/Not sent/Failed definitions and failure examples: raw lines 49\u201357.\n- Configuration API path and `sweepExecutions` TEST example: raw lines 59\u2013110.\n- Succeeded/skip/failure webhook structure and reason table: raw lines 112\u2013213.\n- Failed webhook disable flag, contradictory example code and fund movement route: raw lines 215\u2013247.\n\n## Related\n\n- [[adyen]] \u2014 provider profile.\n- [[adyen-platforms]] \u2014 canonical platform payout concept.\n- [[source-adyen-docs-marketplaces-custom-payouts-scheduled-payouts]] \u2014 schedule configuration and conditions.\n- [[source-adyen-docs-platforms-custom-payouts-scheduled-payouts-view-custom-payout-executions]] \u2014 separate Platforms URL for the analogous guide.\n- [[source-adyen-docs-marketplaces-payout-webhooks]] \u2014 later transfer and bank-status evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15|Marketplace custom payout executions \u2014 pinned 2026-09-15 raw snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A payout initiated by a payout schedule is called an execution.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md:19"
+    },
+    {
+      "text": "Bank Scheduled Payouts Merchant Role",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md:27"
+    },
+    {
+      "text": "The payout was successfully created and sent.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md:55"
+    },
+    {
+      "text": "In this case, the custom payout schedule is disabled and `sweepConfigurationDisabled` is set to **true**.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md:213"
+    },
+    {
+      "text": "When a custom payout execution is successful, it triggers a funds transfer.",
+      "location": "raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md:240"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-custom-payout-executions-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-custom-payouts-scheduled-payouts-view-custom-payout-executions]] \u2014 2026-09-15-captured Marketplace guide for role-gated custom-schedule execution records, success-to-transfer ID, skip/failure reasons and optional disabling; execution is distinct from bank receipt, and sample fields/codes conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "API sample uses sweepDisabled string at raw line 106, while webhook prose/payload uses sweepConfigurationDisabled boolean at lines 211\u2013213 and 230.",
+          "Reason table/API sample use counterpartyAccountBlocked (raw lines 103, 161), but failed webhook sample uses counterpartyBlocked (line 228).",
+          "Example webhook timestamp precedes triggeredAt (raw lines 224, 233; also 136, 142); do not infer a real event sequence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/custom-payouts/scheduled-payouts/view-custom-payout-executions/2026-09-15.md",
+  "raw_sha256": "e78488492aba26f7a0f11723c2b99f85a1287b625c9ea78fd0fecb29b605dfcf",
+  "status": "candidate_ready"
+}

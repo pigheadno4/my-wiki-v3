@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-process-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: Process online payments\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/process-payments\"\nraw_files:\n  - \"adyen/docs/marketplaces/process-payments/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, online-payments, split-payments]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured **Marketplaces / Adyen for Platforms** guide describes processing **online** payments on behalf of marketplace users and splitting payment funds between user balance accounts and the marketplace\u2019s **liable balance account**, with fees/costs deducted as needed. It outlines a pay-in \u2192 balance-account booking/settlement \u2192 scheduled payout flow; its USD amounts and final payout arrows are illustrations, not evidence of a completed payment, capture, settled transfer or bank receipt. [[adyen-platforms]]\n\n## Requirements and routing\n\n- The guide requires an **online payments integration and checkout UI**, Checkout API and Transfers API credentials, standard-webhook handling, and an account holder\u2019s `receiveFromPlatformPayments` capability in a **valid** state. Its setup row offers Checkout **Sessions** (one `/sessions` server call) or **Advanced** (`/paymentMethods`, `/payments`, `/payments/details`), recommending Sessions for most integrations. See [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 21\u201335]]. Possessing credentials or requesting a capability does not establish a successful payment or enabled allocation.\n- If the holder lacks a **valid** `receiveFromPlatformPayments` capability, the funds cannot be allocated to that user balance account and the **full amount is booked to the liable balance account** (raw lines 32\u201333). Separately, if neither a split configuration profile nor an API request supplies split instructions, the **whole transaction amount and fees** go to the liable balance account (raw lines 37\u201341). These are distinct fallback conditions.\n- The guide says individual payment, capture and refund requests on behalf of users need correct split instructions for user and liable balances, unless a split configuration profile supplies them. See [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 37\u201343]]. This overview does not specify profile-versus-request precedence; follow the linked split guide for operation-level behavior.\n\n## Money-flow and status boundary\n\n- The example starts with a **USD 400.00** customer payment, illustrates **USD 396.00** to a user balance account, **USD 4.00** commission to the liable balance account, and **USD 2.00** fee deducted from liable funds. It then depicts scheduled payout of **USD 396.00** to the user\u2019s transfer instrument and **USD 2.00** to the marketplace transfer instrument. These are example allocations across different stages, not transaction evidence. See [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 51\u201369]].\n- The page says Adyen settles processed funds according to split instructions and that balance-account settlement models define how sales funds move toward users\u2019 transfer instruments. Payment processing, split booking, settlement, payout instruction and beneficiary-bank receipt are separate states. See [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 45\u201349, 51\u201369]].\n- Its requirements table says to handle **standard webhooks** and subscribe to **any** of Transfer or Transaction webhooks (raw lines 30\u201331), while the later Webhooks section says to subscribe to **Transfer and Transaction webhooks** to track events/status (raw line 73). The two phrasings differ on subscription coverage; this page does not resolve whether one feed suffices for every event of interest.\n\n## Detail locators\n\n- Online-payment scope, credentials, webhooks, valid-capability and flow prerequisites: [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 15\u201335]].\n- Split-instruction and invalid/missing-instruction liable fallbacks: [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 32\u201343]].\n- Settlement and illustrative USD booking-to-payout sequence: [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 45\u201369]].\n- Webhook coverage wording and split-at-authorization/capture routes: [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|raw lines 71\u201390]].\n\n## Related\n\n- [[adyen-platforms]] \u2014 modern Platforms payments, balances and payouts.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/process-payments/2026-09-15|Marketplace process payments (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "With an Adyen for Platforms integration, you can process online transactions on behalf of your users using Adyen's payment processing platform.",
+      "location": "raw/adyen/docs/marketplaces/process-payments/2026-09-15.md:19"
+    },
+    {
+      "text": "If an account holder does not have the **receiveFromPlatformPayments** capability in a **valid** state, the funds cannot be allocated to their balance account. The full amount is booked to your liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/process-payments/2026-09-15.md:33"
+    },
+    {
+      "text": "in each individual payment, capture, and refund request that you send on behalf of your users, you have to include instructions on how to split the funds between your user's balance accounts and your marketplace's liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/process-payments/2026-09-15.md:39"
+    },
+    {
+      "text": "If you do not provide any split instructions in a split configuration profile or through and API request, the whole transaction amount and fees are booked to your liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/process-payments/2026-09-15.md:41"
+    },
+    {
+      "text": "Subscribe to the [Transfer webhooks](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/overview) and [Transaction webhooks](https://docs.adyen.com/api-explorer/transaction-webhooks/latest/overview) to keep track of these events and their status.",
+      "location": "raw/adyen/docs/marketplaces/process-payments/2026-09-15.md:73"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-process-payments-source-link",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-process-payments]] \u2014 2023-modified, 2026-09-15-captured Marketplace online-payment overview for valid receive capability, user/liable split booking, full-liable fallbacks, illustrative USD pay-in-to-payout and webhook routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Invalid receiveFromPlatformPayments and absent split instructions separately route full amounts to the marketplace liable balance account (raw lines 32\u201333, 39\u201341).",
+          "Requirements say subscribe to any Transfer/Transaction webhook (raw lines 30\u201331), while the later section says Transfer and Transaction (raw line 73); coverage is unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/process-payments/2026-09-15.md",
+  "raw_sha256": "25cabe4c57e733a8307a7c6940d4b5d798e7824ad91a5ddfa158b35834523931",
+  "status": "candidate_ready"
+}

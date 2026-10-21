@@ -1,0 +1,7 @@
+# Retrieval checks — docs-marketplaces-payment-methods-manage-payment-methods
+
+**Q1. Where can a Marketplace platform manage payment methods, and what actions does this page list?**
+The overview routes to either Customer Area or Management API (raw line 19). It lists viewing all methods configured for the merchant account, viewing one method's details, updating its country/region and currency, and activating/deactivating a method for a user (raw lines 21–26). It links separate instructions for each surface (raw lines 28–36). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-payment-methods-manage-payment-methods]] → [[raw/adyen/docs/marketplaces/payment-methods/manage-payment-methods/2026-09-15]].
+
+**Q2. What does the overview leave to the child procedures and live configuration?**
+Its 36 lines name management surfaces and action categories but provide no endpoint, credential role, validation, method-availability, propagation or result details (raw lines 19–36). The Customer Area and Management API child pages own their procedures; listing an action here does not prove a method is currently enabled or accepted by a user's checkout. Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-marketplaces-payment-methods-manage-payment-methods]] → [[raw/adyen/docs/marketplaces/payment-methods/manage-payment-methods/2026-09-15]].

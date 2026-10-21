@@ -15,6 +15,24 @@ The overview does not define currency, timing, role, failure or booked-status ru
 
 ## Sources
 
+- [[source-adyen-docs-marketplaces-internal-fund-transfers]] — 2020-modified, 2026-09-15-captured Marketplace orientation to liable/user balance-account transfers, distinct external bank payouts and scheduled/on-demand/return/webhook process routes.
+
+
+- [[source-adyen-docs-marketplaces-internal-fund-transfers-return-transfers]] — 2020-modified, 2026-09-15-captured Marketplace Transfers API guide for an equal-amount return of an original internal push transfer by incoming ID, with conditional cross-holder capabilities and webhook outcome tracking.
+
+
+- [[source-adyen-docs-marketplaces-internal-fund-transfers-on-demand-fund-transfers]] — 2020-modified, 2026-09-15-captured Marketplace Customer Area/Transfers API internal balance-account guide for conditional capability gates, one extra approval, one-attempt future execution and two-sided booking evidence.
+
+
+- [[source-adyen-docs-marketplaces-internal-fund-transfers-approve-cancel-transfers]] — 2020-modified, 2026-09-15-captured Marketplace optional transfer-review guide for approval, cancellation, 30-day expiry and webhooks; example payloads are bank transfers, not internal two-leg booking proof.
+
+
+- [[source-adyen-docs-marketplaces-internal-fund-transfers-internal-transfer-webhooks]] — 2026-09-15-captured Marketplace Transfer-webhook guide for two-sided internal balance-account received, authorised and booked stages and nested return modifications; TEST examples have amount mismatch and do not prove bank payout.
+
+
+- [[source-adyen-docs-marketplaces-internal-fund-transfers-scheduled-fund-transfers]] — 2020-modified, 2026-09-15-captured Marketplace account-to-account sweep guide for role/capability gates, account-time-zone cron, amount controls and two-sided booked-transfer evidence; optional examples drift into bank-payout fields.
+
+
 - [[source-adyen-docs-platforms-internal-fund-transfers-return-transfers]] — 2020-modified, 2026-09-15-captured Platforms Transfers API guide for returning an original internal push transfer by ID and equal amount, with conditional cross-holder capabilities and webhook outcome tracking.
 
 

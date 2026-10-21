@@ -1,0 +1,11 @@
+# Q1 — purpose and prerequisites
+
+**Question:** What fixed-amount FX problem does this Marketplace pilot solve, and what setup does the page require?
+
+**Answer:** It fixes the user's goods amount in the **settlement currency** while calculating the variable customer charge in the **processing currency** using a rate that includes Adyen markup (raw lines 19–24, 47–59). The pinned page labels the feature limited availability/pilot. It lists online checkout, Checkout API, standard-webhook handling, user-holder receivePayments/receiveFromPlatformPayments/sendToTransferInstrument capabilities, and merchant currency configuration; FX API credential/Read FX rates/Support enablement apply to `rates/calculate`, while report access requires a listed reporting role (lines 26–45). Forward route: [[index]] → [[adyen-index]] → [[adyen-currencies-and-fx]] → [[source-adyen-docs-marketplaces-currency-conversion-payments-fix-settlement-currency]] → [[raw/adyen/docs/marketplaces/currency-conversion/payments/fix-settlement-currency/2026-09-15]].
+
+# Q2 — split destination and source conflict
+
+**Question:** Which currency goes in payment `amount` versus `splits.amount`, where does a mismatch go, and what sample conflict limits conclusions?
+
+**Answer:** The table puts the processing-currency customer charge in `amount` and the settlement-currency goods value in `splits.amount`; multiple split values must sum to goods cost, with mismatch directed to the account explicitly named by `Remainder` (raw lines 216–228). The example uses PLN 20174 versus CZK 100000 and returns `Authorised`; that sample does not independently prove booked settlement or payout (lines 230–291, 871–892). The FX request and field table say `exchangeSide=buy`, but the sample response says `sell`; the curl request also lacks a comma between source currency and value (lines 79, 86, 113–145). The report rates include markup and directional rates are nonreciprocal (lines 173, 204–205). Forward route: [[index]] → [[adyen-index]] → [[adyen-currencies-and-fx]] → [[source-adyen-docs-marketplaces-currency-conversion-payments-fix-settlement-currency]] → [[raw/adyen/docs/marketplaces/currency-conversion/payments/fix-settlement-currency/2026-09-15]].

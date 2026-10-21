@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-internal-fund-transfers-on-demand-fund-transfers",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: On-demand internal fund transfers\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/internal-fund-transfers/on-demand-fund-transfers\"\nraw_files:\n  - \"adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, internal-transfers, transfers-api]\n---\n\n## Overview\n\nThis 2020-modified, 2026-09-15-captured [[adyen]] Marketplaces guide introduces on-demand **internal balance-account transfers** and names both sending funds and internal direct debit. Its concrete Customer Area and Transfers API steps and examples demonstrate a **push** from a source balance account to a counterparty balance account; they do not demonstrate a pull/direct-debit request. This is distinct from a payout to an external bank transfer instrument; the EUR amounts and test requests are illustrations, not executed funds movement. [[adyen-platform-internal-transfers]] [[adyen-platforms]]\n\n## Requirements and request route\n\n- The stated gates are an Adyen for Platforms integration, Transfers API credential with **TransferService Webservice Initiate** role, Customer Area **Initiate internal transfers** and **Balance platform base** roles for the UI route, a server that receives/accepts subscribed Transfer webhooks, and Adyen Support enabling transfers on the **source** balance account. For transfers across **different account holders**, the sender needs `sendToBalanceAccount` and the receiver needs `receiveFromBalanceAccount`; the table makes this holder relationship conditional, not universal. See [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 21\u201338]].\n- In Customer Area, select the source balance account, counterparty type `balanceAccount`, destination balance-account ID, currency and amount; the guide's UI illustration sends **EUR 150** from liable to a user's balance account. The UI action **creates** a transfer request; booked status must be checked separately. For POST `/transfers`, the field table marks `amount` (currency/value), `balanceAccountId` (source), `counterparty.balanceAccountId` (destination), and `category=internal` required; description and references are optional. The test `/btl/v4/transfers` API illustration sends **EUR 100.00** (value 10000), a separate example. See [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 44\u2013125]].\n- The sample API response provides a transfer `id` with `status=received` and `reason=pending`. The guide explicitly says to wait for transfer webhooks to confirm **booked**. For each request, separate webhook series cover the **outgoing/debited** and **incoming/credited** balance-account entries, progressing through `received`, `authorised`, and `booked` or reporting failure. HTTP 2XX, received or authorised status alone is not two-sided booked movement; none of this is external bank receipt. See [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 419\u2013463, 909\u2013915]].\n\n## Review, scheduling and failure boundary\n\n- The optional `review.numberOfApprovalsRequired` value is **1** in this snapshot: one additional team review may be requested. A team member must approve before Adyen continues processing. A successful HTTP 2XX review response reports the number required, not approval or booking. See [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 467\u2013475, 830\u2013836]].\n- With `executionDate.date`, an accepted request remains `received/pending` until a future date within **30 days** in ISO `YYYY-MM-DD` format. On that date the guide describes a **00:00\u201303:00** window and checks for source funds and required team approval. It says Adyen attempts execution **only once**; an error such as insufficient funds ends `failed` and generates a webhook. A request can be cancelled **before** its execution date through POST `/transfers/cancel`. The narrative refers to the Balance Platform configured timezone by default, while the request-field table labels omitted `executionDate.timezone` default **Europe/Amsterdam**; do not assume the effective timezone from one sentence alone. See [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 840\u2013859, 890\u2013892]].\n- If an internal transfer fails, the guide directs reading the source balance account's **available** balance, then considering a user top-up or liable-to-user internal funding if insufficient, or Support if funds suffice. This is troubleshooting guidance, not authorization to submit another transfer or a promise of retry. See [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 894\u2013907]].\n\n## Detail locators\n\n- Scope, access, webhook, conditional cross-holder capabilities and source enablement: [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 15\u201338]].\n- UI/API required fields, examples, test endpoint and dated SDK snippets: [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 40\u2013417]].\n- Response, review, future-date single-attempt execution and cancel window: [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 419\u2013892]].\n- Troubleshooting and two-sided webhook/Customer Area status route: [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|raw lines 894\u2013915]].\n\n## Related\n\n- [[adyen-platform-internal-transfers]] \u2014 main internal-transfer concept.\n- [[source-adyen-docs-platforms-internal-fund-transfers-on-demand-fund-transfers]] \u2014 related Platforms-path guide; preserve path-specific text.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15|Marketplace on-demand internal fund transfers (captured 2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Send funds or initiate an internal direct debit between balance accounts within your marketplace.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md:17"
+    },
+    {
+      "text": "If the balance accounts involved in the transfer *do not belong to the same account holder*, check the [capabilities]",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md:35"
+    },
+    {
+      "text": "Wait for the [transfer webhooks](/marketplaces/internal-fund-transfers/internal-transfer-webhooks) to confirm that the transfer has been booked.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md:463"
+    },
+    {
+      "text": "Possible values: **1**. Currently, it is possible to request only one additional review per transfer.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md:475"
+    },
+    {
+      "text": "Adyen attempts to process the transfer only one time. In case of any errors, such as having insufficient funds in the balance account, the transfer request ends with `status` **failed**.",
+      "location": "raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md:851"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-on-demand-internal-transfer-source-link",
+        "target_path": "wiki/concepts/adyen-platform-internal-transfers.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-internal-fund-transfers-on-demand-fund-transfers]] \u2014 2020-modified, 2026-09-15-captured Marketplace Customer Area/Transfers API internal balance-account guide for conditional capability gates, one extra approval, one-attempt future execution and two-sided booking evidence.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A received/pending or HTTP 2XX transfer response does not establish either leg booked (raw lines 419\u2013463, 909\u2013915).",
+          "Future-date execution is one attempt only, gated by source funds and any requested team approval; narrative configured-platform timezone and field-table Europe/Amsterdam default differ (raw lines 840\u2013859)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/internal-fund-transfers/on-demand-fund-transfers/2026-09-15.md",
+  "raw_sha256": "acf498ba1345a3dcc725a2d3ae20db124d0ed4e3df27e3950552e7ad7371af50",
+  "status": "candidate_ready"
+}

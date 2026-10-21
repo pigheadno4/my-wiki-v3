@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-currency-conversion-refunds-your-platform",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Book an FX refund remainder to a Marketplace platform\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/currency-conversion/refunds/your-platform\"\nraw_files:\n  - \"adyen/docs/marketplaces/currency-conversion/refunds/your-platform/2026-09-15.md\"\ntags: [adyen, marketplaces, currency-conversion, refunds]\n---\n\n## Overview\n\nThis pinned Marketplace guide describes refunding a captured, currency-converted online payment while routing the refund remainder to the **platform's liable balance account**. The customer originally paid in the processing currency, while the user received the settlement currency. The guide is marked **limited availability / pilot** and says its process may change; it does not establish current eligibility. See [[adyen]] and [[adyen-currencies-and-fx]].\n\n## Key takeaways\n\n- In the example, the customer paid **PLN 201.74** for goods worth **CZK 1000.00** to the user. The refund uses those original amounts; the stated intent is to credit the customer the amount originally paid, debit the user the amount originally received, and book the FX remainder to the platform's liable balance account (raw lines 24\u201330, 46\u201351, 59\u201362).\n- Prerequisites are an Adyen online payments integration and Checkout UI, Checkout API credentials, standard webhook handling with transfer or transaction webhooks, the listed account-holder capabilities, Support-configured merchant currencies, and a **captured** payment before initiating a refund (raw lines 32\u201344).\n- POST `/payments/{paymentPspReference}/refunds` with original processing-currency `amount` (**PLN 201.74**) and original settlement-currency `splits.amount` (**CZK 1000.00**) directed to the user's balance account. Add a `Remainder` split with `account` set to the **platform liable balance account ID**; no remainder amount is specified. The curl is a Checkout v72 TEST example (raw lines 53\u201399).\n- **Source wording conflict:** raw line 26 says \u201cbook the remainder amount to the customer,\u201d but the title, line 24, line 30, procedure, and examples assign it to the platform's liable balance account. Follow the explicit split destination when interpreting this dated guide; do not infer a separate customer-remainder allocation (raw lines 15\u201330, 55\u201399).\n- The illustrative response has `status: received`. It shows request receipt and splits, not a completed refund, customer credit, final FX booking, settlement, or bank payout (raw lines 502\u2013536). The guide does not provide a completed-outcome example.\n\n## Detail locators\n\n- Pilot warning, economic actors, prerequisites and flow: raw lines 15\u201351.\n- Checkout request fields and TEST examples: raw lines 53\u2013500.\n- `received` example response: raw lines 502\u2013536.\n\n## Related\n\n- [[adyen]]\n- [[adyen-currencies-and-fx]]\n- [[adyen-platforms]]\n- [[source-adyen-docs-marketplaces-currency-conversion-refunds-your-user]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/currency-conversion/refunds/your-platform/2026-09-15|Pinned FX refund guide]]\n",
+  "quotes": [
+    {
+      "text": "Currency conversion in currently in pilot phase.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "The balance from the remainder is booked to your liable balance account.",
+      "location": "raw line 30, opening money-flow bullets"
+    },
+    {
+      "text": "Your payment must be captured before you can initiate the refund.",
+      "location": "raw line 44, Requirements"
+    },
+    {
+      "text": "Enter your liable balance account ID in the",
+      "location": "raw line 62, Send a refund request"
+    },
+    {
+      "text": "You do not need to specify the amount of the remainder.",
+      "location": "raw line 62, Send a refund request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-fx-refund-platform-source",
+        "target_path": "wiki/concepts/adyen-currencies-and-fx.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-currency-conversion-refunds-your-platform]] \u2014 2026-09-15-captured pilot Marketplace FX-refund guide reusing original processing/settlement amounts and routing the remainder to the platform liable balance account; one sentence mislabels the recipient as customer.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 26 says the remainder is booked to the customer, contradicting the title, line 30, procedure and examples that direct it to the platform liable balance account.",
+          "Example Checkout response is `received`, not proof of completed refund or final booking."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/currency-conversion/refunds/your-platform/2026-09-15.md",
+  "raw_sha256": "d70d71eb51539e380b037a9db647811b0b3b1eaf636a687c3ba4736818ed4da6",
+  "status": "candidate_ready"
+}

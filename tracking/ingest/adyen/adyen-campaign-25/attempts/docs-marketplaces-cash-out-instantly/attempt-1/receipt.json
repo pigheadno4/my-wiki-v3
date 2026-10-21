@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-cash-out-instantly",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace CashOut overview\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/cash-out-instantly\"\nraw_files:\n  - \"adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, cashout, pending-balance]\n---\n\n## Overview\n\nThis 2020-modified Marketplace-path [[adyen]] CashOut overview, captured 2026-09-15, describes a user-requested cashout of funds in a user's **pending available** balance before normal settlement makes them available. A cashout can credit the user's balance account; an instant payout to the user's transfer instrument is a separate, conditional leg when specified. This belongs to the modern [[adyen-platforms]] balance-account model (raw lines 15\u201325, 41\u201346).\n\n## Key takeaways\n\n- **Amount and money movement:** The cashout amount must be no more than the user's pending available balance; if a fee is charged, the amount plus fee must fit that balance (raw lines 29\u201335). The four *possible* legs are Cashout Funding credit to the user's balance account, Cashout Instant Payout to the user's transfer instrument only if specified, optional Cashout Fee debit from the user account to the marketplace's liable balance account, and later Cashout Repayment debit when the captured payments settle (lines 41\u201346). The example's January 1 sale and two-day delay would make funds available January 3 (lines 29\u201331), but its repayment sentence calls January 1 the settlement date (line 46). Treat that as a source inconsistency, not an exact repayment schedule.\n- **Availability and bank return:** The snapshot lists Australia/AUD, EEA/EUR, US/USD and UK/GBP, but support also depends on the receiving bank's ability to accept instant payouts (raw lines 48\u201357). If the bank cannot, the funds are returned and the cashout amount is restored to the source balance account's pending available balance. Australian instant payouts may be delayed by ANZ rail rate limiting (lines 50\u201359). This is regional snapshot guidance, not live eligibility or guaranteed receipt.\n- **Limits and timing:** The listed minimum is 0.01; a rolling 24-hour maximum per balance account is configured at balance-platform level with Adyen approval. The page lists no maximum count per day, yet successful requests on the same balance account have a cooldown until the previous request finishes processing\u2014usually about one minute, up to ten (raw lines 61\u201368). Pass-through-settlement payment methods, such as the example Affirm, do not contribute to pending available and cannot be cashed out (line 69).\n- **Reconciliation and tests:** The daily Statement report tracks balance movements. The Payout report is generated when scheduled payouts occur; after a full cashout, no scheduled payout may occur for that balance account that day and no Payout report is generated for it (raw lines 71\u201383). Transfer webhooks provide real-time transfer tracking (lines 85\u201387). The page instructs TEST-only cashout-priority bank details, with insufficient funds and missing `sendToTransferInstrument` capability as failure tests (lines 89\u201399); they do not establish a live outcome.\n\n## Detail locators\n\n- Pending-available context, example amount/fee conditions and conditional funding/payout/fee/repayment legs: raw lines 15\u201346.\n- Snapshot countries/currencies, receiving-bank return and Australia delay: raw lines 48\u201359.\n- Amount, rolling maximum, cooldown, count and pass-through limits: raw lines 61\u201369.\n- Statement/Payout reports, webhooks and TEST scenarios: raw lines 71\u201399.\n\n## Evidence boundary\n\nCashOut makes pending balance available in the platform ledger; the optional instant bank payout, later settlement repayment, transfer status and beneficiary bank receipt are distinct events. The illustrative sales timeline conflicts internally on the settlement date (raw lines 29\u201331, 46), so it cannot prove a specific repayment date. A request, funding entry, report row or test result does not prove bank receipt. This modern Marketplace flow is separate from Classic Platforms and ordinary payout scheduling.\n\n## Related\n\n- [[adyen-platforms]] \u2014 current platform and marketplace context.\n- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-request]] \u2014 request details and conditions.\n- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-webhooks]] \u2014 transfer-leg event tracking.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15|Pinned Marketplace CashOut overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "During the period between capture and settlement, the funds appear as a [pending available](/marketplaces/balance-types) balance in your users' balance accounts.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md:21"
+    },
+    {
+      "text": "This amount must be less or equal to the pending available balance.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md:33"
+    },
+    {
+      "text": "Adyen makes an instant payout for the cashout amount to your user's transfer instrument, if it is specified in the cashout request (Cashout Instant Payout).",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md:44"
+    },
+    {
+      "text": "Cashout availability depends on the receiving bank's ability to support instant payouts. If they do not support it, the funds are returned, and the cashout amount is added to the pending available balance of the source balance account.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md:50"
+    },
+    {
+      "text": "When you make a successful cashout request for a balance account, you can initiate a new cashout request only after the previous request was processed.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md:68"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-cash-out-instantly-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-cash-out-instantly]] \u2014 2020-modified, 2026-09-15-captured Marketplace CashOut overview for pending-balance funding, conditional instant-payout/fee legs, later settlement repayment, bank-return and cooldown limits; an internal example date conflict prevents exact repayment timing inference.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Marketplace and existing Platforms CashOut overview overlap; retain distinct canonical URL and raw provenance, no duplicate concept.",
+          "The illustrative January 1/January 3 settlement timeline conflicts with the repayment sentence labeling January 1 settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/cash-out-instantly/2026-09-15.md",
+  "raw_sha256": "5f39250879f6d4bf36e3cf3241b6cf76cefc2cb66342e62856fe68a4c9cebf9d",
+  "status": "candidate_ready"
+}

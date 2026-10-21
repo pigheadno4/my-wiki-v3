@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-split-transactions-split-chargebacks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace split chargeback booking\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/split-transactions/split-chargebacks\"\nraw_files:\n  - \"adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, chargebacks, split-payments]\n---\n\n## Overview\n\nThis 2023-modified Marketplace guide captured 2026-09-15 explains how the **disputed amount** in an online-payment chargeback is booked among marketplace balance accounts. By default, Adyen debits the marketplace's liable balance account when an issuer starts a dispute after a customer reverses a user's payment. A successful defense or customer repayment produces a chargeback reversal credit to the liable account; a second chargeback debits it again if the issuer rejects the defense. The marketplace may instead configure user-account or split-ratio booking. This is balance-account chargeback allocation, not proof that a dispute was won, funds settled to a bank or a payout succeeded. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- The page says an online-payment-capable marketplace has no special extra requirements to handle chargebacks. It may accept a chargeback for the user or ask for defense documents and upload them. The default disputed-amount debit, reversal credit and second-chargeback debit are all directed to the liable balance account unless booking logic is changed (raw lines 19\u201335).\n- `platformChargebackLogic.behavior` has three choices: `deductFromLiableAccount`, `deductFromOneBalanceAccount` with required `targetAccount`, or `deductAccordingToSplitRatio` using the original payment/session `splits` ratio. `costAllocationAccount` separately selects where chargeback fees are booked; in the use cases, omitted fees default to the liable balance account. The full disputed amount or portions are allocated to balance accounts, so fee allocation is a separate decision from the disputed amount (raw lines 37\u201366, 80\u201392, 767\u2013782, 1475\u20131503).\n- Support configures a balance-platform default. Per-payment logic overrides that default, and logic in a capture request overrides logic in the payment request. The payment-level object can be sent with Checkout `/payments`, `/sessions` or `/payments/{paymentPspReference}/captures`; listen to `CHARGEBACK` for an occurrence. These request examples use TEST Checkout v72 and versioned SDK snippets; configuring a potential chargeback does not establish a live chargeback or booking (raw lines 45\u201368, 80\u201396).\n- **Destination fallback:** Checkout validates split-instruction format but not the named balance accounts. Even a successful transaction can book somewhere other than the requested account. If the account is nonexistent or belongs to a closed account holder, the **full transaction and fees** book to the marketplace liable balance account; an internal transfer may then correct balances. A successful request is therefore not target-account booking proof (raw lines 70\u201374).\n- For single-user-account allocation, the guide says the chargeback currency and amount need not match the original payment. For ratio allocation, it applies the original split **ratio**, not original amounts, to the disputed amount. Its worked example describes an original USD 100 split 70:20:10 and a USD 88 dispute, but parentheticals say EUR 88 while the displayed allocated lines say USD. Retain the 7:2:1 arithmetic, not the example's mixed-currency labeling as a reliable FX rule (raw lines 767\u2013780, 1475\u20131503).\n- For fund-movement tracking, acknowledge transfer and transaction webhooks per split item. `balancePlatform.transfer.created` at `received` and later `transfer.updated` at `authorised` precede debit booking; the example then shows `transfer.updated` status `chargeback` with `transactionId` and a `balancePlatform.transaction.created` status `booked`. The prose calls the cumulative array `event` while examples use `events`; example PaymentFee and Commission account IDs/transfer-event labels also disagree with adjacent sample payloads, so use them as illustrative rather than a canonical ledger (raw lines 2189\u20132207, 2222\u20132522, 2524\u20132837, 2839\u20133152). The Balance Platform Accounting Report carries chargeback fee type before transfer description (lines 3154\u20133156).\n\n## Detail locators\n\n- Chargeback, reversal and second-chargeback liable-account direction: raw lines 19\u201335. Behavior, fee target and precedence: lines 37\u201368. Invalid/closed target fallback: lines 70\u201374.\n- TEST v72 liable-account example: lines 76\u2013766. User-balance-account example and independent chargeback amount/currency: lines 767\u20131474. Original-ratio example including USD/EUR mismatch: lines 1475\u20132188.\n- Split-grain webhook tracking and `event`/`events` discrepancy: lines 2189\u20132207; disputed-amount webhooks: 2209\u20132522; fees: 2524\u20132837; commission: 2839\u20133152. Report route: lines 3154\u20133160.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platforms]] \u2014 modern Platforms model and Marketplace route.\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-chargebacks]] \u2014 separate Platforms-path guide to chargeback booking.\n- [[source-adyen-docs-marketplaces]] \u2014 marketplace integration overview.\n- [[adyen-classic-platforms]] \u2014 distinct legacy integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15|Marketplace split chargebacks \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If a payment is reversed by a customer of your user, and the issuer has started a [dispute process](/risk-management/understanding-disputes/dispute-process-and-flow), Adyen withdraws the disputed funds from your marketplace's liable balance account. This transaction is called a **chargeback**.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md:19"
+    },
+    {
+      "text": "If you decide to set the chargeback logic on a payment level, you can do so in your payment or capture request. The chargeback logic sent in a capture request overrides the logic you specified in your payment request.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md:50"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request. This means that even if the transaction is successful, it is possible that the funds are not credited to/deducted from the specified balance account. If the balance account does not exist, or it is linked to an account holder with a **closed** [status](https://docs.adyen.com/api-explorer/balanceplatform/latest/post/accountHolders#responses-200-status), the full transaction and its fees are booked to your marketplace's liable balance account.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md:72"
+    },
+    {
+      "text": "The disputed amount is split between the balance accounts in the original payment according to the payment's split ratio. We only consider the ratio when splitting the chargeback, and not the amount. The amount and currency do not need to match the original payment.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md:1477"
+    },
+    {
+      "text": "2. Acknowledge the webhooks. We send these webhooks for every split item in the payment.",
+      "location": "raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md:2198"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-split-chargebacks-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-split-transactions-split-chargebacks]] \u2014 2023-modified, 2026-09-15-captured Marketplace disputed-amount booking guide for liable/user/ratio options, capture-over-payment precedence, invalid-target liable fallback and split-grain webhook tracking; samples have currency/account/status inconsistencies.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A successful Checkout request does not verify destination balance accounts; nonexistent or closed-holder targets book the full transaction and fees to the liable account.",
+          "The ratio example mixes USD and EUR labels; webhook examples mismatch `event` versus `events` and some fee/commission account IDs and event-status labels. Preserve the prose-level lifecycle and verify live bookings separately."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/split-transactions/split-chargebacks/2026-09-15.md",
+  "raw_sha256": "616166b9efdd3e70fef0a3aec2f3530be45246a8136c1074529aafbe9d25f36c",
+  "status": "candidate_ready"
+}

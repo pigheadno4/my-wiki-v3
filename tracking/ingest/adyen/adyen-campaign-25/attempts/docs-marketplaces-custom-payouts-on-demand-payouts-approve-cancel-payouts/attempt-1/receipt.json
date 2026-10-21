@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-marketplaces-custom-payouts-on-demand-payouts-approve-cancel-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Approve or cancel Marketplace-path on-demand payouts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/custom-payouts/on-demand-payouts/approve-cancel-payouts\"\nraw_files:\n  - \"adyen/docs/marketplaces/custom-payouts/on-demand-payouts/approve-cancel-payouts/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, custom-payouts, payout-review, transfers]\n---\n\n## Overview\n\nThis 2020-modified, 2026-09-15-captured Marketplace-path guide explains an optional additional review of an initiated on-demand payout transfer before Adyen processes it. The platform includes a `review` object in Transfers API POST `/transfers`; an eligible team reviewer then approves or cancels the pending payout. Approval authorizes continued processing, while cancellation or 30 days without a decision fails that request. These are review-state transitions, not evidence of a booked payout or beneficiary-bank receipt. See [[adyen]] and [[adyen-platforms]] for provider and modern balance-platform context.\n\n## Key takeaways\n\n- The reviewing web-service API key needs **TransferService Approval role**, and the page requires Transfer Webhooks. It describes granting team members the role through Customer Area, but does not establish a mandatory distinct reviewer or a technically enforced separation-of-duties policy. The linked on-demand guide owns the detailed initial payout request.\n- Submit POST `/transfers/approve` or `/transfers/cancel` with a `transferIds` array naming one to 500 initiated payouts. The curl examples use a TEST balance-platform `/btl/v4` endpoint, while the SDK snippets have pinned library versions and TEST environments. The page says a successful review API request returns HTTP 200; that acknowledges the review action, not downstream payout or bank credit.\n- A `review` object on the original payout transfer makes it pending approval. Approval authorizes the payout request and Adyen continues processing it. Cancellation fails the request and Adyen no longer processes it; no action within 30 days after initiation has the same failure consequence. The page does not provide a same-request retry or post-processing cancellation path.\n- Transfer-webhook tracking separates the states: `balancePlatform.transfer.created` identifies a pending review with `status: received`, `reason: pending` and an illustrative `review.numberOfApprovalsRequired: 1`; `balancePlatform.transfer.updated` illustrates approval as `authorised`/`approved` and cancellation as `cancelled`/`unknown`. The prose mentions expiry updates but provides no separate expiry payload. TEST outgoing bank-transfer examples do not demonstrate final booked transfer, bank arrival or a general requirement for exactly one approval.\n\n## Detail locators\n\n- Review purpose, role/webhook requirements, trigger, pending state, approval/cancellation and 30-day no-action failure: raw lines 15\u201350.\n- Approval endpoint, 1\u2013500 IDs, TEST v4 curl/SDK snippets and HTTP 200: lines 52\u2013259. Cancellation endpoint, same bound, TEST snippets and HTTP 200: lines 261\u2013468.\n- Review event types and pending/approval/cancellation examples: lines 470\u2013736. `received`/`pending`: 487\u2013560; `authorised`/`approved`: 563\u2013651; `cancelled`/`unknown`: 653\u2013736.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-platforms]] \u2014 modern platform balance-account and payout model.\n- [[source-adyen-docs-marketplaces-custom-payouts]] \u2014 Marketplace custom-payout scope and prerequisites.\n- [[source-adyen-docs-platforms-custom-payouts-on-demand-payouts-approve-cancel-payouts]] \u2014 separately pinned Platforms-path version of this review guide.\n\n## Related raw API references\n\n- The raw guide links to Transfers API and on-demand payout initiation, plus payout-webhook detail; these pages own current request schema and later financial-state interpretation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/approve-cancel-payouts/2026-09-15|Adyen Docs: Approve or cancel payouts (2026-09-15 snapshot; page last modified 2020-09-11)]]\n",
+  "quotes": [
+    {
+      "text": "If the payout is approved, then Adyen continues processing the payout.",
+      "location": "raw line 21, # Approve or cancel payouts"
+    },
+    {
+      "text": "Make sure that your web service API key has the following role:- **TransferService Approval role**",
+      "location": "raw line 29, ## Requirements"
+    },
+    {
+      "text": "If the reviewer takes no action within 30 days after initiating the payout request, then the payout fails and Adyen can no longer processes the request.",
+      "location": "raw line 48, ## How it works"
+    },
+    {
+      "text": "You can include one or more `transferIds` in the request, up to a maximum of 500.",
+      "location": "raw line 58, ## Approve payouts; repeated for cancellation at line 267"
+    },
+    {
+      "text": "For every payout request, Adyen sends multiple [webhooks](/marketplaces/payout-webhooks) to your server.",
+      "location": "raw line 472, ## Get status updates on payout reviews"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplaces-approve-cancel-payouts-reciprocal",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-custom-payouts-on-demand-payouts-approve-cancel-payouts]] \u2014 2020-modified, 2026-09-15-captured Marketplace-path Transfers API guide for pending on-demand payout review, 500-ID approve/cancel batches, 30-day expiry and webhook review states; approval does not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/custom-payouts/on-demand-payouts/approve-cancel-payouts/2026-09-15.md",
+  "raw_sha256": "f3d27f92784dc2422fb9d498669ca28f6d574957be5184aed1ec01f9da59960a",
+  "status": "candidate_ready"
+}

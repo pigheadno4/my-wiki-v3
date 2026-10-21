@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-split-transactions-split-refunds",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplaces: Split refunds\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/split-transactions/split-refunds\"\nraw_files:\n  - \"adyen/docs/marketplaces/split-transactions/split-refunds/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, refunds, split-transactions]\n---\n\n## Overview\n\nThis 2026-09-15 Marketplace-path guide explains how a platform requests a refund of a captured payment and allocates deductions across its users' and its own liable balance accounts with refund split instructions. The split determines which credited party bears the refund; the request and test examples are not proof that the refund or balance movements completed. This is an Adyen for Platforms balance-account flow, separate from Classic Platforms. [[adyen]] [[adyen-platforms]] (raw lines 15\u201319, 35\u201339)\n\n## Key takeaways\n\n- The platform needs Checkout API credentials, standard-webhook handling and a subscription to transfer or transaction webhooks. Some payment methods do not support partial refunds; the guide limits refund deductions to balance accounts credited by the payment and says to reuse the original split's `pspReference` values. The outcome of the refund request arrives asynchronously in a `REFUND` webhook. (raw lines 21\u201333, 789)\n- Use the original payment PSP reference in `POST /payments/{paymentPspReference}/refunds`. The request includes `amount` and `merchantAccount`; refund value must equal or, for a partial refund, be below the captured amount, and the top-level refund currency must match payment authorization. A refund `reference` is optional. The guide strongly recommends explicit `splits` for every partial refund; it does not specify a no-splits partial-refund allocation rule. (raw lines 35\u201351)\n- For explicit splits, `account` identifies the user's or platform's balance account to debit, `amount.value` gives that split's deduction, and `type` selects the leg. `BalanceAccount` debits the specified balance account; `Commission` reverses the original platform commission against the liable balance account; fee types and an FX `Remainder` have separate meanings. `reference` is conditionally required for `BalanceAccount`; `amount.currency` is conditionally required when the split refund is in a different currency. The page's top-level currency-matching rule and split-level conditional currency instruction should be read at their own scopes rather than treated as interchangeable. (raw lines 55\u201368)\n- For a **full** refund without `splits`, the deduction follows the original payment **authorization** split ratio, not the capture split. That path assumes the authorization contained splits; if it did not, the full refund is debited from the marketplace's liable balance account. This page does not extend that fallback rule to a partial refund. (raw lines 511\u2013521)\n- The API request validates split formatting, **not** whether target balance accounts exist or remain usable. Even if the request succeeds, a nonexistent target or one linked to a closed account holder causes the full transaction and its fees to be booked to the marketplace's liable balance account. The guide routes balance correction to a separate internal fund transfer. Request acceptance is therefore not destination-booking proof. (raw lines 791\u2013795)\n- Track each refund split separately: `balancePlatform.transfer.created` with outgoing/`received`, then transfer updates such as `authorised` and `refunded`, and a `balancePlatform.transaction.created` booking event. The page says to acknowledge each webhook and describes cumulative prior events and `sequenceNumber` in transfer updates. The illustrated user-sale, transaction-fee and platform-commission legs are TEST samples with different balance-account liabilities; the first transfer status is not final booking or customer receipt. (raw lines 797\u2013815, 819\u2013834, 902\u2013904, 986\u2013989, 1087\u20131089, 1134\u20131151, 1451\u20131468, 1620\u20131623, 1721\u20131723)\n- **Sample reconciliation caution:** The transaction-fee transfer sample uses transfer ID `8KREG78BWDNEKXHW` and balance account `BA...0002`, but its transaction-created sample uses transfer ID `3JERI65VWKBRFIVB` and account `BA...0001`. The commission transfer sample uses transfer ID `7JHRI65VWKBRFPMG` and the liable account `BA...0003`, while its transaction-created sample again uses `3JERI65VWKBRFIVB` and `BA...0001`. Treat those identifiers as inconsistent illustrative data, not a join rule. (raw lines 1167\u20131171, 1205, 1419\u20131443, 1484\u20131487, 1522, 1736\u20131760)\n\n## Detail locators\n\n- Raw lines 70\u2013509: explicit-split refund examples in Checkout v72/test and version-labeled Java/PHP/.NET/Node/Go/Python/Ruby SDKs; example USD 80.00 refund allocates 4.00 commission and 76.00 user balance deduction. Raw lines 523\u2013787: full-refund examples without split instructions.\n- Raw lines 819\u20131132: outgoing user sale-amount transfer and booking example; lines 1134\u20131449: transaction-fee leg; lines 1451\u20131766: platform commission leg. `pspPaymentReference` identifies the associated payment and `modificationPspReference` the refund in the example transfer metadata (raw lines 823\u2013828, 1140\u20131145, 1457\u20131462).\n- Raw lines 1768\u20131781: optional FX `Remainder` booking to a selected balance account; the linked currency-conversion guide owns the fuller conversion procedure.\n\n## Related\n\n- [[adyen-platforms]] \u2014 parent Adyen for Platforms context.\n- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 parallel Platforms-path refund guide; use this page's pinned Marketplace-path evidence for the claims above.\n- [[adyen-platform-internal-transfers]] \u2014 separate balance-correction transfer route.\n- [[adyen-currencies-and-fx]] \u2014 FX context for the `Remainder` route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/split-transactions/split-refunds/2026-09-15|Marketplace split refunds, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When processing a refund for your user, you can split the refund amount between the balance accounts in your marketplace by including the split instructions in your refund request.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Refunds can only be deducted from the balance accounts to which the payment was credited.",
+      "location": "raw line 31, Requirements > Limitations"
+    },
+    {
+      "text": "The funds are deducted according the split instructions in the payment authorization, *not* the capture.",
+      "location": "raw line 513, Use split instructions from payment authorization"
+    },
+    {
+      "text": "If the payment authorization didn't contain split instructions, the full refund amount is debited from your liable balance account.",
+      "location": "raw line 519, Use split instructions from payment authorization"
+    },
+    {
+      "text": "The API request validates only the format of the split instructions, **not** the balance accounts specified in the request.",
+      "location": "raw line 793, Troubleshooting"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "marketplaces-split-refunds-platforms-source",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "- [[source-adyen-docs-platforms-online-payments-split-transactions-split-refunds]] \u2014 2026-09-15 Platforms Checkout refund split-booking guide covering explicit debits, authorization-ratio fallback, liable-account fallback and asynchronous refund/transfer evidence.",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-split-transactions-split-refunds]] \u2014 2026-09-15 Marketplace-path Checkout split-refund guide for explicit user/liable deductions, full-refund authorization-ratio and invalid-target liable fallbacks, and asynchronous per-split booking evidence; examples have inconsistent transfer/account IDs.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "For a full refund without splits, the guide uses the authorization split rather than capture, with liable-account fallback if authorization lacked splits; it does not state the no-splits partial-refund allocation.",
+          "Raw 791\u2013795 warns that format-only validation can leave a seemingly successful request fully booked to the liable account for a nonexistent or closed-holder target; sample fee/commission transaction identifiers differ from corresponding transfer examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/split-transactions/split-refunds/2026-09-15.md",
+  "raw_sha256": "92f8ecf75c4819a8703e98583f9d930818087ef6f12fcb0af88b420984e878d6",
+  "status": "candidate_ready"
+}

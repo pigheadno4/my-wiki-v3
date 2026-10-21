@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-marketplaces-cash-out-instantly-cashout-request",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Marketplace cashout request\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/marketplaces/cash-out-instantly/cashout-request\"\nraw_files:\n  - \"adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md\"\ntags: [adyen, marketplaces, platforms, cashout, payouts]\n---\n\n## Overview\n\nThis 2020-modified Marketplace guide, captured 2026-09-15, describes POST `/cashouts` to make a user's pending funds instantly available in that user's balance account. A request may also direct those funds to the user's transfer instrument as a separate payout leg; omitting the instrument leaves them in the balance account. The endpoint's created cashout and related transfer IDs begin asynchronous processing, not proof of payout or bank receipt. [[adyen]] [[adyen-platforms]]\n\n## Key takeaways\n\n- Prerequisites are an Adyen for Platforms integration, API credentials with Transfers and Configuration API roles, accepted Transfer webhooks, Support enablement for the marketplace, and sales-day settlement on the user's balance account. The user's accounts need `receiveFromBalanceAccount` and `sendToBalanceAccount`; `sendToTransferInstrument` is conditional on a transfer-instrument payout. From LEM API v3, that payout capability is verified at the individual transfer-instrument level, not all instruments for the legal entity (raw lines 21\u201335).\n- For the optional instant bank payout, the guide **recommends** calculating a bank route with `priorities: [instant]` and verifying an `instant` response, then checking `balances.pendingAvailable` with GET `/balanceAccounts/{id}`. Show zero cashout availability when that balance is negative. A route calculation is a precheck, not a guarantee that a later payout succeeds (raw lines 39\u2013104).\n- POST `/cashouts` requires `instructingBalanceAccountId`, `amount.value` and `amount.currency`. `counterparty.transferInstrumentId` is required only to pay out to the user's transfer instrument; absent it, the funds remain in the user's balance account. `description` and `referenceForBeneficiary` are allowed only with that instrument. The platform may charge a fee in minor units, no more than the cashout amount, in the same currency; cashout plus fee must fit the pending balance (raw lines 106\u2013122).\n- The created response exposes a cashout ID and related transfer objects such as `cashoutRepayment` (deduction after settlement) and `cashoutFee`. Track the asynchronous result through Transfer `created`/`updated` and Transaction `created` webhooks; subscribe to both Transfer and Transaction webhooks for that flow. A created response, balance-account availability, or booked debit does not establish bank receipt (raw lines 149\u2013219).\n- If a request succeeds but its instrument payout fails, the guide says the cashout is reversed: cashout amount and user fee return to the user's balance account as pending available, and the marketplace is not charged for the failed cashout. Retrying requires a **new** POST `/cashouts`. Invalid instrument ownership, no instant route, currency/fee mismatch and insufficient pending balance are error routes; this snapshot lists EUR, USD, GBP and AUD and a unit-one minimum, subject to the page's dated scope (raw lines 221\u2013322).\n- **Example conflict:** the request table names `counterparty.transferInstrumentId`, but the curl example places `transferInstrumentId` at the top level. Its prose says EUR 1000 with EUR 10 fee, and request uses fee value 1000, but the example response shows `fee.amount.value: 100000` while its `cashoutFee` transfer is 1000. Do not infer canonical request placement or fee math from those conflicting examples; verify against the API schema (raw lines 117\u2013124, 128\u2013146, 162\u2013199).\n\n## Detail locators\n\n- Purpose, conditional capabilities, setup, optional checks and balance limit: raw lines 17\u2013104. Request fields, TEST /btl/v4 curl example, created response and example conflicts: lines 106\u2013202.\n- Async webhook subscriptions, failure reversal/new-request retry, error causes and dated currencies/minimum: lines 204\u2013322.\n\n## Related\n\n- [[adyen]] \u2014 provider.\n- [[adyen-platforms]] \u2014 modern platform/Marketplace context.\n- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-webhooks]] \u2014 Marketplace cashout transfer legs and statuses.\n- [[source-adyen-docs-platforms-cash-out-instantly-cashout-request]] \u2014 separate Platforms-path request guide.\n- [[adyen-classic-platforms]] \u2014 distinct legacy integration.\n\n## Raw Sources\n\n- [[raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15|Marketplace cashout request \u2014 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When you make a cashout, your user's pending funds are instantly made available in your user's balance account. In your cashout request, you can also specify to pay out the funds to the user's transfer instrument.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md:19"
+    },
+    {
+      "text": "**sendToTransferInstrument** (only required for cashout requests that include a `transferInstrumentId`).",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md:32"
+    },
+    {
+      "text": "If you do not provide this value, the funds are not paid out, but remain in the user's balance account.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md:117"
+    },
+    {
+      "text": "After you make the cashout request, Adyen processes it asynchronously.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md:202"
+    },
+    {
+      "text": "To retry a failed cashout, you must initiate a new POST [/cashouts](https://docs.adyen.com/api-explorer/transfers/latest/post/cashouts) request.",
+      "location": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md:231"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c25-marketplace-cashout-request-source-route",
+        "target_path": "wiki/concepts/adyen-platforms.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-marketplaces-cash-out-instantly-cashout-request]] \u2014 2020-modified, 2026-09-15-captured Marketplace `/cashouts` request guide for pending-balance availability, optional instrument payout and fee, capability/route checks, asynchronous webhooks and failure reversal; request/response examples conflict on instrument placement and fee amount.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "A cashout can make pending funds available on a user balance account without paying out to a bank; optional instrument payout is a separate asynchronous outcome.",
+          "The example curl uses top-level transferInstrumentId although the field table requires counterparty.transferInstrumentId; response fee amount also conflicts with prose/request and cashoutFee transfer."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/marketplaces/cash-out-instantly/cashout-request/2026-09-15.md",
+  "raw_sha256": "0518c56ef4daf72b7435722dfd624f7f1ea27cf96c5d56e311cef57afc2a6b0b",
+  "status": "candidate_ready"
+}
