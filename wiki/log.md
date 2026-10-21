@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-21] ingest | Stripe iOS `26.15.0`
+
+- Approved full additive ingest after 26.14.0, with focused reading and eight exact-SHA supplements. Recorded alpha KYC rename, funding-label forwarding, Identity test-mode image substitution, presentation and scoped Radar changes; older history/source count retained. Details [[stripe-log]], [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]]. No SDK/payment execution, commit or push.
+
+## [2026-10-21] ingest | Stripe iOS `26.14.0`
+
+- Approved full additive ingest with focused reading and five exact-SHA supplements: nine method bindings, presentation/label changes and alpha Apple Pay KYC-region recollection. Prior history/source count retained; excluded implementation and runtime limits explicit. Details [[stripe-log]], [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-20] ingest | Adyen website C24
 
 - Fifty independently approved Classic reports/reconciliation/release/partner/POS and Marketplace foundation/onboarding/verification references documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 2 concepts touched (0 new); source_count 1214 = 1200 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-24/`; details [[adyen-log]]. No commit/push.

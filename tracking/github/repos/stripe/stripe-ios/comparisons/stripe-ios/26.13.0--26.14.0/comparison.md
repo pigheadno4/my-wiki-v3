@@ -1,0 +1,117 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-ios`
+- Package: `stripe-ios`
+- From: `26.13.0` (`b65af30ecc73007aa9164627253ecafdf0a84872`)
+- To: `26.14.0` (`677c04d2f5fac600779a52d3f43de8d8ac8dbf1d`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `README.md`
+- `StripeApplePay.podspec`
+- `StripeConnect.podspec`
+- `StripeCryptoOnramp.podspec`
+- `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `StripeFinancialConnections.podspec`
+- `StripeIdentity.podspec`
+- `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`
+- `StripeIssuing.podspec`
+- `StripePaymentSheet.podspec`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsCollectionViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `StripePayments.podspec`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCash.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCashParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMondu.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMonduParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransfer.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransferParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCard.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCardParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSD.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSDParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWallet.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWalletParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRIS.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRISParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGo.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGoParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoney.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoneyParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `VERSION`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `README.md`
+- `modified`: `StripeApplePay.podspec`
+- `modified`: `StripeConnect.podspec`
+- `modified`: `StripeCryptoOnramp.podspec`
+- `modified`: `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `modified`: `StripeFinancialConnections.podspec`
+- `modified`: `StripeIdentity.podspec`
+- `modified`: `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`
+- `modified`: `StripeIssuing.podspec`
+- `modified`: `StripePaymentSheet.podspec`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsCollectionViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `modified`: `StripePayments.podspec`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCash.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCashParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMondu.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMonduParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransfer.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransferParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCard.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCardParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSD.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSDParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWallet.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWalletParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRIS.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRISParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGo.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGoParams.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoney.swift`
+- `added`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoneyParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `modified`: `VERSION`

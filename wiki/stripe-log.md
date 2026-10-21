@@ -6,6 +6,18 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-21] ingest | Stripe iOS `26.15.0`
+
+- Approved serial full additive override `github-b1305ecffaa642570d15`, SHA `19c1d05439595535f0722e67e4847aece4faf4b2`, after 26.14.0 completed. Same approved focused-reading exception; eight supplemental files included. Both 300-file snapshots match all 600 hashes/sizes; 27 modified, 273 unchanged; effective full list 319 paths, 180 classified upstream changes.
+- Recorded plural alpha KYC migration/result semantics, wallet funding forwarding, native test-mode placeholder uploads with metadata/camera boundary, flow-stable presentation and compiled-out device override, and scoped saved-method Radar helper removal. Preserved all earlier history; 15 raw changelog insertions include six retrospective Identity lines, not new-release feature claims.
+- Existing iOS/Onramp concepts updated first, cumulative source/changelog/company/index/logs updated, source count unchanged. No SDK/device/payment execution, commit or push. Next: scoped review and commit/push only with separate approval. Details [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
+## [2026-10-21] ingest | Stripe iOS `26.14.0`
+
+- Approved serial full additive override `github-71e9aef96d1a15daf405`, SHA `677c04d2f5fac600779a52d3f43de8d8ac8dbf1d`; explicit focused reading of changed implementation, affected prior code and five supplemental files. Unchanged source/history, manifests and duplicated diff verified mechanically; full list remains 316 paths. Current/prior capsules: 300/282 files, all 582 hashes/sizes matched; 18 added, 34 modified, 248 unchanged; 1,001 classified upstream paths.
+- Recorded nine method bindings with distinct processing/mandate rules, shared presentation and labels, Identity button-height SPI and alpha Apple Pay key revalidation/recollection. Excluded factories, redirect-fix implementation, backend region/KYC enforcement and runtime behavior remain qualified.
+- Existing iOS/Onramp concepts updated first, then cumulative source/changelog, company/index and logs. Prior history and source count preserved; no new source or cross-company comparison. No SDK/device/payment execution, commit or push. Next: separately ingest approved 26.15.0 after validation. Details [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ## [2026-10-20] ingest | Stripe Android `23.24.0`
 
 - Approved serial full override `github-d8740fe4c8e9ce7596a4`, exact SHA `51f27a791f68ff1f007b4179768ca5caf6c205b8`, with explicit one-release focused reading. Changed implementation/API sections, affected prior code, release/comparison/short content and complete cumulative wiki pages read; unchanged source/API/history/inventories mechanically verified. Effective full list 61 paths/1.68 MB; both 52-file snapshots match all 104 hashes/sizes, fifteen modified/37 unchanged, 602 classified upstream changes and no packet gaps.

@@ -83,6 +83,10 @@ The `26.11.0` additive baseline adds Scalapay bindings/support announcements and
 
 The `26.13.0` iOS delta adds MoMo/GoPay/ShopeePay bindings and announced PaymentIntent support, with MoMo processing distinct from the other two in client completion. FlowController preserves Checkout updater plumbing; alpha CryptoOnramp adds pre-auth Apple Pay collection, merchant-of-record hint/cache handling and delegated additional KYC. Announced Apple Pay/card-brand/currency fixes and excluded internals remain explicitly qualified; older history is retained in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
 
+The `26.14.0` iOS additive baseline adds nine payment-method bindings/support announcements, shared-container presentation, structured display labels and alpha Apple Pay KYC-region revalidation with explicit recollection recovery. New-method processing is not client success; account eligibility, concrete presentation internals and the announced redirect-crash repair remain bounded evidence. Older native history stays in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
+The `26.15.0` iOS additive baseline records the plural alpha KYC method/result rename, wallet funding-label forwarding, native Identity test-mode placeholder uploads and flow-stable presentation plumbing. The deferred preparation path drops one saved-method Radar helper while ordinary Radar session APIs remain; image substitution does not mean all camera/PII handling stops. Historical attribution and excluded/runtime boundaries remain in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].

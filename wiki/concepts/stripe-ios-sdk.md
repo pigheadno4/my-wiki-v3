@@ -163,6 +163,26 @@ Identity adds STP SPI `hideDeclineButton`, default false, without evidence of co
 
 See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for the approved focused-reading delta, exact evidence and preserved older versions. No SDK build, device or payment testing was performed.
 
+### Version-qualified `26.14.0` additive baseline
+
+The release announces PaymentSheet payments/setup for GCash, Touch 'n Go and TrueMoney, and PaymentIntent support for QRIS, Mondu and four Naira methods (card, bank transfer, USSD and wallet). Retained enums, response/parameter models and serialization establish the bindings; availability/form factories remain excluded, so these are not eligibility or complete recurring-support guarantees. All nine enter the handler's group where `processing` alone is not client success. GCash joins inferred mandates for PaymentIntents and SetupIntents; Touch 'n Go and TrueMoney join SetupIntent inference. Explicit mandate data retains precedence.
+
+PaymentSheet, CustomerSheet, FlowController and Link callers move from concrete bottom sheets to `PaymentSheetContainer`/factory presentation and remove test-mode badge inputs. The supplement shows a resolver that captures an initial Elements Session flag, but the factory and actual container implementations are excluded: do not infer universal native-sheet rollout. Link KYC/HTML confirmation still awaits acceptance work and dismissal before returning, including callback failure. Embedded display-data equality now includes shared structured labels. Identity's STP custom-button cases add an optional minimum height, default nil; renderer behavior is not retained.
+
+Alpha CryptoOnramp records the publishable key used for Apple Pay collection. For pre-authentication collection, token creation fetches fresh platform settings and throws `PaymentMethodKYCRegionChangedError` (`payment_method_kyc_region_changed`) if the key differs. Recollect Apple Pay successfully before retrying; authentication-first collection avoids this pre-auth mismatch path. Collection still does not perform checkout. See [[stripe-crypto-onramp]].
+
+The redirect-cancellation crash fix remains release-note-only evidence. All older versions remain preserved in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]]; no SDK/device/payment testing was performed.
+
+### Version-qualified `26.15.0` additive baseline
+
+FlowController and Embedded now own a native-sheet resolver and pass it through shared/Link/Checkout confirmation, form presentation and rebuilds. Each flow captures its initial override-or-Elements-Session flag; updates retain that decision. The supplemental resolver disables its earlier hardware-specific override with a false compilation condition. Complete PaymentSheet separately opts in only through the test-playground override on phones, not the server-controlled rollout. Container/factory internals remain excluded; this is not evidence of universal native-sheet activation.
+
+The deferred shared-payment-token branch no longer waits for `createSavedPaymentMethodRadarSession`; it calls preparePaymentMethodHandler and returns completeWithoutConfirmingIntent. The saved-method-specific STP helper/endpoint is removed, while ordinary createRadarSession remains. Do not generalize this into removal of Radar or infer payment success from this early completion.
+
+Alpha CryptoOnramp renames `fulfillKYCRequirement`/`FulfillKYCRequirementResult` to plural `fulfillKYCRequirements`/`FulfillKYCRequirementsResult`; update explicit names in alpha integrations. The result distinguishes submitted, pendingVerification, canceled and notRequired, not verified KYC. Wallet previews now forward card funding type to Link formatting; its final formatter is excluded. See [[stripe-crypto-onramp]].
+
+Identity's supplemental native flow passes `isTestMode: !staticContent.livemode` to uploaders. Test-mode document/selfie pixels are replaced with bundled placeholders, without cropping; missing resources fail instead of using the real image. Live-mode branches retain original-image uploads. Camera capture still exists and document metadata/scanner output still passes onward; do not claim all PII collection stops or apply this proof to the web fallback. Historical Identity annotations newly inserted under 26.5.0, 25.17.0 and 25.12.0 are not newly introduced 26.15.0 features. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for exact evidence and all preserved history.
+
 ## Apple Pay
 
 `STPApplePayContext` creates a Stripe PaymentMethod from a `PKPayment`, asks the delegate for confirmation details, and reports completion. It supports UIKit, SwiftUI-compatible presentation, async delegate methods, request customization, shipping and coupon changes, and explicit dismissal.
@@ -205,6 +225,8 @@ The alpha `CryptoOnrampCoordinator` supports Link account discovery and authenti
 
 | Version | Important boundary |
 | --- | --- |
+| `26.15.0` | Alpha plural KYC API; funding-label forwarding; Identity test-mode placeholder uploads; flow-stable presentation plumbing and saved-method Radar SPI removal |
+| `26.14.0` | Nine method bindings/support announcements; processing and mandate distinctions; container presentation; alpha Apple Pay/KYC-region recollection |
 | `26.13.0` | MoMo/GoPay/ShopeePay bindings and announced PaymentIntent support; distinct processing semantics; FlowController rebuild plumbing; alpha pre-auth Apple Pay and additional KYC |
 | `26.12.0` | Alpha partner-terms flows and announced Image API removal; scoped confirmation-wrapper cleanup, Identity styling and retrospective card-program-name note |
 | `26.11.0` | Checkout SPI no-method/missing-Intent confirmation changes and timeout warning; Scalapay bindings/support announcement; revised Link visibility documentation |

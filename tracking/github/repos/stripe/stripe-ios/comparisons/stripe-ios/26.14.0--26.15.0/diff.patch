@@ -1,0 +1,924 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 1e7ecf9..0ea03db 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,15 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.15.0 2026-10-19
++
++### CryptoOnramp (Alpha)
++* [Changed] Apple Pay card previews now include the card funding type (Credit, Debit, or Prepaid), falling back to Card when unavailable, matching Link's formatting.
++* [Changed] Renamed `CryptoOnrampCoordinator.fulfillKYCRequirement(from:)` to `fulfillKYCRequirements(from:)` and `FulfillKYCRequirementResult` to `FulfillKYCRequirementsResult`.
++
++### Identity
++* [Changed] Test-mode verification sessions now upload placeholder document and selfie images instead of users' images.
++
+ ## 26.14.0 2026-10-12
+ ### General
+ * [Removed] Removed the "test mode" badge from all UI surfaces.
+@@ -130,6 +139,10 @@ PATCH
+ * [Added] Added support for Bizum payments.
+ 
+ ## 26.5.0 2026-08-03
++### Identity
++* [Fixed] Fixed camera setup failures on devices whose cameras do not support 4K capture by falling back to a supported capture preset. ([#6695](https://github.com/stripe/stripe-ios/pull/6695))
++* [Changed] Manual document capture is now available when a verification session requires live capture. ([#6815](https://github.com/stripe/stripe-ios/pull/6815))
++
+ ### CryptoOnramp (Alpha)
+ * [Added] Added support for registering wallet addresses on the Tempo network.
+ 
+@@ -205,6 +218,7 @@ PATCH
+ 
+ ### Identity
+ * [Added] Added a manual capture mode for identity document verification, allowing users to tap "Take Photo" instead of relying on automatic capture. ([#6379](https://github.com/stripe/stripe-ios/pull/6379))
++* [Changed] Increased horizontal padding in Identity screen headers. ([#6300](https://github.com/stripe/stripe-ios/pull/6300))
+ 
+ ### PaymentSheet
+ * [Fixed] Fixed an NSRangeException crash in address autocomplete search results.
+@@ -252,6 +266,7 @@ PATCH
+ ## 25.12.0 2026-04-27
+ ### Identity
+ * [Improved] Improved StripeIdentity analytics with richer error details and screen/camera context to help debug verification flows.
++* [Fixed] The web-based Identity verification flow now offers a retry when its web content process terminates. ([#6243](https://github.com/stripe/stripe-ios/pull/6243))
+ 
+ ### All
+ * [Removed] Removed UPI support across the SDK.
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index 5c90a3c..5cbdba8 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 3b842bd..42c7f81 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 6ddff68..cd696b7 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+index cc7bb0d..acc7e92 100644
+--- a/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
++++ b/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift
+@@ -113,12 +113,12 @@ protocol CryptoOnrampCoordinatorProtocol {
+     /// Requires an authenticated Link user.
+     ///
+     /// - Parameter viewController: The view controller from which to present document collection.
+-    /// - Returns: A `FulfillKYCRequirementResult` indicating whether a document was submitted,
++    /// - Returns: A `FulfillKYCRequirementsResult` indicating whether a document was submitted,
+     ///   verification is pending, the user canceled collection, or no requirement remains.
+     /// Throws if an authenticated Link user is not available, the requirement is unsupported,
+     /// the view controller cannot present collection, or an API error occurs.
+     @MainActor
+-    func fulfillKYCRequirement(from viewController: UIViewController) async throws -> FulfillKYCRequirementResult
++    func fulfillKYCRequirements(from viewController: UIViewController) async throws -> FulfillKYCRequirementsResult
+ 
+     /// Presents the current terms and conditions when acceptance is required.
+     /// Requires an authenticated Link user.
+@@ -531,7 +531,7 @@ public final class CryptoOnrampCoordinator: NSObject, CryptoOnrampCoordinatorPro
+     }
+ 
+     @MainActor
+-    public func fulfillKYCRequirement(from viewController: UIViewController) async throws -> FulfillKYCRequirementResult {
++    public func fulfillKYCRequirements(from viewController: UIViewController) async throws -> FulfillKYCRequirementsResult {
+         analyticsClient.log(.kycRequirementFulfillmentStarted)
+         do {
+             let account = try await linkAccountInfo
+@@ -547,7 +547,7 @@ public final class CryptoOnrampCoordinator: NSObject, CryptoOnrampCoordinatorPro
+ 
+             return result
+         } catch {
+-            try logAndThrow(error, during: .fulfillKYCRequirement)
++            try logAndThrow(error, during: .fulfillKYCRequirements)
+         }
+     }
+ 
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 3d573a7..f6f01aa 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.14.0'
++    s.version                        = '26.15.0'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index 9b3e012..d471fc7 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index 6e15541..d385ae0 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index 2038488..9a5c7cf 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift
+index 2ccae7b..39211a0 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift
+@@ -79,6 +79,7 @@ extension CheckoutController {
+                     let paymentMethodParameters = PaymentMethodConfirmationParameters(
+                         option: .new(confirmParams),
+                         configuration: configuration,
++                        nativeSheetPresentation: parameters.nativeSheetPresentation,
+                         confirmationChallenge: confirmationChallenge,
+                         authenticationContext: parameters.authenticationContext,
+                         paymentHandler: parameters.paymentHandler
+@@ -105,6 +106,7 @@ extension CheckoutController {
+                     let paymentMethodParameters = PaymentMethodConfirmationParameters(
+                         option: .saved(paymentMethod, nil),
+                         configuration: configuration,
++                        nativeSheetPresentation: parameters.nativeSheetPresentation,
+                         confirmationChallenge: confirmationChallenge,
+                         authenticationContext: parameters.authenticationContext,
+                         paymentHandler: parameters.paymentHandler
+@@ -144,6 +146,7 @@ extension CheckoutController {
+                         parameters: LinkConfirmationParameters(
+                             confirmOption: confirmOption,
+                             configuration: configuration,
++                            nativeSheetPresentation: parameters.nativeSheetPresentation,
+                             confirmationChallenge: confirmationChallenge,
+                             analyticsHelper: parameters.analyticsHelper,
+                             authenticationContext: linkAuthenticationContext,
+@@ -158,6 +161,7 @@ extension CheckoutController {
+             PaymentSheet.confirmLinkPaymentOption(
+                 confirmOption: parameters.confirmOption,
+                 configuration: configuration,
++                nativeSheetPresentation: parameters.nativeSheetPresentation,
+                 authenticationContext: parameters.authenticationContext,
+                 intent: .checkout(checkoutSession),
+                 elementsSession: elementsSession,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+index c3e6fc0..b5ba1f1 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift
+@@ -39,9 +39,11 @@ extension CheckoutController {
+ 
+     /// The parameters needed to confirm a Checkout Session with Link.
+     struct LinkConfirmationParameters {
++
+         // TODO: Lots of stuff in here because current Link code nominally requires it but it may not all really be necessary.
+         let confirmOption: PaymentSheet.LinkConfirmOption
+         let configuration: PaymentElementConfiguration
++        let nativeSheetPresentation: SheetImplementationResolver?
+         let confirmationChallenge: ConfirmationChallenge?
+         let analyticsHelper: PaymentSheetAnalyticsHelper
+         let authenticationContext: STPAuthenticationContext
+@@ -50,6 +52,7 @@ extension CheckoutController {
+ 
+     /// The parameters needed to confirm a Checkout Session with a new or saved payment method.
+     struct PaymentMethodConfirmationParameters {
++
+         enum Option {
+             case new(IntentConfirmParams)
+             case saved(STPPaymentMethod, IntentConfirmParams?)
+@@ -57,6 +60,7 @@ extension CheckoutController {
+ 
+         let option: Option
+         let configuration: PaymentElementConfiguration
++        let nativeSheetPresentation: SheetImplementationResolver?
+         let confirmationChallenge: ConfirmationChallenge?
+         let authenticationContext: STPAuthenticationContext
+         let paymentHandler: STPPaymentHandler
+@@ -112,6 +116,7 @@ extension CheckoutController {
+ 
+         let paymentOption: PaymentOption
+         let configuration: PaymentElementConfiguration
++        let nativeSheetPresentation: SheetImplementationResolver
+         let integrationShape: PaymentSheet.IntegrationShape
+         let confirmationChallenge: ConfirmationChallenge?
+ 
+@@ -125,6 +130,7 @@ extension CheckoutController {
+             }
+             paymentOption = resolvedPaymentOption
+             configuration = paymentElement.paymentSheetFlowController.configuration
++            nativeSheetPresentation = paymentElement.paymentSheetFlowController.nativeSheetPresentation
+             integrationShape = .flowController
+             confirmationChallenge = paymentElement.paymentSheetFlowController.confirmationChallenge
+         } else {
+@@ -137,6 +143,7 @@ extension CheckoutController {
+             }
+             paymentOption = resolvedPaymentOption
+             configuration = paymentElement.embeddedPaymentElement.configuration
++            nativeSheetPresentation = paymentElement.embeddedPaymentElement.nativeSheetPresentation
+             integrationShape = .embedded
+             confirmationChallenge = paymentElement.embeddedPaymentElement.confirmationChallenge
+         }
+@@ -172,6 +179,7 @@ extension CheckoutController {
+             return .link(.init(
+                 confirmOption: confirmOption,
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 confirmationChallenge: confirmationChallenge,
+                 analyticsHelper: analyticsHelper,
+                 authenticationContext: authenticationContext,
+@@ -182,6 +190,7 @@ extension CheckoutController {
+                 .init(
+                     option: .new(confirmParams),
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     confirmationChallenge: confirmationChallenge,
+                     authenticationContext: authenticationContext,
+                     paymentHandler: paymentHandler
+@@ -193,6 +202,7 @@ extension CheckoutController {
+                 .init(
+                     option: .saved(paymentMethod, confirmParams),
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     confirmationChallenge: confirmationChallenge,
+                     authenticationContext: authenticationContext,
+                     paymentHandler: paymentHandler
+@@ -336,6 +346,7 @@ extension CheckoutController {
+ 
+         return await PaymentSheet.handlePreconfirmActionsIfNecessary(
+             configuration: parameters.configuration,
++            nativeSheetPresentation: parameters.nativeSheetPresentation,
+             authenticationContext: parameters.authenticationContext,
+             intent: .checkout(checkoutSession),
+             paymentOption: paymentOption,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift
+index 0146bcd..1d2ba8c 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift
+@@ -726,7 +726,7 @@ class CustomerSavedPaymentMethodsViewController: UIViewController {
+                 self.updateBottomNotice()
+             }
+         }
+-        navigationBar.additionalButton.configureCommonEditButton(isEditingPaymentMethods: savedPaymentOptionsViewController.isRemovingPaymentMethods, appearance: configuration.appearance)
++        navigationBar.configureEditButton(isEditingPaymentMethods: savedPaymentOptionsViewController.isRemovingPaymentMethods)
+         navigationBar.additionalButton.addTarget(
+             self, action: #selector(didSelectEditSavedPaymentMethodsButton), for: .touchUpInside)
+     }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift
+index 23c470c..e87568a 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift
+@@ -111,7 +111,7 @@ extension CustomerSheet {
+             }
+ 
+             func forciblyDismissSheet(from controller: UIViewController) {
+-                if let bsvc = controller.presentedViewController as? BottomSheetViewController {
++                if let bsvc = controller.presentedViewController?.bottomSheetController {
+                     bsvc.didTapOrSwipeToDismiss()
+                 }
+             }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+index 4971b8f..3902488 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift
+@@ -698,6 +698,7 @@ extension EmbeddedPaymentElement {
+ 
+         let (result, deferredIntentConfirmationType) = await PaymentSheet.confirm(
+             configuration: configuration,
++            nativeSheetPresentation: nativeSheetPresentation,
+             authenticationContext: authContext,
+             intent: intent,
+             elementsSession: elementsSession,
+@@ -728,10 +729,10 @@ extension EmbeddedPaymentElement {
+         return PaymentSheetContainerFactory.make(
+             contentViewController: viewController,
+             appearance: configuration.appearance,
++            usesNativeSheet: nativeSheetPresentation.usesNativeSheet,
+             didCancelNative3DS2: {
+-                stpAssertionFailure("3DS2 was triggered unexpectedly")
+-            }
+-        )
++            stpAssertionFailure("3DS2 was triggered unexpectedly")
++        })
+     }
+ 
+     func clearPaymentOptionIfNeeded() {
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
+index 60f3948..a1aa0aa 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift
+@@ -193,7 +193,7 @@ public final class EmbeddedPaymentElement {
+ 
+         // If we currently have a sheet presented, fail the update (unless it's a checkout session update, which may occur during billing sync)
+         if !mode.isCheckout,
+-           presentingViewController?.presentedViewController is BottomSheetViewController {
++           isPresentingPaymentUI {
+             let result: EmbeddedPaymentElement.UpdateResult = .failed(error: PaymentSheetError.embeddedPaymentElementUpdateWithFormPresented)
+             analyticsHelper.logEmbeddedUpdateFinished(result: result, duration: Date().timeIntervalSince(startTime))
+             return result
+@@ -387,6 +387,8 @@ public final class EmbeddedPaymentElement {
+     internal var defaultPaymentMethod: STPPaymentMethod?
+     internal private(set) var latestUpdateTask: Task<UpdateResult, Never>?
+     internal private(set) var analyticsHelper: PaymentSheetAnalyticsHelper
++    /// Retains this flow's initial native-sheet feature flag across configuration updates.
++    let nativeSheetPresentation: SheetImplementationResolver
+     private let initialSelection: RowButtonType?
+     internal private(set) var formCache: PaymentMethodFormCache = .init()
+     /// The form view controller for the currently selected payment method.
+@@ -464,6 +466,10 @@ public final class EmbeddedPaymentElement {
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+         initialSelection: RowButtonType? = nil
+     ) {
++        // Each new flow captures its own decision, even when a previous flow's configuration is reused.
++        self.nativeSheetPresentation = SheetImplementationResolver(
++            elementsSession: loadResult.elementsSession
++        )
+         self.configuration = configuration
+         self.loadResult = loadResult
+         self.savedPaymentMethods = loadResult.savedPaymentMethods
+@@ -493,8 +499,9 @@ public final class EmbeddedPaymentElement {
+ // MARK: - Checkout
+ 
+ extension EmbeddedPaymentElement {
++
+     var isPresentingPaymentUI: Bool {
+-        return presentingViewController?.presentedViewController is BottomSheetViewController
++        return presentingViewController?.presentedViewController?.bottomSheetController != nil
+     }
+ 
+     /// Returns the explicitly configured presenting view controller or tries to find one if nil.
+@@ -512,8 +519,8 @@ extension EmbeddedPaymentElement {
+             return nil
+         }
+ 
+-        guard !(visibleViewController is BottomSheetViewController) else {
+-            assert(false, "Cannot use a BottomSheetViewController to present EmbeddedPaymentElement.")
++        guard !(visibleViewController is any PaymentSheetContainer) else {
++            assert(false, "Cannot use a PaymentSheetContainer to present EmbeddedPaymentElement.")
+             return nil
+         }
+ 
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift
+index c89164e..0e87b4e 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift
+@@ -53,7 +53,7 @@ struct EmbeddedViewRepresentable: UIViewRepresentable {
+             return
+         }
+ 
+-        if !(visibleVC is StripePaymentSheet.BottomSheetViewController) {
++        if !(visibleVC is any StripePaymentSheet.PaymentSheetContainer) {
+             viewModel.embeddedPaymentElement?.presentingViewController = visibleVC
+         }
+     }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+index c40565f..a23c1f7 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift
+@@ -188,6 +188,16 @@ import UIKit
+ 
+     @_spi(STP) public static var linkIcon: UIImage = Image.link_icon.makeImage()
+ 
++    /// Formats card details using the same localized funding description and masking as a selected Link card.
++    /// - Parameters:
++    ///   - brand: The card brand.
++    ///   - funding: The card funding value returned by the PaymentMethod API, such as `credit` or `debit`.
++    ///   - last4: The last four digits of the card.
++    @_spi(STP) public nonisolated static func formattedCardDetails(brand: STPCardBrand, funding: String?, last4: String) -> String {
++        let linkFunding = ConsumerPaymentDetails.Details.Card.Funding(rawValue: funding?.uppercased() ?? "") ?? .unparsable
++        return ConsumerPaymentDetails.Details.Card.formattedString(brand: brand, funding: linkFunding, last4: last4)
++    }
++
+     private func iconForPaymentDetails(_ paymentDetails: ConsumerPaymentDetails) -> UIImage {
+         guard let appearance, appearance.reduceLinkBranding else {
+             return Self.linkIcon
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift
+index d3342d8..136e48c 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift
+@@ -22,6 +22,7 @@ extension UIViewController {
+     func presentNativeLink(
+         selectedPaymentDetailsID: String?,
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver? = nil,
+         intent: Intent,
+         elementsSession: STPElementsSession,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+@@ -36,6 +37,7 @@ extension UIViewController {
+             intent: intent,
+             elementsSession: elementsSession,
+             configuration: configuration,
++            nativeSheetPresentation: nativeSheetPresentation,
+             logPayment: false,
+             analyticsHelper: analyticsHelper,
+             supportedPaymentMethodTypes: supportedPaymentMethodTypes,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift
+index bf7ff4a..682e8ae 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift
+@@ -27,6 +27,7 @@ final class PayWithLinkController {
+     let intent: Intent
+     let elementsSession: STPElementsSession
+     let configuration: PaymentElementConfiguration
++    private let nativeSheetPresentation: SheetImplementationResolver?
+     let analyticsHelper: PaymentSheetAnalyticsHelper
+     private let confirmationChallenge: ConfirmationChallenge?
+     // If you pass a confirmHandler, it's used to confirm the payment. Otherwise, PaymentSheet.confirm is used.
+@@ -36,6 +37,7 @@ final class PayWithLinkController {
+         intent: Intent,
+         elementsSession: STPElementsSession,
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver? = nil,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+         confirmationChallenge: ConfirmationChallenge?,
+         confirmHandler: ConfirmHandler? = nil
+@@ -43,6 +45,7 @@ final class PayWithLinkController {
+         self.intent = intent
+         self.elementsSession = elementsSession
+         self.configuration = configuration
++        self.nativeSheetPresentation = nativeSheetPresentation
+         self.paymentHandler = .init(apiClient: configuration.apiClient)
+         self.analyticsHelper = analyticsHelper
+         self.confirmationChallenge = confirmationChallenge
+@@ -89,6 +92,7 @@ extension PayWithLinkController: PayWithLinkWebControllerDelegate {
+ 
+         PaymentSheet.confirm(
+             configuration: configuration,
++            nativeSheetPresentation: nativeSheetPresentation,
+             authenticationContext: payWithLinkWebController,
+             intent: intent,
+             elementsSession: elementsSession,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift
+index 7a11342..8efd38b 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift
+@@ -55,6 +55,7 @@ final class PayWithNativeLinkController {
+     let intent: Intent
+     let elementsSession: STPElementsSession
+     let configuration: PaymentElementConfiguration
++    private let nativeSheetPresentation: SheetImplementationResolver?
+     let logPayment: Bool
+     let analyticsHelper: PaymentSheetAnalyticsHelper
+     let supportedPaymentMethodTypes: [LinkPaymentMethodType]?
+@@ -70,6 +71,7 @@ final class PayWithNativeLinkController {
+         intent: Intent,
+         elementsSession: STPElementsSession,
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver? = nil,
+         logPayment: Bool = true,
+         analyticsHelper: PaymentSheetAnalyticsHelper,
+         supportedPaymentMethodTypes: [LinkPaymentMethodType]? = nil,
+@@ -83,6 +85,7 @@ final class PayWithNativeLinkController {
+         self.logPayment = logPayment
+         self.elementsSession = elementsSession
+         self.configuration = configuration
++        self.nativeSheetPresentation = nativeSheetPresentation
+         self.analyticsHelper = analyticsHelper
+         self.supportedPaymentMethodTypes = supportedPaymentMethodTypes
+         self.paymentHandler = .init(apiClient: configuration.apiClient)
+@@ -163,6 +166,7 @@ final class PayWithNativeLinkController {
+                 linkAccount: LinkAccountContext.shared.account,
+                 elementsSession: self.elementsSession,
+                 configuration: self.configuration,
++                nativeSheetPresentation: self.nativeSheetPresentation,
+                 shouldOfferApplePay: shouldOfferApplePay,
+                 shouldFinishOnClose: shouldFinishOnClose,
+                 canContinueWithoutLink: canContinueWithoutLink,
+@@ -242,6 +246,7 @@ extension PayWithNativeLinkController: PayWithLinkViewControllerDelegate {
+ 
+         PaymentSheet.confirm(
+             configuration: configuration,
++            nativeSheetPresentation: nativeSheetPresentation,
+             authenticationContext: payWithLinkViewController.sheetContainer,
+             intent: intent,
+             elementsSession: elementsSession,
+@@ -307,6 +312,7 @@ extension PayWithNativeLinkController: PayWithLinkWebControllerDelegate {
+ 
+         PaymentSheet.confirm(
+             configuration: configuration,
++            nativeSheetPresentation: nativeSheetPresentation,
+             authenticationContext: payWithLinkWebController,
+             intent: intent,
+             elementsSession: elementsSession,
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift
+index cec4094..c5d9cae 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift
+@@ -62,8 +62,10 @@ extension PaymentSheet {
+     }
+ 
+     /// Confirms a PaymentIntent with the given PaymentOption and returns a PaymentResult
++    /// Shares the owning flow's presentation state without resolving it until a sheet is needed.
+     static func confirm(
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver? = nil,
+         authenticationContext: STPAuthenticationContext,
+         intent: Intent,
+         elementsSession: STPElementsSession,
+@@ -85,6 +87,7 @@ extension PaymentSheet {
+         Task { @MainActor in
+             let preconfirmActionsResult = await handlePreconfirmActionsIfNecessary(
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 authenticationContext: authenticationContext,
+                 intent: intent,
+                 paymentOption: paymentOption,
+@@ -106,6 +109,7 @@ extension PaymentSheet {
+ 
+             confirmAfterHandlingLocalActions(
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 authenticationContext: authenticationContext,
+                 intent: intent,
+                 elementsSession: elementsSession,
+@@ -126,6 +130,7 @@ extension PaymentSheet {
+     @MainActor
+     static func handlePreconfirmActionsIfNecessary(
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver?,
+         authenticationContext: STPAuthenticationContext,
+         intent: Intent,
+         paymentOption: PaymentOption,
+@@ -191,6 +196,7 @@ extension PaymentSheet {
+                 let bottomSheetVC = FlowController.makePaymentSheetContainerViewController(
+                     preConfirmationViewController,
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     didCancelNative3DS2: {
+                         paymentHandler.cancel3DS2ChallengeFlow()
+                     }
+@@ -205,6 +211,7 @@ extension PaymentSheet {
+ 
+     static func confirm(
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver? = nil,
+         authenticationContext: STPAuthenticationContext,
+         intent: Intent,
+         elementsSession: STPElementsSession,
+@@ -219,6 +226,7 @@ extension PaymentSheet {
+             Task { @MainActor in
+                 confirm(
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     authenticationContext: authenticationContext,
+                     intent: intent,
+                     elementsSession: elementsSession,
+@@ -238,6 +246,7 @@ extension PaymentSheet {
+     @MainActor
+     static fileprivate func confirmAfterHandlingLocalActions(
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver?,
+         authenticationContext: STPAuthenticationContext,
+         intent: Intent,
+         elementsSession: STPElementsSession,
+@@ -597,6 +606,7 @@ extension PaymentSheet {
+             ) {
+                 PaymentSheet.confirm(
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     authenticationContext: linkAuthenticationContext,
+                     intent: linkIntent,
+                     elementsSession: linkElementsSession,
+@@ -612,6 +622,7 @@ extension PaymentSheet {
+             confirmLinkPaymentOption(
+                 confirmOption: confirmOption,
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 authenticationContext: authenticationContext,
+                 intent: intent,
+                 elementsSession: elementsSession,
+@@ -639,6 +650,7 @@ extension PaymentSheet {
+     static func confirmLinkPaymentOption(
+         confirmOption: LinkConfirmOption,
+         configuration: PaymentElementConfiguration,
++        nativeSheetPresentation: SheetImplementationResolver?,
+         authenticationContext: STPAuthenticationContext,
+         intent: Intent,
+         elementsSession: STPElementsSession,
+@@ -742,6 +754,7 @@ extension PaymentSheet {
+                     intent: intent,
+                     elementsSession: elementsSession,
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     logPayment: false,
+                     analyticsHelper: analyticsHelper,
+                     confirmationChallenge: confirmationChallenge,
+@@ -755,6 +768,7 @@ extension PaymentSheet {
+                     intent: intent,
+                     elementsSession: elementsSession,
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     analyticsHelper: analyticsHelper,
+                     confirmationChallenge: confirmationChallenge,
+                     confirmHandler: confirmHandler
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift
+index 56ef671..c19342c 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift
+@@ -103,21 +103,8 @@ extension PaymentSheet {
+                 // For other payment methods, get shipping address from configuration.
+                 let shippingAddress = configuration.shippingDetails()?.stpAddress
+ 
+-                // Try to create a radar session for the payment method before calling the handler
+-                return await withCheckedContinuation { continuation in
+-                    configuration.apiClient.createSavedPaymentMethodRadarSession(paymentMethodId: paymentMethod.stripeId) { _, error in
+-                        // If radar session creation fails, just continue with the payment method directly
+-                        if let error {
+-                            // Log the error but don't fail the payment
+-                            let errorAnalytic = ErrorAnalytic(event: .savedPaymentMethodRadarSessionFailure, error: error)
+-                            STPAnalyticsClient.sharedClient.log(analytic: errorAnalytic, apiClient: configuration.apiClient)
+-                        }
+-
+-                        // Call the handler regardless of radar session success/failure
+-                        preparePaymentMethodHandler(paymentMethod, shippingAddress)
+-                        continuation.resume(returning: (.completed, STPAnalyticsClient.DeferredIntentConfirmationType.completeWithoutConfirmingIntent))
+-                    }
+-                }
++                preparePaymentMethodHandler(paymentMethod, shippingAddress)
++                return (.completed, STPAnalyticsClient.DeferredIntentConfirmationType.completeWithoutConfirmingIntent)
+             }
+ 
+             // 2b. Otherwise, call the payment method confirmHandler
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
+index 0961b49..fa1ddc9 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
+@@ -285,9 +285,14 @@ public class PaymentSheet {
+ 
+     /// The parent view controller to present
+     lazy var bottomSheetViewController: any PaymentSheetContainer = {
++        // The playground can opt in while complete PaymentSheet remains outside the server-controlled rollout.
++        let usesNativeSheet = NativeSheetFeatureFlags.nativeSheetEnabledOverride == true
++            && UIDevice.current.userInterfaceIdiom == .phone
++
+         let vc = PaymentSheetContainerFactory.make(
+             contentViewController: loadingViewController,
+             appearance: configuration.appearance,
++            usesNativeSheet: usesNativeSheet,
+             didCancelNative3DS2: { [weak self] in
+                 self?.paymentHandler.cancel3DS2ChallengeFlow()
+             }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+index 09d91cb..9598823 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift
+@@ -350,6 +350,8 @@ extension PaymentSheet {
+         private(set) var didPresentAndContinue: Bool = false
+         var confirmationChallenge: ConfirmationChallenge?
+         let analyticsHelper: PaymentSheetAnalyticsHelper
++        /// Retains this flow's initial native-sheet feature flag across configuration updates.
++        let nativeSheetPresentation: SheetImplementationResolver
+         private var linkAccountObserver: LinkAccountContextObserver?
+ 
+         // MARK: - Initializer (Internal)
+@@ -360,12 +362,17 @@ extension PaymentSheet {
+             confirmationChallenge: ConfirmationChallenge? = nil,
+             analyticsHelper: PaymentSheetAnalyticsHelper
+         ) {
++            // Each new flow captures its own decision, even when a previous flow's configuration is reused.
++            self.nativeSheetPresentation = SheetImplementationResolver(
++                elementsSession: loadResult.elementsSession
++            )
+             self.configuration = configuration
+             self.analyticsHelper = analyticsHelper
+             self.analyticsHelper.logInitialized()
+             self.analyticsHelper.startTimeMeasurement(.checkout)
+             self.viewController = Self.makeViewController(
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 loadResult: loadResult,
+                 analyticsHelper: analyticsHelper,
+                 walletButtonsViewState: self.walletButtonsViewState,
+@@ -580,6 +587,7 @@ extension PaymentSheet {
+                 let bottomSheetVC = Self.makePaymentSheetContainerViewController(
+                     self.viewController,
+                     configuration: self.configuration,
++                    nativeSheetPresentation: self.nativeSheetPresentation,
+                     // TODO(MOBILESDK-864): didCancelNative3DS2 is not used in FlowController
+                     didCancelNative3DS2: { [weak self] in
+                         self?.paymentHandler.cancel3DS2ChallengeFlow()
+@@ -617,6 +625,7 @@ extension PaymentSheet {
+             let bottomSheetVC = Self.makePaymentSheetContainerViewController(
+                 loadingVC,
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 // TODO(MOBILESDK-864): didCancelNative3DS2 is not used in FlowController
+                 didCancelNative3DS2: { [weak self] in
+                     self?.paymentHandler.cancel3DS2ChallengeFlow()
+@@ -686,6 +695,7 @@ extension PaymentSheet {
+             presentingViewController.presentNativeLink(
+                 selectedPaymentDetailsID: selectedPaymentDetailsID,
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 intent: intent,
+                 elementsSession: elementsSession,
+                 analyticsHelper: analyticsHelper,
+@@ -743,13 +753,18 @@ extension PaymentSheet {
+                         }
+                     }
+                 }
+-                let bottomSheet = Self.makePaymentSheetContainerViewController(sepaMandateVC, configuration: configuration)
++                let bottomSheet = Self.makePaymentSheetContainerViewController(
++                    sepaMandateVC,
++                    configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation
++                )
+                 presentingViewController.presentAsSheet(bottomSheet)
+             }
+ 
+             func confirm() {
+                 PaymentSheet.confirm(
+                     configuration: self.configuration,
++                    nativeSheetPresentation: self.nativeSheetPresentation,
+                     authenticationContext: authenticationContext,
+                     intent: self.intent,
+                     elementsSession: self.elementsSession,
+@@ -846,6 +861,7 @@ extension PaymentSheet {
+ 
+                     self.viewController = Self.makeViewController(
+                         configuration: self.configuration,
++                        nativeSheetPresentation: self.nativeSheetPresentation,
+                         loadResult: loadResult,
+                         analyticsHelper: analyticsHelper,
+                         walletButtonsViewState: walletButtonsViewState,
+@@ -873,6 +889,7 @@ extension PaymentSheet {
+             let checkoutBillingAddressUpdater = viewController.checkoutBillingAddressUpdater
+             self.viewController = Self.makeViewController(
+                 configuration: self.configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 loadResult: makeLoadResultWithCurrentSavedPaymentMethods(),
+                 analyticsHelper: analyticsHelper,
+                 walletButtonsViewState: self.walletButtonsViewState,
+@@ -922,6 +939,7 @@ extension PaymentSheet {
+             let checkoutBillingAddressUpdater = viewController.checkoutBillingAddressUpdater
+             self.viewController = Self.makeViewController(
+                 configuration: configuration,
++                nativeSheetPresentation: nativeSheetPresentation,
+                 loadResult: makeLoadResultWithCurrentSavedPaymentMethods(
+                     prioritizing: selection.paymentOption
+                 ),
+@@ -960,11 +978,17 @@ extension PaymentSheet {
+         static func makePaymentSheetContainerViewController(
+             _ contentViewController: BottomSheetContentViewController,
+             configuration: PaymentElementConfiguration,
++            nativeSheetPresentation: SheetImplementationResolver?,
+             didCancelNative3DS2: (() -> Void)? = nil
+         ) -> any PaymentSheetContainer {
++            // FlowController's presentation APIs require the main thread but are not yet actor-isolated.
++            let usesNativeSheet = MainActor.assumeIsolated {
++                nativeSheetPresentation?.usesNativeSheet ?? false
++            }
+             let sheet = PaymentSheetContainerFactory.make(
+                 contentViewController: contentViewController,
+                 appearance: configuration.appearance,
++                usesNativeSheet: usesNativeSheet,
+                 didCancelNative3DS2: didCancelNative3DS2 ?? { } // TODO(MOBILESDK-864): Refactor this out.
+             )
+ 
+@@ -974,6 +998,7 @@ extension PaymentSheet {
+ 
+         static func makeViewController(
+             configuration: Configuration,
++            nativeSheetPresentation: SheetImplementationResolver,
+             loadResult: PaymentSheetLoader.LoadResult,
+             analyticsHelper: PaymentSheetAnalyticsHelper,
+             walletButtonsViewState: PaymentSheet.WalletButtonsViewState,
+@@ -985,6 +1010,7 @@ extension PaymentSheet {
+             case .horizontal:
+                 controller = PaymentSheetFlowControllerViewController(
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     loadResult: loadResult,
+                     analyticsHelper: analyticsHelper,
+                     checkoutBillingAddressUpdater: checkoutBillingAddressUpdater,
+@@ -993,6 +1019,7 @@ extension PaymentSheet {
+             case .vertical:
+                 controller = PaymentSheetVerticalViewController(
+                     configuration: configuration,
++                    nativeSheetPresentation: nativeSheetPresentation,
+                     loadResult: loadResult,
+                     isFlowController: true,
+                     analyticsHelper: analyticsHelper,
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index e5acbbf..ddafb09 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.14.0'
++  s.version                        = '26.15.0'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift b/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift
+index b75ff65..1dc1bb8 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift	
+@@ -10,7 +10,6 @@ import Foundation
+ @_spi(STP) import StripeCore
+ 
+ private let APIEndpointRadarSession = "radar/session"
+-private let APIEndpointSavedPaymentMethodRadarSession = "radar/saved_payment_method_session"
+ 
+ extension STPAPIClient {
+ 
+@@ -68,42 +67,4 @@ extension STPAPIClient {
+             }
+         }
+     }
+-
+-    /// Creates a Radar Session for a saved payment method.
+-    ///
+-    /// - Note: See https://stripe.com/docs/radar/radar-session
+-    /// - Note: `StripeAPI.advancedFraudSignalsEnabled` must be `true` to use this method.
+-    /// - Note: See `STPRadarSession`
+-    ///
+-    /// - Parameters:
+-    ///    - paymentMethodId: The ID of the payment method to create a radar session for.
+-    ///    - completion: The callback to run with the returned `STPRadarSession` (and any errors that may have occurred).
+-    @_spi(STP) public func createSavedPaymentMethodRadarSession(
+-        paymentMethodId: String,
+-        completion: @escaping STPRadarSessionCompletionBlock
+-    ) {
+-        STPTelemetryClient.shared.updateFraudDetectionIfNecessary { result in
+-            switch result {
+-            case .failure(let error):
+-                completion(nil, error)
+-                return
+-            case .success(let fraudDetectionDataData):
+-                let paymentUserAgent = PaymentsSDKVariant.paymentUserAgent
+-                let parameters = [
+-                    "muid": fraudDetectionDataData.muid ?? "",
+-                    "sid": fraudDetectionDataData.sid ?? "",
+-                    "guid": fraudDetectionDataData.guid ?? "",
+-                    "payment_user_agent": paymentUserAgent,
+-                    "payment_method": paymentMethodId,
+-                ]
+-                APIRequest<STPRadarSession>.post(
+-                    with: self,
+-                    endpoint: APIEndpointSavedPaymentMethodRadarSession,
+-                    parameters: parameters
+-                ) { (radarSession, _, error) in
+-                    completion(radarSession, error)
+-                }
+-            }
+-        }
+-    }
+ }
+diff --git a/VERSION b/VERSION
+index 59ec95a..aa1f895 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.14.0
+\ No newline at end of file
++26.15.0
+\ No newline at end of file

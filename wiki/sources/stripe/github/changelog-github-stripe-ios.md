@@ -2,9 +2,13 @@
 title: "GitHub changelog: stripe/stripe-ios"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-13
+date_updated: 2026-10-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json"
+  - "github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/manifest.json"
+  - "github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/manifest.json"
+  - "github/stripe/stripe-ios/supplements/2026-10-20-677c04d-515578e2/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-02-9f0d5aa-8ad0f8dd/manifest.json"
@@ -27,6 +31,62 @@ tags: [stripe, ios, swift, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-ios`. Durable architecture and integration knowledge belongs in [[source-github-stripe-ios]] and the linked immutable evidence.
+
+## `stripe-ios@26.15.0` - Change Set `19c1d05`
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-ios` | `stripe-ios@26.14.0` | `stripe-ios@26.15.0` | 2026-10-20 Asia/Shanghai; notes heading 2026-10-19 | `19c1d05439595535f0722e67e4847aece4faf4b2` | Full additive, approved focused reading |
+
+**Alpha compatibility:** migrate fulfillKYCRequirement/FulfillKYCRequirementResult to plural fulfillKYCRequirements/FulfillKYCRequirementsResult. The current coordinator removes its singular method declaration; result cases are submitted, pendingVerification, canceled and notRequired. None establishes successful verification/payment. Apple Pay preview forwards funding type to Link formatting; Credit/Debit/Prepaid and Card fallback are release announcements, with final formatting delegated outside the capsule.
+
+**Presentation:** FlowController/Embedded capture one resolver per flow and reuse it through rebuilds, ordinary/Link/Checkout confirmation and preconfirmation UI. The supplemental resolver's old hardware override is compiled out, despite its nearby comment. Complete PaymentSheet only opts in via the explicit playground override on phones. SwiftUI checks recognize container/navigation wrappers. This is plumbing, not universal rollout, complete factory behavior or supported public Checkout integration.
+
+**Deferred preparation/Radar:** the preparePaymentMethodHandler branch no longer waits for the saved-method Radar request; it invokes the handler then returns completeWithoutConfirmingIntent. The specific STP saved-method helper and endpoint constant disappear; ordinary public createRadarSession remains. Do not infer wholesale fraud-signal removal or fulfillment from this early completion.
+
+**Identity:** native flow uses server session livemode to select test-mode placeholder document/selfie pixels; failure loading placeholders fails instead of sending captured pixels. Live-mode originals remain. Camera/scanner creation and forwarded document metadata remain; this is not a complete privacy/no-PII guarantee or web-fallback proof. Binary placeholders and lower upload transport remain excluded.
+
+**History:** 15 cumulative changelog insertions, no removals: nine new-block lines and six retrospective Identity lines under 26.5.0, 25.17.0 and 25.12.0. Do not redate those older changes to 26.15.0 or rewrite old observations. Version-only podspecs retain deployment declarations.
+
+**Evidence boundary:** both 300-file snapshots hash/size checked; 27 modified, 273 unchanged. All 180 upstream paths classified (27 retained, 153 excluded), plus eight attached supplemental files. Full mode overrides generated delta for incompatible alpha API and broad confirmation/presentation behavior; effective list 319 paths remains. Approved focused reading is not a fresh read of unchanged source or the whole repo. No SDK/device/payment testing.
+
+**Updated sections:** existing iOS/Onramp concepts first; cumulative source/status/history/raw links, this changelog, company/provider index/logs. Earlier knowledge and source count preserved; no cross-company comparison.
+
+**Evidence:**
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/manifest.json` - identity/publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/release-notes.md` - announcements
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json` - snapshot
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/manifest.json` - approved supporting source
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.14.0--26.15.0/comparison.json` - comparison; adjacent comparison.md and diff.patch
+- `tracking/github/repos/stripe/stripe-ios/evidence-attachments/github-b1305ecffaa642570d15/attachment.json` - attachment
+- [[source-github-stripe-ios]] - exact implementation locations and durable findings
+
+## `stripe-ios@26.14.0` - Change Set `677c04d`
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-ios` | `stripe-ios@26.13.0` | `stripe-ios@26.14.0` | 2026-10-13 Asia/Shanghai; notes heading 2026-10-12 | `677c04d2f5fac600779a52d3f43de8d8ac8dbf1d` | Full additive, approved focused reading |
+
+**Methods:** nine typed bindings: QRIS, GCash, Naira card/bank transfer/USSD/wallet, Touch 'n Go, TrueMoney and Mondu. Notes announce payments/setup for GCash/Touch 'n Go/TrueMoney and PaymentIntent support for the others. All nine have processing-alone classified as non-success. GCash joins PaymentIntent/SetupIntent inferred mandates; the other two join SetupIntent inference. Bindings do not establish merchant eligibility or every recurring flow.
+
+**Presentation and SPI:** shared container/factory calls replace concrete bottom-sheet calls across retained UI surfaces; badge inputs disappear. The supplemental resolver freezes an initial native-sheet flag, but factory/container implementation remains excluded. Link KYC/HTML confirmation retains async acceptance-before-dismissal ordering and dismisses before throwing callback failure. Shared structured labels enter Embedded equality. Identity custom-button SPI cases add a default-nil minimum height; pattern-match consumers should check their payload shape.
+
+**Alpha Onramp:** pre-auth Apple Pay source records its original platform key; fresh authenticated resolution before token creation must match it. Otherwise the typed KYC-region error requires successful wallet recollection before retry. Attempt identity and logout cleanup protect stale callback handling. Backend selection, token serialization and KYC enforcement remain outside the evidence.
+
+**Impact/migration:** regression-test presentation/cancellation and custom SPI uses; handle wallet recollection explicitly. Do not equate SDK completion with settlement. Redirect-cancellation crash repair is an announcement, not a retained implementation finding. Eight podspecs retain iOS 15/Swift 5; README size-badge removal does not remove modules. Older changelog lines remain unchanged with 19 insertions.
+
+**Evidence boundary:** 300 current/282 prior files; 18 added, 34 modified, 248 unchanged; all 582 retained hashes/sizes verified. 1,001 upstream dispositions (52 retained, 949 excluded) do not constitute semantic review of excluded code. Full mode overrides generated delta for broad presentation/payment changes; the user approved focused reading, preserving the 316-path full list and unchanged history. Five exact-SHA supplements included. No SDK/device/payment testing.
+
+**Updated sections:** iOS/Onramp concepts first, cumulative source and this changelog, company, provider index and logs; source count and all prior knowledge preserved. No cross-company comparison.
+
+**Evidence:**
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.14.0/2026-10-20/manifest.json` - identity/publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.14.0/2026-10-20/release-notes.md` - announcements
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/manifest.json` - snapshot
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-677c04d-515578e2/manifest.json` - approved supporting source
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.13.0--26.14.0/comparison.json` - comparison; adjacent comparison.md and diff.patch
+- `tracking/github/repos/stripe/stripe-ios/evidence-attachments/github-71e9aef96d1a15daf405/attachment.json` - attachment
+- [[source-github-stripe-ios]] - durable findings and exact source locations
 
 ## `stripe-ios@26.13.0` - Change Set `b65af30` (2026-10-05)
 

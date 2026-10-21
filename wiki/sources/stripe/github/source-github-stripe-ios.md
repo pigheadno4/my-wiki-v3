@@ -2,9 +2,13 @@
 title: "GitHub: stripe/stripe-ios"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-13
+date_updated: 2026-10-21
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json"
+  - "github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/manifest.json"
+  - "github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/manifest.json"
+  - "github/stripe/stripe-ios/supplements/2026-10-20-677c04d-515578e2/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-09-30-9f0d5aa/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-02-9f0d5aa-8ad0f8dd/manifest.json"
@@ -33,6 +37,10 @@ Repository: <https://github.com/stripe/stripe-ios>
 The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f045d3` adds the version-qualified findings below without replacing the `26.4.1` baseline or legacy knowledge.
 
 ## Evidence Boundary
+
+- The approved `26.15.0` full additive ingest follows completion of `26.14.0` and uses the same two-release focused-reading authorization. Changed implementation, affected prior code, release material, cumulative wiki history and eight supplemental files are the semantic-reading scope; unchanged source/history, manifests and duplicated diffs are mechanically verified. Both snapshots have 300 files; all 600 hashes/sizes matched, with 27 modified and 273 unchanged. The effective full list remains 319 paths. All 180 upstream changes have dispositions (27 retained, 153 excluded), not semantic review of excluded code. The supplement verifies native upload substitution and resolver/helper/result code, not concrete presentation internals, final card-label formatting, all network/PII handling or backend KYC enforcement. No SDK/device/payment testing.
+
+- The approved `26.14.0` full additive ingest uses the explicitly approved focused-reading exception for changed implementation, affected prior code, release material and supplemental source, with unchanged source/history, manifests and duplicated diff checked mechanically. Current/prior snapshots contain 300/282 files: 18 added, 34 modified, 248 unchanged, none removed. All 582 retained hashes/sizes matched; five exact-SHA supplemental files are attached. The 316-path effective full list remains intact. Full mode does not claim a fresh end-to-end read of unchanged implementation or a full repository review. Availability/form factories, concrete presentation containers/factory, redirect-cancellation fix implementation and alpha settings/token API internals remain excluded. No SDK/device/payment or eligibility testing.
 
 - The approved `26.13.0` delta uses focused reading of all changed retained implementation, affected prior code, release/comparison content and both cumulative wiki pages. Manifests and unchanged changelog history were checked mechanically. Current/prior snapshots contain 282/276 files: six added, 18 modified, 258 unchanged, none removed; all 558 hashes/sizes matched. The 33-path packet classifies 349 upstream changes (24 retained, 325 policy-excluded), not a full semantic repository review. Availability/form factories, FlowController restoration/error-clearing controllers, current Checkout/Apple Pay internals, currency/card-brand fixes, event/host implementation, KycInfo and additional-KYC/API internals remain excluded. No SDK build, device, payment or eligibility testing.
 
@@ -89,7 +97,7 @@ The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f04
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-ios` | `26.13.0` | `b65af30ecc73007aa9164627253ecafdf0a84872` | Approved focused-reading delta from 26.12.1; all earlier baselines, supplements and deltas retained |
+| `stripe-ios` | `26.15.0` | `19c1d05439595535f0722e67e4847aece4faf4b2` | Approved full additive ingest with focused reading and eight supplemental files; 26.14.0 and all earlier history retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
 
@@ -607,6 +615,105 @@ The release announces a card-brand crash fix, Apple Pay opening for fractional C
 >
 > `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/files/StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift:103`
 
+## `stripe-ios@26.14.0` Additive Baseline
+
+### Nine payment-method bindings and Intent boundaries
+
+New identifiers are `qris`, `gcash`, `ng_card`, `ng_bank_transfer`, `touch_n_go`, `truemoney`, `ng_ussd`, `ng_wallet` and `mondu`. Response properties/decoders and parameter factories, public convenience initializers and serialization mappings accompany the enum additions. Cases precede `unknown`; avoid treating numeric enum values as stable persisted identifiers. Most new response models retain arbitrary response fields, while Naira card also decodes optional last4 and an unknown-safe brand (Amex, Mastercard, Verve or Visa). The new parameter objects expose additionalAPIParameters but no typed method-specific fields; optional billing arguments do not waive backend requirements.
+
+Release notes distinguish payments/setup for GCash, Touch 'n Go and TrueMoney from PaymentIntent support for the other six methods. Availability/form factories are excluded; these announcements and bindings do not prove merchant/country/currency enablement, every recurring scenario or successful UI integration. `_isProcessingIntentSuccess` returns false for all nine, unlike the earlier MoMo branch: processing alone is not successful client completion or settlement.
+
+PaymentIntent inferred-mandate handling adds GCash. SetupIntent adds GCash, Touch 'n Go and TrueMoney. Explicitly assigned mandate data still wins. This is SDK inference, not a universal backend mandate or recurring-eligibility rule.
+
+### Presentation, labels and Identity configuration
+
+PaymentSheet, FlowController, CustomerSheet, Embedded and Link callers replace concrete BottomSheetViewController construction with `PaymentSheetContainerFactory.make` and `presentAsSheet`. Test-mode inputs disappear from retained navigation/loading/update callers, consistent with the announced badge removal; this does not turn sandbox credentials into live mode. The exact-SHA helper delegates presentation to the container and finds a container through its parent chain. Its resolver captures the initial Elements Session native-sheet flag, with a device-specific override; the factory/container implementations remain excluded, so resolver presence is not proof of universal activation or device behavior.
+
+Link's KYC and shared HTML confirmation helpers now retain their view controller while awaiting user input, await onConfirm only for confirmed results, dismiss even after callback failure, then return or throw. This preserves acceptance-before-dismissal ordering rather than establishing new backend terms persistence. Embedded payment display data gains shared structured labels, includes them in equality, and FlowController's Labels becomes Equatable; labels can affect change detection even if the legacy single label does not change.
+
+Identity's STP PrimaryButtonStyle.custom and SecondaryButtonStyle.custom add `height: CGFloat? = nil`, documented as an optional minimum height. Configuration is retained, rendering is not. Default-nil call sites are additive, but consumers pattern-matching the SPI enum payload should recheck arity.
+
+### Alpha Apple Pay provenance and recovery
+
+CryptoOnramp records the actual Apple Pay context's publishable key, KYC prefill and whether collection began without a crypto customer ID. The pending source is promoted only after successful wallet completion. Before token creation from a pre-auth source, fresh platform settings are fetched for the authenticated customer; a different key throws `PaymentMethodKYCRegionChangedError` (`payment_method_kyc_region_changed`) before the token API is called. A stable customer ID does not imply a stable platform key.
+
+Recover by successfully collecting Apple Pay again before retrying token creation, rather than retrying the stale selection. The error guidance recommends a matching countryHint or authenticating before collection. Card/bank collection and customer-ID/token requirements remain; wallet collection alone is not checkout. Attempt-context checks reject mismatched creation callbacks and ignore late completion callbacks. Logout clears pending/current selection, cached client and attempt metadata, and resumes a waiting wallet continuation as canceled. These are client-code findings, not runtime or server-side eligibility guarantees.
+
+The supplement verifies the concrete error, mapping and stored-source structure. It does not include backend settings/token serialization, KYC enforcement or the full additional-document flow. Link/Onramp surfaces remain SPI/alpha.
+
+### Release announcements, history and grounding
+
+The release announces a redirect-cancellation crash fix, including Afterpay/Clearpay. The retained handler diff only changes new-method processing classification; do not attribute that crash fix to the handler or claim its implementation was independently verified. Eight retained podspecs only bump versions, retaining iOS 15 and Swift 5 declarations. README removes module-size badges, not the modules themselves. The cumulative changelog adds 19 lines for the new block and leaves its older lines unchanged; no retrospective relabeling was found at this boundary.
+
+> `case .gcash, .touchNGo, .trueMoney, .AUBECSDebit, .alipay, .bacsDebit, .bancontact, .iDEAL, .SEPADebit, .EPS, .link, .USBankAccount,`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/files/StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift` - inferred mandate switch
+
+> `guard freshClient.publishableKey == source.platformPublishableKey else {`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift` - token precondition
+
+> `return "payment_method_kyc_region_changed"`
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-20-677c04d-515578e2/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/Errors/Concrete Error Types/PaymentMethodKYCRegionChangedError.swift` - typed recovery error
+
+> `isEnabled = elementsSession.isNativeSheetEnabled`
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-20-677c04d-515578e2/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/BottomSheet/SheetImplementationResolver.swift` - initialization capture, not universal rollout proof
+
+## `stripe-ios@26.15.0` Additive Baseline
+
+### Alpha KYC rename and wallet preview
+
+`CryptoOnrampCoordinator.fulfillKYCRequirement(from:)` and `FulfillKYCRequirementResult` become `fulfillKYCRequirements(from:)` and `FulfillKYCRequirementsResult`. The retained coordinator removes the singular method declaration rather than adding a compatibility alias. Explicitly named alpha call sites/types must migrate. The supplemental result defines submitted (accepted document submission for asynchronous verification), pendingVerification, canceled and notRequired. Coordinator behavior still retrieves Link account information and delegates presentation; submitted/pendingVerification drive completion analytics, not proof of completed KYC or a successful payment. Authentication/backend/document enforcement remains delegated.
+
+Apple Pay preview formatting still requires a nonempty brand string and last4; it now passes `card.funding` to `LinkController.formattedCardDetails`. That helper uppercases the funding value, maps unknown values to unparsable and delegates to ConsumerPaymentDetails formatting. Notes announce Credit/Debit/Prepaid with Card fallback, matching Link. The final formatter is excluded, so exact localized output is announcement-qualified. This is preview metadata, not payment authorization or evidence that every React Native wrapper exposes the change.
+
+### Flow-stable presentation and SwiftUI checks
+
+FlowController and Embedded construct one `SheetImplementationResolver` per new flow and retain it through configuration/session updates, cancellation restoration and view-controller rebuilds. The resolver captures `nativeSheetEnabledOverride ?? elementsSession.isNativeSheetEnabled` at initialization and permits the flag on phone idiom. The earlier hardware-specific override is compiled out by `#if false ...` at this SHA; the adjacent comment does not make it active. This corrects any inference that the 26.14.0 device override remains enabled indefinitely, without erasing its version-qualified code.
+
+The captured resolver is threaded through ordinary, Link and Checkout confirmation, preconfirmation/CVC/mandate presentation, and container construction. Complete PaymentSheet separately requests native sheets only when its playground override is explicitly true on phones; its retained comment says it is outside the server-controlled rollout. Do not equate resolver plumbing with universal native-sheet enablement or a new generally available Checkout integration.
+
+Embedded's non-Checkout update guard and isPresentingPaymentUI check now recognize a container through the presented controller's helper. The helper can find a container as the first controller of a UINavigationController as well as through parent traversal. CustomerSheet SwiftUI dismissal uses that helper; Embedded's presenter resolution avoids any PaymentSheetContainer, not just the old bottom-sheet class. Actual container/factory behavior and device correctness remain excluded/unexecuted. CustomerSheet also delegates edit-button configuration to its navigation bar; the latter implementation is outside the capsule.
+
+### Deferred preparation and Radar scope
+
+When intentConfig.preparePaymentMethodHandler is present in the regular deferred path, the SDK now invokes it immediately after resolving the PaymentMethod and configured shipping address, then returns `.completed` with `.completeWithoutConfirmingIntent`. The old saved-payment-method Radar request and its wait/error-logging wrapper are removed. This branch does not newly confirm an Intent; do not fulfill from that early completion alone. The code applies to the resolved PaymentMethod, which can be new or saved, despite the old helper's name.
+
+The STP SPI `createSavedPaymentMethodRadarSession(paymentMethodId:completion:)` and its `radar/saved_payment_method_session` constant are deleted. Public callback/async `createRadarSession` for `radar/session` remains, including its telemetry prerequisite. This is a specific helper/call-site removal, not evidence that all Radar, fraud signals or risk assessment is disabled.
+
+### Identity test-mode upload substitution
+
+The current supplemental native flow supplies `isTestMode: !staticContent.livemode` when constructing document and selfie uploaders, independent of the UI's skip-test-screen flag. Document front/back uploads choose the corresponding bundled placeholder in test mode; live mode retains originalImage. Test mode disables cropping, and when two resolutions are needed both originate from the placeholder. Selfie first/best/last uploads similarly use the bundled selfie for both resolutions rather than capturedImage. Failure to load a placeholder becomes a failed Promise; these branches do not silently fall back to the captured pixels.
+
+> [!info] Image substitution is not complete privacy bypass
+> The native flow still creates camera/scanner controllers, and DocumentUploader still forwards scanner output, EXIF metadata and upload method into its result data. The lower-level uploader, bundled binary images and web fallback implementation are excluded. Do not claim no camera use, removal of every PII field, no network traffic or identical behavior in every integration surface. No device or upload execution was performed.
+
+### Historical annotations and grounding
+
+The cumulative changelog adds 15 lines without removing older lines: nine in the new release block and six retrospective Identity lines. These add camera-preset fallback/manual-live-capture notes under 26.5.0, header padding under 25.17.0 and web-process retry under 25.12.0. They are later upstream historical annotations, not new 26.15.0 features or proof at the earlier retained SHAs. Eight retained podspecs only bump versions and retain their deployment declarations. All older wiki knowledge and raw history are preserved in [[changelog-github-stripe-ios]].
+
+> `public func fulfillKYCRequirements(from viewController: UIViewController) async throws -> FulfillKYCRequirementsResult {`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift` - alpha rename
+
+> `return (.completed, STPAnalyticsClient.DeferredIntentConfirmationType.completeWithoutConfirmingIntent)`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift` - prepare handler early completion
+
+> `isTestMode: !staticContent.livemode`
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/VerificationSheetFlowController.swift` - uploader construction
+
+> `imageToUpload = try side.testModeImage.makeCGImage()`
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/ImageUploaders/DocumentUploader.swift` - substituted pixels
+
+> `isEnabled = PaymentSheet.NativeSheetFeatureFlags.nativeSheetEnabledOverride ?? elementsSession.isNativeSheetEnabled`
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/BottomSheet/SheetImplementationResolver.swift` - initial decision
+
 ## Completion and Delayed Methods
 
 `PaymentSheetResult` returns `completed`, `canceled`, or `failed`. `completed` is the end of the SDK interaction, not settlement proof. The source explicitly directs merchants to transition to a generic receipt and fulfill only after receiving a successful Stripe payment event.
@@ -743,6 +850,30 @@ The May 2026 manual capsule established the modular SDK, PaymentSheet, FlowContr
 - History: [[changelog-github-stripe-ios]]
 
 ## Raw Sources
+
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json` - exact-SHA 26.15.0 capsule
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/manifest.json` - release identity/publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/release-notes.md` - release announcements
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.14.0--26.15.0/comparison.json` - comparison; adjacent comparison.md and diff.patch
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/manifest.json` - eight supporting source files
+- `tracking/github/repos/stripe/stripe-ios/evidence-attachments/github-b1305ecffaa642570d15/attachment.json` - supplement linkage
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift` - preparation branch and early completion
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift` - remaining ordinary Radar session methods
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift` - per-flow presentation plumbing
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/ImageUploaders/SelfieUploader.swift` - placeholder selfie variants
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/FulfillKYCRequirementsResult.swift` - explicit result semantics
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/String+Localized.swift` - preview forwarding into Link formatter
+
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/manifest.json` - exact-SHA 26.14.0 capsule; all paths and hashes
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.14.0/2026-10-20/manifest.json` - release identity and UTC publication timestamp
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.14.0/2026-10-20/release-notes.md` - method support, badge removal and crash-fix announcements
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.13.0--26.14.0/comparison.json` - comparison; adjacent comparison.md and diff.patch
+- `raw/github/stripe/stripe-ios/supplements/2026-10-20-677c04d-515578e2/manifest.json` - five approved supporting files
+- `tracking/github/repos/stripe/stripe-ios/evidence-attachments/github-71e9aef96d1a15daf405/attachment.json` - hash-validated supplement linkage
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/files/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift` - typed construction, factory and serialization
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift` - all nine methods' processing classification
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift` - confirmation/dismissal ordering
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift` - wallet provenance, key revalidation and lifecycle
 
 - `raw/github/stripe/stripe-ios/snapshots/2026-10-13-b65af30/manifest.json` - exact-SHA 26.13.0 capsule and retained hashes
 - `raw/github/stripe/stripe-ios/releases/stripe-ios/26.13.0/2026-10-13/manifest.json` - package-qualified release identity/publication

@@ -1,0 +1,233 @@
+# GitHub ingest packet
+
+- Repository: `stripe/stripe-ios`
+- Work item: `github-b1305ecffaa642570d15`
+- Snapshot: `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json`
+- Recommended mode: `delta`
+- Review priority: `normal`
+
+## `stripe-ios`
+
+- Version: `26.14.0` -> `26.15.0`
+- Recommendation: `delta` / `normal`
+- Unchanged retained files: `273`
+
+### Required reading
+
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/manifest.json`
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/release-notes.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/CHANGELOG.md`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeApplePay.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeConnect.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeCryptoOnramp.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeFinancialConnections.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeIdentity.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripeIssuing.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePayments.podspec`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/files/VERSION`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json`
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/manifest.json`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.14.0--26.15.0/comparison.json`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.14.0--26.15.0/comparison.md`
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.14.0--26.15.0/diff.patch`
+
+### Upstream changes
+
+- `modified` `BuildConfigurations/Version.xcconfig`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `CHANGELOG.md`: `retained-evidence` (snapshot-file)
+- `modified` `Example/CardImageVerification Example/CardImageVerification Example/AppDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/CardImageVerification Example/CardImageVerification Example/Info.plist`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Example/CardImageVerification Example/CardImageVerification Example/SceneDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/Example API Bindings/CreateOnrampSessionResponse.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/CryptoOnramp Example/CryptoOnramp Example/UI Helpers/AuthenticatedUserToolbarItemModifier.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/FinancialConnections Example/FinancialConnections Example/AppDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/FinancialConnections Example/FinancialConnections Example/Info.plist`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Example/FinancialConnections Example/FinancialConnections Example/SceneDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/IdentityVerification Example/IdentityVerification Example/PlaygroundViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/IdentityVerification Example/IdentityVerification Example/Resources/Base.lproj/Main.storyboard`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/Non-Card Payment Examples/Non-Card Payment Examples.xcodeproj/project.pbxproj`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/Non-Card Payment Examples/Non-Card Payment Examples/AppDelegate.h`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/Non-Card Payment Examples/Non-Card Payment Examples/AppDelegate.m`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/Non-Card Payment Examples/Non-Card Payment Examples/Info.plist`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Example/Non-Card Payment Examples/Non-Card Payment Examples/SceneDelegate.h`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Example/Non-Card Payment Examples/Non-Card Payment Examples/SceneDelegate.m`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutCartViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundSections.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundTypes.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/Checkout Playground/CheckoutPlaygroundView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/PaymentSheetTestPlayground.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/PaymentSheetTestPlaygroundSettings.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/PaymentSheet Example/PaymentSheet Example/PlaygroundController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/UI Examples/UI Examples.xcodeproj/project.pbxproj`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/UI Examples/UI Examples/Info.plist`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Example/UI Examples/UI Examples/Source/AppDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Example/UI Examples/UI Examples/Source/SceneDelegate.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Stripe.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Stripe/StripeiOSTests/STPRadarSessionFunctionalTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Stripe3DS2/Stripe3DS2DemoUI/Info.plist`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Stripe3DS2/Stripe3DS2DemoUI/Sources/AppDelegate.h`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Stripe3DS2/Stripe3DS2DemoUI/Sources/AppDelegate.m`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Stripe3DS2/Stripe3DS2DemoUI/Sources/SceneDelegate.h`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Stripe3DS2/Stripe3DS2DemoUI/Sources/SceneDelegate.m`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeApplePay.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `StripeCameraCore.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCardScan.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeConnect.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `StripeCore.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/API Bindings/STPAPIClient+FileUpload.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/API Bindings/STPAPIClient.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/API Bindings/StripeAPIConfiguration+Version.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/API Bindings/StripeError.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/API Bindings/StripeServiceError.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/Analytics/STPAnalyticEvent.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCore/Source/Helpers/STPError.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCoreTests/API Bindings/STPAPIClient+ErrorResponseTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCore/StripeCoreTests/Analytics/AnalyticLoggableErrorTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`: `retained-evidence` (snapshot-file)
+- `renamed` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/FulfillKYCRequirementsResult.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/AdditionalKYCDocumentRequirement.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/API Bindings/Additional KYC/AdditionalKYCQuestionnaire.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/AdditionalKYCFlowCoordinator.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/AdditionalKYCQuestionnaireModel.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/DocumentCollectionConfiguration.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Components/DocumentFileRow.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Components/QuestionnaireAnswerField.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Views/AdditionalKYCQuestionnaireView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Views/ProofOfAddressView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/AdditionalKYC/UI/Views/SourceOfFundsView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/CryptoOnrampAnalyticsEvent.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnramp/Source/Internal/String+Localized.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrieveKYCRequirementsResponse_SourceOfFundsWithQuestionnaire_200.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Mock Data/JSON/RetrieveKYCRequirementsResponse_UnknownAnswerType_200.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripeCryptoOnramp/StripeCryptoOnrampTests/Unit/ApplePayCardFormattingTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Unit/CryptoOnrampCoordinatorErrorMappingTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Unit/DocumentFileTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeCryptoOnramp/StripeCryptoOnrampTests/Unit/STPAPIClient+CryptoOnrampTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeFinancialConnections.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `StripeFinancialConnections/StripeFinancialConnections/Source/Native/Consent/ConsentDataSource.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeFinancialConnections/StripeFinancialConnections/Source/Native/Consent/ConsentViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeFinancialConnectionsLite.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity.podspec`: `retained-evidence` (snapshot-file)
+- `added` `StripeIdentity/StripeIdentity/Resources/Images/TestMode/test_mode_document_back.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripeIdentity/StripeIdentity/Resources/Images/TestMode/test_mode_document_front.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripeIdentity/StripeIdentity/Resources/Images/TestMode/test_mode_selfie.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentity/Source/Helpers/Image.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/ImageUploaders/DocumentUploader.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/ImageUploaders/SelfieUploader.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Coordinators/VerificationSheetFlowController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/ViewControllers/UIViewController+SafariExtension.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentity/Source/NativeComponents/Views/IdentityFlowView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentityTests/Unit/NativeComponents/Coordinators/DocumentUploaderTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripeIdentity/StripeIdentityTests/Unit/NativeComponents/Coordinators/SelfieUploaderTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIdentity/StripeIdentityTests/Unit/NativeComponents/Coordinators/VerificationSheetFlowControllerTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeIssuing.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet.podspec`: `retained-evidence` (snapshot-file)
+- `added` `StripePaymentSheet/StripePaymentSheet/Resources/StripePaymentSheet.xcassets/Link/link_mark_bw.imageset/Contents.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripePaymentSheet/StripePaymentSheet/Resources/StripePaymentSheet.xcassets/Link/link_mark_bw.imageset/Link.svg`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Helpers/Images.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/API Bindings/Link/PaymentDetails.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Components/NavigationBar/LinkSheetNavigationBar.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/Internal/Link/Verification/LinkVerificationViewController-PresentationController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/BottomSheet/SheetImplementationResolver.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/BottomSheet/UIViewController+PaymentSheetPresentation.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/API Models/PaymentPagesAPIResponse.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Internal.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session+AddressMerging.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Session.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElement+Configuration.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElementUIView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Express Checkout Element/ExpressCheckoutElementUtilities.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Payment Element/PaymentElement+Configuration.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Elements/CardSection/CardSectionWithScannerView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Elements/TextField/TextFieldElement+Card.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Error+PaymentSheet.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/STPApplePayContext+PaymentSheet.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Main Screen/PaymentSheetVerticalViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Main Screen/VerticalPaymentMethodListViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Vertical Saved Payment Method Screen/VerticalSavedPaymentMethodsViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/NativeSheetContainerViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/PaymentSheetContainer.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/PaymentSheetFlowControllerViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/PaymentSheetViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/ViewControllers/UpdatePaymentMethodViewController.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Views/PayWithLinkButton.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Views/ShadowedRoundedRectangleView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Views/SheetNavigationBar.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/WalletButtonsView/WalletButtonsView.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/APIErrorDescriptionTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutAddressMergingTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutConfirmationStubbedTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/CheckoutUnitTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/ExpressCheckoutElementViewSnapshotTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/ExpressCheckoutElementViewTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentElementTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentPagesAPIResponse+DiscountTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Checkout/PaymentPagesAPIResponseTest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/LinkCardFormattingTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/LinkNavigationBarSnapshotTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/Link/PayWithLinkViewControllerTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PayWithLinkButtonTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetLPMConfirmFlowTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/PaymentSheetPresentationTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/RowButtonTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/STPFixtures+PaymentSheet.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `StripePaymentSheet/StripePaymentSheetTests/PaymentSheet/SheetImplementationResolverTests.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePayments.podspec`: `retained-evidence` (snapshot-file)
+- `modified` `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift`: `retained-evidence` (snapshot-file)
+- `modified` `StripePayments/StripePayments/Source/Internal/API Bindings/APIRequest.swift`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePayments/StripePaymentsObjcTestUtils/Resources/Mock Files/CheckoutSession.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePayments/StripePaymentsObjcTestUtils/Resources/Mock Files/CheckoutSessionConfirmed.json`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetDeferredAPITest/testHandleDeferredIntentConfirmationwithPreparePaymentMethodHandlercallsHandlerWithCorrectParameters/0001_post_v1_radar_saved_payment_method_session.tail`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetDeferredAPITest/testHandleDeferredIntentConfirmationwithPreparePaymentMethodHandlerdoesNotProceedToIntentConfirmation/0001_post_v1_radar_saved_payment_method_session.tail`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetDeferredAPITest/testHandleDeferredIntentConfirmationwithPreparePaymentMethodHandlernewPaymentMethod/0001_post_v1_radar_saved_payment_method_session.tail`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `StripePayments/StripePaymentsTestUtils/Resources/recorded_network_traffic/PaymentSheetDeferredAPITest/testHandleDeferredIntentConfirmationwithPreparePaymentMethodHandlersetupMode/0001_post_v1_radar_saved_payment_method_session.tail`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripePaymentsUI.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `StripeUICore.podspec`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testOneRowLayout@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testOneRowLayout_iOS26@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testThreeButtonsInTwoByTwoGrid@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testThreeButtonsInTwoByTwoGrid_iOS26@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testTwoColumnLayout@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testTwoColumnLayoutWithEmail@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testTwoColumnLayoutWithEmail_iOS26@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testTwoColumnLayoutWithoutEmail@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `added` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testTwoColumnLayoutWithoutEmail_iOS26@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `Tests/ReferenceImages_64/StripePaymentSheetTests.ExpressCheckoutElementViewSnapshotTests/testTwoColumnLayout_iOS26@3x.png`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `modified` `VERSION`: `retained-evidence` (snapshot-file)
+- `modified` `bitrise.yml`: `intentional-policy-exclusion` (outside-capsule-policy)
+- `deleted` `ci_scripts/should_run_fc_stability_tests.rb`: `intentional-policy-exclusion` (outside-capsule-policy)

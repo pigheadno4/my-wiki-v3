@@ -199,6 +199,20 @@ MainActor `fulfillKYCRequirement(from:)` gets Link account information and deleg
 
 Release-note-only findings describe optional Apple Pay-derived `KycInfo.email`, normalized E.164 `phone` and original `rawPhone`, all for prefill. Normalization uses the billing country when possible; names fall back to shipping values, and a usable name or billing address is still needed (email/phone alone is insufficient). The changed KycInfo model and announced missingLinkSessionKey error implementation are excluded. No general-availability, country eligibility or runtime guarantee follows. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
 
+## iOS `26.14.0` Apple Pay Region Revalidation
+
+The alpha coordinator now retains the original Apple Pay context's publishable key and whether collection began without a crypto customer ID. Before creating a token for that pre-auth selection, it fetches current platform settings using the authenticated customer ID. A different publishable key raises `PaymentMethodKYCRegionChangedError` with code `payment_method_kyc_region_changed` before calling token creation. The same customer ID does not imply the same resolved key.
+
+Recover by successfully calling `collectPaymentMethod(type: .applePay(paymentRequest:), from:)` again, then retry token creation. Do not merely loop token creation with the stale selection. The error guidance recommends a matching countryHint or authenticating before Apple Pay collection. This is a version-qualified native alpha flow, not a general Apple Pay payment failure or merchant-eligibility guarantee.
+
+Attempt identity guards ignore late/mismatched completion callbacks; logout clears selection/cache/attempt metadata and resumes a pending Apple Pay continuation as canceled. Only successful wallet completion promotes the pending selection. The supplement closes the error/mapping/selection evidence gap; settings/token request implementation and backend region-selection rules remain excluded. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
+## iOS `26.15.0` Alpha Compatibility and Labels
+
+The native alpha API renames `fulfillKYCRequirement(from:)` to `fulfillKYCRequirements(from:)` and `FulfillKYCRequirementResult` to `FulfillKYCRequirementsResult`. The retained coordinator no longer declares the old method. The supplemental result defines submitted (accepted for asynchronous verification), pendingVerification, canceled and notRequired. Update explicit method/type names, but do not interpret submission or a completed analytics event as completed verification or payment. The delegated document/KYC implementation remains excluded.
+
+Apple Pay preview construction still requires a recognized brand display string and last4. It now forwards `card.funding` to LinkController.formattedCardDetails, which normalizes the value and delegates formatting. Release notes specify Credit/Debit/Prepaid with Card fallback; the final ConsumerPaymentDetails formatter is outside the retained scope. This is display metadata, not funding authorization or merchant eligibility. The 26.14.0 region-recollection contract remains version-qualified history; no new React Native support is inferred from this native update. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ## Relationship to Other Crypto Products
 
 ### Android `23.14.0` Evidence
