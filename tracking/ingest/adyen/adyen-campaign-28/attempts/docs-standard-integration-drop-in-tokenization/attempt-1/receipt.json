@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-standard-integration-drop-in-tokenization",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Tokenization | Adyen Standard Drop-in\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in/tokenization\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/tokenization/2026-09-15.md\"\ntags: [adyen, standard-integration, drop-in, tokenization, card-on-file]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] **Standard Drop-in** guide covers creating a shopper-linked stored-payment token during a payment or zero-value authorization, then offering that stored method for a shopper-initiated one-click payment. Drop-in handles sensitive details within a payment session; the page claims a reduced PCI DSS scope and SAQ A eligibility, but this source is not a merchant's PCI assessment or live enablement evidence. See [[adyen-tokenization]] for the main token route and [[adyen-online-payments]] for the bounded Standard checkout route. [Raw: lines 15\u201326]\n\n## Key takeaways\n\n- The guide requires a Standard integration, **Checkout webservice** and **Merchant Recurring** credential roles, a **Recurring tokens life cycle events** webhook subscription, and payment methods that support recurring payments. These prerequisites precede storing or reusing details; a listed method is not proof of this merchant's enablement. [Raw: lines 28\u201338]\n- Before storage, ask the shopper for consent. For the tokenization session, the guide sets `shopperInteraction: Ecommerce`, `recurringProcessingModel: CardOnFile`, and `storePaymentMethodMode` to either `askForConsent` (checkbox shown) or `enabled` (no checkbox). Choosing `enabled` does not erase the separate prior-consent instruction. A zero-value authorization can verify/store without collecting a payment, but some methods such as iDEAL need an amount above zero. [Raw: lines 105\u2013126]\n- The flow says authorization precedes token creation. The `recurring.token.created` webhook supplies `storedPaymentMethodId`; persist it with `shopperReference` so the token remains associated with the correct shopper. This token event is distinct from the later one-click payment-outcome webhook. The TEST session example and token webhook are illustrative; they do not prove a real authorization or stored token for a specific shopper. [Raw: lines 40\u2013103, 128\u2013178]\n- For returning-shopper one-click use, the server creates a new `/sessions` request with the shopper reference and `CardOnFile`; the shopper selects a stored method in Drop-in and a webhook supplies the payment outcome. The one-click parameter table says `shopperInteraction: Ecommerce`, but its subsequent curl example sets `ContAuth` and the adjacent SCA note discusses ContAuth. This unresolved within-page mismatch must not be silently normalized into a required value; validate the intended flow against the relevant current API guide before implementation. The table also says a non-CardOnFile recurring model is internally changed to CardOnFile. [Raw: lines 180\u2013220]\n- For go-live, the guide calls for tokenization testing and enabling the recurring-token lifecycle webhook in **live** Customer Area. It does not establish that a test token, merchant credential or payment method is live-ready. [Raw: lines 222\u2013229]\n\n## Detail locators\n\n- Standard tokenization identity and provider PCI-scope claim: raw lines 15\u201326.\n- Roles, webhook subscription and recurring-method prerequisite: raw lines 28\u201338.\n- Store/one-click flow separation and shopper-consent step: raw lines 40\u2013111.\n- Session tokenization fields, checkbox modes and zero-value limitation: raw lines 113\u2013154.\n- Authorization-gated token webhook and token/shopper pair: raw lines 154\u2013178.\n- One-click session table versus ContAuth example/SCA note: raw lines 180\u2013220.\n- Test versus live webhook setup: raw lines 222\u2013229.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 main stored-token concept\n- [[adyen-online-payments]] \u2014 Standard Drop-in context\n- [[source-adyen-docs-standard]] \u2014 bounded Standard checklist\n- [[source-adyen-docs-standard-integration-drop-in]] \u2014 parent Drop-in Sessions path\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/tokenization/2026-09-15|Pinned Standard Drop-in tokenization guide]]\n",
+  "quotes": [
+    {
+      "text": "Because the payment session contains all the information needed to securely create and pay with tokens, Drop-in handles the sensitive payment data for you.",
+      "location": "line 21"
+    },
+    {
+      "text": "Before the shopper pays on your website, ask for their consent to store their payment details for future payments.",
+      "location": "line 109"
+    },
+    {
+      "text": "Some payment methods, like [iDEAL](/payment-methods/ideal/), require a minimum amount more than **0**.",
+      "location": "line 126"
+    },
+    {
+      "text": "The token is created after a successful payment authorization",
+      "location": "line 154"
+    },
+    {
+      "text": "If you set this to any other value, we internally change it to **CardOnFile**.",
+      "location": "line 190"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-dropin-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in-tokenization]] \u2014 2026-09-15 Standard Drop-in shopper-consented token creation and one-click CardOnFile reuse via Sessions/webhooks, with recurring-role/method gates, zero-value limits and unresolved Ecommerce-versus-ContAuth one-click example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The one-click parameter table says shopperInteraction Ecommerce, while its curl example uses ContAuth and nearby SCA text references ContAuth; retain this unresolved source discrepancy.",
+          "The page's SAQ A eligibility statement is a provider claim, not proof of a specific merchant's PCI classification or compliance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/tokenization/2026-09-15.md",
+  "raw_sha256": "f437c9076edc4a662ef69ebfbc911a9d2c13b5fb88433af05f3ad08acf2f8a01",
+  "status": "candidate_ready"
+}

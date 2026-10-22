@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-reports-and-fees-statement-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service Balance Platform Statement report\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/reports-and-fees/statement-report\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/reports-and-fees/statement-report/2026-09-15.md\"\ntags: [adyen, payout-service, reporting, statement-report, balance-accounts]\n---\n\n## Overview\n\nThis Payout Service-path report reference (modified and captured 2026-09-15) describes a **daily Balance Platform Statement Report** with starting balance, transactions that changed the balance and ending balance for available currencies. It is offered as an alternative to the Balance Platform Accounting Report for within-day balance changes and as a route for tracking internal funds transfers. The page states that a balance account with **both opening and ending balance zero is omitted**; therefore its \u201call transactions\u201d description cannot be read as a guarantee that every zero-to-zero account's activity appears. See [[adyen]] and [[adyen-reporting]].\n\n## Key takeaways\n\n- **Generation and grain:** Customer Area can generate this Statement Report automatically on a schedule or manually for a specific day. Rows expose Balance Platform, Account Holder and Balance Account identifiers, category/type/status, amount/currency and starting/ending balance fields. The raw does not specify a universal one-row-per-transfer or one-row-per-transaction rule, so use the report fields and actual file to establish grain. A downloaded sample is illustrative; account settings may add columns or data.\n- **Pending versus completed IDs:** The table describes **Transfer Id** as identifying a pending debit/credit and **Transaction Id** as identifying a completed debit/credit. Treat these as separate identifiers, not interchangeable joins. It also gives PSP payment/modification merchant and PSP references. The table labels both `Reference` and `Description` as a unique identifier of a pending debit or credit; preserve that wording as a table ambiguity rather than assigning new semantics.\n- **Dates, timezone and amount:** The report has Booking Date and its time-zone column, Value Date and its time-zone column, three-character currency codes, and `Amount` typed **Alpha text**. Starting/ending balances are likewise typed Alpha text with their currency columns. This page does not define an amount sign rule, minor-unit conversion, report cutoff timezone or beneficiary-bank receipt. Consult the actual export and more specific reconciliation guides for those.\n- **Scope limits:** Categories include bank, card, grants, internal, issuedCard, platformPayment, topUp and upgrade; the values do not alone prove a payout or settlement lifecycle. The report is balance-account ledger evidence at its described daily scope, not proof of final transfer receipt by a third-party bank.\n\n## Detail locators\n\n- Purpose, zero-to-zero omission, Accounting Report alternative and scheduled/manual generation: pinned raw lines 15-32.\n- Platform/holder/account, category/type/status, Transfer/Transaction IDs and PSP references: pinned raw lines 34-58.\n- Booking/Value dates and time zones, currency/amount/start/end balances, reserved future columns: pinned raw lines 59-78.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main reporting concept and reciprocal source route.\n- [[adyen-payouts]] \u2014 Payout Service product context.\n- [[source-adyen-docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report]] \u2014 separate accounting-report grain and event definitions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/reports-and-fees/statement-report/2026-09-15|Payout Service Balance Platform Statement report, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When a balance account has an opening and ending balance of zero, it is not included in the report.",
+      "location": "line 19, introduction"
+    },
+    {
+      "text": "Track all balance changes within the day, as an alternative to using the Balance Platform Accounting Report.",
+      "location": "line 23, introduction"
+    },
+    {
+      "text": "The unique identifier of a pending debit or credit.",
+      "location": "line 51, Report structure Transfer Id"
+    },
+    {
+      "text": "The unique identifier of a transaction, reflects a completed debit or credit.",
+      "location": "line 52, Report structure Transaction Id"
+    },
+    {
+      "text": "The time zone of the location where the booking happened.",
+      "location": "line 60, Report structure Booking Date Time Zone"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-statement-report-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-reports-and-fees-statement-report]] \u2014 2026-09-15 Payout Service daily Balance Platform Statement Report reference for opening/closing balances, activity, separate pending Transfer/completed Transaction IDs and booking/value dates; zero-to-zero balance accounts are omitted.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page calls the report a view of all daily balance changes but explicitly omits accounts opening and ending at zero; do not claim complete activity for such accounts.",
+          "Amount/start/end fields are typed Alpha text and timezone columns are described, but this page does not supply a sign, unit or cutoff-timezone rule; report rows are not bank receipt proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/reports-and-fees/statement-report/2026-09-15.md",
+  "raw_sha256": "81fa0dd638615f020472effe3ce98d7a6d6b79a851a9db897eac7f980b2f199d",
+  "status": "candidate_ready"
+}

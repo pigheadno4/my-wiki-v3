@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-cards",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service third-party card payouts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-cards\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-cards/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, cards, transfers-api]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] **Payout Service** guide describes sending the business's balance-account funds to a **third-party Mastercard or Visa cardholder**, such as a freelancer or provider, through the **Transfers API**. It covers one-off and recurring paths. The page says funds **typically** become available within 30 minutes, with issuer-dependent variation; this is not a guarantee of cardholder receipt for a particular request. It is separate from the legacy Online Payout API flow in [[adyen-payouts]].\n\n## Key takeaways\n\n- The dated support table lists **EEA** domestic and cross-border payouts to cards issued in the EEA or UK, in the card-issuance country's local currency except **ISK**; **US** domestic payouts in USD; and **UK** domestic and cross-border payouts to EEA-issued cards in GBP. The table is a guide snapshot, not proof a specific card, issuer, account or route is enabled. See raw lines 21\u201329.\n- A **one-off** flow conditionally enables additional data in Checkout `/payments` responses when checking payout eligibility or tokenizing card details; a zero-auth eligibility check is **optional**. Card-detail tokenization is **required if the business is not fully PCI compliant**. The payout request then uses Transfers API `/transfers`. Do not turn the optional check into a universal prerequisite or assume location alone establishes card eligibility. See raw lines 40\u201355.\n- A **recurring** flow enables additional `/payments` response data, optionally checks eligibility with zero auth, stores card details by tokenization, then requests payouts using `/transfers`. The page says its check/store steps are needed only the first time; since the check is expressly optional, this does not make zero auth mandatory. See raw lines 57\u201366.\n- A `/transfers` request is a payout initiation step, distinct from accounting booking, card-network acceptance, later scheme checks and cardholder availability. The related [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] guide distinguishes card `accepted` for processing from final availability and notes later `refused` after scheme checks. See this page's raw lines 19 and 55\u201366; related lifecycle raw lines 69\u201373 and 95\u2013103.\n\n## Detail locators\n\n- **Third-party source/destination, Transfers API and timing qualifier:** raw lines 15\u201319.\n- **EEA/US/UK issue-region and currency matrix:** raw lines 21\u201329.\n- **One-off conditional/optional checks and PCI-dependent tokenization:** raw lines 40\u201355.\n- **Recurring setup and subsequent payout requests:** raw lines 57\u201366.\n- **Child navigation:** raw lines 68\u201376.\n\n## Related\n\n- [[adyen-payouts]]\n- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]]\n- [Manage card details](https://docs.adyen.com/payouts/payout-service/pay-out-to-cards/manage-card-details)\n- [Funds disbursement](https://docs.adyen.com/payouts/payout-service/pay-out-to-cards/funds-disbursement)\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-cards/2026-09-15|Adyen third-party card payouts \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Funds typically become available to the cardholder within 30 minutes, although processing times can vary depending on the card issuer.",
+      "location": "raw line 19, Pay out to third-party cards"
+    },
+    {
+      "text": "Exception: Icelandic krona (ISK) not supported.",
+      "location": "raw line 27, Supported locations and currencies table"
+    },
+    {
+      "text": "(Optional) Make a zero-auth payment to [check if the card is eligible for payouts]",
+      "location": "raw line 50, One-off payout"
+    },
+    {
+      "text": "This is required if you are not [fully PCI compliant](/get-started-with-adyen/adyen-glossary/#pci-compliance).",
+      "location": "raw line 53, One-off payout"
+    },
+    {
+      "text": "You only need to do steps 2 and 3 on the first time that you pay out to a card.",
+      "location": "raw line 66, Recurring payouts"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-card-payouts-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards]] \u2014 2023-modified, 2026-09-15-captured Payout Service guide for one-off/recurring third-party Mastercard/Visa payouts via Transfers API, with region/currency matrix, optional zero-auth and PCI-dependent tokenization; 30-minute availability is issuer-dependent, not guaranteed.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Support table is dated; one-off eligibility check is optional, tokenization is required only under the stated PCI condition, and a transfer request or card-network acceptance is not cardholder receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/2026-09-15.md",
+  "raw_sha256": "67ccf37f8cfdf06e68928700e9d2e5cf823f828f6c4ae4a11be49ffd4d605317",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-cards-funds-disbursement",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service third-party card disbursement\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-cards/funds-disbursement\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-cards/funds-disbursement/2026-09-15.md\"\ntags: [adyen, payout-service, card-payouts, transfers-api, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] Payout Service guide, last modified 2023-11-30 and captured 2026-09-15, describes Transfers API payout requests that debit a source balance account and send funds to a **third-party Mastercard or Visa card**. It belongs under [[adyen-payouts]]; it is not Issuing a card, an internal balance-account transfer, or the legacy Online Payout API. The guide offers one-off raw-card, one-off tokenized-card and recurring tokenized-card request paths, followed by separate webhook status tracking.\n\n## Key takeaways\n\n- Prerequisites are a Payout Service integration, Checkout API tokenization capability for the saved-card paths, a balance-platform Transfers API credential with **Bank Transfer Initiation Webservice** and **TransferService Webservice Initiate** roles, Transfer and Transaction webhook subscriptions with an accepting server, and Adyen-representative enablement. Checking card payout eligibility is recommended. If not fully PCI compliant **or** making recurring payouts, tokenization/saved card details are required; the page allows raw details for a fully PCI-compliant one-off route. See raw lines 23\u201339.\n- POST `/transfers` with `amount`, debited source `balanceAccountId`, `category: card` and `counterparty.card`. The cardholder address/name/type and identification details are described in the route-specific tables; internal `reference` is not sent to the recipient. Raw-card examples provide number/expiry, while tokenized requests use `cardIdentification.storedPaymentMethodId`. The one-off tokenized route first stores the card with `recurringProcessingModel: CardOnFile`; recurring payouts require a saved card with `recurringProcessingModel: Subscription`. See raw lines 41\u201366, 709\u2013735 and 1370\u20131396.\n- The raw-card parameter table marks `cardHolder.reference` required and says it must equal the token-creation `shopperReference`, yet the immediately following raw-card curl example omits that reference (raw lines 58\u2013107). Do not infer from the example that it is optional or that raw-card/token requirements are fully resolved. Card numbers and tokens in examples are TEST illustrations, not usable recipient credentials. Versioned SDK examples span several languages and versions; consult the pinned raw for syntax, not as execution proof. See raw lines 67\u2013581 and 737\u20131905.\n- The one-off and recurring HTTP 2XX response examples have `direction: outgoing`, `reason: approved`, `status: authorised` and `type: cardTransfer`; HTTP 2XX/`authorised` is not booked debit or a credited card outcome. The guide points to status webhooks for received, authorised and booked/deducted stages. See raw lines 583\u2013633, 1246\u20131295, 1907\u20131956 and 2031\u20132035.\n- `executionDate.date` can schedule processing within 30 days in YYYY-MM-DD format, with optional tz-database timezone. The guide says a successful future request stays `received`/`pending` until processing, with a one-time attempt after balance sufficiency and any optional team review are checked. Errors including insufficient funds end `failed` with a webhook. The prose says the 00:00\u201303:00 window uses the Balance Platform timezone by default, while the field table names `Europe/Amsterdam` as timezone default; do not assume these defaults coincide. See raw lines 637\u2013707, 1299\u20131368 and 1960\u20132029.\n\n## Evidence boundary\n\nA card-payout request, eligible-card check, saved token, HTTP 2XX or `authorised` response does not establish a booked balance-account debit or cardholder receipt. Webhooks track later changes; the pinned guide does not document a final recipient-credit guarantee. The repeated future-date sections have the same one-attempt/no-automatic-retry boundary, not three different processing policies. Historical SDK and TEST examples do not prove present-day product enablement.\n\n## Detail locators\n\n- Requirements and raw-card route: raw lines 23\u201366 and 67\u2013633.\n- Future-date scheduling: raw lines 637\u2013707, 1299\u20131368, 1960\u20132029.\n- One-off CardOnFile token route: raw lines 709\u20131295.\n- Subscription recurring route: raw lines 1370\u20131956.\n- Webhook tracking and TEST cards: raw lines 2031\u20132043.\n\n## Related\n\n- [[adyen-payouts]]\n- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-manage-card-details]]\n- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-payout-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-cards/funds-disbursement/2026-09-15|Payout Service third-party card payout guide, 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "If you are not fully PCI compliant or want to make recurring payouts, you must have [tokenized and saved the card details](/payouts/payout-service/pay-out-to-cards/manage-card-details/#tokenize-card-details).",
+      "location": "raw line 34, Requirements"
+    },
+    {
+      "text": "If you are [fully PCI compliant](/get-started-with-adyen/adyen-glossary/#pci-compliance), you are allowed to make payout requests using raw card details.",
+      "location": "raw line 39, Initiate a payout"
+    },
+    {
+      "text": "[Store the card details](/payouts/payout-service/pay-out-to-cards/manage-card-details/#store-card-details) with the `recurringProcessingModel` set to **CardOnFile**.",
+      "location": "raw line 713, One-off payouts with tokenized data"
+    },
+    {
+      "text": "Make sure that you have [stored the card details](/payouts/payout-service/pay-out-to-cards/manage-card-details/#store-card-details) with the `recurringProcessingModel` set to **Subscription**.",
+      "location": "raw line 1374, Recurring payouts"
+    },
+    {
+      "text": "Adyen attempts to process the payout only one time.",
+      "location": "raw lines 648, 1310 and 1971, Process a payout in a future date"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-docs-payouts-payout-service-pay-out-to-cards-funds-disbursement-payouts-source",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-funds-disbursement]] \u2014 2023-modified, 2026-09-15-captured Payout Service Transfers API guide for third-party Mastercard/Visa card payouts using PCI-gated raw data or CardOnFile/Subscription tokens, with future-date one-attempt and webhook-booking boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw-card table marks cardHolder.reference required and tied to shopperReference (raw lines 58\u201366), while adjacent curl omits it (67\u2013107).",
+          "Future-date prose uses Balance Platform timezone by default but field table says Europe/Amsterdam (raw lines 641, 656 and repeated sections); unresolved default.",
+          "HTTP 2XX examples end authorised, not booked or recipient credited (raw lines 583\u2013633, 1246\u20131295, 1907\u20131956)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/funds-disbursement/2026-09-15.md",
+  "raw_sha256": "27d20566d91f4e02c73778a7d6c25bfcd08cca8877714d0c2b7aa770ae22d89e",
+  "status": "candidate_ready"
+}

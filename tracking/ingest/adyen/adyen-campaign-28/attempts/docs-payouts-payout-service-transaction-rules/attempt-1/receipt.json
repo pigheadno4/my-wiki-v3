@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-transaction-rules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service transaction rules\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/transaction-rules\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/transaction-rules/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, transaction-rules, risk, pilot]\n---\n\n## Overview\n\nThis 2022-modified, 2026-09-15-captured [[adyen]] Payout Service-path guide describes rules that evaluate **third-party bank-account or card payout requests** and can decline requests meeting defined conditions. It labels **transaction rules for business accounts** a **limited-availability pilot** whose processes and documentation may change; the page does not prove this feature is enabled for a particular balance platform. A rule decision belongs to payout-request evaluation, not to fund booking, settlement or beneficiary receipt. [[adyen-payouts]]\n\n## Key takeaways\n\n- A rule defines **criteria**, **conditions** and an **outcome**. The criteria include request type, rule type, time interval and one balance-platform resource. The page says to set request `type` to **bankTransfer** for third-party payouts even while its overview includes cards; do not infer a distinct card request type or guaranteed card-rule coverage from this page alone. See raw lines 24\u201353.\n- **Blocklist** tests the current request against conditions; **velocity** uses accumulated previous payouts within an interval; **bypass** skips a specified rule for an entity and requires that rule's ID. Bypass is not a general \u201callow\u201d outcome and does not disable other applicable hard-block rules. Per-transaction, fixed, rolling and sliding windows have different reset/decision behavior. See raw lines 55\u201380 and 145\u2013157.\n- A rule applies to one **balance account**, **account holder** or **balance platform**; each scope expands differently. Velocity totals nevertheless aggregate at the **balance-account level**, and amount aggregation converts payout amounts to the holder/platform default currency. See raw lines 82\u201396.\n- Rule restrictions include counterparty, account/country, description, priority, available-balance percentage, matching-transaction count and total amount. A rule with multiple conditions applies only when **all** match; among multiple applicable rules, **any one** matching `hardBlock` declines the request. The only selectable outcome described is `hardBlock`, not an approval action. See raw lines 98\u2013128 and 141\u2013157.\n- For amount/count limits, this page says **authorised** amounts and transactions consume limit even before capture; expiry or cancellation releases the limit. That is a rule-limit accounting claim, not proof of captured, booked or settled payout funds. A rule-declined payout can be inspected in Transfer webhooks via `transactionRulesResult` and `reason: declinedByTransactionRule`, or in Customer Area. See raw lines 130\u2013164.\n\n## Detail locators\n\n- **Pilot scope and request-rule setup:** raw lines 19\u201353.\n- **Blocklist, velocity, bypass, time windows and resource scope:** raw lines 55\u201396.\n- **Restriction fields and authorised-limit accounting:** raw lines 98\u2013139.\n- **Hard-block hierarchy and decline evidence:** raw lines 141\u2013164.\n\n## Related\n\n- [[adyen-payouts]]\n- [Create transaction rules](https://docs.adyen.com/payouts/payout-service/transaction-rules/create-and-manage)\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/transaction-rules/2026-09-15|Adyen Payout Service transaction rules \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Transaction rules for business accounts are currently in pilot phase.",
+      "location": "raw line 20, Limited availability"
+    },
+    {
+      "text": "For payouts to third parties, set this to **bankTransfer**.",
+      "location": "raw line 36, Transaction rule creation / Request type"
+    },
+    {
+      "text": "You must also provide the ID of the rule to bypass in your request.",
+      "location": "raw line 65, Rule types / Bypass"
+    },
+    {
+      "text": "All authorizations are deducted from the available limit, regardless of whether they have been captured or not.",
+      "location": "raw line 137, Calculating limits"
+    },
+    {
+      "text": "Currently, you can only select a **hardBlock** outcome type.",
+      "location": "raw line 143, Outcome"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-transaction-rules-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-transaction-rules]] \u2014 2022-modified, 2026-09-15-captured limited-pilot Payout Service-path rule guide for scoped blocklist/velocity/bypass evaluation and hard-block decline evidence; rule decision and authorised-limit accounting are not booked payout or recipient proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page discusses bank/card payouts but says third-party request type bankTransfer; do not infer separate card-rule type or enabled card coverage. Bypass skips a named rule, not every rule; only hardBlock is selectable. Pilot availability is unproven for a given platform."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/transaction-rules/2026-09-15.md",
+  "raw_sha256": "6c2fe46c6308005befc666812d7629c1559a9ff9d1598ef9d9bc538314f3b5a9",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payouts-payout-service-reconciliation-use-cases-reconcile-fees",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service fee reconciliation routes\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/reconciliation-use-cases/reconcile-fees\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-fees/2026-09-15.md\"\ntags: [adyen, payout-service, fees, invoice-reconciliation, reporting]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Payout Service page routes invoice-fee reconciliation by money movement: payment/pay-in fees on the payment-processing PSP side, bank-payout fees on Balance Platform, and card payouts initiated from Balance Platform. Each route uses different report grain and account scope. It describes how to compare records, not proof that a particular invoice has been reconciled. See [[adyen-reporting]].\n\n## Key takeaways\n\n- **Payment/pay-in fees:** For fees arising on the payment-processing PSP side, use the Settlement Details Report or Payment Accounting Report. The latter covers payment-lifecycle status changes, events and modifications for transactions, allowing costs by status to be compared for invoice reconciliation. This is separate from the Balance Platform payout-fee route. See pinned raw lines 19\u201321.\n- **Bank-payout fees:** Compare payout fees on the Balance Platform invoice with the Balance Platform Accounting Report or Statement Report. Filter **Booking date** to the invoice month in **CET**, then filter `Category=bank`, `Type=bankTransfer`, and `Status=booked`. For priority, the Accounting Report's Brand variant field has an illustrated `payment_banktransfer_instantBanktransfer` instant-priority value; it is an example label, not a universal fee amount. See pinned raw lines 23\u201333.\n- **Balance Platform card payouts:** Use the Settlement Details Report for the merchant account(s) used for card payouts together with the Balance Platform Accounting Report for the instructing balance account(s). An SDR `BPPaidOut` line carries Adyen Markup, Scheme fees and Interchange. Its `Net Debit (NC)` is **fees only**, not payout amount plus fees. The capture/card-payout amount is on Balance Platform reports; match SDR `Merchant Reference` ID to Accounting Report `Transfer Id` on a `booked` row. See pinned raw lines 35\u201346.\n- **Amount and evidence boundary:** Keep the SDR `(NC)` fee columns distinct from the balance-platform card-payout/capture amount. The page supplies no numerical fee or currency conversion example, and a booked report row or matching IDs does not establish recipient receipt or completed invoice sign-off. See pinned raw lines 39\u201346.\n\n## Detail locators\n\n- PSP-side payment/pay-in fee reports: pinned raw lines 19\u201321.\n- Balance Platform invoice and bank-transfer fee filters, month and priority: pinned raw lines 23\u201333.\n- Card-payout account scope, `BPPaidOut` fee fields and Transfer Id match: pinned raw lines 35\u201346.\n\n## Related\n\n- [[adyen-reporting]] \u2014 reciprocal report/reconciliation route.\n- [[source-adyen-docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report]] \u2014 Balance Platform Accounting Report field definitions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-fees/2026-09-15|Payout Service reconcile fees, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To reconcile payment or pay in fees that happen on PSP, use the [Settlement Details Report]",
+      "location": "line 21, Pay in/payment fees"
+    },
+    {
+      "text": "Filter the **Booking date** on the appropriate month (in CET timezone)",
+      "location": "line 25, Payout fees"
+    },
+    {
+      "text": "**Category**: **bank**",
+      "location": "line 27, Payout fees filters"
+    },
+    {
+      "text": "Each Balance Platform-initiated card payout is represented as a line item",
+      "location": "line 39, Card payouts from Balance Platform"
+    },
+    {
+      "text": "The **Net Debit (NC)** column represents the total fees deducted for the card payout (not the payout amount + fees).",
+      "location": "line 41, Card payouts fee columns"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-reconcile-fees-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-fees]] \u2014 2026-09-15 Payout Service guide separating PSP payment fees, CET-month booked bank-payout invoice fees, and Balance Platform card-payout SDR fee fields from payout amount.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-fees/2026-09-15.md",
+  "raw_sha256": "f111045c03b8bf9f1401a183a6f7a2569e38e3ae28bd062841e4ab7bc3eb7d78",
+  "status": "candidate_ready"
+}

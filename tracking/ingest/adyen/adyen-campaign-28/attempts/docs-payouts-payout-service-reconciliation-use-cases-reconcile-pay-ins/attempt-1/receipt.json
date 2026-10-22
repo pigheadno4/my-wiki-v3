@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payouts-payout-service-reconciliation-use-cases-reconcile-pay-ins",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service: reconcile pay ins\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md\"\ntags: [adyen, payout-service, reporting, reconciliation, pay-ins]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Payout Service guide explains how to use [[adyen-reporting]] to reconcile individual PSP transactions with aggregate settlement pay-ins to a balance account, and to identify top-ups in that report flow. It describes report matching, not a beneficiary-bank receipt or an executed reconciliation for a particular merchant. See the full pinned raw for the field values and report links (lines 19\u201350).\n\n## Key takeaways\n\n- The guide uses the Settlement Details Report together with either the Balance Platform Statement Report or Balance Platform Accounting Report (lines 23\u201327).\n- For merchants using a balance platform strictly as a pass-through transfer mechanism, filter the balance-platform report by Category `platformPayment`, Type `balanceAdjustment`, and Status `booked`. Its Reference and Description fields contain JSON with merchant account, currency and settlement batch number (lines 29\u201341).\n- Match the corresponding merchant account and batch in the Settlement Details Report, then filter its Type to `BalancePlatformTransfer` and by Currency (lines 43\u201349). This is a batch-level join between PSP detail and aggregate balance-platform pay-in, not a one-to-one match of every PSP event to a separate balance-account transfer.\n- The Settlement Details Report can contain `reserveAdjustment` top-ups and/or individual `capture`, `refund`, `chargeback` and other transactions. Their gross amounts, fees and net amounts add up to the `BalancePlatformTransfer` amount (line 50). The page gives no sign convention or time-zone reconciliation rule; inspect the actual report columns and related report guides before assigning debit/credit direction or period boundaries. A `reserveAdjustment` report entry here does not by itself establish a recurring direct-debit top-up.\n\n## Detail locators\n\n- Report set and scope: raw lines 19\u201327.\n- Pass-through balance-platform filters and batch identifiers: raw lines 29\u201341.\n- Settlement Details match, currency filter and component amounts: raw lines 43\u201350.\n\n## Related\n\n- [[adyen]]\n- [[adyen-reporting]]\n- [[source-adyen-docs-payouts-payout-service-reports-and-fees]]\n- [[source-adyen-docs-reporting-settlement-reconciliation-transaction-level-settlement-details-report]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15|Full pinned Adyen reconciliation guide]]",
+  "quotes": [
+    {
+      "text": "Here we explain how to reconcile individual transactions on PSP with the aggregate settlement pay ins to the balance account and to identify balance account top-ups.",
+      "location": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md:19"
+    },
+    {
+      "text": "For merchants using a balance platform strictly for a pass-through transfer mechanism, filter the Balance Platform Accounting Report or the Balance Platform Statement Report on the following columns and values:",
+      "location": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md:29"
+    },
+    {
+      "text": "You can reconcile these pay in transfers by retrieving the Settlement Details Report for the corresponding merchant account, with the matching batch number.",
+      "location": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md:43"
+    },
+    {
+      "text": "* **Type**: **BalancePlatformTransfer**",
+      "location": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md:47"
+    },
+    {
+      "text": "The Settlement Details Report will contain top-ups (**type** = **reserveAdjustment**) and/or individual transactions (**type** = **capture**, **refund**, **chargeback**, etc.), their gross amount, the fees, and net amounts, which add up to the **BalancePlatformTransfer** amount.",
+      "location": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md:50"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-reconcile-pay-ins-reporting-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-pay-ins]] \u2014 2026-09-15 Payout Service guide for matching PSP settlement-batch detail to aggregate balance-platform pay-ins and identifying reserve-adjustment top-ups; report joins do not prove bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15.md",
+  "raw_sha256": "527e1509499bce84a44ffa1af67e2ccb80be429a7fb8641c52e48a8f18dfb396",
+  "status": "candidate_ready"
+}

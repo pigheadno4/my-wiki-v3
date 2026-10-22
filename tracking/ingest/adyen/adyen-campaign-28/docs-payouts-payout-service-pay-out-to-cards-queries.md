@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-pay-out-to-cards
+
+Q1. Whose funds go to whom, where does the guide list support, and how do one-off and recurring requests differ?
+
+A1. The Payout Service route sends the business's balance-account funds to a third-party Mastercard/Visa cardholder through Transfers API (raw lines 15–19). The dated matrix gives EEA domestic/EEA-or-UK-issued cross-border card payouts in local issuer currency except ISK, US domestic in USD, and UK domestic/EEA-issued cross-border in GBP (raw lines 21–29). One-off setup conditionally needs additional Checkout response data and, if not fully PCI compliant, card tokenization; zero auth is optional. Recurring setup enables additional data and stores a token for later `/transfers` requests, with optional zero auth (raw lines 40–66). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-pay-out-to-cards]] → [[raw/adyen/docs/payouts/payout-service/pay-out-to-cards/2026-09-15]].
+
+Q2. Does zero auth, the regional table, a `/transfers` request, or the “within 30 minutes” description guarantee eligibility or cardholder funds?
+
+A2. No. The zero-auth eligibility check is optional in both paths, the table is dated support guidance, and the one-off tokenization requirement is conditional on not being fully PCI compliant (raw lines 21–29, 40–64). The request is an initiation step, while the page's availability timing is only “typically” within 30 minutes and varies by issuer (raw lines 19, 55, 64). The related [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] distinguishes card-network acceptance from later checks and possible refusal (lifecycle raw lines 69–73, 95–103). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-pay-out-to-cards]] → [[raw/adyen/docs/payouts/payout-service/pay-out-to-cards/2026-09-15]].

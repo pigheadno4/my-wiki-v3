@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Pay out to bank accounts | Adyen Payout Service\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, bank-accounts, transfers]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] **Payout Service** guide describes Transfers API payouts **from your balance account to a third-party bank account**, such as a freelancer's or provider's account. It is a route, priority, cut-off and statement-text reference, not an executed payout or bank-receipt record. See [[adyen-payouts]] for the payout-family route and [[adyen-financial-products]] for the product-family context. Keep this Transfers API path separate from the legacy Online Payout API. [Raw: lines 11, 15\u201319]\n\n## Key takeaways\n\n- The guide says third-party payouts are in local currencies, with stated exceptions for EUR in SEPA locations outside the eurozone and USD in Canada. The **same captured page** separately lists a Hong Kong USD wire row and EUR/GBP/USD cross-border routes, so its \u201ctwo exceptions\u201d sentence is not a complete eligibility rule. Use the country, currency, priority and bank-format tables together and verify a route for the specific counterparty. This snapshot does not prove current availability. [Raw: lines 21\u201367, 85\u201393]\n- The country tables distinguish regular, instant, fast, wire and cross-border support; cross-border routes additionally specify bank-account identification and account-owner address requirements. Higher priority carries higher fees, and intermediary banks may delay a cross-border payout or leave the beneficiary with less than the instructed amount. The prose calls instant available in Australia, while the Australia support table lists only regular, fast and wire; do not resolve that conflict as current support. [Raw: lines 30\u201383]\n- Adyen recommends calculating transfer routes when building the integration, first paying a location/counterparty, or investigating repeated failures. Route selection depends on priority, currency and counterparty location. Cut-off times, local timezone, settlement delay and minimum/maximum amount vary by table row; after-cut-off processing can shift to a later business day. The SEPA and US examples contain broken/missing words and the US lead-in describes next-day timing while its first example says same-day receipt, so use the row-level table as dated evidence rather than treating illustrative arrival times as a guarantee. [Raw: lines 85\u2013162]\n- A supplied statement description is passed to the recipient bank, but most banks, not all, display it. Accepted input length is generally up to 140 characters; visible length and allowed characters vary by country, currency and priority. Some table rows explicitly show **zero bank-statement visibility** even when Adyen accepts a description or beneficiary reference, including PLN regular and SGD wire. [Raw: lines 164\u2013174, 221\u2013228, 336\u2013345]\n- Adyen screens each balance-platform transfer for regulatory and risk purposes and recommends including more counterparty information to reduce manual-review and processing-delay risk. The linked child guides own route calculation, the actual payout request and movement webhooks; this page alone does not establish booking, settlement, bank acceptance or beneficiary receipt. [Raw: lines 347\u2013363]\n\n## Detail locators\n\n- Purpose and third-party balance-account-to-bank direction: raw lines 15\u201319.\n- Supported location/currency/priority/format tables and cross-border requirements: raw lines 21\u201367.\n- Priority fees, intermediary-bank risk and route calculation: raw lines 69\u201393.\n- Cut-offs, timezone, settlement delay and amount bands: raw lines 95\u2013162.\n- Statement-text acceptance versus visibility matrix: raw lines 164\u2013345.\n- Screening and child-guide routes: raw lines 347\u2013363.\n\n## Related\n\n- [[adyen-payouts]] \u2014 payout-family route, including legacy API distinction\n- [[adyen-financial-products]] \u2014 Payout Service product-family context\n- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] \u2014 separate request, booking, tracking and return states\n- [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-routes]] \u2014 route calculation for an actual payout candidate\n- [[source-adyen-docs-payouts-payout-service-getting-paid-transfer-statement]] \u2014 statement-text matrix in the getting-paid guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/2026-09-15|Pinned Payout Service bank-payout guide]]\n",
+  "quotes": [
+    {
+      "text": "Adyen supports paying out funds from your [balance account](/payouts/payout-service/account-structure-resources) to third-party bank accounts by using the [Transfers API]",
+      "location": "line 19"
+    },
+    {
+      "text": "Adyen only supports paying out to third parties in local currencies.",
+      "location": "line 23"
+    },
+    {
+      "text": "When using Cross-border priority, payout delays and additional fees may occur due to intermediary banks. As a result, the beneficiary may receive a lower amount than the instructed value.",
+      "location": "line 83"
+    },
+    {
+      "text": "Bank transfers initiated before the cut-off time are typically processed within the specified **settlement delay**, while those initiated after the cut-off time will be processed the next day within the specified settlement delay.",
+      "location": "line 97"
+    },
+    {
+      "text": "Each transfer on the balance platform is screened by Adyen for regulatory and risk purposes.",
+      "location": "line 349"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-bank-payouts-payouts-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts]] \u2014 2023-modified, 2026-09-15-captured Payout Service Transfers API third-party bank-payout route, country/currency/priority/cut-off/statement-text tables, screening and unresolved local-currency/instant-support wording conflicts; no bank-receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's \u201ctwo exceptions\u201d local-currency sentence conflicts with its Hong Kong USD and cross-border table rows; its instant-Australia prose conflicts with the Australia support table. Retain these as unresolved dated-source mismatches, not eligibility claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/2026-09-15.md",
+  "raw_sha256": "0038c3c05bc7b75230dc41fc291954655a3399dd2b53e9c9c654540132589f04",
+  "status": "candidate_ready"
+}

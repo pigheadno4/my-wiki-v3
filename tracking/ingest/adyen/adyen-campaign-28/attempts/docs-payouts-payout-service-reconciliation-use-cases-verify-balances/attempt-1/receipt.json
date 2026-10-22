@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-reconciliation-use-cases-verify-balances",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service balance-position spot checks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/reconciliation-use-cases/verify-balances\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/reconciliation-use-cases/verify-balances/2026-09-15.md\"\ntags: [adyen, payout-service, reconciliation, balance-report, balance-accounts]\n---\n\n## Overview\n\nThis Payout Service-path guide (modified and captured 2026-09-15) explains **spot-checking balance-account positions** before on-demand payouts to a user's third-party bank account or card. It routes operators to a dated Balance Platform Balance Report and separately mentions a real-time Configuration API lookup for a payout account's balance. The page does **not** state a reconciliation formula, pending-versus-booked transaction rule, universal report cutoff time zone or proof that any payout reached a beneficiary. See [[adyen]] and [[adyen-reporting]].\n\n## Key takeaways\n\n- **Daily report grain:** The guide says the Balance Platform Balance Report shows opening and closing balances for a **given day**, across account holders, balance accounts and balance-account currencies. The illustrated June 8, 2022 report has three rows: USD and CAD for one balance account and USD for another. Its opening timestamps are June 8 00:00 CEST and closing timestamps June 9 00:00 CEST. Those dates and zone describe the sample, not a guaranteed timezone configuration for every generated report.\n- **How to inspect:** The documented report route is to obtain a Balance Platform Balance Report for a specific date and filter it to the needed account/currency. Separately, `GET /balanceAccounts/{id}` in the Configuration API is described as a real-time payout-account balance lookup. A daily opening/closing snapshot is not equivalent to that real-time balance or to a verified available-for-payout amount at a later instant.\n- **Evidence boundary:** The worked table contains example balances, not an accounting roll-forward from detailed transactions. This page links to the Accounting Report but does not define a pending/booked formula or reconcile individual debit/credit events. It does not establish actual bank/card payout initiation, booking or recipient receipt.\n\n## Detail locators\n\n- Purpose and payout-availability motivation: pinned raw lines 15-21.\n- Daily Balance Report scope, report retrieval/filtering and real-time Configuration API route: pinned raw lines 23-34.\n- Three-row account/currency sample and its opening/closing dates/timezone: pinned raw lines 36-44.\n- Accounting/report links only, without formula: pinned raw lines 46-49.\n\n## Related\n\n- [[adyen-reporting]] \u2014 main report/reconciliation concept and reciprocal source route.\n- [[adyen-payouts]] \u2014 payout context.\n- [[source-adyen-docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report]] \u2014 separate Accounting Report field and event reference.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/verify-balances/2026-09-15|Payout Service balance verification guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Spot-check account balance positions across your balance platform.",
+      "location": "line 17, introduction"
+    },
+    {
+      "text": "The Balance report shows the opening and closing balances in your balance platform **on a given day** for all account holders, balance accounts , and balance account currencies.",
+      "location": "line 24, View balances"
+    },
+    {
+      "text": "[Get the Balance Platform Balance Report](/payouts/payout-service/prepare-reports/generate-download-reports) for a specific date.",
+      "location": "line 30, View balances"
+    },
+    {
+      "text": "You can also view your payout account's balance in real time using Adyen's Configuration API.",
+      "location": "line 33, View balances"
+    },
+    {
+      "text": "The following Balance Platform Balance Report example shows the opening and closing balances for two balance accounts on the 8th of June, 2022.",
+      "location": "line 38, Balance Platform Balance Report"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-verify-balances-route",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-verify-balances]] \u2014 2026-09-15 Payout Service spot-check guide for daily account/currency opening/closing Balance Report rows and a separate real-time balance-account GET; no transaction roll-forward formula or bank-receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The CEST June 2022 timestamps belong to the worked report sample, not an asserted universal report cutoff timezone.",
+          "The page gives no pending/booked reconciliation formula; do not infer payout availability or bank receipt from a daily snapshot."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/verify-balances/2026-09-15.md",
+  "raw_sha256": "e7dc0bb830b1ac85c2fd2cf99aa741a52d00d7f17b680c2d9412da811293539d",
+  "status": "candidate_ready"
+}

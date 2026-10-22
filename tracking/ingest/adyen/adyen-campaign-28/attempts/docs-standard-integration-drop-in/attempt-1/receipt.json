@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-standard-integration-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Standard integration with Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/2026-09-15.md\"\ntags: [adyen, online-payments, standard-integration, web-drop-in, sessions, webhooks]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] guide describes a **Standard online-payments integration using Web Drop-in** within [[adyen-online-payments]]. Drop-in supplies the shopper-facing payment-method UI and client-side payment flow; the merchant still implements a payment server to create a Checkout session, a client website to mount Drop-in and handle redirects, and a webhook server for the payment outcome (raw lines 15\u201319, 42\u201368).\n\n## Key takeaways\n\n- **Version and setup gates:** The guide specifies Checkout API v72 or later for `/sessions`, a server-side library released March 30, 2026 or later, and Web Drop-in v6.30.0 or later. Its requirements table calls for Merchant admin and Manage API credentials Customer Area roles, an API credential/key and client key, default payment credential roles, a standard webhook with default event codes, and test-account/live-readiness preparation (raw lines 21\u201352). These are this guide's stated versions and preparations, not proof of live enablement.\n- **Session and client boundary:** The payment server posts `/sessions`, passes `session.id` and `session.sessionData` to the website, and the client configures `AdyenCheckout` and mounts Drop-in. The request table describes `merchantAccount`, amount in minor units, `returnUrl`, merchant `reference`, shopper country, `channel: Web` and idempotency key, alongside shopper fields; examples cover multiple server languages (raw lines 56\u201368, 451\u2013775, 803\u2013958). The raw table marks `countryCode` and `shopperEmail` with required icons while describing a locale fallback and email as \u201cstrongly recommended\u201d; do not resolve that inconsistency into an unconditional API-schema claim (raw lines 473\u2013475).\n- **Browser and redirect constraints:** The guide calls for same-domain iframe hosting for redirect flows, discourages native-app WebViews, requires client-side initialization under SSR, and says strict CSP can block native 3DS2 challenges unless adjusted or a redirect flow is selected. For redirects, the returning shopper's `sessionId` and `redirectResult` feed `submitDetails`; if the shopper never returns, rely on the webhook rather than assuming a browser result (raw lines 35\u201338, 973\u20131024).\n- **Outcome authority:** Client `onPaymentCompleted`/`onPaymentFailed` callbacks and `resultCode` inform the shopper of current status. The server uses the standard `AUTHORISATION` webhook, matching `merchantReference` to the session `reference`; `success: true` and `success: false` indicate the authorization event outcome (raw lines 1026\u20131036, 1054\u20131134). A shown client result, session creation or authorization webhook is not proof of capture, settlement or merchant receipt.\n\n## Detail locators\n\n- Roles, credentials, embedding and CSP prerequisites: raw lines 21\u201340.\n- Three-part architecture and end-to-end flow: raw lines 42\u201398.\n- API-library examples, session headers/body, response and errors: raw lines 100\u2013801.\n- Adyen Web setup, global/Drop-in configuration and mount methods: raw lines 803\u2013971.\n- Redirect, shopper result and Drop-in error handling: raw lines 973\u20131052.\n- Standard `AUTHORISATION` webhook and example outcomes: raw lines 1054\u20131134.\n\n## Evidence boundary\n\nThis is a dated Web Sessions/Drop-in integration recipe. The example requests and webhooks are illustrative, not evidence of a live transaction. The guide's own field table contains conditional-versus-required wording tension, and its UI callbacks describe current shopper-facing status; use the server webhook for order-management outcome while keeping authorization distinct from later capture or settlement.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online-payment architecture and release context.\n- [[source-adyen-docs-standard]] \u2014 Standard integration overview route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/2026-09-15|Pinned Standard Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our pre-built Drop-in includes the UI and client-side logic to show available payment methods to your shopper, collect their payment information, and handle the complete payment flow.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Use the [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) endpoint on Checkout API v72 or later.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "Use [Web Drop-in](https://github.com/Adyen/adyen-web) v6.30.0 or later.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/2026-09-15.md:52"
+    },
+    {
+      "text": "If the shopper does not return to your website, you do not get the return URL with parameters appended to it.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/2026-09-15.md:994"
+    },
+    {
+      "text": "Update your order management system when you get the outcome in a [webhook message](/development-resources/webhooks) with `eventCode`: **AUTHORISATION**.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/2026-09-15.md:1062"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-drop-in-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in]] \u2014 2026-09-15 Standard Web Drop-in Sessions guide for Checkout API v72+/Web v6.30.0+, server/client/webhook integration, redirects and authorization-outcome handling; session/client status is not capture or settlement proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's /sessions field table marks countryCode and shopperEmail with required icons while its descriptions provide a locale fallback and call email strongly recommended (raw lines 473\u2013475); retain the tension rather than claiming a settled API schema.",
+          "This guide covers Standard online-payment Web Drop-in; do not route it as Payout Service or infer a merchant-of-record/legal seller model."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/2026-09-15.md",
+  "raw_sha256": "0ec1721f04c5bfdc8bc561ea8cfdeacf35c5bec8b716c73287b1a7fc3f4f5b41",
+  "status": "candidate_ready"
+}

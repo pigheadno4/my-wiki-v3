@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-standard-integration-drop-in-donations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Donations in Standard Drop-in\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in/donations\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/donations/2026-09-15.md\"\ntags: [adyen, giving, donations, drop-in, checkout]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] Standard Drop-in guide describes presenting an Adyen Giving campaign after a successful original payment. If the shopper opts in, the donation amount is charged to the same payment method used for that payment. Drop-in handles the donation form and processing; the merchant receives a client callback and a distinct donation-outcome webhook. This is a guide for [[adyen-giving]], not evidence that a particular merchant, shopper, method, or nonprofit is eligible.\n\n## Key takeaways\n\n- The stated integration is a standard payments integration with Drop-in. The page calls for the Donation campaigns manager Customer Area role, general Giving requirements, Standard webhooks, and the Adyen Giving merchant webhook. An active donation campaign is needed for Drop-in to show the donation form after successful payment.\n- The server creates a payment session without donation-specific request parameters. The checkout-side global configuration may add a `donation` object; the documented event handlers are `onDonationSuccess` and `onDonationFailure`. `onDonationSuccess` fires both for completed donation and shopper decline, distinguished by `didDonate`; it is not by itself proof that a donation was made.\n- With an active campaign after successful payment, Drop-in shows campaign details and amount choices and processes the donation. `autoMount` defaults to true, mounting in Drop-in's container; setting it false suppresses automatic display. The page also provides a display `delay`.\n- The Adyen Giving merchant webhook reports donation outcome. In its successful `DONATION` example, `success` is true and `originalReference` associates the donation with the original transaction. Payment outcome arrives in a separate webhook message. A UI callback, the example payload, or an original payment result does not establish completed donation or nonprofit receipt.\n- Test and live campaigns are created and activated separately. The testing section says starting a campaign produces a `donationToken` in `/payments` or `/payments/details` responses, then asks merchants to verify campaign data and a donation webhook. Those endpoint references appear alongside the guide's session-creation flow; this snapshot does not reconcile the routes or establish that a merchant must issue a separate `/payments` request in a Drop-in Sessions integration. The live section also offers Giving reporting as an outcome check; the page does not demonstrate actual settlement or bank receipt.\n\n## Detail locators\n\n- **Purpose, role and webhook prerequisites** \u2014 raw lines 15\u201331.\n- **Drop-in session, payment and donation sequence** \u2014 raw lines 33\u201377.\n- **Configuration, callbacks and display behavior** \u2014 raw lines 79\u2013130.\n- **Donation outcome and example payload** \u2014 raw lines 132\u2013180.\n- **Separate test/live campaign, token and outcome checks** \u2014 raw lines 182\u2013249; troubleshooting and test cards at 251\u2013288.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-giving]]\n- Related source: [[source-adyen-docs-online-payments-donations-integration-options-sessions-flow]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/donations/2026-09-15|Adyen Docs \u2014 Standard Drop-in donations (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "If the shopper chooses to make a donation, the donation amount is charged to the same payment method that was used for the original transaction.",
+      "location": "line 19, opening paragraph"
+    },
+    {
+      "text": "You do not need to pass any donation-specific parameters in your request to create a payment session.",
+      "location": "line 36, How it works step 2"
+    },
+    {
+      "text": "Called when the donation is completed or the shopper declines to donate. Receives an object with `didDonate`: **true** or **false**.",
+      "location": "line 87, Add Giving configuration event handlers"
+    },
+    {
+      "text": "Use this value to associate the donation with the shopper's original transaction.",
+      "location": "line 150, Get the webhook message, originalReference field"
+    },
+    {
+      "text": "Start receiving the `donationToken` in the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) or [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) responses.",
+      "location": "line 201, Test environment campaign activation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "giving-standard-drop-in-donations-source",
+        "target_path": "wiki/concepts/adyen-giving.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in-donations]] \u2014 2026-09-15 Standard Drop-in Giving guide for post-payment campaign presentation, donation callbacks, separate DONATION-webhook outcome, and test/live checks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/donations/2026-09-15.md",
+  "raw_sha256": "5e3bb545560eed4e4ce230e71f934f73881bd8eed36d3579983b03bc8e4b9deb",
+  "status": "candidate_ready"
+}

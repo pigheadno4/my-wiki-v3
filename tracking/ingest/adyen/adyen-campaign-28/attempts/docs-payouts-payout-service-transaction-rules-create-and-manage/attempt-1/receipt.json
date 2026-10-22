@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-transaction-rules-create-and-manage",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service: create and manage transaction rules\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/transaction-rules/create-and-manage\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/transaction-rules/create-and-manage/2026-09-15.md\"\ntags: [adyen, payout-service, transaction-rules, external-payouts, controls]\n---\n\n## Overview\n\nThis 2021-modified, 2026-09-15-captured [[adyen]] Payout Service guide uses the Balance Platform Configuration API to create, inspect, override, skip, and update transaction rules for outgoing **external payouts** from balance accounts. It requires an Adyen Payouts integration, the **Bank Manage TransactionRules** API role, and Transfer and Transaction webhook subscriptions. The page expressly excludes internal transfers. See [[adyen-payouts]].\n\n## Key takeaways\n\n- **Create and effect:** POST `/transactionRules` targets an `entityKey` and specifies an interval, restrictions, `requestType: bankTransfer`, and `outcomeType: hardBlock`. The described `blockList` and `velocity` types decline a transfer when their respective conditions apply; velocity accumulates previous transactions within its interval, with `aggregationLevel` limited here to `balanceAccount`. Although the page introduction says rules can automatically approve or decline, its concrete creation table prescribes `hardBlock`; do not treat a nonblocked payout or rule creation response as separate human approval, booking, or bank receipt. See pinned raw lines 17\u201319 and 37\u201357.\n- **Activation and limits:** `status: active` starts evaluation and sets `startDate` to the current time; a future `startDate` creates an active rule scheduled for that date. A future `endDate` stops evaluation; without it, evaluation continues until `status` becomes inactive. The EUR 500,000 daily velocity rule is an example using EUR minor units (`50000000`), not an observed live limit. See pinned raw lines 45\u201357 and 59\u2013140.\n- **Inspect and narrow override:** GET routes retrieve one rule or list rules for a balance account, account holder, or balance platform. The hierarchy can be overridden for a specific entity by POSTing a new rule with `overridesRule`, as illustrated by raising one balance account's daily threshold from EUR 500,000 to EUR 800,000. This changes the control applied to that entity. See pinned raw lines 143\u2013248.\n- **Skip and update controls:** A `bypass` rule with empty `ruleRestrictions` and `overridesRule` skips the named rule for a specified entity; the example removes that daily maximum for one balance account. PATCH `/transactionRules/{id}` changes restrictions or `status` between active and inactive; the example raises a platform-wide threshold to EUR 800,000. Skipping or weakening a rule removes that rule's block, but does not itself establish that an external transfer is authorized, processed, or received. See pinned raw lines 250\u2013367.\n\n## Detail locators\n\n- Integration, role, webhook, and internal-transfer scope: pinned raw lines 17\u201335.\n- POST fields, lifecycle dates, rule types, and example response: pinned raw lines 37\u2013140.\n- GET routes and entity-specific override: pinned raw lines 143\u2013248.\n- Bypass and PATCH examples: pinned raw lines 250\u2013367.\n\n## Related\n\n- [[adyen-payouts]] \u2014 Payout Service versus legacy Payout API context.\n- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] \u2014 separate transfer lifecycle and webhook boundaries.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/transaction-rules/create-and-manage/2026-09-15|Payout Service transaction-rule guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "transaction rules that automatically evaluate every external payout",
+      "location": "line 19, introduction"
+    },
+    {
+      "text": "Transaction rules are not supported for [internal transfers](/payouts/payout-service/internal-fund-transfers/).",
+      "location": "line 34, Requirements / Limitations"
+    },
+    {
+      "text": "Set this to **hardBlock**.",
+      "location": "line 49, Create a transaction rule / outcomeType row"
+    },
+    {
+      "text": "This means that the rule no longer applies to that entity.",
+      "location": "line 252, Skip a transaction rule"
+    },
+    {
+      "text": "You can activate or deactivate a transaction rule by updating the value for `status`:",
+      "location": "line 314, Update a transaction rule"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-transaction-rules-create-manage-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-transaction-rules-create-and-manage]] \u2014 2021-modified, 2026-09-15-captured Payout Service Configuration API guide to external-bank-payout hard-block rules, entity overrides, bypass, and active/inactive lifecycle; internal transfers are excluded.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introduction says automatically approve or decline, while the creation table directs outcomeType hardBlock; the source retains this distinction and does not infer approval from a nonblock."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/transaction-rules/create-and-manage/2026-09-15.md",
+  "raw_sha256": "84e6953dfe1b8e9a0888c9915728794b2f1e3d969724ffa412fb904326192ea0",
+  "status": "candidate_ready"
+}

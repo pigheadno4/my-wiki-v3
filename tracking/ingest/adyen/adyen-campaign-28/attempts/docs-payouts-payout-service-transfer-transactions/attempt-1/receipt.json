@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-transfer-transactions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service transfer-transaction lookup\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/transfer-transactions\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/transfer-transactions/2026-09-15.md\"\ntags: [adyen, payout-service, transfers-api, transactions, balance-accounts]\n---\n\n## Overview\n\nThis Payout Service-path guide (last modified 2023-09-07; captured 2026-09-15) explains querying **balance-account transaction records** through the Transfers API `/transactions` endpoints. It distinguishes the transaction's own `id` and signed amount from its related `transfer.id`, and covers platform, account-holder and balance-account scopes. Its prerequisites explicitly allow **Adyen for Platforms, Issuing or Payouts** integrations; the URL alone does not narrow this retrieval API to Payout Service. A transaction booked on an outgoing balance account is not proof that an external beneficiary bank or card recipient received funds. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- **Access and list query:** The guide requires a Transfers API credential with **TransferService Webservice Retrieve** assigned through Adyen contact and says transfers must be enabled for the source balance account. `GET /transactions` needs at least one of `balancePlatform`, `accountHolderId` or `balanceAccountId`, plus `createdSince` and `createdUntil`; it offers optional limit, sort order, cursor and payment-instrument filter. The result's `data` holds transaction records and `_links` supports cursor pagination. `GET /transactions/{id}` retrieves a specific transaction by its **transactionId**. The sample cURL includes a bare `accountHolder` query token alongside `accountHolderId`; examples are TEST illustrations, not a validated production template.\n- **Transaction grain and direction:** Each result has a transaction `id`, `amount`, `status`, balance-platform/holder/account identifiers and a nested related `transfer.id`. The sign of `amount.value` is the direction for that balance account: **positive adds funds**, **negative deducts funds**. Incoming reference is the sender's when provided; outgoing reference is the one supplied in the transfer request. A transaction can be `pending` before credit or debit, or `booked` once the balance-account change occurs. This is different from transfer-request acceptance and from external bank receipt.\n- **External versus internal:** The page names external payouts to third-party bank accounts or cards and internal transfers between balance accounts. It gives a booked negative example for an external bank payout, and separate negative outgoing and positive incoming internal examples. The two internal example transaction IDs and nested transfer IDs differ by leg; do not collapse the legs into one transaction. The list sample has a bank-payout transaction `id` ending in **EUR** while its `amount.currency` says **USD** (raw lines 240-247); use that sample only as an illustration of fields, not currency reconciliation.\n- **Booking and value dates:** `bookingDate` records when funds are reserved or pending on the balance account; `valueDate` records when funds are deducted or made available. The after-bank-cutoff example keeps outgoing funds reserved before deduction, and the guide states outgoing deductions occur at the booked stage. Neither date alone establishes external beneficiary receipt.\n\n## Detail locators\n\n- API scope, integration and credential prerequisites: pinned raw lines 15-36.\n- List identifiers/date filters, pagination, specific-transaction route and illustrative sample: pinned raw lines 38-354.\n- Direction sign, pending/booked semantics and bank/card versus internal examples: pinned raw lines 356-487.\n- BookingDate/valueDate distinction and outgoing deduction stage: pinned raw lines 489-498.\n\n## Related\n\n- [[adyen-payouts]] \u2014 main Payout Service concept and reciprocal source route.\n- [[adyen-platform-internal-transfers]] \u2014 related two-sided balance-account movement.\n- [[source-adyen-docs-payouts-payout-service-view-transfers-details]] \u2014 transfer-level list/detail retrieval, distinct from transaction records.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/transfer-transactions/2026-09-15|Payout Service transfer-transaction guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use the [Transfers API](https://docs.adyen.com/api-explorer/transfers/latest/overview) to query the [/transactions](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions) endpoint and get transaction details on demand.",
+      "location": "line 19, introduction"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model/), [Issuing](/issuing/account-structure-resources/issuing-enterprise/), or [Payouts](/payouts/payout-service/) integration.",
+      "location": "line 25, Requirements"
+    },
+    {
+      "text": "You must include at least one of the following in your request:",
+      "location": "line 46, Get a list of transactions"
+    },
+    {
+      "text": "Has a negative [value](https://docs.adyen.com/api-explorer/transfers/latest/get/transactions/#responses-200-data-amount-value), meaning funds are deducted from the balance account.",
+      "location": "line 362, Identify incoming and outgoing funds"
+    },
+    {
+      "text": "Funds are always deducted at the booked stage for outgoing transfers.",
+      "location": "line 498, Booking and value dates"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-transfer-transactions-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-transfer-transactions]] \u2014 2023-modified, 2026-09-15-captured Transfers API transaction lookup for Platforms/Issuing/Payouts, signed balance-account booking and distinct transaction/transfer IDs; sample bank-payout ID/currency conflict and booked debit is not bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The list sample bank-payout transaction ID ends EUR while amount.currency is USD (raw lines 240-247); do not infer a currency conversion or reuse as reconciliation evidence.",
+          "Separate transaction, transfer request and beneficiary receipt grain; incoming and outgoing internal legs are separate example records."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/transfer-transactions/2026-09-15.md",
+  "raw_sha256": "eaa526b21625c0f1bd3eee203a7c982a048018744ecbe7dea952bd9f0f81f098",
+  "status": "candidate_ready"
+}

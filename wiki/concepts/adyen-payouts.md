@@ -14,6 +14,63 @@ Adyen's payout documentation covers outbound disbursements to suppliers, partner
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts]] — 2020-modified, 2026-09-15-captured Payout Service recurring direct-debit funding overview for balance accounts, with fixed/target amounts, account-timezone trigger checks and bank-instrument source; linked setup/status guides govern consent, capability and credited-funds evidence.
+
+
+- [[source-adyen-docs-payouts-payout-service-transfer-transactions-transaction-webhooks]] — 2026-09-15 Payout Service-path booked balance-account transaction-webhook guide for external bank/card and internal movement, distinct from transfer-status webhooks; TEST bank request/event amounts conflict and booked debit is not bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-sign-terms-of-service]] — 2026-04-modified, 2026-09-15-captured Payout Service direct-debit top-up Terms guide for authorized-signatory/API-only presentation and LEM acceptance readback, with conditional multiple documents; not schedule or debit proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-transfer-transactions]] — 2023-modified, 2026-09-15-captured Transfers API transaction lookup for Platforms/Issuing/Payouts, signed balance-account booking and distinct transaction/transfer IDs; sample bank-payout ID/currency conflict and booked debit is not bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-top-up-webhooks]] — 2020-modified, 2026-09-15-captured Payout Service recurring-top-up configuration, direct-debit transfer and credited-transaction webhook guide; booked/negative-state examples and direction mismatch limit finality inferences.
+
+
+- [[source-adyen-docs-payouts-payout-service-transaction-rules-create-and-manage]] — 2021-modified, 2026-09-15-captured Payout Service Configuration API guide to external-bank-payout hard-block rules, entity overrides, bypass, and active/inactive lifecycle; internal transfers are excluded.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-manage-bank-details]] — 2023-modified, 2026-09-15-captured Payout Service Checkout zero-auth bank-detail tokenization for later third-party bank payouts, with company credential/feature gates, local/cross-border limits and no account validation or receipt proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-transfer-routes]] — 2023-modified, 2026-09-15-captured Payout Service Configuration API preflight for country or counterparty bank routes, priorities and route requirements; calculation is separate from a payout request or bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-transaction-rules]] — 2022-modified, 2026-09-15-captured limited-pilot Payout Service-path rule guide for scoped blocklist/velocity/bypass evaluation and hard-block decline evidence; rule decision and authorised-limit accounting are not booked payout or recipient proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-manage-recurring-top-ups]] — 2020-modified, 2026-09-15-captured Payout Service recurring top-up schedule GET/PATCH/DELETE guide with role/capability gates, immutable funding source and sample pagination-path and funding-source-ID conflicts; schedule changes do not prove debit reversal or mandate revocation.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request]] — 2023-modified, 2026-09-15-captured Payout Service Transfers API request guide for third-party bank payouts, one-off/token counterparty, priority fallback, optional approval and future one-attempt execution; HTTP 2XX is not bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-approve-cancel-payouts]] — 2020-modified, 2026-09-15-captured Payout Service optional bank-transfer review guide for role-gated approve/cancel batches of up to 500, 30-day expiry and review webhooks; approval precedes processing and bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-create-recurring-top-ups]] — 2020-modified, 2026-09-15-captured enterprise-payouts guide for role/capability/terms-gated recurring EUR/USD direct-debit top-ups into balance accounts; API versus Customer Area threshold and fixed-field examples conflict, and a schedule is not credit proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-view-transfers-details]] — 2019-modified, 2026-09-15-captured Payout Service-path Customer Area/Transfers API list, detail and bank confirmation-letter guide; explicitly requires Platforms integration, has inconsistent list-query examples, and sent instruction is not bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-verify-counterparty]] — 2026-09-15 enterprise-payouts domestic EU/UK bank-recipient name-check guide with distinct lookup role, response-driven user confirmation and synthetic TEST fixtures; verification is not transfer authorization or bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-payout-webhooks]] — 2023-modified, 2026-09-15-captured Payout Service card-payout Transfer webhook guide for initiation, reservation, nonfinal booking, internal review, scheme acceptance and post-booking failure; sample bank wording and EUR amount figures remain unresolved.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-funds-disbursement]] — 2023-modified, 2026-09-15-captured Payout Service Transfers API guide for third-party Mastercard/Visa card payouts using PCI-gated raw data or CardOnFile/Subscription tokens, with future-date one-attempt and webhook-booking boundaries.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards]] — 2023-modified, 2026-09-15-captured Payout Service guide for one-off/recurring third-party Mastercard/Visa payouts via Transfers API, with region/currency matrix, optional zero-auth and PCI-dependent tokenization; 30-minute availability is issuer-dependent, not guaranteed.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts]] — 2023-modified, 2026-09-15-captured Payout Service Transfers API third-party bank-payout route, country/currency/priority/cut-off/statement-text tables, screening and unresolved local-currency/instant-support wording conflicts; no bank-receipt proof.
+
+
 - [[source-adyen-docs-payouts-payout-service-manage-access]] — 2026-09-15 Payout Service Customer Area team-access overview for signup admin roles and routes to users, API credentials, webhooks and reports; role listing is not live authorization or payout proof.
 
 

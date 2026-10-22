@@ -1,0 +1,7 @@
+# Q1 — What does this guide configure, and what is required?
+
+It configures Payout Service Configuration API rules to evaluate external bank payouts from balance accounts. The Adyen Payouts integration, Bank Manage TransactionRules role, and Transfer and Transaction webhooks are listed prerequisites; internal transfers are excluded (pinned raw lines 17–35). The concrete POST rule uses `bankTransfer` and `hardBlock` with block-list or velocity restrictions (lines 37–57). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-transaction-rules-create-and-manage]] → [[raw/adyen/docs/payouts/payout-service/transaction-rules/create-and-manage/2026-09-15]].
+
+# Q2 — Can a bypass or nonblocked payout be treated as approved, and how can a rule change?
+
+No approval or payout completion follows from these controls alone. A specific-entity rule can override a higher-hierarchy rule; `bypass` with empty restrictions and `overridesRule` skips the named rule, and PATCH can change restrictions or active/inactive status (pinned raw lines 154–165, 250–321). The introduction says rules can approve or decline, but the concrete create table prescribes `outcomeType: hardBlock`; preserve that difference rather than claiming the absence of a block approves or books a transfer (lines 17–19, 49). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-transaction-rules-create-and-manage]] → [[raw/adyen/docs/payouts/payout-service/transaction-rules/create-and-manage/2026-09-15]].

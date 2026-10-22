@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-standard-integration-drop-in-optional-drop-in-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Standard Drop-in optional configuration\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in/optional-drop-in-configuration\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/optional-drop-in-configuration/2026-09-15.md\"\ntags: [adyen, online-payments, standard-integration, web-drop-in, configuration]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] guide describes optional client-side configuration for a **Standard Web Drop-in** integration under [[adyen-online-payments]]. It distinguishes settings on the per-payment-session `AdyenCheckout` object from settings on the shopper-facing `Dropin` instance. UI configuration and callbacks do not establish a payment outcome.\n\n## Key takeaways\n\n- For a smaller bundle, individual payment-method imports can be used; every method subsequently added must also be imported. **If** individual methods are imported, the Drop-in configuration must include `paymentMethodComponents` listing those imported methods. The code example later lists `Ideal` in that array without importing it in the earlier import snippet, so the snippets are illustrative and should be aligned before use. See raw lines 21\u201338 and 97\u2013107.\n- `AdyenCheckout` represents one payment session. Its optional `secondaryAmount` shows an additional currency on the Pay button, with the merchant doing the conversion and supplying the amount in minor units; this is display configuration, not an Adyen FX quote. `donation` is another optional configuration object. See raw lines 40\u201353.\n- `beforeSubmit` can add shopper details to the payment request. The guide says to continue with `actions.resolve()` regardless of result code, including an unsuccessful payment; use `actions.reject()` only for a failed server-side Adyen API request or network issue. It also lists action-display and form-change event handlers. See raw lines 55\u201365.\n- At the `Dropin` instance, method-specific `paymentMethodsConfiguration` overrides the global setting on `AdyenCheckout`. Stored/regular method display and initial opening, automatic selection, iframe redirect, wallet prominence, final animation and radio buttons have optional controls and documented defaults or applicability. `redirectFromTopWhenInIframe` sets top-level redirects when enabled, while the guide recommends avoiding an iframe. See raw lines 67\u201387.\n- Enabling `showRemovePaymentMethodButton` requires implementing `onDisableStoredPaymentMethod`; when a shopper removes a stored method, the handler must DELETE that `storedPaymentMethodId` and then call `resolve()` or `reject()` according to the DELETE response. Showing the button alone does not perform or prove deletion. See raw lines 80\u201381 and 89\u201395.\n\n## Detail locators\n\n- **Individual imports and conditional component array:** raw lines 21\u201338, 73\u201375, 97\u2013107.\n- **Per-session `AdyenCheckout` amount/donation configuration and callbacks:** raw lines 40\u201365.\n- **Drop-in display settings, defaults, precedence and iframe guidance:** raw lines 67\u201387.\n- **Stored-method deletion callback:** raw lines 89\u201395.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-standard-integration-drop-in]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/optional-drop-in-configuration/2026-09-15|Adyen Standard Drop-in optional configuration \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you import individual payment methods, you must include the `paymentMethodComponents` parameter",
+      "location": "raw line 38, Import Drop-in with individual payment methods"
+    },
+    {
+      "text": "You must do the currency conversion and set the amount.",
+      "location": "raw line 48, AdyenCheckout configuration parameters"
+    },
+    {
+      "text": "You should call the `actions.resolve()` method regardless of the `resultCode`, including when the payment is unsuccessful.",
+      "location": "raw line 59, AdyenCheckout event handlers"
+    },
+    {
+      "text": "Stop the payment flow only when your server-side API request to Adyen failed, or when experiencing network connection issues.",
+      "location": "raw line 60, AdyenCheckout event handlers"
+    },
+    {
+      "text": "If using this prop, you must also implement the `onDisableStoredPaymentMethod` callback.",
+      "location": "raw line 81, Drop-in configuration parameters"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-dropin-optional-configuration-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in-optional-drop-in-configuration]] \u2014 2026-09-15 Standard Web Drop-in optional client configuration for method imports, session/instance settings, submission callbacks and stored-method deletion; conditional requirements and example mismatch are qualified in the source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw import example omits Ideal but the later paymentMethodComponents sample includes it; do not copy the two snippets unmodified as a working pair."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/optional-drop-in-configuration/2026-09-15.md",
+  "raw_sha256": "1eb6ec89ab4aa00fc673b4e2d5e6b0be0fea5151fa847ba14b1f56b399127867",
+  "status": "candidate_ready"
+}

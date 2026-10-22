@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts-approve-cancel-payouts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service approve or cancel bank payouts\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts/approve-cancel-payouts\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/approve-cancel-payouts/2026-09-15.md\"\ntags: [adyen, payout-service, bank-payouts, transfer-review, transfers-api]\n---\n\n## Overview\n\nThis [[adyen]] Payout Service bank-payout review guide, last modified 2020-09-11 and captured 2026-09-15, covers an **optional additional review** triggered on a Transfers API payout request. A team member must approve or cancel before Adyen processes it. It belongs under [[adyen-payouts]] and applies to the pending review state of this payout route, not the legacy Online Payout API or a general reversal of already booked payouts.\n\n## Key takeaways\n\n- Include a `review` object in POST `/transfers` to trigger an additional review. The request remains pending approval until a team reviewer acts. Approval authorizes Adyen to **continue processing**, while cancellation or no action within 30 days makes the request fail and prevents further processing. The reviewer permission is controlled by the **TransferService Approval role** on the web service API key; subscribe to Transfer webhooks. See raw lines 19\u201350.\n- POST `/transfers/approve` or POST `/transfers/cancel` with a required `transferIds` array. Each endpoint accepts one or more IDs, up to **500** per request; examples use two IDs and TEST credentials. HTTP 200 is an API-request response, not proof of an individual transfer's later booking, bank credit or return-free completion. See raw lines 52\u201377, 259\u2013286 and 468.\n- Transfer webhooks distinguish a review-required `balancePlatform.transfer.created` with `status: received`, `reason: pending`, `review.numberOfApprovalsRequired: 1`, from an approved `balancePlatform.transfer.updated` with `status: authorised`, `reason: approved`, and a canceled update with `status: cancelled`, `reason: unknown`. The page also says expiry after 30 days generates a review-status notification, though it does not show a separate expiry payload. These are review-stage statuses, not bank-receipt evidence. See raw lines 470\u2013495, 563\u2013571 and 653\u2013660.\n- The prose describes cancellation/expiry as a payout that \u201cfails,\u201d while the displayed cancellation webhook uses `status: cancelled`; preserve the distinct prose outcome and event status rather than rewriting cancellation as `status: failed`. The approved sample's outgoing bank transfer has a reservation mutation; it does not show a booked debit or receiving-bank credit. See raw lines 44\u201348, 623\u2013650 and 653\u2013735.\n\n## Evidence boundary\n\nThe review is optional and conditional on the payout request's `review` object. The guide does not say an already processed or booked payout can be cancelled through these endpoints. Approval is a gate that lets processing continue; it is not final payout authorization in a card-payment sense, booked debit, settlement or bank receipt. Batch HTTP 200 and TEST webhook examples do not establish a specific live recipient outcome.\n\n## Detail locators\n\n- Review trigger, role, 30-day expiry and outcomes: raw lines 19\u201350.\n- Approve/cancel batch request shape and TEST examples: raw lines 52\u2013468.\n- Review-stage webhook types, fields and examples: raw lines 470\u2013735.\n\n## Related\n\n- [[adyen-payouts]]\n- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]]\n- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/approve-cancel-payouts/2026-09-15|Payout Service bank-payout approval/cancellation guide, 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "Additional reviews require a member of your team to verify a payout before Adyen processes it.",
+      "location": "raw line 19, Approve or cancel payouts"
+    },
+    {
+      "text": "If the reviewer approves the payout, then the payout is authorized and Adyen continues processing the request.",
+      "location": "raw line 46, How it works"
+    },
+    {
+      "text": "If the reviewer takes no action within 30 days after initiating the payout request, then the payout fails and Adyen can no longer processes the request.",
+      "location": "raw line 48, How it works"
+    },
+    {
+      "text": "You can include one or more `transferIds` in the request, up to a maximum of 500.",
+      "location": "raw line 58, Approve payouts table; repeated at line 267 for cancel"
+    },
+    {
+      "text": "If the request is successful, you receive an **HTTP 200 OK** response.",
+      "location": "raw line 259, Approve payouts; repeated at line 468 for cancel"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-docs-payouts-payout-service-pay-out-to-bank-accounts-approve-cancel-payouts-payouts-source",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-approve-cancel-payouts]] \u2014 2020-modified, 2026-09-15-captured Payout Service optional bank-transfer review guide for role-gated approve/cancel batches of up to 500, 30-day expiry and review webhooks; approval precedes processing and bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw lines 44\u201348 call cancellation/expiry failure and no further processing; sample cancellation webhook uses status cancelled/reason unknown (lines 653\u2013735), not status failed.",
+          "Approve/cancel HTTP 200 (lines 259, 468) does not establish later booked debit or bank receipt; guide shows review statuses only."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/approve-cancel-payouts/2026-09-15.md",
+  "raw_sha256": "daf8fbf25ddc64c607eea50c8890261fa2d9a3cba21f4d866cbc6539e226aa96",
+  "status": "candidate_ready"
+}

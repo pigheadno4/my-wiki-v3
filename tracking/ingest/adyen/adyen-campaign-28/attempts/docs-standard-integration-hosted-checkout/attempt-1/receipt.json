@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-standard-integration-hosted-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Hosted Checkout | Adyen Standard online payments\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/hosted-checkout\"\nraw_files:\n  - \"adyen/docs/standard/integration/hosted-checkout/2026-09-15.md\"\ntags: [adyen, standard-integration, online-payments, hosted-checkout, sessions]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] **Standard online-payments** guide explains an Adyen-hosted shopper payment page. The merchant payment server creates a Checkout API session, the website or app redirects the shopper to its returned URL, the merchant server retrieves a session result after return, and a separate webhook server receives the payment outcome. It is a bounded [[adyen-online-payments]] Standard integration route, not evidence of a deployed checkout, authorization, capture or settlement. [Raw: lines 15\u201319, 35\u201379]\n\n## Key takeaways\n\n- The guide's setup table calls for Customer Area merchant-admin and API-credential management roles, an API credential/key, default payment credential roles, a Standard webhook and test/live preparation. For session creation it specifies Checkout API **v72 or later** and a server-side library released **March 30, 2026 or later**. The server creates the session; the browser is redirected to the Adyen-hosted page. These are this guide's gates, not a blanket claim about older integrations. [Raw: lines 21\u201354]\n- Creating the theme in Customer Area requires merchant-admin or Hosted Checkout and Pay by Link Settings role. The documented `POST /sessions` table marks amount, merchant account, return URL, payment reference, country code, shopper email, shopper reference, `mode: hosted`, and theme ID as required. Yet the `shopperEmail` description calls it \u201cstrongly recommended\u201d; preserve that internal wording difference instead of treating the field's runtime validation as proven. The return URL has a 1,024-character limit, protocol and encoding conditions, and **must not contain PII**; shopper reference likewise excludes PII. [Raw: lines 287\u2013328]\n- The session response supplies `url` and `expiresAt`; the page says the default Hosted Checkout expiry is **one hour**, and it may also end after too many attempts. On mobile browsers the guide directs iOS SFSafariViewController or Android Chrome Custom Tabs instead of WebViews because some methods fail in WebViews. A redirect returns `sessionId` and `sessionResult`, which the merchant server sends to `GET /sessions/{id}?sessionResult=...` to show the **current session result**. [Raw: lines 614\u2013665, 946\u2013951]\n- Session-result statuses include `completed`, `paymentPending` for asynchronous methods and `expired`. The response's `status` does **not change**; do not poll that same result for later payment changes. The guide says to use Standard webhooks or Customer Area Transactions for updates and to update the order system from the `AUTHORISATION` webhook, matching `merchantReference`; `success: true` and `false` have different outcomes. A completed session or example `Authorised` result is not capture, settlement or fulfillment proof. Example request, session response and webhook amounts/IDs differ and are illustrative, not one coherent transaction trace. [Raw: lines 330\u2013353, 614\u2013634, 811\u2013921]\n- Live setup is separate from test: apply/configure a live account, request live payment methods and use live endpoints; keep all API calls for one payment session in the **same live endpoint region** to avoid errors. Failed attempts can return a shopper to Hosted Checkout, and multiple payment-attempt webhooks can share a `sessionId`. The supported-method list is a dated guide list, not proof a particular merchant has any method enabled. [Raw: lines 924\u20131021]\n\n## Detail locators\n\n- Product identity, roles and Checkout API/library gates: raw lines 15\u201354.\n- Server, redirect, session-result and webhook flow: raw lines 56\u2013103.\n- Language-specific library setup and example request versions: raw lines 105\u2013285, 330\u2013612.\n- Theme role, session fields and PII limits: raw lines 287\u2013328.\n- Session URL/expiry, mobile-browser container and return query: raw lines 614\u2013665, 946\u2013951.\n- Immutable result statuses, AUTHORISATION webhook and order matching: raw lines 811\u2013921.\n- TEST/LIVE split, same-region gate, retries and supported-method catalog: raw lines 924\u20131027.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main Standard checkout concept\n- [[source-adyen-docs-standard]] \u2014 bounded Standard integration checklist\n- [[source-adyen-docs-standard-integration-drop-in]] \u2014 alternative Standard Drop-in UI path\n- [[source-adyen-docs-online-payments-out-of-app-payments-on-ios]] \u2014 separate iOS out-of-app route\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/hosted-checkout/2026-09-15|Pinned Standard Hosted Checkout guide]]\n",
+  "quotes": [
+    {
+      "text": "The Hosted Checkout integration redirects the shopper to an Adyen-hosted webpage that handles the complete payment flow",
+      "location": "line 19"
+    },
+    {
+      "text": "Use the [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) endpoint on Checkout API v72 or later.",
+      "location": "line 41"
+    },
+    {
+      "text": "The URL must not include personally identifiable information (PII), for example name or email address.",
+      "location": "line 320"
+    },
+    {
+      "text": "The `status` included in the response does not change. Do not make the request again to check for payment status updates.",
+      "location": "line 848"
+    },
+    {
+      "text": "We send you a webhook message for each payment attempt. So, we can send you more than one webhook message that includes the same `sessionId`.",
+      "location": "line 959"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-hosted-checkout-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-hosted-checkout]] \u2014 2026-09-15 Standard Hosted Checkout Sessions guide for Checkout API v72+, server-created hosted URL, return-result lookup and authoritative AUTHORISATION webhooks; the result snapshot is immutable and is not capture/settlement proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide marks shopperEmail required in its table but describes it as strongly recommended; do not infer actual runtime validation from this discrepancy.",
+          "Its session request, response and webhook examples have different amounts/identifiers and must not be presented as one transaction trace."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/hosted-checkout/2026-09-15.md",
+  "raw_sha256": "3987be33ce97d2751995e28e3899e11e6ac48be82cded992a5a49895474dc771",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-cards-payout-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service card-payout transfer webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-cards/payout-webhooks\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-cards/payout-webhooks/2026-09-15.md\"\ntags: [adyen, payout-service, card-payouts, transfer-webhooks]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured Payout Service guide describes Transfer webhooks for outgoing payouts from a balance account to a Mastercard or Visa card. It distinguishes initiation and accounting status from later card-scheme tracking and failure. It is a webhook guide, not proof that funds reached a card. [[adyen]] [[adyen-payouts]]\n\n## Key takeaways\n\n- The guide requires a Payout Service integration, a server able to receive and accept webhooks, and Customer Area subscriptions to both Transfer and Transaction webhooks. It identifies the card-payout Transfer events by `category=card`, `direction=outgoing` and `type=cardTransfer`. See raw lines 28-46. The examples here cover Transfer events; this page does not detail Transaction webhook payloads.\n- `balancePlatform.transfer.created` reports an initiated outgoing request. `balancePlatform.transfer.updated` reports subsequent statuses: `authorised` reserves the amount; `booked` deducts it and includes `events.transactionId`. Booking is explicitly not final: scheme or issuing-bank rejection may still cause failure. See raw lines 59-72, 305-307 and 584-592.\n- After booking, a flagged transfer can enter Adyen internal review. Its `trackingData.status=pending` and `trackingData.type=internalReview` are tracking fields while the sample's transfer `status` remains `booked`. The page recommends fuller `counterparty.card.cardHolder` details to speed review; that recommendation is not a universal request requirement. Review failure is reported in a tracking event with `reason=refusedForRegulatoryReasons`, `status=failed`, `type=internalReview`, and the page directs the reader to Support. See raw lines 920-929, 1030-1048 and 1296-1302.\n- Card-scheme acceptance is another tracking event, with `trackingData.status=accepted` and `type=confirmation`; the sample transfer `status` still reads `booked`. The page says the scheme will process the payout and funds will arrive soon, not that the cardholder has received them. See raw lines 1304-1313 and 1412-1432.\n- A later `balancePlatform.transfer.updated` may report `status=failed` after unsuccessful automatic retries, with a transaction identifier and failure information. The failed example follows a booked event, shows a compensating positive balance mutation, and includes `networkReason` code `14` / \u201cInvalid card number.\u201d The reason-code table gives conditional remediation by code; do not treat it as an unconditional retry instruction. See raw lines 1436-1446, 1531-1572 and 1829-1844.\n- **Source wording conflict:** the opening says a balance-account payout goes to \u201cyour bank account,\u201d and the failure paragraph names an external banking system, while the page title, card identifier table and samples identify Mastercard/Visa card payouts. Keep this entry card-scoped; the bank wording does not establish a bank-transfer payload. The narrative says its examples pay EUR 100.00, whereas sample JSON uses `amount.value=100` EUR. The page does not reconcile those figures; do not use these samples to compute a card payout amount. See raw lines 17-25, 44-57, 89-94 and 1436-1438.\n\n## Detail locators\n\n- `## Requirements` and `## Identify payout-related webhooks`, raw lines 28-57: webhook setup, category/direction/type and event list.\n- `## Payout initiated`, raw lines 59-303: one-off raw card, tokenized one-off and recurring request examples.\n- `## Payout authorised` and `## Payout booked`, raw lines 305-919: reservation versus deduction, transaction ID and nonfinal booking.\n- `## Payout pending`, raw lines 920-1303: post-booking internal review, conditional failure and sample tracking fields.\n- `## Payout accepted`, raw lines 1304-1435: scheme-processing confirmation, not arrival.\n- `## Payout failed` and `## Reason codes`, raw lines 1436-1844: post-booking failure examples, reversal mutation, network reason and code-specific actions.\n\n## Related\n\n- [[adyen-payouts]] \u2014 Payout Service and legacy Online Payout API separation.\n- [[source-adyen-docs-payouts-payout-service-payout-lifecycle]] \u2014 broader Payout Service lifecycle.\n- [[source-adyen-docs-payouts-payout-service-getting-paid-payout-webhooks]] \u2014 separate bank-payout webhook guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-cards/payout-webhooks/2026-09-15|Adyen card-payout webhook guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When your user initiates a transfer to a Mastercard or Visa card, Adyen sends a [balancePlatform.transfer.created](https://docs.adyen.com/api-explorer/transfer-webhooks/latest/post/balancePlatform.transfer.created) webhook to inform your server that an outgoing transfer request has been created.",
+      "location": "raw line 61, Payout initiated"
+    },
+    {
+      "text": "This status is not final. The transfer may still [fail](#outgoing-bank-transfer-failed) if, for example, the transfer is rejected by the scheme or issuing bank.",
+      "location": "raw line 592, Payout booked"
+    },
+    {
+      "text": "After the funds are deducted from your user's balance account, the transfer is automatically analyzed to ensure that it complies with Adyen's policies. If a transfer is flagged, Adyen reviews the transfer.",
+      "location": "raw line 922, Payout pending"
+    },
+    {
+      "text": "This event confirms that the scheme will process the payout. You can use this to let your counterparty know that their funds will arrive soon.",
+      "location": "raw line 1313, Payout accepted"
+    },
+    {
+      "text": "The payout transfer can fail if it is rejected by an external banking system and any automatic retries are unsuccessful.",
+      "location": "raw line 1438, Payout failed"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-card-payout-webhooks-reciprocal",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-payout-webhooks]] \u2014 2023-modified, 2026-09-15-captured Payout Service card-payout Transfer webhook guide for initiation, reservation, nonfinal booking, internal review, scheme acceptance and post-booking failure; sample bank wording and EUR amount figures remain unresolved.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening bank-account wording and external-banking-system failure prose conflict with this page's card title, Mastercard/Visa examples and category=card/type=cardTransfer fields; keep the route card-scoped.",
+          "Narrative EUR 100.00 conflicts with sample amount.value=100 EUR; do not calculate or normalize the sample amount.",
+          "Booked and tracking accepted are not recipient card receipt or an irreversible final success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/payout-webhooks/2026-09-15.md",
+  "raw_sha256": "2bb130a24b116145c204a9406eb7657d0f7a7fe1d9d0da67fc495c4f37590193",
+  "status": "candidate_ready"
+}

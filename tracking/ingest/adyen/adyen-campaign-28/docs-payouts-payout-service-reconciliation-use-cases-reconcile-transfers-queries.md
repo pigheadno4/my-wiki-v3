@@ -1,0 +1,7 @@
+# Query probes — docs-payouts-payout-service-reconciliation-use-cases-reconcile-transfers
+
+Q1. What does this guide tell a Payout Service team to use to track and reconcile transfers?
+Answer: Track transfers through their lifecycle and verify transaction webhooks against either the Balance Platform Accounting Report or Statement Report (raw lines 19–24). For reconciliation, use transaction PSP reference, Status and Amount (line 24). It identifies internal, third-party bank and third-party card transfers using the category/type combinations in lines 26–32. Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-transfers]] → [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-transfers/2026-09-15]].
+
+Q2. Does a matching reference/status/amount establish a signed report join, a time window, or recipient receipt?
+Answer: No. The page names the three matching fields (raw line 24) and type filters (lines 26–32), but gives no worked join, amount-direction convention, date/window rule or bank/card receipt evidence. Treat the match as the page's reconciliation method and check the underlying transfer lifecycle and report transaction for a particular transfer. Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-transfers]] → [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-transfers/2026-09-15]].

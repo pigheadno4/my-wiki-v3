@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation-custom-3d-secure-using-an-external-mpi",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Classic 3D Secure 1 with an external MPI\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-an-external-mpi\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-an-external-mpi/2026-09-15.md\"\ntags: [adyen, classic-api, 3d-secure-1, external-mpi, historical]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] page describes using data retrieved from an external merchant plug-in (MPI) in a Classic API SOAP `/authorise` request for a custom 3D Secure 1 integration. It is an authorization request carrying external MPI data, rather than a guide to perform issuer authentication through Adyen. Adyen says it no longer develops Classic API integrations or accepts new ones and recommends migrating to Checkout API's authorisation-only MPI-data flow. Under [[adyen-3d-secure]], this page is historical Classic-route evidence, not proof of current 3DS1 availability.\n\n## Key takeaways\n\n- The merchant sends a Classic SOAP `/authorise` request using the normal payment service URL, WSDL, username and password. The custom 3DS fields are `shopperIP`, `browserInfo.userAgent`, `browserInfo.acceptHeader`, and `mpiData` retrieved from the external MPI. The example `mpiData` contains directory and authentication responses, CAVV, XID, ECI and CAVV algorithm; those sample values are not evidence of a real authentication result.\n- The page says `acquirerCode` and `authorisationMid` are supplied by support and must be passed in `additionalData`. Their purpose is to keep authorization on the same acquirer and merchant ID that the external MPI used, instead of allowing Adyen's default dynamic acquirer routing to choose a different one. This is a material matching condition, not an optional example embellishment.\n- The page's SOAP request and `Authorised` response are examples. They show where the external authentication data and routing identifiers go, but do not establish that any merchant's external authentication is valid, that authorization will succeed, or that a card payment was captured or settled.\n- The linked Checkout API authorisation-only flow is a migration route, not the contract for this Classic SOAP request. This page states no current scheme support, Classic endpoint version, or universal 3DS1 eligibility; verify any present-day implementation against its own current route.\n\n## Detail locators\n\n- **Classic status and migration warning** \u2014 raw lines 14\u201320.\n- **SOAP authorization, external MPI data and acquirer/MID match** \u2014 raw lines 22\u201335.\n- **Illustrative request payload and MPI fields** \u2014 raw lines 37\u201386.\n- **Illustrative response, including `Authorised`** \u2014 raw lines 88\u2013136.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-3d-secure]]\n- Related source: [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-other-3ds-flows-authorize-mpidata]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-an-external-mpi/2026-09-15|Adyen Docs \u2014 Classic external-MPI 3D Secure 1 (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "line 18, Classic API warning"
+    },
+    {
+      "text": "We strongly recommend migrating to the newer [authorisation-only flow on Checkout API](/online-payments/3d-secure/other-3ds-flows/authorize-mpidata) integration.",
+      "location": "line 20, migration recommendation"
+    },
+    {
+      "text": "`mpiData`:\u00a0A container for the data retrieved from the external 3D MPI.",
+      "location": "line 33, Authorise the payment field list"
+    },
+    {
+      "text": "When using an external MPI the authorisation\u00a0 must be processed over the same acquirer and MID (account at the acquirer) as used by the\u00a0 MPI.",
+      "location": "line 35, Authorise the payment acquirer/MID rule"
+    },
+    {
+      "text": "Therefore, the\u00a0`acquirerCode` and\u00a0`authorisationMid` must be passed in the `additionalData`.",
+      "location": "line 35, Authorise the payment routing fields"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-external-mpi-3ds1-source",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation-custom-3d-secure-using-an-external-mpi]] \u2014 2026-09-15 Classic SOAP `/authorise` guide for external-MPI 3DS1 data and acquirer/MID matching; new Classic integrations no longer accepted.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-an-external-mpi/2026-09-15.md",
+  "raw_sha256": "57127e332c470ff299a99afb3d563195c4c835de974cde3a400c36c0794b2315",
+  "status": "candidate_ready"
+}

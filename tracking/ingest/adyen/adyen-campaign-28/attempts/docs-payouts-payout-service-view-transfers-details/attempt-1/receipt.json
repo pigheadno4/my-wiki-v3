@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-view-transfers-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service transfer details and confirmation letters\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/view-transfers-details\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/view-transfers-details/2026-09-15.md\"\ntags: [adyen, payout-service, transfers-api, transfer-status, confirmation-letter]\n---\n\n## Overview\n\nThis Payout Service-path guide (last modified 2019-12-06; captured 2026-09-15) describes viewing balance-account transfer records through Customer Area or the Transfers API, and downloading a **bank-transfer** confirmation letter. It explicitly lists an **Adyen for Platforms integration** as a prerequisite even though the URL is under Payout Service; do not infer independent Payout Service eligibility from the path. The examples show bank and internal balance-account transfers. A booked balance-account debit or sent-instruction letter does not, by itself, prove the beneficiary bank received funds. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- **Access and evidence:** The guide describes initiation, authorisation and booking before balance-account money movement, and recommends webhooks for ongoing tracking and reconciliation. API retrieval needs **TransferService Webservice Retrieve**. Customer Area transfer viewing needs **Balance platform base**; downloading a confirmation letter needs a separate **Download transfer confirmation letter** role, and unmasked PII needs **View bank transfers PII**. Without the PII role, letter PII is masked.\n- **List and individual lookup:** Customer Area **Balances > Transfers** shows one balance platform at a time with date/status/reference filters. `GET /transfers` describes `createdSince` and `createdUntil`, an interval under six months, optional balance-account/account-holder filters and page limit; the response provides `data` and pagination `_links`. The prose also says to supply at least one unique identifier, but the shown cURL list example has dates and limit only. `GET /transfers/{id}` or Customer Area search retrieves a specific transfer by ID; its response includes amount, direction, event history, reference and current status. The bank examples show outgoing bank-account counterparties and booked accounting plus estimated-arrival tracking; the list also shows an internal balance-account counterparty. These static examples are not live transfer evidence.\n- **List-example conflicts:** The parameter text says `createdSince` and `createdUntil` must be **less than six months apart**, but the accompanying prose describes **May 12, 2025 to May 13, 2026**. The actual cURL uses **May 12\u201313, 2026**, a one-day window, and omits the unique identifier demanded by nearby prose. Do not copy the narrative range or infer that the API accepts an identifier-free request from this inconsistent example; verify current API behavior separately.\n- **Confirmation letter limit:** For a booked **bank transfer**, Customer Area can download a PDF that identifies transfer and beneficiary details and confirms **Adyen sent the instruction to carry out the transfer**. It may include ACH/FPS trace identifiers if available. The documented filters are Status **Booked** and Type **Bank transfer**. The letter is evidence of an instruction and documented transfer state, not final receipt by the beneficiary bank.\n\n## Detail locators\n\n- Transfer stages, webhook recommendation, integration and role prerequisites: pinned raw lines 15-45.\n- List filters, six-month window, identifier statement, conflicting prose/cURL dates and paginated response: pinned raw lines 47-89 and 253-258.\n- Example outgoing bank and internal balance-account records, including booked and estimated-arrival fields: pinned raw lines 262-457.\n- Specific-transfer lookup, response fields and example bank-transfer history: pinned raw lines 459-746.\n- Bank confirmation letter, required roles, PII masking and booked-bank filters: pinned raw lines 748-789.\n\n## Related\n\n- [[adyen-payouts]] \u2014 main Payout Service concept and reciprocal source route.\n- [[adyen-platform-internal-transfers]] \u2014 related internal balance-account transfer model shown in the list example.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/view-transfers-details/2026-09-15|Payout Service transfer-details guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You must have an Adyen for Platforms integration.",
+      "location": "line 41, Requirements"
+    },
+    {
+      "text": "This date must be less than 6 months from the `createdUntil` date.",
+      "location": "line 66, View a list of transfers"
+    },
+    {
+      "text": "You must provide at least one of the unique identifiers in your request.",
+      "location": "line 72, View a list of transfers"
+    },
+    {
+      "text": "The response contains all the details of the transfer.",
+      "location": "line 626, View a specific transfer"
+    },
+    {
+      "text": "confirms that Adyen has sent the instruction to carry out the transfer.",
+      "location": "line 750, Download a transfer confirmation letter"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-view-transfer-details-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-view-transfers-details]] \u2014 2019-modified, 2026-09-15-captured Payout Service-path Customer Area/Transfers API list, detail and bank confirmation-letter guide; explicitly requires Platforms integration, has inconsistent list-query examples, and sent instruction is not bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "List text requires an identifier and under-six-month range, but sample cURL omits identifier and narrative says May 2025\u2013May 2026; do not resolve silently.",
+          "A booked transfer or confirmation letter showing Adyen sent the instruction is not final beneficiary-bank receipt."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/view-transfers-details/2026-09-15.md",
+  "raw_sha256": "ac377aeee1ac3fc562cc1a92bd2cbc113477d4979e6f8b38351b9e6dcfa15916",
+  "status": "candidate_ready"
+}

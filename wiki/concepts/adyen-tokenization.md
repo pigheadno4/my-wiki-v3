@@ -15,6 +15,12 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-standard-integration-drop-in-tokenization]] — 2026-09-15 Standard Drop-in shopper-consented token creation and one-click CardOnFile reuse via Sessions/webhooks, with recurring-role/method gates, zero-value limits and unresolved Ecommerce-versus-ContAuth one-click example.
+
+
+- [[source-adyen-docs-standard-integration-hosted-checkout-tokenization]] — 2026-09-15 Standard Hosted Checkout CardOnFile token creation and shopper-initiated reuse guide, including consent, lifecycle-webhook token receipt, zero-value limits and an unresolved Ecommerce-versus-ContAuth one-click example conflict.
+
+
 - [[source-adyen-docs-development-resources-migrating-payment-data]] — 2026-09-15 capture of a 2019-modified, provider-assisted old-PSP data/card migration overview covering shopper-reference mapping, encrypted transfer and staged recurring-charge cutover.
 
 

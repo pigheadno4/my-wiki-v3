@@ -1,0 +1,7 @@
+# Q1 — Which reports reconcile which Payout Service fee types?
+
+PSP-side payment/pay-in fees use the Settlement Details Report or Payment Accounting Report (pinned raw lines 19–21). Balance Platform bank-payout fees compare its invoice to the Accounting or Statement Report for the CET booking month with `bank`/`bankTransfer`/`booked` filters (lines 23–31). Balance Platform-initiated card payouts require the merchant-account SDR and instructing balance-account Accounting Report (lines 35–39). Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-fees]] → [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-fees/2026-09-15]].
+
+# Q2 — Does card-payout Net Debit include the payout, and how is it matched?
+
+No. SDR `BPPaidOut` `Net Debit (NC)` is the total deducted **fees**, with separate Markup, Scheme fees and Interchange columns, not payout amount plus fees (pinned raw lines 39–44). The capture/card-payout amount is in Balance Platform reports. Match the SDR `Merchant Reference` ID to Accounting Report `Transfer Id` with `Status=booked` (line 46); that report match does not itself prove recipient receipt or invoice sign-off. Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-fees]] → [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-fees/2026-09-15]].

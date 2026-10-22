@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts-payout-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Webhooks for payouts to bank accounts | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks/2026-09-15.md\"\ntags: [adyen, payout-service, bank-payouts, webhooks, transfers]\n---\n\n## Overview\n\nThis Payout Service guide, captured 2026-09-15, maps `balancePlatform.transfer.created` and `.updated` webhooks for outgoing bank-transfer requests from a platform balance account, including authorisation, booking, review, tracking, tracing, crediting, failure, and return. Its opening describes payout to \u201cyour bank account,\u201d while its worked use case explicitly pays a user's balance account to a third-party bank account; retain the example's beneficiary scope rather than treating those phrasings as identical. See [[adyen]] and [[adyen-webhooks]].\n\n## Key takeaways\n\n- The stated prerequisites are a Payout Service integration, a server able to receive and accept webhooks, and Customer Area subscriptions to **Transfer** and **Transaction** webhooks. Identify the payout Transfer events using `category=bank`, `direction=outgoing` from the balance account's perspective, and `type=bankTransfer` (raw lines 19\u201349). These are configuration and classifier requirements, not proof of a delivered event.\n- `transfer.created` says an outgoing request was created; an `updated` event with `status=authorised` says the amount was reserved. If funds are insufficient, `updated` may instead report `status=refused` and `reason=notEnoughBalance`; the guide calls for funding the account and sending a **new** request (raw lines 60\u201362, 148\u2013150, 250\u2013257).\n- `status=booked` reports deduction from the user's balance account and supplies a transaction ID, but the guide explicitly says it is **not final**: instant bank payouts can fail after counterparty rejection, while regular or wire payouts can be returned. Post-booking internal review may appear as a tracking event with `trackingData.status=pending` and `type=internalReview`; failed review reports `trackingData.status=failed` and `reason=refusedForRegulatoryReasons`, even while its example retains top-level `data.status=booked` (raw lines 352\u2013361, 478\u2013488, 620\u2013640, 755\u2013778).\n- Tracking `estimatedArrivalTime` is an **estimate**, subject to beneficiary-bank timing; the captured guide says ETA is available for local payouts but not instant or cross-border payouts. Tracing data is a distinct event carrying network identifiers for UK FPS/GBP and US ACH/USD when funds leave Adyen. For completed instant-priority transfers, a `tracking` event with `status=credited` is the guide's credit confirmation; its sample still has top-level `data.status=booked`, so inspect the tracking event rather than reading that top-level status as receipt (raw lines 924\u2013930, 1059\u20131083, 1220\u20131222, 1320\u20131343).\n- External-bank rejection or unsuccessful automatic retries can produce `status=failed`; counterparty-bank return produces `status=returned` with transaction and reason information. Some permanent return reasons block later use of the transfer instrument and yield HTTP 422 on new requests. The reason-code table nonetheless lists retry-oriented actions for some account-detail reasons: do not infer that every listed reason is safely retryable without checking the actual blocked state. Network returns can include `networkReason`; FPS/ACH return history includes earlier tracing because funds had left Adyen (raw lines 784\u2013793, 1352\u20131358, 1490\u20131510, 1673\u20131688).\n\n## Detail locators\n\n- Prerequisites, classification, and request/authorisation/refusal: raw lines 19\u201349, 60\u2013257.\n- Booking, screening, review outcome and external failure: raw lines 352\u2013790; example JSON occupies intervening lines.\n- ETA, rail-specific tracing and instant credit confirmation: raw lines 924\u2013930, 1059\u20131083, 1220\u20131222.\n- Return, blocking, network reason and reason-code table: raw lines 1352\u20131358, 1490\u20131510, 1673\u20131688.\n- The failed-review sample has `categoryData.type=bank`, unlike the guide's `bankTransfer` classifier and most examples (raw lines 42\u201349, 664\u2013668); confirm the event schema before copying that illustrative value.\n\n## Related\n\n- [[adyen-webhooks]]\n- [[source-adyen-docs-payouts-payout-service-webhook-types]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks/2026-09-15|Pinned Payout Service bank-payout webhook guide]]\n",
+  "quotes": [
+    {
+      "text": "You have [subscribed](/development-resources/webhooks/configure-and-manage#configure-customer-area) to **Transfer webhooks** and **Transaction webhooks**",
+      "location": "line 34"
+    },
+    {
+      "text": "When your user initiates a transfer to a third-party bank account",
+      "location": "line 62"
+    },
+    {
+      "text": "This status is not final. Instant payouts may be rejected by the counterparty's bank",
+      "location": "line 361"
+    },
+    {
+      "text": "Estimated Time of Arrival is currently available for all local payouts. It is *not* available for instant or cross-border payouts.",
+      "location": "line 930"
+    },
+    {
+      "text": "Adyen blocks subsequent transfer attempts when a reason code indicates a permanent issue.",
+      "location": "line 1494"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "reciprocal-payout-service-bank-payout-webhooks",
+        "target_path": "wiki/concepts/adyen-webhooks.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-payout-webhooks]] \u2014 2026-09-15 Payout Service bank-payout Transfer webhook lifecycle guide, distinguishing request, booking, tracking/credit, failure and return with nonfinal booking and retry-block boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's opening says payout to your bank account, while the worked case is a user-balance-account payout to a third-party bank account; source entry preserves both without merging beneficiary ownership.",
+          "Reason table suggests retry for some account-detail reasons while text says permanent reasons block the transfer instrument and later requests fail 422."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks/2026-09-15.md",
+  "raw_sha256": "32a794e5b25d639ca646f4068ded4ef3c09a313888e4b4d9ab2fc03f054fe857",
+  "status": "candidate_ready"
+}

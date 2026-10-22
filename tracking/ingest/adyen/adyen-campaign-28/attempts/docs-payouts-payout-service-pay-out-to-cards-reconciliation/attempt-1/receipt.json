@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-cards-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service card-payout reconciliation\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-cards/reconciliation\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md\"\ntags: [adyen, payout-service, card-payouts, reporting, reconciliation]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] Payout Service guide describes reconciling **card payouts initiated from the Balance Platform**. Within [[adyen-reporting]], it joins fee lines in merchant-account Settlement Details Reports to booked transfer amounts in balance-account Balance Platform Accounting Reports. It is a reporting recipe for card disbursements, not a bank-payout or beneficiary-receipt confirmation (raw lines 15\u201334).\n\n## Key takeaways\n\n- **Use both account scopes:** Obtain the Settlement Details Report from the merchant account(s) used for card payouts and the Balance Platform Accounting Report from the balance account(s) that instruct them (raw line 23). These are separate report grains; the page does not say a single report alone covers both amount and fee.\n- **Fee line and amount:** Each Balance Platform-initiated card payout appears as `BPPaidOut` in the Settlement Details Report. Its `Net Debit (NC)` is **total fees deducted**, expressly not payout amount plus fees; `Markup (NC)`, `Scheme fees (NC)` and `Interchange (NC)` break out fee categories. The capture/card-payout amount is in the Balance Platform Accounting Report (raw lines 25\u201332).\n- **Join and status condition:** Match the Settlement Details Report `Merchant Reference` ID to the Balance Platform Accounting Report `Transfer Id` **where Status is `booked`** (raw line 34). The source does not give a report-availability lag, timezone, card-network posting milestone or recipient-card receipt status; avoid inferring those from a booked accounting row.\n\n## Detail locators\n\n- Payout direction and two required reports/account scopes: raw lines 19\u201323.\n- `BPPaidOut` and fee-column semantics: raw lines 25\u201330.\n- Capture/card-payout amount and booked-ID join: raw lines 32\u201334.\n\n## Evidence boundary\n\nThe source says \u201ccapture or card payout\u201d for the Balance Platform amount, without specifying additional capture semantics here (raw lines 32\u201334). Its `booked` condition qualifies the accounting-report row used for the join; it does not prove the recipient card was credited or that external settlement finished. No timing or currency-conversion rule is supplied by this short guide.\n\n## Related\n\n- [[adyen-reporting]] \u2014 report and reconciliation route.\n- [[source-adyen-docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report]] \u2014 separate accounting-report field reference.\n- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards]] \u2014 Payout Service card-payout route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15|Pinned Payout Service card-payout reconciliation guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "On this page we outline the reconciliation process for card payouts initiated from the Balance Platform.",
+      "location": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md:19"
+    },
+    {
+      "text": "you need to use both the [Settlement Details Report](/reporting/settlement-reconciliation/transaction-level/settlement-details-report) from your merchant account(s) used for card payouts, and the [Balance Platform Accounting Report](/payouts/payout-service/reports-and-fees/balance-platform-accounting-report) from the balance account(s) you instruct the card payouts from.",
+      "location": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md:23"
+    },
+    {
+      "text": "Each Balance Platform-initiated card payout is represented as a line item on the [Settlement Details Report](/reporting/settlement-reconciliation/transaction-level/settlement-details-report) with **type**: **BPPaidOut**.",
+      "location": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md:25"
+    },
+    {
+      "text": "The **Net Debit (NC)** column represents the total fees deducted for the card payout (not the payout amount + fees).",
+      "location": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md:27"
+    },
+    {
+      "text": "you can use the ID provided in the **Merchant Reference** column in the Settlement Details Report and the **Transfer Id** column from the Balance Platform Accounting Report where the **Status** column shows the value **booked**.",
+      "location": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md:34"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-card-reconciliation-source",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-reconciliation]] \u2014 2026-09-15 Payout Service card-disbursement reconciliation guide joining merchant-report BPPaidOut fees to booked balance-platform Transfer Id amounts; Net Debit is fees only, and booked is not recipient-card receipt proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's Net Debit (NC) is total card-payout fees, not payout amount plus fees; the amount is in the Balance Platform Accounting Report (raw lines 25\u201332).",
+          "The join requires Balance Platform Accounting Report Status booked (raw line 34); this is accounting status, not evidence of external cardholder receipt.",
+          "The phrase capture/card payout amount appears in raw lines 32\u201334 without more capture semantics; do not extend it to payment capture lifecycle."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-cards/reconciliation/2026-09-15.md",
+  "raw_sha256": "0dc001b11aac84c7f5cf12c7c6e7c1e7a1db7b57e93ad3da34554232d445be1d",
+  "status": "candidate_ready"
+}

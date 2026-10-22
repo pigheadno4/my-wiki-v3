@@ -1,0 +1,9 @@
+# Retrieval checks
+
+Q1. How do I recognize Payout Service bank-payout webhooks, and what setup and lifecycle do they describe?
+
+Answer: Follow [[index]] → [[adyen-index]] → [[adyen-webhooks]] → [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-payout-webhooks]] → [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks/2026-09-15]]. The captured guide requires a Payout Service integration, receiving/accepting server, and Transfer plus Transaction webhook subscriptions (raw lines 26–34). For its bank-payout Transfer events, `category=bank`, `direction=outgoing`, `type=bankTransfer` (raw lines 36–49). `created` identifies the request, while `updated` carries authorisation, booking, review/tracking, credit, failure or return status at the relevant event grain (raw lines 60–62, 148–150, 352–361, 478–488, 1220–1222, 1352–1358).
+
+Q2. Does `booked` or estimated arrival prove beneficiary receipt, and when can a failed/returned payout be retried?
+
+Answer: Follow [[index]] → [[adyen-index]] → [[adyen-webhooks]] → [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-payout-webhooks]] → [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks/2026-09-15]]. `booked` is expressly nonfinal and may precede bank rejection/failure or return (raw lines 352–361). ETA is an estimate, limited in the captured guide to local payouts and excluded for instant/cross-border; instant credit confirmation uses a separate tracking `credited` event (raw lines 924–930, 1220–1222). Insufficient funds calls for funding plus a new request (raw lines 250–257), but permanent return reasons may block the instrument and produce HTTP 422 on subsequent requests despite retry suggestions in the reason-code table (raw lines 1490–1496, 1673–1688).

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation-custom-3d-secure-using-a-hosted-mpi",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Classic 3D Secure 1 with a hosted MPI\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-a-hosted-mpi\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-a-hosted-mpi/2026-09-15.md\"\ntags: [adyen, classic-api, 3d-secure-1, hosted-mpi, historical]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide describes a custom hosted-MPI 3D Secure 1 redirect within the Classic API `/authorise` integration. Its metadata says last modified 2020-05-01; the raw snapshot was fetched 2026-09-15. Adyen says it no longer develops the Classic API integration and no longer accepts new integrations with it, and recommends migrating to Checkout API's authorisation-only MPI-data flow. This is historical implementation evidence under [[adyen-3d-secure]], not a claim that the legacy route or a scheme's 3DS1 service remains available today.\n\n## Key takeaways\n\n- In the documented SOAP Classic flow, the merchant first calls `/authorise` with a `returnUrl`, shopper IP, and browser user-agent and accept-header data. The return URL is limited to 1024 characters; the guide warns against GET parameters on it. The SOAP request and response are explicitly examples to generate with a toolkit, not production credentials or current API acceptance proof.\n- A `Refused` initial `resultCode`, such as a Risk refusal, is handled as an ordinary payment response. For `RedirectShopper`, the response supplies `issuerUrl`, `pspReference`, `md`, and MPI-prefixed redirect fields in `additionalData`. The merchant retains the returned `md` for `/authorise3d`; `RedirectShopper` is a redirect instruction, not successful authentication or authorization.\n- The merchant POSTs all fields matching `mpiImplementationType` to `issuerUrl`, removing the prefix from their form-field names. The guide illustrates an auto-submitting form with a non-JavaScript submit fallback.\n- Following issuer authentication, the shopper returns by POST to the original `returnUrl`. The merchant then calls `/authorise3d`, using the same merchant account as the initial call, browser and shopper-IP data, the saved `md`, and MPI-prefixed response data. The final SOAP response shown with `Authorised` is an example, not evidence of any actual payment outcome or a guarantee of authorization.\n- The migration recommendation links to Checkout API authorisation-only MPI data, but this page does not provide its implementation contract. Do not combine these Classic SOAP steps with that newer flow.\n\n## Detail locators\n\n- **Classic status and migration warning** \u2014 raw lines 14\u201320.\n- **Initial `/authorise` request, return URL and SOAP example** \u2014 raw lines 22\u2013129.\n- **Initial refusal/redirect fields and saved `md`** \u2014 raw lines 131\u2013143.\n- **MPI field selection and issuer redirect form** \u2014 raw lines 145\u2013217.\n- **Issuer POST return, `/authorise3d` inputs and example result** \u2014 raw lines 219\u2013318.\n\n## Related\n\n- Company: [[adyen]]\n- Main concept: [[adyen-3d-secure]]\n- Related source: [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-a-hosted-mpi/2026-09-15|Adyen Docs \u2014 Classic custom 3D Secure with hosted MPI (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "line 18, opening Classic API warning"
+    },
+    {
+      "text": "We strongly recommend migrating to the newer [authorisation-only flow on Checkout API](/online-payments/3d-secure/other-3ds-flows/authorize-mpidata) integration.",
+      "location": "line 20, opening migration recommendation"
+    },
+    {
+      "text": "Do not add GET parameters to this URL as some custom 3D integrations do not support these.",
+      "location": "line 31, Step 1 returnUrl warning"
+    },
+    {
+      "text": "Store the\u00a0`md`\u00a0value from the response in, for example, a database, or the cookie of the shopper.",
+      "location": "line 143, Step 1 md instruction"
+    },
+    {
+      "text": "Cut the `mpiImplementationType` prefix from the keys before they are added to the form.",
+      "location": "line 152, Step 2 issuer redirect"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "classic-hosted-mpi-3ds1-source",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation-custom-3d-secure-using-a-hosted-mpi]] \u2014 2020-modified Classic API hosted-MPI 3DS1 SOAP redirect and `/authorise3d` guide; new Classic integrations no longer accepted (2026-09-15 snapshot).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/custom-3d-secure-implementation/custom-3d-secure-using-a-hosted-mpi/2026-09-15.md",
+  "raw_sha256": "54a3f50e0b2d0bb85deda50ad93b91106c877bee3560d2d23f65c86dae3dcf79",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Balance Platform Accounting Report | Adyen Payout Service path\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/reports-and-fees/balance-platform-accounting-report\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md\"\ntags: [adyen, payout-service, reporting, reconciliation, balance-platform]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Payout Service-path [[adyen-reporting]] reference describes the Balance Platform Accounting Report: a daily account-change report for **all** balance accounts in a balance platform, including liable and user accounts. It also describes a manually generated interactive variant with multi-day, account and event filters. The report's columns identify financial-service applicability across issuing, payouts and platform payments; the Payout Service URL does not make every column or split type a Payout Service-only rule. See raw lines 15\u201329 and **Report structure**.\n\n## Key takeaways\n\n- The daily report can be generated automatically on a schedule or manually for a day; the interactive report is manual, with date-range, account-holder/balance-account and Category/Type/Status filters. The page lists processed payments, internal transfers, bank payouts and fees/invoice deductions as reconciliation uses. For current individual-payment status it recommends API responses/webhooks, followed by daily report reconciliation (raw lines 19\u201340). A report row alone is not an independently verified beneficiary-bank receipt.\n- A **Transfer Id** groups pending credit/debit events: initiated then authorized or refused, with no booked money movement yet. A refund starts its own received/authorised/refunded transfer and new Transfer Id rather than linking to the original payment's Transfer Id. A **Transaction Id** marks a debit or credit booked on a balance account, and its Transfer Id can link it back to the transfer. Do not treat transfer receipt/authorization as a booked balance change; a booked bank-category balance-account debit still does not confirm receipt by an external bank beneficiary (raw **Transfers and transactions**, lines 50\u201355; **bank event category**, lines 71\u201379).\n- Category, Type and Status distinguish platform-payment, internal, bank and card events; the page maps bank booked/returned/rejected, card booked, and internal fee/transfer/return/correction cases in its event tables. The report contains events on the day each status update occurs (raw **Events in the report**, lines 57\u2013114). Use the exact category/type/status row before assigning financial meaning.\n- The report uses value-date accounting: Booking Date identifies when the event occurred, while Value Date identifies when the balance-account amount is available or debited. The two may differ, and Value Date need not be after Booking Date. The generated report covers booking-date mutations from midnight to the following midnight for the selected day in **CET**; accounts with no transactions do not appear (raw lines 116\u2013136, 144\u2013146). A missing row is therefore not proof that an account has a zero balance.\n\n## Detail locators\n\n- The daily and interactive generation routes and intended uses: raw lines 19\u201340.\n- Event category/type/status reference, including bank returns and internal-transfer/fee/correction rows: raw lines 50\u2013114.\n- Received, authorised and captured EUR example with separate Booking/Value Dates: raw lines 116\u2013126. Sample columns may differ from a generated report according to balance-platform settings (line 130).\n- Standard fields, financial-service applicability and account/transfer/transaction/currency/register references: raw lines 132\u2013238. Additional columns are excluded by default and can be added in Customer Area (lines 239\u2013263).\n- The cross-service split-type column and examples, including user-share, liable-account commission, fee, VAT, remainder and surcharge: raw lines 265\u2013284. These are report labels, not evidence that a given Payout Service payment used a split.\n\n## Related\n\n- [[adyen-reporting]] \u2014 report grain and evidence boundary.\n- [[adyen-payouts]] \u2014 Payout Service versus other disbursement models.\n- [[adyen]] \u2014 provider context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15|Balance Platform Accounting Report, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The **Balance Platform Accounting Report** is a daily report that tracks all balance changes on all balance accounts in your balance platform, including liable accounts and the accounts of your users.",
+      "location": "raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md, Balance Platform Accounting Report, line 19"
+    },
+    {
+      "text": "**Transfer**: an event where the credit or debit is pending and no real money movement has taken place.",
+      "location": "raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md, Transfers and transactions, line 54"
+    },
+    {
+      "text": "**Transactions**: an event where the credit or debit is booked on the balance and real money movement has taken place.",
+      "location": "raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md, Transfers and transactions, line 55"
+    },
+    {
+      "text": "Value dates are not always in the future. Bookings that have an immediate impact on the balance may have a value date on or before the booking date.",
+      "location": "raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md, Value-date accounting, line 120"
+    },
+    {
+      "text": "The generated report includes the balance mutations with a **Booking Date** for all the accounts for your balance platform between opening (00:00 AM) and closing (00:00 AM the next day) for your selected day in Central European Time (CET).",
+      "location": "raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md, Report structure, line 136"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payoutservice-bpar-reporting-link",
+        "target_path": "wiki/concepts/adyen-reporting.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report]] \u2014 2026-09-15-captured Payout Service-path daily/interactive Balance Platform Accounting Report reference for cross-service account changes, pending versus booked IDs, CET booking window, value dates and event/split labels; bank booking is not beneficiary receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/reports-and-fees/balance-platform-accounting-report/2026-09-15.md",
+  "raw_sha256": "b1579b22bad23c5ff6004fafbfe4cd997f2c12261d632e9ea2bf0f225d96695c",
+  "status": "candidate_ready"
+}

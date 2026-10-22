@@ -11,4 +11,7 @@ Adyen card payouts send funds to eligible recipient cards for disbursements or m
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-manage-card-details]] — 2023-modified Payout Service guide to PCI-gated third-party card collection, zero-auth eligibility and post-authorization tokenization before a separate Transfers API card payout; distinct from the legacy Payout API flow.
+
+
 - [[source-adyen-docs-online-payments-online-payouts-instant-payouts]] — Adyen instant card payouts webpage, legacy Payout API guide with Transfers API migration direction, use cases and eligibility/region limits (webpage snapshot, 2026-09-15).

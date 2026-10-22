@@ -1,0 +1,9 @@
+# C28 coordinator full-read exemplar audit
+
+**PASS** — 2026-10-21. Coordinator fully read all three predetermined pinned raw snapshots and compared each final promoted source and both fixed query answers. No material final-sample failure required expansion.
+
+- `docs-payouts-payout-service-pay-out-to-bank-accounts`: all 363 lines. Third-party beneficiary scope and modern Transfers API remain distinct from legacy Payout API. Country/currency/priority routes, address and ownership requirements, cutoff and delivery qualifications, intermediary fees, conflicting exception/priority wording and screening boundaries are retained or located without bank-receipt inference. Source and Q1/Q2 pass.
+- `docs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request`: all 2,867 lines, including every SDK example and TEST success/failure/return row. Roles, source balance account and beneficiary details, priority fallback, optional approval, future-date limit, single insufficient-funds attempt and cancellation boundary remain distinct. Required date omitted by SDK examples and the prose versus field timezone discrepancy are explicit after independent correction review. Accepted response is distinct from booking and bank receipt. Source and Q1/Q2 pass.
+- `docs-standard-integration-drop-in-best-practices`: full pinned raw through line 236. Standard Web scope, once-only client mounting and SSR, custom-button method exceptions, duplicate submission, LIVE HTTPS, iframe/WebView constraints, browser snapshot, cookies and extensions, regional resources and SRI are retained. Malformed/incomplete snippets and differing CDN hosts are explicitly qualified. Source and Q1/Q2 pass.
+
+Exact manifest hashes remain immutable. Final close exhaustively verifies all campaign hashes and retrieval routes. This audit establishes faithful historical retrieval, not current provider availability or successful payment/funds movement.

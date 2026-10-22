@@ -28,6 +28,9 @@ The captured Advanced-flow guide lists Web Components v5.0.0 or later and descri
 
 ## Sources
 
+- [[source-adyen-docs-standard-integration-drop-in-donations]] — 2026-09-15 Standard Drop-in Giving guide for post-payment campaign presentation, donation callbacks, separate DONATION-webhook outcome, and test/live checks.
+
+
 - [[source-adyen-docs-platforms-donations]] — 2026-09-15 Platforms Giving overview for account-holder campaigns, separate online/POS donations, nonprofit settlement model, eligibility, lifecycle and terminal-version gates; no observed donation outcome.
 
 

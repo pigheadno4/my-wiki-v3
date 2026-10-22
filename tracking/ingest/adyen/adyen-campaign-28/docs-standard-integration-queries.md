@@ -1,0 +1,7 @@
+# Retrieval checks: docs-standard-integration
+
+Q1. What integration choices and server responsibilities does the Standard child page compare?
+Answer: Hosted Checkout redirects the shopper to an Adyen-hosted page; Drop-in embeds the prebuilt UI on the merchant website. Both still require the merchant's own payment and webhook servers. The comparison assigns Adyen's Apple Pay certificate to Hosted Checkout and the merchant's certificate to Drop-in; child guides own exact setup. The chooser describes one server Checkout API request for each path (raw lines 19–40, 60–68). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-standard-integration]] → [[raw/adyen/docs/standard/integration/2026-09-15]].
+
+Q2. Which comparison-table features are option-specific, and what cannot be inferred from its icons?
+Answer: Styling individual methods, updating the session amount after start, custom client actions and automatic Giving donation form are marked only for Drop-in. Shared marks cover payment with available methods, detail storage, Uplift and accessibility. The table calls these features available, so its “Required” image markers do not establish universal mandatory implementation or account/method enablement. This overview does not prove authorization, capture, settlement or webhook outcome (raw lines 42–68). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-standard-integration]] → [[raw/adyen/docs/standard/integration/2026-09-15]].

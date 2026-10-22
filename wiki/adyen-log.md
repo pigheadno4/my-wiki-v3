@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-21] ingest | Adyen website C28
+
+- All 50 exact-manifest Payout Service third-party disbursement/funding/reporting, Standard integration and legacy Classic 3DS1 references General Docs sources independently approved and promoted. First full-review approvals 45/50; 5 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 8 concepts, including 0 new concept(s). Classic versus Marketplace versus modern Platforms scope, resource ownership, money direction, verification cohorts/deadlines, roles/capabilities/consent, API/environment/version scope, asynchronous lifecycle results, report grains and submission versus verification/payment/settlement/payout/bank receipt remain distinct. Original reviews, attempts and bounded correction evidence retained. Platform guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 1414 = 1400 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-28/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-21] ingest | Adyen React Native `2.13.0`
 
 - Approved additive delta from `@adyen/react-native@2.12.0` to `2.13.0`, exact SHA `68acfa3ab6976482fd4f9e3a0c075eb649b75d70`; approved focused reading, generated manifests/diff checked mechanically. All 606 current/prior file hashes/sizes/Git blob IDs verified; six added, 43 modified, two deleted, 256 unchanged.

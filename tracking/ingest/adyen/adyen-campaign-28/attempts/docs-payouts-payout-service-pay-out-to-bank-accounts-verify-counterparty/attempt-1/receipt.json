@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts-verify-counterparty",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service counterparty name verification\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts/verify-counterparty\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/verify-counterparty/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, enterprise-accounts, bank-accounts, verification]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] **enterprise-payouts** guide describes a counterparty **name lookup** before a proposed transfer to a **domestic EU or UK bank account**. The enterprise bank-account holder enters recipient details through a platform interface; the platform calls `POST /verifyCounterpartyName`, presents the result and asks the user whether to continue or cancel. Only after confirmation does the guide route to a separate `POST /transfers` request. A name-check response is not a payout authorization, account capability determination, transfer execution, or bank receipt. [[adyen-payouts]]\n\n## Key takeaways\n\n- The Balance Platform API key needs **CounterpartyNameVerification Webservice Initiate**, with Adyen Support asked to enable the role. The integration type is enterprise payouts. This page does not say the lookup role grants transfer-initiation permission. See raw lines 28\u201336.\n- For a domestic **EU** account the request uses account-holder full name and an IBAN identification; for a domestic **UK** account it uses full name, eight-digit account number, six-digit sort code, `ukLocal` identification and personal/business account type. `reference` and `balanceAccountId` are optional in both tables; Adyen expressly says it **does not verify** the supplied balance-account ID. The examples use the TEST BCL v2 URL, not proof of LIVE enablement. See raw lines 48\u201360, 81\u2013129.\n- Response codes include match, no match, partial match and unsupported cases, with additional UK-only account/type outcomes. Only partial-name-match variants return the registered name; other outcomes withhold it to reduce name guessing. The human-readable `responseDescription` is **not** to drive client logic; branch on `response` and show a relevant warning/choice. See raw lines 62\u201375 and 191\u2013280.\n- The UI guidance includes a **continue with payment** option even for some no-match/unsupported responses, after presenting a warning. A match does not automatically submit a payment, and a non-match is not stated as an API-level transfer prohibition. The enterprise bank-account holder chooses whether to proceed; the later transfer request is separate. See raw lines 72\u201375 and 221\u2013280.\n- **TEST responses are synthetic**: the supplied `reference` selects a named test response, while an unrecognized reference defaults to HTTP 200/`nameMatch`. A test `nameMatch` therefore does not establish a real recipient-name match or a production payout capability. See raw lines 282\u2013294 and 396\u2013410.\n\n## Detail locators\n\n- **Enterprise/EU-UK domestic scope, required role and sequence:** raw lines 19\u201375.\n- **EU and UK request fields and TEST examples:** raw lines 81\u2013189.\n- **Response fields, EU/UK variants, name privacy and client logic:** raw lines 191\u2013280.\n- **TEST reference-driven fixtures and examples:** raw lines 282\u2013543.\n- **Separate bank-payout and webhook next steps:** raw lines 545\u2013553.\n\n## Related\n\n- [[adyen-payouts]]\n- [[source-adyen-docs-payouts-payout-service-enterprise-accounts]]\n- [Bank payout request](https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts/bank-payout-request)\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/verify-counterparty/2026-09-15|Adyen counterparty name verification \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen's verification of counterparty name service allows enterprise bank account holders to check the intended recipient before making a payment to domestic bank accounts registered in the EU or UK regions.",
+      "location": "raw line 19, Verify counterparty name"
+    },
+    {
+      "text": "CounterpartyNameVerification Webservice Initiate",
+      "location": "raw line 35, Requirements table"
+    },
+    {
+      "text": "If the `response` is a partial name match, Adyen returns the name on the account in the response.",
+      "location": "raw line 70, How it works"
+    },
+    {
+      "text": "Adyen does not verify this value.",
+      "location": "raw line 92, EU request parameters / balanceAccountId"
+    },
+    {
+      "text": "Any request that does not specify one of the expected `response` values results with a **nameMatch** `reponse`, and a **200 - Success** HTTP status code.",
+      "location": "raw line 288, Testing your client interface"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-counterparty-verification-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-verify-counterparty]] \u2014 2026-09-15 enterprise-payouts domestic EU/UK bank-recipient name-check guide with distinct lookup role, response-driven user confirmation and synthetic TEST fixtures; verification is not transfer authorization or bank receipt.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "TEST defaults to a 200/nameMatch when reference is not a recognized fixture; a synthetic match is not production verification. balanceAccountId is not verified by this lookup; the separate transfer request and its permissions/outcome must not be inferred."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/verify-counterparty/2026-09-15.md",
+  "raw_sha256": "07b1d0ea2a204475f8d99ac77c36970b126757a945414b714d018c9a92754129",
+  "status": "candidate_ready"
+}

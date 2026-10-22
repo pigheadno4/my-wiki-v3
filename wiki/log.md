@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-21] ingest | Adyen website C28
+
+- Fifty independently approved Payout Service third-party disbursement/funding/reporting, Standard integration and legacy Classic 3DS1 references documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 8 concepts touched (0 new); source_count 1414 = 1400 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-28/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-21] ingest | Adyen React Native `2.13.0`
 
 - Approved additive delta with focused reading; Google Pay merchant info, Apple Pay type export, iOS embedded layout fixes, native SDK pins and demo-client limitations recorded. All `2.12.0` history preserved; source count unchanged. Details [[adyen-log]], [[source-github-adyen-react-native]] and [[changelog-github-adyen-react-native]]. No SDK/device/payment execution, commit or push.

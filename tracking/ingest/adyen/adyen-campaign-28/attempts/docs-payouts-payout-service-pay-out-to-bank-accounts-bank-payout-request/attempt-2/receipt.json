@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Payout Service third-party bank payout request\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts/bank-payout-request\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/bank-payout-request/2026-09-15.md\"\ntags: [adyen, payout-service, bank-payouts, transfers-api, third-party]\n---\n\n## Overview\n\nThis Payout Service guide (last modified 2023-11-30; captured 2026-09-15) explains a Transfers API request to move funds **from a source balance account to a third-party bank account**. It offers one-off bank details or a stored bank-account token, optional priority fallback, one additional review, and a future execution date. The request response and TEST examples do not establish booking or receipt by the beneficiary bank. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- **Prerequisites and request shape:** The API credential needs the Transfers API roles; a server must accept webhooks; and Support must enable transfers on the **source balance account**. POST `/transfers` specifies `amount`, source `balanceAccountId`, `category=bank`, destination `counterparty.bankAccount` and transfer priority. The table marks `priorities` required if `priority` is absent. Bank-account owner details and account identification vary by individual status, country and currency. A one-off request supplies identification; the token example uses `storedPaymentMethodId`. Descriptions and references have separate roles, including a `referenceForBeneficiary` sent to the recipient and related webhooks.\n- **Accepted request versus movement:** A successful API call yields HTTP 2XX and a transfer-request `id`. This is request acceptance, not proof of a booked debit, external bank receipt or completed payout. The guide directs readers to payout webhooks for received, authorised and booked/debited stages, plus estimated arrival information; actual transfer-specific events/details are needed to substantiate an outcome.\n- **Priority fallback and review:** A list of priorities lets Adyen try the first route and then another available priority if the first is unavailable; route availability depends on location, currency and counterparty. The example has unavailable `fast` and selected `regular` with `routingDetails`; it is illustrative, not a general routing guarantee. Including `review.numberOfApprovalsRequired=1` triggers the only additional review count described here; a team member must approve before Adyen continues processing.\n- **Future execution and failure:** A request may include `executionDate.date` within 30 days in YYYY-MM-DD form and an optional timezone. The guide says a successful future request remains `received/pending` until execution; on that date, between 00:00 and 03:00 in the balance-platform-configured default time zone, Adyen checks funds and any required team approval. The timing prose uses the Balance Platform's configured default time zone for the 00:00\u201303:00 processing window (raw line 2133), while the optional `executionDate.timezone` table labels **Europe/Amsterdam** as its default (line 2148). The page does not reconcile these defaults or establish which controls the processing window when a request supplies a timezone. The table also marks `executionDate.date` **required** (lines 2144-2148), but the Java, PHP, C#, Go and TypeScript future-date SDK examples create `executionDate` with **timezone only** (lines 2235-2246, 2307-2321, 2385-2401, 2511-2524, 2679-2692). Do not treat those samples as complete future-date requests or infer API validation behavior from this mismatch. It attempts processing **once**; errors such as insufficient funds end in `failed` with a webhook. Cancellation via `POST /transfers/cancel` is described **before** execution date, not as a general reversal after processing. Consult the detailed status and cancel guides for event semantics.\n- **TEST fixtures:** Country/currency/priority tables give successful and unsuccessful bank-account fixtures for TEST only. Unsuccessful rows distinguish `return` from `failure` scenarios and show reason codes including account-not-found, account-closed, refused-by-bank and timeout. Those test fixtures do not prove a live route or recipient receipt.\n\n## Detail locators\n\n- Roles, accepting webhooks, Support enablement and request fields: pinned raw lines 15-64.\n- One-off versus token request and SDK/TEST examples: pinned raw lines 66-1044.\n- Priority fallback, selected-route response and received/pending example: pinned raw lines 1048-1555.\n- Optional one-person review and team approval: pinned raw lines 1559-2125.\n- Future-date requirement, incomplete SDK examples, conflicting timezone defaults, one-attempt failure and pre-execution cancellation: pinned raw lines 2129-2148, 2235-2246, 2307-2321, 2385-2401, 2511-2524, 2679-2706.\n- Transfer-status webhooks and TEST success/return/failure fixtures: pinned raw lines 2708-2867.\n\n## Related\n\n- [[adyen-payouts]] \u2014 main Payout Service and payout-lifecycle concept route.\n\n## Related raw API references\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks/2026-09-15|Payout webhook guide]] \u2014 linked status and tracking reference; not separately assessed here.\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/approve-cancel-payouts/2026-09-15|Approve/cancel payout guide]] \u2014 linked review and cancellation reference; not separately assessed here.\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/transfer-routes/2026-09-15|Bank transfer routes guide]] \u2014 linked priority-route reference; not separately assessed here.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/bank-payout-request/2026-09-15|Payout Service third-party bank payout request guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to [make a payout request](#make-payout-request) to transfer funds to third-party bank accounts.",
+      "location": "line 19, introduction"
+    },
+    {
+      "text": "Include all the required parameters to decrease the possibility of [manual review and processing delays](/payouts/payout-service/pay-out-to-bank-accounts/payout-webhooks#payout-pending).",
+      "location": "line 38, Initiate a payout"
+    },
+    {
+      "text": "If that route is unavailable, Adyen automatically retries the transfer using the next available priority.",
+      "location": "line 1054, Fallback priorities"
+    },
+    {
+      "text": "Adyen attempts to process the payout only one time.",
+      "location": "line 2140, Process a payout in a future date"
+    },
+    {
+      "text": "The webhooks provide updates from when the request is received and authorized up to when the transfer is booked and deducted from the balance account.",
+      "location": "line 2710, Get updates on the status of the transfer"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-third-party-bank-request-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request]] \u2014 2023-modified, 2026-09-15-captured Payout Service Transfers API request guide for third-party bank payouts, one-off/token counterparty, priority fallback, optional approval and future one-attempt execution; HTTP 2XX is not bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep source balance-account debit, request acceptance, booked transfer and beneficiary-bank receipt distinct; TEST bank fixtures are not LIVE route evidence.",
+          "Future-date table requires executionDate.date, but Java/PHP/C#/Go/TypeScript examples set timezone only; do not treat those samples as complete requests (raw 2144-2148, 2235-2246, 2307-2321, 2385-2401, 2511-2524, 2679-2692).",
+          "Processing-window prose names the Balance Platform configured default zone, while the optional timezone field table defaults to Europe/Amsterdam; the source does not say which controls when a timezone is supplied (raw 2133, 2148)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/bank-payout-request/2026-09-15.md",
+  "raw_sha256": "70752fab5bff5c08ff7fd93a807a4093d2fc490c41ebea6eb83e7ea5a20af151",
+  "status": "candidate_ready"
+}

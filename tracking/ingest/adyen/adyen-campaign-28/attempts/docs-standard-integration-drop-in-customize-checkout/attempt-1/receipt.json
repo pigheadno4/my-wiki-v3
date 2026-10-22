@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-standard-integration-drop-in-customize-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Standard Web Drop-in checkout customization\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in/customize-checkout\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md\"\ntags: [adyen, online-payments, standard-integration, web-drop-in, localization]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] **Standard Web Drop-in** guide describes customizing checkout payment-method order, language/localization, text direction and styling within [[adyen-online-payments]]. It is a configuration guide, not evidence that a payment method is enabled for a merchant or that a change has been applied in a live checkout (raw lines 15\u201328, 50\u201352, 157\u2013169).\n\n## Key takeaways\n\n- **Ordering choice:** Dynamic payment-method ordering is enabled by default and Adyen highly recommends it. Customer Area settings can prioritize cost or conversion for all or selected countries/regions. Manually selecting methods by country is available, but the page says it disables dynamic ordering and does not recommend it (raw lines 24\u201348).\n- **Locale resolution and overrides:** Drop-in uses the global `AdyenCheckout` `locale`; if absent it uses the session `shopperLocale`; an unmatched locale falls back to `en-US`. A `translations` object plus matching `locale` in global configuration can replace included text or define a custom locale. Missing keys in the custom-locale example fall back to `en-US` values (raw lines 54\u2013155). Localization changes affect UI text, not payment-method or merchant eligibility.\n- **Direction and styling boundaries:** Text direction stays left-to-right unless the checkout container's parent has an HTML `dir` attribute; merely setting an RTL locale is insufficient. CSS custom properties and an override stylesheet imported after Adyen CSS can style elements outside an iframe; the page does not promise styling of iframe contents (raw lines 157\u2013188).\n- **Example mismatch:** The custom-locale code constructs `globalConfiguration` but calls `AdyenCheckout(configuration)` in the same snippet (raw lines 147\u2013155). Treat that as an unresolved variable-name mismatch in the example, not a tested working invocation.\n\n## Detail locators\n\n- Dynamic default, cost/conversion controls and manual-ordering tradeoff: raw lines 24\u201348.\n- Included-language, global/session locale precedence and en-US fallback: raw lines 50\u201363.\n- Translation overrides and custom-locale parameters/examples: raw lines 65\u2013155.\n- Separate right-to-left direction and outside-iframe CSS styling: raw lines 157\u2013188.\n\n## Evidence boundary\n\nThis guide documents configuration surfaces for the Standard Drop-in UI. The source does not itself specify a Web SDK version or prove that any particular translation key, CSS override, payment method, or ordering goal is effective in a merchant's deployment. Follow the parent integration's own version and setup requirements; validate the source's variable-name mismatch before copying the example.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online-payment and Drop-in route.\n- [[source-adyen-docs-standard-integration-drop-in]] \u2014 parent Sessions/Web Drop-in setup.\n- [[source-adyen-docs-standard-integration-drop-in-best-practices]] \u2014 separate embedding and production setup guidance.\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15|Pinned Standard Drop-in customization guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Dynamic payment method ordering is enabled by default.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md:32"
+    },
+    {
+      "text": "This is not recommended and disables dynamic payment method ordering.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md:28"
+    },
+    {
+      "text": "If the locale that you set in the configuration object or the `shopperLocale` value does not match any of the included locales, Drop-in defaults to **en-US** (United States English).",
+      "location": "raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md:63"
+    },
+    {
+      "text": "Text direction is independent from the `locale` you set in the `configuration` object.",
+      "location": "raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md:159"
+    },
+    {
+      "text": "You can customize elements that are not inside an iFrame, by overriding the CSS property styles:",
+      "location": "raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md:169"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-drop-in-customize-checkout-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in-customize-checkout]] \u2014 2026-09-15 Standard Web Drop-in customization guide for dynamic/manual payment-method ordering, locale and translation fallbacks, separate RTL direction and CSS outside iframes; custom-locale example has a variable-name mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Manual payment-method configuration disables dynamic ordering (raw lines 26\u201328); do not imply both operate simultaneously.",
+          "Custom-locale example defines globalConfiguration but invokes AdyenCheckout(configuration) (raw lines 147\u2013155); do not present it as copy-ready.",
+          "The child page has no explicit SDK version; do not infer a version from URL or treat UI settings as live availability proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/customize-checkout/2026-09-15.md",
+  "raw_sha256": "f8072fdf8bfa15a52e29ccefa0a987b82750ce78e978e5ba7232b56f1576388c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Classic API 3D Secure 1 and 2 redirect authentication\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md\"\ntags: [adyen, classic-api, 3d-secure, 3ds1, 3ds2, redirect-authentication]\n---\n\n## Overview\n\nDespite its `3d-secure-1` URL, this 2023-08-25-modified, 2026-09-15-captured page is titled **3D Secure 1 and 2 redirect authentication** for the legacy Classic Payment API `/authorise` integration. Adyen says it no longer develops or accepts **new Classic API integrations** and recommends the newer Checkout API redirect guide, which also requires migrating to Checkout API. This is historical flow evidence, not current 3DS1 scheme support, merchant enablement, legal compliance, authentication success or payment authorization. See [[adyen]] and [[adyen-3d-secure]] (raw lines 5\u201325).\n\n## Key takeaways\n\n- The page frames 3D Secure as issuer-side card-not-present authentication and mentions possible personal-card liability shift and conversion/redirect risks. Those are dated general statements; liability and regulatory treatment depend on transaction, scheme, region and flow and cannot be inferred for a specific payment. Its PSD2 section lists default Adyen handling, Dynamic 3DS rules and per-transaction preference; the latter overrides Adyen's default out-of-scope and exemption selection logic (raw lines 27\u201349).\n- Its dated setup says to obtain a test account/API key and check 3DS1 enablement. It lists default test enablement and live default for Bancontact/MisterCash, Maestro, Mastercard and Visa; American Express, Diners/Discover and JCB require Support configuration in that snapshot. These lists are **not evidence of present-day scheme acceptance or live merchant configuration** (raw lines 51\u201376).\n- The illustrated Classic flow starts with POST `/authorise`, payment reference/amount/card and browser/IP data. Raw card data is conditioned on full PCI compliance; otherwise the page directs use of Classic Client-Side Encryption. An `Authorised` result can be normal/frictionless or non-enrolled, while `RedirectShopper` returns `issuerUrl`, `paRequest` and `md`; `RedirectShopper` is a redirect instruction, not completed authentication (raw lines 78\u2013190).\n- For `RedirectShopper`, the page submits `PaReq`, uppercase `MD` and `TermUrl` by form POST to the issuer. The issuer returns `MD` and `PaRes` to the merchant return URL; the merchant then sends `md` and `paResponse` to Classic `/authorise3d`. This is the page's legacy redirect handoff, not a general rule for modern Checkout API 3DS2 (raw lines 193\u2013250).\n- The page instructs the merchant to present the result code from `/authorise` or `/authorise3d` and says the payment outcome also arrives asynchronously by webhook. It lists Authorised, Cancelled, Error and Refused; **manual capture remains required** for an authorised payment using manual capture. Its test-card sections include both redirect and native 3DS2 scenarios, which are test fixtures rather than proof of live availability or transaction outcome (raw lines 339\u2013416).\n\n## Detail locators\n\n- Classic deprecation, migration and risk/PSD2 framing: raw lines 19\u201349.\n- Historical test/live scheme setup: raw lines 51\u201376.\n- Classic `/authorise` parameters, PCI caveat and response branch: raw lines 78\u2013190.\n- Issuer form/return and Classic `/authorise3d` completion request: raw lines 193\u2013337.\n- Result/webhook/capture boundary and test fixtures: raw lines 339\u2013416.\n\n## Related\n\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication]]\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15|Pinned Classic 3DS redirect guide]]\n",
+  "quotes": [
+    {
+      "text": "This page is for the Classic API (`/authorise`) integration, which we no longer accept new integrations with.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md:21"
+    },
+    {
+      "text": "option 3 overrides our default PSD2 compliance handling logic",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md:45"
+    },
+    {
+      "text": "You can only pass raw card data if you are\u00a0[fully PCI compliant]",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md:102"
+    },
+    {
+      "text": "**RedirectShopper**: Indicates that you need to redirect the shopper to the card issuer for 3D Secure authentication.",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md:171"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook]",
+      "location": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md:341"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-3ds-classic-redirect-reciprocal",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1]] \u2014 2023-modified, 2026-09-15-captured Classic `/authorise` 3DS1/2 redirect and `/authorise3d` guide; new Classic integrations not accepted, historical scheme lists and redirect steps do not prove current support or payment outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not treat the page's dated default-live scheme list or broad personal-card liability sentence as current universal support/liability rules."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/2026-09-15.md",
+  "raw_sha256": "818d9e1d2d00324118fef2c0e51300735f6c125e9d76d5349870b45317545d7a",
+  "status": "candidate_ready"
+}

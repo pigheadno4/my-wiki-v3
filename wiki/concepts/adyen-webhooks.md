@@ -16,6 +16,9 @@ The overview's examples are flow- and object-qualified: delayed payment confirma
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-payout-webhooks]] — 2026-09-15 Payout Service bank-payout Transfer webhook lifecycle guide, distinguishing request, booking, tracking/credit, failure and return with nonfinal booking and retry-block boundaries.
+
+
 - [[source-adyen-docs-payouts-payout-service-webhook-types]] — 2026-09-15 Payout Service webhook-envelope and configuration/Transfer type guide, including internal-versus-bank transfer identifiers and request-status boundaries.
 
 

@@ -27,6 +27,18 @@ In `@adyen/adyen-web@6.47.0`, the challenge handler checks for a missing `result
 
 ## Related
 
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation]] — 2019-modified Classic custom 3DS1 chooser for external versus acquirer-hosted/non-standard MPI SOAP routes; new Classic integrations no longer accepted (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation-custom-3d-secure-using-an-external-mpi]] — 2026-09-15 Classic SOAP `/authorise` guide for external-MPI 3DS1 data and acquirer/MID matching; new Classic integrations no longer accepted.
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation-custom-3d-secure-using-a-hosted-mpi]] — 2020-modified Classic API hosted-MPI 3DS1 SOAP redirect and `/authorise3d` guide; new Classic integrations no longer accepted (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1]] — 2023-modified, 2026-09-15-captured Classic `/authorise` 3DS1/2 redirect and `/authorise3d` guide; new Classic integrations not accepted, historical scheme lists and redirect steps do not prove current support or payment outcome.
+
+
 - [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2-ios]] — 2019-modified, 2026-09-15-captured iOS redirect 3D Secure landing page routing to Drop-in or Components guides; navigation only, with no SDK or payment behavior specified.
 
 
@@ -114,6 +126,9 @@ Adyen's regulation-compliance overview is region-, actor-, scheme-, period-, tra
 
 
 ## Sources
+
+- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-3d-secure-1-authentication-only]] — 2026-09-15-captured legacy Classic Payment API 3DS1 authentication-only guide with issuer redirect, separate later authorization and Checkout migration warning; sample request snippets have gaps.
+
 
 - [[source-adyen-docs-industries-markets-japan-credit-card-security-guidelines-compliance-guide]] — 2023-modified, 2026-09-15-captured Adyen interpretation of Japan Credit Card Security Guidelines 5.0, with April 2025 Japan-acquiring credit-card scope, recurring/out-of-scope qualifications and versioned 3DS2 routing controls; dated guidance, not legal or merchant-compliance proof.
 

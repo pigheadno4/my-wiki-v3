@@ -21,6 +21,33 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-standard-integration]] — 2026-09-15 Standard Hosted Checkout versus Drop-in chooser for domain/UI, merchant server/webhook ownership, Apple Pay certificate and option-specific feature marks; child guides own execution prerequisites/outcomes.
+
+
+- [[source-adyen-docs-standard-integration-drop-in-customize-checkout]] — 2026-09-15 Standard Web Drop-in customization guide for dynamic/manual payment-method ordering, locale and translation fallbacks, separate RTL direction and CSS outside iframes; custom-locale example has a variable-name mismatch.
+
+
+- [[source-adyen-docs-standard-integration-drop-in-optional-drop-in-configuration]] — 2026-09-15 Standard Web Drop-in optional client configuration for method imports, session/instance settings, submission callbacks and stored-method deletion; conditional requirements and example mismatch are qualified in the source.
+
+
+- [[source-adyen-docs-standard-integration-drop-in-optional-server-configuration]] — 2026-09-15 Standard Drop-in optional server guide for server-authoritative session amount updates before an irreversible `payable: true` transition and an immutable session-result lookup; mixed v70/v72 examples do not prove compatibility or capture/settlement.
+
+
+- [[source-adyen-docs-standard-integration-payment-method-setup]] — 2026-09-15 Standard integration payment-method setup checklist for Apple Pay certificate/domain paths, PayPal permission, local/Support gates and selected pricing/contract qualifiers; listing is not merchant/store/session availability proof.
+
+
+- [[source-adyen-docs-standard-integration-drop-in-best-practices]] — 2026-09-15 Standard Web Drop-in guidance on single client-side mount, custom-button exceptions, LIVE HTTPS/redirect hosting, regional assets/SRI and real-device testing; snippets and CDN host examples need implementation verification.
+
+
+- [[source-adyen-docs-standard-integration-hosted-checkout]] — 2026-09-15 Standard Hosted Checkout Sessions guide for Checkout API v72+, server-created hosted URL, return-result lookup and authoritative AUTHORISATION webhooks; the result snapshot is immutable and is not capture/settlement proof.
+
+
+- [[source-adyen-docs-standard-integration-drop-in]] — 2026-09-15 Standard Web Drop-in Sessions guide for Checkout API v72+/Web v6.30.0+, server/client/webhook integration, redirects and authorization-outcome handling; session/client status is not capture or settlement proof.
+
+
+- [[source-adyen-docs-standard]] — 2026-09-15 Standard online-payments integration checklist for a bounded single-request Drop-in or Hosted Checkout path; broader Adyen features outside its linked sections are not automatically available, and checklist routes do not prove execution.
+
+
 - [[source-adyen-docs-industries-peak-season-online-payments]] — 2026-09-15 seasonal online-checkout readiness guide for early changes, local-method consideration and test-market/SCA/webhook/failure-path checks; proposed benefits and tests do not prove live availability or payment outcome.
 
 

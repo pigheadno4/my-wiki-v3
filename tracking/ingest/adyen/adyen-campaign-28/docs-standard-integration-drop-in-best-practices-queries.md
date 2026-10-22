@@ -1,0 +1,9 @@
+# Retrieval checks — docs-standard-integration-drop-in-best-practices
+
+Q1. What are this Standard Web Drop-in page's main client, button, hosting and asset practices?
+
+A1. It is scoped to Standard online-payments Drop-in (raw lines 19–27). Initialize and mount once despite rerenders, and create/mount on the client when using SSR (raw lines 33–69). Disable a custom button on an attempt, but use Drop-in's own button for PayPal, Klarna and Click to Pay (raw lines 71–111). LIVE checkout needs HTTPS, cross-domain iframes break redirects, and native WebViews are discouraged (raw lines 113–136). If embedding assets, match URL region with LIVE endpoint and Drop-in environment; SRI is recommended (raw lines 175–205). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-standard-integration-drop-in-best-practices]] → [[raw/adyen/docs/standard/integration/drop-in/best-practices/2026-09-15]].
+
+Q2. Can the React/custom-button/SRI snippets be pasted unchanged as proof of one-time mounting, retry safety or correct LIVE resources?
+
+A2. No. The React sample's hook import is malformed and its effect lacks an explicit once-only guard despite the surrounding instruction (raw lines 42–65). The custom-button example has an ellipsis placeholder and no shown reset after failure; prose mentions Enter while describing `beforeSubmit` as fired on button selection, so actual keyboard/retry behavior needs verification (raw lines 75–101). The region table uses `checkoutshopper-...cdn.adyen.com`, while the v6.33.0 SRI sample uses `checkoutshopper-live.adyen.com`; a mismatched SRI hash prevents asset loading (raw lines 184–218). None of these instructions proves payment authorization or settlement. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-standard-integration-drop-in-best-practices]] → [[raw/adyen/docs/standard/integration/drop-in/best-practices/2026-09-15]].

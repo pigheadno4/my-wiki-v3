@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-top-up-balance-accounts-manage-recurring-top-ups",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Payout Service recurring balance-account top-up management\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, balance-accounts, recurring-top-ups]\n---\n\n## Overview\n\nThis Payout Service guide, last modified 2020-09-11 and captured 2026-09-15, describes viewing, updating, deactivating and deleting **recurring top-up schedules** for a balance account through the Configuration API or Customer Area. A schedule can automatically trigger future top-up attempts; schedule state or API sample responses do not prove a direct debit, booked balance credit or future-debit revocation. See [[adyen]] and [[adyen-payouts]] (raw lines 5\u201321, 303\u2013445).\n\n## Key takeaways\n\n- The stated scope is an **enterprise payouts** integration. API schedule configuration requires a Configuration API credential with **BankAPI Advanced Webservice** role; the Customer Area route instead lists **Balance platform base** and **Configure scheduled payouts** human roles. It lists Configuration, Transfer and Transaction webhooks. Transfer-instrument funding requires an active **receiveFromTransferInstrument** capability with valid verification status, and the top-up source needs enough funds. This feature does **not** support on-demand top-ups (raw lines 23\u201336).\n- GET `/balanceAccounts/{balanceAccountId}/recurringTopUps` lists schedules for one balance account in creation order, with optional `limit` and cursor pagination. The response data includes source transfer instrument when applicable, fixed versus target amount, schedule/threshold, status and direct-debit beneficiary reference. The page describes weekday, weekly, monthly and continuous balance checks; a returned schedule is not a posted top-up (raw lines 40\u2013112, 183\u2013222).\n- PATCH `/balanceAccounts/{balanceAccountId}/recurringTopUps/{topUpId}` changes specified settings and leaves omitted parameters unchanged. It can adjust fixed/target amount, schedule, threshold, status and reference. The source `transferInstrumentId` is **immutable**: changing the funding source requires deactivating the existing schedule and creating a new one. The page's example changes amount and sets `status: inactive`; deactivation is a schedule lifecycle action, not evidence that any previously initiated debit was reversed (raw lines 303\u2013411).\n- DELETE on that specific balance-account/top-up-ID route removes a recurring top-up; the guide illustrates success as **204 No Content** and a separate Customer Area Remove action. It does not specify that deactivation or deletion cancels already triggered transfers, revokes a funding mandate or prevents every future debit outside that schedule. Do not infer those effects from the response (raw lines 413\u2013453).\n- The example pagination `link.next.href` and `link.previous.href` use singular `recurringTopUp` while the documented GET/PATCH/DELETE endpoints use plural `recurringTopUps`; treat the example links as internally inconsistent rather than changing the documented route or asserting live API behavior (raw lines 63, 178, 185, 288\u2013291, 309, 419).\n\n## Detail locators\n\n- Integration, roles, webhooks, capability, no on-demand path and funding-source balance: raw lines 23\u201336.\n- GET list, schedule data and pagination examples: raw lines 40\u2013301.\n- PATCH mutable fields, immutable source and inactive example: raw lines 303\u2013411.\n- DELETE route, 204 example and Customer Area removal: raw lines 413\u2013453.\n\n## Related\n\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-create-recurring-top-ups]]\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-top-up-webhooks]]\n- [[adyen-api-access]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15|Pinned recurring top-up management guide]]\n",
+  "quotes": [
+    {
+      "text": "After you create a recurring top-up, we automatically trigger top-ups to your balance account according to the settings you configured.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md:19"
+    },
+    {
+      "text": "This feature does not support on-demand top-ups.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md:35"
+    },
+    {
+      "text": "The funding source `transferInstrumentId` is immutable.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md:313"
+    },
+    {
+      "text": "To change the source of funds, you must deactivate the current recurring top-up and create a new one.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md:313"
+    },
+    {
+      "text": "If the request is successful, you receive a **204 - No Content** response.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md:445"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payouts-recurring-topups-manage-reciprocal",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-manage-recurring-top-ups]] \u2014 2020-modified, 2026-09-15-captured Payout Service recurring top-up schedule GET/PATCH/DELETE guide with role/capability gates, immutable funding source and sample pagination-path conflict; schedule changes do not prove debit reversal or mandate revocation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw pagination example link uses singular recurringTopUp while the documented endpoint path uses plural recurringTopUps. Preserve unresolved example/documentation discrepancy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/manage-recurring-top-ups/2026-09-15.md",
+  "raw_sha256": "d7392e0e65bb831b4f20d28b2d15e1690f88228aba095cd580be50d9006e678c",
+  "status": "candidate_ready"
+}

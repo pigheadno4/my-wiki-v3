@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts-manage-bank-details",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Manage bank account details | Adyen Payout Service\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/pay-out-to-bank-accounts/manage-bank-details\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/manage-bank-details/2026-09-15.md\"\ntags: [adyen, payout-service, bank-details, tokenization, third-party-payouts]\n---\n\n## Overview\n\nThis 2023-modified, 2026-09-15-captured [[adyen]] **Payout Service** guide describes tokenizing a third-party counterparty's bank details so a merchant can refer to them in later bank-payout requests. A token is a reference to the bank details, not proof that the bank account is valid, that a payout has been made or that a beneficiary received funds. See [[adyen-payouts]] for this Transfers API payout route and [[adyen-tokenization]] for the token family. [Raw: lines 15\u201323, 34\u201335, 519\u2013565]\n\n## Key takeaways\n\n- Before this flow, the guide calls for a Payout Service integration, **Checkout API for tokenization**, a company `ws@Company.[YourCompanyAccount]` API credential with **Checkout encrypted cardholder data** role, a webhook receiver, and Adyen-contact enablement. That named role is the page's prerequisite despite the bank-details subject; it does not by itself establish PCI scope or actual credential assignment. [Raw: lines 25\u201337]\n- The captured local-tokenized detail scope is IBAN/SEPA Direct Debit, UK Local/BACS and US Local/ACH. **Local account details cannot be used for cross-border transfers**; the guide says to use a cross-border-capable identification format such as NumberAndBic. Token creation **does not validate the bank account**, so invalid details can cause a later payout to fail. The list is dated provider guidance, not proof of current regional enablement. [Raw: lines 34\u201352]\n- To store details, the documented server request is Checkout API `POST /payments` with `amount.value: 0`, applicable currency, bank-detail `paymentMethod` (`sepadirectdebit`, `ukLocal` or `usLocal`), billing address, `enablePayOut: true`, merchant account, `recurringProcessingModel: Subscription`, payment reference, return URL, bank-holder `shopperReference` and `storePaymentMethod: true`. This is a **zero-auth tokenization setup**, not a funds payout; the example is a TEST-environment SEPA request. [Raw: lines 54\u2013112]\n- The page says a token is created **after successful payment authorization**. Retrieve `storedPaymentMethodId` from `additionalData.tokenization.storedPaymentMethodId` in the successful authorization response or from `recurring.token.created`; store it together with `additionalData.tokenization.shopperReference`. Both values are needed for the later bank-payout request, whose own child guide controls transfer submission and outcome. A zero amount or the sample `Authorised` response does not establish bank verification, payout booking or bank receipt. [Raw: lines 519\u2013571]\n\n## Detail locators\n\n- Payout-token purpose and feature/credential/webhook requirements: raw lines 19\u201337.\n- Cross-border restriction, no account validation and dated local-format scope: raw lines 34\u201352.\n- Zero-auth Checkout `POST /payments` request fields and TEST example: raw lines 54\u2013112.\n- Language-specific illustrative library requests: raw lines 114\u2013517.\n- Authorization-gated token location and required token/holder pair: raw lines 519\u2013565.\n- Separate payout-request route: raw lines 567\u2013571.\n\n## Related\n\n- [[adyen-payouts]] \u2014 Payout Service route and legacy Payout API distinction\n- [[adyen-tokenization]] \u2014 token family context\n- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts]] \u2014 third-party bank payout route, currencies and priorities\n- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request]] \u2014 payout request and transfer outcome child guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/manage-bank-details/2026-09-15|Pinned Payout Service manage-bank-details guide]]\n",
+  "quotes": [
+    {
+      "text": "A token is a unique reference for a third party's bank account details",
+      "location": "line 23"
+    },
+    {
+      "text": "Your company (**ws\\@Company.\\[YourCompanyAccount]**) has the following [role]",
+      "location": "line 32"
+    },
+    {
+      "text": "The tokenization service does not validate bank accounts when creating a token. Invalid details may lead to failed payouts later.",
+      "location": "line 35"
+    },
+    {
+      "text": "The token is created after a successful payment authorization.",
+      "location": "line 519"
+    },
+    {
+      "text": "You must provide these values when making a bank account payout request.",
+      "location": "line 565"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-manage-bank-details-payouts-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-manage-bank-details]] \u2014 2023-modified, 2026-09-15-captured Payout Service Checkout zero-auth bank-detail tokenization for later third-party bank payouts, with company credential/feature gates, local/cross-border limits and no account validation or receipt proof.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source describes bank-detail tokenization, not token deletion or a PCI-compliance determination; do not import those claims from adjacent card or recipient-management guides.",
+          "Successful zero-auth authorization creates/reports a token but does not validate the bank account or prove any outbound transfer."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/manage-bank-details/2026-09-15.md",
+  "raw_sha256": "5289723aff53b1ec4ef85cbbe3ad0ecbb4d1109c6e5174af7606d326abe5963d",
+  "status": "candidate_ready"
+}

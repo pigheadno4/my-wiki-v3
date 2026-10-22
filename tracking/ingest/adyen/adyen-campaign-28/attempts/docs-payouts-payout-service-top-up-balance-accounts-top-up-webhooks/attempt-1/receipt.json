@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-top-up-balance-accounts-top-up-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Payout Service recurring top-up webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/top-up-balance-accounts/top-up-webhooks\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, recurring-top-ups, webhooks, direct-debit]\n---\n\n## Overview\n\nThis Payout Service page, last modified 2020-09-11 and captured 2026-09-15, distinguishes **recurring-top-up configuration changes**, **triggered direct-debit transfer states**, and **balance-account credit**. It says Top-up API management is asynchronous: a successful API response does not itself prove the schedule was created, updated or deleted. These webhook examples are historical evidence paths, not proof of a real direct debit, balance credit or external-bank receipt. See [[adyen]] and [[adyen-payouts]] (raw lines 5\u201323).\n\n## Key takeaways\n\n- For an **enterprise payouts** integration with a server that receives/accepts webhooks, the page recommends Configuration webhooks for successful recurring schedule `created`, `updated` and `deleted`; Transfer webhooks for a direct debit's status changes; and Transaction webhooks for resulting fund movement. A configuration event proves a schedule change, not a debit or credited funds (raw lines 25\u201349).\n- The guide identifies top-up transfer events by `category: bank` and `type: bankDirectDebit`. `balancePlatform.transfer.created` indicates initiation, while `balancePlatform.transfer.updated` tracks states including received, authorised and booked in its examples. Transfer status should be read at its own stage; initiation or authorization is not a balance-account credit (raw lines 164\u2013434).\n- The narrative calls the created event an **outgoing** direct-debit request from a balance account, and its initiated/authorised examples use `direction: outgoing`; its booked example for the same illustrated transfer changes to `direction: incoming`. This is an unresolved sample direction inconsistency, so do not derive a universal top-up money direction from those fields alone (raw lines 168, 216, 291, 380).\n- A transfer can fail after initial request acceptance. The page gives `rejected` and `returned` `balancePlatform.transfer.updated` examples; their event arrays include a prior `booked` accounting event before the later negative outcome. Thus the illustrated booked state cannot be treated as irreversible top-up finality. The rejected sample's narrative says failure before finalization; the returned narrative describes funds reaching a destination bank and coming back. Those examples do not by themselves establish a particular bank's receipt or a refund/reversal in a real account (raw lines 435\u2013702).\n- `balancePlatform.transaction.created` is the page's **balance-account credit** evidence: it says transaction webhooks are sent only when transfer funds are credited, unlike a transfer webhook for each status change. Its sample has `status: booked` and balance-account/transfer IDs. This is a different evidence grain from configuration or transfer-state messages and remains subject to the page's later failure/return examples (raw lines 706\u2013751).\n\n## Detail locators\n\n- Asynchronous Top-up API and three webhook families: raw lines 19\u201332.\n- Configuration created/updated/deleted events and samples: raw lines 35\u2013161.\n- Direct-debit transfer types, received/authorised/booked samples and direction discrepancy: raw lines 164\u2013434.\n- Rejected/returned transfer examples with prior booked accounting entries: raw lines 435\u2013702.\n- Credited-funds transaction event and sample: raw lines 706\u2013751.\n\n## Related\n\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-manage-recurring-top-ups]]\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-create-recurring-top-ups]]\n- [[adyen-platforms]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15|Pinned top-up webhook guide]]\n",
+  "quotes": [
+    {
+      "text": "A successful API response does not necessarily indicate that a recurring top-up is successfully created, updated, or deleted.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md:19"
+    },
+    {
+      "text": "sent when a new recurring top-up is successfully created.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md:39"
+    },
+    {
+      "text": "which informs your server that an outgoing direct debit request is initiated from a balance account",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md:168"
+    },
+    {
+      "text": "A transfer can fail during processing even if the initial API request is accepted.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md:437"
+    },
+    {
+      "text": "transaction webhooks are only sent when the funds from the transfer are credited to the balance account.",
+      "location": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md:710"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payouts-topup-webhooks-reciprocal",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-top-up-webhooks]] \u2014 2020-modified, 2026-09-15-captured Payout Service recurring-top-up configuration, direct-debit transfer and credited-transaction webhook guide; booked/negative-state examples and direction mismatch limit finality inferences.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The same illustrated transfer is outgoing in initiated/authorised samples and incoming when booked (raw lines 216, 291, 380); preserve as unresolved example conflict, not a universal money-direction rule."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/top-up-webhooks/2026-09-15.md",
+  "raw_sha256": "ba1ff13c31cfcade2538de2e23587088741c788b83e3ba7430ab0cdfb119c39e",
+  "status": "candidate_ready"
+}

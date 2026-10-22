@@ -1,0 +1,21 @@
+{
+  "job_id": "docs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The complete pinned raw matches SHA-256 70752fab5bff5c08ff7fd93a807a4093d2fc490c41ebea6eb83e7ea5a20af151; all five quotes occur at their stated lines. Candidate, suggestions and Q1/Q2 match the accepted receipt and correctly distinguish third-party bank payout request acceptance, selected fallback route, booked debit and beneficiary receipt. One material source contradiction is missing: the future-date parameter table requires executionDate.date (raw 2144-2148), but Java, PHP, C#, Go and TypeScript future-date examples supply only timezone in their executionDate objects (raw 2235-2246, 2307-2321, 2385-2401, 2511-2524, 2679-2692). The candidate's future-date detail locator alone does not warn that these examples are incomplete against the stated requirement. Q2 recognizes an additional timezone ambiguity between the configured Balance Platform default timing prose (2133) and executionDate.timezone's Europe/Amsterdam default (2148), which should also appear as an explicit source warning. The existing Adyen Payouts concept is a valid reciprocal route, subject to carrying these bounded source warnings.",
+  "required_changes": [
+    "Add a concise future-execution warning to the source: executionDate.date is required by the parameter table, yet the listed Java/PHP/C#/Go/TypeScript future-date SDK samples omit it; do not treat those samples as complete future-date requests. Cite the exact raw lines and do not infer API validation behavior.",
+    "Explicitly retain the source's unresolved timezone tension: processing window prose uses the Balance Platform configured default timezone while the optional executionDate.timezone table states Europe/Amsterdam as its default. Do not choose which controls the window when a request supplies a timezone. Carry these warnings into Q2 and the reciprocal concept warning or label as source-specific caveats."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "payout-service-third-party-bank-request-route",
+      "verdict": "rejected",
+      "reason": "The reciprocal route is correctly placed under Adyen Payouts, but its warnings need the required-date versus incomplete SDK examples and unresolved default-timezone tension before promotion."
+    }
+  ],
+  "reviewer_identity": "c28-rdocs-payouts-payout-service-pay-out-to-bank-accounts-bank-payout-request",
+  "reviewer_model": "gpt-6-sol"
+}

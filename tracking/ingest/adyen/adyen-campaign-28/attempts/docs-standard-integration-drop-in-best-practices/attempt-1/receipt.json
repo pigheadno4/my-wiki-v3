@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-standard-integration-drop-in-best-practices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Standard Web Drop-in best practices\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in/best-practices\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/best-practices/2026-09-15.md\"\ntags: [adyen, online-payments, standard-integration, web-drop-in, checkout-security]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] page gives implementation guidance specifically for a **Standard online-payments Web Drop-in** integration, within [[adyen-online-payments]]. It covers client lifecycle, custom-button safety, browser/redirect constraints, resource loading and testing. These are integration practices and dated compatibility recommendations; they do not prove that a payment method is enabled, a shopper was authorized, or funds settled.\n\n## Key takeaways\n\n- Initialize `AdyenCheckout` and mount Drop-in **once** when ready to display methods. React StrictMode and hooks can rerun effects; execute instance creation/mounting on the **client** under SSR because Drop-in needs `window` and `document`. The page's React snippet has a malformed hook import path and mounts from an effect keyed to `dropin` without a once-only guard, so treat it as illustrative rather than paste-ready proof of single mounting. See raw lines 33\u201369.\n- For a **custom pay button**, disable it as soon as an attempt starts and use `beforeSubmit` to reject an in-progress submission. The snippet contains an ellipsis placeholder and no shown reset of its in-progress flag after completion/failure, so it is not a complete retry/error design. The prose mentions Pay-button and Enter-key attempts but describes `beforeSubmit` as triggered by button selection; verify keyboard behavior in the actual integration. **PayPal, Klarna and Click to Pay do not support the custom button** here; use Drop-in's button for those methods. See raw lines 71\u2013111.\n- Use **HTTPS in LIVE**; HTTP is described only for local testing. Cross-domain iframe hosting breaks redirect flows, so if an iframe is unavoidable the page says host it on the parent domain. For native mobile apps it recommends avoiding WebViews and names Android Custom Tabs or iOS SFSafariViewController instead. See raw lines 113\u2013136.\n- The browser-version table is a dated support snapshot. Drop-in may set risk cookie `_RP_UID`; extensions can block iframe/elements needed by payment methods. These observations do not establish behavior for a particular browser/session. See raw lines 138\u2013167.\n- Prefer the Adyen Web npm package for client resources; when embedding script/CSS, align the URL region with LIVE endpoints and Drop-in `environment`. The page recommends SRI `integrity` and `crossorigin`, with version-specific hashes in release notes. Its URL table shows `checkoutshopper-...cdn.adyen.com`, but the v6.33.0 SRI example uses `checkoutshopper-live.adyen.com`; do not mix host, version and hash from these separate examples without verification. A hash mismatch prevents the browser loading the asset. See raw lines 175\u2013218.\n- Test a working integration in a secure context and on real mobile devices. The Uplift section is a recommendation to inspect optimization opportunities, not proof of improved conversion or account feature activation. See raw lines 169\u2013173 and 220\u2013230.\n\n## Detail locators\n\n- **Standard Drop-in scope, one-time mounting, React example and SSR:** raw lines 19\u201369.\n- **Custom-button duplicate prevention and method exceptions:** raw lines 71\u2013111.\n- **HTTPS, iframe/WebView and browser tables:** raw lines 113\u2013158.\n- **Cookie, extensions and Uplift guidance:** raw lines 160\u2013173.\n- **Regional resources, SRI and host mismatch:** raw lines 175\u2013218.\n- **Testing and child navigation:** raw lines 220\u2013236.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-standard-integration-drop-in]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/best-practices/2026-09-15|Adyen Standard Drop-in best practices \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "initialize `AdyenCheckout` and mount your instance of Drop-in only once",
+      "location": "raw line 35, Handle web framework re-renders"
+    },
+    {
+      "text": "make sure the code that creates an `AdyenCheckout` instance and mounts Drop-in is executed on the client side.",
+      "location": "raw line 69, Manage Server-Side Rendering"
+    },
+    {
+      "text": "you must disable your pay button as soon as a payment attempt has been made.",
+      "location": "raw line 77, Prevent multiple submissions"
+    },
+    {
+      "text": "For these payment methods, you must use the button provided by Drop-in.",
+      "location": "raw line 111, Unsupported payment methods"
+    },
+    {
+      "text": "make sure that the URL region matches with the region of your [live endpoints](/development-resources/live-endpoints) and the `environment` you configured for Drop-in in your integration.",
+      "location": "raw line 186, Embed the Adyen Web script and stylesheet"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-dropin-best-practices-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in-best-practices]] \u2014 2026-09-15 Standard Web Drop-in guidance on single client-side mount, custom-button exceptions, LIVE HTTPS/redirect hosting, regional assets/SRI and real-device testing; snippets and CDN host examples need implementation verification.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "React import is malformed and effect does not itself enforce once-only mount; beforeSubmit snippet is incomplete and has no shown retry reset. Region CDN table and v6.33.0 SRI sample use different hosts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/best-practices/2026-09-15.md",
+  "raw_sha256": "3a73a03d06123b3bce999814133042439a9e0bfe854e3fbaad326f167179ea48",
+  "status": "candidate_ready"
+}

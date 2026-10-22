@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payouts-payout-service-top-up-balance-accounts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service balance-account top-ups\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/top-up-balance-accounts\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/top-up-balance-accounts/2026-09-15.md\"\ntags: [adyen, payouts, payout-service, balance-accounts, recurring-top-ups, direct-debit]\n---\n\n## Overview\n\nThis 2020-09-11-modified, 2026-09-15-captured [[adyen]] **Payout Service** overview describes recurring top-ups that pull funds **from a linked bank transfer instrument by direct debit into a balance account**. A configured balance trigger starts the outgoing direct-debit request, which can lead to an incoming balance-account transfer. This is funding for later payouts, not a payout to a beneficiary. The page's shortened request-to-balance description is not proof of a successful debit or booked credit. See [[adyen-payouts]].\n\n## Key takeaways\n\n- Recurring top-ups are described as maintaining enough balance for necessary transfers, including partner, claim, driver and seller payout use cases. Those are examples of what a funded balance can support, not a promise that any later payout occurs. See raw lines 17\u201328.\n- Configure **either** a fixed top-up value or a target available-balance amount. For target amounts, the overview says the balance is increased toward that target when a top-up is triggered; the funding and credit are separate stages, so this is the configured amount logic rather than an instant-credit guarantee. See raw lines 30\u201335 and 64\u201370.\n- A recurring top-up uses **both** `trigger.schedule` and `trigger.threshold`. The account-timezone schedule checks on weekdays, weekly Monday, or monthly first day at 07:00; an omitted schedule defaults to continuous monitoring. A below-threshold available balance triggers an outgoing direct-debit request. This overview says **below**, while the linked creation guide's Customer Area wording says **less than or equal to**; do not assume exact-threshold behavior is identical across setup channels. See raw lines 37\u201348 and [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-create-recurring-top-ups]].\n- The bank funding source is identified by `counterparty.transferInstrumentId`. The page shows where to find that ID in the **test** Customer Area and says to contact an Adyen point of contact if no instrument is listed. An ID or configured schedule does not establish valid consent, sufficient funds or successful collection. See raw lines 50\u201362.\n- The child guides carry the operational gates and status evidence: [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-sign-terms-of-service]] describes direct-debit Terms acceptance before API setup (Customer Area wizard handles its own flow); [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-create-recurring-top-ups]] adds roles, capability, currency and source-funding conditions; [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-top-up-webhooks]] separates configuration, transfer status and credited transaction and shows later rejected/returned cases. The overview's three-step process does not collapse those gates or make booking final. See raw lines 64\u201388 for this page's process and child navigation.\n\n## Detail locators\n\n- **Purpose, funding direction and payout use cases:** raw lines 15\u201328.\n- **Fixed versus target amount:** raw lines 30\u201335.\n- **Schedule/threshold checks and account timezone:** raw lines 37\u201348.\n- **Funding instrument and test Customer Area lookup:** raw lines 50\u201362.\n- **Request-to-transfer overview and child-guide routes:** raw lines 64\u201388.\n\n## Related\n\n- [[adyen-payouts]]\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-create-recurring-top-ups]]\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-sign-terms-of-service]]\n- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts-top-up-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/2026-09-15|Payout Service top-up overview \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "A recurring top-up triggers outgoing direct debit requests to a bank account, based on the trigger settings you configure.",
+      "location": "raw line 19, Top up accounts"
+    },
+    {
+      "text": "You can either configure a fixed amount or a target amount.",
+      "location": "raw line 32, Top-up amount"
+    },
+    {
+      "text": "you must specify the parameters that trigger top-ups to the linked balance account.",
+      "location": "raw line 39, Top-up trigger"
+    },
+    {
+      "text": "This is the default value we set if you do not specify `trigger.schedule` in your request.",
+      "location": "raw line 46, Top-up trigger"
+    },
+    {
+      "text": "In your API requests, this is represented by the [counterparty.transferInstrumentId]",
+      "location": "raw line 52, Top-up source"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-payout-service-top-up-overview-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts]] \u2014 2020-modified, 2026-09-15-captured Payout Service recurring direct-debit funding overview for balance accounts, with fixed/target amounts, account-timezone trigger checks and bank-instrument source; linked setup/status guides govern consent, capability and credited-funds evidence.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The overview compresses outgoing direct-debit request into incoming transfer/balance increase. The linked creation and webhook guides distinguish setup, trigger, transfer state, credited transaction and later rejection/return; they also expose an exact-threshold wording difference and sample direction discrepancy."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/top-up-balance-accounts/2026-09-15.md",
+  "raw_sha256": "b94b61cce5b8486d478a02ca6fa5f81d1ba0afe548e2e3eebd373c9c6c2429e1",
+  "status": "candidate_ready"
+}

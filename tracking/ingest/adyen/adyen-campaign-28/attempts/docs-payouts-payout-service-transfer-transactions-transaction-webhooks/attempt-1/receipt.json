@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payouts-payout-service-transfer-transactions-transaction-webhooks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Payout Service transaction-created webhooks\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payouts/payout-service/transfer-transactions/transaction-webhooks\"\nraw_files:\n  - \"adyen/docs/payouts/payout-service/transfer-transactions/transaction-webhooks/2026-09-15.md\"\ntags: [adyen, payout-service, transaction-webhooks, transfers, balance-accounts]\n---\n\n## Overview\n\nThis Payout Service-path guide (modified and captured 2026-09-15) describes `balancePlatform.transaction.created` webhooks when funds are **debited from or credited to a balance account** in transfers involving external bank/card counterparties or another balance account. It distinguishes these accounting notifications from Transfer webhooks for transfer status changes. Its prerequisite table also names **Adyen for Platforms, Issuing or Payouts** integrations, so the URL path alone does not narrow the event's scope. A booked balance-account debit is not proof that a third-party bank or card beneficiary received funds. See [[adyen]] and [[adyen-payouts]].\n\n## Key takeaways\n\n- **Subscriptions and event timing:** The page lists a server able to receive and accept webhooks and subscription to Standard and Transaction webhooks; it marks Transfer webhooks optional in the table. Transfer webhooks cover status changes, while transaction webhooks are sent only when funds from a transfer are credited or debited on a balance account. The example transaction events have `status: booked` and `environment: test`; use actual transfer-specific events for a real outcome.\n- **Direction and resource ownership:** Outgoing external cases cover third-party bank and card payouts; outgoing internal cases cover funds sent from one balance account to another. Incoming internal cases cover the receiving balance account. `data.id` is the transaction-event identifier, while nested `data.transfer.id` identifies the related transfer record; `data.accountHolder` and `data.balanceAccount` refer to the source for outgoing events and destination for incoming internal events. Negative `amount.value` denotes an outgoing debit in examples; positive denotes incoming credit. The outgoing and incoming internal TEST examples use distinct transaction **and nested transfer** IDs, and this page does not identify those IDs as the same transfer's paired sides.\n- **Example amount conflict:** The outgoing external prose calls for **EUR 100.00**, but its request JSON uses `amount.value: 150000` EUR, while the shown transaction webhook has `amount.value: -10000` EUR. The raw does not reconcile the request/event amounts; do not use this example to assert a booked amount or reconciliation rule. The internal request also renders `value` as a quoted string while its transaction examples show numeric values; avoid treating the snippets as a validated schema.\n- **Evidence boundary:** A transaction-created webhook establishes the balance-account debit/credit reported by that event. It is different from initial request acceptance and from a bank/card network's later delivery or receipt. The page's examples are TEST payloads and cannot prove a live account's funding or payout completion.\n\n## Detail locators\n\n- Event purpose, Transfer-versus-Transaction webhook distinction, integration/subscription prerequisites: pinned raw lines 15-38.\n- Outgoing external request, booked webhook fields and amount mismatch: pinned raw lines 40-135.\n- Outgoing internal example and quoted request value: pinned raw lines 137-215.\n- Incoming internal booked example and resource owner: pinned raw lines 217-274.\n\n## Related\n\n- [[adyen-payouts]] \u2014 main Payout Service concept and reciprocal source route.\n- [[adyen-platform-internal-transfers]] \u2014 related balance-account-to-balance-account movement.\n\n## Related raw API references\n\n- [[raw/adyen/docs/payouts/payout-service/transfer-transactions/2026-09-15|Transaction lookup guide]] \u2014 related transaction-query page; separately reviewed or promoted by its own job.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payouts/payout-service/transfer-transactions/transaction-webhooks/2026-09-15|Payout Service transaction-webhook guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "While a transfer webhook is sent for every status change, transaction webhooks are only sent when the funds from the transfer are credited or debited from the balance account.",
+      "location": "line 21, introduction"
+    },
+    {
+      "text": "You must have an [Adyen for Platforms](/adyen-for-platforms-model/), [Issuing](/issuing/account-structure-resources/issuing-enterprise/), or [Payouts](/payouts/payout-service/) integration.",
+      "location": "line 27, Requirements"
+    },
+    {
+      "text": "\"value\": 150000",
+      "location": "line 61, Outgoing external transfer request"
+    },
+    {
+      "text": "\"value\": -10000,",
+      "location": "line 104, Outgoing external transaction webhook"
+    },
+    {
+      "text": "After an incoming internal transfer is [**booked** ](/payouts/payout-service/internal-fund-transfers/internal-transfer-webhooks/#internal-transfer-booked)to the balance account, Adyen sends a [balancePlatform.transaction.created](https://docs.adyen.com/api-explorer/transaction-webhooks/latest/post/balancePlatform.transaction.created) webhook with the following information:",
+      "location": "line 223, Incoming internal transactions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payout-service-transaction-webhooks-route",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payouts-payout-service-transfer-transactions-transaction-webhooks]] \u2014 2026-09-15 Payout Service-path booked balance-account transaction-webhook guide for external bank/card and internal movement, distinct from transfer-status webhooks; TEST bank request/event amounts conflict and booked debit is not bank receipt.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "External example says EUR 100, request value 150000, webhook value -10000; do not infer a matched amount or conversion (raw 49, 61, 104).",
+          "Outgoing/incoming internal examples have different transaction and nested transfer IDs; do not join them as paired sides from this page alone (raw 183-193, 242-253)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payouts/payout-service/transfer-transactions/transaction-webhooks/2026-09-15.md",
+  "raw_sha256": "23254fde2eacaafda2d7dfe1e8406866e8813e528b3e4923974093631520b068",
+  "status": "candidate_ready"
+}

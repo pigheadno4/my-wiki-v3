@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-standard-integration-drop-in-optional-server-configuration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Optional server configuration | Adyen Standard Drop-in\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/drop-in/optional-server-configuration\"\nraw_files:\n  - \"adyen/docs/standard/integration/drop-in/optional-server-configuration/2026-09-15.md\"\ntags: [adyen, standard-integration, online-payments, drop-in, sessions]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] **Standard Drop-in** guide offers two optional payment-server features: changing a session amount before shopper submission and retrieving a payment-session result on the server. It belongs to the bounded [[adyen-online-payments]] Standard path; these are conditional configuration steps, not evidence that a payment was authorized, captured or settled. [Raw: lines 15\u201326, 174\u2013182]\n\n## Key takeaways\n\n- To permit a later amount change, create the session with `payable: false` and confirm that value in the response. The guide's TEST example uses Checkout API `POST /v72/sessions`; this initial state prevents shopper submission while the amount is updateable. [Raw: lines 24\u201381]\n- For a changed amount, the merchant server makes `PATCH /sessions/{sessionId}` with the original response's `sessionData`, updated amount in minor units/currency and optionally `payable`. Once `payable: true` marks the final amount, the session **cannot be updated again**. If it remains false, another update setting it true is required before shopper submission. [Raw: lines 83\u2013123]\n- Drop-in can display revised amounts multiple times before the server-side session is patched. Before payment submission, `beforeSubmit` must obtain the final amount **from the merchant server, not the client**, patch the session and pass returned `sessionData` via `actions.resolve`; the example rejects on failure. The display-only example uses USD 1,000 while the server request examples use EUR 1,900 then EUR 10,000, so those snippets are illustrative rather than one reconciled cart/session trace. [Raw: lines 38\u201357, 95\u2013171]\n- Optionally, the server can retrieve a result with the session `id` and `sessionResult` from `onPaymentCompleted` or `onPaymentFailed` using `GET /sessions/{id}?sessionResult=...`. The statuses shown are `completed` (the guide describes this as authorized), `paymentPending` for asynchronous methods, `canceled` and `expired`. The returned `status` **does not update**; later changes require webhooks or Customer Area Transactions, not repeated GET polling. A session result does not itself prove capture or settlement. [Raw: lines 174\u2013182, 340\u2013378]\n- The result-lookup curl sample uses Checkout API **v70** and several older language-library examples, while the session-create/PATCH samples use **v72**. Treat those as dated, mixed-version examples, not proof that a v70 lookup is the required or compatible version for a v72 Standard integration. [Raw: lines 40\u201345, 97\u2013111, 184\u2013337]\n\n## Detail locators\n\n- Optional feature choices and `payable: false` creation: raw lines 15\u201381.\n- PATCH fields and irreversible `payable: true` transition: raw lines 83\u2013123.\n- Drop-in display versus server-authoritative final amount and `beforeSubmit` resolution: raw lines 125\u2013171.\n- Server result lookup and illustrative API-library versions: raw lines 174\u2013337.\n- Result statuses, immutable snapshot and webhook/Transactions follow-up: raw lines 340\u2013378.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Standard online-payments concept\n- [[source-adyen-docs-standard]] \u2014 bounded Standard checklist\n- [[source-adyen-docs-standard-integration-drop-in]] \u2014 parent Drop-in integration route\n- [[source-adyen-docs-standard-integration-drop-in-optional-drop-in-configuration]] \u2014 optional client configuration route\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/drop-in/optional-server-configuration/2026-09-15|Pinned Standard Drop-in optional server guide]]\n",
+  "quotes": [
+    {
+      "text": "You can update the session with the new amount so that the shopper pays the correct total.",
+      "location": "line 26"
+    },
+    {
+      "text": "Set to **false**: Indicates that the session is not yet ready for the shopper to submit the payment, so the payment amount can be updated.",
+      "location": "line 36"
+    },
+    {
+      "text": "When you set this to true, you can no longer update the session.",
+      "location": "line 93"
+    },
+    {
+      "text": "When you make a request to update the server-side session data, you must store and get the updated amount on your server. Do not get the updated amount from the client.",
+      "location": "line 152"
+    },
+    {
+      "text": "The `status` included in the response doesn't get updated. Do not make the request again to check for payment status updates.",
+      "location": "line 378"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-standard-dropin-optional-server-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-drop-in-optional-server-configuration]] \u2014 2026-09-15 Standard Drop-in optional server guide for server-authoritative session amount updates before an irreversible `payable: true` transition and an immutable session-result lookup; mixed v70/v72 examples do not prove compatibility or capture/settlement.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The result-lookup example is v70 while session create/PATCH examples are v72; do not infer a supported mixed-version integration from the snippets.",
+          "The UI amount example differs in currency and value from server examples; do not combine them into one payment trace."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/drop-in/optional-server-configuration/2026-09-15.md",
+  "raw_sha256": "5003bd8bb2ee63d1cf52f0a9b8067e1bc5334f155fb025576e60a4f3c237d202",
+  "status": "candidate_ready"
+}

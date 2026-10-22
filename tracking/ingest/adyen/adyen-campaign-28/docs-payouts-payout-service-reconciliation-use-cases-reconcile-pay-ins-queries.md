@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. How does the Payout Service guide reconcile PSP transactions with pay-ins to a balance account, and what report inputs are needed?
+Answer: It combines Settlement Details with a Balance Platform Statement or Accounting Report (raw lines 19–27). For pass-through balance platforms, filter the latter to Category platformPayment, Type balanceAdjustment and Status booked; use its merchant account, currency and settlement batch in Reference/Description JSON to find the same merchant account and batch in Settlement Details, filtered to Type BalancePlatformTransfer and Currency (raw lines 29–49). Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-pay-ins]] → [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15]].
+
+Q2. What amount grain and limits matter when interpreting a matched pay-in?
+Answer: The Settlement Details Report's reserveAdjustment top-ups and/or capture/refund/chargeback transaction rows include gross, fees and net amounts that add up to the aggregate BalancePlatformTransfer amount (raw line 50). The page does not define a sign convention or timezone join, and the report match does not prove a beneficiary-bank receipt. Route: [[index]] → [[adyen-index]] → [[adyen-reporting]] → [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-pay-ins]] → [[raw/adyen/docs/payouts/payout-service/reconciliation-use-cases/reconcile-pay-ins/2026-09-15]].

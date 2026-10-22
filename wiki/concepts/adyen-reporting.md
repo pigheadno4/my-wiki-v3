@@ -19,6 +19,42 @@ A reporting menu, dashboard label or report row is not, by itself, proof of fina
 
 ## Sources
 
+- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-transfers]] — 2026-09-15 Payout Service guide to matching transaction webhooks against Balance Platform Accounting or Statement reports by transaction PSP reference, Status and Amount, with internal/bank/card category and type lookup; no worked direction, timing or bank-receipt proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases]] — 2026-09-15 Payout Service navigation hub for report preparation, pay-in reconciliation, balance checks, fund-transfer cash management and fee reconciliation; child guides own report grain and matching, and this hub is not actual reconciliation proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-pay-ins]] — 2026-09-15 Payout Service guide for matching PSP settlement-batch detail to aggregate balance-platform pay-ins and identifying reserve-adjustment top-ups; report joins do not prove bank receipt.
+
+
+- [[source-adyen-docs-payouts-payout-service-pay-out-to-cards-reconciliation]] — 2026-09-15 Payout Service card-disbursement reconciliation guide joining merchant-report BPPaidOut fees to booked balance-platform Transfer Id amounts; Net Debit is fees only, and booked is not recipient-card receipt proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-reconcile-fees]] — 2026-09-15 Payout Service guide separating PSP payment fees, CET-month booked bank-payout invoice fees, and Balance Platform card-payout SDR fee fields from payout amount.
+
+
+- [[source-adyen-docs-payouts-payout-service-reconciliation-use-cases-verify-balances]] — 2026-09-15 Payout Service spot-check guide for daily account/currency opening/closing Balance Report rows and a separate real-time balance-account GET; no transaction roll-forward formula or bank-receipt proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-prepare-reports]] — 2026-09-15 Payout Service checklist for report/fee selection, time-zone and column configuration, role-gated column edits, distinct retrieval routes and complete pre-live reconciliation tests; preparation is not report generation or financial-event proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-prepare-reports-generate-download-reports]] — 2026-09-15-captured Payout Service guide for role-gated scheduled/manual balance-platform report generation, report-created availability webhook and authenticated CSV/optional TSV download.
+
+
+- [[source-adyen-docs-payouts-payout-service-reports-and-fees-statement-report]] — 2026-09-15 Payout Service daily Balance Platform Statement Report reference for opening/closing balances, activity, separate pending Transfer/completed Transaction IDs and booking/value dates; zero-to-zero balance accounts are omitted.
+
+
+- [[source-adyen-docs-payouts-payout-service-reports-and-fees]] — 2026-09-15 Payout Service report/fee map distinguishing Adyen-account and balance-platform report grains, required/optional full-month reconciliation inputs, and transaction versus invoice fee totals; reports are not payout or bank-receipt proof.
+
+
+- [[source-adyen-docs-payouts-payout-service-reconcile-balances]] — 2026-09-15 Payout Service guide for merchant-batch to balance-platform internal-transfer matching across daily/monthly report grains and time zones, with one-holder dashboard and sample-label limits.
+
+
+- [[source-adyen-docs-payouts-payout-service-reports-and-fees-balance-platform-accounting-report]] — 2026-09-15-captured Payout Service-path daily/interactive Balance Platform Accounting Report reference for cross-service account changes, pending versus booked IDs, CET booking window, value dates and event/split labels; bank booking is not beneficiary receipt.
+
+
 - [[source-adyen-docs-payouts-payout-service-enterprise-accounts-account-statements]] — 2026-09-15 Payout Service enterprise-account CAMT.053 guide for account/currency statement grain, booked or available balances, ISO/optional BAI codes and aggregated daily file.
 
 

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-3d-secure-1-authentication-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Classic API 3D Secure 1 authentication-only integration\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/3d-secure-1-authentication-only\"\nraw_files:\n  - \"adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/3d-secure-1-authentication-only/2026-09-15.md\"\ntags: [adyen, classic-api, 3d-secure-1, authentication-only, legacy]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] Classic Payment API guide describes a historical 3D Secure 1 authentication-only flow. Adyen says it no longer develops Classic `/authorise` or accepts new Classic integrations, and directs migration to Checkout API standalone authentication. The legacy flow obtains authentication data for a later authorization by another PSP/acquirer, or optionally continues to a distinct authorization with Adyen. This page is not evidence of current 3DS1 issuer or merchant eligibility. See [[adyen-3d-secure]].\n\n## Key takeaways\n\n- **Prerequisites and fallback scope:** The guide presumes an Adyen test account, API key, and familiarity with the full Classic 3DS1 guide. It presents 3DS1 authentication-only as a fallback when an issuer does not support the legacy 3DS2 authentication-only integration. The migration instruction requires moving to Checkout API as well as its newer standalone-authentication route. See pinned raw lines 19\u201339.\n- **Authentication request and shopper handoff:** Submit Classic Payment API `/authorise` with `authenticationData.authenticationOnly: true` and required 3DS1 parameters; the TEST v46 example returns `RedirectShopper`, `issuerUrl`, `md`, and `paRequest`. Redirect the shopper to the issuer; after authentication the issuer posts `MD` and `PaRes` to the merchant `TermUrl`. `RedirectShopper` begins the authentication handoff and is not payment authorization. See pinned raw lines 41\u2013109.\n- **Authentication result:** Submit `MD` as `md`, `PaRes` as `paResponse`, and `authenticationData.authenticationOnly: true` to `/authorise3d`. A finished flow returns `AuthenticationFinished`; `additionalData.threeDAuthenticatedResponse: Y` signals successful authentication in this guide, with other values directed to the separate status reference. Its sample response includes `cavv`, `xid`, and `eci`. Authentication completion or `Y` alone does not authorize a payment. See pinned raw lines 113\u2013367.\n- **Separate optional authorization:** If processing with Adyen, send a later server-side `/authorise3d` request with `authenticationData.authenticationOnly: false`; the guide's successful example returns `Authorised`. Processing with another PSP/acquirer instead requires its separate authorization using the authentication data, which this guide does not execute. See pinned raw lines 25\u201327 and 371\u2013401.\n- **Example caution:** The initial curl JSON omits a colon after `authenticationData` (line 60). Several language-specific `/authorise3d` snippets omit the `authenticationOnly: true` field despite the prose and curl requirement (lines 115\u2013121 and 145\u2013340). Treat those examples as historical illustrations, not copy-ready proof of an authentication-only request.\n\n## Detail locators\n\n- Classic deprecation, migration and prerequisites: pinned raw lines 19\u201339.\n- `/authorise` TEST v46 request, response and issuer redirect: pinned raw lines 41\u2013109.\n- Authentication-only `/authorise3d`, SDK examples and result fields: pinned raw lines 113\u2013369.\n- Optional Adyen authorization branch: pinned raw lines 371\u2013401.\n\n## Related\n\n- [[adyen-3d-secure]] \u2014 merchant authentication context and reciprocal route.\n- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]] \u2014 separately documented Checkout API standalone authentication.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/3d-secure-1-authentication-only/2026-09-15|Classic 3DS1 authentication-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "which we no longer accept new integrations with.",
+      "location": "line 21, Classic API warning"
+    },
+    {
+      "text": "In the response, you get the authentication data that you need to authorise the payment with another PSP or acquirer.",
+      "location": "line 25, introduction"
+    },
+    {
+      "text": "* `authenticationData.authenticationOnly`:\u00a0Set this to **true**.",
+      "location": "line 45, Step 1"
+    },
+    {
+      "text": "If the authentication process has finished, you receive **AuthenticationFinished**.",
+      "location": "line 344, Step 3 result"
+    },
+    {
+      "text": "* `authenticationData.authenticationOnly`:\u00a0Set this to **false**.",
+      "location": "line 377, Optional Adyen authorisation"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c28-classic-3ds1-auth-only-route",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-3d-secure-1-authentication-only]] \u2014 2026-09-15-captured legacy Classic Payment API 3DS1 authentication-only guide with issuer redirect, separate later authorization and Checkout migration warning; sample request snippets have gaps.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/classic-integrations/classic-api-integration/3d-secure-authentication/3d-secure-1/3d-secure-1-authentication-only/2026-09-15.md",
+  "raw_sha256": "a1e8f9cb376ce29abdbae2431571935884f0abbaa59872d4f9a3f29a8e96798e",
+  "status": "candidate_ready"
+}

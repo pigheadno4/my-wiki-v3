@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payouts-payout-service-pay-out-to-bank-accounts-verify-counterparty
+
+Q1. Who can use this name lookup, what must be enabled, and what data and action follow?
+
+A1. The guide scopes the service to enterprise bank-account holders checking intended recipients before domestic EU/UK bank transfers, with the Balance Platform API key's CounterpartyNameVerification Webservice Initiate role enabled through Support (raw lines 19–36). The EU path supplies full name and IBAN; the UK path supplies full name, account number, sort code and personal/business account type (raw lines 48–60, 81–145). The platform calls `POST /verifyCounterpartyName`, presents the `response`, asks the user to continue/cancel, and only upon confirmation separately calls `POST /transfers` (raw lines 62–75). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-verify-counterparty]] → [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/verify-counterparty/2026-09-15]].
+
+Q2. Does `nameMatch` verify the source balance, authorize a payout, force a transfer, or prove production recipient identity when seen in TEST?
+
+A2. No. Adyen says it does not verify `balanceAccountId` in the lookup (raw lines 91–92, 131–145). Only partial-match variants return a name; client logic should use `response`, not `responseDescription`, and the UI still seeks user confirmation before a separate transfer request (raw lines 70–75, 202–219, 221–280). In TEST, `reference` selects a simulated outcome, and an unrecognized reference defaults to HTTP 200/`nameMatch`; this is not a real account-name finding or transfer permission (raw lines 282–294). Route: [[index]] → [[adyen-index]] → [[adyen-payouts]] → [[source-adyen-docs-payouts-payout-service-pay-out-to-bank-accounts-verify-counterparty]] → [[raw/adyen/docs/payouts/payout-service/pay-out-to-bank-accounts/verify-counterparty/2026-09-15]].

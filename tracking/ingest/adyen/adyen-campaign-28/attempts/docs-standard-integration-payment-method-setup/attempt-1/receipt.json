@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-standard-integration-payment-method-setup",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Standard integration payment-method setup\"\ntype: source\ndate_ingested: 2026-10-21\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/standard/integration/payment-method-setup\"\nraw_files:\n  - \"adyen/docs/standard/integration/payment-method-setup/2026-09-15.md\"\ntags: [adyen, standard-integration, online-payments, payment-methods, setup]\n---\n\n## Overview\n\nThis Standard integration page (modified and captured 2026-09-15) lists payment-method families and **extra setup for selected methods**. It says most Adyen methods can be used without additional setup but identifies exceptions. Its list and steps are a dated documentation snapshot, not evidence that a method is enabled for a merchant, store, shopper, country, session or live account. The page does not define Sessions filtering or method-return rules. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Apple Pay has two certificate paths:** The guide requires allowing Apple Pay IP addresses and either Adyen's certificate or the merchant's own. The Adyen-certificate path requires secure HTTPS pages, valid SSL and Customer Area merchant name and shop websites; `http://localhost` is excluded for the listed website test setup. The own-certificate path adds an Apple Developer account, merchant identifier, payment-processing certificate and merchant-domain registration; its merchant-identity certificate is used to request an Apple Pay payment session and its CSR must be created separately from Adyen's payment-processing CSR. These are setup instructions, not proof of merchant validation or payment success.\n- **PayPal permission and other activation gates:** PayPal setup uses developer and sandbox business/personal accounts, Customer Area addition and an emailed activation link to permit Adyen to process the sandbox business account's PayPal transactions. Fastlane by PayPal has a separate sandbox business-account activation route. Bizum needs a local supported acquirer contract plus MID/Terminal ID and acquirer connection to Adyen. Several named methods (DuitNow, Open Banking, both Pay by Bank regions, PayPay, PromptPay, Touch 'n Go and Walley) route through Support for Customer Area addition. Google Pay directs to Google's setup documentation. These conditions are method-specific; a family listed at the top is not a blanket availability promise.\n- **Other product and commercial qualifications:** Bancontact mobile asks for **3DS2 Additional Fields** in Customer Area. The page labels its MobilePay steps as **payouts** with Support approval and recurring-token lifecycle webhooks; do not silently recast those steps as an ordinary shopper-payment method. Riverty and Scalapay warn that activation defaults to standard pricing and point to an account manager to check Enterprise pricing eligibility. Titres Restaurant needs an authorization/CONECS MID and separate issuer contracts. The exact list and setup conditions are at the raw locators below.\n- **Scope boundary:** This page specifies some payment-method setup requirements, not merchant/store-level entitlement, method selection in a particular `/sessions` response, or a guaranteed authorization/capture/settlement result. Those questions require the relevant method and integration guides plus actual configured account evidence.\n\n## Detail locators\n\n- Supported method families, \u201cmost\u201d statement and setup-exception list: pinned raw lines 15-49.\n- Apple Pay certificate, domain, HTTPS and merchant-session setup paths: pinned raw lines 50-143.\n- Bancontact mobile, Bizum, DuitNow, Fastlane, Google Pay, MobilePay, Open Banking and Pay by Bank: pinned raw lines 145-193.\n- PayPal, PayPay, PromptPay, Riverty, Scalapay, Titres Restaurant, Touch 'n Go and Walley: pinned raw lines 195-233.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online-payment concept and reciprocal source route.\n- [[source-adyen-docs-standard]] \u2014 Standard integration checklist.\n\n## Raw Sources\n\n- [[raw/adyen/docs/standard/integration/payment-method-setup/2026-09-15|Standard integration payment-method setup, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use most of the payment methods that we offer without any additional setup.",
+      "location": "line 29, introduction"
+    },
+    {
+      "text": "You can use [Adyen's certificate](#adyens-certificate) or [your own certificate](#your-own-certificate).",
+      "location": "line 56, Apple Pay"
+    },
+    {
+      "text": "You cannot use `http://localhost` to test.",
+      "location": "line 77, Apple Pay"
+    },
+    {
+      "text": "Use the activation link to give Adyen permission to process PayPal transactions on your PayPal business sandbox account.",
+      "location": "line 202, PayPal"
+    },
+    {
+      "text": "Activating Riverty defaults the pricing to standard pricing.",
+      "location": "line 214, Riverty"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "standard-payment-method-setup-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-standard-integration-payment-method-setup]] \u2014 2026-09-15 Standard integration payment-method setup checklist for Apple Pay certificate/domain paths, PayPal permission, local/Support gates and selected pricing/contract qualifiers; listing is not merchant/store/session availability proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Page does not define method filtering or Sessions availability for a configured merchant/store; do not infer it from the method-family list.",
+          "MobilePay section explicitly says payouts, so do not relabel that setup as an ordinary shopper-payment acceptance flow."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/standard/integration/payment-method-setup/2026-09-15.md",
+  "raw_sha256": "0978f72d5e9973c10e8dba6be8b4e47d4edaec73913a4c86595fbdab72adce13",
+  "status": "candidate_ready"
+}
