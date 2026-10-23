@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-24] ingest | Adyen website C30
+
+- Fifty independently approved historical VX675/VX680/VX690/VX820 Duet manuals and plugin/release directory documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 3 concepts touched (0 new); source_count 1514 = 1500 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-30/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-23] ingest | Braintree GraphQL `default-branch@9f76e60`
 
 - Approved focused-reading additive full ingest: PayPal shipping/search migrations, nullable subscription response, 3DS additions, refund-surcharge attribution and OAuth documentation. All `3a89f42` history preserved; source count unchanged. Details [[braintree-log]], [[source-github-graphql-api]] and [[changelog-github-graphql-api]]. No API/payment execution, commit or push.

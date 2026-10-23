@@ -15,6 +15,9 @@ The landing page points to required versus optional partner-integration componen
 
 ## Sources
 
+- [[source-adyen-docs-plugins]] — 2026-09-15 Adyen Plugins directory for pre-built commerce-system integrations, distinguishing Adyen-maintained entries from partner entries and routing feature support to plugin-specific guides.
+
+
 - [[source-adyen-docs-partners-application-information]] — 2023-modified, 2026-09-15-captured partner `applicationInfo` API-request metadata guide distinguishing technology-platform name from service-integrator name, with request examples and value-consistency rules; not a partnership application or payment/permission proof.
 
 

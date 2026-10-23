@@ -15,6 +15,9 @@ This landing page is navigation. Online website/mobile integrations, POS termina
 
 ## Sources
 
+- [[source-adyen-docs-release-notes]] — 2022-modified, 2026-09-15-captured directory routing to six Adyen release-note areas; it contains no release-specific facts or child-page behavior.
+
+
 - [[source-adyen-docs-index]] — 2026-09-14 Adyen Docs home navigation across online, POS, Platforms/Classic and Intelligent Money Movement plus developer resources; child guides own eligibility, mechanics and execution evidence.
 
 
