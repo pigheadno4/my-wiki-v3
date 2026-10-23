@@ -3231,6 +3231,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.98.0/2026-10-04/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.97.0--1.98.0/comparison.json)
 
+## `github-95315bcbe1395348621a`
+
+- Repository: `braintree/graphql-api`
+- SHA: `9f76e60580da00f6740a20692d0b5ea2f313d93e`
+- Collection date: `2026-10-23`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/manifest.json)
+- Packet: [review packet](repos/braintree/graphql-api/ingest-packets/github-95315bcbe1395348621a/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@9f76e60` (recommended `delta`)
+  Ref: `master`
+  From SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
+  To SHA: `9f76e60580da00f6740a20692d0b5ea2f313d93e`
+  Comparison: [manifest](repos/braintree/graphql-api/comparisons/default-branch/3a89f42--9f76e60/comparison.json)
+
 ## `github-961c3611b36c6341ad56`
 
 - Repository: `paypal/paypal-js`

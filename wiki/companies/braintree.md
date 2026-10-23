@@ -910,6 +910,8 @@ The collected Marketplace overviews and recurring-billing overview state incompa
 
 ## GraphQL API Contract
 
+Latest ingested schema baseline: `default-branch@9f76e60`, exact SHA `9f76e60580da00f6740a20692d0b5ea2f313d93e`, committed 2026-10-20 and ingested 2026-10-23. Approved additive full review with focused reading preserves the prior `3a89f42` history. The new contract removes the two PayPal shipping booleans in favor of `shippingPreference`, replaces merchant-account search `id` with a token-oriented text filter, and makes the subscription response's payment-method ID nullable while creation still requires it. It adds 3DS device/status fields, qualified refund-surcharge attribution, transaction customer names and OAuth-scope descriptions. Schema additions and dated deprecation prose do not prove client-SDK support, merchant eligibility, a new enforcement date or payment success. [[source-github-graphql-api]] [[changelog-github-graphql-api]]
+
 The `braintree/graphql-api` baseline at exact commit `3a89f42` exposes the GraphQL contract for transaction authorization, charge, capture, partial capture, refunds and voids; client tokens, tokenization and vaulting; PayPal one-time payments and billing agreements; Venmo payment contexts; 3D Secure; and recurring billing plans and subscriptions.
 
 The schema is field-level contract evidence, not proof of merchant enablement or client-SDK support. Integration questions should combine it with the appropriate Web, Android, iOS, or server SDK source rather than treating schema presence as an end-to-end capability claim.

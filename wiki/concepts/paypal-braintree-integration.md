@@ -137,7 +137,13 @@ The independent Android `popup-bridge@5.3.0` library provides the corresponding 
 
 PopupBridge does not create a Braintree payment session or nonce and does not establish merchant eligibility. The Braintree Web or PayPal web integration remains responsible for checkout behavior, and the merchant server remains responsible for processing the resulting Braintree nonce or approved payment state. See [[source-github-popup-bridge-ios]] and [[source-github-popup-bridge-android]] for the independent platform implementations.
 
-## Related
+## GraphQL shipping migration at `9f76e60`
+
+The separate Braintree GraphQL schema removes `collectShippingAddress` and `shippingAddressEditable` from both `PayPalExperienceProfileInput` and `PayPalBillingAgreementExperienceProfileInput`. Both now expose optional `shippingPreference`: `BUYER_SELECTS_ADDRESS`, `MERCHANT_PROVIDED_ADDRESS_LOCKED`, or `NO_SHIPPING_ADDRESS`. The first permits a buyer-selected/new address, the second uses the merchant's address without buyer editing, and the third collects/displays no shipping address. The schema does not document a default or a universal two-boolean conversion; choose the intended outcome explicitly. Parent shipping-address prerequisites remain in their respective input contracts. [[source-github-graphql-api]]
+
+This is exact-commit GraphQL input evidence at `9f76e60580da00f6740a20692d0b5ea2f313d93e`, not a simultaneous Braintree Web/React SDK change or a direct PayPal Orders API migration. Older `3a89f42` inputs remain preserved for historical queries in [[changelog-github-graphql-api]].
+
+## Related Sources
 
 - [[source-braintree-docs-reference-general-paypal-advanced-options-payee-node]] - 2026-09-16 Braintree-hosted Node-routed reference for using `payee_id` or `payee_email` on PayPal transaction sale requests to route funds among merchant-owned PayPal accounts, with separate currency-account, refund and Control Panel reporting boundaries; the captured restriction note is damaged, and the page is not current eligibility, direct PayPal API, exact SDK-version or payment-execution evidence.
 

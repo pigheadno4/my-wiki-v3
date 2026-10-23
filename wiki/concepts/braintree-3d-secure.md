@@ -17,7 +17,13 @@ The guide limits compatibility to credit-card, debit-card and Secure Remote Comm
 
 In certain cases, 3DS can shift fraud-chargeback liability to the customer's bank, based on transaction status. The guide warns that not every 3DS transaction receives a liability shift, and that a shift does not always trigger automatic representation; the merchant must still monitor chargebacks and complete required actions. Do not treat 3DS authentication as a guarantee of chargeback protection or as a replacement for gateway fraud decisioning.
 
-## Sources
+## Exact-commit GraphQL additions at `9f76e60`
+
+The schema adds optional `PerformThreeDSecureLookupInput.deviceId`, a stable identifier across 3DS transactions for the same device, documented as usable for DCAP eligibility. It remains separate from `dfReferenceId`, which correlates previously collected CardinalCommerce device data. The field alone does not establish eligibility or native/browser SDK forwarding. [[source-github-graphql-api]]
+
+`ThreeDSecureAuthenticationStatus` adds `SKIPPED_DUE_TO_SMART_AUTHENTICATION` and formally deprecates `SKIPPED_DUE_TO_ADAPTIVE_AUTHENTICATION` in favor of it. The changelog announces this on 2026-10-20, while the deprecation description says since 2026-10-01: retain both dates with their meanings, not as proof of an exact production rollout date. Handle old/new enum values and keep skip status separate from successful authentication, liability shift and payment authorization. Existing deprecations of flattened `ThreeDSecureDetails` fields only gain dated descriptions in this comparison; their nested `authentication` replacements are not new APIs. [[changelog-github-graphql-api]]
+
+## Website Sources
 
 - [[source-braintree-articles-br-transactions-three-d-secure-processing-requirements]] - Brazil article snapshot fetched 2026-09-16 (page metadata updated 2025-04-02) for card-brand-qualified debit-card 3DS processing guidance; not a general mandate, liability-shift, current-policy, merchant-eligibility or sibling-account claim
 - [[source-braintree-3d-secure-advanced-options-android-v5]] - Android v5-routed advanced-options webpage snapshot for liability signals, vaulted-card and Google Pay verification routes, SCA exemptions, data-only 3DS and Visa DAF; not authorization, settlement, current SDK-support or merchant-eligibility evidence

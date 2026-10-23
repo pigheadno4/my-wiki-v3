@@ -6,6 +6,13 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-23] ingest | GraphQL `default-branch@9f76e60`
+
+- Approved additive full override for `github-95315bcbe1395348621a`: `3a89f427466a0a978dbfcfd953913f4e76c3264a` -> `9f76e60580da00f6740a20692d0b5ea2f313d93e`. Explicit focused reading of changed definitions/affected prior definitions, notes and cumulative history; unchanged schema/history/generated evidence mechanically verified, shared wiki sections read. Source/changelog retain all earlier body lines.
+- Ingested PayPal shipping-input removal/replacement, merchant-account filter name/type change, nullable subscription output but still-required create input, 3DS stable-device ID and Smart Authentication status, US e-commerce card refund-surcharge attribution, customer names and OAuth-scope documentation. Formal deprecation flags versus old warning prose, dated annotations versus rollout, existing returning-buyer methods and SDK/eligibility boundaries remain explicit.
+- Three-file capsule / 615,078 bytes; two modified, README unchanged. All six current/prior raw file sizes/SHA-256/Git blob IDs verified; temporary patch replay reconstructs the current snapshot byte-for-byte and the old raw changelog remains an exact suffix (48 new lines). Three existing concepts updated first, then source/changelog/company/index; source count unchanged, no new cross-provider comparison. No API/payment execution, commit or push.
+- Close checks: seven typed pages pass, links on all nine touched pages resolve, original source/changelog body lines preserved in order, index entries unique and source_count unchanged. Both GraphQL packets pass GitHub validation; ten pre-existing errors in five unrelated repositories remain, zero pending items. Successful retry recorded by the existing index generator; stale budget failure cleared. Review: `tracking/github/repos/braintree/graphql-api/ingest-review-9f76e60-2026-10-23.md`.
+
 ## [2026-10-20] ingest | Android Drop-in `default-branch@72c0586`
 
 - Approved serial delta `github-8540369a45f6df31a495`: `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7` -> `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` (upstream 2026-04-23). Explicit focused-reading exception: three assigned changed documents and affected prior files, complete source/changelog and comparison read; manifests mechanically verified and relevant shared-page sections read. Credential values omitted from display, never changed in raw. Both 165-file snapshots hash/size verified.

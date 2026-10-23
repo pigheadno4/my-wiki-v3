@@ -2,8 +2,10 @@
 title: "GitHub: braintree/graphql-api"
 type: source
 date_ingested: 2026-08-11
+date_updated: 2026-10-23
 original_format: github-repo
 raw_files:
+  - "github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/manifest.json"
   - "github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/manifest.json"
 tags: [braintree, graphql, api-specification, checkout, paypal, venmo, vault, subscriptions, three-d-secure, github-repository]
 ---
@@ -13,6 +15,8 @@ tags: [braintree, graphql, api-specification, checkout, paypal, venmo, vault, su
 `braintree/graphql-api` is Braintree's public GraphQL schema and schema-change history. The retained baseline is default branch `master` at exact commit `3a89f427466a0a978dbfcfd953913f4e76c3264a`, committed on 2026-08-04. Its immutable capsule contains `schema.graphql`, `CHANGELOG.md`, and `README.md`.
 
 Repository: <https://github.com/braintree/graphql-api>
+
+Latest ingested full baseline: `default-branch@9f76e60`, exact SHA `9f76e60580da00f6740a20692d0b5ea2f313d93e`, committed 2026-10-20 and ingested 2026-10-23. The original `3a89f42` baseline and all its findings remain below; changes are qualified separately in the new full-ingest section. This is a schema commit, not a semantic SDK release.
 
 ## Evidence Boundary
 
@@ -91,9 +95,110 @@ Subscription states are `PENDING`, `ACTIVE`, `PAST_DUE`, `CANCELED`, and `EXPIRE
 
 ## Latest Retained Changes
 
+Historical `3a89f42` snapshot findings follow. The newer `9f76e60` contract is recorded separately below, without replacing this history.
+
 The 2026-08-04 commit adds merchant-account type and capabilities, including `supportsPublicDescriptors`. Recent 2026 changes also add and expand native recurring billing, direct top-level searches, ACH transaction search, 3DS pass-through network selection, and recurring plan add-on and discount template management.
 
 These are changelog milestones within the cumulative schema. Only exact comparisons against a later commit may be described as future delta findings.
+
+## Full additive baseline: `default-branch@9f76e60`
+
+**Boundary:** `3a89f427466a0a978dbfcfd953913f4e76c3264a` -> `9f76e60580da00f6740a20692d0b5ea2f313d93e` on `master`. User-approved full mode overrides the path-based delta recommendation because existing inputs are removed and an output becomes nullable. The explicit focused-reading exception covers changed schema definitions and affected prior definitions in full, new changelog entries and cumulative wiki history; unchanged schema/history, manifests and the duplicated diff were checked mechanically. Relevant shared wiki sections were read. No GraphQL API requests, client generation or payment execution were performed.
+
+**Evidence:** Both snapshots retain the same three paths. `schema.graphql` and `CHANGELOG.md` changed; README is byte-identical. Current capsule: 615,078 bytes. All six current/prior files pass size, SHA-256 and Git blob checks. Applying the stored patch to a temporary copy of the prior snapshot reconstructs every current file byte-for-byte. The old raw changelog is an exact suffix of the new one (48 added lines); no prior raw history was rewritten. A definition-level text comparison identifies 71 changed/added blocks, including one new enum; most changes are descriptions or formatting, not new operations.
+
+### PayPal shipping input migration
+
+Both `PayPalExperienceProfileInput` (one-time checkout) and `PayPalBillingAgreementExperienceProfileInput` remove `collectShippingAddress` and `shippingAddressEditable`. Their replacement is optional `shippingPreference: PayPalShippingPreference`:
+
+| Value | Exact schema meaning |
+| --- | --- |
+| `BUYER_SELECTS_ADDRESS` | Buyer selects a PayPal address or supplies a new one |
+| `MERCHANT_PROVIDED_ADDRESS_LOCKED` | Uses the merchant-provided address without buyer editing |
+| `NO_SHIPPING_ADDRESS` | No shipping address collected or displayed |
+
+```graphql
+# Input fragment for the selected create-payment/agreement operation:
+paypalExperienceProfile: {
+  shippingPreference: MERCHANT_PROVIDED_ADDRESS_LOCKED
+}
+```
+
+Supply the merchant address through the parent operation's `shippingAddress`, observing its own prerequisites. The one-time input requires `addressLine1`, `adminArea2` and `countryCode` when an address is supplied; the billing-agreement input documents those fields as required for Billing Agreements. The enum has no documented default or universal truth-table mapping from the removed booleans. Choose the intended checkout behavior explicitly and validate against the target schema. Do not assume a separately versioned Braintree Web/React wrapper or PayPal Orders API accepts this GraphQL field.
+
+### Merchant-account search migration
+
+`MerchantAccountSearchInput.id: SearchValueInput` is removed and replaced by `merchantAccountId: SearchTextValueInput`, described as the merchant-account ID/token. The old filter accepted `is`/`in` strings; the new text filter also permits `isNot`, `startsWith`, `endsWith` and `contains`. Audit field names, filter types and identifier semantics rather than merely renaming an opaque global ID.
+
+```graphql
+# New MerchantAccountSearchInput fragment:
+merchantAccountId: { is: "merchant_account_token" }
+```
+
+This does not change `MerchantAccount.id` itself or prove account creation/eligibility.
+
+### Recurring billing nullability
+
+The returned `RecurringBillingSubscription.paymentMethodId` changes from `ID!` to `ID`. Regenerate or audit client output types, null checks and display/reconciliation paths. This does not permit creation without a payment method: unchanged `CreateRecurringBillingSubscriptionInput.paymentMethodId` is still `ID!`; the existing update input remains optional `ID`. No subscription create/update/cancel/charge operation is added in this comparison.
+
+### 3DS device ID and status vocabulary
+
+`PerformThreeDSecureLookupInput.deviceId: String` is an optional stable device identifier, documented as usable for DCAP eligibility. It is distinct from `dfReferenceId`, which connects the lookup with previously collected CardinalCommerce device data. `paymentMethodId: ID!` and `amount: Amount!` remain required. Schema presence does not prove client-SDK forwarding, enrollment or exemption eligibility.
+
+`ThreeDSecureAuthenticationStatus` adds `SKIPPED_DUE_TO_SMART_AUTHENTICATION` and marks the Adaptive Authentication value deprecated in favor of it. The changelog entry is dated 2026-10-20; the deprecation description says since 2026-10-01. Those are announcement and annotation dates, not an inferred deployment timeline. Handle both values during migration; a skipped state is not proof of successful authentication, liability shift, authorization or capture. Existing flattened `ThreeDSecureDetails` deprecations gain dated descriptions; use the already-existing nested `authentication` fields rather than treating them as newly introduced.
+
+### Refund surcharge and transaction customer details
+
+Optional `surchargeAmount: String` is added to `RefundInput`, `Refund` and `CreditCardDetachedRefundOptionsInput`. Each describes the surcharge as a portion of the total refund, already included and not to be added separately, non-negative and applicable to US-region e-commerce credit-card transactions only. A 10.00 total refund including 0.30 surcharge remains a 10.00 refund, not 10.30. This is schema documentation, not confirmation that a specific merchant/refund is accepted; detached refunds remain separately eligibility-gated.
+
+`TransactionCustomerDetailsInput` adds optional `firstName` and `lastName`, each documented with a 255-character maximum. The input describes details stored on a transaction when no customer is associated, for fraud-detection purposes; it is not a new customer-creation or identity-verification operation.
+
+### OAuth scope clarifications in descriptions
+
+The mutation/query signatures remain present; the changed descriptions now specify:
+
+| Operation | Documented OAuth token scopes |
+| --- | --- |
+| `chargePaymentMethod` | `TRANSACTION_SALE` and `TRANSACTION_MANAGE_SETTLEMENT` |
+| `vaultPaymentMethod` | `CUSTOMER_CREATE` and `MULTI_USE_PAYMENT_METHOD_CREATE` |
+| `reverseTransaction` | `TRANSACTION_REFUND` and `TRANSACTION_VOID` |
+| `verifyPaymentMethod`, `verifyUsBankAccount` | `MULTI_USE_PAYMENT_METHOD_UPDATE` |
+| `verifyCreditCard` | `MULTI_USE_PAYMENT_METHOD_UPDATE` for multi-use; `STANDALONE_VERIFICATIONS` for single-use |
+| `idsFromLegacyIds` | A `_FIND` scope; `PAYMENT_METHOD` conversion requires `MULTI_USE_PAYMENT_METHOD_FIND`, also recommended there for integrations supporting every `LegacyIdType` |
+
+Treat these as newly retained contract documentation, not proof that OAuth enforcement first changed at this commit. They do not apply indiscriminately to API-key authentication.
+
+### Payment-method inventory and deprecation attribution
+
+The comparison adds `BLIK_PAY_LATER`, `OXXO_PAY` and `PIX_INTERNATIONAL` to local-payment inventory, OXXO Pay to non-instant methods, and corresponding `_VIA_PAYPAL` search values. The larger `ExternalProcessor` enum adds many processor names. Neither enum establishes a working connector, geography, account enablement or client implementation.
+
+Boleto/Samsung Pay enum entries and `VenmoPaymentContext.userName` gain formal `@deprecated` markers. The prior schema already described these entries as deprecated/unsupported in prose, so this is not proof that a payment flow was newly discontinued in October. Use `payerInfo.userName` for Venmo; its existing consent, payment-method-usage and return-context fields are not new features. Many other fields only gain dated legacy deprecation descriptions or wording normalization. Existing View/Edit funding-instrument mutations were already present in `3a89f42`; this update does not introduce that returning-buyer workflow.
+
+### Grounding excerpts at `9f76e60`
+
+> `merchantAccountId: SearchTextValueInput`
+>
+> `raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/schema.graphql:6219`
+
+> `shippingPreference: PayPalShippingPreference`
+>
+> `raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/schema.graphql:8270`
+
+> `deviceId: String`
+>
+> `raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/schema.graphql:9058`
+
+> `paymentMethodId: ID`
+>
+> `raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/schema.graphql:9461`
+
+> `SKIPPED_DUE_TO_SMART_AUTHENTICATION`
+>
+> `raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/schema.graphql:12817`
+
+### Historical and query boundary
+
+Keep the `3a89f42` contract for older queries, including its shipping booleans and non-null subscription response field. For new integrations targeting `9f76e60`, use this section and [[changelog-github-graphql-api]], not the older baseline alone. The repository schema does not prove the exact schema deployed to a particular account/environment or the availability of a separately versioned SDK binding. Broader domains remain inventory-level unless their exact definitions were read for the query.
 
 ## Other API Inventory
 
@@ -112,6 +217,11 @@ The schema also contains customer and merchant records, disputes and evidence, f
 
 ## Raw Sources
 
+- [9f76e60 snapshot manifest](../../../../raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/manifest.json)
+- [Exact schema](../../../../raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/schema.graphql) - changed definitions read under the explicit focused-reading exception, unchanged sections verified mechanically
+- [[raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/CHANGELOG|New changelog]] - six new milestones; older history verified byte-for-byte
+- [[raw/github/braintree/graphql-api/snapshots/2026-10-23-9f76e60/files/README|Repository evidence scope]]
+- [Exact comparison](../../../../tracking/github/repos/braintree/graphql-api/comparisons/default-branch/3a89f42--9f76e60/comparison.json) and [reconstructable diff](../../../../tracking/github/repos/braintree/graphql-api/comparisons/default-branch/3a89f42--9f76e60/diff.patch)
 - Snapshot manifest: `raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/manifest.json`
 - Schema: `raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/files/schema.graphql`
 - Repository changelog: `raw/github/braintree/graphql-api/snapshots/2026-08-11-3a89f42/files/CHANGELOG.md`

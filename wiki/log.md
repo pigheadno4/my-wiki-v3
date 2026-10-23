@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-23] ingest | Braintree GraphQL `default-branch@9f76e60`
+
+- Approved focused-reading additive full ingest: PayPal shipping/search migrations, nullable subscription response, 3DS additions, refund-surcharge attribution and OAuth documentation. All `3a89f42` history preserved; source count unchanged. Details [[braintree-log]], [[source-github-graphql-api]] and [[changelog-github-graphql-api]]. No API/payment execution, commit or push.
+
 ## [2026-10-23] ingest | Adyen website C29
 
 - Fifty independently approved general/setup and historical deprecated-terminal documentation sources; first full-review approvals 47/50 and 4 targeted correction reviews. 8 concepts touched (0 new); source_count 1464 = 1450 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-29/`; details [[adyen-log]]. No commit/push.

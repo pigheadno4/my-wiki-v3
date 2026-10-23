@@ -1,0 +1,1749 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 624aa82..14f66ca 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,3 +1,51 @@
++# 10-20-2026
++* Add new enum values:
++    * `SKIPPED_DUE_TO_SMART_AUTHENTICATION` to `ThreeDSecureAuthenticationStatus`
++* Deprecate:
++    * `SKIPPED_DUE_TO_ADAPTIVE_AUTHENTICATION` on `ThreeDSecureAuthenticationStatus`
++
++# 10-06-2026
++* Add new fields:
++    * `deviceId` to `PerformThreeDSecureLookupInput`
++* Update types:
++    * Make `paymentMethodId` nullable on `RecurringBillingSubscription`
++* Deprecate:
++    * `BOLETOBANCARIO` on `NonInstantLocalPaymentMethodType`
++    * `SAMSUNG_PAY` on `PaymentMethodOriginType`
++    * `BOLETOBANCARIO_VIA_PAYPAL`, `CREDIT_CARD_VIA_SAMSUNG_PAY` on `PaymentMethodSnapshotSearchType`
++    * `userName` on `VenmoPaymentContext`
++
++# 09-30-2026
++* Add new enums:
++    * `PayPalShippingPreference`
++* Add new enum values:
++    * `BUYER_SELECTS_ADDRESS`, `MERCHANT_PROVIDED_ADDRESS_LOCKED`, `NO_SHIPPING_ADDRESS` to `PayPalShippingPreference`
++* Add new fields:
++    * `firstName`, `lastName` to `TransactionCustomerDetailsInput`
++    * `shippingPreference` to `PayPalBillingAgreementExperienceProfileInput`, `PayPalExperienceProfileInput`
++    * `surchargeAmount` to `CreditCardDetachedRefundOptionsInput`, `Refund`, `RefundInput`
++* Remove:
++    * `collectShippingAddress` field from `PayPalBillingAgreementExperienceProfileInput`
++    * `collectShippingAddress` field from `PayPalExperienceProfileInput`
++    * `shippingAddressEditable` field from `PayPalBillingAgreementExperienceProfileInput`
++    * `shippingAddressEditable` field from `PayPalExperienceProfileInput`
++
++# 09-15-2026
++* Add new enum values:
++    * `ACI_WORLDWIDE`, `AIB_MERCHANT_SERVICES`, `AUTOPAY`, `BAMBORA`, `BANK_OF_AMERICA_MERCHANT_SERVICES`, `BARCLAYCARD_PAYMENTS`, `BUCKAROO`, `CHECKOUT_COM`, `CM_COM`, `COMPUTOP`, `ECOMMPAY`, `ELAVON`, `EMERCHANTPAY`, `FIS`, `GETNET`, `GLOBAL_PAYMENTS`, `GOCARDLESS`, `HEARTLAND_PAYMENT_SYSTEMS`, `HELCIM`, `MOLLIE`, `MONERIS`, `MULTISAFEPAY`, `NEXI_GROUP`, `OPAYO`, `PAYONE`, `PAYSAFE`, `PAYU`, `PPRO`, `PRIORITY_TECHNOLOGY`, `PRZELEWY24`, `RAPYD`, `REDSYS`, `SHIFT4_PAYMENTS`, `TRUSTLY`, `TRUST_PAYMENTS`, `TSYS`, `UNZER`, `VERIFONE_2CHECKOUT`, `WELLS_FARGO_MERCHANT_SERVICES`, `WORLDLINE` to `ExternalProcessor`
++
++# 08-13-2026
++* Add new fields:
++    * `merchantAccountId` to `MerchantAccountSearchInput`
++* Remove:
++    * `id` field from `MerchantAccountSearchInput`
++
++# 08-11-2026
++* Add new enum values:
++    * `BLIK_PAY_LATER`, `OXXO_PAY`, `PIX_INTERNATIONAL` to `LocalPaymentMethodType`
++    * `OXXO_PAY` to `NonInstantLocalPaymentMethodType`
++    * `BLIK_PAY_LATER_VIA_PAYPAL`, `OXXO_PAY_VIA_PAYPAL`, `PIX_INTERNATIONAL_VIA_PAYPAL` to `PaymentMethodSnapshotSearchType`
++
+ # 08-04-2026
+ * Add new types:
+     * `MerchantAccountCapabilities`
+diff --git a/schema.graphql b/schema.graphql
+index ec09b4d..233ebbc 100644
+--- a/schema.graphql
++++ b/schema.graphql
+@@ -119,7 +119,11 @@ type Address {
+   """Company name."""
+   company: String
+ 
+-  """The street address."""
++  """
++  The street address.
++  
++  Deprecated (since 2020-11-18): Use `addressLine1` instead.
++  """
+   streetAddress: String @deprecated(reason: "Use `addressLine1` instead.")
+ 
+   """
+@@ -127,7 +131,11 @@ type Address {
+   """
+   addressLine1: String
+ 
+-  """Extended address information, such as an apartment or suite number."""
++  """
++  Extended address information, such as an apartment or suite number.
++  
++  Deprecated (since 2020-11-18): Use `addressLine2` instead.
++  """
+   extendedAddress: String @deprecated(reason: "Use `addressLine2` instead.")
+ 
+   """
+@@ -135,22 +143,38 @@ type Address {
+   """
+   addressLine2: String
+ 
+-  """First name."""
++  """
++  First name.
++  
++  Deprecated (since 2020-02-26): Use `fullName` instead.
++  """
+   firstName: String @deprecated(reason: "Use `fullName` instead.")
+ 
+-  """Last name."""
++  """
++  Last name.
++  
++  Deprecated (since 2020-02-26): Use `fullName` instead.
++  """
+   lastName: String @deprecated(reason: "Use `fullName` instead.")
+ 
+   """Full name."""
+   fullName: String
+ 
+-  """Locality/city."""
++  """
++  Locality/city.
++  
++  Deprecated (since 2020-11-18): Use `adminArea2` instead.
++  """
+   locality: String @deprecated(reason: "Use `adminArea2` instead.")
+ 
+   """A city, town, or village."""
+   adminArea2: String
+ 
+-  """State or province."""
++  """
++  State or province.
++  
++  Deprecated (since 2020-11-18): Use `adminArea1` instead.
++  """
+   region: String @deprecated(reason: "Use `adminArea1` instead.")
+ 
+   """
+@@ -166,7 +190,11 @@ type Address {
+   """Country code for the address."""
+   countryCode: CountryCode
+ 
+-  """Phone number."""
++  """
++  Phone number.
++  
++  Deprecated (since 2024-12-17): Use `phone` instead
++  """
+   phoneNumber: String @deprecated(reason: "Use `phone` instead")
+ 
+   """Phone number."""
+@@ -902,10 +930,18 @@ enum BusinessType {
+   LIMITED_LIABILITY_CORPORATION
+   NONPROFIT
+   PARTNERSHIP
++
++  """
++  Deprecated (since 2020-11-23): No longer applicable, use PARTNERSHIP instead.
++  """
+   PARTNERSHIP_LLP @deprecated(reason: "No longer applicable, use PARTNERSHIP instead.")
+   PRIVATE_CORPORATION
+   PUBLIC_CORPORATION
+   SOLE_PROPRIETORSHIP
++
++  """
++  Deprecated (since 2020-11-23): No longer applicable, use NONPROFIT instead.
++  """
+   TAX_EXEMPT @deprecated(reason: "No longer applicable, use NONPROFIT instead.")
+ }
+ 
+@@ -1457,7 +1493,11 @@ type ChildCapture {
+ 
+ """Top-level fields returned from the client configuration query."""
+ type ClientConfiguration {
+-  """URL to send analytics."""
++  """
++  URL to send analytics.
++  
++  Deprecated (since 2018-02-12): This field is included for supporting SDKs that send analytics.
++  """
+   analyticsUrl: String @deprecated(reason: "This field is included for supporting SDKs that send analytics.")
+ 
+   """Configuration for Apple Pay on iOS."""
+@@ -1471,13 +1511,25 @@ type ClientConfiguration {
+   """
+   assetsUrl: String
+ 
+-  """A URL pointing to the base path of Braintree's client API."""
++  """
++  A URL pointing to the base path of Braintree's client API.
++  
++  Deprecated (since 2018-02-12): This field is included for supporting legacy clients.
++  """
+   clientApiUrl: String @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+-  """A list of client features the merchant supports."""
++  """
++  A list of client features the merchant supports.
++  
++  Deprecated (since 2018-02-26): This field is included for supporting legacy clients.
++  """
+   supportedFeatures: [ClientFeature!] @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+-  """Configuration for payment methods in legacy clients."""
++  """
++  Configuration for payment methods in legacy clients.
++  
++  Deprecated (since 2018-07-12): This field is included for supporting legacy clients.
++  """
+   braintreeApi: BraintreeApiConfiguration @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+   """Configuration for credit card tokenization."""
+@@ -1495,11 +1547,17 @@ type ClientConfiguration {
+   """Configuration for Google Pay on Android and the web."""
+   googlePay: GooglePayConfiguration
+ 
+-  """Deprecated, this field will always be null."""
++  """
++  This field will always be null.
++  
++  Deprecated (since 2019-04-16): This field is included for supporting legacy clients.
++  """
+   ideal: IDealConfiguration @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+   """
+-  Deprecated, formerly configuration for Kount fraud tools, now this configuration lives under fraudProvider.
++  Formerly configuration for Kount fraud tools; this configuration now lives under `fraudProvider`.
++  
++  Deprecated (since 2020-04-03): This field is included for supporting legacy clients.
+   """
+   kount: KountConfiguration @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+@@ -1513,7 +1571,9 @@ type ClientConfiguration {
+   paypal: PayPalConfiguration
+ 
+   """
+-  Deprecated: Samsung pay is no longer supported. Configuration for Samsung Pay.
++  Configuration for Samsung Pay.
++  
++  Deprecated (since 2024-10-21): Samsung pay is no longer supported.
+   """
+   samsungPay: SamsungPayConfiguration @deprecated(reason: "Samsung pay is no longer supported.")
+ 
+@@ -1527,7 +1587,9 @@ type ClientConfiguration {
+   venmo: VenmoConfiguration
+ 
+   """
+-  Deprecated: Visa Checkout is no longer supported. Configuration for Visa Checkout.
++  Configuration for Visa Checkout.
++  
++  Deprecated (since 2026-02-03): Visa Checkout is no longer supported.
+   """
+   visaCheckout: VisaCheckoutConfiguration @deprecated(reason: "Visa Checkout is no longer supported.")
+ 
+@@ -2546,7 +2608,11 @@ type CreditCardConfiguration {
+   """
+   challenges: [Challenge!]
+ 
+-  """Whether or not the merchant supports 3D Secure."""
++  """
++  Whether or not the merchant supports 3D Secure.
++  
++  Deprecated (since 2019-01-30): Use `threeDSecure` instead.
++  """
+   threeDSecureEnabled: Boolean @deprecated(reason: "Use `threeDSecure` instead.")
+ 
+   """Configuration for 3D Secure."""
+@@ -2570,6 +2636,14 @@ input CreditCardDetachedRefundOptionsInput {
+   explicitly overridden during transaction creation.
+   """
+   merchantCategoryCode: MerchantCategoryCode
++
++  """
++  The portion of the total refund amount attributable to the surcharge. This
++  amount is already included in the total refund amount and must not be added
++  separately. Value must be non-negative. Applicable to e-commerce credit card
++  transactions only. [US region].
++  """
++  surchargeAmount: String
+ }
+ 
+ """Details about a credit card."""
+@@ -2619,10 +2693,18 @@ type CreditCardDetails {
+   """3D Secure information for the payment method."""
+   threeDSecure: ThreeDSecureDetails
+ 
+-  """A URL to an image logo representing the card brand."""
++  """
++  A URL to an image logo representing the card brand.
++  
++  Deprecated (since 2018-10-24): This field is included for supporting legacy clients.
++  """
+   imageUrl: String @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+-  """The display name of the card brand, e.g. "Visa" or "American Express"."""
++  """
++  The display name of the card brand, e.g. "Visa" or "American Express".
++  
++  Deprecated (since 2018-09-18): Use `brandCode` instead.
++  """
+   brand: String @deprecated(reason: "Use `brandCode` instead.")
+ 
+   """Indicates whether the card on file is network tokenized."""
+@@ -3511,7 +3593,11 @@ type Dispute implements Node {
+   """
+   transaction: Transaction
+ 
+-  """The chargeback protection status of the dispute."""
++  """
++  The chargeback protection status of the dispute.
++  
++  Deprecated (since 2022-09-19): Use `protectionLevel` instead.
++  """
+   chargebackProtectionLevel: ChargebackProtectionLevel @deprecated(reason: "Use `protectionLevel` instead.")
+ 
+   """The protection level of the dispute."""
+@@ -3519,6 +3605,10 @@ type Dispute implements Node {
+ 
+   """
+   Indicates whether or not the merchant can upload evidence for this dispute based on its current status.
++  
++  Deprecated (since 2023-10-11): This field is redundant to `OPEN` status which
++  represents disputes with allowed evidence submission. For all other statuses
++  it is not possible to submit evidence.
+   """
+   evidenceSubmittable: Boolean @deprecated(reason: "This field is redundant to `OPEN` status which represents disputes with allowed evidence submission. For all other statuses it is not possible to submit evidence.")
+ 
+@@ -3571,6 +3661,10 @@ interface DisputeEvidence {
+ 
+ """The evidence category that specifies which requirement it satisfies."""
+ enum DisputeEvidenceCategory {
++  """
++  Deprecated (since 2023-06-21): AVS_RESPONSE from the original transaction is
++  provided on your behalf when submitting a dispute.
++  """
+   AVS_RESPONSE @deprecated(reason: "AVS_RESPONSE from the original transaction is provided on your behalf when submitting a dispute.")
+   CARRIER_NAME
+   CARRIER_NAME_OTHER
+@@ -3801,7 +3895,11 @@ type DisputeTextEvidence implements DisputeEvidence {
+   """Date and time at which the evidence was sent to the processor."""
+   sentToProcessorAt: Timestamp
+ 
+-  """The body for text evidence."""
++  """
++  The body for text evidence.
++  
++  Deprecated (since 2021-02-03): Use `content` for name instead.
++  """
+   comment: String @deprecated(reason: "Use `content` for name instead.")
+ 
+   """The body for text evidence."""
+@@ -3815,6 +3913,10 @@ type DisputeTextEvidence implements DisputeEvidence {
+ For text evidence: the evidence category that specifies which requirement it satisfies.
+ """
+ enum DisputeTextEvidenceCategory {
++  """
++  Deprecated (since 2023-06-21): AVS_RESPONSE from the original transaction is
++  provided on your behalf when submitting a dispute.
++  """
+   AVS_RESPONSE @deprecated(reason: "AVS_RESPONSE from the original transaction is provided on your behalf when submitting a dispute.")
+   CARRIER_NAME
+   CREDIT_ISSUED_AMOUNT
+@@ -4144,14 +4246,54 @@ enum ExternalPaymentStatus {
+ 
+ """The name of the payment service provider processing the transaction."""
+ enum ExternalProcessor {
++  ACI_WORLDWIDE
+   ADYEN
++  AIB_MERCHANT_SERVICES
+   AMAZON_PAY
+   AUTHORIZE_NET
++  AUTOPAY
++  BAMBORA
++  BANK_OF_AMERICA_MERCHANT_SERVICES
++  BARCLAYCARD_PAYMENTS
++  BUCKAROO
+   CHASE
++  CHECKOUT_COM
++  CM_COM
++  COMPUTOP
++  ECOMMPAY
++  ELAVON
++  EMERCHANTPAY
++  FIS
+   FISERV
++  GETNET
++  GLOBAL_PAYMENTS
++  GOCARDLESS
++  HEARTLAND_PAYMENT_SYSTEMS
++  HELCIM
++  MOLLIE
++  MONERIS
++  MULTISAFEPAY
++  NEXI_GROUP
+   NUVEI
++  OPAYO
++  PAYONE
++  PAYSAFE
++  PAYU
++  PPRO
++  PRIORITY_TECHNOLOGY
++  PRZELEWY24
++  RAPYD
++  REDSYS
++  SHIFT4_PAYMENTS
+   SQUARE
+   STRIPE
++  TRUSTLY
++  TRUST_PAYMENTS
++  TSYS
++  UNZER
++  VERIFONE_2CHECKOUT
++  WELLS_FARGO_MERCHANT_SERVICES
++  WORLDLINE
+   WORLDPAY
+ }
+ 
+@@ -4164,7 +4306,7 @@ input ExternalProcessorResponseInput {
+   cvvResponseCode: AvsCvvResponseCode
+ }
+ 
+-"""A credit card's assocation with an external vault."""
++"""A credit card's association with an external vault."""
+ enum ExternalVaultStatus {
+   """
+   The payment method for this transaction has been vaulted in an external vault.
+@@ -4469,7 +4611,11 @@ type GooglePayConfiguration {
+   """The environment being used for Google Pay."""
+   environment: GooglePayEnvironment
+ 
+-  """Authorization to use when tokenizing a Google Pay payment method."""
++  """
++  Authorization to use when tokenizing a Google Pay payment method.
++  
++  Deprecated (since 2018-02-26): This field is included for supporting legacy clients.
++  """
+   googleAuthorization: String @deprecated(reason: "This field is included for supporting legacy clients.")
+ 
+   """
+@@ -4847,19 +4993,39 @@ input InStoreChoiceInput {
+ 
+ """Reference object for an in-store request."""
+ type InStoreContext implements Node & InStoreContextResult {
+-  """A unique ID for this in-store request."""
++  """
++  A unique ID for this in-store request.
++  
++  Deprecated (since 2021-04-14): Use the id field from the InStoreContextPayload
++  """
+   id: ID! @deprecated(reason: "Use the id field from the InStoreContextPayload")
+ 
+-  """The transaction representing the charge on the payment method."""
++  """
++  The transaction representing the charge on the payment method.
++  
++  Deprecated (since 2021-04-14): Use a Node query for a RequestTransactionInStoreContext
++  """
+   transaction: Transaction @deprecated(reason: "Use a Node query for a RequestTransactionInStoreContext")
+ 
+-  """The refund representing the refund on the payment method."""
++  """
++  The refund representing the refund on the payment method.
++  
++  Deprecated (since 2021-04-14): Use a Node query for a RequestRefundInStoreContext
++  """
+   refund: Refund @deprecated(reason: "Use a Node query for a RequestRefundInStoreContext")
+ 
+-  """The reader associated with the in-store request."""
++  """
++  The reader associated with the in-store request.
++  
++  Deprecated (since 2021-04-14): Use the reader field from the InStoreContextPayload
++  """
+   reader: InStoreReader @deprecated(reason: "Use the reader field from the InStoreContextPayload")
+ 
+-  """The status of the context created."""
++  """
++  The status of the context created.
++  
++  Deprecated (since 2021-04-14): Use the status field from the InStoreContextPayload
++  """
+   status: InStoreContextStatus! @deprecated(reason: "Use the status field from the InStoreContextPayload")
+ }
+ 
+@@ -4883,7 +5049,11 @@ type InStoreContextPayload {
+   """
+   clientMutationId: String
+ 
+-  """The in-store context created when an in-store flow is initiated."""
++  """
++  The in-store context created when an in-store flow is initiated.
++  
++  Deprecated (since 2021-04-14): Use top-level fields
++  """
+   inStoreContext: InStoreContext @deprecated(reason: "Use top-level fields")
+ 
+   """A unique ID for this in-store context request."""
+@@ -5840,6 +6010,9 @@ enum LocalPaymentMethodType {
+   BANCONTACT
+   BIZUM
+   BLIK
++  BLIK_PAY_LATER
++
++  """Deprecated (since 2024-12-12): Boleto Bancário is no longer supported."""
+   BOLETOBANCARIO @deprecated(reason: "Boleto Bancário is no longer supported.")
+   CRYPTO
+   EPS
+@@ -5851,9 +6024,11 @@ enum LocalPaymentMethodType {
+   MULTIBANCO
+   MYBANK
+   OXXO
++  OXXO_PAY
+   P24
+   PAYU
+   PAY_UPON_INVOICE
++  PIX_INTERNATIONAL
+   SATISPAY
+   SEPA
+   SKRILL
+@@ -5958,7 +6133,11 @@ type MerchantAccount {
+   """
+   id: ID!
+ 
+-  """The disbursement bank account linked with the merchant account."""
++  """
++  The disbursement bank account linked with the merchant account.
++  
++  Deprecated (since 2024-01-22): This field is no longer supported and will always be null.
++  """
+   bankAccount: DisbursementBankAccount @deprecated(reason: "This field is no longer supported and will always be null.")
+ 
+   """The ISO code for the currency the merchant account uses."""
+@@ -6033,11 +6212,11 @@ type MerchantAccountConnectionEdge {
+ 
+ """Input fields for searching for merchant accounts."""
+ input MerchantAccountSearchInput {
+-  """Find merchant accounts with an id or ids."""
+-  id: SearchValueInput
+-
+   """Find merchant accounts associated with a given PayPal account ID."""
+   paypalAccountId: SearchValueInput
++
++  """Find merchant accounts by their merchant account ID (token)."""
++  merchantAccountId: SearchTextValueInput
+ }
+ 
+ """
+@@ -6142,7 +6321,11 @@ type MonetaryAmount {
+   """
+   value: Amount
+ 
+-  """The ISO code for the money's currency."""
++  """
++  The ISO code for the money's currency.
++  
++  Deprecated (since 2020-11-05): Use `currencyCode` instead.
++  """
+   currencyIsoCode: CurrencyCodeAlpha @deprecated(reason: "Use `currencyCode` instead.")
+ 
+   """The currency code for the monetary amount."""
+@@ -6211,6 +6394,8 @@ type Mutation {
+ 
+   """
+   Charge any payment method and return a payload that includes details of the resulting transaction.
++  When using an OAuth Access Token to call this mutation, it must include the
++  TRANSACTION_SALE and TRANSACTION_MANAGE_SETTLEMENT scopes.
+   """
+   chargePaymentMethod(input: ChargePaymentMethodInput!): TransactionPayload
+ 
+@@ -6249,6 +6434,8 @@ type Mutation {
+   Vault payment information from a single-use payment method and return a
+   payload that includes a new multi-use payment method. When vaulting a credit
+   card, by default, this mutation will also verify that card before vaulting.
++  When using an OAuth Access Token to call this mutation, it must include the
++  CUSTOMER_CREATE and MULTI_USE_PAYMENT_METHOD_CREATE scopes.
+   """
+   vaultPaymentMethod(input: VaultPaymentMethodInput!): VaultPaymentMethodPayload
+ 
+@@ -6282,6 +6469,8 @@ type Mutation {
+ 
+   """
+   Reverse a transaction and return a payload that includes either the voided transaction or a refund.
++  When using an OAuth Access Token to call this mutation, it must include the
++  TRANSACTION_REFUND and TRANSACTION_VOID scopes.
+   """
+   reverseTransaction(input: ReverseTransactionInput!): ReverseTransactionPayload
+ 
+@@ -6321,6 +6510,8 @@ type Mutation {
+ 
+   """
+   Update custom fields on a transaction. Custom fields are [defined in the Control Panel](https://articles.braintreepayments.com/control-panel/custom-fields#store-and-pass-back-fields).
++  
++  Deprecated (since 2023-10-09): Use `updateCustomFields` instead.
+   """
+   updateTransactionCustomFields(input: UpdateTransactionCustomFieldsInput!): UpdateTransactionCustomFieldsPayload @deprecated(reason: "Use `updateCustomFields` instead.")
+ 
+@@ -6329,13 +6520,24 @@ type Mutation {
+   """
+   updateCustomFields(input: UpdateCustomFieldsInput!): UpdateCustomFieldsPayload
+ 
+-  """Run a verification on a multi-use payment method."""
++  """
++  Run a verification on a multi-use payment method.
++  When using an OAuth Access Token to call this mutation, it must include the MULTI_USE_PAYMENT_METHOD_UPDATE scope.
++  """
+   verifyPaymentMethod(input: VerifyPaymentMethodInput!): VerifyPaymentMethodPayload
+ 
+-  """Run a verification on a multi-use credit card payment method."""
++  """
++  Run a verification on a credit card payment method.
++  When using an OAuth Access Token to call this mutation, it must include the
++  MULTI_USE_PAYMENT_METHOD_UPDATE scope for a multi-use payment method or the
++  STANDALONE_VERIFICATIONS scope for a single-use payment method.
++  """
+   verifyCreditCard(input: VerifyCreditCardInput!): VerifyPaymentMethodPayload
+ 
+-  """Run a verification on a multi-use US bank account payment method."""
++  """
++  Run a verification on a multi-use US bank account payment method.
++  When using an OAuth Access Token to call this mutation, it must include the MULTI_USE_PAYMENT_METHOD_UPDATE scope.
++  """
+   verifyUsBankAccount(input: VerifyUsBankAccountInput!): VerifyPaymentMethodPayload
+ 
+   """
+@@ -6397,6 +6599,8 @@ type Mutation {
+ 
+   """
+   Tokenize Samsung Pay card fields and return a payload that includes a single-use payment method.
++  
++  Deprecated (since 2024-10-21): Samsung pay is no longer supported.
+   """
+   tokenizeSamsungPayCard(input: TokenizeSamsungPayCardInput!): TokenizeSamsungPayCardPayload @deprecated(reason: "Samsung pay is no longer supported.")
+ 
+@@ -6407,6 +6611,8 @@ type Mutation {
+ 
+   """
+   Tokenize US bank login fields and return a payload that includes a single-use payment method.
++  
++  Deprecated (since 2024-02-02): US bank logins are no longer supported.
+   """
+   tokenizeUsBankLogin(input: TokenizeUsBankLoginInput!): TokenizeUsBankAccountPayload @deprecated(reason: "US bank logins are no longer supported.")
+ 
+@@ -6443,7 +6649,11 @@ type Mutation {
+   """
+   deleteCustomer(input: DeleteCustomerInput!): DeleteCustomerPayload
+ 
+-  """Delete a payment method referenced by a single-use token."""
++  """
++  Delete a payment method referenced by a single-use token.
++  
++  Deprecated (since 2019-01-22): Use `deletePaymentMethodFromVault` instead.
++  """
+   deletePaymentMethodFromSingleUseToken(input: DeletePaymentMethodFromSingleUseTokenInput!): DeletePaymentMethodFromSingleUseTokenPayload @deprecated(reason: "Use `deletePaymentMethodFromVault` instead.")
+ 
+   """
+@@ -6915,10 +7125,11 @@ input NonInstantLocalPaymentContextInput {
+ 
+ """A value identifying the type of non-instant regional payment method."""
+ enum NonInstantLocalPaymentMethodType {
+-  """Deprecated: Boleto Bancário is no longer supported."""
+-  BOLETOBANCARIO
++  """Deprecated (since 2024-12-12): Boleto Bancário is no longer supported."""
++  BOLETOBANCARIO @deprecated(reason: "Boleto Bancário is no longer supported.")
+   MULTIBANCO
+   OXXO
++  OXXO_PAY
+   TRUSTLY
+ }
+ 
+@@ -7417,10 +7628,10 @@ enum PaymentMethodOriginType {
+   NETWORK_TOKEN
+   PAYPAL
+ 
+-  """Deprecated: Samsung is no longer supported."""
+-  SAMSUNG_PAY
++  """Deprecated (since 2024-10-30): Samsung is no longer supported."""
++  SAMSUNG_PAY @deprecated(reason: "Samsung is no longer supported.")
+ 
+-  """Deprecated: Visa Checkout is no longer supported."""
++  """Deprecated (since 2026-02-03): Visa Checkout is no longer supported."""
+   VISA_CHECKOUT @deprecated(reason: "Visa Checkout is no longer supported.")
+ }
+ 
+@@ -7441,10 +7652,11 @@ enum PaymentMethodSnapshotSearchType {
+   BANCOMATPAY_VIA_PAYPAL
+   BANCONTACT_VIA_PAYPAL
+   BIZUM_VIA_PAYPAL
++  BLIK_PAY_LATER_VIA_PAYPAL
+   BLIK_VIA_PAYPAL
+ 
+-  """Deprecated: Boleto Bancário is no longer supported."""
+-  BOLETOBANCARIO_VIA_PAYPAL
++  """Deprecated (since 2024-12-12): Boleto Bancário is no longer supported."""
++  BOLETOBANCARIO_VIA_PAYPAL @deprecated(reason: "Boleto Bancário is no longer supported.")
+   CREDIT_CARD
+   CREDIT_CARD_VIA_APPLE_PAY
+   CREDIT_CARD_VIA_GOOGLE_PAY
+@@ -7452,10 +7664,10 @@ enum PaymentMethodSnapshotSearchType {
+   CREDIT_CARD_VIA_META_CHECKOUT
+   CREDIT_CARD_VIA_NETWORK_TOKEN
+ 
+-  """Deprecated: Samsung is no longer supported."""
+-  CREDIT_CARD_VIA_SAMSUNG_PAY
++  """Deprecated (since 2024-10-30): Samsung is no longer supported."""
++  CREDIT_CARD_VIA_SAMSUNG_PAY @deprecated(reason: "Samsung is no longer supported.")
+ 
+-  """Deprecated: Visa Checkout is no longer supported."""
++  """Deprecated (since 2026-02-03): Visa Checkout is no longer supported."""
+   CREDIT_CARD_VIA_VISA_CHECKOUT @deprecated(reason: "Visa Checkout is no longer supported.")
+   CRYPTO_VIA_PAYPAL
+   EPS_VIA_PAYPAL
+@@ -7467,11 +7679,13 @@ enum PaymentMethodSnapshotSearchType {
+   MBWAY_VIA_PAYPAL
+   MULTIBANCO_VIA_PAYPAL
+   MYBANK_VIA_PAYPAL
++  OXXO_PAY_VIA_PAYPAL
+   OXXO_VIA_PAYPAL
+   P24_VIA_PAYPAL
+   PAYPAL
+   PAYU_VIA_PAYPAL
+   PAY_UPON_INVOICE_VIA_PAYPAL
++  PIX_INTERNATIONAL_VIA_PAYPAL
+   SATISPAY_VIA_PAYPAL
+   SEPA_DIRECT_DEBIT
+   SEPA_VIA_PAYPAL
+@@ -8039,11 +8253,6 @@ input PayPalBillingAgreementExperienceProfileInput {
+   """Merchant brand name to be displayed on the PayPal approval pages."""
+   brandName: String
+ 
+-  """
+-  Indicates whether a shipping address will be collected from the customer during the agreement approval flow.
+-  """
+-  collectShippingAddress: Boolean
+-
+   """
+   Specifies the PayPal page to display when a user lands on the PayPal site to complete the payment.
+   """
+@@ -8052,16 +8261,13 @@ input PayPalBillingAgreementExperienceProfileInput {
+   """Locale of the PayPal payment approval experience."""
+   locale: Language
+ 
+-  """
+-  Indicates whether to enable user editing of the shipping address. Only applies
+-  when shipping address is provided by merchant.
+-  """
+-  shippingAddressEditable: Boolean
+-
+   """
+   Presents the customer with either the Continue or Setup Now flow. Default is Continue flow if the field is not provided.
+   """
+   userAction: PayPalBillingAgreementUserAction
++
++  """Controls how the buyer's shipping address is handled during checkout."""
++  shippingPreference: PayPalShippingPreference
+ }
+ 
+ """
+@@ -8123,10 +8329,18 @@ type PayPalConfiguration {
+   """The merchant's PayPal client ID."""
+   clientId: String
+ 
+-  """The merchant's privacy policy URL."""
++  """
++  The merchant's privacy policy URL.
++  
++  Deprecated (since 2023-08-09): This field is deprecated and will no longer be returned
++  """
+   privacyUrl: String @deprecated(reason: "This field is deprecated and will no longer be returned")
+ 
+-  """The merchant's user agreement URL."""
++  """
++  The merchant's user agreement URL.
++  
++  Deprecated (since 2023-08-09): This field is deprecated and will no longer be returned
++  """
+   userAgreementUrl: String @deprecated(reason: "This field is deprecated and will no longer be returned")
+ 
+   """
+@@ -8137,7 +8351,11 @@ type PayPalConfiguration {
+   """The PayPal environment."""
+   environment: PayPalEnvironment
+ 
+-  """For internal use only."""
++  """
++  For internal use only.
++  
++  Deprecated (since 2018-07-12): This field is only included for internal testing purposes.
++  """
+   environmentNoNetwork: Boolean @deprecated(reason: "This field is only included for internal testing purposes.")
+ 
+   """Whether or not the merchant has been vetted."""
+@@ -8164,7 +8382,11 @@ type PayPalConfiguration {
+   """
+   payeeEmail: String
+ 
+-  """For internal use only."""
++  """
++  For internal use only.
++  
++  Deprecated (since 2018-02-12): This field is only included for internal testing purposes.
++  """
+   directBaseUrl: String @deprecated(reason: "This field is only included for internal testing purposes.")
+ }
+ 
+@@ -8192,11 +8414,6 @@ input PayPalExperienceProfileInput {
+   """Merchant brand name to be displayed on the PayPal approval pages."""
+   brandName: String
+ 
+-  """
+-  Indicates whether a shipping address will be collected from the customer during the agreement approval flow.
+-  """
+-  collectShippingAddress: Boolean
+-
+   """
+   Specifies the PayPal page to display when a user lands on the PayPal site to complete the payment.
+   """
+@@ -8205,12 +8422,6 @@ input PayPalExperienceProfileInput {
+   """Locale of the PayPal payment approval experience."""
+   locale: Language
+ 
+-  """
+-  Indicates whether to enable user editing of the shipping address. Only applies
+-  when shipping address is provided by merchant.
+-  """
+-  shippingAddressEditable: Boolean
+-
+   """
+   Presents the customer with either the Continue or Pay Now (COMMIT) checkout
+   flow. Default is Continue flow if the field is not provided.
+@@ -8219,6 +8430,9 @@ input PayPalExperienceProfileInput {
+ 
+   """Indicates the contact information preferred by the customers."""
+   contactPreference: PayPalUserContactPreference
++
++  """Controls how the buyer's shipping address is handled during checkout."""
++  shippingPreference: PayPalShippingPreference
+ }
+ 
+ """The intent for PayPal payments."""
+@@ -8643,6 +8857,24 @@ enum PayPalShippingOptionType {
+   SHIPPING
+ }
+ 
++"""
++Controls how the buyer's shipping address is handled during PayPal checkout.
++"""
++enum PayPalShippingPreference {
++  """
++  The buyer selects a shipping address from their PayPal account (or provides a new one).
++  """
++  BUYER_SELECTS_ADDRESS
++
++  """
++  The merchant-provided shipping address is used and cannot be changed by the buyer.
++  """
++  MERCHANT_PROVIDED_ADDRESS_LOCKED
++
++  """No shipping address is collected or displayed."""
++  NO_SHIPPING_ADDRESS
++}
++
+ """PayPal-specific details on a transaction."""
+ type PayPalTransactionDetails {
+   """
+@@ -8670,7 +8902,12 @@ type PayPalTransactionDetails {
+   """The identification value of the payment within PayPal's API."""
+   paymentId: String
+ 
+-  """If the transaction is a refund, the PayPal refund ID."""
++  """
++  If the transaction is a refund, the PayPal refund ID.
++  
++  Deprecated (since 2019-12-16): This field will never be populated as it only
++  appears on refunds. Use `details.paypalId` on a refund instead.
++  """
+   refundId: String @deprecated(reason: "This field will never be populated as it only appears on refunds. Use `details.paypalId` on a refund instead.")
+ 
+   """Whether or not the transaction qualifies for PayPal Seller Protection."""
+@@ -8687,10 +8924,18 @@ type PayPalTransactionDetails {
+   """The fee charged by PayPal for the transaction."""
+   transactionFee: MonetaryAmount
+ 
+-  """The fee charged by PayPal for the transaction."""
++  """
++  The fee charged by PayPal for the transaction.
++  
++  Deprecated (since 2019-10-18): Use `transactionFee.value` instead.
++  """
+   transactionFeeAmount: String @deprecated(reason: "Use `transactionFee.value` instead.")
+ 
+-  """The currency code for the currency of the PayPal transaction fee."""
++  """
++  The currency code for the currency of the PayPal transaction fee.
++  
++  Deprecated (since 2019-10-18): Use `transactionFee.currencyCode` instead.
++  """
+   transactionFeeCurrencyIsoCode: String @deprecated(reason: "Use `transactionFee.currencyCode` instead.")
+ 
+   """
+@@ -8703,7 +8948,11 @@ type PayPalTransactionDetails {
+   """
+   origin: PaymentMethodOrigin
+ 
+-  """Buyer selected financing option at the time of creating a transaction."""
++  """
++  Buyer selected financing option at the time of creating a transaction.
++  
++  Deprecated (since 2025-11-04): This field is no longer supported.
++  """
+   selectedFinancingOption: SelectedPayPalFinancingOptionDetails @deprecated(reason: "This field is no longer supported.")
+ 
+   """The application used by the payer to scan the QR code."""
+@@ -8801,6 +9050,13 @@ input PerformThreeDSecureLookupInput {
+   """
+   dfReferenceId: String
+ 
++  """
++  Unique and unchanging identifier linked to a specific user device that is
++  consistent across 3DS transactions for that device. Device ID can be used for
++  DCAP eligibility.
++  """
++  deviceId: String
++
+   """ID of a payment method to perform the lookup on."""
+   paymentMethodId: ID!
+ 
+@@ -9019,6 +9275,8 @@ type Query {
+   """
+   Get a GraphQL ID from a legacy ID that was returned from an SDK or a legacyId
+   field. Does not verify existence except for payment methods.
++  
++  Deprecated (since 2026-04-09): Use idsFromLegacyIds instead.
+   """
+   idFromLegacyId(legacyId: ID!, type: LegacyIdType!): ID! @deprecated(reason: "Use idsFromLegacyIds instead.")
+ 
+@@ -9027,6 +9285,10 @@ type Query {
+   existence except for payment methods; if a payment method cannot be resolved,
+   `null` is returned at that position in the list. Already-global IDs are
+   returned as-is. Min: 1 Max: 50 IDs.
++  When calling this query with an OAuth access token, include a find scope (an
++  `OAuthScope` ending in `_FIND`). Converting `PAYMENT_METHOD` IDs requires
++  `MULTI_USE_PAYMENT_METHOD_FIND`; use this scope if your integration supports
++  every `LegacyIdType`.
+   """
+   idsFromLegacyIds(input: IdsFromLegacyIdsInput!): [ID]!
+ 
+@@ -9039,6 +9301,9 @@ type Query {
+   """
+   A collection of the available searches. Each field on the `Search` type is a
+   different search that can be queried with its own input parameters.
++  
++  Deprecated (since 2026-07-01): Use the individual top-level search queries
++  (e.g. `transactions`, `refunds`, `verifications`) instead.
+   """
+   search: Search @deprecated(reason: "Use the individual top-level search queries (e.g. `transactions`, `refunds`, `verifications`) instead.")
+ 
+@@ -9193,7 +9458,7 @@ type RecurringBillingSubscription implements Node {
+   """
+   The payment method to use for this subscription. Accepts single-use or vaulted payment methods.
+   """
+-  paymentMethodId: ID!
++  paymentMethodId: ID
+ 
+   """The merchant account ID used for the subscription."""
+   merchantAccountId: ID
+@@ -9822,7 +10087,11 @@ type Refund implements Node & Payment {
+   """The current status of this refund."""
+   status: PaymentStatus
+ 
+-  """Fields describing the payment processor response."""
++  """
++  Fields describing the payment processor response.
++  
++  Deprecated (since 2025-10-30): Use relevant events in `statusHistory` or `processorAuthorizationResponse` instead.
++  """
+   processorResponse: TransactionAuthorizationProcessorResponse @deprecated(reason: "Use relevant events in `statusHistory` or `processorAuthorizationResponse` instead.")
+ 
+   """Fields describing the payment authorization processor response."""
+@@ -9874,6 +10143,14 @@ type Refund implements Node & Payment {
+   """
+   customer: Customer
+ 
++  """
++  The portion of the total refund amount attributable to the surcharge. This
++  amount is already included in the total refund amount and must not be added
++  separately. Value must be non-negative. Applicable to e-commerce credit card
++  transactions only. [US region].
++  """
++  surchargeAmount: String
++
+   """Line items for this refund."""
+   lineItems: [TransactionLineItem!]
+ 
+@@ -10006,6 +10283,14 @@ input RefundInput {
+   """
+   description: String
+ 
++  """
++  The portion of the total refund amount attributable to the surcharge. This
++  amount is already included in the total refund amount and must not be added
++  separately. Value must be non-negative. Applicable to e-commerce credit card
++  transactions only. [US region].
++  """
++  surchargeAmount: String
++
+   """
+   Line items for this refund. Up to 249 line items may be specified.
+   
+@@ -10278,7 +10563,14 @@ type RegisterApplePayDomainsPayload {
+ 
+ """Top-level fields returned for a report query."""
+ type Report {
+-  """Top-level fields returned in the transaction-level fee report query."""
++  """
++  Top-level fields returned in the transaction-level fee report query.
++  
++  Deprecated (since 2020-02-10): This report has been renamed
++  `paymentLevelFees`, since it applies to all types in the Payment interface,
++  including transactions and refunds. Use the `paymentLevelFees` field instead,
++  which returns the same report.
++  """
+   transactionLevelFees(
+     """Report date (UTC)."""
+     date: Date!
+@@ -11242,9 +11534,9 @@ input RoleSearchInput {
+ }
+ 
+ """
+-Deprecated: Samsung pay is no longer supported.
+-
+ Details about a Samsung Pay card.
++
++Deprecated: Samsung pay is no longer supported.
+ """
+ type SamsungPayCardDetails {
+   """The display name of the card brand, e.g. "Visa" or "American Express"."""
+@@ -11271,9 +11563,9 @@ type SamsungPayCardDetails {
+ }
+ 
+ """
+-Deprecated: Samsung pay is no longer supported.
+-
+ Input fields for a Samsung Pay card.
++
++Deprecated: Samsung pay is no longer supported.
+ """
+ input SamsungPayCardInput {
+   """
+@@ -11303,9 +11595,9 @@ input SamsungPayCardInput {
+ }
+ 
+ """
+-Deprecated: Samsung Pay is no longer supported.
+-
+ Configuration for Samsung Pay on Android.
++
++Deprecated: Samsung Pay is no longer supported.
+ """
+ type SamsungPayConfiguration {
+   """A string used to identify the merchant to the customer."""
+@@ -11325,9 +11617,9 @@ type SamsungPayConfiguration {
+ }
+ 
+ """
+-Deprecated: Samsung pay is no longer supported.
+-
+ The environment being used for Samsung Pay.
++
++Deprecated: Samsung pay is no longer supported.
+ """
+ enum SamsungPayEnvironment {
+   PRODUCTION
+@@ -11337,9 +11629,9 @@ enum SamsungPayEnvironment {
+ }
+ 
+ """
+-Deprecated: Samsung pay is no longer supported.
+-
+ Additional information about the payment method specific to Samsung Pay.
++
++Deprecated: Samsung pay is no longer supported.
+ """
+ type SamsungPayOriginDetails {
+   """
+@@ -11387,50 +11679,78 @@ enum ScaExemptionType {
+ type Search {
+   """
+   A paginated list of transactions that match the TransactionSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `transactions` query instead.
+   """
+   transactions(input: TransactionSearchInput!, first: Int, after: String): TransactionConnection @deprecated(reason: "Use the top-level `transactions` query instead.")
+ 
+-  """A paginated list of refunds that match the RefundSearchInput."""
++  """
++  A paginated list of refunds that match the RefundSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `refunds` query instead.
++  """
+   refunds(input: RefundSearchInput!, first: Int, after: String): RefundConnection @deprecated(reason: "Use the top-level `refunds` query instead.")
+ 
+   """
+   A paginated list of all types of Payment that match the PaymentSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `payments` query instead.
+   """
+   payments(input: PaymentSearchInput!, first: Int, after: String): PaymentConnection @deprecated(reason: "Use the top-level `payments` query instead.")
+ 
+-  """A paginated list of disputes that match the DisputeSearchInput."""
++  """
++  A paginated list of disputes that match the DisputeSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `disputes` query instead.
++  """
+   disputes(input: DisputeSearchInput!, first: Int, after: String): DisputeConnection @deprecated(reason: "Use the top-level `disputes` query instead.")
+ 
+   """
+   A paginated list of verifications that match the VerificationSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `verifications` query instead.
+   """
+   verifications(input: VerificationSearchInput!, first: Int, after: String): VerificationConnection @deprecated(reason: "Use the top-level `verifications` query instead.")
+ 
+-  """A paginated list of customers that match the CustomerSearchInput."""
++  """
++  A paginated list of customers that match the CustomerSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `customers` query instead.
++  """
+   customers(input: CustomerSearchInput!, first: Int, after: String): CustomerConnection @deprecated(reason: "Use the top-level `customers` query instead.")
+ 
+   """
+   A paginated list of business account creation requests that match the BusinessAccountCreationRequestSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `businessAccountCreationRequests` query instead.
+   """
+   businessAccountCreationRequests(input: BusinessAccountCreationRequestSearchInput!, first: Int, after: String): BusinessAccountCreationRequestConnection @deprecated(reason: "Use the top-level `businessAccountCreationRequests` query instead.")
+ 
+   """
+   A paginated list of in-store readers that match the InStoreReaderSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `inStoreReaders` query instead.
+   """
+   inStoreReaders(input: InStoreReaderSearchInput!, first: Int, after: String): InStoreReaderConnection @deprecated(reason: "Use the top-level `inStoreReaders` query instead.")
+ 
+   """
+   A paginated list of in-store locations that match any of the conditions in InStoreLocationSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `searchInStoreLocations` query instead.
+   """
+   inStoreLocations(input: InStoreLocationSearchInput!, first: Int, after: String): InStoreLocationSearchConnection @deprecated(reason: "Use the top-level `searchInStoreLocations` query instead.")
+ 
+   """
+   A paginated list of roles that match any of the conditions in RoleSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `roles` query instead.
+   """
+   roles(input: RoleSearchInput!, first: Int, after: String): RoleSearchConnection @deprecated(reason: "Use the top-level `roles` query instead.")
+ 
+   """
+   A paginated list of recurring billing subscriptions that match the RecurringBillingSubscriptionSearchInput.
++  
++  Deprecated (since 2026-07-01): Use the top-level `recurringBillingSubscriptions` query instead.
+   """
+   recurringBillingSubscriptions(input: RecurringBillingSubscriptionSearchInput!, first: Int, after: String): RecurringBillingSubscriptionConnection @deprecated(reason: "Use the top-level `recurringBillingSubscriptions` query instead.")
+ }
+@@ -11483,9 +11803,9 @@ input SearchAddressInput {
+ }
+ 
+ """
+-Deprecated: Please use `SearchDisputeProtectionLevelInput` instead.
+-
+ Input fields for searching for a dispute with a given chargeback protection level.
++
++Deprecated: Please use `SearchDisputeProtectionLevelInput` instead.
+ """
+ input SearchChargebackProtectionLevelInput {
+   """The dispute's chargeback protection level is exactly this value."""
+@@ -12004,8 +12324,9 @@ type SelectedPayPalFinancingOptionDetails {
+ }
+ 
+ """
+-Deprecated: SelectedPayPalFinancingOptionInput are no longer supported.
+ Input fields indicating a selected financing option by a PayPal buyer.
++
++Deprecated: SelectedPayPalFinancingOptionInput are no longer supported.
+ """
+ input SelectedPayPalFinancingOptionInput {
+   """Total number of payments over which to finance the transaction."""
+@@ -12461,10 +12782,16 @@ enum ThreeDSecureAuthenticationStatus {
+   AUTHENTICATE_FAILED_ACS_ERROR
+   AUTHENTICATE_FRICTIONLESS_FAILED
+   AUTHENTICATE_REJECTED
++
++  """Deprecated (since 2024-05-23): This was a 3DS1 status."""
+   AUTHENTICATE_SIGNATURE_VERIFICATION_FAILED @deprecated(reason: "This was a 3DS1 status.")
+   AUTHENTICATE_SUCCESSFUL
++
++  """Deprecated (since 2021-01-06): No longer applicable."""
+   AUTHENTICATE_SUCCESSFUL_ISSUER_NOT_PARTICIPATING @deprecated(reason: "No longer applicable.")
+   AUTHENTICATE_UNABLE_TO_AUTHENTICATE
++
++  """Deprecated (since 2024-06-07): No longer applicable."""
+   AUTHENTICATION_BYPASSED @deprecated(reason: "No longer applicable.")
+   AUTHENTICATION_UNAVAILABLE
+   CHALLENGE_REQUIRED
+@@ -12473,14 +12800,21 @@ enum ThreeDSecureAuthenticationStatus {
+   EXEMPTION_TRA_SUCCESSFUL
+   LOOKUP_BYPASSED
+   LOOKUP_CARD_ERROR
++
++  """Deprecated (since 2025-11-25): This was a 3DS1 status."""
+   LOOKUP_ENROLLED @deprecated(reason: "This was a 3DS1 status.")
+   LOOKUP_ERROR
+   LOOKUP_FAILED_ACS_ERROR
+   LOOKUP_NOT_ENROLLED
+   LOOKUP_SERVER_ERROR
+   MPI_SERVER_ERROR
+-  SKIPPED_DUE_TO_ADAPTIVE_AUTHENTICATION
++
++  """
++  Deprecated (since 2026-10-01): Replaced with SKIPPED_DUE_TO_SMART_AUTHENTICATION.
++  """
++  SKIPPED_DUE_TO_ADAPTIVE_AUTHENTICATION @deprecated(reason: "Replaced with SKIPPED_DUE_TO_SMART_AUTHENTICATION.")
+   SKIPPED_DUE_TO_RULE
++  SKIPPED_DUE_TO_SMART_AUTHENTICATION
+   UNSUPPORTED_ACCOUNT_TYPE
+   UNSUPPORTED_CARD
+   UNSUPPORTED_THREE_D_SECURE_VERSION
+@@ -12581,57 +12915,99 @@ type ThreeDSecureDetails {
+   according to the merchant's configuration with CardinalCommerce, with either
+   Base64 or Hex encoding. The decoded value will be of different length and
+   format per card scheme.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.cavv instead.
+   """
+   cavv: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.cavv instead.")
+ 
+   """
+   A unique identifier for the 3D Secure interaction with the card brand directory server.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.directoryServerTransactionId instead.
+   """
+   directoryServerTransactionId: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.directoryServerTransactionId instead.")
+ 
+-  """The electronic commerce indicator."""
++  """
++  The electronic commerce indicator.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.eciFlag instead.
++  """
+   eciFlag: ECommerceIndicator @deprecated(reason: "Use ThreeDSecureDetails.authentication.eciFlag instead.")
+ 
+-  """A boolean indicating if the card has received liability shift."""
++  """
++  A boolean indicating if the card has received liability shift.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.liabilityShifted instead.
++  """
+   liabilityShifted: Boolean @deprecated(reason: "Use ThreeDSecureDetails.authentication.liabilityShifted instead.")
+ 
+-  """A boolean indicating if the card is eligible for liability shift."""
++  """
++  A boolean indicating if the card is eligible for liability shift.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.liabilityShiftPossible instead.
++  """
+   liabilityShiftPossible: Boolean @deprecated(reason: "Use ThreeDSecureDetails.authentication.liabilityShiftPossible instead.")
+ 
+-  """Indicates whether the card is enrolled in a 3D Secure program."""
++  """
++  Indicates whether the card is enrolled in a 3D Secure program.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.cardEnrolled instead.
++  """
+   cardEnrolled: ThreeDSecureCardEnrolled @deprecated(reason: "Use ThreeDSecureDetails.authentication.cardEnrolled instead.")
+ 
+-  """The 3D Secure authentication status of the card."""
++  """
++  The 3D Secure authentication status of the card.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.authenticationStatus instead.
++  """
+   authenticationStatus: ThreeDSecureAuthenticationStatus @deprecated(reason: "Use ThreeDSecureDetails.authentication.authenticationStatus instead.")
+ 
+-  """The version of the 3D Secure protocol used during authentication."""
++  """
++  The version of the 3D Secure protocol used during authentication.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.version instead.
++  """
+   version: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.version instead.")
+ 
+-  """A unique identifier for the 3D Secure interaction with the provider."""
++  """
++  A unique identifier for the 3D Secure interaction with the provider.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.xId instead.
++  """
+   xId: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.xId instead.")
+ 
+   """
+   A unique identifier for the 3D Secure interaction with the 3D Secure server.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.threeDSecureServerTransactionId instead.
+   """
+   threeDSecureServerTransactionId: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.threeDSecureServerTransactionId instead.")
+ 
+   """
+   A unique identifier for the 3D Secure interaction with the access control server.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.acsTransactionId instead.
+   """
+   acsTransactionId: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.acsTransactionId instead.")
+ 
+   """
+   Indicates the current status of the 3D Secure authentication from the 3D Secure server for 3D Secure 1.0 authentications.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.paresStatus instead.
+   """
+   paresStatus: ThreeDSecureAuthenticationStatusIndicator @deprecated(reason: "Use ThreeDSecureDetails.authentication.paresStatus instead.")
+ 
+   """
+   Indicates the current status of the 3D Secure authentication from the 3D Secure server for 3D Secure 2.0 authentications.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.transactionStatus instead.
+   """
+   transactionStatus: ThreeDSecureAuthenticationStatusIndicator @deprecated(reason: "Use ThreeDSecureDetails.authentication.transactionStatus instead.")
+ 
+   """
+   Indicates the reason for the transaction status. This will be null if status is `SUCCESSFUL_AUTHENTICATION`.
++  
++  Deprecated (since 2020-10-05): Use ThreeDSecureDetails.authentication.transactionStatusReason instead.
+   """
+   transactionStatusReason: String @deprecated(reason: "Use ThreeDSecureDetails.authentication.transactionStatusReason instead.")
+ }
+@@ -12647,7 +13023,8 @@ enum ThreeDSecureDeviceChannel {
+   THREE_R_I
+ }
+ 
+-""" The billing address of the cardholder sent with 3D Secure Lookup requests.
++"""
++The billing address of the cardholder sent with 3D Secure Lookup requests.
+ """
+ input ThreeDSecureLookupBillingAddressInput {
+   """
+@@ -12791,7 +13168,8 @@ type ThreeDSecureLookupData {
+   transactionId: String
+ }
+ 
+-""" The shipping address of the transaction to be sent with 3D Secure Lookup requests.
++"""
++The shipping address of the transaction to be sent with 3D Secure Lookup requests.
+ """
+ input ThreeDSecureLookupShippingAddressInput {
+   """
+@@ -13246,13 +13624,25 @@ type TokenizeCreditCardPayload {
+   """
+   clientMutationId: String
+ 
+-  """A one-time-use reference to tokenized sensitive information."""
++  """
++  A one-time-use reference to tokenized sensitive information.
++  
++  Deprecated (since 2018-04-05): Use `paymentMethod.id` instead.
++  """
+   token: String @deprecated(reason: "Use `paymentMethod.id` instead.")
+ 
+-  """Details about the tokenized card."""
++  """
++  Details about the tokenized card.
++  
++  Deprecated (since 2018-04-05): Use `paymentMethod.details` instead.
++  """
+   creditCard: CreditCardDetails @deprecated(reason: "Use `paymentMethod.details` instead.")
+ 
+-  """A single-use payment method."""
++  """
++  A single-use payment method.
++  
++  Deprecated (since 2018-07-30): Use `paymentMethod` instead.
++  """
+   singleUseToken: PaymentMethod @deprecated(reason: "Use `paymentMethod` instead.")
+ 
+   """A single-use payment method."""
+@@ -13263,6 +13653,8 @@ type TokenizeCreditCardPayload {
+   that applies to the payment method when processed with the provided merchant
+   account. This can be used to determine whether to perform 3D Secure
+   authentication.
++  
++  Deprecated (since 2020-10-05): Use paymentMethod.details.threeDSecure.authenticationInsight instead.
+   """
+   authenticationInsight(input: AuthenticationInsightInput!): AuthenticationInsight @deprecated(reason: "Use paymentMethod.details.threeDSecure.authenticationInsight instead.")
+ }
+@@ -13317,7 +13709,11 @@ type TokenizeCvvPayload {
+   """A single-use tokenized CVV."""
+   tokenizedCvv: TokenizedCvv
+ 
+-  """A single-use payment method representing just a CVV."""
++  """
++  A single-use payment method representing just a CVV.
++  
++  Deprecated (since 2020-08-24): This mutation does not create a full PaymentMethod. Use `tokenizedCvv` instead.
++  """
+   singleUseToken: PaymentMethod @deprecated(reason: "This mutation does not create a full PaymentMethod. Use `tokenizedCvv` instead.")
+ }
+ 
+@@ -13464,9 +13860,9 @@ type TokenizePayPalOneTimePaymentPayload {
+ }
+ 
+ """
+-Deprecated: Samsung pay is no longer supported.
+-
+ Top-level input field for tokenizing a Samsung Pay card.
++
++Deprecated: Samsung pay is no longer supported.
+ """
+ input TokenizeSamsungPayCardInput {
+   """
+@@ -13479,9 +13875,9 @@ input TokenizeSamsungPayCardInput {
+ }
+ 
+ """
+-Deprecated: Samsung pay is no longer supported.
+-
+ Top-level fields returned from a tokenized Samsung Pay card.
++
++Deprecated: Samsung pay is no longer supported.
+ """
+ type TokenizeSamsungPayCardPayload {
+   """
+@@ -13489,7 +13885,11 @@ type TokenizeSamsungPayCardPayload {
+   """
+   clientMutationId: String
+ 
+-  """A one-time-use reference to tokenized sensitive information."""
++  """
++  A one-time-use reference to tokenized sensitive information.
++  
++  Deprecated (since 2018-08-07): Use `paymentMethod` instead.
++  """
+   singleUseToken: PaymentMethod @deprecated(reason: "Use `paymentMethod` instead.")
+ 
+   """A single-use payment method."""
+@@ -13519,9 +13919,9 @@ type TokenizeUsBankAccountPayload {
+ }
+ 
+ """
+-Deprecated: US bank logins are no longer supported.
+-
+ Top-level input fields for tokenizing a US bank login.
++
++Deprecated: US bank logins are no longer supported.
+ """
+ input TokenizeUsBankLoginInput {
+   """
+@@ -13609,7 +14009,11 @@ type Transaction implements Node & Payment {
+   """The current status of this transaction."""
+   status: PaymentStatus
+ 
+-  """Fields describing the payment processor response."""
++  """
++  Fields describing the payment processor response.
++  
++  Deprecated (since 2018-12-06): Use relevant events in `statusHistory` or `processorAuthorizationResponse` instead.
++  """
+   processorResponse: TransactionAuthorizationProcessorResponse @deprecated(reason: "Use relevant events in `statusHistory` or `processorAuthorizationResponse` instead.")
+ 
+   """Fields describing the payment authorization processor response."""
+@@ -13837,6 +14241,12 @@ input TransactionCustomerDetailsInput {
+ 
+   """Phone number for the customer."""
+   phoneNumber: String
++
++  """First name of the customer. 255 character maximum."""
++  firstName: String
++
++  """Last name of the customer. 255 character maximum."""
++  lastName: String
+ }
+ 
+ """
+@@ -13874,7 +14284,7 @@ multi-use payment methods, or from single-use payment methods which will not be
+ stored in an external vault.
+ """
+ input TransactionExternalVaultOptionsInput {
+-  """The credit card's assocation with an external vault."""
++  """The credit card's association with an external vault."""
+   status: ExternalVaultStatus!
+ 
+   """
+@@ -14408,6 +14818,8 @@ type TransactionRiskContextPayload {
+ 
+   """
+   The identifier of the transaction risk context, to be used as the Client Metadata ID.
++  
++  Deprecated (since 2024-10-08): Use `paypalRiskCorrelationId` for clientMetadataId instead.
+   """
+   clientMetadataId: ID @deprecated(reason: "Use `paypalRiskCorrelationId` for clientMetadataId instead.")
+ 
+@@ -14598,15 +15010,31 @@ type TransactionSettlementProcessorResponse {
+   """The text explanation of the processor response legacyCode."""
+   message: String
+ 
+-  """The processing bank's response to the provided CVV."""
++  """
++  The processing bank's response to the provided CVV.
++  
++  Deprecated (since 2019-11-15): AVS and CVV checks do not take place when
++  capturing a transaction, only when authorizing. Use the `processorResponse` on
++  an authorization-related `PaymentStatusEvent` instead.
++  """
+   cvvResponse: AvsCvvResponseCode @deprecated(reason: "AVS and CVV checks do not take place when capturing a transaction, only when authorizing. Use the `processorResponse` on an authorization-related `PaymentStatusEvent` instead.")
+ 
+   """
+   The processing bank's response to the provided billing postal or zip code.
++  
++  Deprecated (since 2019-11-15): AVS and CVV checks do not take place when
++  capturing a transaction, only when authorizing. Use the `processorResponse` on
++  an authorization-related `PaymentStatusEvent` instead.
+   """
+   avsPostalCodeResponse: AvsCvvResponseCode @deprecated(reason: "AVS and CVV checks do not take place when capturing a transaction, only when authorizing. Use the `processorResponse` on an authorization-related `PaymentStatusEvent` instead.")
+ 
+-  """The processing bank's response to the provided billing street address."""
++  """
++  The processing bank's response to the provided billing street address.
++  
++  Deprecated (since 2019-11-15): AVS and CVV checks do not take place when
++  capturing a transaction, only when authorizing. Use the `processorResponse` on
++  an authorization-related `PaymentStatusEvent` instead.
++  """
+   avsStreetAddressResponse: AvsCvvResponseCode @deprecated(reason: "AVS and CVV checks do not take place when capturing a transaction, only when authorizing. Use the `processorResponse` on an authorization-related `PaymentStatusEvent` instead.")
+ 
+   """The ACH return code, if applicable."""
+@@ -14788,6 +15216,8 @@ type UpdateCreditCardBillingAddressPayload {
+ 
+   """
+   The new billing address. Will be `null` if a failed verification prevented the update.
++  
++  Deprecated (since 2023-10-04): Use `paymentMethod.details.billingAddress` instead.
+   """
+   billingAddress: Address @deprecated(reason: "Use `paymentMethod.details.billingAddress` instead.")
+ 
+@@ -15331,10 +15761,10 @@ input UpdateTransactionAmountInput {
+ }
+ 
+ """
++Input for creating or updating custom fields on a transaction.
++
+ Deprecated: `UpdateTransactionCustomFields` mutation is no longer supported,
+ please use `UpdateCustomFields` mutation instead.
+-
+-Input for creating or updating custom fields on a transaction.
+ """
+ input UpdateTransactionCustomFieldsInput {
+   """
+@@ -15353,9 +15783,10 @@ input UpdateTransactionCustomFieldsInput {
+ }
+ 
+ """
++Top-level output field from updating custom fields for a specific transaction.
++
+ Deprecated: `UpdateTransactionCustomFields` mutation is no longer supported,
+ please use `UpdateCustomFields` mutation instead.
+-Top-level output field from updating custom fields for a specific transaction.
+ """
+ type UpdateTransactionCustomFieldsPayload {
+   """
+@@ -15378,7 +15809,11 @@ scalar URL
+ 
+ """Details about the customer's acceptance of ACH terms."""
+ type UsBankAccountAchMandate {
+-  """Deprecated, The text the customer agreed to when setting up ACH."""
++  """
++  The text the customer agreed to when setting up ACH.
++  
++  Deprecated (since 2025-07-09): Acceptance text no longer returned.
++  """
+   acceptanceText: String @deprecated(reason: "Acceptance text no longer returned.")
+ 
+   """Date and time when the text terms were accepted."""
+@@ -15416,7 +15851,11 @@ type UsBankAccountConfiguration {
+   """The route ID used to process a US bank account payment."""
+   routeId: String
+ 
+-  """The public key for Plaid to use to log in to a bank account."""
++  """
++  The public key for Plaid to use to log in to a bank account.
++  
++  Deprecated (since 2024-02-02): US bank logins are no longer supported.
++  """
+   plaidPublicKey: String @deprecated(reason: "US bank logins are no longer supported.")
+ }
+ 
+@@ -15451,10 +15890,20 @@ type UsBankAccountDetails {
+   """NACHA-mandated proof of acceptance of ACH terms."""
+   achMandate: UsBankAccountAchMandate
+ 
+-  """The ACH return code, if applicable."""
++  """
++  The ACH return code, if applicable.
++  
++  Deprecated (since 2025-11-25): Moved to Transaction level for semantic
++  correctness. Check for processorSettlementResponse field in Transaction instead.
++  """
+   achReturnCode: String @deprecated(reason: "Moved to Transaction level for semantic correctness. Check for processorSettlementResponse field in Transaction instead.")
+ 
+-  """The ACH reject reason, if applicable."""
++  """
++  The ACH reject reason, if applicable.
++  
++  Deprecated (since 2025-11-25): Moved to Transaction level for semantic
++  correctness. Check for processorSettlementResponse field in Transaction instead.
++  """
+   achRejectReason: String @deprecated(reason: "Moved to Transaction level for semantic correctness. Check for processorSettlementResponse field in Transaction instead.")
+ }
+ 
+@@ -15589,9 +16038,9 @@ enum UsBankAccountVerificationMethod {
+ }
+ 
+ """
+-Deprecated: US bank logins are no longer supported.
+-
+ Input fields for a US bank login object.
++
++Deprecated: US bank logins are no longer supported.
+ """
+ input UsBankLoginInput {
+   """The public token returned from the bank login."""
+@@ -15826,7 +16275,8 @@ input VaultCreditCardVerificationOptionsInput {
+   fraudTools: CreditCardFraudToolsOptionsInput
+ }
+ 
+-""" Specifies behavior for vaulting a single-use payment method for an in-store transaction.
++"""
++Specifies behavior for vaulting a single-use payment method for an in-store transaction.
+ """
+ input VaultInStorePaymentMethodAfterTransactingInput {
+   """Specifies the criteria which must be met to vault this payment method."""
+@@ -15871,7 +16321,8 @@ input VaultLimitedUsePayPalAccountOptionsInput {
+   makeDefault: Boolean
+ }
+ 
+-""" Specifies behavior for vaulting a single-use payment method after transacting with it.
++"""
++Specifies behavior for vaulting a single-use payment method after transacting with it.
+ """
+ input VaultPaymentMethodAfterTransactingInput {
+   """Specifies the criteria which must be met to vault this payment method."""
+@@ -16223,11 +16674,12 @@ type VenmoPaymentContext implements Node & PaymentContext {
+   clientSDKMetadata: ClientSDKMetadata
+ 
+   """
+-    Deprecated: This field is included for supporting legacy clients. Please use `payerInfo.userName` instead.
+-    
+   The username associated with the payment.
++  
++  Deprecated (since 2021-09-07): This field is included for supporting legacy
++  clients. Please use `payerInfo.userName` instead.
+   """
+-  userName: String
++  userName: String @deprecated(reason: "This field is included for supporting legacy clients. Please use `payerInfo.userName` instead.")
+ 
+   """
+   Whether the `paymentMethodId` may be used to make a one time payment
+@@ -16454,6 +16906,8 @@ type VenmoPaysheetTransactionDetails {
+ 
+   """
+   The list of line items belonging to the transaction. Can include up to 249 line items.
++  
++  Deprecated (since 2024-03-25): Use `venmoPaysheetLineItems` instead.
+   """
+   lineItems: [PaypalLineItem!] @deprecated(reason: "Use `venmoPaysheetLineItems` instead.")
+ 
+@@ -16523,7 +16977,13 @@ type Verification implements Node {
+   """
+   paymentMethod: PaymentMethod
+ 
+-  """For a credit card, the amount used when performing the verification."""
++  """
++  For a credit card, the amount used when performing the verification.
++  
++  Deprecated (since 2019-08-22): Depending on the type of payment method being
++  verified, some verifications do not have an amount. On a credit card
++  verification, use `paymentMethodVerificationDetails.amount` instead.
++  """
+   amount: MonetaryAmount @deprecated(reason: "Depending on the type of payment method being verified, some verifications do not have an amount. On a credit card verification, use `paymentMethodVerificationDetails.amount` instead.")
+ 
+   """The merchant account used for the verification."""
+@@ -16740,19 +17200,39 @@ input VerifyUsBankAccountInput {
+ 
+ """Details about the user and merchant authenticated in this request."""
+ type Viewer {
+-  """Unique identifier."""
++  """
++  Unique identifier.
++  
++  Deprecated (since 2019-05-29): Use `user` for id instead.
++  """
+   id: ID @deprecated(reason: "Use `user` for id instead.")
+ 
+-  """Email address."""
++  """
++  Email address.
++  
++  Deprecated (since 2019-05-29): Use `user` for email instead.
++  """
+   email: String @deprecated(reason: "Use `user` for email instead.")
+ 
+-  """Current status."""
++  """
++  Current status.
++  
++  Deprecated (since 2019-05-29): Use `user` for status instead.
++  """
+   status: UserStatus @deprecated(reason: "Use `user` for status instead.")
+ 
+-  """Full name."""
++  """
++  Full name.
++  
++  Deprecated (since 2019-05-29): Use `user` for name instead.
++  """
+   name: String @deprecated(reason: "Use `user` for name instead.")
+ 
+-  """Associated roles."""
++  """
++  Associated roles.
++  
++  Deprecated (since 2019-05-29): Use `user` for roles instead.
++  """
+   roles: [Role!] @deprecated(reason: "Use `user` for roles instead.")
+ 
+   """Details about the authenticated user."""
+@@ -16766,9 +17246,9 @@ type Viewer {
+ }
+ 
+ """
+-Deprecated: Visa Checkout is no longer supported.
+-
+ Configuration for Visa Checkout.
++
++Deprecated: Visa Checkout is no longer supported.
+ """
+ type VisaCheckoutConfiguration {
+   """The Visa Checkout API key."""
+@@ -16785,9 +17265,9 @@ type VisaCheckoutConfiguration {
+ }
+ 
+ """
+-Deprecated: Visa Checkout is no longer supported.
+-
+ Additional information about the payment method specific to Visa Checkout.
++
++Deprecated: Visa Checkout is no longer supported.
+ """
+ type VisaCheckoutOriginDetails {
+   """The Visa assigned identifier for the transaction."""

@@ -23,7 +23,13 @@ Braintree's collected Get Paid guide starts after a transaction has settled. It 
 
 PayPal transactions follow a separate collected funding route: by default PayPal funds them to the merchant's PayPal Business Account balance, after which the merchant can withdraw manually or have PayPal configure Settlement Withdrawal. The article says that feature sends the previous day's transactions to the bank within 2-3 business days and exposes a daily report for each withdrawal; this snapshot-scoped route is not evidence that an individual transaction funded or that a deposit arrived. [[source-braintree-payment-methods-paypal-funding-reconciliation]]
 
-## Sources
+## Exact-commit GraphQL contract update: `9f76e60`
+
+The independently versioned `braintree/graphql-api` contract at `9f76e60580da00f6740a20692d0b5ea2f313d93e` (2026-10-20; ingested 2026-10-23) replaces merchant-account search `id: SearchValueInput` with `merchantAccountId: SearchTextValueInput`, documented as the merchant-account ID/token. This changes both the field name and filter type; it is not merely a label change. Text search permits exact, not-equal, prefix, suffix, contains and list criteria. It does not establish a new account, authorization or merchant eligibility. [[source-github-graphql-api]]
+
+The same schema makes the subscription response's `paymentMethodId` nullable, but `CreateRecurringBillingSubscriptionInput.paymentMethodId` remains required. Refund surcharge attribution is already included in the refund total and is documented for US e-commerce credit-card transactions; do not add it to the total again. New external-processor/local-payment enum values are contract inventory, not proof of a working connector or merchant availability. Earlier `3a89f42` behavior remains historical evidence in [[changelog-github-graphql-api]].
+
+## Website Sources
 
 - [[source-braintree-docs-reference-client-api-jsonp]] - 2026-09-16 unversioned Braintree website Client API reference for invoking most ordinarily POST-based methods through a JSONP GET override, callback delivery, and mapped response status; not a browser-support matrix, exact-version Web SDK behavior, current-support or endpoint authority, GitHub history, server-side processing, or payment-execution proof
 
