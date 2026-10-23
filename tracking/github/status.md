@@ -200,6 +200,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-react-native/releases/stripe-react-native/0.73.0/2026-09-01/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-react-native/comparisons/stripe-react-native/0.72.0--0.73.0/comparison.json)
 
+## `github-0e72035e00894050ad04`
+
+- Repository: `paypal/paypal-js`
+- SHA: `21435c291d38bf375abbc60b5207b8fff13fb69d`
+- Collection date: `2026-10-24`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-js/ingest-packets/github-0e72035e00894050ad04/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/paypal-js@11.3.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-js/comparisons/paypal-js/11.2.2--11.3.0/comparison.json)
+
 ## `github-0f505b736a8fbe7628ca`
 
 - Repository: `adyen/adyen-ios`

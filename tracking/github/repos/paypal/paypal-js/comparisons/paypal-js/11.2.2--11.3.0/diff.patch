@@ -1,0 +1,220 @@
+diff --git a/packages/paypal-js/CHANGELOG.md b/packages/paypal-js/CHANGELOG.md
+index 6f26970..cad21a1 100644
+--- a/packages/paypal-js/CHANGELOG.md
++++ b/packages/paypal-js/CHANGELOG.md
+@@ -1,5 +1,16 @@
+ # Changelog
+ 
++## 11.3.0
++
++### Minor Changes
++
++- 7689364: Add v6 types for `updateClientToken()` on the SDK instance
++- 051a03e: Increase the v6 `loadCoreSdkScript` per-attempt script load timeout from 30 seconds to 60 seconds so slow networks have more time to load the Core SDK script before the load is reported as timed out.
++
++### Patch Changes
++
++- 83e6ca1: Only treat a v6 SDK on the window namespace as a loaded V6 core script, so a v5 SDK already on `window.paypal` no longer resolves `loadCoreSdkScript` after a failed or timed out load.
++
+ ## 11.2.2
+ 
+ ### Patch Changes
+diff --git a/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts b/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts
+index 65cee8e..0a88689 100644
+--- a/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts
++++ b/packages/paypal-js/e2e-tests/v6/timeout-script.test.ts
+@@ -76,7 +76,7 @@ test("Wait for a slow script without starting a second request (v6)", async ({
+   await expect(resolvedScripts).toHaveCount(1);
+ });
+ 
+-test("Reject after 30 seconds when the script never loads (v6)", async ({
++test("Reject after 60 seconds when the script never loads (v6)", async ({
+   page,
+ }) => {
+   test.setTimeout(SCRIPT_LOAD_TIMEOUT_MS + 15_000);
+diff --git a/packages/paypal-js/package.json b/packages/paypal-js/package.json
+index 6f08dd9..5ee1912 100644
+--- a/packages/paypal-js/package.json
++++ b/packages/paypal-js/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@paypal/paypal-js",
+-  "version": "11.2.2",
++  "version": "11.3.0",
+   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
+   "main": "index.js",
+   "module": "dist/esm/paypal-js.js",
+diff --git a/packages/paypal-js/src/v6/constants.ts b/packages/paypal-js/src/v6/constants.ts
+index 4cd402f..28a5f38 100644
+--- a/packages/paypal-js/src/v6/constants.ts
++++ b/packages/paypal-js/src/v6/constants.ts
+@@ -8,7 +8,7 @@ export const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
+ 
+ export const MAX_SCRIPT_LOAD_ERROR_RETRIES = 2;
+ // Each script attempt may remain pending for this long before timing out.
+-export const SCRIPT_LOAD_TIMEOUT_MS = 30_000;
++export const SCRIPT_LOAD_TIMEOUT_MS = 60_000;
+ // Small base/cap so a full error-retry cycle adds at most a couple of seconds
+ // of latency on top of a script that's definitively failed to load.
+ export const RETRY_BASE_DELAY_MS = 50;
+diff --git a/packages/paypal-js/src/v6/dom.test.ts b/packages/paypal-js/src/v6/dom.test.ts
+index 3c57411..f2e18a1 100644
+--- a/packages/paypal-js/src/v6/dom.test.ts
++++ b/packages/paypal-js/src/v6/dom.test.ts
+@@ -17,6 +17,14 @@ describe("getPayPalWindowNamespace()", () => {
+     expect(getPayPalWindowNamespace("paypal")).toBe(reference);
+   });
+ 
++  test("should return undefined when window[namespace] is not the v6 SDK", () => {
++    vi.stubGlobal("paypal", { version: "5.0.500" });
++    expect(getPayPalWindowNamespace("paypal")).toBeUndefined();
++
++    vi.stubGlobal("paypal", {});
++    expect(getPayPalWindowNamespace("paypal")).toBeUndefined();
++  });
++
+   test("should support custom namespaces", () => {
+     const reference = { version: "6" };
+     vi.stubGlobal("myCustomNamespace", reference);
+diff --git a/packages/paypal-js/src/v6/dom.ts b/packages/paypal-js/src/v6/dom.ts
+index 6658064..0314bf2 100644
+--- a/packages/paypal-js/src/v6/dom.ts
++++ b/packages/paypal-js/src/v6/dom.ts
+@@ -4,7 +4,18 @@ export function getPayPalWindowNamespace(
+   namespace: string,
+ ): PayPalV6Namespace | undefined {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-  return (window as any)[namespace];
++  const paypalWindowReference = (window as any)[namespace];
++
++  // Ignore anything that is not the v6 SDK, such as a v5 SDK that is
++  // already loaded on the same namespace.
++  if (
++    typeof paypalWindowReference?.version !== "string" ||
++    !paypalWindowReference.version.startsWith("6")
++  ) {
++    return undefined;
++  }
++
++  return paypalWindowReference;
+ }
+ 
+ export function createScriptElement({
+diff --git a/packages/paypal-js/src/v6/index.ts b/packages/paypal-js/src/v6/index.ts
+index 4595176..e256249 100644
+--- a/packages/paypal-js/src/v6/index.ts
++++ b/packages/paypal-js/src/v6/index.ts
+@@ -31,7 +31,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
+   );
+   const namespace = dataNamespace ?? "paypal";
+   const paypalWindowReference = getPayPalWindowNamespace(namespace);
+-  if (paypalWindowReference?.version.startsWith("6")) {
++  if (paypalWindowReference) {
+     return Promise.resolve(paypalWindowReference);
+   }
+ 
+diff --git a/packages/paypal-js/src/v6/load-script-with-retry.test.ts b/packages/paypal-js/src/v6/load-script-with-retry.test.ts
+index 8dea7fd..05524c4 100644
+--- a/packages/paypal-js/src/v6/load-script-with-retry.test.ts
++++ b/packages/paypal-js/src/v6/load-script-with-retry.test.ts
+@@ -50,7 +50,7 @@ describe("loadScriptWithRetry()", () => {
+     expect(result).toBe(window.paypal);
+   });
+ 
+-  test("should continue waiting for a slow script until the 30-second timeout", async () => {
++  test("should continue waiting for a slow script until the 60-second timeout", async () => {
+     vi.useFakeTimers();
+     try {
+       const appendChildSpy = vi
+@@ -411,6 +411,56 @@ describe("loadScriptWithRetry()", () => {
+     }
+   });
+ 
++  test("should retry instead of resolving with a non-v6 namespace already on window", async () => {
++    vi.spyOn(Math, "random").mockReturnValue(0);
++    // e.g. a v5 SDK left on window.paypal by an earlier page
++    vi.stubGlobal("paypal", { version: "5.0.500" });
++    let attempts = 0;
++    const appendChildSpy = vi
++      .spyOn(document.head, "appendChild")
++      .mockImplementation((node) => {
++        attempts++;
++        if (attempts === 1) {
++          process.nextTick(() => node.dispatchEvent(new Event("error")));
++        } else {
++          vi.stubGlobal("paypal", { version: "6.1.0" });
++          process.nextTick(() => node.dispatchEvent(new Event("load")));
++        }
++        return node;
++      });
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++
++      await vi.advanceTimersByTimeAsync(expectedRetryDelayMs(1));
++
++      const result = await loadPromise;
++      expect(result.version).toBe("6.1.0");
++      expect(appendChildSpy).toHaveBeenCalledTimes(2);
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
++  test("should not resolve on timeout with a non-v6 namespace already on window", async () => {
++    vi.stubGlobal("paypal", { version: "5.0.500" });
++    vi.spyOn(document.head, "appendChild").mockImplementation((node) => node);
++
++    vi.useFakeTimers();
++    try {
++      const loadPromise = loadScriptWithRetry(buildParams());
++      const expectation = expect(loadPromise).rejects.toThrow(
++        `timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms`,
++      );
++
++      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
++      await expectation;
++    } finally {
++      vi.useRealTimers();
++    }
++  });
++
+   test("should remove a timed-out script after its request eventually errors", async () => {
+     let scriptElement: HTMLScriptElement | undefined;
+     const appendChildSpy = vi
+diff --git a/packages/paypal-js/types/v6/index.d.ts b/packages/paypal-js/types/v6/index.d.ts
+index 7eeb45d..4fd6d10 100644
+--- a/packages/paypal-js/types/v6/index.d.ts
++++ b/packages/paypal-js/types/v6/index.d.ts
+@@ -92,6 +92,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
+  * **Always includes:**
+  * - `findEligibleMethods()` - Base method that verifies buyer and merchant eligibility for various payment methods. Use this to conditionally render the appropriate payment buttons on your site.
+  * - `updateLocale()` - Base method that updates the locale for the SDK instance. The locale should be specified using a BCP-47 code.
++ * - `updateClientToken()` - Base method that updates the client token for the SDK instance.
+  *
+  * **Conditionally includes methods based on components:**
+  * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
+@@ -212,6 +213,22 @@ export interface BaseInstance {
+    * ```
+    */
+   updateLocale: (locale: string) => void;
++  /**
++   * Replaces the clientToken (e.g. before it expires) for this SDK instance and
++   * its sessions, without calling `createInstance` again. The new token must be
++   * for the same clientId and merchant.
++   *
++   * @param clientToken - A PayPal JWT or Braintree-wrapped clientToken.
++   * @throws If the instance was created with a clientId, or if the token is not
++   * a valid JWT.
++   * @returns void
++   *
++   * @example
++   * ```typescript
++   * sdkInstance.updateClientToken("your-new-client-token");
++   * ```
++   */
++  updateClientToken: (clientToken: string) => void;
+   /**
+    * Hydrates the SDK instance with eligible payment methods from a pre-fetched response.
+    *

@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-24] ingest | PayPal JS core `11.3.0`
+
+- Approved serial delta `github-0e72035e00894050ad04`, exact SHA `21435c291d38bf375abbc60b5207b8fff13fb69d`, from core `11.2.2`. React remains `10.6.0`. Fully read changed source, cumulative raw changelog, release/comparison records, complete wiki source/changelog and affected prior code. User explicitly approved mechanical verification of generated manifests/packet inventories: all 322 snapshot file sizes, SHA-256 hashes and Git blob IDs pass; six modified and 155 unchanged retained files. Four verbatim grounding excerpts extracted before edits.
+- Concept audit first: [[paypal-checkout]] records token-replacement typing, 60-second per-attempt loader timeout and shared non-v6 namespace rejection. Added core source/changelog sections and updated company/catalog; source_count remains 177. Older version sections, warnings, supplements and evidence links preserved. Client tokens remain distinct from vault/payment tokens; no new saved-payment editing or React refresh wrapper is inferred. No cross-company comparison warranted.
+- No package build, browser, hosted SDK or payment execution, commit or push. Next: focused validation and lifecycle close, then report findings before any publication.
+- Close check: five typed pages, whitespace, seven-page local evidence links and provider/company catalog uniqueness pass. All 29 prior release sections, old changelog history and raw references preserved. Work item is `ingested`; final global validation has only the ten pre-existing unrelated errors and zero pending items. Corrected an omitted combined package-qualified release identifier detected on the first lifecycle check. Next: report findings, then await scoped commit/push approval.
+
 ## [2026-10-16] ingest | PayPal iOS `3.1.1`
 
 - Approved delta item `github-85652bd08413a3ffc568`, SHA `de98414f5cf74dc3db2239a4828b4760ef391d20`, after closing full `3.1.0`. Fully read all nine changed retained files, release notes and cumulative wiki context; affected prior code read during the preceding full cycle. Generated manifests/inventories/duplicated diffs mechanically verified under approval; 153 unchanged files hash-verified, all 162 snapshot hashes/sizes pass. Four grounding excerpts extracted before edits.

@@ -118,6 +118,14 @@ React `10.6.0` depends on core `^11.2.1` and adds Venmo vault integration throug
 
 At `f58396a` (release record 2026-10-09 UTC), core `11.2.2` checks the requested namespace before rejecting at the 30-second timeout. If truthy, it invokes the existing load handler to resolve and mark the script resolved even when no load event was observed; otherwise the `11.2.1` pending-element/rejection path remains. This check does not independently verify namespace version or authenticity. Error retry limits, explicit environment, namespace deduplication and payment APIs are unchanged. React remains `10.6.0`; its `^11.2.1` range allows `11.2.2`, but installed resolution requires lockfile/package evidence. Source: [[source-github-paypal-js]]; history: [[changelog-github-paypal-js]]. No browser/payment test performed.
 
+### Core 11.3.0 Token and Loader Boundary
+
+At `21435c2` (released October 20, 2026), `@paypal/paypal-js@11.3.0` adds the v6 `updateClientToken(clientToken): void` declaration. Its contract describes replacing the instance/session client token without another `createInstance()` call, using a token for the same client ID and merchant. It accepts a PayPal JWT or Braintree-wrapped client token and documents a throw for a client-ID-created instance or invalid JWT. This is a TypeScript contract, not implementation of the hosted SDK, automatic refresh scheduling, a payment/vault-token exchange, or a new saved-method editing API.
+
+The loader increases its per-attempt timeout from 30 to 60 seconds. Timeouts still reject without inserting another script; explicit errors retain at most two retries. Namespace lookup now accepts only a string `version` starting with `6`, so a pre-existing v5 namespace cannot satisfy its cached, load-event, retry-delay or timeout-success checks. This is a prefix check, not full version parsing, SDK authenticity verification, or environment isolation. Earlier `11.2.x` behavior and warnings remain version-qualified above.
+
+React stays `10.6.0` with core range `^11.2.1`, which permits `11.3.0` but does not prove an installed upgrade or introduce a React token-refresh wrapper. Source and exact evidence: [[source-github-paypal-js]]; timeline: [[changelog-github-paypal-js]]. No package build, browser or payment execution was performed.
+
 ### Historical v6 sample baseline at `b5f2df2`
 
 The `paypal-examples/v6-web-sdk-sample-integration` baseline combines static JavaScript, React/TypeScript, and Node.js examples. The standard PayPal flow fetches a server-owned client ID, checks PayPal, Pay Later, and Credit eligibility separately, starts the selected session with an unresolved create-order promise to preserve browser transient activation, and captures on approval.

@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-js"
 type: source
 date_ingested: 2026-07-30
-date_updated: 2026-10-12
+date_updated: 2026-10-24
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json"
@@ -30,6 +31,24 @@ tags: [paypal, javascript-sdk, react, npm, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for the independently versioned packages in `paypal/paypal-js`. Detailed implementation knowledge belongs in [[source-github-paypal-js]] and the linked immutable snapshots.
+
+## Repository change set: `21435c2` (2026-10-20 UTC)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/paypal-js` | `11.2.2` | `11.3.0` | `21435c291d38bf375abbc60b5207b8fff13fb69d` | Delta |
+
+Package-qualified release `@paypal/paypal-js@11.3.0` was collected and ingested October 24 as approved serial work item `github-0e72035e00894050ad04`. React remains independently `10.6.0` and is not a new release in this work item.
+
+**Impact:** adds the v6 `BaseInstance.updateClientToken(clientToken): void` declaration, documenting replacement for the same client ID/merchant without recreating the instance or sessions. Client-ID-created instances and invalid JWTs are documented throw cases; PayPal JWTs and Braintree-wrapped tokens are accepted by the declared contract. This is typed/hosted-runtime contract evidence, not local implementation or automatic token renewal. The loader doubles its per-attempt timeout from 30 to 60 seconds and only accepts a namespace with a string version starting with `6`, preventing an existing v5 SDK from satisfying v6 success checks.
+
+**Migration:** use server-issued browser-safe replacement tokens with the same identity and handle synchronous errors. Verify the hosted method independently; do not treat client-token replacement as vault-token exchange or View/Edit Saved Payment. Adjust loading UX for the longer wait; explicit-error retries remain capped at two and genuine timeouts still do not auto-retry. Keep namespace/environment options consistent. React's unchanged `^11.2.1` dependency permits `11.3.0`, but does not establish installed resolution or add a React refresh wrapper.
+
+**Updated knowledge:** [[paypal-checkout]] first; additive core 11.3.0 source section, grounding, latest-status table, company/provider catalog and logs. All older source/changelog sections, warning callouts and raw evidence preserved. No new source page, count change or cross-company comparison warranted. The automated API scan misses the new declared method; the source diff is authoritative for that addition.
+
+**Reading boundary:** complete cumulative wiki history, changed retained files, cumulative raw changelog, release notes/comparison and affected prior code read. Generated manifests and packet inventories mechanically checked under the explicit item-specific exception; both snapshots' 322 file sizes, SHA-256 hashes and Git blob IDs pass, with six modified retained paths and 155 unchanged. Release/packet/comparison hashes pass; no unclassified upstream changes or recorded gaps. Tests in the patch are regression intent, not executed results. No build, browser or payment execution.
+
+Evidence: [snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/manifest.json), [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/release-notes.md), [comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.2--11.3.0/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.2--11.3.0/diff.patch), [token declaration](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/types/v6/index.d.ts), [namespace helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/dom.ts), and [timeout constants](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/constants.ts).
 
 ## Repository change set: `f58396a` (2026-10-09 UTC)
 
@@ -572,6 +591,8 @@ The same SHA contains `@paypal/paypal-js@9.0.0`, matching React 8.9.2's declared
 The same SHA contains `@paypal/react-paypal-js@8.9.1`, but no React release is recorded in this change set because the approved work item contains only `@paypal/paypal-js@8.4.2`. A future React release ingest will add its own package-qualified timeline entry.
 
 ## Raw Sources
+
+- [Core 11.3.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/manifest.json), and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/release-notes.md)
 
 - [Core 11.2.2 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/manifest.json), and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/release-notes.md)
 

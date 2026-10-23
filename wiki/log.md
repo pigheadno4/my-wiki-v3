@@ -1,5 +1,10 @@
 # Wiki Log
 
+## [2026-10-24] ingest | PayPal JS core `11.3.0`
+
+- Approved additive delta: v6 client-token replacement declaration, 60-second loader timeout and non-v6 namespace exclusion. React remains `10.6.0`; earlier history and source count preserved. Details [[paypal-log]], [[source-github-paypal-js]] and [[changelog-github-paypal-js]]. No hosted/payment execution, commit or push.
+
+
 ## [2026-10-24] ingest | Adyen website C31
 
 - Fifty independently approved VX820 non-Duet, payment-method catalog/setup, cards and Apple Pay foundation documentation sources; first full-review approvals 42/50 and 8 targeted correction reviews. 5 concepts touched (0 new); source_count 1564 = 1550 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-31/`; details [[adyen-log]]. No commit/push.

@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-js"
 type: source
 date_ingested: 2026-04-13
-date_updated: 2026-10-12
+date_updated: 2026-10-24
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-11-cbec2ba/manifest.json"
   - "github/paypal/paypal-js/snapshots/2026-10-02-d9966e6/manifest.json"
@@ -30,7 +31,9 @@ tags: [paypal, javascript-sdk, react, npm, typescript, github-repository, venmo]
 
 ## Overview
 
-Latest ingested releases: `@paypal/paypal-js@11.2.2` (release record October 9 UTC) and `@paypal/react-paypal-js@10.6.0` (October 5 UTC), collected October 11 and ingested October 12. Core resolves a missing-load-event case when the namespace exists at its 30-second timeout; otherwise it preserves the no-timeout-retry behavior added in `11.2.1`. React adds Venmo save-with-purchase forwarding and a save-without-purchase button/hook. Earlier package-qualified knowledge, including the `11.2.0` retry-documentation contradiction and all prior supplements, remains below.
+Latest ingested releases: `@paypal/paypal-js@11.3.0` (October 20 release, October 24 collection/ingest) and independently unchanged `@paypal/react-paypal-js@10.6.0`. Core adds the v6 `updateClientToken()` TypeScript contract, raises the loader timeout to 60 seconds and excludes non-v6 namespaces from successful-load detection. These changes do not establish hosted token-refresh implementation or a new React saved-payment editing wrapper. All earlier package-qualified sections, warnings and supplements remain below.
+
+Prior October 12 checkpoint: `@paypal/paypal-js@11.2.2` (release record October 9 UTC) and `@paypal/react-paypal-js@10.6.0` (October 5 UTC), collected October 11 and ingested October 12. Core resolves a missing-load-event case when the namespace exists at its 30-second timeout; otherwise it preserves the no-timeout-retry behavior added in `11.2.1`. React adds Venmo save-with-purchase forwarding and a save-without-purchase button/hook. Earlier package-qualified knowledge, including the `11.2.0` retry-documentation contradiction and all prior supplements, remains below.
 
 `paypal/paypal-js` is PayPal's JavaScript SDK monorepo. It contains two independently versioned packages: `@paypal/paypal-js`, the vanilla loader and TypeScript definitions, and `@paypal/react-paypal-js`, the React integration layer.
 
@@ -48,6 +51,13 @@ Repository: <https://github.com/paypal/paypal-js>
 - September 15 work item `github-961c3611b36c6341ad56` was approved as full additive ingest with an explicit item-specific focused reading scope: all 24 changed retained files, relevant dependencies, complete release/comparison records and wiki history, and all six attached Storybook files. The entire capsule remains immutable; unchanged unrelated files and generated schemas were not reread. This does not change the registry's default full-reading policy or claim a whole-repository review.
 
 ## Grounding excerpts
+
+### Core 11.3.0 grounding
+
+- `export const SCRIPT_LOAD_TIMEOUT_MS = 60_000;` - `raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/constants.ts:11`.
+- `!paypalWindowReference.version.startsWith("6")` - same snapshot, `files/packages/paypal-js/src/v6/dom.ts:13`.
+- `updateClientToken: (clientToken: string) => void;` - same snapshot, `files/packages/paypal-js/types/v6/index.d.ts:231`.
+- `for the same clientId and merchant.` - same declaration file, line 219.
 
 ### Core 11.2.2 grounding
 
@@ -331,7 +341,7 @@ Repository: <https://github.com/paypal/paypal-js>
 
 | Package | Latest ingested release | Evidence status |
 | --- | --- | --- |
-| `@paypal/paypal-js` | `11.2.2` | Serial delta ingest; v8 through 11.2.1 history retained |
+| `@paypal/paypal-js` | `11.3.0` | Serial delta ingest; v8 through 11.2.2 history retained |
 | `@paypal/react-paypal-js` | `10.6.0` | Same shared-SHA delta; v8 through 10.5.2 and prior Storybook supplements retained |
 
 This table reports wiki ingest progress, not the latest version published upstream.
@@ -583,6 +593,37 @@ If the namespace is absent, the earlier 30-second rejection, retained pending el
 React is still independently `10.6.0`; no React release belongs to this work item. Its existing core range `^11.2.1` permits `11.2.2`, but a merchant's actual installed version depends on dependency resolution/lockfile evidence. No new saved-payment, Venmo, or payment-session API is added by this core patch.
 
 **Reading boundary:** approved delta `github-294704633f9b426cbd53`, ingested 2026-10-12 using focused reading. Changed code/metadata, complete patch and affected prior implementation/dependencies read; unchanged history and both inventories verified mechanically (324 file hashes/sizes). Three retained files modified, 158 unchanged; the prior timeout HTML and React changelog are no longer selected, not upstream deletions. Their prior evidence and the `11.2.1`/`10.6.0` knowledge remain. No browser, package build or payment execution.
+
+#### `@paypal/paypal-js@11.3.0`
+
+Released October 20 at `21435c291d38bf375abbc60b5207b8fff13fb69d`, compared with `11.2.2` at `f58396a4cc57552e475fb198234d8e822c25e6b4`. Approved delta `github-0e72035e00894050ad04`, collected and ingested October 24.
+
+**Client-token replacement contract:** [the v6 declaration](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/types/v6/index.d.ts) adds `updateClientToken(clientToken: string): void` to `BaseInstance`, inherited by component-qualified SDK instances. Its JSDoc says it replaces the client token for the instance and its sessions without calling `createInstance()` again, for the same client ID and merchant. It accepts a PayPal JWT or Braintree-wrapped client token and documents a throw if the instance was created with a client ID or the token is not a valid JWT.
+
+This is a declaration added to the loader/type package, not local implementation of token validation, session propagation, automatic expiry detection or token issuance. The matching hosted SDK must support the method; this ingest does not establish when that runtime first shipped or merchant eligibility. Client tokens are not persistent vault/payment tokens, and this addition is not the sample repository's View/Edit Saved Payment API.
+
+Illustrative call on an existing token-created SDK instance; not a complete integration or executed runtime/compiler test:
+
+```ts
+import type { SdkInstance } from "@paypal/paypal-js/sdk-v6";
+
+function replaceClientToken(
+  sdkInstance: SdkInstance<readonly ["paypal-payments"]>,
+  replacementToken: string,
+) {
+  // Obtain a browser-safe token from the merchant server for the same identity.
+  // Handle a synchronous error; the declared return type is void, not a Promise.
+  sdkInstance.updateClientToken(replacementToken);
+}
+```
+
+**Loader wait:** [constants](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/constants.ts) change the per-attempt timeout from 30,000 to 60,000 ms. The [unchanged retry helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/load-script-with-retry.ts) still rejects a genuine timeout without adding another script, retains the pending element with its shared late-result observer, and permits at most two retries after explicit errors. Sixty seconds is per attempt, not a total deadline across error retries. A late load does not resurrect an already rejected promise. Applications retain responsibility for loading UX and final failure handling; this is not payment-request retry policy.
+
+**Namespace correction:** [the DOM helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/dom.ts) now returns a namespace only when `version` is a string starting with `6`. The entry point therefore reuses that validated helper result. All helper consumers, including retry-delay, load-event, timeout-success and late-observer paths, stop treating an existing v5 SDK as a successfully loaded v6 SDK. The `11.2.2` missing-load-event recovery remains, now constrained by that check. It is only a prefix check, not semantic-version parsing or authenticity verification; namespace-only in-flight keys and pathname/state-based pending-element selection remain unchanged, so use consistent environment/options.
+
+**React boundary:** no React implementation, export or version changes. `10.6.0` still declares core `^11.2.1`, which allows `11.3.0`; inspect actual installed resolution rather than assuming an upgrade. This does not add a React refresh hook/provider integration or saved-payment editing wrapper. The automated API scan lists no public changes, but the exact `BaseInstance` declaration proves an additive method; do not treat that scan as exhaustive.
+
+**Reading and evidence:** all six changed retained files, cumulative raw changelog, complete wiki source/changelog, release notes, comparison and affected prior code/dependencies read. Under the item-specific user exception, generated manifests and packet inventories were mechanically verified: 322 file sizes/SHA-256/Git blob IDs across two 161-file snapshots, 155 unchanged files and no retained additions/removals. All upstream changes have a disposition; tests are excluded under existing policy but their patch is retained as intended regression coverage, not executed results. No package build, browser, hosted SDK or payment test. Historical sections and raw links are preserved.
 
 ## `@paypal/react-paypal-js`
 
@@ -1079,6 +1120,9 @@ See [[changelog-github-paypal-js]] for the chronological package release ledger 
 - Sources: [[source-paypal-javascript-sdk-reference]], [[source-paypal-js-sdk-v6-setup]]
 
 ## Raw Sources
+
+- [Core 11.3.0 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/manifest.json), and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.3.0/2026-10-24/release-notes.md)
+- [Core 11.2.2 to 11.3.0 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.2--11.3.0/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.2--11.3.0/diff.patch), [v6 entry](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/paypal-js/src/v6/index.ts), and [unchanged React package metadata](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-24-21435c2/files/packages/react-paypal-js/package.json)
 
 - [Core 11.2.2 snapshot](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/manifest.json), [release record](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/manifest.json), and [notes](../../../../raw/github/paypal/paypal-js/releases/paypal-js/11.2.2/2026-10-11/release-notes.md)
 - [Core 11.2.1 to 11.2.2 comparison](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-js/comparisons/paypal-js/11.2.1--11.2.2/diff.patch), and [unchanged DOM helper](../../../../raw/github/paypal/paypal-js/snapshots/2026-10-11-f58396a/files/packages/paypal-js/src/v6/dom.ts)
