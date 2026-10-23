@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-name-validation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen cardholder name validation\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/name-validation\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/name-validation/2026-09-15.md\"\ntags: [adyen, cards, name-validation, online-payments]\n---\n\n## Overview\n\nThis Adyen guide (last-modified metadata 2022-08-09; captured 2026-09-15) describes requesting a Visa or Mastercard cardholder-name comparison against issuer records during a **zero-value authorization** in the **Advanced online-payments flow**, Checkout API **v69 or later**. It presents fraud, KYC and payout reliability as potential uses, not proof of identity, regulatory compliance, a paid authorization, capture, settlement, or payout. A fee applies to each transaction where name validation is performed. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The stated requirements are an API key on a credential with the Checkout webservice role, issuer readiness, a zero-value authorization, and Visa or Mastercard payments in the United States, United Kingdom, or Europe. This dated scope does not establish current issuer or merchant eligibility. (raw lines 27\u201336)\n- Send `/payments` with `amount.value: 0`, card details (`paymentMethod.type: scheme`), the cardholder name, and `paymentValidations.name.status: requested`. The guide specifies encrypted card fields, with unencrypted fields only for a fully PCI-compliant integration. `shopperName.firstName` and `lastName` are preferred; if omitted, Adyen falls back to `paymentMethod.holderName`, deriving the first name up to its first space or period. Apple Pay and Google Pay do not return the shopper name for this flow; the merchant must collect a checkout-entered name and pass it to `/payments`. (raw lines 47\u201354, 60\u201371, 490\u2013494)\n- The synchronous response's `paymentValidations.name.status` can be `performed`, `notPerformed`, or `notSupported`. The guide says unsupported issuer validation has no validation charge. Visa returns a raw status; Mastercard does not. A separate `result` supplies `match`, `partialMatch`, or `noMatch`; Visa has full/first/middle/last-name fields, Mastercard full name only. The schemes maintain the full-name combination logic, which Adyen says is opaque to it. A merchant must decide what to do with the result, for example separately authorize a payment or seek additional verification. (raw lines 49\u201356, 503\u2013529)\n- Example response `resultCode: Authorised` is paired with `amount.value: 0`; it illustrates the zero-value check, not movement of purchase or payout funds. Test names and the `NotPerformed`/`NotSupported` reference triggers are test fixtures, not live controls. (raw lines 537\u2013590, 592\u2013653)\n\n## Example qualifications and conflicts\n\n- The curl, Node, Python and Ruby examples include `paymentValidations.name.status: requested`; the Java, PHP, C#, Go and TypeScript request snippets omit `paymentValidations` even though the prose says to include it. Those snippets alone are incomplete for requesting validation. (raw lines 49, 69, 79\u2013108, 142\u2013151, 193\u2013205, 249\u2013260, 278\u2013306, 345\u2013356, 371\u2013399, 413\u2013440, 477\u2013487)\n- The Visa test row for \u201cJohn Peter Smith\u201d shows raw `fullName: 01` together with Adyen `fullName: partialMatch`, while the outcome mapping labels Visa raw `01` as `match`. Treat that row as an unresolved example inconsistency, not a dependable mapping rule. (raw lines 525\u2013529, 618\u2013624)\n- The guide says additional `paymentValidations` types are being developed; this is future-facing guidance, not evidence that those types are supported in this snapshot. (raw line 56)\n\n## Detail locators\n\n- Requirements and flow: raw lines 27\u201356.\n- Request fields, wallet-name handling and language examples: raw lines 60\u2013489.\n- Holder-name fallback and response status/outcomes: raw lines 490\u2013529.\n- Illustrative responses and test scenarios: raw lines 531\u2013653.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/name-validation/2026-09-15|Adyen name validation guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The service is offered by Visa and Mastercard, and requires you to pay a fee for each transaction where name validation is performed.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "An [online payments integration using the Advanced flow](/online-payments/build-your-integration/advanced-flow) with Checkout API v69 or later.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "Set to **requested** to request a name validation.",
+      "location": "raw line 69"
+    },
+    {
+      "text": "Mastercard does not return a `rawResponse.status`.",
+      "location": "raw line 505"
+    },
+    {
+      "text": "The logic to determine the outcome of this combination is built and maintained by schemes, and is not transparent to Adyen.",
+      "location": "raw line 523"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "name-validation-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-name-validation]] \u2014 2026-09-15-captured Visa/Mastercard zero-value name-validation guide for Advanced Checkout API v69+, with issuer/region/PCI limits and conflicting examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Several language examples omit the required paymentValidations request field; one Visa test row conflicts with the status mapping."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/name-validation/2026-09-15.md",
+  "raw_sha256": "8aa24ab2f7720a5de4b25ca85c102a751625e6e86ed28fb059b8757de456b7ac",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-cards-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen React Native Card Component integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/react-native-component/2026-09-15.md\"\ntags: [adyen, cards, react-native, components, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] page, captured and last modified 2026-09-15, explains adding cards to an **existing React Native Components** integration. It is a payment-method-specific supplement, not a complete Sessions or Advanced integration guide. Its examples use the `@adyen/react-native` wrapper but do not pin that package's version; see [[adyen-react-native-sdk]] for separately versioned wrapper architecture. The page does not document final payment-result handling, 3DS action callbacks, or PCI assessment for the whole integration.\n\n## Key takeaways\n\n- **Prerequisite and basic start:** The merchant must first build a React Native Components integration and add cards in the **test** Customer Area. The page says cards require no additional card-specific `/payments` fields or required Components integration. Optional `AdyenCheckout` configuration includes holder name, CVC visibility, billing address and lookup callbacks, card brands, region-specific inputs, storage switch, and BIN callbacks. A button example calls `useAdyenCheckout().start('card')`; it depends on the `/paymentMethods` method type and broader integration wiring. See pinned raw lines 19\u201376.\n- **Card presentation:** Checkout API v53+ `splitCardFundingSources: true` in the server-side `/paymentMethods` request can return separate credit and debit card objects; the Netherlands EUR 47 / v72 request is illustrative. Card brand recognition changes icon and security-code field. Co-badged card presentation is described as showing supported brands and shopper choice. The source recommends 3D Secure and automatic capture for debit transactions because of some issuer restrictions and gives a Sweden debit-before-credit note. These are dated, conditional regional recommendations, not proof of current legal or merchant eligibility. See pinned raw lines 79\u2013153.\n- **Stored cards and a source conflict:** The page supports one-click, subscription, and unscheduled card-on-file tokenization and strongly recommends explicit shopper permission for future recurring payments. Its prose says to set `showStorePaymentField: true` so the shopper sees a storage switch, while the immediately following configuration snippet sets it to `false`\u2014which the option table says hides that switch. Follow the prose only after checking the intended flow and exact SDK behavior; the snippet is internally inconsistent. The zero-value card-token request uses test-prefixed card placeholders, `storePaymentMethod`, `CardOnFile`, `Ecommerce`, a shopper reference, and server-side `/payments`; token creation is evidenced through a `recurring.token.created` webhook carrying `storedPaymentMethodId`, not the example request alone. See pinned raw lines 155\u2013578.\n- **Token-use examples and limits:** The one-click sample supplies a stored-method ID plus encrypted security code, yet uses `shopperInteraction: ContAuth`; keep this as sample wording rather than a general shopper-initiated rule. Subscription and unscheduled examples use the same stored-method ID with their respective `recurringProcessingModel` values. Illustrations use Checkout **test** v72 and several language-library versions; some `storePaymentMethod` samples use string values where typed examples use booleans. These examples do not establish a compatible complete implementation, successful 3DS, authorization, capture, settlement, or payout. See pinned raw lines 185\u20131643.\n- **Test versus LIVE:** The page permits `test_`-prefixed test card details for testing API requests while the client integration is unfinished. Before live card payments it says to test with test cards and add desired cards in the **live** Customer Area. Those steps are not evidence that cards are currently enabled for a merchant or that any live payment succeeded. This page does not set out a full PCI scope or production credential-handling procedure; consult [[adyen-pci-dss-compliance]] for architecture-specific assessment. See pinned raw lines 1645\u20131653.\n\n## Detail locators\n\n- Requirements, optional Card Component settings and `start('card')` example: pinned raw lines 19\u201377. Address lookup requires `onUpdateAddress` and `onConfirmAddress` when `addressVisibility=lookup`; `onBinLookup` has an 11-digit minimum, while `onBinValue` returns the first six digits and requires a client key (lines 48\u201356).\n- Debit/credit split, Netherlands example, regional guidance, brand recognition and co-badging: pinned raw lines 79\u2013153.\n- Consent advice, storage-switch conflict, zero-value `/payments` token-creation samples and token webhook: pinned raw lines 155\u2013578.\n- One-click, subscription and unscheduled stored-card examples: pinned raw lines 580\u20131643. The one-click curl shows encrypted CVC with `ContAuth` (lines 585\u2013608); no action callback or payment-result sequence is given here.\n- Test and live checklist: pinned raw lines 1645\u20131653.\n\n## Related\n\n- [[adyen-react-native-sdk]] \u2014 wrapper and independently versioned native SDK boundaries.\n- [[adyen-online-payments]] \u2014 broader client/server/webhook integration architecture.\n- [[adyen-tokenization]] \u2014 consent, shopper reference and token lifecycle.\n- [[adyen-3d-secure]] \u2014 authentication route; this page only recommends it for some debit cases.\n- [[adyen-pci-dss-compliance]] \u2014 merchant assessment by actual card-data architecture.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/react-native-component/2026-09-15|React Native Card Component integration, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add cards to your existing React Native Components integration.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "| **Integration type** | Make sure that you have built your [React Native Components integration](/online-payments/build-your-integration). |",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "* [In your `AdyenCheckout` configuration](#configuration), make sure that `showStorePaymentField` is set to **true**. This shows a switch for your shopper to choose to store their card details.",
+      "location": "pinned raw line 165"
+    },
+    {
+      "text": "      showStorePaymentField: false",
+      "location": "pinned raw line 171"
+    },
+    {
+      "text": "When a token is created, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) webhook. The webhook contains the `storedPaymentMethodId` that you can use to make subsequent payments using the stored payment details.",
+      "location": "pinned raw line 578"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-react-native-card-component-source-route",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-react-native-component]] \u2014 2026-09-15 React Native Card Component supplement for card settings, brand/funding presentation and token examples; storage-switch snippet conflicts with its prose and no wrapper package version is pinned.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide instructs showStorePaymentField: true but the adjacent code sets false; avoid treating that snippet as a valid consent UI.",
+          "One-click stored-card CVC sample uses shopperInteraction: ContAuth; do not infer a general shopper-initiated rule or payment completion.",
+          "The webpage does not pin a @adyen/react-native release and does not document complete Sessions/Advanced or 3DS action handling."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/react-native-component/2026-09-15.md",
+  "raw_sha256": "437bd751334724d9bdb6e985db5ce55add3787483caa612c629556027d6637c7",
+  "status": "candidate_ready"
+}

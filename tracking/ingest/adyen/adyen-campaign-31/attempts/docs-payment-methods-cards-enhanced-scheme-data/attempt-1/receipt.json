@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-enhanced-scheme-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen enhanced scheme data for online card payments\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/enhanced-scheme-data/2026-09-15.md\"\ntags: [adyen, cards, enhanced-scheme-data, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] overview defines enhanced scheme data (ESD) as additional information sent with **online card payment or capture requests** so shoppers can see purchase detail on statements and use it for reporting. It distinguishes optional Visa/Mastercard Level 2/3 or travel data that **can** lower interchange fees by up to 1%, without affecting authorization rates, from data required for compliance or eligibility, such as American Express fraud/reporting data, that does not lower interchange. These are conditional purposes, not a fee or payment-outcome guarantee. The page routes in-person integrations to a separate POS guide. [[adyen-online-payments]]\n\n## Key takeaways\n\n- The stated integration prerequisite is an **Advanced-flow online payments integration** that listens for AUTHORISATION and CAPTURE webhooks. ESD type depends on scheme and merchant category code (MCC), with some industries assigned airline, car-rental, lodging, or Level 2/3 data. The MCC table is a guide to type, subject to the explicit no-ESD MCC exclusions. Eligibility must not be inferred from a child-guide link or the \u201call other MCCs\u201d row alone. See raw lines 19\u201329, 31\u201339, and 57\u201397.\n- Adyen says it processes a payment **without submitted ESD** if the business is ineligible or the data is incomplete/invalid. Once a payment is processed, its submitted ESD cannot be changed or fixed. Different ESD types cannot be combined in one request, and refunds/reversals do not use ESD; the page recommends omitting it there. These ESD limitations do not themselves state a declined authorization or failed capture. See raw lines 40\u201354 and 85\u201397.\n- The overview says Checkout API `/payments/{paymentPspReference}/captures` does **not** support car-rental or lodging ESD in this snapshot; an existing Classic API integration can use `/capture` instead. This is a route/version-specific boundary, not general absence of these ESD types. See raw lines 47\u201350.\n- For Visa interchange-fee discounts, the page calls for AVS setup and AVS data in each Visa request. That is a stated qualification for the discount, not a claim that AVS alone grants eligibility or savings. See raw line 55.\n- The explicit no-ESD MCC list is 4112, 5812, 4468, 5541, 5542, 5983, and 5499; Adyen says it processes a payment from those MCCs without ESD if supplied. The nearby \u201call other MCCs\u201d Level 2/3 row must be read with this exception. See raw lines 63\u201397.\n\n## Detail locators\n\n- ESD purposes, fee ceiling and authorization-rate distinction: raw lines 22\u201329.\n- Scheme/MCC type table and exclusions: raw lines 57\u201397.\n- Child routes under \u201cSend ESD\u201d cover Level 2/3, airline, car rental, lodging, American Express, and FSA/HSA: raw lines 99\u2013123. These links are navigation; this overview does not provide their request fields or establish merchant availability.\n- Source metadata reports a 2023-05-26 modification and a 2026-09-15 capture (raw lines 2, 11). Treat the displayed rules as this captured snapshot, not current scheme or compliance authority.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-payment-capture]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/2026-09-15|Adyen enhanced scheme data overview snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Enhanced scheme data (ESD) is additional data that you send with your payment or capture requests for card transactions.",
+      "location": "raw line 22, opening definition"
+    },
+    {
+      "text": "This data is optional and does not affect authorization rates.",
+      "location": "raw line 26, purpose list"
+    },
+    {
+      "text": "An [online payments integration that uses the Advanced flow]",
+      "location": "raw line 37, Requirements table"
+    },
+    {
+      "text": "After a payment is processed, you cannot change or fix the ESD that you sent with it.",
+      "location": "raw line 45, Requirements > Limitations"
+    },
+    {
+      "text": "If you send ESD, we process the payment without the ESD.",
+      "location": "raw line 87, Not eligible for ESD"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-esd-overview-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data]] \u2014 2026-09-15-captured online card ESD overview for conditional fee/compliance purposes, Advanced-flow prerequisites, MCC eligibility/exclusions and capture-route limits; child ESD guides remain separate authority.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer merchant eligibility, fee savings, or authorization outcome from the overview's ESD type table."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/2026-09-15.md",
+  "raw_sha256": "cea52ea4bf1ca6827ed0921e7a61501a654013d9a275385f92f2050a3a5dc227",
+  "status": "candidate_ready"
+}

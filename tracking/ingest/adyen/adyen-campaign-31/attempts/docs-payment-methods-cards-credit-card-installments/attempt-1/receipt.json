@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-credit-card-installments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen credit card installments\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/credit-card-installments\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/credit-card-installments/2026-09-15.md\"\ntags: [adyen, cards, installments, online-payments]\n---\n\n## Overview\n\nAdyen online credit-card installment guide for Brazil/BRL, Mexico/MXN and Japan/JPY, covering country and network plan options, Web checkout or custom-card setup, payment requests, and later reconciliation and funds timing. The page metadata says last modified 2022-12-21 and this copy was captured 2026-09-15. Its support tables and examples do not prove present merchant, bank, card, or regional eligibility.\n\n## Key takeaways\n\n- A successful installment purchase charges the first installment immediately and schedules following installments automatically; cards that support 3D Secure can also use it for authentication. The page lists refunds, partial refunds, separate/partial captures and chargebacks for its three country/currency rows, but those feature marks do not establish a particular transaction outcome (raw lines 19\u201331).\n- Country counts differ: Brazil allows 1\u201399, Mexico names 3/6/9/12/18 monthly installments, and Japan regular plans allow 2\u201399. Japan additionally describes regular, revolving and bonus plans; revolving requires prior issuer approval and the network matrix differs by plan (raw lines 33\u201357).\n- Prerequisite routes are Web Drop-in/Components v3.15.0+ or a custom card UI. For Web, `/sessions` installment options are documented from v5.21.0+, while the `/payments` path sets options in the Drop-in or Card Component configuration from v3.15.0+. Sessions offers all-card or brand-specific options with `values`, optional `preselectedValue` and `plans` listed as regular/revolving; the guide\u2019s older table marks `values` required (raw lines 59\u201390, 458\u2013929). The existing [[adyen-online-payments]] concept records newer exact Web SDK 6.47.0 code accepting plan-only configuration; retain the version difference rather than applying this older table universally.\n- With a custom card UI, Brazil/Mexico send valid `installments.value` on the first `/payments` request; the guide says Brazilian merchant-charged installment interest is added to `amount.value`. Japan requires Checkout API v64+ and adds `installments.plan`: regular uses value 2\u201399, revolving/bonus value 1. The `/sessions` `plans` table lists only regular/revolving while the Japan `/payments` path also documents bonus; these are distinct surfaces, not an all-flow plan list (raw lines 930\u2013945, 1316\u20131332). Encrypted-card payloads, test endpoints, library-version snippets and idempotency keys are illustrations, not proof of a safe or successful implementation.\n- On a successful first payment the guide describes a `/payments` response and AUTHORISATION webhook; it says no webhook arrives for later installment charges, whose success is checked in Settlement details reporting. This does not equate the first authorization with later settlement or bank receipt (raw lines 1312\u20131314, 1709\u20131711).\n- Payout timing depends on country: Brazil says each settled installment has a 30-day settlement delay, with fee-bearing advances offered; Mexico and Japan say funds are received in full on first-installment settlement, with stated Japan Visa/Mastercard exceptions. Mexico additionally gives a then-supported issuer-bank list and requires a direct legal agreement with other issuing banks, plus an additional scheme fee. These are historical provider statements, not current support or a guarantee of receipt (raw lines 1713\u20131736). Test with test card numbers before live installments (raw lines 1738\u20131742).\n\n## Detail locators\n\n- Country/currency feature matrix and plan/network choices: raw lines 19\u201357.\n- Web prerequisites, Sessions options and all-card/brand-specific examples: raw lines 59\u2013871.\n- Web client configuration examples: raw lines 872\u2013929.\n- Brazil/Mexico and Japan custom-UI `/payments` examples and versioned library samples: raw lines 930\u20131711.\n- Country settlement, issuer-bank and test notes: raw lines 1713\u20131742.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/credit-card-installments/2026-09-15|Adyen credit card installments snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Paying in installments is a popular form of credit card purchase in Brazil, Mexico, and Japan.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "* Revolving: a payment is split into an initial partial payment, and the remaining amount is split in installments. The cardholder must get a prior approval from the issuer.",
+      "location": "raw line 48, Japan plans"
+    },
+    {
+      "text": "* If you use the [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) endpoint, [include the installment options object when you create a session](#sessions-request). Supported in [v5.21.0](/online-payments/release-notes?integration_type=web\\&version=5.21.0) or later.",
+      "location": "raw line 72, Web Drop-in or Components"
+    },
+    {
+      "text": "You will not receive webhooks for subsequent installment payments.",
+      "location": "raw line 1314, Brazil/Mexico payment outcome"
+    },
+    {
+      "text": "To accept installment payments made with cards issued by other banks, you must have a legal agreement directly with the bank that issued the card.",
+      "location": "raw line 1730, Getting paid > Mexico"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-credit-card-installments-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-credit-card-installments]] \u2014 2022-modified, 2026-09-15-captured online credit-card installment guide for Brazil, Mexico and Japan, versioned Web/custom-UI setup, later-charge reconciliation and country funds timing; its older required-`values` table differs from the exact Web 6.47.0 code note above.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw's older Sessions table marks values required, while the main concept's newer Web SDK 6.47.0 code note allows plan-only choices. Preserve exact-version scope."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/credit-card-installments/2026-09-15.md",
+  "raw_sha256": "e1622190f65a05d36d3b5bb7484e31660c242b2e12b6091d1a941571ac4dccc8",
+  "status": "candidate_ready"
+}

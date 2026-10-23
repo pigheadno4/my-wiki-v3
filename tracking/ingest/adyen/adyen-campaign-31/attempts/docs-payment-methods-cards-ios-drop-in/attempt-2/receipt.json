@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-payment-methods-cards-ios-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen iOS Card Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/ios-drop-in/2026-09-15.md\"\ntags: [adyen, cards, ios, drop-in, online-payments]\n---\n\n## Overview\n\nAdyen guide for adding cards to an existing iOS Drop-in integration. It branches by Sessions versus Advanced server-side flow and iOS Drop-in version. Both flow tabs require the corresponding iOS Drop-in integration and adding cards in Customer Area before starting. The guide says cards need no additional card-specific API fields for the basic integration; optional/use-case fields have separate conditions. This is a 2026-09-15 webpage snapshot, not evidence of present merchant enablement or a successful payment.\n\n## Key takeaways\n\n- Sessions is the default path described for Drop-in v5.0.0 or later; the Advanced section calls itself the default for Drop-in v4.10.0 and earlier. The configuration tables separately name v4.10.3 or earlier. Do not merge those version statements into a new cutoff (raw lines 39\u201395, 847\u2013849).\n- Optional card fields cover cardholder name, security code visibility, allowed card types, billing address and market-specific fields. Separate debit and credit forms use server-sent `splitCardFundingSources: true` on Sessions `/sessions` or Advanced `/paymentMethods` (the latter says Checkout API v53+). The Netherlands amount is an example; Sweden ordering, co-badged selection and combo-card advice have their own qualifications (raw lines 65\u2013205).\n- Card tokenization is presented for one-click, subscription and unscheduled card-on-file use. The page strongly recommends explicit shopper permission for future recurring charges. Sessions token examples use `/sessions` and API/library versions and show `askForConsent` in curl/Node/Go but `enabled` in other library samples; these examples do not establish one universal consent setting. Advanced creation uses `/payments` and refers to `recurring.token.created` for the stored payment method ID (raw lines 207\u2013540, 847\u20131259).\n- The Advanced text says `showsStorePaymentMethodField` must be true to show a storage checkbox, while its immediately following Swift sample sets it to false. Treat that sample as contradictory, not a verified checkbox implementation. The Checkout API v69-or-earlier Sessions note instead names `enableStoreDetails` (raw lines 536\u2013540, 851\u2013864).\n- The initial 'Create a token for one-click payments' request examples use `shopperInteraction: Ecommerce` in both Sessions and Advanced flows (raw lines 223\u2013242, 866\u2013893); the later 'Make a one-click payment' examples use `ContAuth` (raw lines 542\u2013563, 1261\u20131288). Subscription and unscheduled examples also use `ContAuth` with their respective `recurringProcessingModel`. These are example-bound interaction values, not universal shopper-present rules. Token creation/reuse, 3D Secure, authorization, capture and settlement are distinct events; no example proves an outcome.\n- Live-card prerequisites in this guide include test-card testing, adding desired cards in the live Customer Area, assessing PCI DSS compliance, and submitting the required SAQ A. Its `test_` encrypted-card values and checkout-test URLs are test illustrations, not live credentials or a PCI determination (raw lines 2388\u20132398).\n\n## Detail locators\n\n- Requirements, API endpoints and v5/v4 card configuration: raw lines 21\u201395.\n- Debit/credit separation, Sweden, combo/co-badged cards: raw lines 97\u2013205.\n- Sessions token creation and reuse with illustrative, versioned language samples: raw lines 207\u2013846.\n- Advanced token creation, stored-payment-method webhook and one-click/subscription/unscheduled examples: raw lines 847\u20132325.\n- v5 Sessions versus v4 client-side installment options: raw lines 2326\u20132387.\n- Test and go-live checklist: raw lines 2388\u20132398.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/ios-drop-in/2026-09-15|Adyen iOS Card Drop-in integration snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add cards to your existing iOS Drop-in integration.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "You do not need to send additional fields for cards.",
+      "location": "raw line 41, API reference"
+    },
+    {
+      "text": "Supported from Checkout API v53 or later.",
+      "location": "raw line 133, Advanced debit/credit separation"
+    },
+    {
+      "text": "* Make sure that `showsStorePaymentMethodField` is set to **true** [when creating an instance of Drop-in](#configuration). This shows a checkbox for your shopper to choose to store their card details.",
+      "location": "raw line 857, Advanced Store card details"
+    },
+    {
+      "text": "configuration.card.showsStorePaymentMethodField = false",
+      "location": "raw line 861, immediately following Swift sample"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-cards-ios-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-ios-drop-in]] \u2014 2026-09-15 iOS Card Drop-in guide for Sessions/Advanced setup, card form options, tokenization and live prerequisites; Advanced storage-checkbox and Sessions consent examples conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced storage-checkbox prose requires true but immediately following sample sets false; Sessions token examples differ between askForConsent and enabled."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "d85f68d03fbb99f76d6d0b3458d3466b5e75938f0fa68fceb28f1cd546ff0c38",
+  "status": "candidate_ready"
+}

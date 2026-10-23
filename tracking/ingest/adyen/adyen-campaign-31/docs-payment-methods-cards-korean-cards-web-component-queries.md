@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-cards-korean-cards-web-component
+
+Q1. What must be added for Korean Card Payments via redirect in a Web Components integration?
+
+A1. This is a method-specific addition to an existing Web Components integration, with Sessions and Advanced sections (raw lines 15–25, 80–88). Sessions requires Checkout API v68+, redirect handling, and method setup; it needs no added /sessions parameters or method-specific configuration, but imports and initializes Redirect (raw lines 29–71). Advanced requires existing Advanced Web Components, redirect handling and method setup, imports/initializes Redirect, and says no extra /payments parameters (raw lines 82–118). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-korean-cards-web-component]] → [[raw/adyen/docs/payment-methods/cards/korean-cards/web-component/2026-09-15]].
+
+Q2. Which setup and sample limits prevent treating this page as a complete or live-ready integration?
+
+A2. Both flows require Support for test setup and a pre-live PCI DSS assessment plus SAQ A submission (raw lines 74–78, 120–124). Both initialization samples use unquoted `kcp_creditcard` without defining it (raw lines 64–72, 102–112); their code is not self-contained. The page delegates shared integration/redirect work to the main guides and states no method-specific added Sessions or Advanced payment parameters, not that entire requests are empty (raw lines 19–23, 40–42, 114–118). Its Sessions v68+ requirement is not repeated under Advanced (raw lines 29–36, 82–88). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-korean-cards-web-component]] → [[raw/adyen/docs/payment-methods/cards/korean-cards/web-component/2026-09-15]].

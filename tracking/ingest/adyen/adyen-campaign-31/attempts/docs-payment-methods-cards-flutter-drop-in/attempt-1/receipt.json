@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-payment-methods-cards-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen cards in Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, online-payments, cards, flutter, drop-in, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] page, modified and captured 2026-09-15, adds **cards to an existing Flutter Drop-in integration**. It presents separate **Sessions** and **Advanced** server flows, optional card UI and debit/credit display settings, and card-token examples for one-click, subscription and unscheduled card-on-file use. It is not a standalone Flutter integration guide or evidence that a merchant has cards enabled, is PCI compliant, authorized a payment, captured funds or settled. See [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Prerequisites and base path:** Both flow tabs require an existing Flutter Drop-in integration and adding cards in the Customer Area. The card add-on says no card-specific extra fields for base `/sessions` (Sessions) or `/payments` (Advanced) requests and no extra base Drop-in configuration. Advanced then routes to required callbacks in its separate integration guide; this page does not define callback handling or a 3DS result. See raw lines 21\u201357 and 78\u201384.\n- **Optional card behavior:** The configuration table includes name/address/CVC visibility, supported types, Korean security and social-security-number field visibility, storage UI, and BIN callbacks. `onBinLookup` is described after at least 11 digits and returns brands; `onBinValue` returns the first six digits and cites a client key. These are optional UI/API descriptions, not permission to collect or expose raw card data outside the supported integration. See raw lines 59\u201376.\n- **Debit/credit and brand choice:** To show separate debit and credit forms, the Sessions flow sets `splitCardFundingSources: true` on server `/sessions`; Advanced sets it on `/paymentMethods` and is marked **Checkout API v53 or later**. The NL/EUR 47 examples use test Checkout v70 and v72 respectively; they are examples, not region limits or current API defaults. The guide says to set `countryCode: SE` for its Sweden debit-first presentation and recommends **3D Secure plus automatic capture** for combo-card debit due to some issuer restrictions; the latter is advice, not a universal requirement. It also describes conditional card-brand recognition and supported co-badged brand choice. See raw lines 86\u2013192.\n- **Token storage and reuse:** Cards are linked to one-click, subscription and unscheduled card-on-file tokenization. The page **strongly recommends asking explicit shopper permission** for future recurring charges and transparency about schedule/amount. Its Sessions token example uses Checkout test v71, `storePaymentMethodMode: askForConsent`, `shopperReference`, `CardOnFile` and `Ecommerce`; when a token is created, it says a `recurring.token.created` webhook is received. A token-created event is not payment authorization or settlement. The Advanced storage example uses test v72 `/payments`, zero USD amount and `test_` encrypted-card fixtures; later one-click, subscription and unscheduled examples use stored-payment-method IDs. Both one-click example sections show `shopperInteraction: ContAuth` (for example raw lines 537\u2013550 and 1257\u20131263), while the subscription and unscheduled examples use `ContAuth` with their respective recurring models. These are sample values, not a resolved statement about all shopper-initiated cases. See raw lines 194\u2013229, 519\u2013525, 832\u2013870, 1235\u20131264, 1596\u20131624 and 1948\u20131976.\n- **Unresolved storage-setting and consent example differences:** The optional table names `showStorePaymentMethodField` (raw line 70), while Advanced token prose names `showStorePaymentField` (line 838); the page does not reconcile them. The Sessions curl sample uses `askForConsent` (line 227), but Java and other language samples use `enabled` (for example lines 251\u2013260 and 435\u2013449), even while the prose recommends explicit permission. Do not silently treat those spellings or modes as interchangeable. Checkout API v69-or-earlier instructions separately name `enableStoreDetails` (lines 521\u2013525).\n- **Test/live and PCI boundary:** The `test_` prefix is described only for testing API requests with encrypted test-card details when the client integration is unfinished. Before live card payments, the page says to test, add accepted cards in the **live** Customer Area, assess PCI DSS compliance and submit the required **Self-Assessment Questionnaire A**. The Advanced curl sample renders `storePaymentMethod` as a string `\"true\"` while the Java snippet uses boolean `true` (raw lines 866 and 896\u2013905); the page does not reconcile those examples. The code blocks use test endpoints and language-library-specific versions, and do not prove a complete safe live card-data implementation or a payment outcome. See raw lines 2300\u20132310 and example sections above.\n\n## Detail locators\n\n- **Requirements, server-flow split, base fields and optional configuration:** raw lines 21\u201384.\n- **Split funding sources, v53 gate, Sweden/3DS advice, brand/co-badged UI:** raw lines 86\u2013192.\n- **Sessions token creation, language-version examples, webhook and older API route:** raw lines 194\u2013527.\n- **Sessions one-click code examples:** raw lines 527\u2013831.\n- **Advanced token creation and test encrypted-card snippets:** raw lines 832\u20131234.\n- **Advanced one-click, subscription and unscheduled token examples:** raw lines 1235\u20132299.\n- **Test cards, live method setup and PCI/SAQ A gate:** raw lines 2300\u20132310.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-pci-dss-compliance]]\n- [[source-adyen-docs-payment-methods-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/flutter-drop-in/2026-09-15|Cards Flutter Drop-in guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add cards to an existing Drop-in integration.",
+      "location": "raw line 17, under # Cards Drop-in integration"
+    },
+    {
+      "text": "Supported from Checkout API v53 or later.",
+      "location": "raw line 120, under ## Showing debit and credit cards separately / Advanced flow"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 198, under ## Recurring payments"
+    },
+    {
+      "text": "`showStorePaymentField` is set to **true**",
+      "location": "raw line 838, under Advanced flow / Store card details; compare optional table raw line 70"
+    },
+    {
+      "text": "Before you can start accepting card payments in the live environment, you need to [assess your PCI DSS compliance](/development-resources/pci-dss-compliance-guide#online-payments) and submit the required *Self-Assessment Questionnaire A* document.",
+      "location": "raw line 2310, under ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-flutter-card-dropin-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-flutter-drop-in]] \u2014 2026-09-15 Flutter Drop-in card add-on for existing Sessions/Advanced integrations, optional debit/credit and token routes, with unresolved storage-setting/example differences and separate live PCI gate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c31-flutter-card-dropin-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-flutter-drop-in]] \u2014 2026-09-15 Flutter card Drop-in Sessions/Advanced token creation and one-click, subscription and unscheduled examples; explicit-permission advice and storage-setting/mode conflicts remain source-qualified.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Optional table showStorePaymentMethodField differs from Advanced prose showStorePaymentField; Sessions examples differ between askForConsent and enabled."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "d471cbe2de11a6afb97d7254dd9c7d6759cfe16766aa0afe615603d8207903de",
+  "status": "candidate_ready"
+}

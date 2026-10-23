@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-api-only-apple-pay-token-decryption",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Decrypt Apple Pay tokens\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/api-only/apple-pay-token-decryption\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15.md\"\ntags: [adyen, apple-pay, api-only, token-decryption, pci, card-data]\n---\n\n## Overview\n\nThis 2024-modified, 2026-09-15-captured [[adyen]] guide contrasts Adyen-decrypted Apple Pay tokens with **merchant-side decryption in an advanced API-only integration**. It belongs with [[adyen-online-payments]]. Its token and request examples explain data handoff; they do not evidence Apple Pay merchant eligibility, completed authentication, authorization, capture or settlement.\n\n## Key takeaways\n\n- The guide says a PCI-compliant merchant can choose whether Adyen or the merchant decrypts; a merchant **not PCI compliant must let Adyen handle decryption**. It advises merchant decryption only for advanced setups such as submitting MPI data. Self-decryption further requires an eligible Apple Developer account, the merchant's own Apple Pay certificate, PCI compliance for unencrypted card details, and API-only integration. PCI status is a prerequisite claimed by the guide, not established by this source.\n- For **Adyen decryption**, in-app PassKit returns `PKPayment.paymentData`; the code base64-encodes that data. Web receives token data in `onpaymentauthorized`; the example JSON-stringifies `event.payment.token.paymentData` and base64-encodes it. The merchant passes the encoded data through its server as `paymentMethod.type: applepay` and `applePayToken` in Checkout `/payments`. In-app and web encoding examples are distinct. The sample API endpoint is **test v72**, with illustrative amounts/currencies and library versions; submitting a token is not a payment outcome.\n- For **merchant decryption**, the guide says verify the Apple Pay certificate before decrypting, select the matching merchant certificate/private key using `publicKeyHash`, recover/decrypt the symmetric data, check `transactionId` against already processed payments to avoid duplicate credit, and verify original transaction details. These are stated responsibilities, not a complete independently validated cryptographic procedure; the detailed method is delegated to Apple's token-format reference.\n- The decrypted **customer-initiated** mapping includes card expiry/name/PAN from token fields and MPI authentication/CAVV/directory/ECI values. The table marks `mpiData.eci` with a required icon **but its description explicitly allows omission when `eciIndicator` is absent**; preserve that condition. The **merchant-initiated** table lists the card-data mapping without the customer-initiated MPI fields; its example adds `Subscription`, `ContAuth`, `networkTxReference`, shopper IP and billing address, which should not be promoted to universal table requirements.\n- The decrypted-payment curl examples show masked `number` values and dated expiry placeholders, despite the table directing use of the token's `applicationPrimaryAccountNumber`. They are redacted illustrations, not copy-ready live payloads or permission to handle raw PAN outside the stated PCI/API-only conditions.\n\n## Detail locators\n\n- [[raw/adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15|Pinned raw]], lines 15\u201329: token purpose, PCI branching and advanced-use limit.\n- Same raw, lines 31\u201372 and 363\u2013402: Adyen-decryption in-app and web encoding/handoff, with test `/payments` examples; lines 74\u2013691 contain language-specific request samples.\n- Same raw, lines 693\u2013717: merchant-side prerequisites, certificate/key/decryption, duplicate transaction ID and original-payment checks.\n- Same raw, lines 719\u2013767: customer-initiated field table and sample, including `eciIndicator` exception and redacted PAN; lines 769\u2013813: merchant-initiated table and sample.\n\n## Related\n\n- [[adyen-pci-dss-compliance]] \u2014 compliance context for raw card data handling.\n- [[adyen-card-encryption]] \u2014 distinct card-data encryption context.\n- [[source-adyen-docs-payment-methods-apple-pay]] \u2014 Apple Pay channel/certificate overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15|Decrypt Apple Pay tokens]]\n",
+  "quotes": [
+    {
+      "text": "you have a choice of letting Adyen handle the token decryption, or handling it on your own.",
+      "location": "line 23, Choose a decryption method"
+    },
+    {
+      "text": "If you are not PCI-compliant you must let Adyen handle the decryption.",
+      "location": "line 29, Choose a decryption method"
+    },
+    {
+      "text": "Include the encoded token from step 1 as the value of `applePayToken` in the `paymentMethod` object",
+      "location": "line 51, Let Adyen handle the decryption / In-app"
+    },
+    {
+      "text": "Be PCI-compliant to handle unencrypted card details.",
+      "location": "line 701, Handle the decryption on your own / Requirements"
+    },
+    {
+      "text": "Confirm that you have not already credited this payment by verifying that no payment with the same `transactionId` shows as processed.",
+      "location": "line 715, Handle the decryption on your own / Decryption process"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-apple-token-decryption-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-api-only-apple-pay-token-decryption]] \u2014 2024-modified, 2026-09-15-captured Apple Pay API-only token guide contrasting Adyen versus PCI-gated merchant decryption, channel-specific token encoding, certificate/key and replay checks, and CIT/MIT decrypted-field maps; sample masked PAN and conditional ECI wording require care, with no payment-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Customer-initiated ECI row has a required marker but allows omission when eciIndicator is missing.",
+          "Self-decryption example uses masked PAN while the table requires applicationPrimaryAccountNumber from decrypted token; treat example as redacted, not executable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15.md",
+  "raw_sha256": "c565315b12bb9ac09adeb5591a1983800e996c76aca36b2297e3e1b6ebcde95d",
+  "status": "candidate_ready"
+}

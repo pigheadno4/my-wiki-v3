@@ -1,0 +1,7 @@
+# C31 online payment-method catalog retrieval checks
+
+Q1. What is this catalog for, and what must be considered before using a listed method?
+Answer: It routes online Drop-in, Components and API-only payment methods (pinned raw lines 20–22) and offers Country/Region, Processing currency, Settlement currency, Feature and Supported integration filters (lines 24–26). Individual rows supply method-specific labels and links (lines 30–141), but the page gives no merchant-account setup or execution proof; consult the linked method and setup guide for actual prerequisites. Other-channel catalogs are separate (line 22). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods]] → [[raw/adyen/docs/payment-methods/2026-09-15]].
+
+Q2. Does a row prove current eligibility, a completed payment or a settlement result?
+Answer: No. These are captured catalog labels, not a merchant's live state. Rows differ: Convenience stores Indonesia lists IDR processing and USD settlement (pinned raw line 47), while Samsung Pay lists API-only integration (line 122). A settlement-currency label is not evidence that a transaction settled or funds arrived. The source metadata is 2023-modified (raw line 12), captured 2026-09-15 (line 2). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods]] → [[raw/adyen/docs/payment-methods/2026-09-15]].

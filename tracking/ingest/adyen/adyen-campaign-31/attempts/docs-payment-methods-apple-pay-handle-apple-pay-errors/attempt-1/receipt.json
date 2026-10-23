@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-handle-apple-pay-errors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay error handling\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/handle-apple-pay-errors\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/handle-apple-pay-errors/2026-09-15.md\"\ntags: [adyen, apple-pay, errors, online-payments]\n---\n\n## Overview\n\nAdyen troubleshooting guide for selected Apple Pay API, web merchant-validation, Adobe Commerce and `/applePay/sessions` errors. Its metadata says last modified 2023-07-05; this raw was captured 2026-09-15. Each remedy is tied to a named symptom and integration path. It does not establish present provider configuration, a valid live certificate, successful authentication or payment outcome.\n\n## Key takeaways\n\n- API error `5_001` says the Apple Pay-authorized amount and Adyen-authorized amount differ; verify transaction amounts. The page notes Discover and American Express **test** cards support only USD. Error `5_002` says the API-submitted token does not conform to specification; the `/payments` custom-integration example says to stringify and base64-encode `payment.token.paymentData` as `applePayToken`. These are error-specific checks, not universal instructions for all Apple Pay integrations (raw lines 21\u201344).\n- Error `5_004` says the Apple Pay encryption key is correct but the decrypting private key is not configured for the Adyen API credential. Check that the payment processing certificate used the same API credential, the app/site uses the linked merchant identifier, and the latest certificate was activated in Apple Developer Portal after Adyen confirmation. Also check test-to-live merchant identifier and avoid a test card in live. This concerns Adyen credential/certificate mapping, not a prompt to expose or handle private keys (raw lines 46\u201371).\n- `CSR algorithm/size incorrect. Expected: RSA(2048)` appears while creating a **web merchant identity** in Apple Developer Portal. The page says not to use Adyen\u2019s CSR for that merchant identity certificate; generate the separate CSR using its web merchant-identity route. Do not conflate it with the payment processing certificate checks above (raw lines 73\u201381).\n- For web \u201cPayment Not Processed,\u201d check validated domain, its link to the merchant identity certificate, `onValidateMerchant`/`validationUrl`, matching verified-domain `initiativeContext`, Apple server requirements and Safari Web Inspector errors. The Adobe Commerce case separately points to `adyen_exception.log`, PEM location, merchant identifier/domain and network status (raw lines 83\u2013112). These are diagnostics, not proof of repair.\n- The `422 Unauthorized to process transactions on behalf of merchantId` case concerns `/applePay/sessions` merchant-session retrieval. The page says SDK 3.18.0+ and API v65+, a `merchantId` in `/paymentMethods` configuration, and then distinguishes Drop-in/Components (pass the full `/paymentMethods` response and add all shop domains in Customer Area) from API-only (include required session parameters). If 422 remains, it directs each route to Support with its full `/applePay/sessions` request for URL enrollment and merchantIdentifier review (raw lines 114\u2013141).\n\n## Detail locators\n\n- API errors `5_001`, `5_002`, `5_004`: raw lines 21\u201371.\n- Separate web merchant-identity CSR error: raw lines 73\u201381.\n- Web payment-sheet and Adobe Commerce troubleshooting: raw lines 83\u2013112.\n- Versioned 422 merchant-session troubleshooting by Drop-in/Components versus API-only: raw lines 114\u2013141.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/handle-apple-pay-errors/2026-09-15|Adyen Apple Pay error guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The amount that was authorised in Apple Pay is not the same as the amount that was authorised by the Adyen payments platform.",
+      "location": "raw line 29, 5_001 What it means"
+    },
+    {
+      "text": "The Apple Pay key is correct, but the key that was used to encrypt the data isn't configured for your Adyen API credential.",
+      "location": "raw line 50, 5_004 What it means"
+    },
+    {
+      "text": "Make sure that you are not using the CSR file that you received from Adyen to generate the merchant identity certificate.",
+      "location": "raw line 81, CSR algorithm/size How to troubleshoot"
+    },
+    {
+      "text": "Make sure that you are using SDK version [3.18.0](/online-payments/release-notes#releaseNote=2020-11-09-web-componentsdrop-in-3.18.0) or later and API version 65 or later.",
+      "location": "raw line 122, 422 How to troubleshoot"
+    },
+    {
+      "text": "The `merchantId` is required for the `/applePay/sessions` request.",
+      "location": "raw line 124, 422 How to troubleshoot"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-apple-pay-errors-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-handle-apple-pay-errors]] \u2014 2023-modified, 2026-09-15-captured Apple Pay error guide for amount/token, processing certificate versus web identity CSR, merchant validation and versioned `/applePay/sessions` 422 diagnostics.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/handle-apple-pay-errors/2026-09-15.md",
+  "raw_sha256": "19da081edb38f5776e77c5464f51df01b67d84a21b16b7f72aa012830733b5a4",
+  "status": "candidate_ready"
+}

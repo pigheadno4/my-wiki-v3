@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-api-only",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Apple Pay API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/api-only/2026-09-15.md\"\ntags: [adyen, apple-pay, api-only, online-payments, certificates, wallets]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified 2025-03-05 and captured 2026-09-15, describes adding Apple Pay to an existing **Advanced-flow API-only** online integration with a merchant-built payment form. It covers web and iOS app channels, certificate choice, merchant validation, Apple Pay token handoff and result display. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-apple-pay|Apple Pay overview]]. The steps and sample `Authorised` response are not evidence of current country/account eligibility, live payment authorization, capture or settlement. See raw lines 15\u201330 and 131\u2013466.\n\n## Key takeaways\n\n- The page says Adyen did **not** support China UnionPay cards through Apple Pay in this dated snapshot and says not to send Apple `merchantCapability: supportsEMV`. Its prerequisites are an existing Advanced API-only flow, Customer Area **Change payment methods** role, Apple Pay added in Customer Area, and a certificate. The **API Clientside Encryption Payments role** is specifically stated for *live* Apple Pay processing. It offers Adyen's certificate for web, while mobile integrations use the merchant's own Apple Developer account and certificate. These are page-specific conditions, not a current eligibility or compliance determination. See raw lines 19\u201332 and 487\u2013491.\n- The server `/paymentMethods` request uses supported `countryCode` and currency and sets `channel: Web` for Safari or `iOS` for in-app payments. The response can identify `applepay`; `merchantId` and `merchantName` are needed for the Adyen-certificate **web** validation route. Shopper Touch ID/Face ID or companion-device confirmation is Apple Pay authentication, separate from Adyen's payment result. See raw lines 34\u201376.\n- Apple Pay **session validation is web-only**, triggered by `onvalidatemerchant` and completed through `completeMerchantValidation`. With Adyen's certificate, the merchant calls `/applePay/sessions` using the returned name/ID and a registered domain matching `window.location.hostname`, then decodes the returned Base64 data. With its own certificate, the merchant obtains an Apple session. The guide states the session data expires after **five minutes**. In-app payments skip this web validation step. See raw lines 78\u2013129.\n- After the shopper's Apple Pay authorization, the guide offers two **different decryption paths**. For **Adyen-managed decryption**, the merchant stringifies/Base64-encodes the framework `paymentData` and sends `paymentMethod.type: applepay` with `applePayToken` from the **server** to `/payments` (this page, raw lines 133\u2013164). For **merchant-managed decryption**, the linked [[raw/adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15|token-decryption guide]] requires a merchant-owned Apple Pay certificate, Apple Developer account, PCI compliance and API-only integration; after local decryption its customer-initiated `/payments` example uses `scheme` card details and applicable `mpiData`, **not** `applePayToken` (related raw lines 693\u2013767). That guide also directs a duplicate `transactionId` check before crediting (related raw lines 710\u2013717). These are distinct request shapes, and neither snippet is a complete safe decryption implementation. The primary page's API examples use a Checkout test endpoint and language-library-specific versions; its `Authorised` JSON is illustrative.\n- The page names `Authorised` and `Refused` as Apple Pay `resultCode` cases for shopper messaging, with a different-method retry recommendation on refusal. It points to separate token creation and reuse guides for recurring payments. Authentication, API response and displayed result do not themselves show capture or settlement. See raw lines 464\u2013477.\n- Its live Adyen-certificate **web** setup requires an externally accessible, unprotected, unredirected domain-association file at the stated `/.well-known/` path with `Content-Type: text/plain`, on each domain including subdomains, followed by live Customer Area setup. Domain editing requires the Change payment methods role and applies only to generic Apple Pay, not scheme-specific variants. Both certificate routes mention Apple IP and `out.adyen.com` firewall access; the page warns that resolved IP allow-listing can break when addresses change. These are configuration instructions, not evidence the domain was verified. See raw lines 487\u2013550.\n\n## Detail locators\n\n- **Versioned snapshot, API-only prerequisites, certificate/channel scope and China UnionPay limit:** raw lines 15\u201332.\n- **Apple Pay method lookup, channel and returned configuration:** raw lines 34\u201376.\n- **Web-only session validation, own-versus-Adyen certificate and five-minute limit:** raw lines 78\u2013129.\n- **Apple Pay token/decryption boundary, server `/payments` and versioned TEST examples:** raw lines 131\u2013462. The Go snippet says library v10.4.0 but imports `/v9/` paths at raw lines 323\u2013328; do not treat snippets as verified build recipes.\n- **Result codes, recurring route, test and live/domain/firewall prerequisites:** raw lines 464\u2013550.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-apple-pay]]\n- [[adyen-tokenization]]\n- [[adyen-pci-dss-compliance]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15|Apple Pay token-decryption guide]] \u2014 cited sections distinguish Adyen-managed encoded-token submission from PCI-qualified merchant decryption and decrypted-card requests; this is related authority, not this page's pinned raw source.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/api-only/2026-09-15|Apple Pay API-only guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Adyen does not currently support China UnionPay cards when using Apple Pay. You cannot send the [merchantCapability](https://developer.apple.com/documentation/applepayontheweb/applepaypaymentrequest/merchantcapabilities) \"supportsEMV\" in your Apple Pay integration.",
+      "location": "raw line 21, opening scope"
+    },
+    {
+      "text": "This step is only required for web integrations. You do not need to complete the Apple Pay session validation for in-app payments.",
+      "location": "raw line 80, ## Complete the Apple Pay session validation"
+    },
+    {
+      "text": "The Apple Pay session data expires after five minutes, so make sure you complete the Apple Pay session validation within this time.",
+      "location": "raw line 127, ### Tab: Use your own Apple Pay certificate"
+    },
+    {
+      "text": "[Handle the decryption yourself](/payment-methods/apple-pay/api-only/apple-pay-token-decryption#handle-the-decryption-on-your-own). This is only allowed if you are PCI-compliant.",
+      "location": "raw line 136, ## Make a payment"
+    },
+    {
+      "text": "To process live Apple Pay payments, your API credential needs to have the **API Clientside Encryption Payments role**.",
+      "location": "raw line 489, ### Going live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "apple-pay-api-only-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-api-only]] \u2014 2025-modified, 2026-09-15-captured Apple Pay Advanced API-only web/iOS guide for certificate, web-only merchant validation, PCI-qualified token-decryption choice and server payment request; examples are not live outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/api-only/2026-09-15.md",
+  "raw_sha256": "71daf871284fa4d15cc3aa28129cf3510f7e513534f570cf04100208fb1e5ad7",
+  "status": "candidate_ready"
+}

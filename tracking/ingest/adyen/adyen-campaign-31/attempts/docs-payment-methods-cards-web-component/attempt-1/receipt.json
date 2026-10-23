@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Card Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/web-component/2026-09-15.md\"\ntags: [adyen, cards, web-components, sessions-flow, advanced-flow, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] Card Component guide, last modified in 2022 and captured 2026-09-15, describes adding a card form to an **existing Web Components integration**. It branches by server-side Sessions versus Advanced flow and by Web Component version. It is a card-specific source under [[adyen-online-payments]], not a complete payment, 3DS, PCI or live-enablement implementation.\n\n## Key takeaways\n\n- Both flow tabs require a prior Web Components integration of the selected flow and cards added in Customer Area. The guide says no extra API fields are needed merely for cards: Sessions generally uses `/sessions` with Components v5.0.0 or later, while `/payments` is for the additional Advanced use cases. Specific features have their own parameters.\n- Web Components v6 imports `AdyenCheckout` and `Card` and constructs `new Card(checkout, ...)`; v5.x.x or earlier uses `checkout.create('card', ...)`. Mounting renders the form. Optional fields and events are version- and condition-dependent: holder name must be shown before it can be required; partial billing address depends on `billingAddressRequired`; address lookup (v5.45.0+) requires full billing address and an external API. `onConfigSuccess` means card fields are ready, whereas `onSubmit` concerns valid client input and is not payment authorization.\n- Brand recognition attempts to render an icon and CVC form; co-badged cards have a shopper brand-choice path. Separate debit/credit forms depend on `splitCardFundingSources: true` in **Sessions `/sessions`** or **Advanced `/paymentMethods`**, plus returned `fundingSource` objects. The source specifically calls for debit-first, clearly labeled presentation when accepting payments in Sweden; that is dated source guidance, not a current legal determination.\n- Card tokenization covers one-click, subscription and unscheduled card-on-file examples. The page strongly recommends explicit shopper permission for future recurring payments. Sessions examples use `/sessions` and a token-created webhook; Checkout API v69 or earlier instead uses the `enableStoreDetails` checkbox. Advanced token creation uses `/payments` plus the checkbox and receives `recurring.token.created` with `storedPaymentMethodId`. Advanced stored-card display uses the checkout instance's stored methods and valid `onSubmit` state sent to the server. The examples are test-environment illustrations, not token creation or payment success evidence.\n- Before live card payments, the page calls for test cards, adding wanted cards in live Customer Area, assessing PCI DSS compliance and submitting the required SAQ A. For v5.20.0+ JSON Web Encryption card fields it requires a secure local or HTTPS test context in allowed origins. A rendered form, valid field, created session, token request or example API call does not prove 3DS authentication, authorization, capture or settlement.\n\n## Source-specific cautions\n\n- The Advanced stored-card mount example contains `});.mount('#stored-card');` (raw line 1461), which is malformed as shown. Address-lookup examples also use assignment syntax inside object literals and the two-request selection example resolves `mappedData` without defining it in the snippet (raw lines 225\u2013303). Treat these as illustrative locators requiring implementation verification.\n- The Advanced token-creation examples use test-only `test_` encrypted-card placeholders and mixed language-library versions; they do not show safe handling of real card data. The page does not specify a 3DS challenge or server-side result/webhook outcome procedure for an actual card payment.\n\n## Detail locators\n\n- [[raw/adyen/docs/payment-methods/cards/web-component/2026-09-15|Pinned raw]], lines 15\u201354: purpose, flow prerequisites, v6 import and card API-field distinction.\n- Same raw, lines 56\u2013185: versioned construction, optional configuration and event table; lines 187\u2013305 cover external address-lookup callbacks and field mapping.\n- Same raw, lines 307\u2013393: brand/co-badged display and flow-specific debit/credit splitting.\n- Same raw, lines 395\u20131032: recurring consent, Sessions token and one-click examples, and Checkout API v69-or-earlier checkbox note.\n- Same raw, lines 1033\u20131499: Advanced token-creation examples, token webhook, stored-card lookup and onSubmit handoff; lines 1501\u20132560 contain Advanced one-click, subscription and unscheduled examples.\n- Same raw, lines 2562\u20132574: test-only card values, secure-context/JWE condition and live PCI/SAQ A checklist.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 token lifecycle and stored-payment-method context.\n- [[adyen-card-recognition]] \u2014 brand/BIN and choice context.\n- [[adyen-pci-dss-compliance]] \u2014 compliance guidance beyond this page's checklist.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/web-component/2026-09-15|Card Component]]\n",
+  "quotes": [
+    {
+      "text": "Add card payments to an existing Components integration.",
+      "location": "line 17, Card Component"
+    },
+    {
+      "text": "You do not need to send additional fields for cards.",
+      "location": "line 49, API reference"
+    },
+    {
+      "text": "When the shopper is entering their card details, Components tries to recognize the card brand.",
+      "location": "line 309, Card brand recognition"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "line 399, Recurring payments"
+    },
+    {
+      "text": "Before you can start accepting card payments in the live environment, you need to assess your PCI DSS compliance and submit the required",
+      "location": "line 2574, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-cards-web-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-web-component]] \u2014 2026-09-15-captured Card Component guide for existing Sessions or Advanced Web Components integrations, versioned card-form setup, brand/debit-credit display, tokenized recurring examples and test/live PCI gates; illustrative snippets include malformed stored-card and address-lookup code, and client readiness does not prove payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw metadata says last_modified 2022-01-19 although it contains later v6 and v6.41.0 references; describe it as a 2026-09-15 snapshot with version-specific content, not a uniform 2022 behavior guarantee."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/web-component/2026-09-15.md",
+  "raw_sha256": "452d66d79e7e326b8f7185280370cd4324e30cd3f6c047c4d0ae0d6c700992b2",
+  "status": "candidate_ready"
+}

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-24] ingest | Adyen website C31
+
+- Fifty independently approved VX820 non-Duet, payment-method catalog/setup, cards and Apple Pay foundation documentation sources; first full-review approvals 42/50 and 8 targeted correction reviews. 5 concepts touched (0 new); source_count 1564 = 1550 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-31/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-24] ingest | Adyen website C30
 
 - Fifty independently approved historical VX675/VX680/VX690/VX820 Duet manuals and plugin/release directory documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 3 concepts touched (0 new); source_count 1514 = 1500 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-30/`; details [[adyen-log]]. No commit/push.

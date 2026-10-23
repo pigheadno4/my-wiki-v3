@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-cards-enhanced-scheme-data-l2-l3
+
+Q1. What does this Level 2/3 ESD guide cover, and when is ESD sent?
+
+A1. It concerns eligible US Mastercard/Visa card transactions; Level 2 has purchase/tax data and Level 3 adds line items (raw lines 17–24). Eligibility and parent-guide requirements apply; dated limitations from April 1, 2026 state Visa L3-only and Mastercard L2/L3, with card and tax constraints (raw lines 26–44). The flow sends data with /payments for automatic or delayed automatic capture and with captures for manual capture (raw lines 46–59), subject to the conflicting field-path instructions at raw lines 56–57 and 120–121. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-l2-l3]] → [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/l2-l3/2026-09-15]].
+
+Q2. What can validation feedback and examples establish, and what conflicts limit reliance on them?
+
+A2. Invalid required ESD can be dropped entirely; L3-only errors or L2-only cards can lead to L2 submission, while malformed optional fields can be omitted (raw lines 66–78). Optional configured webhook additionalData distinguishes received and scheme-submitted ESD and reasons (raw lines 92–114, 284–370), not payment settlement or achieved interchange savings. The L3→L2 examples must be qualified by Visa's dated L3-only rule (raw lines 32–39, 329–370); top-level versus later payment/capture field paths conflict (raw lines 56–57, 120–121), and reason-field singular/plural plus null/empty-string examples differ (raw lines 105–114, 288–290, 344–370). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-l2-l3]] → [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/l2-l3/2026-09-15]].

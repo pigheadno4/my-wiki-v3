@@ -15,6 +15,24 @@ The 2026-09-15 V400m manual requires shipment and device tamper checks with imme
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx820-user-manual-troubleshooting-and-support-vx820]] — 2019-modified, 2026-09-15-captured historical VX820 non-Duet troubleshooting-first and Support escalation route, with merchant account, conditional transaction PSP reference and device serial; the separate eVo schedule ended VX820 transactions 29 March 2024, so this is not current service proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx820-user-manual-use-the-admin-menu-vx820]] — 2019-modified, 2026-09-15-captured historical VX820 non-Duet pictured-key-plus-9 and Admin-PIN menu access; listed removal/reset functions are not execution, and the separate eVo table gives the 29 March 2024 transaction cutoff.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx820-user-manual-view-terminal-information-vx820]] — 2019-modified, 2026-09-15-captured historical **VX820 non-Duet** Quick Info display guide for IP, terminal/software identifiers and QR contents; display is not connection, boarding or payment proof, and the eVo table lists no more VX820 transactions on 29 March 2024.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx820-user-manual-inspect-device-security-vx820]] — 2019-modified historical VX820 non-Duet weekly visual-security checklist with damaged/tampered-device stop-use and Support escalation; inspection guidance does not prove device safety or post-cutoff transaction support.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx820-user-manual-board-the-terminal-vx820]] — 2019-modified historical **VX820 non-Duet** internet/security-prechecked POS App boarding paths and classic-library links; the separate deprecation table ends VX820 transactions on 29 March 2024, so old ready-to-process wording is not current support proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx820-user-manual]] — 2021-modified, 2026-09-15-captured historical **VX820 non-Duet** PED/dongle quickstart and wrong-port damage warning; the separate eVo table lists VX820 "No more transactions" on 29 March 2024.
+
+
 - [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-vx675-user-manual-turn-on-and-turn-off-the-vx675]] — 2019-modified, 2026-09-15-captured historical VX675 image-led power-on/startup-screen and power-off/beep cues; power state does not establish boarding or transaction support after the separate 29 March 2024 model cutoff.
 
 

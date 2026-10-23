@@ -1,0 +1,17 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-api-only",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The candidate is otherwise grounded in the full pinned raw, but it conflates the Adyen-managed Apple Pay token handoff with the merchant self-decryption path. That could lead a PCI-compliant integrator to send the wrong /payments shape or to assume Adyen's certificate is sufficient for self-decryption.",
+  "required_changes": [
+    "In the payment-data/decryption paragraph, qualify that stringifying and Base64-encoding the Apple Pay framework paymentData into paymentMethod.applePayToken is the Adyen-managed decryption path. The linked token-decryption guide instead requires a merchant-managed Apple Pay certificate and Apple Developer account plus PCI compliance for self-decryption, and its /payments example sends decrypted scheme card details (with applicable mpiData), not applePayToken. The same guide also directs the merchant to check duplicate transactionId before crediting. Cite the separate guide as the detailed authority rather than blending these paths. Evidence: parent pinned raw lines 133-143; raw/adyen/docs/payment-methods/apple-pay/api-only/apple-pay-token-decryption/2026-09-15.md lines 21-51, 693-767, 769-800.",
+    "Update Q2 so it answers the likely implementation question directly: the encoded applePayToken handoff belongs to Adyen-managed decryption; merchant self-decryption has its own certificate, PCI and decrypted-card/MPI request requirements. Do not suggest the encoded-token request is shared by both choices."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "apple-pay-api-only-online-route"
+  ],
+  "reviewer_identity": "c31-rdocs-payment-methods-apple-pay-api-only",
+  "reviewer_model": "gpt-6-sol"
+}

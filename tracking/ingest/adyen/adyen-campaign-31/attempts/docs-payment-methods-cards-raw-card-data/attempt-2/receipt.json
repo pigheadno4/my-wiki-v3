@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-cards-raw-card-data",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen API-only raw-card integration (historical guide)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/raw-card-data\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/raw-card-data/2026-09-15.md\"\ntags: [adyen, cards, api-only, raw-card-data, pci, online-payments, historical]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified **2022-08-09** and captured 2026-09-15, describes an **API-only card integration with a merchant-built UI that collects raw card data**. The stated gate is **full PCI compliance**; merchants without it are directed to pre-built UI or a custom encrypted-card integration (raw lines 15\u201321). It requires an API-only integration and adding intended cards in the **test Customer Area** before following the examples (raw lines 23\u201328). This is a historical guide in [[adyen-online-payments]], not evidence that a merchant is compliant, enabled for LIVE, or has safely handled card data.\n\n## Key takeaways\n\n- The form table lists card number, expiry month/year, security code and cardholder name as required in this guide (raw lines 30\u201340). The server-side **/payments** section uses raw **scheme** card fields and has an optional co-badged brand and a mobile-native-3DS2 SDK-version field qualified by its trigger (raw lines 308\u2013321). The many request examples are test-environment illustrations, not complete or verified safe production implementations.\n- For a card with two identified brands **that the merchant supports**, the shopper must choose the brand; if the merchant supports only one, the page says to let the shopper use that one (raw lines 42\u201348, 306). The **/cardDetails** guide uses at least eight PAN digits; it says full PAN gives the best result, and omitting **supportedBrands** makes Adyen assume all card brands are supported (raw lines 46\u201357). These claims are source-bound and do not establish any account's actual brands or present regional legal obligations.\n- The **/payments** response has a **resultCode** and the page says a payment outcome also arrives asynchronously in a webhook (raw lines 669\u2013703). Its listed card result codes are **Authorised, Cancelled, Error and Refused**; Error/Refused direct readers to **refusalReason**, manual capture still needs a separate capture after Authorised, and 3DS may produce additional result codes (raw lines 694\u2013703). A sample **Authorised** response is illustrative, not an executed authorization, capture or settlement.\n- Optional separate debit/credit presentation requires **Checkout API v53+** and uses **splitCardFundingSources** in **/paymentMethods** and **paymentMethod.fundingSource** in **/payments** (raw lines 705\u2013810). The Netherlands/EUR example is not general availability proof. The Brazil 3DS/automatic-capture statement is a recommendation; the Sweden debit-first statement is dated provider guidance (raw lines 810\u2013816).\n- Cards are described as supporting tokenization for **one-click, subscription and unscheduled card-on-file** payments. The page **strongly recommends** explicit shopper permission for future recurring charges, rather than stating that permission is a new schema field (raw lines 818\u2013828). It shows shopperReference-based stored-card retrieval and a CVC prompt, then example token payment models (raw lines 1223\u20131256, 1258\u20132339). Creating a token or presenting its example ID is not proof of consent, storage or a later charge.\n- **Example conflict:** the \u201cone click\u201d token-creation example uses **UnscheduledCardOnFile**. Its **storePaymentMethod** value is a string in curl, NodeJS JavaScript, Python and Ruby (raw lines 854, 1041, 1129, 1167), but a boolean in Java, PHP, C#, Go and NodeJS TypeScript (raw lines 892, 942, 996, 1086, 1209). The unscheduled-payment narrative links to a **subscription** anchor (raw lines 1980\u20131984). Do not copy these mismatched examples as a validated token flow.\n- Before LIVE use, this page says to test with test cards, add accepted cards in the live Customer Area, **assess PCI DSS compliance and submit SAQ D** (raw lines 2341\u20132349). That is this 2022-modified raw-card guide's stated gate, not proof of completed assessment or a current universal PCI classification.\n\n## Detail locators\n\n- Identity, full-PCI alternative and initial API-only/test setup: raw lines 15\u201328.\n- Required form fields and co-badged **/cardDetails** decision, parameters and examples: raw lines 30\u2013306; note optional **countryCode** row combines shopper-country and terminal-location wording at raw line 56.\n- Server **/payments** shape, mixed-version language examples and sample response: raw lines 308\u2013688.\n- ResultCode/webhook, manual capture and 3DS additional-result boundaries: raw lines 690\u2013703.\n- Debit/credit split version, fields and regional notes: raw lines 705\u2013816.\n- Tokenization advice, creation examples, stored-card display and later payment examples: raw lines 818\u20132339.\n- Test and LIVE checklist with SAQ D statement: raw lines 2341\u20132349.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-pci-dss-compliance]]\n- [[adyen-tokenization]]\n- [[adyen-3d-secure]]\n- [[co-badged-cards]]\n- [[source-adyen-docs-payment-methods-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/raw-card-data/2026-09-15|Full pinned raw-card API-only guide]]\n",
+  "quotes": [
+    {
+      "text": "To collect raw card data, you need to be [fully PCI compliant](/development-resources/pci-dss-compliance-guide). If you are not fully PCI compliant, use one of our [pre-built UI solutions](/payment-methods/cards#how-do-you-want-to-integrate) or build a custom [card integration with encryption](/payment-methods/cards/custom-card-integration) instead.",
+      "location": "raw line 21, beneath # API only with raw card data"
+    },
+    {
+      "text": "If the [/cardDetails](https://docs.adyen.com/api-explorer/Checkout/latest/post/cardDetails) endpoint identifies two brands and you support both, you must let the shopper choose which brand to pay with. If you only support one brand, let the shopper pay with it.",
+      "location": "raw line 48, ### Showing co-badged cards"
+    },
+    {
+      "text": "From your server, make a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request, specifying:",
+      "location": "raw line 310, ## Make a payment"
+    },
+    {
+      "text": "Use the\u00a0 [resultCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-resultCode) from the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response to present the payment result to your shopper. You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw line 692, ## Present the payment result"
+    },
+    {
+      "text": "3. Before you can start accepting card payments in the live environment, you need to assess your PCI DSS compliance and submit the required *Self-Assessment Questionnaire D* document. For more information, refer to [PCI DSS compliance guide](/development-resources/pci-dss-compliance-guide#online-payments).",
+      "location": "raw line 2349, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-raw-card-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-raw-card-data]] \u2014 2022-modified API-only raw-card guide for fully PCI-compliant merchant UI/server collection, co-badged choice, /payments outcome handling and token examples; SAQ D LIVE gate and example conflicts remain source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/raw-card-data/2026-09-15.md",
+  "raw_sha256": "6e6f78cee4b238bd99bb8d90bf3ef2f1e13f8e7852a923f02bbc28fe2fcdca1b",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-cards-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android Card Component integration (v5.0.0 guide)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/android-component/2026-09-15.md\"\ntags: [adyen, cards, android, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified and captured 2026-09-15, explains adding cards to an existing **Android Components v5.0.0 or later** integration. It separates server-side Sessions and Advanced flows; earlier Component versions have a separate guide. See [[adyen-online-payments]] and [[adyen-tokenization]]. The page is a provider documentation snapshot, not evidence of a particular merchant's live enablement, PCI status, token creation, authorization, capture or settlement. See raw lines 15\u201339.\n\n## Key takeaways\n\n- Both flows require an existing Android Components integration and cards added in Customer Area. The basic `/sessions` or `/payments` card request and Component configuration need no *card-specific additional* fields; this does not waive the underlying flow's requirements. Optional configuration covers address input/lookup, CVC visibility, holder name, card types, Brazil/Korea-specific fields and installment options. Address lookup callbacks rely on the merchant's chosen external address service; the one- and two-request patterns and Android `stateOrProvince` field are detailed in raw lines 61\u2013269. See raw lines 23\u201375.\n- For separate debit and credit forms, set `splitCardFundingSources: true` on a **server-side** `/sessions` request or, for Advanced flow with Checkout API v53 or later, `/paymentMethods`. The Netherlands request/response examples are illustrative. The guide describes combo-card 3D Secure and automatic capture as **recommendations** because of some issuer restrictions, and says `countryCode: SE` causes debit before credit presentation in Sweden; these statements are not payment outcome or present legal-compliance proof. See raw lines 271\u2013369. It says the Component tries card-brand recognition and, for applicable regions, renders supported co-badged brands for cardholder choice. See raw lines 371\u2013377.\n- Cards support tokenization for one-click, subscription and unscheduled card-on-file use. The page **strongly recommends** explicit shopper permission for future recurring payments; that wording is advice, not a stated universal requirement. Sessions token creation is described for Components v5.0.0+, with a special Checkout API v69-or-earlier checkbox route. Advanced flow tells the integrator to show the storage switch and pass the shopper's `data.storePaymentMethod` choice in the payment request. Token creation is associated with `recurring.token.created`; Advanced-flow text says that webhook contains `storedPaymentMethodId`, which can be reused for subsequent requests. See raw lines 379\u2013393, 395\u2013716 and 1019\u20131052, 1446\u20131493.\n- **Material example conflict:** the Advanced-flow prose says `setShowStorePaymentField(true)` to show the storage switch, but the adjacent Kotlin example uses `setShowStorePaymentField(false)` and comments that it does not show the option. Treat the snippet as contradictory, not proof of the correct UI. See raw lines 1023\u20131051. The page's test examples include `test_` card values and API-library-specific snippets; they are not a full secure implementation or live credential instructions. One-click, subscription and unscheduled examples differ by recurring model and interaction fields; use the raw and linked tokenization contract for exact versions and conditions. See raw lines 395\u20132552.\n- Before live card payments, the guide directs merchants to test, add cards in the **live** Customer Area, assess PCI DSS compliance and submit its stated SAQ A document. This is a stated checklist, not a determination that any merchant qualifies for SAQ A or has complied. The `test_` prefix is expressly for encrypted **test** card details when the client integration is not ready. See raw lines 2578\u20132588 and [[adyen-pci-dss-compliance]].\n\n## Detail locators\n\n- **Flow prerequisites, base requests and optional card configuration:** raw lines 21\u2013127.\n- **Optional address lookup callbacks, field mapping and back handling:** raw lines 129\u2013269. The two-request prose has a malformed callback name at line 222; its sample uses `onLookupCompletion` at line 251.\n- **Debit/credit split, Sweden, brand and co-badged display:** raw lines 271\u2013377.\n- **Sessions token examples, v69 exception and one-click examples:** raw lines 379\u20131017.\n- **Advanced storage-switch conflict, token webhook, stored-card display and later payment examples:** raw lines 1019\u20132552. Examples mix Checkout API v70/v71/v72 and language-library versions; preserve each snippet's own version/environment.\n- **Installments and pre-live testing/PCI checklist:** raw lines 2554\u20132588.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-pci-dss-compliance]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/android-component/2026-09-15|Android Card Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for **v5.0.0**, released in October 2023. If you are using an earlier version, use [the guide for earlier versions](/payment-methods/cards/android-component/earlier-versions) instead.",
+      "location": "raw line 21, opening version scope"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 383, ## Recurring payments"
+    },
+    {
+      "text": "Make sure that your [Card Component configuration](#configuration) includes `setShowStorePaymentField(true)` to show a switch for storing card details.",
+      "location": "raw line 1027, ### Tab: Advanced flow / ### Store card details"
+    },
+    {
+      "text": ".setShowStorePaymentField(false) // Do not show the option to store the cared details.",
+      "location": "raw line 1047, adjacent Advanced-flow Kotlin example"
+    },
+    {
+      "text": "Before you can start accepting card payments in the live environment, you need to [assess your PCI DSS compliance](/development-resources/pci-dss-compliance-guide#online-payments) and submit the required *Self-Assessment Questionnaire A* document.",
+      "location": "raw line 2588, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "android-card-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-android-component]] \u2014 2026-09-15 Adyen Android Card Component v5.0.0+ guide for Sessions/Advanced setup, card UI and tokenized examples; its Advanced storage-switch prose conflicts with the adjacent snippet.",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "android-card-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-android-component]] \u2014 Android Card Component v5.0.0+ card-token creation, stored-card display and one-click/subscription/unscheduled example routes; shopper-permission advice and the Advanced storage-switch example conflict remain source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/android-component/2026-09-15.md",
+  "raw_sha256": "40cd0e6c265b31bd0a8153784c72d0f674caf08c15544b5b21d4df3b14278760",
+  "status": "candidate_ready"
+}

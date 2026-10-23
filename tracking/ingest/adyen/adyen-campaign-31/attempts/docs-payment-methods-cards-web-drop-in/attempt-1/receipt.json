@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cards Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/web-drop-in/2026-09-15.md\"\ntags: [adyen, cards, web-drop-in, online-payments, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified 2023-05-26 and captured 2026-09-15, explains adding cards to an **existing** Web Drop-in integration. It branches on the merchant server's Sessions or Advanced flow and covers optional client card configuration, separate debit/credit display, card-brand recognition, and card token creation/reuse. Route through [[adyen-online-payments]]; token handling also relates to [[adyen-tokenization]]. The page's test requests and UI events are instructions and examples, not proof of merchant enablement, 3D Secure completion, authorization, capture or settlement.\n\n## Key takeaways\n\n- **Prerequisites and scope:** first build the matching Sessions or Advanced Web Drop-in integration and add cards in Customer Area. The guide says ordinary card use needs no extra card-specific API fields; use `/sessions` for the Sessions route (default for Drop-in v5.0.0 or later) and `/payments` for Advanced/additional use cases. Its v6 resource import is specifically for Web Drop-in v6. See raw lines 21\u201354.\n- **Client configuration and events:** card configuration is optional and sits under `paymentMethodsConfiguration.card`. The property table has individual Web-version gates, defaults and conditions, such as `holderNameRequired` needing `hasHolderName`, partial billing address requiring `billingAddressRequired`, and address-lookup callbacks needing an external address API and full required billing address. `onSubmit` means valid form data after Pay; `onError` is for client validation and, since v5.0.0, can return objects for every component. Neither callback is payment authorization. See raw lines 56\u2013281, especially 105\u2013161.\n- **Display features:** separate debit/credit forms use `splitCardFundingSources: true` in a Sessions `/sessions` request or an Advanced `/paymentMethods` request. Drop-in attempts brand recognition while details are entered; the co-badged section says supported brands are shown for shopper choice under applicable regional rules. This page does not determine a merchant's supported card brands or regional compliance. See raw lines 283\u2013307.\n- **Stored cards:** the page supports one-click, subscription and unscheduled card-on-file routes and **strongly recommends** explicit shopper permission for future recurring payments. Sessions token examples use `/sessions`; Advanced uses `/payments` and says to show the storage checkbox with `enableStoreDetails: true`. It says token creation yields a `recurring.token.created` webhook, with `storedPaymentMethodId` identified in the Advanced subsection. The Checkout API v69-or-earlier checkbox instruction is separately versioned. Subsequent subscription and unscheduled examples call `/payments` with stored token, `ContAuth`, and the respective recurring model; examples are not completed transactions. See raw lines 309\u20132473, especially 634\u2013640, 976\u2013985, 1382\u20131450 and 1810\u20132150.\n- **Example conflicts and test limits:** Sessions token-creation snippets differ between `storePaymentMethodMode: \"askForConsent\"` and `\"enabled\"`; Advanced `storePaymentMethod` snippets use booleans and quoted strings, including `\"True\"`. Treat these as illustration differences, not a single verified consent or request contract. The `test_` encrypted-card values and sample amounts/currencies are test fixtures. For Web v5.20.0 or later, the page says card fields use JSON Web Encryption and the test environment needs a secure context plus allowed origin. Its dated live checklist calls for test-card checks, cards added in live Customer Area, and PCI DSS assessment plus submitted SAQ A; this page cannot certify current PCI eligibility or a live payment. See raw lines 325\u2013631, 991\u20131376, 2475\u20132487.\n\n## Detail locators\n\n- Requirement and API flow: raw lines 21\u201354.\n- Optional configuration, version gates, callbacks and external address lookup: raw lines 56\u2013281.\n- Funding-source split and brand display: raw lines 283\u2013307.\n- Sessions token creation/stored-card/one-click examples: raw lines 309\u2013975.\n- Advanced token creation and one-click examples: raw lines 976\u20131724.\n- Subscription and unscheduled card-on-file examples: raw lines 1725\u20132473.\n- Test, secure context and historical live checklist: raw lines 2475\u20132487.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-pci-dss-compliance]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/web-drop-in/2026-09-15|Cards Web Drop-in guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add cards to your existing Web Drop-in integration.",
+      "location": "raw line 19, # Cards Drop-in integration"
+    },
+    {
+      "text": "Before you begin, [add cards in your Customer Area](/payment-methods/add-payment-methods).",
+      "location": "raw lines 30 and 37, ## Requirements, Sessions and Advanced tabs"
+    },
+    {
+      "text": "You do not need to send additional fields for cards.",
+      "location": "raw line 49, ## API reference"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 313, ## Recurring payments"
+    },
+    {
+      "text": "Before you can start accepting card payments in the live environment, you need to assess your PCI DSS compliance and submit the required *Self-Assessment Questionnaire A* document.",
+      "location": "raw line 2487, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cards-web-drop-in-online-payments-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-web-drop-in]] \u2014 2023-modified, 2026-09-15-captured cards Web Drop-in guide for existing Sessions/Advanced integrations, optional client card controls and tokenized recurring examples; version, consent, test-fixture and PCI qualifications remain in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions and Advanced snippets differ in consent/storage option values and types; do not promote sample requests as a definitive schema or successful transaction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/web-drop-in/2026-09-15.md",
+  "raw_sha256": "7c754c407972efbcd8f6773f670f1b90a577e4bd62bba466bac2089feb5786b8",
+  "status": "candidate_ready"
+}

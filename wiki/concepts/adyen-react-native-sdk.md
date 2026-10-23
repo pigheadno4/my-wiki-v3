@@ -70,6 +70,12 @@ The release updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the de
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-cards-react-native-drop-in]] — 2026-09-15 React Native Drop-in card guide for existing integration prerequisites, optional card fields, Checkout API v53+ debit/credit split, tokenized recurring examples and test/live card setup; storage-switch prose requires `true` while adjacent sample sets `false`, and the page does not pin native SDK versions or prove payment outcome.
+
+
+- [[source-adyen-docs-payment-methods-cards-react-native-component]] — 2026-09-15 React Native Card Component supplement for card settings, brand/funding presentation and token examples; storage-switch snippet conflicts with its prose and no wrapper package version is pinned.
+
+
 - [[source-github-adyen-react-native]] - cumulative exact-SHA wrapper evidence
 - [[changelog-github-adyen-react-native]] - package-qualified release ledger
 - [[adyen-ios-sdk]] - independently versioned native iOS runtime

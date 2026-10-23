@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-apple-pay-certificate-web",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay web with your own certificate (historical guide)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/apple-pay-certificate/web\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/apple-pay-certificate/web/2026-09-15.md\"\ntags: [adyen, apple-pay, web, certificates, historical]\n---\n\n## Overview\n\nThis [[adyen]] page, last modified **2023-11-24** and captured 2026-09-15, describes enabling Apple Pay on a website **with the merchant's own Apple Pay certificates**. Its stated integration prerequisite is Web Drop-in/Components using the Advanced or Sessions flow, plus a Customer Area user with Merchant admin or Manage API Credentials role and an Apple Developer Program or Enterprise Program account (raw lines 21\u201331). It is a historical setup guide under [[adyen-online-payments]], not evidence of current eligibility, a deployed certificate or an authorized payment.\n\n## Key takeaways\n\n- The guide calls for separate Apple merchant identifiers for **test** and **live** transactions, although the same identifier may serve multiple websites and iOS apps (raw lines 35\u201349). It selects the web service user that will execute Apple Pay transactions in Adyen Customer Area and uses its CSR to create a payment processing certificate for each identifier. The processing certificate encrypts payment information for Adyen to decrypt and process; the resulting certificate is uploaded against the corresponding identifier/user (raw lines 35\u201338, 58\u201384).\n- For ordinary web setup, the merchant also registers and validates its domain with Apple, creates a distinct **merchant identity certificate**, converts it to PEM and places it on the merchant server. That certificate authenticates communication when requesting an Apple Pay payment session for each transaction; the **Adyen-issued CSR for processing cannot be reused** for this identity certificate (raw lines 39\u201343, 158\u2013194). Both the domain-registration and merchant-identity-certificate steps explicitly **do not apply to the Salesforce Commerce Cloud plugin**; the page routes plugin users to separate documentation (raw lines 158\u2013170).\n- The processing-certificate renewal creates an overlap: Apple may still use the old certificate during activation and for about **four hours afterward** (raw lines 86\u2013112). The page describes matching the decoded `paymentMethod.applePayToken.header.publicKeyHash` to the Customer Area `KeyID` to identify the certificate used for a payment; an old `KeyID` during rollout alone does not mean setup failed. A new `KeyID` on an **authorized** payment is its verification signal (raw lines 114\u2013154). The page then gives an old-certificate removal control (raw line 156); this is a source procedure, not a completed rotation or authorization claim.\n- Adding Apple Pay in Customer Area is a separate step using merchant name/account and the created merchant identifier (raw lines 196\u2013201). Its example token and certificate command are illustrative; this page does not establish current account activation, safe handling of private keys, or payment capture/settlement.\n\n## Detail locators\n\n- Requirements and setup role/account prerequisites: raw lines 21\u201331.\n- Merchant identifiers, TEST/LIVE split, Adyen web-service-user CSR and payment processing certificate: raw lines 33\u201384.\n- Certificate renewal, overlap, token-header `KeyID` check and removal: raw lines 86\u2013156.\n- Domain registration and Salesforce exception: raw lines 158\u2013166.\n- Merchant identity certificate, distinct CSR, PEM/server path and Salesforce exception: raw lines 168\u2013194.\n- Customer Area payment-method addition: raw lines 196\u2013201.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-apple-pay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/apple-pay-certificate/web/2026-09-15|Full pinned Apple Pay web certificate guide]]\n",
+  "quotes": [
+    {
+      "text": "| **Integration type**                           | Make sure that you have built a Web Drop-in/Components integration using the Advanced or Sessions flow.                                                                                                                                                                                                                                                                                                                                                                                                                         |",
+      "location": "raw line 27"
+    },
+    {
+      "text": "2. [Create a payment processing certificate](#create-payment-processing-certificate) for each merchant identifier, and add each certificate to the correct user in your Customer Area. Apple Pay uses this certificate to encrypt payment information, and we need to have this certificate to be able to decrypt and process the payment.",
+      "location": "raw line 38"
+    },
+    {
+      "text": "When your certificate expires, you have to renew it. Apple Pay requires time to fully activate your new payment processing certificate. During that time period, transactions may still use the old certificate.",
+      "location": "raw line 88"
+    },
+    {
+      "text": "If you see the `KeyID` for your old certificate, this may be due to the gradual rollout of Apple Certificates, and it does not mean that your setup is not successful. Four hours after the activation the rollout should be completed and you will no longer see payments using the old certificate. When you see the new certificate for an authorized payment, this confirms that all steps have been completed successfully.",
+      "location": "raw line 154"
+    },
+    {
+      "text": "   * Follow the instructions from Apple to create a CSR yourself. The CSR you received from us cannot be used for creating a merchant identity certificate.",
+      "location": "raw line 179"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-apple-pay-web-own-certificate-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-web]] \u2014 2023-modified, 2026-09-15-captured own-certificate Apple Pay Web guide for separate TEST/LIVE identifiers, Adyen processing versus merchant identity certificates, renewal overlap and Salesforce plugin exceptions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/apple-pay-certificate/web/2026-09-15.md",
+  "raw_sha256": "57a35ad763ea83e5fd6635460b54610e76a4fc7ebefaa9e329e29331a9afec70",
+  "status": "candidate_ready"
+}

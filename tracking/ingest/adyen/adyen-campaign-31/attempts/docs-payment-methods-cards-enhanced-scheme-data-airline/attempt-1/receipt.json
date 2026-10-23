@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-enhanced-scheme-data-airline",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen airline enhanced scheme data\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/airline\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/enhanced-scheme-data/airline/2026-09-15.md\"\ntags: [adyen, cards, airline, enhanced-scheme-data]\n---\n\n## Overview\n\nAdyen guide for adding airline enhanced scheme data (ESD) to eligible US domestic card transactions by merchants with specified travel MCCs, aiming for scheme-specific interchange treatment. It was last modified 2023-04-06 and captured 2026-09-15. The page says its own limits supplement the parent ESD requirements, which must be checked separately. The historical eligibility and interchange statements are not proof of merchant qualification, a discounted rate, authorization, capture or settlement.\n\n## Key takeaways\n\n- Eligible MCCs listed for Mastercard and Visa are 3000\u20133350 and 4511; the page says airline data may be sent for commercial and consumer cards. MCC 4722 is limited: Mastercard consumer transactions automatically get a discount and commercial ones can instead submit Level 2/3 data; Visa card-present consumer/commercial transactions must send airline data for a discount, card-not-present transactions need not, and Visa commercial transactions cannot send Level 2/3 data. Preserve scheme, card and channel conditions; a payment or POS link does not broaden the rule (raw lines 26\u201354).\n- Capture setting determines endpoint and field container: automatic or delayed automatic capture sends `additionalData.airline` with `/payments`, while manual single or multiple partial capture sends `enhancedSchemeData.airline` with `/payments/{paymentPspReference}/captures`. The page gives no API minimum; v72 appears in examples, not as a stated requirement (raw lines 56\u201368, 92\u2013212).\n- Its payment/capture mapping marks airline code, ticket number, passenger name, carrier code, class of travel, destination, travel date, departure airport, flight number and issue date as required; stopover/fare/tax/reservation/travel-agency fields are shown without that mark. The capture-column table spells the required departure airport field `legs.depatureAirportCode`, but the capture sample uses `departureAirportCode`; verify the authoritative schema before implementation. The `/payments` example also omits the table\u2019s required `issue_date`. Do not treat either example as a complete validated payload (raw lines 69\u201388, 96\u2013148, 154\u2013212).\n- The `/payments` example includes plain card number/CVC values and a test endpoint, and the testing section lists test cards. This is illustrative source material, not authorization to handle live raw card data or evidence of PCI compliance. The examples have idempotency-key placeholders but show no result, webhook, interchange assessment or funds receipt (raw lines 94\u2013147, 150\u2013221).\n\n## Detail locators\n\n- MCC/scheme/card-present eligibility and parent-requirements boundary: raw lines 19\u201354.\n- Capture-mode endpoint selection and required/optional field mapping: raw lines 56\u201388.\n- Versioned test request illustrations and field-name discrepancy: raw lines 90\u2013212.\n- Test-card fixtures: raw lines 214\u2013221.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/airline/2026-09-15|Adyen airline ESD guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If your business operates under specific travel-related Merchant Category Codes (MCCs), you can provide enhanced scheme data (ESD) to optimize your interchange rates.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "In addition to the [requirements that apply to sending ESD](/payment-methods/cards/enhanced-scheme-data#requirements), take into account the following additional limitations for sending airline data.",
+      "location": "raw line 28, Requirements"
+    },
+    {
+      "text": "* Card not present: You do not have to send airline data to get a discount.",
+      "location": "raw line 53, MCC 4722 Visa limitation"
+    },
+    {
+      "text": "* **Automatic capture** and **Delayed automatic capture**: in the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request, include airline data in the [additionalData.airline](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-additionalData-AdditionalDataAirline-airline-ticket_number) object.",
+      "location": "raw line 60, How it works"
+    },
+    {
+      "text": "* **Manual capture** (**Single partial capture** and **Multiple partial capture**): in the [/payments/{paymentPspReference}/captures](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/\\(paymentPspReference\\)/captures) request, include airline data in the [enhancedSchemeData.airline](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/\\(paymentPspReference\\)/captures#request-enhancedSchemeData-airline) object.",
+      "location": "raw line 61, How it works"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-airline-esd-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-airline]] \u2014 2023-modified, 2026-09-15-captured airline ESD guide for eligible MCCs and capture-mode-specific payment/capture fields; required-field table and example disagree on departure-airport spelling and issue-date presence.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw table spells required capture field legs.depatureAirportCode, while capture example uses departureAirportCode; payment example omits table-required issue_date."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/airline/2026-09-15.md",
+  "raw_sha256": "430f06eaa215986c8be68973ae742a634dccd4f72fd55d841b3f591fef92f997",
+  "status": "candidate_ready"
+}

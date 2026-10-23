@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-cards-cards-recurring-india",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen India recurring-card mandate guide (historical)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/cards-recurring-india\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/cards-recurring-india/2026-09-15.md\"\ntags: [adyen, cards, india, recurring-payments, tokenization, mandates, historical]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified **2021-05-04** and captured 2026-09-15, describes **locally acquired recurring card payments in India** for regular **Subscription** charges and non-fixed **UnscheduledCardOnFile** automatic top-ups. It explicitly says local acquiring is needed and tells the merchant to contact an Account Manager or Support to evaluate whether and how it can process locally (raw lines 14\u201321). The flow is a shopper/issuer **mandate**, a pre-debit notification, then a recurring **/payments** request. Route this through [[adyen-tokenization]] and [[adyen-online-payments]]. It does not establish current India eligibility, mandate approval, legal compliance or a completed payment.\n\n## Key takeaways\n\n- The illustrated initial flow sends encrypted card details and billing-plan **mandate** fields in **/payments**, redirects the shopper to issuer **3D Secure 2**, and sends **/payments/details** on return (raw lines 23\u201348, 64\u201391). The prose says the request/response instructions describe **Checkout API v66 or earlier**, with unspecified 3DS differences on v67+, yet its examples use **v72** endpoints (raw lines 31\u201339, 95\u201396, 424\u2013425). Do not treat those mixed versions as proven equivalent. A successful initial response is presented as creating the mandate; the issuer's **mandateId** is explicitly an empty placeholder in this snapshot (raw lines 190\u2013203).\n- The mandate is unique per billing plan. Its amount must be at least the initial transaction amount; **max** (default) and **exact** set different permitted recurring-charge ranges, with monthly/adhoc frequency and an end date in the table (raw lines 58\u201389). The page states a recurring charge **at or below INR 15,000** does not need 3DS authentication (raw line 76). This is a **2021 provider statement**, not a current regulatory threshold or merchant approval.\n- Before each later charge, the merchant initiates **/notifyShopper** with token, merchant, shopper, amount, billing date and reference, then uses the returned **shopperNotificationReference** in the later **/payments** request (raw lines 316\u2013360, 403\u2013420). A **Success** response means the notification request was processed in its example; it is not proof that the shopper received an email/SMS or that a payment was authorized. The guide recommends initiation **at least 72 hours** before charging and says issuer delivery is **at least 24 hours** before the recurring charge (raw lines 50\u201354, 323\u2013325). The later [[source-adyen-docs-industries-markets-india|India overview]] and [[source-adyen-docs-online-payments-payments-india-compliance-guide|compliance guide]] state a **48-hour cooling period** (their raw lines 39 and 79 respectively). The 24-hour delivery statement here must not replace that separately stated cooling period; the page does not reconcile their timing origins.\n- **/notifyShopper** can return **Refused** or an errorCode/message, and subsequent **/payments** can be **Refused**; the guide routes the final payment status through an **AUTHORISATION** webhook (raw lines 376\u2013400, 449\u2013497). Example **Authorised** data is illustrative. Authentication, authorization, capture and settlement are distinct; no sample response or notification reference proves funds moved.\n- Mandate cancellation may arrive via **DISABLE_RECURRING** for BillDesk acquiring or, with enabled Tokenization webhooks, **recurring.token.disabled** for local acquiring (raw lines 499\u2013505). A cancellation between authorization and scheme clearing can yield **CAPTURE_FAILED**. The page's opening local-acquiring prerequisite and its BillDesk-specific branch coexist without explaining how a merchant qualifies for each; do not generalize one webhook route to all. The **/disable** request's **recurringDetailReference** is optional in the table, but **omitting it disables the whole recurring contract for that shopper, including all recurring details** (raw lines 507\u2013529). Treat that selector as consequential; the example includes a specific reference.\n- The final checklist points to the **live India Customer Area** (raw lines 539\u2013541), but this snapshot does not demonstrate a live account, local-acquiring approval, issuer mandate status or a processed recurring charge.\n\n## Detail locators\n\n- India/local-acquiring scope, recurring models and initial flow: raw lines 14\u201362.\n- Initial encrypted-card/mandate request fields, example and redirect: raw lines 64\u2013188.\n- Conditional mandate result, token and placeholder issuer ID; result codes/webhook: raw lines 190\u2013314.\n- Pre-debit timing, **/notifyShopper** fields and Success/Refused/error examples: raw lines 316\u2013401.\n- Later recurring **/payments** request and final AUTHORISATION webhook: raw lines 403\u2013497.\n- Cancellation webhook branches, **CAPTURE_FAILED**, broad **/disable** omission effect: raw lines 499\u2013537.\n- Live India Customer Area pointer: raw lines 539\u2013541.\n\n## Related\n\n- [[adyen]]\n- [[adyen-tokenization]]\n- [[adyen-online-payments]]\n- [[adyen-3d-secure]]\n- [[source-adyen-docs-industries-markets-india]]\n- [[source-adyen-docs-online-payments-payments-india-compliance-guide]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/cards-recurring-india/2026-09-15|Full pinned India recurring-card guide]]\n",
+  "quotes": [
+    {
+      "text": "You need to process transactions via local acquiring to support the recurring flows described on this page. Reach out to your Account Manager or our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to evaluate if and how you can process locally with Adyen.",
+      "location": "raw line 16, beneath # Recurring card payments in India"
+    },
+    {
+      "text": "1. [Notify the issuer](#send-a-pre-debit-notification) that you will charge the shopper. We recommend that you do this at least 72 hours before you intend to charge the shopper.",
+      "location": "raw line 52, ## How it works"
+    },
+    {
+      "text": "| `mandate.amount`                      | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | The amount the shopper will be charged per recurring debit in minor units. Must be more than or equal to the transaction amount. The recurring charge does not need to go through 3D Secure authentication if the amount is less than or equal to INR 15,000. |",
+      "location": "raw line 76, ### Make a payment"
+    },
+    {
+      "text": "A pre-debit notification is an email or SMS notification sent to a shopper to inform them of their impending billing plan charge. You need to inform the issuer when the notification needs to be sent out and subsequently the issuer sends the email or SMS. When they receive the notification, shoppers can choose to cancel the mandate. Shoppers receive the pre-debit notification at least 24 hours before every recurring payment in the billing plan.",
+      "location": "raw line 325, ### Initiate a pre-debit notification"
+    },
+    {
+      "text": "| `recurringDetailReference` |                                                                                             | The ID that uniquely identifies the recurring detail reference. If not provided, the whole recurring contract for the provided `shopperReference` will be disabled, which includes all recurring details.               |",
+      "location": "raw line 513, ## Cancel a mandate"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-india-recurring-cards-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-cards-recurring-india]] \u2014 2021-modified India locally acquired recurring-card guide for issuer mandate, pre-debit notification and later token charge; mixed v66/v72 examples, later 48-hour cooling guidance and broad /disable omission effect are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/cards-recurring-india/2026-09-15.md",
+  "raw_sha256": "1c5dac37201577bfa45245febe6a7769f7e3c69e8f04370826d40943c13e0fae",
+  "status": "candidate_ready"
+}

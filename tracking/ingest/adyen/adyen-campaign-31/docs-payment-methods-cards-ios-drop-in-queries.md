@@ -1,0 +1,9 @@
+# C31 retrieval checks: iOS Card Drop-in
+
+Q1. What is this page for, and what must exist before adding cards?
+
+It adds cards to an existing iOS Drop-in integration. Select the matching Sessions or Advanced server-side flow and add cards in Customer Area first (raw lines 15–37). Basic cards need no additional card-specific API fields; Sessions `/sessions` is described as the default for Drop-in v5.0.0+, while `/payments` is listed for an additional use case (raw lines 39–44). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-ios-drop-in]] → [[raw/adyen/docs/payment-methods/cards/ios-drop-in/2026-09-15]].
+
+Q2. What material boundary or conflict must a reader retain before storing cards or going live?
+
+The guide recommends explicit shopper permission for future recurring payments (raw lines 207–211). Its Sessions creation examples differ between `askForConsent` and `enabled` (raw lines 225–242, 246–268, 366–392), and Advanced prose says `showsStorePaymentMethodField` true while the next Swift sample sets false (raw lines 851–864); neither is a safe universal implementation. Initial token-creation examples use `Ecommerce` (raw lines 240, 888), while later one-click token-use examples use `ContAuth` (raw lines 563, 1287); these example values do not determine universal shopper-presence semantics. Test encrypted-card values and test URLs are examples; before live acceptance, the guide calls for test-card testing, adding accepted cards in live Customer Area, PCI DSS assessment and SAQ A submission (raw lines 2388–2398). These steps and examples prove no authorization, capture or settlement. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-ios-drop-in]] → [[raw/adyen/docs/payment-methods/cards/ios-drop-in/2026-09-15]].

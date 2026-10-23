@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-apple-pay-certificate-ios",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen own Apple Pay payment processing certificate for iOS\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/apple-pay-certificate/ios\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/apple-pay-certificate/ios/2026-09-15.md\"\ntags: [adyen, apple-pay, ios, certificates, payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified 2023-11-24 and captured 2026-09-15, describes setting up a merchant-owned **Apple Pay payment processing certificate** for a native iOS mobile integration. It applies to an existing iOS Drop-in or Components integration using Advanced or Sessions. The merchant creates Apple merchant identifiers and the certificate through Apple, then supplies the certificate to Adyen for decryption and payment processing. It is a configuration and renewal guide, not evidence of current Apple Pay entitlement, live enablement or a successful payment. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Access and prerequisites:** The guide requires a Customer Area user with **Merchant admin** or **Manage API Credentials** and an Apple Developer account in the Developer or Enterprise Program. It separately recommends an Apple **Account Holder** or **Admin** user with a group inbox/distribution-list email so expiry notifications reach the team; that notification setup is distinct from the required Customer Area role. The iOS Drop-in/Components Advanced-or-Sessions integration is a prerequisite. See pinned raw lines 21\u201331.\n- **Identifiers, capability and certificate roles:** Create separate Apple merchant identifiers for **test** and **live** transactions, even though the page says one identifier can be reused across multiple websites and iOS apps within an environment. Enable Apple Pay capability for the app. For each merchant identifier, generate a CSR through the Adyen Customer Area record of the **web service user that executes Apple Pay transactions**, use that CSR in Apple Developer to create the payment processing certificate, and upload the resulting CER to the corresponding identifier for that web service user. Apple Pay encrypts payment information with this certificate; Adyen needs it to decrypt and process the payment. The page instructs answering **No** if Apple asks whether the Merchant ID's payments are processed exclusively in China; this is source-dated setup wording, not a current regional eligibility determination. Then add Apple Pay to the relevant merchant account in Customer Area. See pinned raw lines 33\u201387 and 161\u2013166.\n- **Renewal and overlap:** The source says certificates must be renewed at expiry. Its renewal path creates a new CSR under the relevant web service user, matches the `KeyID` with an **Input needed** certificate record, uploads the new CER and activates the certificate in Apple's Developer Portal. The old certificate remains in use until Apple activation, and can continue to be used for **about four hours** afterward during rollout; do not assume immediate cutover. See pinned raw lines 89\u2013119.\n- **Check the certificate in use:** The guide shows how to decode the Base64 JSON `paymentMethod.applePayToken` from a `/payments` request and compare the token header's `publicKeyHash` (containing `KeyID`) against the relevant web service user's certificate records. Seeing the old `KeyID` during rollout does not by itself indicate failed setup; the guide treats a new `KeyID` on an **authorized** payment as confirmation of its setup steps. This is certificate-use evidence, not proof of capture, settlement or payout. The page also gives the Customer Area route for removing the old certificate; treat removal as a separate lifecycle action after checking the rollover. See pinned raw lines 117\u2013159. The token strings shown are placeholders, not credentials or a safe token-handling implementation.\n\n## Detail locators\n\n- Requirements and distinct Customer Area versus Apple Developer roles: pinned raw lines 21\u201331.\n- Four setup phases, test/live merchant IDs, CSR and web service user route: pinned raw lines 33\u201364.\n- iOS capability, Apple payment processing CER, China prompt and upload: pinned raw lines 66\u201387.\n- Renewal, `KeyID` matching, Apple activation and approximately four-hour overlap: pinned raw lines 89\u2013115.\n- Token-header check, rollout interpretation and old-certificate removal path: pinned raw lines 117\u2013159.\n- Customer Area Apple Pay addition with merchant account and identifier: pinned raw lines 161\u2013166.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online-wallet integration route.\n- [[adyen-ios-sdk]] \u2014 separately versioned iOS Apple Pay client runtime and server boundary.\n- [[source-adyen-docs-payment-methods-apple-pay]] \u2014 Apple Pay overview and channel routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/apple-pay-certificate/ios/2026-09-15|Merchant-owned Apple Pay certificate for iOS, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to enable Apple Pay for your native mobile integration with your own Apple Pay certificate.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "1. [Create merchant identifiers](#create-merchant-identifier) in your Apple developer account, and enter them in your Customer Area. You must create separate merchant identifiers for test transactions and live transactions.",
+      "location": "pinned raw line 37"
+    },
+    {
+      "text": "3. [Create a payment processing certificate](#create-payment-processing-certificate) for each merchant identifier, and add each certificate to the correct user in your Customer Area. Apple Pay uses this certificate to encrypt payment information, and we need to have this certificate to be able to decrypt and process the payment.",
+      "location": "pinned raw line 39"
+    },
+    {
+      "text": "When your certificate expires, you have to renew it. Apple Pay requires time to fully activate your new payment processing certificate. During that time period, transactions may still use the old certificate.",
+      "location": "pinned raw line 91"
+    },
+    {
+      "text": "If you see the `KeyID` for your old certificate, this may be due to the gradual rollout of Apple Certificates, and it does not mean that your setup is not successful. Four hours after the activation the rollout should be completed and you will no longer see payments using the old certificate. When you see the new certificate for an authorized payment, this confirms that all steps have been completed successfully.",
+      "location": "pinned raw line 157"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-apple-pay-ios-cert-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios]] \u2014 2023-modified, 2026-09-15-captured iOS merchant-owned Apple Pay payment-processing certificate setup and renewal guide, with separate test/live IDs, web-service-user upload and approximately four-hour certificate overlap.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Certificate use, an authorized example and Customer Area setup do not establish current merchant eligibility, capture, settlement or payout.",
+          "The roughly four-hour old-certificate overlap follows Apple activation; old-KeyID observation during rollout is not itself setup failure."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/apple-pay-certificate/ios/2026-09-15.md",
+  "raw_sha256": "4e8204d28d4f69b5e9eca513c7a6e4b7bde61d47ab7af40cf117c7a952a9458a",
+  "status": "candidate_ready"
+}

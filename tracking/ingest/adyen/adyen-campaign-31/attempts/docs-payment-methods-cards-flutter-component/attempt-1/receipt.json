@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cards-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cards in Flutter Components (Sessions and Advanced)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/flutter-component/2026-09-15.md\"\ntags: [adyen, cards, flutter, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide adds cards to an **existing Flutter Components integration**. It splits server ownership between Sessions (`/sessions`) and Advanced (`/payments`), with cards added in Customer Area before starting either route. The page says cards need no additional card-specific request fields or mandatory Component configuration on top of those parent flows; optional card controls and tokenization are separate. Its code blocks use test endpoints and versioned examples, not a complete or proven live implementation. See [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Sessions requires an existing Flutter Components Sessions flow and added cards; Advanced requires its own existing Flutter Components flow and added cards. The page's basic request/configuration statements are scoped to each parent flow. Sessions then initializes/shows the Component; Advanced adds its required callbacks. See raw lines 21\u201384.\n- Optional UI controls include cardholder name, address, CVC, supported card types, storage choice and stored-card CVC. `onBinLookup` requires at least 11 entered digits and returns brands; `onBinValue` returns the first six and requires a client key. Debit/credit splitting is set in server requests (`/sessions` or Advanced `/paymentMethods`, the latter labeled Checkout API v53+); country and amount examples are illustrative. Combo-card 3DS and automatic capture are **strong recommendations**, while the Sweden debit-first statement is the page's dated local-legislation claim. Co-badged display and brand recognition are separately described. See raw lines 59\u2013192.\n- For recurring card use, the page lists one-click, subscription and unscheduled card-on-file. It **strongly recommends** explicit shopper permission for future recurring charges, rather than declaring it a universal mandatory field. Sessions storage examples show `storePaymentMethodMode` as both `askForConsent` and `enabled`; do not treat these differing examples as one identical consent behavior. A created token is reported by `recurring.token.created` webhook, which is token evidence, not payment authorization or settlement. Checkout API v69-or-earlier has its own `enableStoreDetails` checkbox route. See raw lines 194\u2013525.\n- Advanced storage text names `showStorePaymentField`, while the optional configuration table names `showStorePaymentMethodField`; this captured page does not reconcile those names. Its zero-amount `/payments` examples use `test_` encrypted-card placeholders, `Ecommerce`, `CardOnFile` and storage parameters; they are test examples, not permission to submit raw card data or a guarantee that a token was stored. Advanced stored-card display first uses the same `shopperReference` in `/paymentMethods`; later card-token examples use `storedPaymentMethodId` and distinguish CardOnFile, Subscription and UnscheduledCardOnFile. The one-click examples use `ContAuth` even while labeled one-click; verify the intended shopper-initiated versus subsequent-payment model against the dedicated tokenization guide. See raw lines 832\u20132308.\n- Before live card payments, the guide says to test, add accepted cards in live Customer Area, assess PCI DSS compliance and submit the required Self-Assessment Questionnaire A. These stated gates do not establish actual compliance, merchant enablement, successful 3DS, authorization, capture or settlement. See raw lines 2310\u20132320.\n\n## Detail locators\n\n- Flow prerequisites and no-additional-card-fields/configuration statements: raw lines 21\u201384.\n- Optional configuration, BIN callbacks, debit/credit split, combo/co-badged behavior: raw lines 59\u2013192.\n- Sessions token creation, conflicting consent examples and token webhook: raw lines 194\u2013525; Sessions one-click examples: raw lines 527\u2013830.\n- Advanced storage-field mismatch, test-only creation examples, stored-card lookup, CardOnFile/subscription/unscheduled examples: raw lines 832\u20132308.\n- Test-to-live and PCI checklist: raw lines 2310\u20132320.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/flutter-component/2026-09-15|Cards Flutter Component guide, 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "`showStorePaymentMethodField`",
+      "location": "raw line 70, ## Components configuration > ### Optional configuration table"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 198, under ## Recurring payments"
+    },
+    {
+      "text": "When a token is created, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) webhook.",
+      "location": "raw line 519, Sessions flow after store-card examples"
+    },
+    {
+      "text": "`showStorePaymentField`",
+      "location": "raw line 838, Advanced flow > ### Store card details"
+    },
+    {
+      "text": "Before you can start accepting card payments in the live environment, you need to [assess your PCI DSS compliance](/development-resources/pci-dss-compliance-guide#online-payments) and submit the required *Self-Assessment Questionnaire A* document.",
+      "location": "raw line 2320, under ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-cards-flutter-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-flutter-component]] \u2014 2026-09-15 Flutter Cards Component guide for existing Sessions/Advanced integrations, optional card UI, token examples and pre-live PCI checklist; storage-field names and consent/example models conflict within the page, so test snippets are not production or payment-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Optional configuration names showStorePaymentMethodField (raw line 70), while Advanced storage text names showStorePaymentField (line 838).",
+          "Sessions token-creation examples use askForConsent (raw lines 227, 377, 409) and enabled (lines 253, 292, 336, 446, 477, 504); their shopper-consent behavior cannot be unified from this page alone."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/flutter-component/2026-09-15.md",
+  "raw_sha256": "3910d5baaf581823e96a162ea0517db3bca8cbe7152bc01c2236b8e84883e15a",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-korean-cards-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Korean Card Payments via redirect for API-only integrations\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/korean-cards/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/korean-cards/api-only/2026-09-15.md\"\ntags: [adyen, cards, korean-cards, api-only, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes adding **Korean Card Payments via redirect** to an existing **API-only Advanced online-payments integration**. It covers only method-specific additions, and delegates the rest of the payment, redirect, and outcome handling to the main integration guide. It is a dated setup guide, not evidence that a particular merchant is enabled or a payment succeeded. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The prerequisites are an existing API-only integration that handles `action.type: redirect` and adding this method in Customer Area. These steps are conditional on merchant setup; merely sending discovery parameters does not establish availability. (raw lines 19\u201329)\n- For `/paymentMethods`, the guide specifies `countryCode: KR` and `amount.currency: KRW`. Its sample response lists `type: kcp_creditcard`. The `kr-KR` locale and KRW 1000 amount appear in TEST examples rather than as universal requirements. (raw lines 46\u201353, 55\u201374, 331\u2013342)\n- The shopper selects the method, the merchant uses a payment form, `/payments` is sent, and the existing integration handles the returned redirect. The example response has `resultCode: RedirectShopper` and a GET `action.type: redirect` URL; this is a next action, not authorization, capture, or settlement proof. (raw lines 31\u201342, 682\u2013696)\n- The guide directs merchants to contact Support to set up the test environment. Before live card acceptance, it says to assess PCI DSS compliance and submit a required Self-Assessment Questionnaire A document. This dated statement is not a PCI compliance determination or safe handling authorization for raw card data. (raw lines 698\u2013702)\n\n## Material guide and example conflicts\n\n- The flow overview says to include additional information about intended purchase items in the payment request, but the dedicated `/payments` section says **no additional parameters** are needed and its shown requests do not include item data. Resolve this with current provider guidance before implementation. (raw lines 31\u201336, 344\u2013346, 348\u2013679)\n- The payment-form section says no other shopper information must be collected, yet curl, Node, Python and Ruby `/payments` examples include raw card number, expiry, CVC and holder name. Java, PHP, C#, Go and TypeScript examples provide only `kcp_creditcard` in `paymentMethod`. These divergent test snippets do not define a complete, safe live card-data collection or PCI model. (raw lines 38\u201344, 352\u2013375, 397\u2013409, 436\u2013452, 480\u2013496, 513\u2013535, 559\u2013575, 588\u2013609, 622\u2013643, 665\u2013679, 698\u2013702)\n- Language samples name distinct API-library versions and TEST endpoints/environments; their request structure, SDK calls, and values are illustrative for those examples. A LIVE endpoint prefix is noted separately in library snippets. (raw lines 59\u201374, 76\u2013329, 350\u2013679)\n\n## Detail locators\n\n- Prerequisites, flow and payment-form text: raw lines 15\u201344.\n- Payment-method discovery parameters and test examples: raw lines 46\u2013342.\n- Payment request examples and redirect response: raw lines 344\u2013696.\n- Test and live qualifications: raw lines 698\u2013702.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/korean-cards/api-only/2026-09-15|Adyen Korean Card Payments via redirect API-only guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Korean Card Payments via redirect.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#handle-the-redirect). `action.type`: **redirect**.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "You do not need to collect any other information from the shopper in your payment form.",
+      "location": "raw line 42"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 346"
+    },
+    {
+      "text": "Before you can start accepting card payments in the live environment, you need to assess your PCI DSS compliance and submit the required *Self-Assessment Questionnaire A* document.",
+      "location": "raw line 702"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "korean-cards-api-only-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-korean-cards-api-only]] \u2014 2026-09-15 Korean Card Payments via redirect API-only guide for existing integrations, KR/KRW discovery and conditional redirect/PCI setup; payment-parameter and card-field examples conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Overview says to add item information, while /payments section says no additional parameters; raw-card fields appear in some TEST examples but not others."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/korean-cards/api-only/2026-09-15.md",
+  "raw_sha256": "12863a87b9047024aab7ff73c74053eedd051a1634a809674980c1abbea4a815",
+  "status": "candidate_ready"
+}

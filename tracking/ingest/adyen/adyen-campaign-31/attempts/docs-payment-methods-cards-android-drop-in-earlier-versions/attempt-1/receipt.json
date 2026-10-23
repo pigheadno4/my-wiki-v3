@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-cards-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android Cards Drop-in v4.x.x integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, cards, android, drop-in, earlier-versions]\n---\n\n## Overview\n\nThis [[adyen]] page, captured 2026-09-15, is the **earlier-version Android Cards Drop-in v4.x.x** guide for adding cards to an existing Drop-in integration. Its explicit requirement is an **Advanced flow** Android Drop-in integration and card addition in the Customer Area. Introductory, configuration and See also links point to a Sessions-flow guide despite that requirement; do not infer the two flows are interchangeable from those links. See [[adyen-android-sdk]] for the separately versioned Android SDK route and [[source-adyen-docs-payment-methods-cards-android-drop-in]] for the v5.0.0+ cards page.\n\n## Key takeaways\n\n- **Card display and client/server split:** The server sends `countryCode` plus `amount.currency` to `/paymentMethods`; Drop-in uses the response to show available cards. Optional `CardConfiguration` controls cardholder name and postal-code fields. Drop-in collects and encrypts sensitive card details in the app, then returns `paymentComponentData.paymentMethod`; the merchant sends component data to its server for a Checkout `/payments` request. The page's shorthand that sensitive information does not touch the server means unencrypted fields are not supposed to reach it: the separate [[adyen-pci-dss-compliance]] guide expressly says encrypted cardholder data is sent through the merchant server. See pinned raw lines 19\u201388 and PCI guide raw lines 215\u2013225.\n- **Server request and outcomes:** The illustrated request uses the Checkout **test** v72 `/payments` endpoint, encrypted card fields, merchant account and Android return URL. Language examples use distinct historical API-library versions; the Go example labels v10.4.0 while importing `/v9/` paths. The response example's `Authorised` is a sample result, not a live transaction. `resultCode` is for shopper presentation and a webhook separately reports the outcome; `Cancelled`, `Error`, `Refused` and additional 3D Secure result codes are possible. If manual capture applies, capture remains a separate step. This guide does not document a complete action callback or prove capture, settlement or payout. See pinned raw lines 83\u2013471.\n- **Stored-card example and wording conflicts:** For token creation the page describes a shopper storage switch, passes `storePaymentMethod` and a unique `shopperReference` in server `/payments`, and uses the same shopper reference in `/paymentMethods` to show stored cards. It calls the switch-containing object `actionComponentData` while referencing `paymentComponentData.storePaymentMethod`; preserve that inconsistency rather than treating either as verified field wiring. To hide the save-card switch, prose says `showStoredPaymentMethods: false`, but the adjacent Kotlin code uses `.setShowStorePaymentField(false)`; these appear to be different controls and the example does not resolve the wording. A shopper-present stored-card example sends `paymentComponentData.paymentMethod` through the server and uses `ContAuth` plus `UnscheduledCardOnFile` in its illustrative request; do not generalize those values to all shopper-initiated reuse. The page points elsewhere for shopper-not-present subscription or contract payments. See pinned raw lines 473\u2013809.\n- **Live boundary:** The guide describes `test_`-prefixed test details while a client integration is unfinished, then lists test cards, live Customer Area card addition, a live client key and PCI assessment/SAQ A before live cards. SAQ A is conditional on actual mobile Drop-in eligibility in the PCI guide; these steps do not attest compliance, present merchant enablement or a successful payment. See pinned raw lines 811\u2013823 and PCI guide raw lines 215\u2013237.\n\n## Detail locators\n\n- v4.x.x identity, Advanced-flow requirement and Sessions-link inconsistency: pinned raw lines 15\u201338.\n- Optional `CardConfiguration`, test environment and postal-code policy: pinned raw lines 36\u201381.\n- Component-to-server `/payments` request and historical SDK snippets: pinned raw lines 83\u2013437. Go v10.4.0 label and `/v9/` imports occur at lines 289\u2013295.\n- Response fields, result codes, webhook and separate manual capture: pinned raw lines 439\u2013471.\n- Token creation, switch-name/object-name inconsistencies, stored-card retrieval and use: pinned raw lines 473\u2013809.\n- Test and live checklist: pinned raw lines 811\u2013823.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 main SDK route; its current retained v5 baseline must not be attributed to this v4.x.x guide.\n- [[adyen-online-payments]] \u2014 broader Advanced client/server/webhook architecture.\n- [[adyen-tokenization]] \u2014 current token lifecycle and shopper-reference scope.\n- [[adyen-3d-secure]] \u2014 authentication pathway distinct from authorization/capture.\n- [[adyen-pci-dss-compliance]] \u2014 mobile Drop-in SAQ A eligibility and encrypted-data path.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/android-drop-in/earlier-versions/2026-09-15|Android Cards Drop-in v4.x.x guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [Android Drop-in](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in) renders the available cards in your payment form, and securely collects sensitive card information, so it doesn't touch your server.",
+      "location": "pinned raw line 21"
+    },
+    {
+      "text": "| **Integration type** | Make sure that you have built an Advanced flow [Android Drop-in integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in). |",
+      "location": "pinned raw line 27"
+    },
+    {
+      "text": "Use the\u00a0 [resultCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-resultCode) from the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response to present the payment result to your shopper. You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "pinned raw line 460"
+    },
+    {
+      "text": "If you do not want to show the switch for saving card details, set `showStoredPaymentMethods` to **false** when [creating an instance of Drop-in](/online-payments/build-your-integration/sessions-flow/?platform=Android\\&integration=Drop-in#set-up).",
+      "location": "pinned raw line 486"
+    },
+    {
+      "text": "          .setShowStorePaymentField(false)",
+      "location": "pinned raw line 491"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-android-dropin-v4-source-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-android-drop-in-earlier-versions]] \u2014 historical Android Cards Drop-in v4.x.x Advanced-flow guide for card display, server payments, results and stored-card examples; Sessions links and save-switch naming conflict require qualification.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v4.x.x requirement specifies Advanced flow, while several inline navigation links point to Sessions.",
+          "The storage-switch prose names showStoredPaymentMethods but its adjacent snippet uses setShowStorePaymentField; the token section also mixes actionComponentData and paymentComponentData nomenclature.",
+          "The introduction's card-data server shorthand is qualified by the PCI guide: encrypted cardholder data passes through the merchant server; merchant SAQ A eligibility must be assessed.",
+          "Go v10.4.0-labeled example imports /v9/ packages; snippets are not proven compatible or complete."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "3b75d80d08644529b19cf6c4a8a314bd6649543d4b017146d3ff5e78f71a66d4",
+  "status": "candidate_ready"
+}

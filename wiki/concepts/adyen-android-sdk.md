@@ -64,6 +64,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-cards-android-drop-in-earlier-versions]] — historical Android Cards Drop-in v4.x.x Advanced-flow guide for card display, server payments, results and stored-card examples; Sessions links and save-switch naming conflict require qualification.
+
+
+- [[source-adyen-docs-payment-methods-cards-android-drop-in]] — 2026-09-15 cards guide for existing Android Drop-in v5.0.0+ Sessions or Advanced flows, with card configuration, split funding, tokenization and test/live boundaries.
+
+
 - [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-android-5-0-0]] - Adyen Docs Android v4.13.3-or-earlier to v5.0.0 migration guide for Drop-in and Components (2026-09-15 snapshot)
 
 

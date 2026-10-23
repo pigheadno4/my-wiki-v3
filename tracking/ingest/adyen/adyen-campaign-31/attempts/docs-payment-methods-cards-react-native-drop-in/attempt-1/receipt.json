@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cards-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Card Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, cards, react-native, drop-in, tokenization, checkout-api]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] page adds cards to an **existing React Native Drop-in integration**. It documents card-specific options and server Checkout API examples, so the main route is [[adyen-react-native-sdk]]. It does not itself pin a React Native wrapper or native iOS/Android SDK version, describe a complete Sessions flow, or establish payment outcome.\n\n## Key takeaways\n\n- First build the React Native Drop-in integration and add cards in the **test** Customer Area. The page says no extra card-specific API fields or required card-specific Drop-in integration are needed for the basic path; its examples use server-side `/paymentMethods` and `/payments` for additional card and tokenization use cases.\n- Optional card settings include holder name, CVC display for new/stored cards, storage choice, address visibility, supported brands, country filters and Korean/Brazilian fields. Address `lookup` requires both `onUpdateAddress` and `onConfirmAddress` callbacks. BIN callbacks are scoped to minimum 11 entered digits for `onBinLookup` and a client key for the first-six-digit `onBinValue`.\n- Separate debit/credit methods require Checkout API **v53 or later** and server `/paymentMethods` with `splitCardFundingSources: true`; the NL/EUR 47.00 request and split response are examples. For debit combo cards the page **recommends** 3D Secure and automatic capture because of some issuer restrictions. For Sweden it says `countryCode: SE` yields debit-first Drop-in ordering, which is dated source guidance rather than a current legal determination. Recognition and co-badged choice are client presentation behavior, not authorization.\n- Card tokenization covers one-click, subscription and unscheduled card-on-file. It strongly recommends explicit shopper permission for future recurring payments. To show the storage switch, the prose requires `showStorePaymentField: true`, but the adjacent sample sets it to **`false`**, which the configuration table says hides that option. Follow the stated condition, and treat the snippet as conflicting illustration. The test `/payments` token request uses `test_` encrypted-card placeholders; a later `recurring.token.created` webhook carries a `storedPaymentMethodId` for subsequent use. The examples do not prove consent, token creation, successful payment or funds movement.\n- Before live card payments, the page directs test-card testing and adding desired cards in the **live** Customer Area. It contains no card-specific PCI assessment or native SDK version pin in this raw; use separately versioned integration and PCI sources for those requirements. A 3DS recommendation is not evidence of authentication, and an API call or token webhook is not authorization, capture or settlement proof.\n\n## Detail locators\n\n- [[raw/adyen/docs/payment-methods/cards/react-native-drop-in/2026-09-15|Pinned raw]], lines 15\u201336: purpose, prior Drop-in/test Customer Area prerequisites and no-extra-card-field boundary.\n- Same raw, lines 38\u201356: optional configuration, conditional address callbacks, BIN callback limits; lines 58\u2013132: v53 funding-source split, combo-card recommendation, Sweden and brand choice.\n- Same raw, lines 134\u2013162: recurring consent, storage-switch prose/example conflict; lines 168\u2013557: test-only token-request illustrations and token-created webhook.\n- Same raw, lines 559\u2013919: one-click stored-token examples; lines 920\u20131271: subscription; lines 1272\u20131622: unscheduled card-on-file.\n- Same raw, lines 1624\u20131633: test and live Customer Area checklist.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored credential lifecycle.\n- [[adyen-online-payments]] \u2014 merchant server, client and payment-outcome context.\n- [[adyen-pci-dss-compliance]] \u2014 PCI guidance outside this page.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/react-native-drop-in/2026-09-15|Card Drop-in integration]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add cards to your existing React Native Drop-in integration.",
+      "location": "line 19, Card Drop-in integration"
+    },
+    {
+      "text": "There is no required cards specific integration for Drop-in.",
+      "location": "line 36, Drop-in configuration"
+    },
+    {
+      "text": "Supported from Checkout API v53 or later.",
+      "location": "line 60, Showing debit and credit cards separately"
+    },
+    {
+      "text": "make sure that `showStorePaymentField` is set to **true**.",
+      "location": "line 144, Store card details"
+    },
+    {
+      "text": "showStorePaymentField: false",
+      "location": "line 150, Store card details example"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-cards-rn-dropin-react-native-sdk",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-react-native-drop-in]] \u2014 2026-09-15 React Native Drop-in card guide for existing integration prerequisites, optional card fields, Checkout API v53+ debit/credit split, tokenized recurring examples and test/live card setup; storage-switch prose requires `true` while adjacent sample sets `false`, and the page does not pin native SDK versions or prove payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source's showStorePaymentField prose and adjacent code conflict; preserve both.",
+          "The React Native wrapper/native SDK versions in the concept come from separate GitHub evidence, not this source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "cbb269ba662b1a4275570fc645a4719a9207937fd761fb8133d7cf15b3e0abf2",
+  "status": "candidate_ready"
+}

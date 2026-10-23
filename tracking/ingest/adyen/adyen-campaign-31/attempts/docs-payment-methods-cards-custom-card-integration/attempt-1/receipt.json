@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-custom-card-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen API-only encrypted card integration guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/custom-card-integration\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/custom-card-integration/2026-09-15.md\"\ntags: [adyen, cards, online-payments, api-only, encryption, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified and captured 2026-09-15, covers an **API-only card integration with encrypted card details** across Web and mobile examples. A merchant builds its card-form UI. On Web, Adyen's Custom Card Component collects, validates and encrypts the sensitive inputs inside Adyen-served iframes; the iOS, Android, React Native and Flutter examples collect card details in the merchant app and call client-side encryption. The encrypted payload goes to the merchant server, which calls Checkout `/payments`. These collection architectures have different card-data and PCI implications. See [[adyen-online-payments]], [[adyen-card-encryption]] and [[adyen-pci-dss-compliance]].\n\n## Key takeaways\n\n- **Prerequisites and card selection:** The page calls for an API-only integration and adding intended cards in the **test** Customer Area before starting. It uses `/paymentMethods` with `countryCode` and `amount.currency` to determine cards shown to a shopper; this is a request/response selection step, not proof of live country, currency or merchant eligibility. See pinned raw lines 31\u201344.\n- **Client boundaries:** Web uses the Custom Card iframe fields and a public `clientKey`; the page shows version-specific `AdyenCheckout` initialization (asynchronous in v5.0.0+) and callbacks, then sends `state.data` to the merchant server only when `state.isValid`. It recommends version-matched SRI for script/CSS delivery. Web v5.20.0+ JWE input fields require a secure local or HTTPS test context and allowed origin. The mobile tabs instead show public-key/client-side encryption after the merchant app collects raw card inputs. Neither path makes a copied code snippet a complete, tested card-data integration. See pinned raw lines 21\u201327, 46\u2013246, 417\u2013627 and 2754\u20132758.\n- **Server request and outcomes:** The server-side `/payments` section lists amount in minor units, unique reference, encrypted `paymentMethod` type `scheme`, merchant account, return URL and risk-data fields. Its return URL must omit personally identifiable information. The illustrated curl request uses the **test** v72 endpoint and `test_` card placeholders; language snippets pin differing API-library versions and show example idempotency keys. A `/payments` resultCode is for shopper presentation, while payment outcome also arrives asynchronously by webhook. `Authorised`, `Cancelled`, `Error` and `Refused` are distinguished; 3DS can add other result codes. Manual capture still requires a separate capture step. Neither response example nor a 3DS authentication step proves capture, settlement or payout. See pinned raw lines 629\u20131060.\n- **Card presentation:** In some regions the page describes co-badged brand choice, including Web `onBinLookup`/selected-brand handling; it separately describes debit/credit presentation with Checkout API v53+ and `splitCardFundingSources`. The Netherlands EUR 47 example is illustrative, while Sweden ordering and Brazil debit 3DS/automatic-capture advice are source-dated regional statements, not a present legal or issuer determination. See pinned raw lines 1062\u20131230.\n- **Stored cards:** The page routes CardOnFile, Subscription and UnscheduledCardOnFile through standard tokenization parameters, recommends explicit shopper permission for future recurring charges, and says token creation yields a `recurring.token.created` webhook containing `storedPaymentMethodId`. A shopper-reference lookup can return stored methods; the one-click branch collects a fresh CVC. The zero-value token-creation and subsequent `/payments` examples are illustrative; a submitted request does not prove token creation or a future charge. Its one-click example combines fresh CVC collection with `shopperInteraction: ContAuth`, while token creation uses `Ecommerce`; keep that sample wording separate from a general rule for shopper-initiated reuse. See pinned raw lines 1231\u20131705 and 2036\u20132738.\n- **Fraud collection and go-live boundary:** Optional cross-page fraud-data collection is described for Web Drop-in/Components and passed by Custom Card at checkout; its script affects pages where installed. The page separately lists test-card checks, adding cards in the live Customer Area and a PCI assessment/SAQ A submission before live cards. Do **not** apply its broad SAQ A sentence to every architecture: the separately retained [[source-adyen-docs-development-resources-pci-dss-compliance-guide]] distinguishes Web Custom Card SAQ A from raw-card API-only SAQ D and gives a separate mobile API-only scope. Exact merchant architecture and assessment remain necessary; this snapshot does not attest compliance or live enablement. See pinned raw lines 2740\u20132766 and PCI guide raw lines 135\u2013153, 247\u2013259.\n\n## Detail locators\n\n- Web installation, SRI, environment/client key, callbacks, iframe fields and version gates: pinned raw lines 46\u2013246; styling/brands: lines 248\u2013416.\n- iOS/Android/React Native/Flutter collection, public keys and encryption examples: pinned raw lines 417\u2013627.\n- `/payments` request fields, test curl and language-specific SDK examples: pinned raw lines 629\u20131024; response/result/webhook: lines 1026\u20131060. The Go example labels v12.2.0 but imports `/v9/` packages at lines 859\u2013867; use snippets as illustrations, not verified compatible implementations.\n- Co-badging, debit/credit splitting and regional notes: pinned raw lines 1062\u20131230.\n- Token creation, webhook, stored-card lookup, one-click, subscription and unscheduled card-on-file examples: pinned raw lines 1231\u20132738.\n- Optional fraud collection, v5.20.0+ secure-context condition and live checklist: pinned raw lines 2740\u20132766.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main client/server online-payment route.\n- [[adyen-tokenization]] \u2014 stored-card lifecycle and shopper permission.\n- [[adyen-3d-secure]] \u2014 authentication route separate from authorization and capture.\n- [[adyen-pci-dss-compliance]] \u2014 architecture-specific merchant assessment; no certification inferred here.\n- [[adyen-card-encryption]] \u2014 distinct custom Web JWE/raw-card route; do not merge it with Adyen-hosted Custom Card iframes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/custom-card-integration/2026-09-15|API-only encrypted card integration, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Build your own UI for the card payment form, and then use our Custom Card Web Component to collect, validate, and encrypt your shopper's card details. The Component renders card input fields in iframes served by Adyen.",
+      "location": "pinned raw line 23"
+    },
+    {
+      "text": "Build your own UI for the card payment form, collect the shopper's card details, and then use Adyen classes to validate and encrypt the data in your client app.",
+      "location": "pinned raw line 27"
+    },
+    {
+      "text": "From your server, make a POST [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request, specifying:",
+      "location": "pinned raw line 631"
+    },
+    {
+      "text": "Use the\u00a0 [resultCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#responses-200-resultCode) from the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response to present the payment result to your shopper. You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "pinned raw line 1049"
+    },
+    {
+      "text": "3. Before you can start accepting card payments in the live environment, you need to assess your PCI DSS compliance and submit the required *Self-Assessment Questionnaire A* document. For more information, refer to [PCI DSS compliance guide](/development-resources/pci-dss-compliance-guide#online-payments).",
+      "location": "pinned raw line 2766"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-custom-card-integration-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-custom-card-integration]] \u2014 2026-09-15 API-only encrypted-card guide for Web Custom Card iframes versus mobile app-side collection/encryption, server `/payments`, result/webhook and stored-card routes; PCI scope and snippets require architecture/version review.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's broad live SAQ A instruction must not be universalized: the separate PCI guide gives Web Custom Card SAQ A and raw-card API-only SAQ D scopes. The one-click example collects CVC yet uses ContAuth; preserve that example rather than generalizing shopper-interaction behavior. Go example labels v12.2.0 but imports /v9/ packages."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/custom-card-integration/2026-09-15.md",
+  "raw_sha256": "483b063605ff3a731c73a67eb827507528385f6a245059333eb7d5cf65c86f19",
+  "status": "candidate_ready"
+}

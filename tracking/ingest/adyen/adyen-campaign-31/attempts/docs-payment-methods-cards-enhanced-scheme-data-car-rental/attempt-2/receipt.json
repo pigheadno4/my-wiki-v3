@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cards-enhanced-scheme-data-car-rental",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen car-rental enhanced scheme data\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/car-rental\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/enhanced-scheme-data/car-rental/2026-09-15.md\"\ntags: [adyen, cards, enhanced-scheme-data, car-rental]\n---\n\n## Overview\n\nThis [[adyen]] guide covers car-rental enhanced scheme data (ESD) for **US domestic** card transactions by businesses with eligible travel-related MCCs. It names rental dates and agreements as industry data and describes conditional Visa downgrade prevention and Mastercard industry-rate qualification. Sending the fields does not by itself establish merchant eligibility, a particular interchange rate, or payment/capture success. This child guide inherits the parent ESD requirements, including its Advanced-flow online integration and webhook prerequisites. [[adyen-online-payments]]\n\n## Key takeaways\n\n- Eligible MCCs in this snapshot are **3351\u20133500, 7512, and 7513** for Mastercard and Visa, and **7519** for Mastercard only. The page limits car-rental ESD to commercial and consumer cards. These are stated categories, not evidence that a specific merchant or card is enabled. See raw lines 17\u201352.\n- For automatic or delayed automatic capture, the guide's prose recommends car-rental ESD in Checkout API `/payments` under `additionalData.carRental`; its adjacent Checkout v72 example instead puts flat `carRental.*` keys directly in `additionalData` (raw lines 58, 65, 120\u2013129). Neither shape is verified here as an executable schema. For manual single/multiple partial capture, it points to Classic API `/capture`, because Checkout API does **not** support car-rental ESD in capture requests. The `travelEntertainmentAuthData.market` and `.duration` fields are payment-request-only. Do not transfer this Classic capture route to Checkout capture. See raw lines 32\u201341 and 54\u201366.\n- The guide marks rental agreement number, renter name, return city/state/country/location ID, checkout date, and return date as required; other listed fields include rate, rental days, location, tax/fuel/insurance and one-way charges. The table's precise field names and its required column are at raw lines 68\u201390. These are guide-level fields, not a complete API schema.\n- There are material source inconsistencies: the \u201cSend car rental data\u201d section begins \u201cInclude airline data,\u201d despite the car-rental heading and fields; the Checkout payment prose names `additionalData.carRental`, while its example uses flat `additionalData` `carRental.*` keys; Classic capture prose names `additionalData.enhancedSchemeData.carRental`, while its example also uses flat `additionalData` `carRental.*` keys. The examples also place `-X POST` on a line without the joining backslash before `-d`, and include raw **test** card data. Treat snippets as illustrations to check against the relevant API/version and card-data-handling requirements, not copy-ready live requests. See raw lines 58\u201366, 120\u2013129 and 150\u2013188.\n\n## Detail locators\n\n- MCC/scheme table and Checkout-vs-Classic capture limit: raw lines 26\u201359.\n- Required and other car-rental fields: raw lines 68\u201390.\n- Checkout API v72 TEST `/payments` and Classic Payment API v72 TEST `/capture` examples: raw lines 94\u2013188. A test-card table follows at raw lines 190\u2013197.\n- The linked parent ESD overview owns general eligibility and invalid/incomplete-data behavior; this page's links alone do not establish actual fee savings or an authorization result.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-payment-capture]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/car-rental/2026-09-15|Adyen car-rental ESD snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Send car rental data for US domestic transactions.",
+      "location": "raw line 17, opening description"
+    },
+    {
+      "text": "Your business must operate under an [eligible MCC](#car-rental-data-mcc).",
+      "location": "raw line 32, Requirements > Limitations"
+    },
+    {
+      "text": "The [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview) does not support sending car rental data in capture requests.",
+      "location": "raw line 36, Requirements > Limitations"
+    },
+    {
+      "text": "You can send the following car rental data fields only in the payment request:",
+      "location": "raw line 38, Requirements > Limitations"
+    },
+    {
+      "text": "Include airline data in the payment or capture request.",
+      "location": "raw line 63, Send car rental data"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-car-rental-esd-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-car-rental]] \u2014 2026-09-15-captured US domestic car-rental ESD guide for eligible MCCs, Checkout payment versus Classic capture routes and required fields; both routes' prose-versus-flat-field examples and a section wording error remain source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not interpret the typo \u201cInclude airline data\u201d as changing the page to an airline ESD guide.",
+          "Checkout payment and Classic capture prose each name nested carRental objects, while both adjacent examples use flat additionalData carRental.* keys; neither example verifies an executable schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/car-rental/2026-09-15.md",
+  "raw_sha256": "6ba9b050e69a0de003b71434767f111c750e5304b5256a1eb4aeab7e9c65992f",
+  "status": "candidate_ready"
+}

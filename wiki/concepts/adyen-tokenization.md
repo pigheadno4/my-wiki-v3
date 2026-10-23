@@ -15,6 +15,15 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-cards-cards-recurring-india]] — 2021-modified India locally acquired recurring-card guide for issuer mandate, pre-debit notification and later token charge; mixed v66/v72 examples, later 48-hour cooling guidance and broad /disable omission effect are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-cards-flutter-drop-in]] — 2026-09-15 Flutter card Drop-in Sessions/Advanced token creation and one-click, subscription and unscheduled examples; explicit-permission advice and storage-setting/mode conflicts remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-cards-android-component]] — Android Card Component v5.0.0+ card-token creation, stored-card display and one-click/subscription/unscheduled example routes; shopper-permission advice and the Advanced storage-switch example conflict remain source-qualified.
+
+
 - [[source-adyen-docs-standard-integration-drop-in-tokenization]] — 2026-09-15 Standard Drop-in shopper-consented token creation and one-click CardOnFile reuse via Sessions/webhooks, with recurring-role/method gates, zero-value limits and unresolved Ecommerce-versus-ContAuth one-click example.
 
 

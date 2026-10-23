@@ -1,0 +1,9 @@
+# C31 retrieval checks: credit card installments
+
+Q1. What is this guide for and what integration prerequisites does it name?
+
+It covers online credit-card installments in Brazil/BRL, Mexico/MXN and Japan/JPY, with country-specific counts and plan/network conditions (raw lines 19–57). It requires an existing Web Drop-in/Components integration v3.15.0+ or a custom card-form UI; Web `/sessions` options are documented from v5.21.0+, while Web `/payments` options use client configuration from v3.15.0+ (raw lines 59–73). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-credit-card-installments]] → [[raw/adyen/docs/payment-methods/cards/credit-card-installments/2026-09-15]].
+
+Q2. What material limits affect plan selection and later payment/funds outcomes?
+
+Japan revolving needs prior issuer approval (raw line 48), and its custom-UI `/payments` plan field requires Checkout API v64+ with value 2–99 for regular but 1 for revolving/bonus (raw lines 1316–1328). Successful first-payment `/payments`/AUTHORISATION evidence does not cover later charges: the page says later installments have no webhooks and directs their status to Settlement details reporting (raw lines 1312–1314, 1709–1711). Brazil, Mexico and Japan have different funds timing; Mexico names a historical issuer-bank set, direct agreement for other banks and extra scheme fee (raw lines 1713–1736). The older Sessions table marks `values` required (raw line 81), while the main concept records newer Web 6.47.0 plan-only code behavior; apply each with version scope. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-credit-card-installments]] → [[raw/adyen/docs/payment-methods/cards/credit-card-installments/2026-09-15]].

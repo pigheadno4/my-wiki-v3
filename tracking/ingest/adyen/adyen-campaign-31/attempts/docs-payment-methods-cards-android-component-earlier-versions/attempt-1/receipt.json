@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Android Card Component v4.x.x integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, cards, android, component, earlier-versions]\n---\n\n## Overview\n\nThis historical [[adyen]] guide describes adding cards to an existing Android Card Component **v4.x.x** integration using the Advanced flow. It covers selecting available card methods, client-side collection and server-side `/payments`, result presentation, optional tokenization, and test-to-live prerequisites. It is an earlier-version route, not evidence of current SDK behavior or merchant eligibility. [[adyen-online-payments]]\n\n## Key takeaways\n\n- The stated prerequisites are an existing Advanced-flow Android Components integration, cards added in the Customer Area, and a client key. The app's `/paymentMethods` request supplies `countryCode` and `amount.currency`; it selects `scheme` for available cards and `storedPaymentMethods` for stored-card display. The guide then adds the Card Component dependency, configures the client key in TEST, and attaches the Component view. See raw lines 23\u201392.\n- The Component collects card information and returns `paymentComponentState.data`; the merchant passes that data to its server for a `/payments` request. The prose requires both a valid state **and the shopper proceeding to pay**, but the adjacent observer snippet calls `sendPayment` whenever `isValid` becomes true. The example is therefore not an unambiguous submit trigger. The illustrative v72 curl sample also contains a literal hint-templated `paymentMethod` key; it is not copy-ready JSON. See raw lines 94\u2013103 and 134\u2013167.\n- The synchronous `resultCode` is for presenting a shopper result; the payment outcome also arrives asynchronously by webhook. The table distinguishes `Authorised`, `Cancelled`, `Error`, and `Refused`, allows additional 3D Secure results, and says manual capture still requires a capture action after `Authorised`. A sample `Authorised` response is illustrative, not evidence of an actual captured or settled payment. See raw lines 490\u2013524.\n- For later token payments, the page describes a shopper-selected storage switch, passing `data.storePaymentMethod` and `shopperReference` in `/payments`, then using a token. Its switch-hiding prose names `showStoredPaymentMethods`, while its neighboring Kotlin snippet calls `.setShowStorePaymentField(false)`; the field name must not be inferred from one alone. The token-payment example uses `storedPaymentMethodId`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: UnscheduledCardOnFile` even though the surrounding section says the shopper proceeds to pay. Keep shopper-present and shopper-not-present uses distinct. See raw lines 526\u2013581 and 856. [[adyen-tokenization]]\n- The live checklist calls for test-card validation, enabling cards in the LIVE Customer Area, a LIVE client key, and assessment of PCI DSS compliance with the required SAQ A submission before live card acceptance. These are historical guide prerequisites, not proof that any merchant has met them. See raw lines 858\u2013870.\n\n## Detail locators\n\n- Optional postal-code field configuration and its stated default: raw lines 105\u2013132.\n- Server request examples and response fields: raw lines 134\u2013509. The snippets are versioned illustrations and contain templating artifacts.\n- The requirement table points to Advanced flow, while the closing \u201cSee also\u201d link points to a Sessions-flow Android Components guide: raw lines 23\u201329 and 872\u2013874. Treat the latter as navigation, not a change to this page's Advanced-flow prerequisite.\n- The stored-card section repeats a `/payments` path rather than providing a complete stored-card display procedure; its token example is at raw lines 548\u2013581.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/android-component/earlier-versions/2026-09-15|Adyen Card Component v4.x.x integration snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Card Component v4.x.x integration",
+      "location": "raw line 15, heading"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "raw line 27, Requirements table"
+    },
+    {
+      "text": "If `isValid` is true and the shopper proceeds to pay, pass the `paymentComponentState.data` to your server",
+      "location": "raw line 94, Show the available cards in your payment form"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw line 513, Present the payment result"
+    },
+    {
+      "text": "If you do not want to show the switch for saving card details, set `showStoredPaymentMethods` to **false**",
+      "location": "raw line 539, Create a token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-android-card-v4-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-android-component-earlier-versions]] \u2014 Historical Android Card Component v4.x.x Advanced-flow guide for card collection, server payment, result and token examples; adjacent submit and storage-switch snippets conflict with prose, and live prerequisites remain conditional.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep this v4.x.x earlier-version route distinct from the existing v5.0.0+ Android Card Component source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "c73d2a14dab4421fa4b3845802898a4ed9127f6bd3a8e2bbe98327a6f728a3ea",
+  "status": "candidate_ready"
+}

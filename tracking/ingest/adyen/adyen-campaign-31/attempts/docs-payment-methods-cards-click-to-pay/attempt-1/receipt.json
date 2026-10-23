@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cards-click-to-pay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Click to Pay cards\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/click-to-pay\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/click-to-pay/2026-09-15.md\"\ntags: [adyen, cards, click-to-pay, online-payments]\n---\n\n## Overview\n\nAdyen Click to Pay Web integration guide for account-recognized card selection without manual card-detail entry. Card schemes store cardholder data and issue tokens. The page leads with one-off card payments but qualifies recurring support as Mastercard Click to Pay only; regular Card Component or Drop-in is a separate recurring route. The page metadata was last modified 2026-02-04 and this raw was captured 2026-09-15; none of the listed support or benefits proves current account enablement or a payment outcome.\n\n## Key takeaways\n\n- Sessions lists Web Drop-in or Components v5.39.0+ and Checkout API v69+; Advanced also lists API-only with a Custom Card Component. Both tabs call for cards and Click to Pay to be added in Customer Area. Advanced says a separate ClickToPay Component with a Custom Card Component needs Support or Account Manager enablement (raw lines 27\u201351).\n- Drop-in shows Click to Pay with cards when available; the Card Component embeds it, while a Custom Card Component uses a standalone Click to Pay Component. To suppress Click to Pay, the guide says to add `clicktopay` to `blockedPaymentMethods` on `/sessions` or `/paymentMethods`. The standalone component is separate from manual card-entry UI and requires its provided pay button; Adyen says a custom Click to Pay pay button is unsupported. For Card and standalone Components, mount only when the shopper chooses that option because recognition can trigger an OTP (raw lines 88\u2013192).\n- A shopper can be recognized by browser cookie or email. Sessions passes `shopperEmail`, `id` and `sessionData` from the `/sessions` response into `AdyenCheckout`; other integrations add `shopperEmail` to card configuration. The page says a Mastercard shopper without a browser cookie always gets a console HTTP 400 even if the flow continues; this is a narrowly described recognition condition, not permission to disregard other 400 responses or proof of payment success (raw lines 194\u2013239).\n- Click to Pay request examples add `srcDigitalCardId` and `srcCorrelationId` and describe automatically sent scheme/storefront IDs in a `configuration` object. Card Component/Sessions examples use `scheme`; a standalone Advanced example says `clicktopay`. The Advanced sample duplicates `paymentMethod` and has malformed JSON, while the Drop-in configuration snippet omits a comma after `merchantDisplayName`. Treat these as illustrations requiring correction and version checks, not executable request shapes. The displayed `Authorised` response is an example, not evidence of authorization, capture or settlement (raw lines 98\u2013122, 241\u2013353).\n- Click to Pay testing needs scheme sandbox accounts and their test cards; the guide explicitly excludes Adyen test card numbers for Click to Pay. A payment may or may not require 3D Secure under normal decision-making, and chargebacks/risk settings remain card-payment concerns. Neither the benefits list nor test path establishes a guaranteed authorization rate, security result, fee outcome or live availability (raw lines 53\u201360, 355\u2013391).\n\n## Detail locators\n\n- Purpose, one-off and Mastercard-only recurring scope: raw lines 15\u201325.\n- Flow/version/Customer Area and Support prerequisites: raw lines 27\u201351.\n- Integration configuration, recognition and custom-button limits: raw lines 88\u2013239.\n- Request/response fields and malformed sample boundary: raw lines 241\u2013353.\n- Scheme sandbox testing and card-payment follow-up routes: raw lines 355\u2013391.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-network-tokenization]]\n- [[adyen-tokenization]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/click-to-pay/2026-09-15|Adyen Click to Pay guide snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Currently, Adyen\u2019s Click to Pay integration only supports [recurring payments](/online-payments/tokenization/make-token-payments) on Mastercard Click to Pay.",
+      "location": "raw line 25, introduction"
+    },
+    {
+      "text": "Web Drop-in or Components for Click to Pay requires [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview) v69 or later.",
+      "location": "raw line 37, Sessions requirements"
+    },
+    {
+      "text": "Adyen does not support a custom pay button for Click to Pay. You must use the button provided by the Component.",
+      "location": "raw line 192, standalone component"
+    },
+    {
+      "text": "If the shopper is using a Mastercard but there is no browser cookie, the console always returns a [400 Bad Request error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400).",
+      "location": "raw line 200, recognition"
+    },
+    {
+      "text": "You cannot use Adyen's [test cards](/development-resources/test-cards-and-credentials/test-card-numbers) to test Click to Pay functionality.",
+      "location": "raw line 383, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-click-to-pay-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-click-to-pay]] \u2014 2026-09-15 Click to Pay Web card guide for versioned Sessions/Advanced setup, shopper recognition and scheme sandbox tests; recurring is Mastercard-only in this snapshot and request snippets have syntax faults.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced example has a duplicated paymentMethod object and malformed JSON; Drop-in configuration omits a comma. Do not treat samples as executable."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/click-to-pay/2026-09-15.md",
+  "raw_sha256": "c25c6d535c8a2494078586415eb124a04f553915abe56f6f3db81fff090fa146",
+  "status": "candidate_ready"
+}

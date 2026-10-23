@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-cards-enhanced-scheme-data-car-rental
+
+Q1. Which car-rental ESD transactions and request routes does this guide cover?
+
+A1. The page is for US domestic car-rental ESD with eligible MCCs and commercial or consumer cards (raw lines 17–34); its MCC table limits 3351–3500, 7512 and 7513 to Mastercard/Visa and 7519 to Mastercard (raw lines 43–52). Automatic/delayed automatic capture uses Checkout /payments; manual capture uses existing Classic /capture because Checkout captures do not support car-rental ESD (raw lines 32–41, 54–59). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-car-rental]] → [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/car-rental/2026-09-15]].
+
+Q2. What required fields and source conflicts constrain an implementation or rate claim?
+
+A2. The table marks rental agreement number, renter and return location/date fields required (raw lines 68–90); travelEntertainmentAuthData market/duration are payment-request-only (raw lines 38–41). The section says “airline data” although its context is car rental (raw lines 61–66), and both endpoint payload shapes conflict between prose and examples: Checkout `/payments` prose names `additionalData.carRental` while its sample puts flat `carRental.*` keys in `additionalData` (raw lines 58, 65, 120–129); Classic `/capture` prose names `additionalData.enhancedSchemeData.carRental` while its sample likewise uses flat `additionalData` `carRental.*` keys (raw lines 59, 66, 164–187). Neither sample verifies an executable schema. TEST raw-card and shell examples are illustrative, not live payment or rate proof (raw lines 94–197). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-car-rental]] → [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/car-rental/2026-09-15]].

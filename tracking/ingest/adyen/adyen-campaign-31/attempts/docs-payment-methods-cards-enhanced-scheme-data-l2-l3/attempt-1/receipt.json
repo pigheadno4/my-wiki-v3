@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cards-enhanced-scheme-data-l2-l3",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Level 2/3 enhanced scheme data for card payments\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cards/enhanced-scheme-data/l2-l3\"\nraw_files:\n  - \"adyen/docs/payment-methods/cards/enhanced-scheme-data/l2-l3/2026-09-15.md\"\ntags: [adyen, cards, enhanced-scheme-data, level-2, level-3]\n---\n\n## Overview\n\nThis [[adyen]] page describes sending Level 2/3 enhanced scheme data (ESD) for eligible **US Mastercard and Visa** card payments or captures. Level 2 contains purchase and tax details; Level 3 adds line-item details. The page says eligible Mastercard/Visa transactions may benefit from lower interchange rates, while American Express has no financial incentive here but may receive the data for fraud prevention and reporting. Eligibility and rate benefit are conditional, not established by the presence of fields or a sample response. [[adyen-online-payments]]\n\n## Key takeaways\n\n- The guide inherits ESD eligibility and general requirements from its parent guide. Its additional limitations say that **from April 1, 2026**, Visa supports Level 3 only and Mastercard supports Levels 2 and 3; the eligible card types are business, purchasing, and corporate cards, with most business cards limited to Level 2. The Level 2 minimum total tax amount is 0.1%; the maximum is 30% for Mastercard and 22% for Visa. These are the page's dated rules, not independently verified current scheme rules. See raw lines 17\u201344.\n- ESD goes in a payment request for automatic or delayed automatic capture, and in a capture request for manual single or multiple partial capture. The top-level flow names `enhancedSchemeData.levelTwoThree` for `/payments` and `enhancedSchemeData` for captures, but the later field instructions and examples instead put payment ESD under `additionalData.enhancedSchemeData` and capture ESD under `enhancedSchemeData.levelTwoThree`. This is a material **within-page field-path conflict**; use the applicable API/version reference before implementation. See raw lines 46\u201364, 116\u2013121, and 152\u2013280.\n- Validation requires correct format and accurate data; Visa amount calculations must reconcile line totals with quantities, unit prices, discounts, freight, taxes, and capture total. The page says to send ESD in the capture request if payment and capture totals differ. Missing or malformed required fields can cause Adyen to drop all ESD; Level 3-only errors or a Level 2-only card can lead to Level 2 submission; malformed optional fields can be dropped. These are **data-submission** outcomes, not payment authorization, capture, or settlement outcomes. See raw lines 66\u201390.\n- The field table distinguishes required Level 2/3 customer reference and tax amount, required Level 3 line-item details, and shipping/destination fields mandatory only when **all** of these hold: corporate card, US acquisition, and shipped goods. Keep the payment-versus-capture field names distinct. See raw lines 116\u2013149.\n- ESD validation feedback is optional and requires webhook configuration; AUTHORISATION feedback for automatic capture or ESD sent in the payment request additionally calls for Support enablement. The page distinguishes `enhancedSchemeDataReceived`, `enhancedSchemeDataSubmitted`, refusal reasons, and warning reasons. It maps automatic capture to AUTHORISATION and manual or delayed automatic capture to CAPTURE, but the later instruction says AUTHORISATION may apply when ESD was sent in the payment request. Feedback shows what ESD Adyen submitted to a scheme after validation; it does not prove a favorable interchange rate or a settled payment. See raw lines 48\u201364 and 92\u2013114, 284\u2013370.\n- The generalized Level 3-error fallback to Level 2 and the examples mentioning submission to \u201cVisa or Mastercard\u201d are not reconciled with the page's **April 2026 Visa Level 3-only** rule. The webhook field table lists `null` among values, whereas the ineligible and invalid examples use empty strings; the monitoring prose uses singular `enhancedSchemeDataRefusalReason`/`enhancedSchemeDataWarningReason` while the table and examples use plural `...Reasons`. Preserve these inconsistencies rather than treating example payloads as a complete schema. See raw lines 32\u201339, 76\u201378, 105\u2013114, 284\u2013370.\n\n## Detail locators\n\n- Level 2/3 validation and Visa calculation formulas: raw lines 66\u201390.\n- Complete payment/capture field comparison, including conditional shipping destination fields: raw lines 116\u2013149.\n- Illustrative v72 TEST requests/responses: raw lines 152\u2013280. The payment example includes raw test card number and CVC and an `Authorised` response; it is not a safe live card-data-handling pattern or evidence of an actual payment. Both shell samples show `-X POST` without a joining backslash before `-d`, and the capture example's line-item object name differs from the field table; these examples need validation against the applicable API reference.\n- Example webhook payloads for valid L3, valid L2, downgraded L3, ineligible card, and invalid ESD: raw lines 284\u2013370. Test card numbers are at raw lines 372\u2013379.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-payment-capture]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/l2-l3/2026-09-15|Adyen Level 2/3 ESD snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Include level 2/3 data in your requests for US payments with Mastercard and Visa.",
+      "location": "raw line 17, opening description"
+    },
+    {
+      "text": "Visa supports level 3 data only.",
+      "location": "raw line 34, Requirements > Limitations (starting April 1, 2026)"
+    },
+    {
+      "text": "**Automatic capture** and **Delayed automatic capture**: in the [/payments]",
+      "location": "raw line 56, How it works"
+    },
+    {
+      "text": "If a required field is missing or incorrectly formatted for both levels, we drop all level 2/3 data.",
+      "location": "raw line 76, Level 2/3 data validation"
+    },
+    {
+      "text": "For the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request: include the [additionalData.enhancedSchemeData]",
+      "location": "raw line 120, Send level 2/3 data"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c31-l2-l3-esd-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cards-enhanced-scheme-data-l2-l3]] \u2014 2026-09-15-captured US card Level 2/3 ESD guide for eligible Mastercard/Visa payment or capture requests and validation webhooks; dated scheme limits and conflicting request-field paths are retained in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not collapse payment and capture field paths: this raw page contradicts itself.",
+          "Do not generalize L3-to-L2 downgrade examples to post-April-2026 Visa when the page says Visa is L3-only."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cards/enhanced-scheme-data/l2-l3/2026-09-15.md",
+  "raw_sha256": "ef6481b131fae95bdc0fc408305c1026bd60bb1c534b05d1415f21bb8aa282d7",
+  "status": "candidate_ready"
+}
