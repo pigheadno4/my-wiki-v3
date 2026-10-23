@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What did the historical MX925 guide require before boarding, and which routes did it describe?
+Answer: Connect the device to the internet and perform a device security inspection first (raw line 21). It then describes a merchant-account Customer Area registration/one-time-password route (raw lines 25–46), plus POS App Android and iOS IP/hostname-based routes (raw lines 48–81). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-board-the-terminal-mx925]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/mx925-user-manual/board-the-terminal-mx925/2026-09-15]].
+
+Q2. Can the guide's post-configuration “begin processing payments” text establish current MX925 availability?
+Answer: No. Those are 2019-modified boarding instructions (raw lines 43–46, 67–81), while the separately captured eVo/Verix deprecation page lists MX925 “No more transactions” as 29 March 2024. The Android Bluetooth-or-Wi-Fi prompt does not describe Bluetooth pairing here; this page's Android steps use terminal IP (raw lines 63–66). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-board-the-terminal-mx925]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/mx925-user-manual/board-the-terminal-mx925/2026-09-15]].

@@ -15,6 +15,15 @@ The captured enablement guide describes intended capabilities and vendor perform
 
 ## Sources
 
+- [[source-adyen-docs-uplift-uplift-experiments]] — 2026-09-15 live-transaction Uplift experiment guide covering checkout, recommendation-based optimization, risk-test routing, access and eligibility gates, variant traffic, results timing, statistical-significance guidance, and the setting-change choice on ending optimization tests.
+
+
+- [[source-adyen-docs-uplift]] — 2022-modified, 2026-09-15-captured Uplift overview of role-gated dashboards, integration-dependent recommendations and five modules; expected effects and regional variation are not measured merchant outcomes.
+
+
+- [[source-adyen-docs-uplift-uplift-requirements]] — 2019-modified, 2026-09-15-captured Uplift Web integration, webhook, five-module and conditional request-data requirements/recommendations; shopper-field API validity differs from Uplift guidance and no activation or results are proved.
+
+
 - [[source-adyen-docs-partners-uplift-enablement]] — 2026-09-15 partner guide to Uplift prerequisites and module-specific implementation, merchant decisions, version floors, and outcome limits.
 
 ## Related

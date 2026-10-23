@@ -15,6 +15,9 @@ The 2023-modified landing page captured 2026-09-15 supplies orientation and link
 
 ## Sources
 
+- [[source-adyen-docs-intelligent-money-movement]] — 2026-09-15 enterprise Intelligent Money Movement overview for payment processing, merchant-to-balance-account funds flow, enterprise accounts, third-party payouts and issued-card spending; distinct from this concept's platform-user financial-product family, with no account-specific enablement or execution proof.
+
+
 - [[source-adyen-docs-marketplaces-compliance-financial-products-keeping-records]] — 2024-modified, 2026-09-15-captured Marketplace financial-products service-record guide: five years after offering termination unless longer internal retention, with UK/Ireland vulnerable-customer record conditions; not legal advice or retention proof.
 
 

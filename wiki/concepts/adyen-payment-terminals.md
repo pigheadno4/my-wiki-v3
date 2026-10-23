@@ -15,6 +15,120 @@ The 2026-09-15 V400m manual requires shipment and device tamper checks with imme
 
 ## Sources
 
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-use-the-admin-menu-e355]] — 2019-modified, 2026-09-15-captured historical e355 Admin-menu guide: illustrated key plus 9, PIN gate, and listed configuration-removal and totals-reset purposes; no action outcome or current support proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-charge-the-e355]] — 2019-modified, 2026-09-15-captured historical e355 charging page for supplied Micro-USB cable, external power and side port; physical charging guidance does not establish current transaction support or payment readiness.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-use-the-admin-menu-mx925]] — 2019-modified, 2026-09-15-captured historical MX925 PIN-gated Admin-menu key sequence and separate unknown-PIN troubleshooting route; no current support or payment proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-attach-the-e355-to-the-frame]] — 2019-modified e355 user-manual frame-attachment steps, captured 2026-09-15 under terminal deprecation; mechanical fit does not establish a tablet connection, boarding or payment readiness.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame]] — 2026-09-15-captured historical e355 frame overview linking tablet/terminal attachment, power and removal guides; physical mounting and charging purpose do not establish current transaction support.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-view-terminal-information-mx925]] — 2019-modified, 2026-09-15-captured historical MX925 device-info keypress and screen/QR identifier list; display is not connectivity, credential or payment-readiness proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth-step-3-start-a-transaction]] — 2026-09-15-captured historical e355 boarded/connected Bluetooth POS-app amount, card-prompt and PIN transaction-start sequence; simplified correct-PIN approval wording is not actual authorization or current device proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-view-terminal-information-e355]] — 2019-modified, 2026-09-15-captured historical e355 device-info shortcut and IP/terminal/software/QR identifier list; displayed fields do not establish connectivity, current support or payment outcome.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-remove-the-e355-from-the-frame]] — 2019-modified, 2026-09-15-captured historical e355 frame-removal sequence: unlock screws, press Eject, relock screws, with flat-surface tablet precaution.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual]] — 2021-modified, 2026-09-15-captured historical MX925 quickstart with no-new-orders notice, PED power/ETH cabling and damage warning; the linked eVo deprecation table lists MX925 “No more transactions” on 29 March 2024.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-connect-the-e355-frame-to-a-power-source]] — 2019-modified historical e355 frame-power steps specifying a Verifone-certified wall charger and front-panel barrel port for tablet/device charging; no observed charge or payment readiness.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth-remove-configuration-and-reboard]] — 2026-09-15-captured historical e355 Bluetooth-manual procedure for conditionally skipping or destructively erasing merchant configuration before separate reboarding; reboot is not recovery, current support or payment proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-troubleshooting-and-support-mx925]] — 2019-modified, 2026-09-15-captured historical MX925 support route: self-service troubleshooting then email Support if unresolved with merchant account, serial and conditional transaction PSP reference; no repair or current-availability proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth-step-1-clean-the-bluetooth-configuration]] — 2026-09-15-captured deprecated e355 paired-device cleanup path; unpairing requires disconnection, while “unless necessary” opening advice conflicts with the final “all devices” step.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-turn-on-and-turn-off-the-e315]] — 2019-modified, 2026-09-15-captured historical e315 iPod/iPhone-coupled power-on and iOS-off/disconnect/>5-second pictured-key power-off sequence; not device support or payment-readiness proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-troubleshooting-and-support-e355]] — 2019-modified, 2026-09-15-captured historical e355 support route: linked self-service troubleshooting, then email Support if unresolved with merchant account, terminal serial and conditional transaction PSP reference; no repair proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-troubleshooting-and-support-e315]] — 2019-modified, 2026-09-15-captured historical e315 self-service-then-Support escalation route requesting merchant account, applicable PSP reference and serial number; no reset, repair or current support proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual]] — 2021-modified, 2026-09-15-captured historical e315 manual overview: no new terminal orders, charge/security-inspect/iOS-network/board quickstart and POS App or own-app routes; “ready to process payments” is not current availability or outcome proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-use-the-admin-menu-e315]] — 2019-modified, 2026-09-15-captured historical e315 Admin-menu access guide with illustrated version-specific sequences, PIN gate and an unaddressed 1.12–1.13 gap.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-attach-a-tablet-to-the-frame]] — 2019-modified historical e355 frame guide for removable-module, connector-alignment and locking-screw tablet attachment; mechanical fitting does not establish connection, boarding or current transaction support.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual]] — 2021-modified, 2026-09-15-captured historical e355 manual hub for charging, inspection, Wi-Fi and boarding; it says no new orders, while its parent deprecation page lists a 2024 transaction cutoff.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-remove-a-tablet-from-the-frame]] — 2019-modified, 2026-09-15-captured historical e355 tablet-frame removal sequence: release module, lift tablet, reseat/lock module, and use a smooth flat surface to protect the screen.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-understand-the-led-colors-e355]] — 2021-modified, 2026-09-15-captured historical e355 LED status table for sleep, battery, charging, timer fault and gang-charger LED-off behavior; indicator labels are not current support, health or payment proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-understand-the-led-colors-e315]] — 2019-modified, 2026-09-15-captured historical e315 LED behavior/status table for sleep, low battery, charging, timer fault, normal operation and gang-charger Off condition.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-turn-on-and-off-the-e355]] — 2019-modified, 2026-09-15-captured historical e355 fully-charged power-on/logo cue and >5-second beeping power-off procedure; not boarding or payment-readiness proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-install-an-ipod-or-iphone-into-the-e315]] — 2019-modified historical e315 iPod/iPhone casing, Lightning-connector and iPod-spacer installation guide; mechanical fit only, not boarding or current device support.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth-troubleshoot-the-bluetooth-connection]] — 2026-09-15-captured historical e355 Bluetooth troubleshooting for protocol mismatch, range/20-second icon check, app-then-terminal restart and conditional unpairing of unnecessary devices; no fix or current support proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth]] — 2019-modified historical e355 Bluetooth pair/reboard/transaction-start navigation and POS App protocol-v2 mismatch warning; successful pairing is not successful boarding or payment, and later deprecation limits device use.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-charge-the-e315]] — 2019-modified, 2026-09-15-captured historical e315 charging guide for certified wall charger/Micro-USB, eight-hour initial charge without iPod/iPhone, and five-slot-plus-USB gang charger; not current device support or battery-condition proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-inspect-device-security-mx925]] — 2019-modified, 2026-09-15-captured historical MX925 staff inspection guide for weekly tamper checks, third-party identity verification and stop-use/Support escalation.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-inspect-device-security-e355]] — 2019-modified, 2026-09-15-captured historical e355 manual for staff visual tamper checks, weekly inspection and stop-use/Support escalation; not current model or certification proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-inspect-device-security-e315]] — 2019-modified, 2026-09-15-captured historical e315 visual-tamper, third-party access, PIN-privacy and weekly inspection checklist; stop use and contact Support when in doubt, with no current device eligibility or certification proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-connect-the-e355-to-your-wireless-network]] — 2019-modified, 2026-09-15-captured historical e355 Wi-Fi setup for pre-boarding scan/manual SSID and menu security selections; connection claims and WPA/TKIP-era options do not establish present support or security compliance.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-board-the-terminal-e315]] — 2019-modified historical e315/iOS boarding and MFI missing-reader troubleshooting guide, captured 2026-09-15 under terminal deprecation.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth-step-2-pair-the-e355-with-a-mobile-device]] — 2026-09-15-captured historical e355 Bluetooth pairing/boarding step for iOS or Android, including frame exception, OS-mismatch escalation and through-v36 iOS restart behavior; no current support or payment-outcome proof.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-board-the-terminal-mx925]] — 2019-modified, 2026-09-15-captured historical MX925 boarding guide for security/network prerequisites, merchant-account OTP and POS App paths; the deprecation table lists MX925 “No more transactions” on 29 March 2024.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-board-the-terminal-e355]] — 2019-modified, 2026-09-15-captured historical e355 POS App boarding guide for security/network prechecks, frame, Android/iOS and classic-library routes; its quick-start link points to VX675 and current e355 support is not established.
+
+
+- [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation]] — 2021-modified, 2026-09-15-captured historical eVo/Verix terminal retirement and VOS/Android replacement table, with separate 29 March 2024 device and 31 March 2024 classic-library transaction cutoffs; not current model or PCI eligibility proof.
+
+
 - [[source-adyen-docs-industries-major-sports-event]] — 2026-09-15 Adyen in-person sports-event planning guide for international visitors, conditional connectivity/offline options and terminal preparation; recommendations do not establish device support, merchant enablement, live resilience or payment outcomes.
 
 

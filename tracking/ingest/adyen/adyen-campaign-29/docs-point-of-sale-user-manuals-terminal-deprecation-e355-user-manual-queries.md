@@ -1,0 +1,7 @@
+# Query proposal — docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual
+
+Q1. What does the historical e355 manual hub cover before an existing device could be used?
+A1. It routes to charge, device security inspection, Wi-Fi connection and boarding (raw lines 23–30), lists an e355 and USB-to-Micro-USB cable (raw lines 34–37), and names Adyen POS App or one's own POS app (raw line 39). The hub does not supply those child procedures, credentials or proof that steps succeeded. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/2026-09-15]].
+
+Q2. How should the no-orders and “ready to process” wording be read after deprecation?
+A2. The 2021-modified page says new e355 orders are unavailable (raw line 19), yet uses generic “your new terminal” phrasing (raw line 25). Its post-quickstart “ready to process payments” sentence (raw line 32) is historical and cannot override the linked eVo-deprecation page's 29 March 2024 e355 no-transactions entry; it does not prove current device support, account enablement or a payment outcome. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/2026-09-15]].

@@ -1,0 +1,5 @@
+# Query checks — docs-development-resources
+
+Q1. What should a builder do before using this directory, and where does it route? The page says choose the integration type and follow the corresponding guide first (raw line 51). It then links credentials, libraries, webhooks and client-side authentication (lines 53–75), plus examples (77–101). Route: [[index]] → [[adyen-index]] → [[adyen-api-access]] → [[source-adyen-docs-development-resources]] → [[raw/adyen/docs/development-resources/2026-09-15]].
+
+Q2. Does the landing page itself establish MCP/API permissions or a successful/live payment integration? No. AI tools and Agentic Commerce are link descriptions at raw lines 27–47; credentials and webhook cards are link descriptions at 53–75. The page gives no endpoint contract, role scope, environment configuration, or outcome. Use the linked dedicated sources for those claims. Route: [[index]] → [[adyen-index]] → [[adyen-api-access]] → [[source-adyen-docs-development-resources]] → [[raw/adyen/docs/development-resources/2026-09-15]].

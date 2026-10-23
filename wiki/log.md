@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-23] ingest | Adyen website C29
+
+- Fifty independently approved general/setup and historical deprecated-terminal documentation sources; first full-review approvals 47/50 and 4 targeted correction reviews. 8 concepts touched (0 new); source_count 1464 = 1450 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-29/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-21] ingest | Adyen website C28
 
 - Fifty independently approved Payout Service third-party disbursement/funding/reporting, Standard integration and legacy Classic 3DS1 references documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 8 concepts touched (0 new); source_count 1414 = 1400 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-28/`; details [[adyen-log]]. No commit/push.

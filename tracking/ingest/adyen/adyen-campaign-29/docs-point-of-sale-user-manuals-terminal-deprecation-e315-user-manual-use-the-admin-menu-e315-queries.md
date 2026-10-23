@@ -1,0 +1,7 @@
+# Q1 — How does this e315 page say to access the Admin menu?
+
+For terminal software through 1.11, it shows a four-button illustrated sequence followed by the Admin PIN (pinned raw lines 20–23). For 1.14 and later, it shows an illustrated first button followed by `1`, `5`, `9`, then the Admin PIN (lines 25–28). The guide names basic chip/magnetic-stripe transaction, totals-print and refund functions but does not perform them (line 16). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-use-the-admin-menu-e315]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e315-user-manual/use-the-admin-menu-e315/2026-09-15]].
+
+# Q2 — What if the PIN is unknown, or the e315 runs version 1.12 or 1.13?
+
+Both listed routes require an Admin-menu PIN and direct an unknown-PIN user to the separate POS Troubleshooting Admin PIN guide (pinned raw lines 23 and 28). This page states routes only through 1.11 and from 1.14 onward; it says nothing about 1.12–1.13, so neither sequence can be assigned to those versions from this evidence. The historical menu page does not prove current model support or authorization to issue a refund. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-use-the-admin-menu-e315]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e315-user-manual/use-the-admin-menu-e315/2026-09-15]].

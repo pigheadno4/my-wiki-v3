@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What does this guide compare, and what does it say about the two model routes?
+Answer: It introduces Adyen for Platforms user onboarding, payment processing on users' behalf and payouts (raw lines 17–27). It selects between Marketplace and Platform based on business and payment needs: shoppers interact with the marketplace brand versus directly with a platform user; both list online payments and direct sub-merchant payouts, while the table places in-person payments and payment facilitators in the Platform column (raw lines 29–56). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-adyen-for-platforms-model]] → [[raw/adyen/docs/adyen-for-platforms-model/2026-09-15]].
+
+Q2. What historical and ownership limits matter when using its decision tree?
+Answer: The tree asks about integration before 1 August 2022 and balance-platform upgrade, and sends a Classic integration to discussion with Adyen about a possible upgrade for more financial products or enhanced processing (raw lines 66–104). The page does not establish automatic migration, current eligibility, a transaction's legal seller/merchant of record or ownership of funds; the customer-facing brand and in-person questions are model-routing signals (raw lines 70–98, 106–134). Route: [[index]] → [[adyen-index]] → [[adyen-platforms]] → [[source-adyen-docs-adyen-for-platforms-model]] → [[raw/adyen/docs/adyen-for-platforms-model/2026-09-15]].

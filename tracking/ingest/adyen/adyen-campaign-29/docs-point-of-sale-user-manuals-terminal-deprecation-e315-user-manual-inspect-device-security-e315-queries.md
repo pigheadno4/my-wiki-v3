@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What staff checks and escalation does the historical e315 inspection guide require?
+Answer: Compare appearance/manual pictures and power-on logo; do not use a damaged or sticker-covered unit (raw lines 20–26). Verify third-party repair identities, check for skimmers/cameras, verify installation/replacement/return, report tampering, protect customer PIN visibility, inspect visually weekly, and stop using the unit/contact Support when in doubt (raw lines 28–40). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-inspect-device-security-e315]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e315-user-manual/inspect-device-security-e315/2026-09-15]].
+
+Q2. Does passing the checklist certify an e315 or establish current payment-processing support?
+Answer: No. The page describes staff checks, not a unit-specific certificate or completed inspection (raw lines 16–40). It was last modified in 2019, and the separate deprecation source lists 29 March 2024 as the e315 no-transactions date; visual inspection cannot establish current device eligibility or payment outcome. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual-inspect-device-security-e315]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e315-user-manual/inspect-device-security-e315/2026-09-15]].

@@ -30,6 +30,9 @@ This is a 2023-last-modified Adyen page captured 2026-09-15. It does not identif
 
 ## Sources
 
+- [[source-adyen-docs-set-up-adyen-payments-application-requirements]] — 2025-modified, 2026-09-15-captured Adyen live-account application checklist for legal-entity/tax or VAT/identity/residency evidence, conditionally reviewed online-site content and ownership documentation; submission is not live approval.
+
+
 - [[source-adyen-docs-account-balances-next-payout]] — 2023-modified, 2026-09-15-captured Adyen guide to a merchant account's changing Next payout balance, expense-driven negatives, possible refund/payout/deposit effects, and conditional Reserve auto-funding or top-up/transfer routes; balance is not bank receipt.
 
 

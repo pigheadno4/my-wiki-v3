@@ -20,6 +20,12 @@ The 2026-09-15 captured page explicitly presents incomplete, non-definitive secu
 
 ## Sources
 
+- [[source-adyen-docs-about-our-customer-area]] — 2026-09-15-captured dated BPCA-to-unified-Customer-Area migration guide for TEST/LIVE setup, company/merchant role scope, access copying and deep-link changes; timeline remains indicative.
+
+
+- [[source-adyen-docs-new-customer-area-menu]] — 2026-09-15 Customer Area menu-transition and old-to-new page navigation guide; rollout/menu visibility does not establish user roles or successful operations.
+
+
 - [[source-adyen-docs-account-single-sign-on]] — 2026-09-15 Customer Area SAML 2.0 SSO overview and navigation to setup, SSO-user creation, existing-user migration and login guidance; no merchant enablement or actual access outcome established.
 
 

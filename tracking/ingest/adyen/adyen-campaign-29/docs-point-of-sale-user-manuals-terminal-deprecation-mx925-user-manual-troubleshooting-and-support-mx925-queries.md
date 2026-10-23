@@ -1,0 +1,7 @@
+# Retrieval probes — docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-troubleshooting-and-support-mx925
+
+Q1. What should an operator do for an MX925 issue, and what details go to Support?
+A1. First try the linked POS troubleshooting documentation (raw lines 16–18). If unresolved, email Adyen Support with merchant account and terminal serial number, plus the transaction PSP reference if applicable; the serial is in Device info and on the terminal's back (raw lines 20–28). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-troubleshooting-and-support-mx925]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/mx925-user-manual/troubleshooting-and-support-mx925/2026-09-15]].
+
+Q2. Does the MX925 support page itself diagnose or repair the terminal, or establish current availability?
+A2. No. It is a 2019-modified page in a terminal-deprecation/MX925 manual path, and its contents only route to separate troubleshooting and conditional Support contact (raw lines 5–28). The sample serial number is illustrative; no Support response, repair or transaction outcome appears (raw lines 20–28). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-mx925-user-manual-troubleshooting-and-support-mx925]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/mx925-user-manual/troubleshooting-and-support-mx925/2026-09-15]].

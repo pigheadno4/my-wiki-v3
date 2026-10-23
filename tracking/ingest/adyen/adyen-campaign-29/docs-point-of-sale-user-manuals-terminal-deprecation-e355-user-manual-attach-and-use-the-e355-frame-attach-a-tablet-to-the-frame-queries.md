@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What is the historical e355 tablet-frame attachment sequence?
+Answer: Detach the Removable Module by turning locking screws counter-clockwise and sliding Eject right; align the frame's Tablet Connector with the tablet port; guide module pins back into slots; turn locking screws clockwise (raw lines 21–27). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-attach-a-tablet-to-the-frame]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/attach-and-use-the-e355-frame/attach-a-tablet-to-the-frame/2026-09-15]].
+
+Q2. What does the completed attachment establish about payment readiness?
+Answer: The page describes mechanical attachment for easier terminal connection (raw lines 17–27), with no tablet-compatibility list, connection test, Bluetooth pairing, boarding or payment result. The separate deprecation source lists 29 March 2024 as e355 “No more transactions,” so these 2019 instructions do not establish current support. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-attach-a-tablet-to-the-frame]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/attach-and-use-the-e355-frame/attach-a-tablet-to-the-frame/2026-09-15]].

@@ -1,0 +1,7 @@
+# Q1 — What sequence does the e355 frame-removal page give?
+
+When the terminal is no longer in use, turn locking screws counter-clockwise to unlock, push Eject downward to release the e355, then turn the screws clockwise (pinned raw lines 17–25). Place the e355 on a smooth flat surface while attaching/removing the tablet to avoid screen scratches (line 27). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-remove-the-e355-from-the-frame]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/attach-and-use-the-e355-frame/remove-the-e355-from-the-frame/2026-09-15]].
+
+# Q2 — Does this page require a power-off or prove device safety/current support?
+
+No power-off or cable step appears in this short mechanical procedure (pinned raw lines 15–27), so do not add one from this evidence. It gives a release sequence and scratch precaution, not a safety inspection, certification or present e355-support finding. The page is a 2019-modified historical manual under the terminal-deprecation path. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-attach-and-use-the-e355-frame-remove-the-e355-from-the-frame]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/attach-and-use-the-e355-frame/remove-the-e355-from-the-frame/2026-09-15]].

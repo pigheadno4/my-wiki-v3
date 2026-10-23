@@ -1,0 +1,7 @@
+# Query proposal — docs-point-of-sale-user-manuals-terminal-deprecation
+
+Q1. Which eVo terminals and replacement paths did this historical page cover?
+A1. The 2021-modified page addresses previous-generation Verifone Verix/eVo terminals because of stated PCI PTS expiry and Verifone repair/support cessation (raw lines 19–35). Its dated table names e315, e355, MX925, VX675, VX680, VX690, VX820 and VX820 Duet; it suggests VOS/Android alternatives by device type and says e280 purchase was Japan-only (raw lines 32–48). This is not current availability or certification proof. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/2026-09-15]].
+
+Q2. What were the separate terminal and classic-library transaction cutoffs, and what cannot be inferred now?
+A2. The page's model table says “No more transactions” from 29 March 2024 for its eVo list (raw lines 32–35); its integration section separately says transactions through classic libraries would no longer be possible after 31 March 2024, directing migration to Terminal API (raw lines 50–54). Those are historical page claims, not a live device status, present PCI determination, account eligibility or proof of a migrated/processed payment. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/2026-09-15]].

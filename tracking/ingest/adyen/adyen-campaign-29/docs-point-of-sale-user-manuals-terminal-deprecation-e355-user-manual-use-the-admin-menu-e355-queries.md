@@ -1,0 +1,7 @@
+# C29 e355 Admin-menu retrieval checks
+
+Q1. What is this page for, and what is needed to reach the e355 Admin menu?
+Answer: It lists Admin-menu purposes (network settings, installer, merchant configuration/maintenance, and totals printing/reset) at pinned raw line 16. The access steps require the illustrated terminal key plus `9` (line 20) and the Admin PIN (line 21); an unknown PIN routes to the separate POS Troubleshooting Admin PIN guide (line 21). The page then says the menu appears (line 22). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-use-the-admin-menu-e355]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/use-the-admin-menu-e355/2026-09-15]].
+
+Q2. Does opening this menu remove a configuration, reset totals, or prove current e355/payment availability?
+Answer: No such outcome is documented. The page names removal and reset as menu purposes (pinned raw line 16), but its only procedure ends when the Admin menu appears (lines 20–22). Its 2019-modified page sits in the terminal-deprecation path (raw lines 7, 10), so current device support or successful payment cannot be inferred. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-use-the-admin-menu-e355]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/use-the-admin-menu-e355/2026-09-15]].

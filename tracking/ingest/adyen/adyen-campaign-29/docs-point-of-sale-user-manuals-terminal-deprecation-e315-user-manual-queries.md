@@ -1,0 +1,7 @@
+# Query probes — docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual
+
+Q1. What is the e315 manual overview and its stated quickstart?
+Answer: This 2021-modified e315 manual says new terminals of this type cannot be ordered (raw lines 15–19). Its historical sequence is charge, perform device security inspection, connect using the iOS device's connection, then board (lines 23–28); it names the terminal and USB-to-Micro-USB cable, plus Adyen POS App or own-app integration (lines 32–37). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e315-user-manual/2026-09-15]].
+
+Q2. Does “ready to process payments” establish current e315 availability or a successful live payment?
+Answer: No. That quickstart sentence appears at line 30, but the same page says new e315 terminals cannot be ordered and links the deprecation overview (line 19). It provides no actual merchant enablement, transaction authorization or settlement result. Follow the child inspection/boarding guides for their model-specific procedures (lines 26–28). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e315-user-manual]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e315-user-manual/2026-09-15]].

@@ -18,6 +18,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-adyen-for-platforms-model]] — 2026-09-15 Adyen for Platforms model-selection guide comparing Marketplace and Platform shopper interaction and capabilities, with a Classic-to-balance-platform upgrade decision branch.
+
+
 - [[source-adyen-docs-marketplaces-verification-requirements-reference-additional-products-brand-specific-industry-codes]] — 2026-09-15 Marketplace-path brand-specific IC/MCC classification and conditional industry-approval contact guide; pinned export lacks the promised accepted-code values and proves no approval or business-account eligibility.
 
 

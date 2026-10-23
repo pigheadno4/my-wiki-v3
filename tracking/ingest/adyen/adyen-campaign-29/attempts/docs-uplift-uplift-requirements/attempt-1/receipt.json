@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-uplift-uplift-requirements",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Uplift integration and data requirements\"\ntype: source\ndate_ingested: 2026-10-22\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/uplift/uplift-requirements\"\nraw_files:\n  - \"adyen/docs/uplift/uplift-requirements/2026-09-15.md\"\ntags: [adyen, uplift, online-payments, risk, tokenization, authentication]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] page (metadata last modified 2019-09-06) maps **general, module-specific and payment-request data requirements or recommendations** for [[adyen-uplift]]. It covers Web online-payment integrations and the Protect, Tokenize, Authenticate, Optimize and Personalize modules. These are conditions for using or improving Uplift, not evidence that a merchant's module is enabled or has improved results (raw lines 15\u201325, 39\u201341, 93\u201397).\n\n## Key takeaways\n\n- **General Web gate and versioned routes:** The page asks for a Web online-payments integration and enabled/accepted webhooks. It recommends Web Drop-in or Components v6 with Sessions or Advanced flow and Checkout API v71 or later; it also lists Web API-only with encrypted or raw card data on v71+ as supported. Raw-card Web API-only processing carries additional PCI requirements (raw lines 23\u201337). These are the captured page's version statements, not a current support matrix.\n- **Module gates differ:** Protect requires Adyen's risk engine; premium settings and fraud-data collection are recommended. Tokenize requires Adyen tokenization; network-token products, Real Time Account Updater and token-lifecycle webhooks are recommended. Authenticate requires 3D Secure 2 and gives Sessions versus Advanced implementation paths, including native/redirect choices and Web API-only additional-action handling (raw lines 39\u201364). Its EEA/UK regulatory language is a dated provider description, not current legal advice.\n- **Optimize and Personalize conditions:** Optimize requires co-badged-card support, with Web Drop-in/Components minimum v6.16.0 and recommended v6.18.1; Web API-only raw-card integrations use `/cardDetails`. Auto Rescue and more payment methods are recommendations. Personalize requires the listed v6 Web Drop-in/Components or Web API-only routes, shopper data including at least `shopperEmail`, and for Advanced flows a shopper-conversion identifier tying `/paymentMethods` to `/payments`; Components must retain the returned payment-method order (raw lines 65\u201391).\n- **Do not confuse API validity with Uplift conditions:** The text distinguishes fields required for a payment request to work (`amount`, `reference`, and table entries `merchantAccount`/`returnUrl`) from shopper fields that are not needed for the request to work but are recommended or marked \u201cmust be included\u201d for Uplift/module/flow purposes (raw lines 93\u2013117). Conditional examples include partner `applicationInfo`, Advanced-flow `browserInfo`/`checkoutAttemptId`/`paymentMethod`, API-only Protect `riskData.clientData`, Tokenize recurring/storage fields and Personalize `shopperConversionId`. The table's blanket \u201cmust be included\u201d wording for `shopperEmail` and `shopperIP` should be read with the preceding API-functionality qualification and Sessions auto-collection note, not generalized into an unconditional API schema rule (raw lines 95\u2013117).\n- **Additional context remains qualified:** The table lists optional/contextual `accountInfo`, billing address, country, birth date, line items, order reference, holder name, locale and phone. Enhanced Scheme Data is limited to qualifying US domestic transactions and card schemes (raw lines 118\u2013128). More submitted data is framed as improving recommendations, not a guaranteed conversion, fraud or authentication outcome (raw lines 19, 93\u201397).\n\n## Detail locators\n\n- General integration/webhook/PCI prerequisites: raw lines 23\u201337.\n- Per-module Protect, Tokenize, Authenticate, Optimize and Personalize gates: raw lines 39\u201391.\n- Payment-request versus Uplift data distinction and field-by-flow table: raw lines 93\u2013128.\n\n## Evidence boundary\n\nThis is a captured provider requirements/recommendations page with older modification metadata. It cannot establish a merchant's live module activation, PCI or regulatory compliance, payment authorization, or measured uplift. Preserve the difference between **required**, **recommended**, and flow-conditional fields; the page's own shopper-field prose and table use different senses of \u201cmust\u201d (raw lines 93\u2013117). Current product eligibility or legal obligations need fresh provider and appropriate legal review.\n\n## Related\n\n- [[adyen-uplift]] \u2014 five-module product route.\n- [[adyen-online-payments]] \u2014 underlying Web integration.\n- [[adyen-risk-management]] \u2014 Protect risk context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/uplift/uplift-requirements/2026-09-15|Pinned Uplift requirements page, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can use this page to see what is required or recommended depending on which online payments integration you have built, and which Adyen Uplift modules you intend to use.",
+      "location": "raw/adyen/docs/uplift/uplift-requirements/2026-09-15.md:21"
+    },
+    {
+      "text": "Make sure that you enable and accept webhooks.",
+      "location": "raw/adyen/docs/uplift/uplift-requirements/2026-09-15.md:36"
+    },
+    {
+      "text": "**Required**: use Adyen's [risk engine](/risk-management), Protect.",
+      "location": "raw/adyen/docs/uplift/uplift-requirements/2026-09-15.md:45"
+    },
+    {
+      "text": "**Required**: support [co-badged cards](/online-payments/co-badged-cards-compliance/).",
+      "location": "raw/adyen/docs/uplift/uplift-requirements/2026-09-15.md:65"
+    },
+    {
+      "text": "Other fields such as `shopperIP`, `shopperReference`, and `shopperEmail` are not required for the payment request to work, but recommended to include to ensure your integration supports Adyen Uplift",
+      "location": "raw/adyen/docs/uplift/uplift-requirements/2026-09-15.md:95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c29-uplift-requirements-source",
+        "target_path": "wiki/concepts/adyen-uplift.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-uplift-uplift-requirements]] \u2014 2019-modified, 2026-09-15-captured Uplift Web integration, webhook, five-module and conditional request-data requirements/recommendations; shopper-field API validity differs from Uplift guidance and no activation or results are proved.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw lines 93\u201397 say shopperIP/shopperReference/shopperEmail are not required for the payment request to work, while the table later uses must-be-included language for Uplift/flow goals (lines 113\u2013116); do not convert it to unconditional API schema requiredness.",
+          "Version floors and EEA/UK authentication wording are dated source claims; no current support or legal-compliance determination follows.",
+          "Protect premium, network-token optimization, Real Time Account Updater, Auto Rescue and more methods are recommendations, not universal prerequisites or activated products."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/uplift/uplift-requirements/2026-09-15.md",
+  "raw_sha256": "51b598ac7efbb4fc8cc08cd38d372188cb8999a7de16769198437b39484f0773",
+  "status": "candidate_ready"
+}

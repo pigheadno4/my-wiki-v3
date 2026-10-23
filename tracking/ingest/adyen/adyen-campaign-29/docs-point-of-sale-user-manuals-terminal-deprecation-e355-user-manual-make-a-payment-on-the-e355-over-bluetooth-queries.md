@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What stages and compatibility condition does the historical e355 Bluetooth page describe?
+Answer: It advises cleaning unnecessary Bluetooth pairings (raw line 21), then links pairing, configuration removal/reboarding and transaction start (raw lines 23–29). POS App and e355 should have matching serial protocol versions; the 2019 page names version 2 at that time (raw line 31). Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/make-a-payment-on-the-e355-over-bluetooth/2026-09-15]].
+
+Q2. Does successful Bluetooth pairing mean the e355 boarded or processed a payment?
+Answer: No. The page explicitly says a protocol mismatch can allow pairing while boarding and transaction start fail and the app stays in initialization (raw line 31). It links a transaction-start guide without showing a transaction result (raw line 29); the separate deprecation source lists e355 no transactions after 29 March 2024. Route: [[index]] → [[adyen-index]] → [[adyen-payment-terminals]] → [[source-adyen-docs-point-of-sale-user-manuals-terminal-deprecation-e355-user-manual-make-a-payment-on-the-e355-over-bluetooth]] → [[raw/adyen/docs/point-of-sale/user-manuals/terminal-deprecation/e355-user-manual/make-a-payment-on-the-e355-over-bluetooth/2026-09-15]].
