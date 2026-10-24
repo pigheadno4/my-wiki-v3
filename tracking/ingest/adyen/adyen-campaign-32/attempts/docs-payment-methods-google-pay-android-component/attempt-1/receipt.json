@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-google-pay-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay Android Component setup\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/android-component/2026-09-15.md\"\ntags: [adyen, google-pay, android, component, wallets]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **Google Pay** to an existing Android Components integration, with separate **Sessions** and **Advanced** server-side flows and Compose/non-Compose client examples. It links a migration guide for **5.9.x** but does not make that version a universal minimum in this page. It covers component configuration and test/live preparation, not token decryption, recurring consent, final payment webhooks, capture, or settlement. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** An existing Sessions Android Components integration, Checkout API **v69+**, and Google Pay added in Customer Area are stated prerequisites. The page says no extra Google-Pay-specific `/sessions` parameters are needed. It imports the `googlepay` module, plus `components-compose` for Compose, then gets the Google Pay payment method from `checkoutSession` and creates/attaches `GooglePayComponent`. A unique component key is shown for new screens or sessions. See raw lines 25\u201364 and 122\u2013175.\n- **Advanced:** An existing Advanced Android Components integration and Google Pay setup in Customer Area are stated prerequisites. The client selects the Google Pay method from the `/paymentMethods` response and creates/attaches the Component. The page says no extra Google-Pay-specific `/payments` parameters are needed. The Advanced section does **not** restate Sessions' Checkout API v69+ version as its own prerequisite; neither \u201cno extra parameters\u201d statement replaces the main integration's request requirements. See raw lines 216\u2013246 and 304\u2013365.\n- Both flows list **optional** Google Pay configuration: allowed auth methods default to `PAN_ONLY` and `CRYPTOGRAM_3DS`, allowed networks derive from account settings but can be overridden, prepaid/billing/shipping/email and button visibility have stated defaults, and `setGooglePayEnvironment` can select Google's TEST or PRODUCTION environment, defaulting to the Adyen environment. These are configuration values, not proof of network eligibility, 3DS outcome, Google token processing, or payment authorization. The snippets include placeholders and an extra brace, so validate them against the applicable SDK before use. See raw lines 66\u2013120 and 248\u2013302.\n- In TEST, the page offers Google's test-card suite (FPAN, Android/Chrome-on-Android DPAN, 3DS2 scenarios) or a wallet with real cards mapped to Adyen test cards of the same brand; it says the real card is not charged in that test route. For 3DS2 **without** the test suite, it names American Express or Discover only. These are test-fixture claims, not evidence of a completed payment. See raw lines 177\u2013201 and 367\u2013391.\n- Before LIVE, the guide calls for an API credential with **API Clientside Encryption Payments role**, a configured **Google Merchant ID** in live Customer Area, and completion of Google's Android production-deployment steps; testing live scenarios is recommended. It says Google Pay is available in LIVE only when the shopper is logged in and has a valid method in their Google Pay account. These are necessary conditions in this snapshot, not sufficient merchant approval or actual processing proof. See raw lines 203\u2013214 and 393\u2013404.\n\n## Detail locators\n\n- 5.9.x migration-guide link and flow split: raw lines 17\u201325.\n- Sessions dependency, optional configuration and component examples: raw lines 29\u2013175.\n- Advanced dependency, optional configuration and component examples: raw lines 216\u2013365.\n- TEST scenarios and LIVE checklist repeated by flow: raw lines 177\u2013214 and 367\u2013404.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/android-component/2026-09-15|Adyen Google Pay Android Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v69 or later.",
+      "location": "raw line 34, Sessions Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 41, Sessions /sessions"
+    },
+    {
+      "text": "Default is **PAN\\_ONLY**, **CRYPTOGRAM\\_3DS**.",
+      "location": "raw line 75, Sessions optional configuration"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 365, Advanced /payments"
+    },
+    {
+      "text": "The shopper has at least one valid payment method on their Google Pay account.",
+      "location": "raw line 404, Advanced Before you go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-google-pay-android-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-android-component]] \u2014 2026-09-15 Android Google Pay Component guide for existing Sessions/Advanced flows, optional wallet configuration and TEST/LIVE gates; v69+ is stated for Sessions, and component readiness is not payment-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer the Sessions v69+ prerequisite is separately stated for Advanced.",
+          "Google Pay configuration/auth-method defaults and test-wallet fixtures do not establish token handling, final payment result or merchant eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/android-component/2026-09-15.md",
+  "raw_sha256": "f6dc042ccbd1f8feddc53952111fa5edb2244db86d6cb26133c4fe72769eb54f",
+  "status": "candidate_ready"
+}

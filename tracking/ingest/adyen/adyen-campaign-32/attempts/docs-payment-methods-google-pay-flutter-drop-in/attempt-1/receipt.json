@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-google-pay-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, google-pay, flutter, drop-in, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds Google Pay to an **existing Flutter Drop-in integration** using either Sessions or Advanced server-side flow. It directs the merchant to Google's Android Pay setup and to add Google Pay in Adyen Customer Area. Its method-specific instructions concern Drop-in configuration and TEST/LIVE readiness; the referenced main integration guides own the underlying server requests, callbacks and payment outcomes. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Both tabs require an existing **Flutter Drop-in** integration and Customer Area method setup. Sessions says Google Pay needs **no additional fields** in the existing `/sessions` request; Advanced says the same for `/payments`. These are method-specific additions, not a claim that the base server requests can omit their normal required fields. The page does not state a Checkout API or Flutter SDK minimum version. (raw lines 21\u201349)\n- Both flows say to add Google Pay properties to the Flutter configuration object. `googlePayEnvironment` can be `test` or `production`. The shown configuration snippet is incomplete and omits punctuation/closure, so it is illustrative rather than ready-to-run code. After configuration, Sessions says initialize/show Drop-in; Advanced says add its required callbacks. (raw lines 51\u201372, 97\u2013103)\n- Optional configuration lists `merchantAccount` but describes it as **Google Merchant ID**, with any value for testing and a Google Pay & Wallet Console ID before LIVE; do not confuse this page's label with the Adyen merchant account field in other API requests. Other listed knobs include merchant display name, total-price status, allowed card networks/auth methods, prepaid/credit-card eligibility, shopper email and address collection. `panOnly` is described as stored card PAN/expiry data; `cryptogram3DS` as Android device-token data with a device-generated cryptogram. These labels do not prove completed shopper authentication, authorization or transaction eligibility. The `assuranceDetailsRequired` description is truncated after \u201cSet to true to require,\u201d leaving its exact object/behavior unspecified in this page. (raw lines 74\u201395)\n- TEST requires a Google account/wallet. The guide offers Google's test-card suite (FPAN, DPAN only through native Android/Chrome on Android, and 3DS2 scenarios) or real cards in the wallet mapped to Adyen same-brand test cards without a charge. Without the suite, it says Amex or Discover is required to trigger the specified 3DS2 challenge tests. Test payment status can be checked in test Customer Area; these are test fixtures, not live authorization evidence. (raw lines 105\u2013129)\n- For LIVE, the guide **recommends** testing Google's Android API scenarios and **requires/checks** the API Clientside Encryption Payments role, a configured Google Merchant ID in live Customer Area, and Google's Android production-deploy steps. It says Google Pay is available live only if the shopper is logged into Google and has at least one valid payment method. This dated checklist does not prove provider approval, merchant enablement, actual payment, capture or settlement. (raw lines 131\u2013142)\n\n## Detail locators\n\n- Flutter Sessions versus Advanced prerequisites and server-request statements: raw lines 21\u201349.\n- Required environment and optional Flutter config, plus callback split: raw lines 51\u2013103.\n- TEST wallet/card scenarios: raw lines 105\u2013129.\n- LIVE role, Merchant ID, deploy and shopper conditions: raw lines 131\u2013142.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-google-pay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/flutter-drop-in/2026-09-15|Adyen Google Pay Flutter Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When you [make the `/sessions` request](/online-payments/build-your-integration/sessions-flow?platform=Flutter\\&integration=Drop-in#create-a-payment-session), Google Pay does not require any additional fields.",
+      "location": "raw line 45"
+    },
+    {
+      "text": "When you [make the `/payments` request](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in#make-a-payment), Google Pay does not require any additional fields.",
+      "location": "raw line 49"
+    },
+    {
+      "text": "`googlePayEnvironment`",
+      "location": "raw line 63"
+    },
+    {
+      "text": "Your [Google Merchant ID](https://developers.google.com/pay/api/web/reference/request-objects#MerchantInfo). This can be anything for testing.",
+      "location": "raw line 80"
+    },
+    {
+      "text": "Make sure that your API credential has the **API Clientside Encryption Payments role**.",
+      "location": "raw line 135"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "google-pay-flutter-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-flutter-drop-in]] \u2014 2026-09-15 Google Pay Flutter Drop-in add-on for existing Sessions/Advanced flows, required wallet environment config, optional wallet settings and TEST/LIVE gates; snippets and outcomes remain qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Optional `merchantAccount` is described as Google Merchant ID; `assuranceDetailsRequired` description and configuration snippet are incomplete."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "c7bd130cffd8c9d89e2c2e62c86c3609fb764d05849bb9ee2c962bb4c5bfa340",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,5 @@
+# C32 docs-payment-methods-apple-pay-web retrieval checks
+
+Q1. Which Apple Pay Web integration choices does this page offer? It links an all-in-one Web Drop-in child and a pre-built Web Component child (raw lines 19–27), then the main Web Drop-in and Components documentation (raw line 29). This page itself states no integration prerequisite or SDK version. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-apple-pay-web]] → [[raw/adyen/docs/payment-methods/apple-pay/web/2026-09-15]].
+
+Q2. What is the evidence boundary? The source is a 29-line chooser of labels and links (raw lines 15–29). It gives no Sessions/Advanced choice, certificate/domain/browser gate, account or shopper eligibility, request/result detail, authentication, authorization, capture or settlement result. The selected child and main guide are needed for implementation claims; the labels do not establish current readiness or success. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-apple-pay-web]] → [[raw/adyen/docs/payment-methods/apple-pay/web/2026-09-15]].

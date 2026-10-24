@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay React Native Drop-in add-on\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, apple-pay, react-native, drop-in, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **Apple Pay** to an existing **React Native Drop-in** integration, with separate Sessions (`/sessions`) and Advanced (`/payments`) prerequisite tabs. Both require Apple Pay set up with **the merchant's own iOS payment-processing certificate** and added in Adyen Customer Area; live processing additionally requires the **API Clientside Encryption Payments role**. It is a method-specific add-on and does not pin a React Native wrapper or native SDK version, describe full server payment handling, or prove payment outcome. [[adyen-react-native-sdk]]\n\n## Key takeaways\n\n- The guide says there are no extra **Apple-Pay-specific** API fields to send, but the `AdyenCheckout` configuration **must** provide `applepay.merchantID` (Apple Pay merchant identifier) and `merchantName` (used for the payment summary). The TEST example also contains client key, return URL, NL country and EUR amount; those sample values are not universal eligibility or a complete server request. See raw lines 21\u201375.\n- Optional Apple Pay settings include wallet onboarding if no supported cards, summary items, billing/shipping contacts and methods, shipping type, supported issuing countries and recurring metadata. The page says the **last summary item must match the amount sent in `/payments`**; that wording appears on a page with both Sessions and Advanced tabs, and no Sessions-specific amount-alignment procedure is supplied here. A client summary alone does not prove the merchant server charged that amount. See raw lines 77\u201392.\n- For recurring Apple Pay, the page requires `recurringPaymentRequest` in the Apple Pay configuration and separately routes token creation and later token payments to Adyen tokenization guides. Its table marks **`paymentDescription`**, **`regularBilling`** and **`managementURL`** required; `trialBilling`, Apple merchant-token `tokenNotificationURL`, and localized `billingAgreement` are listed as optional. The Apple Pay sheet displays the described billing information, but this page does not show token creation, actual shopper authorization, a billing schedule, or successful later charges. See raw lines 92\u2013111. [[adyen-tokenization]]\n- The recurring example conflicts with its table: it uses `description` instead of required `paymentDescription` and lacks a comma before `regularBilling`. Its `startDate` is an example literal and the snippet is not copy-ready. Keep the table's field name separate from the malformed sample. See raw lines 104\u2013111 and 115\u2013139.\n- The test route uses Apple's sandbox card numbers and Adyen Customer Area test-payment status. LIVE separately requires the credential role and Apple Pay setup in the merchant's Apple Developer account for the live merchant identifier. Test-card use, configuration and wallet authorization are not evidence of final Adyen authorization, capture or settlement. See raw lines 141\u2013153.\n\n## Detail locators\n\n- Sessions/Advanced prerequisites and own-certificate setup: raw lines 21\u201341.\n- Required merchant identifier/name and TEST configuration example: raw lines 43\u201375.\n- Optional contact/amount and recurring-property tables: raw lines 77\u2013111.\n- Conflicting recurring snippet and test/live routes: raw lines 115\u2013153.\n\n## Related\n\n- [[adyen-react-native-sdk]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/react-native-drop-in/2026-09-15|Adyen Apple Pay React Native Drop-in snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built a Sessions flow [React-Native Drop-in integration]",
+      "location": "raw line 29, Sessions requirements"
+    },
+    {
+      "text": "Set up Apple Pay with your own certificate",
+      "location": "raw line 40, Advanced setup requirements"
+    },
+    {
+      "text": "The last item must have the same value as the `amount` you send in your [/payments]",
+      "location": "raw line 84, Optional configuration > summaryItems"
+    },
+    {
+      "text": "To enable recurring payments, you must include `recurringPaymentRequest`",
+      "location": "raw line 96, Recurring payments"
+    },
+    {
+      "text": "`paymentDescription`",
+      "location": "raw line 106, Recurring payment properties table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-apple-pay-rn-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-react-native-drop-in]] \u2014 2026-09-15 Apple Pay React Native Drop-in add-on for own-certificate setup, merchant ID/name, amount alignment and recurring sheet metadata; the recurring sample misnames a required field and cannot prove token or payment outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep own-certificate requirement scoped to this React Native Drop-in guide, rather than importing Adyen-certificate options from other Apple Pay routes.",
+          "Recurring table says paymentDescription but example says description and lacks a comma; preserve this inconsistency."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "d27ddee0843dbf2e606c9815e15b0612bf8feadc22b93152601cabdb9f97390e",
+  "status": "candidate_ready"
+}

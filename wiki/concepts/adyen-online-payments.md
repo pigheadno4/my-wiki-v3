@@ -21,6 +21,141 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-apple-pay-ios]] — 2026-09-15 Apple Pay for iOS chooser linking Drop-in, Component and general iOS integration pages; navigation only, with certificate, version and outcome questions left to child guides.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-web]] — 2026-09-15 Apple Pay Web navigation chooser for Drop-in versus Component and their main Web integration guides; child prerequisites, browser support and outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-paypal-web]] — 2020-modified, 2026-09-15-captured PayPal Web navigation page linking Web Drop-in and Components routes; it does not establish child-guide behavior, eligibility or payment outcome.
+
+
+- [[source-adyen-docs-payment-methods-paypal-ios]] — 2026-09-15 PayPal for iOS chooser linking Drop-in, Redirect Component and general iOS integration pages; navigation only, with child prerequisites and outcomes left to their guides.
+
+
+- [[source-adyen-docs-payment-methods-paypal-android]] — 2026-09-15 PayPal Android navigation chooser for Drop-in versus Redirect Component and their main Android guides; child setup, versions and outcomes are separate authority.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-web]] — 2026-09-15 Google Pay for Web chooser linking Web Drop-in, Web Component and general Web integration guides; navigation only, without child-guide prerequisites or outcome claims.
+
+
+- [[source-adyen-docs-payment-methods-wallets-india-web]] — 2026-09-15 Wallets India Web navigation chooser linking Drop-in, WalletINElement Components, and Sessions/Advanced main-flow guides; child prerequisites and behavior remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-wallets-india-web-drop-in]] — 2026-09-15 Wallets India Web Drop-in add-on for existing Sessions/Advanced flows, Sessions v68+ and live-request/no-test-platform limits; optional import names conflict.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-android]] — 2026-09-15 Android Google Pay chooser linking Drop-in/Component children and Sessions/Advanced base guides; navigation alone supplies no eligibility, version or payment outcome.
+
+
+- [[source-adyen-docs-payment-methods-wallets-india]] — 2026-09-15 Wallets India overview for India local-entity/integration prerequisites, IN/INR capability matrix, wallet-page redirect and Web/API-only/Pay by Link routes; marks are not current eligibility or transaction proof.
+
+
+- [[source-adyen-docs-payment-methods-samsung-pay-enable-samsung-pay]] — 2019-modified, 2026-09-15-captured Samsung Pay enablement guide for Adyen CSR/role setup, Samsung developer gateway/SDK setup and Support-configured schemes; setup is not live processing proof.
+
+
+- [[source-adyen-docs-payment-methods-wallets-india-web-component]] — 2026-09-15 Wallets India Web Component add-on for existing Sessions/Advanced flows, with Sessions-only v68+ wording, no stated method-specific request fields, no test platform and a live Customer Area request gate; snippets conflict with import/config prose.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-flutter-component]] — 2026-09-15 Flutter Apple Pay Component Sessions/Advanced add-on for own iOS certificate, client configuration and TEST/LIVE gates; raw prerequisite links and snippets have qualified defects, with no recurring flow specified here.
+
+
+- [[source-adyen-docs-payment-methods-paypal-paypal-troubleshooting]] — 2026-09-15 PayPal Web Drop-in/Components `/payments` troubleshooting for overlay action, details callback, required smart button and currency/intent/merchant-ID errors; console errors leave an open offer.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-api-only-google-pay-token-decryption]] — 2026-09-15 API-only PCI-gated merchant Google Pay token-decryption guide for signature/expiry validation and FPAN/DPAN card-field mapping; overview PCI level and malformed sample requests remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-flutter-drop-in]] — 2026-09-15 Flutter Apple Pay Drop-in Sessions/Advanced guide for own-certificate setup, native merchant configuration and live credential role; table-versus-Dart merchant-ID spelling and payment-outcome limits are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-paypal-setup-paypal-direct-merchants]] — 2026-09-15-captured direct-merchant PayPal test/live sandbox, Customer Area and seven-day permission-link setup guide, with default capture/recurring configuration and stated Active-status timing; account status is not shopper consent, token or payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-react-native-component]] — 2026-09-15 Advanced React Native Apple Pay Component guide for merchant-owned iOS certificate, client configuration and recurring display/token route; test/live and snippet qualifications remain.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-react-native-component]] — 2026-09-15 React Native Google Pay Component guide for Android activity handoff, wallet configuration, TEST/live setup and recurring-token navigation; environment value and code-fence discrepancies are source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-flutter-drop-in]] — 2026-09-15 Google Pay Flutter Drop-in add-on for existing Sessions/Advanced flows, required wallet environment config, optional wallet settings and TEST/LIVE gates; snippets and outcomes remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-flutter-component]] — 2026-09-15 Flutter Google Pay Component guide for existing Sessions/Advanced integrations, separate Google/Adyen environments, TEST/LIVE gates and incomplete/mismatched configuration snippets.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-ios-drop-in]] — 2023-modified, 2026-09-15-captured Apple Pay iOS Drop-in Sessions/Advanced guide for own-certificate setup, versioned native configuration, recurring tokenization handoff and TEST/LIVE limits; code examples require version-aware review.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-ios-component]] — 2023-modified, 2026-09-15-captured Apple Pay iOS Component guide for Sessions/Advanced prerequisites, v5.3/v5.0/v4 client configuration, recurring token route and live certificate/role gates; snippets have version-specific gaps.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-web-component-express-checkout]] — 2025-modified, 2026-09-15-captured Google Pay Web Component express guide for Advanced-only Web flow, v6 express flag, merchant-owned total validation and callback handoff; Android exclusion and inconsistent snippets are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-samsung-pay-samsung-pay-api]] — 2026-09-15 Samsung Pay API-only guide for CSR/developer/SDK/gateway and scheme setup, complete SDK-token server handoff, and distinct TEST/LIVE and result-code boundaries.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-web-component-express-checkout]] — 2023-modified, 2026-09-15-captured Apple Pay Advanced Web Components v6 express add-on for contact/shipping callbacks and browser/live gates; client total and wallet authorization events are not server amount or payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-wallets-india-api-only]] — 2019-modified, 2026-09-15-captured v68+ API-only Wallets India issuer discovery and redirect guide; TEST/no-test-platform, example issuer and v68/v72 differences remain qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-android-drop-in]] — 2026-09-15 Android Google Pay Drop-in guide for existing Sessions (Checkout API v69+) or Advanced flows, optional wallet settings, test-wallet scenarios and live role/Merchant-ID prerequisites; no payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-web-drop-in]] — 2023-modified, 2026-09-15-captured Google Pay Web Drop-in guide for v5+ Sessions versus Payments configuration, optional wallet/3DS/iframe settings, test/live gates and shopper funding limits; wallet approval is not authorization or payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-paypal-android-component]] — 2021-modified, 2026-09-15-captured PayPal Android Redirect Component guide for server payment/return, webhook outcome, conditional risk/recurring setup and capture-dependent refunds; request examples conflict with Android channel/return URL guidance and contain field/encoding errors.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-web-component]] — 2019-modified, 2026-09-15-captured Google Pay Web Component guide for v5+ Sessions/default versus direct payments, v6/v5 mounting, optional wallet settings, recurring route and TEST/LIVE gates; callback naming and snippets need version review.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-android-component]] — 2026-09-15 Android Google Pay Component guide for existing Sessions/Advanced flows, optional wallet configuration and TEST/LIVE gates; v69+ is stated for Sessions, and component readiness is not payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-google-pay-api-only]] — 2023-modified, 2026-09-15-captured Google Pay API-only gateway-token guide for Web/Android with Checkout v67+, server handoff, 3DS, TEST and LIVE prerequisites; examples and results have stated limits.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-web-drop-in]] — 2026-09-15-captured, metadata-2021 Apple Pay Web Drop-in guide for Sessions/Advanced, certificate and browser/iframe gates, recurring/tracking callbacks and live domains; later-version prose and snippet faults remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-web-component]] — 2019-modified, 2026-09-15-captured Apple Pay Web Component Sessions/Advanced guide for certificate-dependent validation, browser/iframe and version gates, recurring configuration and live domains; example callback/snippet inconsistencies remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-paypal-api-only]] — 2026-09-15 Adyen PayPal API-only Advanced Web add-on for method discovery, conditional risk data, redirect/webhook outcome, capture/refund and settled-payment token lifecycle; HUF/list and code-example conflicts remain in the source.
+
+
+- [[source-adyen-docs-payment-methods-paypal]] — 2023-modified, 2026-09-15-captured Adyen PayPal wallet overview for Web direct/mobile redirect, versioned PayPal buttons, narrower Venmo US/USD Web support, conditional risk data and child-guide routes; capability marks are not merchant enablement or transaction proof.
+
+
+- [[source-adyen-docs-payment-methods-google-pay]] — 2023-modified, 2026-09-15-captured Google Pay wallet overview for conditional network/region support, DPAN/FPAN and 3DS/liability wording, express and channel routes; capability marks are not merchant or outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-paypal-android-drop-in]] — 2021-modified, 2026-09-15-captured PayPal Android Drop-in redirect guide for server request/return details, webhook-final outcome, conditional risk and recurring/refund setup; code-example conflicts remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-paypal-ios-component]] — 2026-09-15 PayPal iOS Redirect Component guide for v5 Sessions/Advanced setup, conditional risk data, webhook-led outcome, recurring tokens and capture-dependent refunds; snippets contain material conflicts.
+
+
+- [[source-adyen-docs-payment-methods-paypal-web-drop-in]] — 2026-09-15 PayPal Web Drop-in Sessions/Advanced guide for setup, conditional risk fields, client buttons, webhook-led outcome, token gates and capture-dependent refunds; see source for material refund-prose/example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-paypal-web-component]] — 2019-modified, 2026-09-15-captured PayPal Web Component guide for versioned Sessions/Payments setup, conditional Fraudnet/risk fields, webhook-final outcomes, recurring token gates and capture-sensitive refunds; table/example callback and field-placement conflicts remain in the source.
+
+
+- [[source-adyen-docs-payment-methods-paypal-web-component-express-checkout]] — 2026-09-15-captured PayPal Web Component v5.59.0+ Express guide for Sessions/Advanced order updates, latest paymentData, Advanced-only review and token exceptions; examples and 2023 metadata conflict need qualification.
+
+
+- [[source-adyen-docs-payment-methods-samsung-pay]] — 2022-modified, 2026-09-15-captured Samsung Pay wallet overview for ecommerce payment-sheet and NFC POS routes, conditional device/region/issuer support, feature marks and child-guide navigation.
+
+
+- [[source-adyen-docs-payment-methods-express-checkout]] — 2026-09-15 express-checkout overview for product/cart buttons, method/platform/flow Component-version matrix and separate faster-checkout alternatives; child guides own setup and outcomes.
+
+
 - [[source-adyen-docs-payment-methods-cards-web]] — 2019-modified, 2026-09-15-captured Web cards chooser linking Drop-in, Card Component and custom-card guides; this is navigation, not child implementation, PCI or payment-outcome authority.
 
 

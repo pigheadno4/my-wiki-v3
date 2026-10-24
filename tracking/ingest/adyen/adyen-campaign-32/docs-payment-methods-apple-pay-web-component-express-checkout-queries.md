@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-apple-pay-web-component-express-checkout
+
+Q1. What does this Apple Pay Web express guide require and add?
+
+A1. It is an add-on for existing Advanced-flow Web Components v6, with Apple Pay enabled, certificate setup and base Web Component integration (raw lines 27–35). It sets isExpress and contact-field requests, handles shipping-address/method changes with new line items, choices and totals, then checks isAvailable before mounting (raw lines 39–89, 91–218). Component v6.10.0+ broadens supported third-party-browser coverage; earlier versions have separate compatibility limits (raw line 33). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-apple-pay-web-component-express-checkout]] → [[raw/adyen/docs/payment-methods/apple-pay/web-component/express-checkout/2026-09-15]].
+
+Q2. What validation, amount and payment-outcome gaps constrain the samples?
+
+A2. onAuthorized fires before onSubmit and must resolve/reject, but its sample merely logs raw data and resolves, rather than demonstrating the called-for checks (raw lines 181–199). Shipping examples update client ApplePayAmountHelper totals but show no server payment-amount synchronization (raw lines 107–179, 272–319). A table uses singular newShippingMethod while code uses newShippingMethods, and mount names vary among applePay/applepay/applePayComponent (raw lines 99–105, 201–218, 329–338). Live requires API Clientside Encryption Payments role and separate certificate go-live steps; none of these samples proves authorization, capture or settlement (raw lines 230–234). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-apple-pay-web-component-express-checkout]] → [[raw/adyen/docs/payment-methods/apple-pay/web-component/express-checkout/2026-09-15]].

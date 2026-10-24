@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay React Native Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/react-native-component/2026-09-15.md\"\ntags: [adyen, apple-pay, react-native, components, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page adds Apple Pay to an existing **Advanced-flow React Native Components** integration. It requires Apple Pay setup with the merchant's **own certificate** and Customer Area method addition, while linking the underlying iOS certificate instructions separately. It describes client Component configuration and says no Apple Pay-specific additional `/payments` fields are needed; it does **not** specify a merchant-side token-decryption flow or prove a payment result. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The integration prerequisite is Advanced React Native Components, with the merchant-owned Apple Pay certificate and Apple Pay method setup completed first. The **API Clientside Encryption Payments role** is specified for LIVE processing. The page does not state a React Native SDK or Checkout API minimum version. Its certificate link is to the separate iOS guide, not a set of certificate/key steps reproduced here. (raw lines 21\u201334, 157\u2013161)\n- The React Native `AdyenCheckout` configuration must add `applepay.merchantID` (Apple merchant identifier) and `merchantName` (used in a `PKPaymentSummaryItem`). The test example also carries `environment`, `clientKey`, `returnUrl`, `countryCode: NL`, and `amount: EUR 1000`; those country/amount values are illustrative, not a global acceptance list. A UI element can call `start('applepay')` using the Components wrapper. (raw lines 36\u201361, 81\u2013100)\n- Optional client configuration includes `allowOnboarding` (false by default, hiding Apple Pay when no wallet cards), contact/shipping fields, `shippingType`, `supportedCountries` as an **issuer-country card filter**, and `summaryItems`. The last summary item must equal the amount sent in server `/payments`; a payment-sheet display or shopper selection does not prove the server amount or authorization outcome. (raw lines 64\u201379)\n- For recurring Apple Pay, the page says `recurringPaymentRequest` is required in configuration, followed by shopper-token creation and later token transactions. Its property table marks `paymentDescription`, `regularBilling` and `managementURL` required; trial billing, token lifecycle notification URL and a displayed billing agreement are optional in the table. The example instead uses `description` and lacks a comma after it; it is not an executable or authoritative required-property schema. A payment-sheet billing agreement is a displayed term, not proof of consent capture or a successful recurring charge. (raw lines 79, 102\u2013147)\n- TEST uses Apple's sandbox test cards and test Customer Area payment lookup. LIVE requires the credential role and Apple Pay setup for the **live merchant identifier** in the merchant's Apple Developer account. Test lookup, Component launch, wallet authorization and linked tokenization instructions do not establish actual live account readiness, payment authorization, capture or settlement. (raw lines 149\u2013161)\n\n## Detail locators\n\n- Advanced wrapper prerequisites, certificate/Customer Area and no-extra-field API note: raw lines 21\u201334.\n- Required client config and launch call: raw lines 36\u201361, 81\u2013100.\n- Optional wallet/contact/country and summary-amount settings: raw lines 64\u201379.\n- Recurring properties and inconsistent example: raw lines 102\u2013147.\n- Sandbox versus LIVE role and identifier: raw lines 149\u2013161.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/react-native-component/2026-09-15|Adyen React Native Apple Pay Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built an Advanced flow [React-Native Components integration](/online-payments/build-your-integration/advanced-flow?platform=React-Native\\&integration=Components).",
+      "location": "raw line 25"
+    },
+    {
+      "text": "[Set up Apple Pay with your own certificate](/payment-methods/apple-pay/apple-pay-certificate/ios).",
+      "location": "raw line 27"
+    },
+    {
+      "text": "You do not need to send additional fields for Apple Pay.",
+      "location": "raw line 32"
+    },
+    {
+      "text": "The last item must have the same value as the `amount` you send in your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 71"
+    },
+    {
+      "text": "To enable recurring payments, you must include `recurringPaymentRequest` [when configuring Apple Pay](#optional-configuration), and include the [recurring payment properties](#recurring-payment-props).",
+      "location": "raw line 104"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "apple-pay-react-native-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-react-native-component]] \u2014 2026-09-15 Advanced React Native Apple Pay Component guide for merchant-owned iOS certificate, client configuration and recurring display/token route; test/live and snippet qualifications remain.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Recurring table requires paymentDescription, but sample uses description and omits a comma; do not treat snippet as executable or as consent/payment proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/react-native-component/2026-09-15.md",
+  "raw_sha256": "ebfcb0d93b0a395c2950b7a9c6516b68246481df868c05f18f13f35010c18861",
+  "status": "candidate_ready"
+}

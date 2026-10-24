@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypal-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPal Android Redirect Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/android-component/2026-09-15.md\"\ntags: [adyen, paypal, android, redirect, online-payments]\n---\n\n## Overview\n\nAdyen guide for adding PayPal to an existing Android Components integration through the Redirect Component. The shopper leaves the app for PayPal and the merchant server submits returned details. The page metadata says last modified 2021-07-26; this copy was captured 2026-09-15 and contains versioned test examples. It does not prove present merchant or shopper-account enablement, authorization, capture, settlement, refund or funds receipt.\n\n## Key takeaways\n\n- Existing Android Components integration and PayPal setup are prerequisites. `/paymentMethods` discovery uses supported `countryCode`, `amount.currency` and minor-unit `amount.value`; the page\u2019s currency example is blank (`****`), so it supplies no specific currency rule. A listed `paypal` type is a method-selection result, not completed setup or payment (raw lines 15\u201340).\n- The server\u2019s Advanced `/payments` request sets `paymentMethod.type: paypal`; the table describes `channel: Android`, `returnUrl` from `RedirectComponent.getReturnUrl(context)`, optional `lineItems`, Magnes-only `paypalPairingId` and PayPal-required risk fields for marketplaces or specified verticals. Risk-field applicability is merchant-specific; ask the PayPal account manager. `additionalData.paypalRisk` uses a stringified `additional_data` key/value array. For HUF, transaction and item amounts must round to whole HUF and reconcile or PayPal may reject (raw lines 42\u2013139).\n- A `/payments` response can contain a redirect `action`, which the server passes to the app; after the shopper returns, the server sends `actionComponentData.details` to `/payments/details`. The shown `RedirectShopper` and `Authorised` responses are examples. Synchronous `resultCode` is for current shopper messaging; AUTHORISATION webhooks determine final outcome, including failures after apparent authorization. `OFFER_CLOSED` arrives only when enabled. None of these statuses alone proves capture or settlement (raw lines 649\u2013750).\n- Recurring requires PayPal Support-enabled Reference Transactions on the seller account, PayPal recurring permissions granted to Adyen, and token lifecycle webhooks. The initial token request is described with `Subscription` or `UnscheduledCardOnFile`, `Ecommerce`, unique `shopperReference`, `storePaymentMethod: true`, and `shopperEmail` only for zero-value authorization. After settlement, `recurring.token.created` supplies the stored payment method ID; later token requests use the same shopper reference, `ContAuth` and matching recurring model. The guide does not itself describe a shopper-consent or billing-agreement screen; do not infer one from these fields (raw lines 753\u2013810).\n- Before capture, cancel; after capture, refund. For partial refunds after immediate capture, the guide directs `lineItems` for the refunded items and says Adyen can add a dummy line item if its sum differs from `amount`. For later capture, `capturePspReference` is needed when delayed capture, multiple partial captures enabled and more than one partial capture are all true; use the capture response PSP reference, not the payment reference. A `received` refund example is request receipt, not proof of funds returned (raw lines 812\u2013932).\n- PayPal Seller Protection applies only to physical goods here and has delivery-address, shopper-name and line-item guidance. Sandbox testing uses distinct PayPal business and personal accounts. Live use requires a live PayPal business account and configuration; the page says PayPal is available only when the shopper is logged in and has a valid funding method. Request snippets conflict with the field guidance: the PHP sample puts a stringified-array placeholder in `shopperReference`, the Python sample embeds unescaped JSON in a string, and the Ruby sample shows a non-JSON stringified risk map. Do not copy those examples as a complete implementation (raw lines 286\u2013302, 530\u2013541, 580\u2013589, 934\u2013969).\n\n## Detail locators\n\n- Setup and method discovery: raw lines 15\u201340.\n- HUF rounding and marketplace/vertical risk fields: raw lines 42\u2013124.\n- `/payments` field table and language/version examples: raw lines 126\u2013649.\n- Redirect return, result codes and webhook outcomes: raw lines 650\u2013750.\n- Recurring authorization, token webhook and later charge fields: raw lines 753\u2013810.\n- Cancel/refund and partial-capture-specific refund rules: raw lines 812\u2013932.\n- Seller Protection and test/live account conditions: raw lines 934\u2013969.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-payment-capture]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/android-component/2026-09-15|Adyen PayPal Android Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "If you have an existing [Android Components](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components) integration, you can use our Redirect Component to redirect the shopper to complete the payment.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "When this happens, PayPal doesn't accept the transaction.",
+      "location": "raw line 50, HUF rounding"
+    },
+    {
+      "text": "However, the synchronous API response doesn't give you the final outcome.",
+      "location": "raw line 726, Get the payment outcome"
+    },
+    {
+      "text": "* `shopperEmail`: Required when making a zero-value authorization request with `amount.value`: **0**. Do not include this parameter if the request is not for a zero-value authorization.",
+      "location": "raw line 787, Create a token"
+    },
+    {
+      "text": "PayPal uses this unique capture reference to locate the transaction in their systems. Without it, the refund can fail.",
+      "location": "raw line 905, later-capture partial refund"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-paypal-android-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-android-component]] \u2014 2021-modified, 2026-09-15-captured PayPal Android Redirect Component guide for server payment/return, webhook outcome, conditional risk/recurring setup and capture-dependent refunds; example snippets have field/encoding errors.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "PHP shopperReference and Python/Ruby paypalRisk examples conflict with the stated fields/format; treat code as illustrative."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/android-component/2026-09-15.md",
+  "raw_sha256": "e20e013f39ca8da360797d656fe68bcca41cccd36dc70d6caf1d97834e471040",
+  "status": "candidate_ready"
+}

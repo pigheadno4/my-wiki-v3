@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-paypal-api-only
+
+Q1. What are the PayPal-specific API-only prerequisites and payment/redirect steps?
+
+A1. This is an add-on to an existing Advanced API-only Web integration with redirect handling, PayPal enabled in Customer Area and separate PayPal setup (raw lines 19–30). It discovers PayPal through /paymentMethods using listed country/currency fields (raw lines 46–84), then shows /payments lineItems and conditionally applicable Fraudnet pairing/paypalRisk fields (raw lines 86–96). The v71 TEST example produces RedirectShopper and action.type redirect, not a final payment outcome (raw lines 98–142, 621–635). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal-api-only]] → [[raw/adyen/docs/payment-methods/paypal/api-only/2026-09-15]].
+
+Q2. Which outcome, recurring and example limits matter?
+
+A2. The synchronous resultCode is current status; the page directs order decisions to AUTHORISATION webhooks and optionally OFFER_CLOSED, and warns even Authorised may later fail (raw lines 731–768). Before capture cancel is available, after capture refund is needed (raw lines 770–772). Recurring needs PayPal Reference Transactions/account permissions and token webhooks; the initial Ecommerce/storePaymentMethod request is distinct from settled-payment recurring.token.created and later ContAuth use (raw lines 774–831). HUF rounding guidance conflicts with the earlier currency list that omits HUF, and malformed language example strings prevent treating snippets as copy-ready (raw lines 50–53, 255–269, 343–394, 560–619, 711–715). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal-api-only]] → [[raw/adyen/docs/payment-methods/paypal/api-only/2026-09-15]].

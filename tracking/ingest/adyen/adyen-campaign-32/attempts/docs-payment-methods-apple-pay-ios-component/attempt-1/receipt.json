@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay iOS Component guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/ios-component/2026-09-15.md\"\ntags: [adyen, apple-pay, ios, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified 2023-02-26 and captured 2026-09-15, describes adding Apple Pay to an **existing iOS Components** checkout. It separates Sessions `/sessions` from Advanced `/payments` and gives version-specific **client** Apple Pay Component configuration; the underlying payment flow and live setup remain separate. See [[adyen-online-payments]]. The captured guide does not establish current Apple Pay, issuer, country or merchant availability, certificate state, authorization, capture or settlement. See raw lines 15\u201350.\n\n## Key takeaways\n\n- Both flows require Apple Pay setup using the merchant's **own iOS certificate** and Apple Pay added in Customer Area. The **API Clientside Encryption Payments role** is stated specifically for live processing. `/sessions` is the default for iOS Components v5.0.0+, while `/payments` is framed as an additional use case. The page says Apple Pay adds no method-specific request fields; this does not remove the underlying flow's request requirements. See raw lines 21\u201350 and [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios|iOS certificate guide]].\n- For **v5.3.0+**, the configuration section names `paymentRequest` (`PKPaymentRequest`) and `merchantIdentifier`; its Swift sample builds `ApplePayComponent.Configuration(paymentRequest:)` and does not explicitly pass a merchant identifier, so do not treat that sample alone as a complete explanation of the table. For **v5.0.0\u2013v5.2.0**, it shows `ApplePayPayment` and `merchantIdentifier`. The **v4.x.x** section specifically says Components v4.10.0 or earlier and uses a different `summaryItems`/`merchantIdentifier` pattern, but its final line assigns the configuration to `dropInConfiguration.applePay` despite this being a Component guide. These are versioned examples, not a single interchangeable recipe. See raw lines 52\u2013147.\n- For v5.0.0+, optional settings include billing/shipping contacts and methods, supported card-issue countries, coupon fields, signed `applicationData` and `allowOnboarding`. The page says `allowOnboarding` defaults to false; turning it on lets a shopper add a wallet card when none or none supported, while the default hides Apple Pay when no wallet card exists. These are UI/configuration conditions, not live payment enablement. See raw lines 149\u2013168.\n- The guide says recurring Apple Pay requires `PKRecurringPaymentRequest` in Component configuration **and** a token created before subsequent recurring transactions. The linked tokenization guides own shopper permission, server request and token lifecycle detail; this page does not demonstrate consent, token creation or a later charge. See raw lines 169\u2013179 and [[adyen-tokenization]].\n- Testing uses Apple's test cards and a test Customer Area lookup. For live payments the guide again calls for the API Clientside Encryption Payments role and Apple Pay set up on the merchant's Apple Developer account for its live merchant identifier. Its error link is a separate guide. A configured Component or test lookup is not an authorization or funds movement result. See raw lines 181\u2013200.\n\n## Detail locators\n\n- **Sessions versus Advanced prerequisites and live role:** raw lines 21\u201341.\n- **Base API request scope and separate error route:** raw lines 43\u201350.\n- **Versioned client setup and snippet discrepancies:** raw lines 52\u2013147; v5.3.0+ table/sample at 58\u201380 and v4.10.0-or-earlier Drop-in assignment at 112\u2013147.\n- **Optional wallet/card/onboarding/coupon controls:** raw lines 149\u2013173.\n- **Recurring request/token boundary and TEST/LIVE preparation:** raw lines 175\u2013200.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/ios-component/2026-09-15|Apple Pay iOS Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "[Set up Apple Pay with your own certificate](/payment-methods/apple-pay/apple-pay-certificate/ios).",
+      "location": "raw line 31, ### Tab: `/sessions` setup steps"
+    },
+    {
+      "text": "You do not need to send additional fields for Apple Pay.",
+      "location": "raw line 45, ## API reference"
+    },
+    {
+      "text": "Your Apple Pay [merchant identifier](/payment-methods/apple-pay/apple-pay-certificate/ios#create-merchant-identifier).",
+      "location": "raw line 61, ### Tab: v5.3.0 or later table"
+    },
+    {
+      "text": "To enable recurring payments, you must include `PKRecurringPaymentRequest` [when configuring Apple Pay](#optional-configuration).",
+      "location": "raw line 177, ## Recurring payments"
+    },
+    {
+      "text": "To process live Apple Pay payments, your API credential needs to have the **API Clientside Encryption Payments role**.",
+      "location": "raw line 191, ### Going live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "apple-pay-ios-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-ios-component]] \u2014 2023-modified, 2026-09-15-captured Apple Pay iOS Component guide for Sessions/Advanced prerequisites, v5.3/v5.0/v4 client configuration, recurring token route and live certificate/role gates; snippets have version-specific gaps.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/ios-component/2026-09-15.md",
+  "raw_sha256": "660de62213898ddcfb6319762e46d01c10daf917a387c5d9549a8e14e7a1ae69",
+  "status": "candidate_ready"
+}

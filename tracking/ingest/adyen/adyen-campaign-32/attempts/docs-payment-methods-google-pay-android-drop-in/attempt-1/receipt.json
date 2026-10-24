@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-google-pay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay Android Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/android-drop-in/2026-09-15.md\"\ntags: [adyen, google-pay, android, drop-in, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, last modified and captured 2026-09-15, explains adding Google Pay to an **existing Android Drop-in** integration. It has separate Sessions and Advanced server-flow sections, each with Customer Area method setup, optional Android configuration and test/live preparation. Use [[adyen-online-payments]] as the main route. The page does not show a completed wallet authorization, 3DS challenge, capture or settlement, and does not prove current merchant/device/card eligibility.\n\n## Key takeaways\n\n- **Flow prerequisites:** the Sessions branch requires an existing Android Sessions Drop-in integration with Checkout API **v69 or later**, plus Google Pay added in Customer Area. It says no additional parameters are needed when creating a payment session. The Advanced branch similarly requires an existing Android Advanced Drop-in and Customer Area method setup; it says no additional fields are needed in its `/payments` request. The v69 minimum is stated for Sessions here, not for the Advanced branch. See raw lines 19\u201338 and 137\u2013206.\n- **Android client controls:** both branches list optional `CheckoutConfiguration` settings for supported card networks, credit/prepaid cards, Google Pay allowed authentication methods, billing/shipping data, merchant details, price status and button display. The listed default auth methods are `PAN_ONLY` and `CRYPTOGRAM_3DS`; this is a configuration value, not completed 3DS authentication. Allowed networks are initially drawn from account settings but can be overridden. `setGooglePayEnvironment` may explicitly choose Google's TEST or PRODUCTION setting and otherwise follows the Adyen environment. Keep Google and Adyen environment choices distinct; the placeholder Kotlin blocks are illustrative, not a full executable integration. See raw lines 40\u201394 and 146\u2013200.\n- **Testing:** the page describes a Google account and wallet, with either Google's TEST card suite or a wallet holding real cards mapped by Adyen to same-brand test cards. It limits test-suite DPAN to native Android/Chrome on Android; in the no-suite path it says only Amex or Discover triggers its 3DS2 test challenges. These test instructions and payment-list lookup do not establish a live charge, an actual challenge result or authorization. See raw lines 98\u2013122 and 208\u2013232.\n- **Live preparation and availability:** its live checklist calls for the Adyen API credential's **API Clientside Encryption Payments role**, a configured Google Merchant ID in live Customer Area, and Google's Android production deployment steps. It recommends testing Google's scenarios in live. The page states Google Pay is available in live only when the shopper is logged in to Google and has at least one valid Google Pay payment method. These are stated conditions, not proof a particular merchant, shopper, card or integration can process a live payment. See raw lines 124\u2013135 and 234\u2013245.\n\n## Detail locators\n\n- Sessions prerequisite, Checkout API version and session-field boundary: raw lines 19\u201338.\n- Sessions Android `CheckoutConfiguration` parameters and example: raw lines 40\u201394.\n- Sessions test card suite, non-suite mapping and live checklist: raw lines 96\u2013135.\n- Advanced prerequisite, configuration parameters and no-extra-`/payments` statement: raw lines 137\u2013206.\n- Advanced repeated test and live preparation: raw lines 208\u2013245.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-3d-secure]]\n- [[adyen-payment-testing]]\n- [[source-adyen-docs-payment-methods-google-pay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/android-drop-in/2026-09-15|Google Pay Android Drop-in guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add Google Pay to your Drop-in integration.",
+      "location": "raw line 17, # Android Drop-in"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v69 or later.",
+      "location": "raw line 31, ## Sessions flow Drop-in / ## Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 38, ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "Default follows the value of the Adyen `environment`.",
+      "location": "raw lines 59 and 165, ## Add additional configuration for Google Pay in Sessions and Advanced flows"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 206, ## Add additional parameters to your /payments request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "google-pay-android-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-android-drop-in]] \u2014 2026-09-15 Android Google Pay Drop-in guide for existing Sessions (Checkout API v69+) or Advanced flows, optional wallet settings, test-wallet scenarios and live role/Merchant-ID prerequisites; no payment-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "769d888561aa7edecbb63dfc167cc220ccfa20748f7f5271507e528681e46aea",
+  "status": "candidate_ready"
+}

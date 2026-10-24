@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-apple-pay-react-native-drop-in
+
+Q1. What does this React Native Drop-in Apple Pay guide require for Sessions and Advanced?
+
+A1. It assumes an existing Sessions or Advanced React Native Drop-in integration, Apple Pay added in Customer Area, and the merchant's own iOS Apple Pay certificate; the API Clientside Encryption Payments role is required for live processing (raw lines 21–41). It says no extra Apple-Pay-specific API fields, but requires applepay.merchantID and merchantName in AdyenCheckout configuration (raw lines 43–75). It does not pin a wrapper/native SDK version. Route: [[index]] → [[adyen-index]] → [[adyen-react-native-sdk]] → [[source-adyen-docs-payment-methods-apple-pay-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/apple-pay/react-native-drop-in/2026-09-15]].
+
+Q2. What amount, recurring and example boundaries must be retained?
+
+A2. The optional summaryItems instruction says its last item must match the /payments amount, but the page gives no Sessions-specific server amount synchronization procedure (raw lines 77–92). Recurring requires recurringPaymentRequest and separate tokenization; its table requires paymentDescription, regularBilling and managementURL, with billingAgreement and tokenNotificationURL optional (raw lines 92–111). The sample uses description instead of paymentDescription and lacks a comma (raw lines 115–139). Sandbox testing and a live Apple Developer merchant identifier/credential role are separate gates; no token, authorization, capture or settlement is proved (raw lines 141–153). Route: [[index]] → [[adyen-index]] → [[adyen-react-native-sdk]] → [[source-adyen-docs-payment-methods-apple-pay-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/apple-pay/react-native-drop-in/2026-09-15]].

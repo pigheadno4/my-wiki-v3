@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-samsung-pay-samsung-pay-api",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Samsung Pay API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/samsung-pay/samsung-pay-api\"\nraw_files:\n  - \"adyen/docs/payment-methods/samsung-pay/samsung-pay-api/2026-09-15.md\"\ntags: [adyen, samsung-pay, wallet, api-only, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes accepting Samsung Pay through an **existing API-only integration** with a merchant-built payment form. It delegates Samsung-side enablement to a separate guide and Samsung Pay SDK documentation, then describes sending the SDK token to Adyen's Checkout `/payments` endpoint. The page does not document merchant decryption, key custody, a PCI level or token cryptography. It is not proof of current wallet/account eligibility or a successful live payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Before the method-specific flow, the guide says to have an API-only integration and add Samsung Pay in the **test Customer Area**. Preparation is to request a CSR from Adyen, create a Samsung Pay Developer account, set Adyen as payment gateway, integrate the Samsung Pay SDK, and ask Adyen Support to configure compatible **Visa, Mastercard, Maestro, Amex and Discover** schemes on the merchant account. These are setup actions, not proof they occurred or that every scheme is enabled. (raw lines 21\u201334)\n- Show Samsung Pay when its app is available on the shopper's device. Optional `/paymentMethods` discovery takes a supported `countryCode` and `amount.currency`; `GB`/`GBP` are examples, and the response identifies `paymentMethod.type: samsungpay`. This does not establish universal region/currency or device support. (raw lines 36\u201347)\n- When the shopper selects Samsung Pay, obtain tokenized payment information from the Samsung SDK. The merchant **server** sends `paymentMethod.type: samsungpay` and `paymentMethod.samsungPayToken` in `/payments`. The token is the **complete base64-encoded SDK payload**, not just `3DS.data`. The page does not instruct merchants to decrypt it; CSR/gateway/SDK detail is in linked setup materials rather than specified here. (raw lines 49\u201358)\n- The sample API result has `resultCode: Authorised`, but the page's result table also describes `Error` with a `refusalReason` and bank `Refused`. Present the actual response code to the shopper; the illustrated response is not a real authorization, capture, settlement or card-network result. (raw lines 361\u2013385)\n- Samsung provides testing guidance, and TEST payment status can be checked in test Customer Area. The guide separately requires a **request for Samsung Pay in live Customer Area before live acceptance**. TEST configuration, sample tokens and response bodies do not establish LIVE method approval or processing. (raw lines 387\u2013393)\n\n## Example qualifications\n\n- The curl snippet targets TEST Checkout API **v68** and includes rendered `{hint:...}` markup in a field name. API-library examples use distinct dated versions and TEST settings, with an additional live endpoint prefix noted for LIVE. The Go comment says v10.4.0 while import paths use `/v9/`. These snippets are illustrative, not a complete verified production request. (raw lines 60\u2013359, especially 63\u201378 and 230\u2013239)\n- The page does not state an API-version minimum, a merchant-side decrypt/PCI classification, or capture/settlement behavior. Do not infer those from the v68 example endpoint, the token payload, or the `Authorised` sample. (raw lines 21\u201326, 49\u201378, 361\u2013393)\n\n## Detail locators\n\n- Prerequisites, account/CSR/gateway/SDK/network setup: raw lines 21\u201334.\n- Device check, discovery and server token handoff: raw lines 36\u201358.\n- TEST request/library examples: raw lines 60\u2013359.\n- Result codes and test/live boundary: raw lines 361\u2013393.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-samsung-pay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/samsung-pay/samsung-pay-api/2026-09-15|Adyen Samsung Pay API-only guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built an [API-only integration](/online-payments/build-your-integration/advanced-flow?platform=Web\\&integration=API%20only).",
+      "location": "raw line 25"
+    },
+    {
+      "text": "[Request for a CSR](/payment-methods/samsung-pay/enable-samsung-pay#generate-csr) from Adyen.",
+      "location": "raw line 30"
+    },
+    {
+      "text": "Contact Adyen's [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to configure the compatible card schemes (Visa, Mastercard, Maestro, Amex, and Discover) for SamsungPay on your merchant account.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "This is the complete base64-encoded token, not just the `3DS.data`.",
+      "location": "raw line 58"
+    },
+    {
+      "text": "Before you can accept live Samsung Pay payments, you need to submit a request for Samsung Pay in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 393"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "samsung-pay-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-samsung-pay-samsung-pay-api]] \u2014 2026-09-15 Samsung Pay API-only guide for CSR/developer/SDK/gateway and scheme setup, complete SDK-token server handoff, and distinct TEST/LIVE and result-code boundaries.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Page does not document merchant token decryption, PCI level or key custody; curl hint markup and Go library version/path conflict make snippets non-executable as printed."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/samsung-pay/samsung-pay-api/2026-09-15.md",
+  "raw_sha256": "0d6bf1de58dc90a98726ce98f741e32d2920da55b1f906f315460c593cb56e13",
+  "status": "candidate_ready"
+}

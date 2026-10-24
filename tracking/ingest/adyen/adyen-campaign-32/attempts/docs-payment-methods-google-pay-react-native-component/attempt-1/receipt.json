@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-google-pay-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay React Native Component integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/react-native-component/2026-09-15.md\"\ntags: [adyen, google-pay, react-native, components, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, modified and captured 2026-09-15, describes adding Google Pay to an existing React Native Component integration. Its implementation details are Android-facing: a Google Pay sheet, potential 3D Secure redirect and Android activity-result handoff. It covers optional wallet configuration, tokenization navigation and TEST/LIVE setup. See [[adyen-online-payments]]. The guide is a setup snapshot, not evidence of current account/device eligibility or a successful authorization, capture or settlement. See raw lines 15\u201347 and 71\u2013113.\n\n## Key takeaways\n\n- The prerequisite is an existing React Native Component integration, Google's Google Pay setup steps for Android and Google Pay added in Adyen Customer Area. When the shopper selects Google Pay, the Component presents a wallet card-choice sheet; for a selected card needing 3D Secure, it also handles redirecting to another site for verification. These are client-flow statements, not Adyen payment-outcome claims. The guide says no extra Google Pay fields are required for the server `/payments` request; optional payment fields remain in the API reference. See raw lines 15\u201333.\n- The Android activity must pass `onActivityResult` data to `AdyenCheckout.handleActivityResult(requestCode, resultCode, data)`. The shown block is fenced `kotlin` but uses Java-shaped `@Override`, semicolons and method syntax; treat it as an illustrative activity integration, not a verified paste-ready Kotlin implementation. The page states no React Native package/SDK minimum version. See raw lines 35\u201347.\n- Optional `AdyenCheckout` configuration covers Google `merchantAccount` (described here as a **Google Merchant ID**, defaulting to the corresponding `brands` value from `/paymentMethods`), `allowedCardNetworks`, `allowedAuthMethods`, price status, prepaid/credit-card allowance, billing/email/shipping requirements and `existingPaymentMethodRequired`. The table distinguishes `PAN_ONLY` Google-account cards from `CRYPTOGRAM_3DS` Android device-token cards; these returned-data descriptions do not establish that the merchant may handle raw PAN, bypass PCI duties, or has a successful network token charge. See raw lines 49\u201366.\n- The `googlePayEnvironment` row's possible-values prose lists **WalletConstants.ENVIRONMENT_TEST for both test and live**, while its default follows the `AdyenCheckout` environment. This is a source inconsistency; do not use its duplicated value as a verified live configuration. See raw line 67.\n- For recurring Google Pay, this page directs the reader to create a shopper token and then make later token transactions through separate [[adyen-tokenization]] guides. It does not specify consent mechanics or show token creation or a later charge. See raw lines 71\u201374.\n- Testing describes a Google wallet enrolled in the test-card suite, including FPAN, DPAN (only through native Android or Chrome on Android) and 3DS2 scenarios, or a wallet with real cards mapped to Adyen test cards without a charge. Outside the test-card suite, it specifies American Express or Discover for the described 3DS2 challenge tests. The TEST payment list is a status-check route, not proof that a real card was charged. See raw lines 76\u2013100.\n- Before live use, the page recommends live scenario testing and directs a live **API Clientside Encryption Payments role**, Google Merchant ID configuration in live Customer Area and Google's Android production deployment steps. It says live Google Pay availability also depends on the shopper being logged in to Google and having a valid payment method. These instructions do not establish completed merchant approval or actual live payment success. See raw lines 102\u2013113.\n\n## Detail locators\n\n- **Component prerequisites, shopper sheet/3DS redirect and server field boundary:** raw lines 15\u201333.\n- **Android `onActivityResult` code:** raw lines 35\u201347.\n- **Optional provider settings, auth methods, defaults and duplicated environment enum:** raw lines 49\u201369.\n- **Recurring navigation, TEST card choices and live gates:** raw lines 71\u2013113.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-google-pay]]\n- [[source-adyen-docs-payment-methods-google-pay-android-component]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/react-native-component/2026-09-15|Google Pay React Native Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When shoppers select Google Pay, Component presents the Google Pay payment sheet where shoppers choose a card they want to use.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "AdyenCheckout.handleActivityResult(requestCode, resultCode, data);",
+      "location": "raw line 45, activity-result snippet"
+    },
+    {
+      "text": "The corresponding merchant ID value from the `brands` array in the [/paymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods) response.",
+      "location": "raw line 55, merchantAccount table row"
+    },
+    {
+      "text": "Possible values: - **WalletConstants.ENVIRONMENT\\_TEST** for test. - **WalletConstants.ENVIRONMENT\\_TEST** for live.",
+      "location": "raw line 67, googlePayEnvironment table row"
+    },
+    {
+      "text": "To make recurring Google Pay payments, you first need to [create a shopper token](/online-payments/tokenization/create-tokens) and then [make subsequent recurring transactions](/online-payments/tokenization/make-token-payments) with the token.",
+      "location": "raw line 73, Recurring payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-google-pay-react-native-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-react-native-component]] \u2014 2026-09-15 React Native Google Pay Component guide for Android activity handoff, wallet configuration, TEST/live setup and recurring-token navigation; environment value and code-fence discrepancies are source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The googlePayEnvironment table prints WalletConstants.ENVIRONMENT_TEST for both test and live; do not infer a corrected live enum from this page (raw line 67).",
+          "The activity-result block is fenced Kotlin but uses Java-shaped syntax (raw lines 41\u201347); it is not verified paste-ready Kotlin."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/react-native-component/2026-09-15.md",
+  "raw_sha256": "5165ecf286426a4a38f974e03d44f8843ed05620787ec8392b1cf18b76903a27",
+  "status": "candidate_ready"
+}

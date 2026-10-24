@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-google-pay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/api-only/2026-09-15.md\"\ntags: [adyen, google-pay, wallet, api-only, online-payments]\n---\n\n## Overview\n\nThis Adyen guide (last-modified metadata 2023-05-31; captured 2026-09-15) adds Google Pay to an **existing API-only checkout integration** for a merchant-built payment form. It describes Google Pay API token collection on Web or Android and an Adyen Checkout server `/payments` request. Its specified tokenization method is **PAYMENT_GATEWAY** with Adyen as gateway; it does not provide a merchant-decryption flow, merchant key instructions or a PCI-level determination. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The stated prerequisites are adding Google Pay in Customer Area, **Checkout API v67 or later**, and integrating Google's Web or Android Pay API with `gateway: adyen` and `gatewayMerchantId` set to the merchant or company account name. Google API setup remains a separate responsibility. (raw lines 21\u201343)\n- Show the method where Google Pay is supported. An optional `/paymentMethods` discovery request uses supported `countryCode`, `amount.currency`, and `channel: Web` or `Android`; `NL`/`EUR` are examples. A response may identify `paymentMethod.type: googlepay`; this and a displayed payment sheet do not establish a payment result or universal region/currency support. (raw lines 45\u201357)\n- Obtain `PaymentData.token` from Google Pay and send it **from the merchant server** as `paymentMethod.type: googlepay` and `googlePayToken` in Adyen `/payments`. The guide calls for `browserInfo` if triggering 3D Secure and a `returnUrl` for a post-3DS redirect. It does not instruct the merchant to decrypt the Google token or handle Google private keys on this gateway path. (raw lines 59\u201369)\n- A payment response can carry `Authorised` or an `action` requiring further 3DS authentication; the text names `redirect` and `threeDS2` action types. The example `RedirectShopper` response and the linked redirect guide are authentication continuation, not final authorization, capture or settlement proof. Present the eventual `/payments` or `/payments/details` result code; the table distinguishes `Authorised`, `Error` with `refusalReason`, and bank `Refused`. (raw lines 482\u2013529)\n- For recurring, the page points to creating a shopper token first and making later token payments; it does not spell out consent or recurring request contracts. TEST setup uses a Google account/wallet and either Google's test-card suite or real wallet cards mapped to Adyen test cards. The stated test-suite DPAN cases are native Android/Chrome on Android only; without the suite, Amex or Discover is specified for 3DS2 tests. These are TEST examples, not live payment proof. (raw lines 531\u2013560)\n- Before LIVE, the guide lists the **API Clientside Encryption Payments role**, associating the Google Merchant ID with the Adyen merchant account, and Google's Web/Android production-deploy steps. It says production availability also depends on a shopper logged into Google with a valid payment method. This is a dated checklist, not proof of actual merchant enablement, PCI compliance or successful processing. (raw lines 562\u2013577)\n\n## Example qualifications\n\n- The curl example shows a TEST v68 endpoint and rendered `{hint:...}` placeholders inside JSON field names; those annotations are not a literal executable request. Language-library versions vary, and the Go snippet labels library v10.4.0 while importing `/v9/` paths. Verify examples against the selected SDK/API version rather than treating them as a full production implementation. (raw lines 71\u2013100, 102\u2013479, especially 306\u2013312)\n- The page says a 3DS response may contain `redirect` **or** `threeDS2`, while its next numbered step broadly says to redirect on any `action`. Follow the action type and linked flow rather than assuming every action is a URL redirect. (raw lines 493\u2013518)\n\n## Detail locators\n\n- Prerequisites, Google gateway specification, discovery and channel: raw lines 21\u201357.\n- Server payment handoff and versioned examples: raw lines 59\u2013480.\n- Results and 3DS continuation: raw lines 482\u2013529.\n- Recurring, TEST and LIVE conditions: raw lines 531\u2013577.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/api-only/2026-09-15|Adyen Google Pay API-only guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have integrated [Checkout API v67 or later](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only\\&version=71#get-available-payment-methods).",
+      "location": "raw line 27"
+    },
+    {
+      "text": "choose **Gateway**. Set\u00a0**adyen**\u00a0as your\u00a0`gateway`\u00a0and provide your merchant or company account name in the\u00a0`gatewayMerchantId`\u00a0parameter.",
+      "location": "raw line 31"
+    },
+    {
+      "text": "Set this to\u00a0**Web**\u00a0if the payment is being initiated on the web, or\u00a0**Android**\u00a0for in-app payments.",
+      "location": "raw line 55"
+    },
+    {
+      "text": "If the shopper used a card that requires 3D Secure authentication before the payment can be completed, you receive an `action.type` **redirect** or `action.type` **threeDS2** in the response.",
+      "location": "raw line 493"
+    },
+    {
+      "text": "Make sure that your API credential has the **API Clientside Encryption Payments role**.",
+      "location": "raw line 564"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "google-pay-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-api-only]] \u2014 2023-modified, 2026-09-15-captured Google Pay API-only gateway-token guide for Web/Android with Checkout v67+, server handoff, 3DS, TEST and LIVE prerequisites; examples and results have stated limits.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Gateway-token page does not document merchant decryption, keys, or a PCI level; TEST snippets contain rendered hint keys and a Go version/path mismatch.",
+          "The page names redirect and threeDS2 actions but the next step broadly says to redirect on any action."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/api-only/2026-09-15.md",
+  "raw_sha256": "558b02ce8f533a6e0cc8a9dc6b7c9506f59ed0ae6b77bb171f19bdc97a47c3f9",
+  "status": "candidate_ready"
+}

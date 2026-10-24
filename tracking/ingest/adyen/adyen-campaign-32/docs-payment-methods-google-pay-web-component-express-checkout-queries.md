@@ -1,0 +1,9 @@
+# Retrieval checks — Google Pay Web Component express checkout
+
+Q1. What is this express-checkout guide for, and what must be in place before using it?
+
+A1. It describes Google Pay express checkout for an existing Web Components **Advanced flow** integration, with Google Pay's setup steps and the method added in Adyen Customer Area. The page excludes Android (raw lines 21–28). It shows shipping callback intents/options, initial transaction information, `isAvailable()` before mounting (raw lines 50–172), and requires `isExpress: true` for v6.0.0+ (raw line 253). Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-google-pay-web-component-express-checkout]] → [[raw/adyen/docs/payment-methods/google-pay/web-component/express-checkout/2026-09-15]].
+
+Q2. How does a shipping or price change reach `/payments`, and what do the callbacks and samples prove?
+
+A2. The merchant implements recalculation for `onPaymentDataChanged` on initialization/address/option changes, including its own shipping-option and total functions (raw lines 314–353). Adyen does not automatically receive the Google Pay changed amount; validate it and hand it to `onSubmit` for `/payments` (raw lines 356–358). `onAuthorized` yields shopper information before `onSubmit` (raw lines 360–373); the guide provides no server response or final payment result. Code has `shippingOptions` versus `shippingOptionParameters`, `GooglePlay` versus `GooglePay`, and `googlepay` versus `googlePay` inconsistencies (raw lines 71–85, 162–171, 205–219, 228–246, 377–391), so it is not a verified drop-in implementation. Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-google-pay-web-component-express-checkout]] → [[raw/adyen/docs/payment-methods/google-pay/web-component/express-checkout/2026-09-15]].

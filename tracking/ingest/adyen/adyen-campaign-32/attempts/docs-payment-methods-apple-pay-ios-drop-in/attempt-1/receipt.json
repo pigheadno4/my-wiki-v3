@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, apple-pay, ios, drop-in, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] Apple Pay guide, last modified 2023-02-26 and captured 2026-09-15, adds Apple Pay to an existing **iOS Drop-in** integration. It distinguishes Sessions `/sessions` and Advanced `/payments`, gives versioned native configuration, and points to recurring tokenization and TEST/LIVE setup. See [[adyen-online-payments]]. Configuration and test instructions are not evidence of current wallet/account enablement or a completed authorization, capture or settlement. See raw lines 15\u201350 and 163\u2013175.\n\n## Key takeaways\n\n- Both routes require an existing iOS Drop-in integration of the selected flow, Apple Pay set up with the merchant's **own certificate**, and Apple Pay added in Customer Area. The guide names the **API Clientside Encryption Payments role** specifically for processing live Apple Pay payments. It says no additional Apple Pay API fields are needed; `/sessions` is the default with Drop-in v5.0.0+, while `/payments` is for an additional use case. These are flow and role prerequisites, not evidence of live enablement. See raw lines 21\u201350.\n- Native Drop-in **v5.3.0+** configuration lists an Apple `PKPaymentRequest` and `merchantIdentifier`; its Swift snippet, however, initializes `applePay` with `paymentRequest` only, leaving the listed merchant identifier absent from the shown call. **v5.0.0\u2013v5.2.0** lists `merchantIdentifier` and shows a `payment` argument. The **v4.10.0-or-earlier** section lists merchant identifier, payment amount/currency/country and summary items; its example creates a `payment` value but does not pass it into the displayed `ApplePayComponent.Configuration` initializer. These examples are version-specific illustrations, not complete validated implementations. See raw lines 52\u2013129.\n- For iOS Drop-in v5.0.0+, optional settings include required/prefilled contacts, shipping, country-limited issuing cards, coupon information and `applicationData` signed into the resulting `PKPaymentToken`. `allowOnboarding: true` lets a shopper add a card when none are present or supported; its stated default is false, in which case Apple Pay is not displayed without wallet cards. `PKRecurringPaymentRequest` is marked required for recurring payments. The page says v4.x has no additional optional configuration. See raw lines 131\u2013155.\n- Recurring requires `PKRecurringPaymentRequest` when configuring Apple Pay; actual recurring payment setup goes to the separate create-token and subsequent-token-transaction guides. This page does not establish consent capture, token creation, network-token provisioning, or a successful subsequent payment; do not infer those from a configured request. See raw lines 157\u2013161 and [[adyen-tokenization]].\n- The testing section points to Apple's test cards and sandbox instructions, and to Customer Area's TEST payment list for status. Going live repeats the credential role requirement and says to set up Apple Pay on the Apple Developer account for the **live merchant identifier**. Test status and live setup steps do not show current production acceptance or payment lifecycle completion. See raw lines 163\u2013175.\n\n## Detail locators\n\n- **Sessions/Advanced prerequisites, own-certificate and live credential-role scopes:** raw lines 21\u201350.\n- **Versioned Drop-in Apple Pay configuration and sample discrepancies:** raw lines 52\u2013129.\n- **Optional v5+ fields, onboarding behavior and v4 scope:** raw lines 131\u2013155.\n- **Recurring handoff, testing and live merchant-identifier setup:** raw lines 157\u2013175.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-apple-pay]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios]]\n- [[source-adyen-docs-payment-methods-apple-pay-handle-apple-pay-errors]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/ios-drop-in/2026-09-15|Apple Pay iOS Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built a Sessions flow [iOS Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in).",
+      "location": "raw line 29, Sessions requirements table"
+    },
+    {
+      "text": "To [process live Apple Pay payments](#going-live) make sure that you have the following role:- **API Clientside Encryption Payments role**.",
+      "location": "raw line 30, Sessions API credential roles"
+    },
+    {
+      "text": "`merchantIdentifier`",
+      "location": "raw line 63, v5.3.0 or later configuration table"
+    },
+    {
+      "text": "`PKRecurringPaymentRequest`",
+      "location": "raw line 151, v5+ optional configuration table"
+    },
+    {
+      "text": "To enable recurring payments, you must include `PKRecurringPaymentRequest` [when configuring Apple Pay](#optional-configuration).",
+      "location": "raw line 159, Recurring payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-apple-pay-ios-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-ios-drop-in]] \u2014 2023-modified, 2026-09-15-captured Apple Pay iOS Drop-in Sessions/Advanced guide for own-certificate setup, versioned native configuration, recurring tokenization handoff and TEST/LIVE limits; code examples require version-aware review.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v5.3+ table lists merchantIdentifier but its shown initializer passes only paymentRequest; the v4 example builds a payment value but does not pass it in the shown configuration call (raw lines 56\u2013129).",
+          "Apple Pay setup and PKRecurringPaymentRequest do not establish consent capture, token creation, successful authorization, capture or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "5c8cb799646959cca677c2d18cfd6237c06e75ba372cc793f7e6bce0e24fcd31",
+  "status": "candidate_ready"
+}

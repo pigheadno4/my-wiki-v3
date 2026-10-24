@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-paypal-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayPal Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/web-component/2026-09-15.md\"\ntags: [adyen, paypal, web-components, wallets, tokenization]\n---\n\n## Overview\n\nThis 2019-modified, 2026-09-15-captured [[adyen]] guide adds PayPal Smart Payment Buttons to an **existing Web Components** integration, through [[adyen-online-payments]]. It states availability from Components **v3.7.0**, requires the existing Components integration and PayPal setup steps, and splits instructions by `/sessions` and `/payments`. These are documented integration paths and examples, not proof that a merchant or shopper has live PayPal access or that a payment completed.\n\n## Key takeaways\n\n- The page calls `/sessions` the default for Components **v5.0.0+**, and `/payments` the route for an additional use case. It shows TEST Checkout examples at `/v71/sessions` and `/v72/payments`, while language-library examples have their own listed versions; those snippets are illustrative, not a single version-independent request contract. The request tables leave `lineItems` unmarked as required. A `/payments` example identifies PayPal with `paymentMethod.type: \"paypal\"` and `subtype: \"sdk\"`. See raw locators for fields and samples.\n- `additionalData.paypalPairingId` is conditional on a customer-initiated transaction using Fraudnet with the same pairing ID sent to Fraudnet and Adyen. `additionalData.paypalRisk` concerns marketplaces and merchants in certain verticals, with PayPal/its account manager determining applicable fields; the page says to encode them as a stringified `additional_data` array. The common marketplace field table is expressly illustrative, not universally required. For HUF, PayPal expects rounded transaction and line-item amounts to match; Adyen-side rounding can leave a discrepancy that PayPal rejects.\n- On the client, the `/sessions` tab says no extra PayPal configuration is needed, and uses `new PayPal(checkout)` on **v6+** versus `checkout.create('paypal')` on **v5 and earlier**. The `/payments` tab lists amount, country code, submission/action callbacks, PayPal merchant ID and intent; its table names `onAdditionalAction` and `configuration.merchantId/intent`, while its example uses `onAdditionalDetails` and top-level `merchantId/intent`. Follow the exact version/flow guide for implementation; the snapshot does not reconcile these differences. The sample rejects absent `resultCode` or unexpected errors and resolves even an unsuccessful result. The page also calls for a `same-origin-allow-popups` cross-origin opener policy to allow PayPal popups.\n- Optional settings cover CSP nonce (from v5.2.0), button style, shipping/user-input callbacks, PayPal Credit/Pay Later buttons and Venmo visibility. The page dates per-payment `intent` choices to **v5.34.0+**: capture, authorize, subscription and tokenize. It lists Pay Later country/local-currency scope and cross-border limits and says Venmo appears by default when both merchant and shopper are in the US. These UI options do not establish PayPal funding or shopper eligibility.\n- An API `resultCode` can drive a provisional shopper message, but the page says to wait for webhooks for the **final payment outcome**, particularly when risk rules run after authorisation. `AUTHORISATION` success/failure is its listed completion signal; `OFFER_CLOSED` for a timeout requires enabling that non-default event. Optional PayPal details in standard webhooks require the listed additional setting. Neither button rendering nor an `Authorised` synchronous result alone proves capture or settlement.\n- For recurring use, the page **strongly recommends** explicit shopper permission. Direct merchants without indirect settlement need PayPal Vault permissions; marketplaces or indirect-settlement arrangements are directed to Adyen Support. Cross-account token sharing needs account configuration. Zero-value token creation requires **v5.3.0+** for `/sessions`; for `/payments`, use `intent: \"tokenize\"` at **v5.34.0+** or a global amount object at **v5.3.0+**, otherwise the page says no token is created. Zero-value requests require `shopperEmail` and `amount.value: 0`; it says not to include `shopperEmail` for non-zero-value requests. Obtain the shopper reference/token from `recurring.token.created`, rather than assuming a request response produced a usable token.\n- Before capture, the guide points to cancellation; after capture, refund. For an immediately captured partial refund, it calls for refund `lineItems` and says a mismatch with amount causes Adyen to add a dummy item. For later capture, `capturePspReference` is required **when later capture, multiple partial captures enabled, and more than one partial capture all apply**; it must be the capture reference, not the payment reference, and omission can cause failure. The immediately captured section's line-item wording mixes \u201citems the shopper should pay for\u201d with \u201conly ... items that you are refunding\u201d; preserve that ambiguity rather than guessing an accounting rule from the example. A refund response with `status: received` is not proof of final refund.\n- Seller Protection discussion is limited to **physical goods** and asks program participants for delivery address, shopper name and line items, with a test-payment eligibility check. The testing section uses PayPal business/personal sandbox roles; live setup separately requires a live PayPal business account and configured live environment. It states live PayPal availability also depends on a logged-in shopper with a valid funding method.\n\n## Detail locators\n\n- [[raw/adyen/docs/payment-methods/paypal/web-component/2026-09-15|Pinned raw]], lines 15\u201348: identity, Components/version/setup prerequisites, `/sessions` default and conditional risk fields; lines 516\u2013568: `/payments` tab and PayPal subtype example.\n- Same raw, lines 50\u2013513 and 528\u20131039: TEST curl and versioned language-library examples; Python `paypalRisk` strings at lines 412 and 927 and the PHP `/payments` example at lines 684\u2013690 need independent scrutiny before use.\n- Same raw, lines 1041\u20131119: HUF rounding, conditional marketplace/vertical risk fields and stringified formatting; lines 1121\u20131255: DOM/component version split and `/payments` table/example mismatch.\n- Same raw, lines 1257\u20131373: optional settings, Pay Later/Venmo scope and versioned intent; lines 1375\u20131412: resultCode versus final webhook outcome and optional webhook details.\n- Same raw, lines 1414\u20131485: recurring permission, Vault/marketplace setup, zero-value version/configuration gates and token webhook; lines 1487\u20131607: capture-sensitive cancel/refund paths and partial-refund example; lines 1609\u20131643: Seller Protection and sandbox/live boundaries.\n\n## Related\n- [[adyen-tokenization]] \u2014 generic tokenization context; this page's PayPal and version conditions govern here.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/web-component/2026-09-15|PayPal Component]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add PayPal to your existing Web Components integration.",
+      "location": "line 19, PayPal Component"
+    },
+    {
+      "text": "This is the default with [Components v5.0.0]",
+      "location": "line 40, /sessions tab"
+    },
+    {
+      "text": "When this happens, PayPal doesn't accept the transaction.",
+      "location": "line 1045, Amounts in Hungarian Forints (HUF)"
+    },
+    {
+      "text": "However, the synchronous API response doesn't give you the final outcome.",
+      "location": "line 1387, Get the payment outcome"
+    },
+    {
+      "text": "No token is created if you send a zero-value authorization request to the `/payments` endpoint without having updated the configuration as described above.",
+      "location": "line 1465, Prepare for tokenization"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-paypal-web-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-web-component]] \u2014 2019-modified, 2026-09-15-captured PayPal Web Component guide for versioned Sessions/Payments setup, conditional Fraudnet/risk fields, webhook-final outcomes, recurring token gates and capture-sensitive refunds; table/example callback and field-placement conflicts remain in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The /payments configuration table and example differ on callback name and merchantId/intent placement; avoid treating either snippet as a complete safe implementation.",
+          "The partial-refund lineItems prose uses conflicting item descriptions; preserve the raw and do not infer a new accounting rule.",
+          "This guide's modified metadata predates many later SDK/API versions and examples in the captured body; retain snapshot/version distinctions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/web-component/2026-09-15.md",
+  "raw_sha256": "c475c592bf000aff57ecf865eba93c5f58631bd4c20e73b45aa072d86c61454f",
+  "status": "candidate_ready"
+}

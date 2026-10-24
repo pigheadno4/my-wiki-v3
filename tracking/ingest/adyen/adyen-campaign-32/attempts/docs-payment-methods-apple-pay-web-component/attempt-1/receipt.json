@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay Web Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/web-component/2026-09-15.md\"\ntags: [adyen, apple-pay, web-components, online-payments, wallets]\n---\n\n## Overview\n\nThis [[adyen]] page, last-modified metadata 2019-09-06 and captured 2026-09-15, describes adding Apple Pay to an existing **Web Components** integration using either Sessions `/sessions` or Advanced `/payments`. It covers component setup, certificate-dependent merchant validation, browser and iframe limits, recurring configuration, testing and live-domain setup. See [[adyen-online-payments]]. It is a historical setup guide, not proof of current method availability or a completed authorization, capture or settlement. See raw lines 15\u201347 and 437\u2013498.\n\n## Key takeaways\n\n- The prerequisite is an existing Web Components flow: Sessions for `/sessions`, Advanced for `/payments`. The page calls for Apple Pay added in Customer Area, Apple Pay set up with Adyen's or the merchant's own certificate, and the **Change payment methods** Customer Area role. The **API Clientside Encryption Payments role** is specifically for live Apple Pay processing. The two requirements tabs differ: the Sessions tab calls for allowing Apple Pay IP addresses on the server; the Advanced tab additionally specifies Apple test cards and a Sandbox tester Apple ID for Adyen TEST, an Apple Developer account even with Adyen's certificate, and domain verification for each domain when using the merchant's own certificate. See raw lines 21\u201347.\n- On Component **v6.10.0+**, the page says Apple Pay can be offered on supported third-party browsers/devices, including Windows and Chromebooks, with code-scanning completion. Earlier-version compatibility differs: macOS Safari; iOS/iPadOS all browsers including web views; no non-Apple devices. For Safari iframe embedding, Safari 17+ needs `allow=\"payment\"`; Safari 16 or earlier requires matching iframe and top-level origin, including specified protocol, full host and port. These are browser/version conditions, not universal device eligibility. See raw lines 49\u201376.\n- With **Adyen's certificate**, this Component page says neither Sessions nor Advanced needs extra Apple Pay Component configuration. With the **merchant's own certificate**, `onValidateMerchant` is required to display the payment sheet; the merchant's server uses the validation URL to request an Apple Pay session and resolves or rejects the callback. The guide directs mounting only after `isAvailable()` resolves. Certificate setup and availability checks precede payment execution. See raw lines 101\u2013176.\n- Optional component request data covers button properties, contacts, shipping, `merchantCapabilities`, `supportedCountries`, and `recurringPaymentRequest`; the last is required for this page's recurring setup. `shippingContactEditingMode` is marked v6.13.0+. `onAuthorized` is called after shopper authorization in Apple Pay and can continue/stop the flow; it is **not** Adyen payment authorization or settlement. `onApplePayCodeClose` only signals code-window closure. See raw lines 178\u2013232.\n- Wallet Order Tracking is marked **v6.0.0+**. The guide says its callback fires after payment completion in Sessions but after `onSubmit` resolves in Advanced; order-detail failure closes the overlay while payment can still complete without a Wallet order. Its prose names `onOrderTracking` while the sample uses `onOrderTrackingRequest`, and that JavaScript-shaped sample is fenced as `swift`; treat it as illustrative, not a verified copy-ready implementation. `applePayCapabilities` is marked **v6.10.0+** and is recommended here only for product-page display decisions. See raw lines 271\u2013343.\n- Apple Pay recurring tokenization is described for **v5.39.0+**. The page strongly recommends explicit shopper permission and transparency about schedule/amount, requires `recurringPaymentRequest` in Apple Pay configuration, then sends token creation and later payment handling to [[adyen-tokenization]]. Its v6 example omits a comma in `new ApplePay(checkout {`; sample dates and URLs are illustrative. A recurring request does not prove token creation or future charges. See raw lines 345\u2013427.\n- For live setup with **Adyen's certificate**, the page calls for an accessible, unprotected, unredirected domain-association file with `Content-Type: text/plain` at the specified `/.well-known/` path on every domain including subdomains, live Customer Area setup, and generic Apple Pay domain configuration. Domain edits require the Change payment methods role; scheme-specific Apple Pay variants are outside that domain-edit flow. Both certificate paths call for Apple IP access and `out.adyen.com`; the guide warns DNS-resolved IP allow lists can become stale. The own-certificate path points to a separate Apple Developer merchant-identifier setup. These are steps, not evidence of completed verification or live payments. See raw lines 437\u2013498.\n\n## Detail locators\n\n- **Flow-specific requirement tables and Safari/device compatibility:** raw lines 21\u201376.\n- **Sessions/Advanced certificate callback, mounting, optional request fields and events:** raw lines 78\u2013269. The v6 and v5 mount examples use `applepay` despite naming the instance `applepayComponent` at raw lines 241\u2013269.\n- **Order tracking, capabilities and versioned recurring configuration:** raw lines 271\u2013427.\n- **Test and live certificate/domain/firewall setup:** raw lines 429\u2013498.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-apple-pay]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate]]\n- [[source-adyen-docs-payment-methods-apple-pay-handle-apple-pay-errors]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/web-component/2026-09-15|Apple Pay Web Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "On v6.10.0 and later versions of the Component, you can offer Apple Pay on all supported third-party browsers, platforms, and devices, including Windows and Chromebooks.",
+      "location": "raw line 70, Device compatibility"
+    },
+    {
+      "text": "If you are using `/sessions` together with Adyen's Apple Pay certificate, you do not need to add any additional configuration for Apple Pay.",
+      "location": "raw line 105, Sessions component configuration"
+    },
+    {
+      "text": "Required if you use your own [Apple Pay certificate](/payment-methods/apple-pay/apple-pay-certificate/). Called when the payment sheet is displayed.",
+      "location": "raw line 227, Events table"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 349, Recurring payments"
+    },
+    {
+      "text": "Domain configuration updates apply only to the generic Apple Pay payment method. Scheme-specific variants, like AMEX Apple Pay, Visa Apple Pay, and Mastercard Apple Pay, do not require domain configuration and are not supported by this flow.",
+      "location": "raw line 476, Going live with Adyen certificate"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-apple-pay-web-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-web-component]] \u2014 2019-modified, 2026-09-15-captured Apple Pay Web Component Sessions/Advanced guide for certificate-dependent validation, browser/iframe and version gates, recurring configuration and live domains; example callback/snippet inconsistencies remain source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide's Order Tracking prose says onOrderTracking while its snippet uses onOrderTrackingRequest (raw lines 281\u2013316); v6 sample also has a malformed constructor (raw line 358).",
+          "Wallet/shopper authorization, setup, tracking callbacks and domain instructions do not prove Adyen authorization, capture, settlement or live domain verification."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/web-component/2026-09-15.md",
+  "raw_sha256": "41a527fe23c1002fbc82ae1f9d69dc780d3f098204708f58d95444fd73b19778",
+  "status": "candidate_ready"
+}

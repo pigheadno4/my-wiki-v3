@@ -1,0 +1,9 @@
+# PayPal Android Drop-in retrieval checks
+
+Q1. What is the Android PayPal Drop-in flow and what must be in place first?
+
+It adds PayPal to an existing Android Drop-in integration after the linked PayPal setup. The server supplies `/paymentMethods` country, currency and minor-unit amount for display; Android sends `paymentComponentData.paymentMethod` to the server for `/payments`, receives redirect `action`, and sends returned `actionComponentData.details` for server `/payments/details`. Raw lines 17–38, 124–138, 652–685. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal-android-drop-in]] → [[raw/adyen/docs/payment-methods/paypal/android-drop-in/2026-09-15]].
+
+Q2. What conditions and outcome boundaries prevent treating redirect, token, or refund requests as completed payments?
+
+The synchronous `resultCode`, even `Authorised`, is not final under later risk rules; wait for `AUTHORISATION`, and receive `OFFER_CLOSED` only after enabling it (raw lines 714–740). Recurring needs PayPal Reference Transactions/permissions, token webhooks and a settled initial payment; zero-value token requests require `shopperEmail` (raw lines 766–810). Uncaptured payments route to cancellation; captured payments route to refund. The delayed-capture `capturePspReference` applies when all three listed partial-capture conditions hold, and a `received` refund response is a request state (raw lines 812–915). The guide's HUF rounding and conditional risk-data rules plus mismatched language snippets also require careful reading (raw lines 44–54, 88–138, 299–330, 427–440, 517–536). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal-android-drop-in]] → [[raw/adyen/docs/payment-methods/paypal/android-drop-in/2026-09-15]].

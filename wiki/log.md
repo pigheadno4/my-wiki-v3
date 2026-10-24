@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-24] ingest | Adyen website C32
+
+- Fifty independently approved Apple Pay, Google Pay, PayPal, Samsung Pay, India-wallet and express-checkout documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 5 concepts touched (0 new); source_count 1614 = 1600 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-32/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-24] ingest | Checkout Components `5.0.438`
 
 - Approved additive delta: experiment-gated iframe tools permission and Webpack development range, with changelog omission and generated-bundle limits explicit. Earlier history/source count preserved. Details [[paypal-log]], [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build/browser/payment execution, commit or push.

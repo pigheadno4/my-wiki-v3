@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypal-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPal Android Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/android-drop-in/2026-09-15.md\"\ntags: [adyen, paypal, android, drop-in, online-payments, redirects]\n---\n\n## Overview\n\nThis [[adyen]] page, last modified 2021-07-26 and captured 2026-09-15, explains adding PayPal to an **existing Android Drop-in** integration. The app displays PayPal and handles the shopper redirect/return; the merchant server requests `/paymentMethods`, sends `/payments`, and submits returned details to `/payments/details`. PayPal setup is a prerequisite. This historical guide and its test examples do not establish current merchant or shopper eligibility, a completed authorization, capture, settlement or refund. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- Drop-in uses `/paymentMethods` `countryCode`, `amount.currency` and minor-unit `amount.value` to show methods. Pass `paymentComponentData.paymentMethod` from Android to the server for `/payments`; the request table calls for `channel: Android` and a `returnUrl` from `RedirectComponent.getReturnUrl(context)`. A redirect `action` goes back to the app. The page's currency example is blank (`****`), and the server-language snippets are illustrative, not a complete verified Android request. See raw lines 21\u201342 and 124\u2013678.\n- For **HUF** transactions, this page says PayPal expects the transaction and line-item amounts rounded to whole amounts and their rounded totals to match; otherwise PayPal may reject a mismatch after Adyen rounds. The listed `lineItems` and `paypalRisk` are optional request topics in general, while PayPal risk information is required for marketplaces and specific verticals as determined with a PayPal account manager. `additionalData.paypalRisk` uses a stringified `additional_data` array; `paypalPairingId` applies only when using Magnes with the same ID sent to Magnes and Adyen. Do not apply the marketplace example field list universally. See raw lines 40\u2013138.\n- Several `/payments` language examples are inconsistent with their own prose: PHP puts `STATE_DATA` in `paypalRisk` and the stringified-risk placeholder in `shopperReference`; the Python `paypalRisk` literal is not validly escaped; Go labels API library v10.4.0 but imports v9. Use the raw prose and a version-matched API reference before implementation. The curl request is a Checkout test v72 example, not evidence of a live call. See raw lines 140\u2013650.\n- After redirect return, send `actionComponentData.details` from Drop-in to server `/payments/details`. Its synchronous `resultCode` is for the shopper display, not the final order outcome: even `Authorised` may later fail under post-authorisation risk rules; `Pending`/`Received` are unresolved. Wait for the `AUTHORISATION` webhook; `OFFER_CLOSED` timeout reporting is available only if that non-default event is enabled. Distinguish `Refused`, `Cancelled` and `Error` responses by the page's separate actions. See raw lines 679\u2013751.\n- PayPal recurring use requires seller-account **Reference Transactions** enabled by PayPal Support and recurring permissions granted to Adyen, plus recurring-token lifecycle webhooks. Initial `/sessions` or `/payments` token parameters specify `Subscription` or `UnscheduledCardOnFile`, `Ecommerce`, `shopperReference` and `storePaymentMethod: true`; `shopperEmail` is required for a zero-value authorization and should be omitted otherwise. The page says the `recurring.token.created` webhook arrives when the initial payment has settled and contains `storedPaymentMethodId`; later requests use that token, the same shopper reference, `ContAuth` and the matching recurring model. A requested token or enabled permission is not a successful later charge. See raw lines 753\u2013810.\n- For an uncaptured PayPal payment the page routes to **cancel**; after capture it routes to **refund**. For partial refunds with immediate capture, it instructs including the refunded `lineItems` and matching their sum to `amount`, though the adjacent API table does not mark `lineItems` required and says Adyen adds a dummy item if totals differ. The `/refunds` response example has `status: received` and a new refund `pspReference`, not proof of completion. For delayed capture, `capturePspReference` is needed **when later capture, multiple partial captures enabled and more than one partial capture are all true**; use the capture response's PSP reference, not the original payment reference. See raw lines 812\u2013932.\n- The page scopes Seller Protection to physical goods and tells participating merchants to supply delivery address, shopper name and line items, then check a test transaction's eligibility. Live setup separately requires a live PayPal business account and environment configuration; the page says PayPal appears live only when the shopper is logged in and has a valid PayPal payment method. Sandbox checks and submitted fields do not prove actual Seller Protection coverage or live availability. See raw lines 934\u2013969.\n\n## Detail locators\n\n- **Prerequisites, availability inputs, Android-to-server handoff:** raw lines 15\u201342.\n- **HUF rounding, conditional risk fields and format:** raw lines 44\u2013123.\n- **Server request table, test examples and redirect action:** raw lines 124\u2013678.\n- **Return details, synchronous status versus webhooks:** raw lines 679\u2013751.\n- **Recurring permissions, zero-value email and settled-payment token webhook:** raw lines 753\u2013810.\n- **Cancel/refund split and conditional capture reference:** raw lines 812\u2013932.\n- **Seller Protection, sandbox and live account/shopper conditions:** raw lines 934\u2013969.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-refunds]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/android-drop-in/2026-09-15|Adyen PayPal Android Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add PayPal to an existing Android Drop-in integration.",
+      "location": "raw line 17, opening description"
+    },
+    {
+      "text": "PayPal also expects the rounded line item amounts to add up to the rounded transaction amount.",
+      "location": "raw line 46, Amounts in Hungarian Forints (HUF)"
+    },
+    {
+      "text": "Not all businesses need to send risk fields. Contact your PayPal account manager to verify.",
+      "location": "raw line 54, PayPal risk fields"
+    },
+    {
+      "text": "However, the synchronous API response doesn't give you the final outcome.",
+      "location": "raw line 726, Get the payment outcome"
+    },
+    {
+      "text": "Without it, the refund can fail.",
+      "location": "raw line 905, Partial refund when payments are captured later"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-android-dropin-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-android-drop-in]] \u2014 2021-modified, 2026-09-15-captured PayPal Android Drop-in redirect guide for server request/return details, webhook-final outcome, conditional risk and recurring/refund setup; code-example conflicts remain source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page contains inconsistent PHP, Python and Go example details; the source entry flags them and treats request prose as the bounded route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/android-drop-in/2026-09-15.md",
+  "raw_sha256": "79285fe8b9589ebe376a2178c3d08effaa105b4f9eec7138013a2b135207f149",
+  "status": "candidate_ready"
+}

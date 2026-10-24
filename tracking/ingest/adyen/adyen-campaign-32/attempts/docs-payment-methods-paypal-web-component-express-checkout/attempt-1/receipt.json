@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-paypal-web-component-express-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPal Express Checkout Web Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/web-component/express-checkout\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/web-component/express-checkout/2026-09-15.md\"\ntags: [adyen, paypal, express-checkout, web-components, wallets]\n---\n\n## Overview\n\nThis [[adyen]] guide describes rendering a PayPal Express Checkout button outside the usual checkout page, such as on a product page, using an existing PayPal **Web Component** integration and Web Component **v5.59.0 or later**. It covers **Sessions** and **Advanced** flows, PayPal lightbox delivery changes, Adyen order updates, and optional Advanced-flow review. The captured page is dated 2026-09-15, but its metadata says last modified 2023-04-04 while its v5.59.0 prerequisite links a 2024-02-26 release note; the metadata and body chronology conflict. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Flow identity:** In Sessions, the merchant server creates a `/sessions` payment session and stores `sessionId`; in Advanced, `onSubmit` leads the **merchant server** to call `/payments`, and it stores the response `pspReference`. The top-level Advanced sketch says the Component makes `/payments`, whereas the detailed step assigns that call to the server; preserve the server boundary. The PayPal lightbox may show delivery methods for the default address or omit them. Address and, when shown, method changes can alter the final amount. See pinned raw lines 19\u201359, 73\u201379 and 962\u2013966.\n- **Amount updates and latest state:** If the final amount changes, a server endpoint calls Checkout `/paypal/updateOrder`: Sessions identifies the order with `sessionId`, Advanced with `pspReference`. Both carry the current `paymentData` and the new amount in minor units including delivery fees and tax; `taxTotal` is additional when supplied, and its tax must also be included in the payment amount. Address/method fields depend on what changed and whether methods are shown, with one selected method in the examples. Each successful update returns a **new** `paymentData` to pass back to the Component; reusing an earlier blob is contrary to the page. A failed update can return `errorCode`, `errorType` and `message`, and the example rejects multiple selected methods. The broad \u201cno additional action\u201d statement for unchanged amount sits beside later instructions to make an **initial** update when `onShippingAddressChange` fires as the lightbox opens; apply that distinction carefully rather than dropping the initial callback. See pinned raw lines 81\u2013104, 837\u2013861, 968\u2013992 and 1725\u20131749.\n- **Client callbacks and completion:** Set `isExpress: true`. The guide uses PayPal `onShippingAddressChange` on lightbox open and later address changes, and `onShippingOptionsChange` only when default delivery methods are presented; examples call a merchant backend update function and replace the Component's payment data. Rejected shipping choices and update errors need handling. For Sessions it says the Component makes an authorization request and `onPaymentCompleted` can redirect to a confirmation page; for Advanced the merchant implements `onAdditionalDetails` and sends `state.data.details` plus `state.data.paymentData` to server `/payments/details` for authorization. Closing the PayPal lightbox, receiving shopper details, invoking a callback, or submitting details does not by itself prove authorization, capture, settlement or payout. See pinned raw lines 863\u2013958 and 1751\u20131878.\n- **Review-page boundary:** An extra payment review page is **not available with Sessions**. Advanced can set `userAction: 'continue'`, collect shopper details and final `state.data` after the lightbox, then wait for the shopper's **Pay** action on the merchant review page before `/payments/details`. This differs from immediate Advanced detail submission. The request examples around `/payments/details` contain malformed JSON (including an unterminated `\"details` key and unquoted member names), so use them as field locators, not executable payloads. See pinned raw lines 1841\u20131958.\n- **Tokenization and example limits:** The page says PayPal Express supports recurring tokens and strongly **recommends** explicit shopper permission for future charges. It forbids zero-value authorizations to create a token and says token creation fails if the PayPal configuration includes `intent: \"tokenize\"`; other token behavior is delegated to linked general guides. The many test v72 and language-SDK examples are illustrative, with a USD narrative/curl versus EUR library snippets and Go v10.4.0 labels importing `/v9/` paths. They do not prove current PayPal merchant enablement, working code, consent, token creation or a live payment outcome. See pinned raw lines 104\u2013835, 992\u20131723 and 1960\u20131973.\n\n## Detail locators\n\n- Existing PayPal Web Component, v5.59.0+, Sessions/Advanced sketches and lightbox modes: pinned raw lines 19\u201359.\n- Sessions `/sessions`, `sessionId`, `/paypal/updateOrder` fields and test v72 examples: pinned raw lines 69\u2013861. The narrative/curl uses USD but several language snippets use EUR (lines 104\u2013172).\n- Sessions `isExpress`, address/method callbacks, shopper details and `onPaymentCompleted`: pinned raw lines 863\u2013958.\n- Advanced `/payments`/`pspReference`, `/paypal/updateOrder` fields and examples: pinned raw lines 960\u20131749.\n- Advanced callbacks, `/payments/details`, optional review page, `userAction` and malformed JSON snippets: pinned raw lines 1751\u20131958.\n- Recurring consent recommendation and tokenization exceptions: pinned raw lines 1960\u20131973.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online-wallet payment route.\n- [[adyen-tokenization]] \u2014 general recurring consent and token lifecycle.\n- [[source-adyen-docs-payment-methods-paypal-web-component]] \u2014 prerequisite PayPal Web Component guide; this page does not replace its setup.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/web-component/express-checkout/2026-09-15|PayPal Express Checkout Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Implement the [PayPal Web Component](/payment-methods/paypal/web-component). PayPal Express Checkout is supported from [v5.59.0](/online-payments/release-notes?integration_type=web\\&version=5.59.0#releaseNote=2024-02-26-web-componentsdrop-in-5.59.0) and later.",
+      "location": "pinned raw line 23"
+    },
+    {
+      "text": "You need to integrate an additional endpoint to update PayPal orders when the amount changes.",
+      "location": "pinned raw line 83"
+    },
+    {
+      "text": "When the shopper selects the PayPal Express Checkout button, the [`onSubmit` ](/payment-methods/paypal/web-component?tab=pp-risk-payments_2#step-2-create-an-instance-of-the-component)callback is triggered and your server makes a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "pinned raw line 964"
+    },
+    {
+      "text": "Adding a payment review page is not possible if your integration uses the Sessions flow.",
+      "location": "pinned raw line 1884"
+    },
+    {
+      "text": "* PayPal Express Checkout does not allow zero-value authorization requests to create a token.",
+      "location": "pinned raw line 1968"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-paypal-express-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-web-component-express-checkout]] \u2014 2026-09-15-captured PayPal Web Component v5.59.0+ Express guide for Sessions/Advanced order updates, latest paymentData, Advanced-only review and token exceptions; examples and 2023 metadata conflict need qualification.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The 2023 last-modified metadata conflicts with a linked 2024 v5.59.0 release; retain capture date and version prerequisite without inferring historical availability.",
+          "Sessions updateOrder uses sessionId, Advanced uses pspReference; both require latest paymentData. Sessions cannot use the extra review page.",
+          "The /payments/details samples are malformed JSON, and Go v10.4.0-labeled imports use /v9/ paths; snippets are not verified implementations.",
+          "Broad no-action-if-amount-unchanged wording coexists with an initial update-order callback on PayPal lightbox open."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/web-component/express-checkout/2026-09-15.md",
+  "raw_sha256": "5f16d56cf9ae9d6e267a56203ce9dc8d5385ddf8451a502ad43b443606ccee7d",
+  "status": "candidate_ready"
+}

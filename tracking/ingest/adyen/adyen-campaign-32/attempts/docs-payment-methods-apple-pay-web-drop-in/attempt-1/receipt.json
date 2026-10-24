@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay Web Drop-in (historical guide)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/web-drop-in/2026-09-15.md\"\ntags: [adyen, apple-pay, web, drop-in, online-payments, historical]\n---\n\n## Overview\n\nThis [[adyen]] guide adds Apple Pay to an **existing Web Drop-in integration**. It separates **Sessions `/sessions`** and **Advanced `/payments`** setup (raw lines 15\u201347), and belongs under [[adyen-online-payments]]. The page metadata says last modified **2021-12-17**, yet its captured 2026-09-15 body includes v6.10.0, v6.13.0 and a domain-association file named 2026 (raw lines 11, 29\u201347, 211, 409); treat its versioned instructions as this snapshot, not a consistent 2021 release or proof of present support.\n\n## Key takeaways\n\n- Both endpoint tabs require an existing matching Web Drop-in flow, Apple Pay added in Customer Area, and own or Adyen Apple Pay certificate setup. The page names **Change payment methods** as the Customer Area role and **API Clientside Encryption Payments** as the API credential role for live processing (raw lines 21\u201347, 403\u2013405). The Sessions tab calls for server allowance of Apple Pay IP addresses; the Advanced tab additionally specifies Apple test cards plus Sandbox tester Apple ID in Adyen TEST, an Apple Developer account even with Adyen's certificate, and per-domain Apple verification when using the merchant's own certificate (raw lines 34\u201347). These tab-specific prerequisites should not be collapsed into one undocumented universal procedure.\n- For Safari iframe display, the page calls for `allow=\"payment\"` on Safari 17 or later; Safari 16 or earlier requires the iframe and top-level page to match protocol, full host and specified port (raw lines 53\u201366). Drop-in **v6.10.0+** is described as supporting compatible third-party browsers/devices, including Windows/Chromebooks with code scanning; older versions' table limits macOS to Safari, allows iOS/iPadOS browsers/web views, and excludes non-Apple devices (raw lines 68\u201376). Compatibility remains conditional on supported device/browser.\n- Under either `/sessions` or `/payments`, **Adyen's certificate** needs no extra Apple Pay Drop-in configuration in this guide, while **own certificate** requires `onValidateMerchant` to display the sheet; its example sends the validation URL to the merchant server and resolves or rejects with the merchant session result (raw lines 91\u2013163). This is merchant validation and UI configuration, not a completed payment. The page says no additional Apple Pay **API-request** fields are needed for the chosen endpoint, while its recurring-payment **client configuration** has a separate required `recurringPaymentRequest` (raw lines 78\u201383, 311\u2013317).\n- Optional Drop-in UI controls include instance-only `instantPaymentTypes`, Apple Pay button/request data, non-Safari code modal/window rendering, event callbacks and `applePayCapabilities` at **v6.10.0+**; it recommends the latter only for a product-page button (raw lines 165\u2013235, 287\u2013309). `onAuthorized` is called after **shopper authorization in Apple Pay** and resolves/rejects continuation of the flow (raw line 231); it is not Adyen authorization, capture or settlement proof. The capability sample's `switch` cases have no `break` statements (raw lines 295\u2013309), so it should not be copied as validated display logic.\n- Wallet Order Tracking is marked **v6.0.0+**. Its prose calls the callback `onOrderTracking`, while its fenced `swift` example uses JavaScript-like `onOrderTrackingRequest` and constructs `new ApplePay` (raw lines 237\u2013271). The page says Sessions calls tracking after payment completion, whereas Advanced calls it after `onSubmit` resolves; it describes an order-detail error closing the overlay without an Apple Wallet order (raw lines 274\u2013285). Neither callback timing nor the page's \u201csuccessfully completed\u201d wording substitutes for an observed payment outcome.\n- Recurring tokenization is stated for **v5.39.0+**. The page **strongly recommends** explicit shopper permission for future charges and says `recurringPaymentRequest` is required for Apple Pay recurring configuration; actual token creation, later payment and token management are delegated to a separate tokenization guide (raw lines 311\u2013317, 387\u2013393). The v6 example visibly omits a separator in `new ApplePay(checkout {` (raw line 324); neither versioned snippet proves consent or a usable recurring charge.\n- For LIVE with **Adyen's certificate**, the page requires a domain-association file for each domain/subdomain at the specified `/.well-known/` path, publicly accessible without password/proxy/redirect and with `text/plain`; live Customer Area method/domain updates require the named role and apply only to the **generic Apple Pay** method, not scheme-specific variants (raw lines 403\u2013442). The **own-certificate** tab instead routes to Apple Developer live merchant-identifier setup (raw lines 453\u2013455). Both tabs call for Apple domain-verification IP access and `out.adyen.com` allow-listing, warning that DNS-resolved IP fallbacks may change and disrupt service (raw lines 444\u2013464). This historical checklist does not establish successful domain verification, firewall reachability or live payment enablement.\n\n## Detail locators\n\n- Endpoint-specific requirements, roles, certificate and TEST conditions: raw lines 21\u201347.\n- Safari iframe and Drop-in browser/device version gates: raw lines 49\u201376.\n- API endpoint reference and certificate-dependent merchant validation examples: raw lines 78\u2013163.\n- Optional button, payment-request, code and event configuration: raw lines 165\u2013235.\n- Wallet Order Tracking timing and example-name/language mismatch; capabilities sample: raw lines 237\u2013309.\n- Recurring permission, configuration and flawed v6 example: raw lines 311\u2013393.\n- TEST status lookup and LIVE role, domain, variant and firewall paths: raw lines 395\u2013464.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-apple-pay]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-web]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/web-drop-in/2026-09-15|Full pinned Apple Pay Web Drop-in guide]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Apple Pay to your existing Web Drop-in integration.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "* **For shoppers on Safari 17 later**: add the [`allow` attribute to the iframe](https://www.w3.org/TR/payment-request/#using-with-cross-origin-iframes) to let the iframe communicate correctly with Apple Pay APIs:",
+      "location": "raw line 57"
+    },
+    {
+      "text": "* `onValidateMerchant`: Required for displaying the Apple Pay payment sheet. For more information, see [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession/1778021-onvalidatemerchant).",
+      "location": "raw line 99"
+    },
+    {
+      "text": "| `onAuthorized(data, actions)`                        | Called after the shopper authorizes the payment with Apple Pay. This contains the raw event from Apple Pay, and the raw event from Apple Pay pre-formatted by our Web SDK. Call `actions.resolve()` to continue or `actions.reject()` to stop the payment flow. See [Apple Pay documentation](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession/1778020-onpaymentauthorized) for more information. |",
+      "location": "raw line 231"
+    },
+    {
+      "text": "To process live Apple Pay payments, your API credential needs to have the **API Clientside Encryption Payments role**. You can check this in your [live Customer Area](https://ca-live.adyen.com/) or ask your Admin user to verify.",
+      "location": "raw line 405"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-apple-pay-web-dropin-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-web-drop-in]] \u2014 2026-09-15-captured, metadata-2021 Apple Pay Web Drop-in guide for Sessions/Advanced, certificate and browser/iframe gates, recurring/tracking callbacks and live domains; later-version prose and snippet faults remain qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "25242dcf0a17443b60e97203e68d6a0023de4bbe8aaa0a1bf18d8b33726d2d7a",
+  "status": "candidate_ready"
+}

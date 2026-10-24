@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-24] ingest | Adyen website C32
+
+- All 50 exact-manifest Apple Pay, Google Pay, PayPal, Samsung Pay, India-wallet and express-checkout General Docs sources independently approved and promoted. First full-review approvals 44/50; 6 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 5 concepts, including 0 new concept(s). Client/server and integration architecture, PCI assessment and encryption, consent/token lifecycles, API/environment/version and region scope, certificate roles/renewal, and authentication versus authorization/capture/settlement remain distinct. Original reviews, attempts and bounded correction evidence retained. Website guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 1614 = 1600 website + 14 GitHub summaries. All 50 raw hashes unchanged; 100 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-32/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-24] ingest | Adyen website C31
 
 - All 50 exact-manifest VX820 non-Duet, payment-method catalog/setup, cards and Apple Pay foundation General Docs sources independently approved and promoted. First full-review approvals 42/50; 8 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

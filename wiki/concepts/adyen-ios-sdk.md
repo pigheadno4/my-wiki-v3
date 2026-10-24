@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-paypal-ios-drop-in]] — 2026-09-15 PayPal guide for existing iOS Drop-in, covering Sessions/Payments request context, webhook outcomes, recurring-account permissions and capture-dependent refunds.
+
+
 - [[source-adyen-docs-online-payments-upgrade-your-integration-upgrade-to-ios-5-0-0]] — 2026-09-15 snapshot of Adyen's v4.10.1-or-earlier to iOS v5.0.0 online-checkout migration guide for callbacks, `AdyenContext`, Component/Drop-in settings, Apple Pay and card brand types; Checkout API v69 is recommended, while the iDEAL note is for later v5.9.0.
 
 

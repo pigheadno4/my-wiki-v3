@@ -70,6 +70,12 @@ The release updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the de
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-google-pay-react-native-drop-in]] — 2026-09-15 Google Pay React Native Drop-in add-on for existing setup, optional wallet fields, tokenization routes and TEST/LIVE gates; no SDK version or payment outcome is established, and its environment row repeats the TEST constant for live.
+
+
+- [[source-adyen-docs-payment-methods-apple-pay-react-native-drop-in]] — 2026-09-15 Apple Pay React Native Drop-in add-on for own-certificate setup, merchant ID/name, amount alignment and recurring sheet metadata; the recurring sample misnames a required field and cannot prove token or payment outcomes.
+
+
 - [[source-adyen-docs-payment-methods-cards-react-native-drop-in]] — 2026-09-15 React Native Drop-in card guide for existing integration prerequisites, optional card fields, Checkout API v53+ debit/credit split, tokenized recurring examples and test/live card setup; storage-switch prose requires `true` while adjacent sample sets `false`, and the page does not pin native SDK versions or prove payment outcome.
 
 

@@ -64,6 +64,9 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-google-pay-android-component-migrate]] — 2026-09-15 Google Pay Android Component guide for optional earlier-5.x.x to 5.9.x migration, View/Compose attachment, button submission and initialization-time availability errors; migration examples do not establish current SDK behavior or payment outcome.
+
+
 - [[source-adyen-docs-payment-methods-cards-android-drop-in-earlier-versions]] — historical Android Cards Drop-in v4.x.x Advanced-flow guide for card display, server payments, results and stored-card examples; Sessions links and save-switch naming conflict require qualification.
 
 

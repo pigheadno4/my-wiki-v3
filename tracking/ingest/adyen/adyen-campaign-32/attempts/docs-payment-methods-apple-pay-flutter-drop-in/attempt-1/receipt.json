@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay Flutter Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, apple-pay, flutter, drop-in, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, last modified and captured 2026-09-15, explains adding Apple Pay to an **existing Flutter Drop-in** integration using either a Sessions or Advanced server flow. It assumes Apple Pay was set up with a **merchant-owned certificate** and added in Customer Area; the live API credential needs the **API Clientside Encryption Payments role**. Route through [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios]] setup guide. This page does not establish certificate installation, Apple Pay capability or merchant enablement, and it shows no completed authorization, capture or settlement.\n\n## Key takeaways\n\n- **Prerequisites and server boundary:** the `/sessions` tab points to an existing Sessions Drop-in and the `/payments` tab to an existing Advanced Drop-in. Both call for own-certificate Apple Pay setup and Customer Area method addition. It says Apple Pay itself adds no extra fields to the respective `/sessions` or `/payments` request; the base integration still supplies its own required fields. For errors, it routes to a separate Apple Pay error-handling guide. The requirements-table links contain unexpanded `platform` template text, while the API-reference links name Flutter directly. See raw lines 21\u201353.\n- **Flutter/iOS client configuration:** both flow sections say extra Apple Pay configuration is required. The property table names `merchantID` and `merchantName`; the Dart illustration constructs `ApplePayConfiguration(merchantId: ..., merchantName: ...)`. It also lists optional onboarding, billing/shipping, supported-country and merchant-capability settings. If summary items are supplied, the last item's value must match the amount stated for `/payments`; that wording does not define how to reconcile a Sessions request. Sessions then initializes/shows Drop-in; Advanced points to required callbacks. Consult the version-matched Flutter API before copying the illustrative constructor. See raw lines 55\u2013106.\n- **Test and live boundary:** the page sends readers to Apple's sandbox test cards and Adyen's **test** Payment list. For live processing, it repeats the API Clientside Encryption Payments role and calls for Apple Pay setup under the live Apple Developer merchant identifier. A test payment listing, configured merchant ID, wallet sheet or callback is not a live payment outcome. The guide gives no recurring-token or refund procedure. See raw lines 108\u2013120.\n\n> [!warning] Contradiction\n> The configuration table spells the property `merchantID`, but the Flutter constructor example uses `merchantId` (raw lines 65\u201377). The page does not resolve the naming difference. Verify the actual Flutter configuration contract for the installed version.\n\n## Detail locators\n\n- Sessions/Advanced prerequisites, own-certificate and live-role conditions: raw lines 21\u201341.\n- No-extra-Apple-Pay-server-fields and error route: raw lines 43\u201353.\n- Required Flutter Apple Pay properties, optional fields and flow-specific launch/callback links: raw lines 55\u2013106.\n- Sandbox test and live role/merchant-ID setup: raw lines 108\u2013120.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-apple-pay-apple-pay-certificate-ios]]\n- [[source-adyen-docs-payment-methods-apple-pay-handle-apple-pay-errors]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/flutter-drop-in/2026-09-15|Apple Pay Flutter Drop-in guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Apple Pay to your existing Drop-in integration.",
+      "location": "raw line 19, # Apple Pay Drop-in integration"
+    },
+    {
+      "text": "[Set up Apple Pay with your own certificate](/payment-methods/apple-pay/apple-pay-certificate/ios).",
+      "location": "raw lines 31 and 40, ## Requirements, Sessions and Advanced tabs"
+    },
+    {
+      "text": "Apple Pay does not require any additional fields.",
+      "location": "raw lines 47 and 51, ## API reference, Sessions and Advanced tabs"
+    },
+    {
+      "text": "The last item must have the same value as the `amount` you send in your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 87, ### Optional configuration"
+    },
+    {
+      "text": "To process live Apple Pay payments, your API credential needs to have the **API Clientside Encryption Payments role**.",
+      "location": "raw line 118, ### Going live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "apple-pay-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-flutter-drop-in]] \u2014 2026-09-15 Flutter Apple Pay Drop-in Sessions/Advanced guide for own-certificate setup, native merchant configuration and live credential role; table-versus-Dart merchant-ID spelling and payment-outcome limits are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw table merchantID versus Dart example merchantId naming is unresolved; source retains warning."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "ed30597c58b9ecf2fa79e269710b34bf99771878158303028eada3134faf4cfb",
+  "status": "candidate_ready"
+}

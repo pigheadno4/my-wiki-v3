@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-paypal-paypal-troubleshooting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPal Web troubleshooting\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/paypal-troubleshooting\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/paypal-troubleshooting/2026-09-15.md\"\ntags: [adyen, paypal, web, troubleshooting, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] troubleshooting page, modified and captured 2026-09-15, applies to **Web Drop-in and Web Components integrations using Checkout `/payments`**. It maps a loading overlay, a stuck processing state, custom PayPal button failure and three console-error classes to checks. See [[adyen-online-payments]]. Its symptoms and checks are diagnostic guidance, not evidence that a transaction was authorized, captured or settled. See raw lines 15\u201321 and 23\u201396.\n\n## Key takeaways\n\n- If the PayPal overlay spins after the shopper clicks PayPal, the page says the window opens during `onSubmit` but needs the full `response.action` from the server's `/payments` response passed to Drop-in or Component. Browser console silence does not rule out initialization or action-handoff problems. This identifies a client/server handoff to inspect, not a guaranteed repair. See raw lines 23\u201331.\n- If the shopper finishes in PayPal and the UI remains on \u201cProcessing Payment,\u201d the page associates that symptom with no `/payments/details` request. For PayPal `action.type: sdk`, configure `onAdditionalDetails` to submit its `state.data` to `/payments/details`. The observed processing message is not payment completion; neither the request nor an API response alone proves the final outcome. See raw lines 33\u201341.\n- A single custom button cannot submit PayPal in this Web integration by hiding its own button with `showPayButton: false`. The page says the PayPal smart button calls the PayPal library to obtain shopper PayPal account information and must remain on the page. This is a method-specific UI constraint, not a statement that the shopper has a valid funding source. See raw lines 43\u201351.\n- The guide recommends testing with browser console open and says that when a console error appears, **the transaction remains an open offer**. For the USD/EUR mismatch error, `amount.currency` must be set in client initialization and `paymentMethodsConfiguration.amount.currency` should match the actual `/payments` currency. The example is labeled `json` but contains ellipses and unquoted keys, so it is illustrative rather than valid JSON. See raw lines 53\u201376.\n- The capture-versus-authorize **intent mismatch** is between payment-method configuration and the PayPal SDK. For **Web Drop-in v3.13.0 or earlier** specifically, the guide says to pass `intent` dynamically from payment-method configuration, avoid an overriding wrong `paypalConfiguration.intent`, and check `paymentMethodsResponse.paypalConfiguration.intent` against the authorization type configured on the merchant account. This is a request/SDK intent diagnostic, not proof that a capture occurred. See raw lines 78\u201386.\n- The merchant-ID console error points to a wrong PayPal Merchant ID in payment-method settings; the page says to compare that setting and contact Adyen Support to verify the account configuration. It does not verify the account or grant permissions itself. This page gives no billing-agreement, recurring-token, funding-source eligibility or actual capture/refund procedure; use the separate PayPal integration guides for those topics. See raw lines 88\u2013100.\n\n## Detail locators\n\n- **Scope, overlay action handoff and missing details request:** raw lines 15\u201341.\n- **Required PayPal smart-button behavior and console-error status boundary:** raw lines 43\u201355.\n- **Currency mismatch and illustrative amount snippet:** raw lines 57\u201376.\n- **Legacy Drop-in intent/merchant configuration and PayPal Merchant ID check:** raw lines 78\u201396.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paypal]]\n- [[source-adyen-docs-payment-methods-paypal-web-drop-in]]\n- [[source-adyen-docs-payment-methods-paypal-web-component]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/paypal-troubleshooting/2026-09-15|PayPal troubleshooting \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This troubleshooting information applies to Web Drop-in and Web Components integrations using the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) endpoint.",
+      "location": "raw line 21, scope"
+    },
+    {
+      "text": "If the PayPal overlay is stuck loading, check that you pass the full `response.action` object from your server to the Drop-in or Component.",
+      "location": "raw line 31, overlay troubleshooting"
+    },
+    {
+      "text": "The `onAdditionalDetails` event handler must trigger a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request, passing the `state.data` from `onAdditionalDetails`.",
+      "location": "raw line 41, stuck Processing Payment"
+    },
+    {
+      "text": "using a custom button to submit PayPal transactions is not possible.",
+      "location": "raw line 47, custom payment button"
+    },
+    {
+      "text": "Note that if an error appears in the console, the transaction remains an open offer.",
+      "location": "raw line 55, Console errors"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-paypal-troubleshooting-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-paypal-troubleshooting]] \u2014 2026-09-15 PayPal Web Drop-in/Components `/payments` troubleshooting for overlay action, details callback, required smart button and currency/intent/merchant-ID errors; console errors leave an open offer.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Scope is Web Drop-in/Components using /payments; the page does not diagnose billing agreements, recurring tokens, funding eligibility or capture/refund execution.",
+          "The capture/authorize intent fix is specifically qualified to Web Drop-in v3.13.0 or earlier (raw lines 78\u201386)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/paypal-troubleshooting/2026-09-15.md",
+  "raw_sha256": "71ad1449b5e83071faca92810d911ff0b7b17b1f3dd5585acb47b30633ba5102",
+  "status": "candidate_ready"
+}

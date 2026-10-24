@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-google-pay-web-component-express-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay Web Component express checkout\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/web-component/express-checkout\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/web-component/express-checkout/2026-09-15.md\"\ntags: [adyen, google-pay, web-components, express-checkout]\n---\n\n## Overview\n\nThis 2026-09-15 capture of Adyen's Google Pay express checkout Web Component guide (page metadata last modified 2025-11-06) describes a wallet checkout with shipping, total, and shopper-information callbacks. It applies only to an existing Web Components **Advanced flow** integration; the page explicitly excludes Android. The Google Pay setup steps and addition of the method in Adyen Customer Area precede the example. This is a historical integration guide, not evidence of current merchant eligibility or a successful payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The example sets Google Pay `SHIPPING_ADDRESS` and `SHIPPING_OPTION` callback intents, asks for a shipping address and option, supplies initial options and `transactionInfo`, then checks `isAvailable()` before mounting. For Web v6.0.0 or later, it says `isExpress: true` is required. Sample US/USD prices, shipping countries, and options illustrate configuration; they do not establish universal market support.\n- `onPaymentDataChanged` illustrates address validation and recalculation on initialization, address changes, or shipping-option changes. The merchant must implement the example's `fetchNewShippingOptions` and `calculateNewTransactionInfo` logic. A wallet-side changed amount is **not** sent to Adyen automatically: validate the updated amount and pass it to `onSubmit` for the server's `/payments` request. The guide does not show that request, a response, or an authorization/capture/settlement result.\n- The `onAuthorized` callback in the example obtains Google Pay shopper information before `onSubmit`; its name is not proof of Adyen payment authorization. Optional `emailRequired`, `billingAddressRequired`, and `billingAddressParameters` request extra shopper fields.\n- Read the snippets with care: the broad example uses `shippingOptions` while the step-by-step section uses `shippingOptionParameters`; the shipping example spells the constructor `GooglePlay` instead of `GooglePay`; and the mount snippet calls `googlepay.isAvailable()` but mounts `googlePay`. These are source-level mismatches, not validated runnable code.\n\n## Detail locators\n\n- Requirements, Advanced-only and Android exclusion: raw lines 21\u201328.\n- Broad HTML/JavaScript sample, callback intents, initial shipping options and amount, data callbacks, shopper callback, and availability check: raw lines 30\u2013174.\n- Callback and shipping configurations: raw lines 186\u2013247. v6 express flag and initial total: raw lines 249\u2013284. Optional email and billing address: raw lines 286\u2013312.\n- Merchant-owned recalculation and amount-validation handoff to `onSubmit`/`/payments`: raw lines 314\u2013358. Shopper-information callback and mount: raw lines 360\u2013392.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 parent online-payment integration concept.\n- [[source-adyen-docs-payment-methods-google-pay-web-component]] \u2014 base Web Component integration; its Sessions/default path does not override this page's Advanced-only express scope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/web-component/express-checkout/2026-09-15|Google Pay express checkout, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Google Pay express checkout is supported only with the Advanced flow integration.",
+      "location": "raw line 25"
+    },
+    {
+      "text": "Google Pay express checkout is not supported on Android.",
+      "location": "raw line 26"
+    },
+    {
+      "text": "For v6.0.0 or later, you must include `isExpress`: **true**.",
+      "location": "raw line 253"
+    },
+    {
+      "text": "When the payment amount changes, Adyen doesn't receive the updated amount from Google Pay. You must validate that the updated amount is correct before you send it in the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 356"
+    },
+    {
+      "text": "This is triggered before `onSubmit`:",
+      "location": "raw line 362"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-google-pay-web-express-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-web-component-express-checkout]] \u2014 2025-modified, 2026-09-15-captured Google Pay Web Component express guide for Advanced-only Web flow, v6 express flag, merchant-owned total validation and callback handoff; Android exclusion and inconsistent snippets are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The base Google Pay Web Component page describes Sessions as a default path, but this express checkout guide explicitly requires Advanced flow.",
+          "Sample constructor, shipping-property and mount identifiers differ within the captured page; do not represent snippets as validated runnable code.",
+          "onAuthorized supplies Google Pay shopper information before onSubmit, not proof of an Adyen payment authorization or final payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/web-component/express-checkout/2026-09-15.md",
+  "raw_sha256": "80d9180cbc5e547058a23315dd1f4e111fffa5318b4bd70cf6f61f7e35a4b104",
+  "status": "candidate_ready"
+}

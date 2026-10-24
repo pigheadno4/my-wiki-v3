@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-google-pay-android-component-migrate",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay Android Component migration to 5.9.x\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/android-component/migrate\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/android-component/migrate/2026-09-15.md\"\ntags: [adyen, google-pay, android, component, migration]\n---\n\n## Overview\n\nThis [[adyen]] Android Google Pay Component guide describes an **optional** migration from earlier 5.x.x versions to **5.9.x**. It says 5.9.0 introduced a simplified integration that omits the deprecated `onActivityResult` path and can include the Google Pay button. It is a historical migration guide, not a statement that 5.9.x is the current SDK or a universal prerequisite for Google Pay. [[adyen-android-sdk]]\n\n## Key takeaways\n\n- **Activity result removal:** Add `AdyenComponentView` to the layout and attach `googlePayComponent` with `lifecycleOwner`, or use the shown Jetpack Compose `AdyenComponent(googlePayComponent)`. The guide then says activity-result-related code can be cleaned up and gives `onActivityResult`/`handleActivityResult` removal as an example. See raw lines 27\u201360.\n- **Button choice:** If the app keeps its own Google Pay button, replace `googlePayComponent.startGooglePayScreen(\u2026)` with `googlePayComponent.submit()`. To show the button inside `AdyenComponentView`, remove the app's button and configure `setSubmitButtonVisible(true)`; `setGooglePayButtonStyling(\u2026)` is optional. The page says the `com.google.pay.button:compose-pay-button` dependency can then be removed. These are alternative UI paths within this migration, not a requirement to adopt the embedded button. See raw lines 62\u201383.\n- **Availability handling:** The guide says a separate `GooglePayComponent.PROVIDER.isAvailable(\u2026)` call is no longer needed because `GooglePayComponent` checks on initialization; unavailability is reported as `GooglePayUnavailableException` in `onError`. This is SDK behavior asserted for the migration path, not proof that a device or merchant is eligible. See raw lines 85\u201389.\n\n## Detail locators\n\n- Version and optional migration scope: raw lines 15\u201325.\n- View/Compose examples and deprecated callback cleanup: raw lines 27\u201360.\n- Button configuration and dependency note: raw lines 62\u201383.\n- Availability check and error callback: raw lines 85\u201389.\n\n## Related\n\n- [[adyen-android-sdk]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-google-pay-android-component]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/android-component/migrate/2026-09-15|Adyen Android Google Pay 5.9.x migration guide]]\n",
+  "quotes": [
+    {
+      "text": "You are not required to migrate, but if you do, then 5.9.0 introduced a simplified integration for Google Pay to make migration easier.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Add `AdyenComponentView` to your layout and attach the component to it.",
+      "location": "raw line 29, Remove deprecated Activity Result code"
+    },
+    {
+      "text": "If you want to keep displaying a button yourself, then you have to replace the call to `googlePayComponent.startGooglePayScreen(\u2026)` with `googlePayComponent.submit()`.",
+      "location": "raw line 64, Display Google Pay button"
+    },
+    {
+      "text": "You no longer need to call `GooglePayComponent.PROVIDER.isAvailable(\u2026)`.",
+      "location": "raw line 87, Google Pay availability check"
+    },
+    {
+      "text": "If Google Pay is not available, you get a `GooglePayUnavailableException` in `onError`.",
+      "location": "raw line 89, Google Pay availability check"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-google-pay-android-component-migrate-android-sdk",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-android-component-migrate]] \u2014 2026-09-15 Google Pay Android Component guide for optional earlier-5.x.x to 5.9.x migration, View/Compose attachment, button submission and initialization-time availability errors; migration examples do not establish current SDK behavior or payment outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/android-component/migrate/2026-09-15.md",
+  "raw_sha256": "ae27ecf280178e16a4f994e5994ee815f1ccc71fa6d9a39237539d00bf9f4e61",
+  "status": "candidate_ready"
+}

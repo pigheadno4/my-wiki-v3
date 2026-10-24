@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-google-pay-api-only-google-pay-token-decryption",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay merchant token decryption (historical API-only guide)\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/api-only/google-pay-token-decryption\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/api-only/google-pay-token-decryption/2026-09-15.md\"\ntags: [adyen, google-pay, api-only, token-decryption, pci, online-payments, historical]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified and captured **2026-09-15**, describes an **API-only merchant-decryption** path for encrypted Google Pay tokens, after which the merchant passes **raw card details** to Adyen. It says this path is for PCI-compliant merchants and should be handled by the merchant only in advanced setups, such as a need to submit Merchant Plug-In (MPI) data (raw lines 15\u201335). It belongs under [[adyen-online-payments]]; it is distinct from the [[adyen-card-encryption|Adyen JWE card-encryption route]]. This page does not prove merchant PCI status, key custody, successful decryption or payment authorization.\n\n## Key takeaways\n\n- The stated merchant prerequisites are a **Google Pay merchant ID**, **PCI compliance to handle unencrypted card details**, and an **API-only integration** (raw lines 29\u201335). This child says \u201cPCI-compliant\u201d without a level, while the separately read [[source-adyen-docs-payment-methods-google-pay|Google Pay overview]] states **PCI DSS Level 1** for merchant-side token decryption (overview raw line 75). Preserve the narrower overview condition when assessing the two historical pages together; neither establishes a merchant's actual compliance or current permission.\n- The page delegates cryptographic implementation to **Google's developer instructions**. Its overview sequence fetches Google root signing keys, verifies the intermediate key's signature with a nonexpired root signing key, checks intermediate-key expiry, verifies the payload signature, decrypts **only after signature verification**, then checks `messageExpiration` before using payment details (raw lines 37\u201349). This is a documented validation sequence, not a demonstrated key operation or complete production security review.\n- It distinguishes **FPAN/`PAN_ONLY`** decrypted output (PAN and expiry) from **DPAN/`CRYPTOGRAM_3DS`** output (PAN/expiry plus cryptogram and ECI indicator) (raw lines 51\u201379). The two `/payments` field tables differ: FPAN marks scheme/card fields, `paymentMethod.brand: googlepay`, source type/tokenized **false** and Ecommerce interaction; DPAN additionally marks MPI `directoryResponse`, `authenticationResponse`, `cavv` from the exact cryptogram and `eci` from the exact indicator, and tokenized **true** (raw lines 81\u2013100, 121\u2013136). FPAN **may** trigger 3D Secure 2 and need extra fields; the page routes that handling to a separate 3DS guide (raw lines 83\u201387). These field mappings do not establish authentication, authorization or liability shift.\n- **Example conflict:** both JSON-like request examples use capitalized `PaymentMethod` whereas the tables name `paymentMethod`; the FPAN example omits a comma and the colon after `shopperInteraction`, and the DPAN example has an omitted comma plus `Shopperinteraction` casing/colon mismatch (raw lines 91\u2013119, 123\u2013161). Placeholder `<PAN>` values and a JavaScript-style comment in the DPAN fenced JSON are further signs that these are illustrations, not runnable validated payloads. Use the exact request schema as separate authority before any implementation.\n- The page gives no TEST/LIVE credential or key-rotation steps, response/result code, capture, settlement or recurring-token procedure. Its scope ends at decrypted-field request guidance (raw lines 15\u2013161); no real card data or token operation is evidenced here.\n\n## Detail locators\n\n- Token purpose, PCI and advanced-use qualification: raw lines 15\u201335.\n- Google verification/decryption/message-expiry sequence: raw lines 37\u201349.\n- FPAN versus DPAN example decrypted fields: raw lines 51\u201379.\n- FPAN request fields, possible 3DS2 and flawed example: raw lines 81\u2013119.\n- DPAN MPI/cryptogram/ECI fields and flawed example: raw lines 121\u2013161.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-google-pay]]\n- [[source-adyen-docs-payment-methods-google-pay-api-only]]\n- [[adyen-card-encryption]]\n- [[adyen-3d-secure]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/api-only/google-pay-token-decryption/2026-09-15|Full pinned Google Pay token-decryption guide]]\n",
+  "quotes": [
+    {
+      "text": "If you are [PCI-compliant](/get-started-with-adyen/adyen-glossary/#pci-compliance) you can handle the token decryption and pass raw card details to Adyen.",
+      "location": "raw line 21"
+    },
+    {
+      "text": "Only handle the token decryption on your own in advanced setup scenarios, like when you have to submit Merchant Plug-In (MPI) data in a Google Pay request.",
+      "location": "raw line 25"
+    },
+    {
+      "text": "* Have a [Google Pay merchant ID](https://developers.google.com/pay/api/web/guides/setup#registration).",
+      "location": "raw line 33"
+    },
+    {
+      "text": "6. Verify that the message isn't expired. This requires you to check that the current time is earlier than the `messageExpiration` field in the decrypted contents.",
+      "location": "raw line 48"
+    },
+    {
+      "text": "FPAN payments may trigger 3D Secure 2, which requires additional fields. You can handle 3D Secure 2 for FPAN in a similar way to other scheme payment methods described [here](/online-payments/3d-secure/).",
+      "location": "raw line 87"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-google-pay-token-decryption-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-api-only-google-pay-token-decryption]] \u2014 2026-09-15 API-only PCI-gated merchant Google Pay token-decryption guide for signature/expiry validation and FPAN/DPAN card-field mapping; overview PCI level and malformed sample requests remain qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/api-only/google-pay-token-decryption/2026-09-15.md",
+  "raw_sha256": "cc88f75dfe415a33326504de32b4d3b8b344cea49e6f6a32fba798a010955c64",
+  "status": "candidate_ready"
+}

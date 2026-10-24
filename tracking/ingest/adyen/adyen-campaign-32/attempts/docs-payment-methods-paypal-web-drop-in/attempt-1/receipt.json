@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypal-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPal Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/web-drop-in/2026-09-15.md\"\ntags: [adyen, paypal, web-drop-in, online-payments, wallet]\n---\n\n## Overview\n\nThis [[adyen]] PayPal guide, last modified and captured 2026-09-15, adds PayPal Smart Payment Buttons to an **existing Web Drop-in integration** (buttons from Drop-in v3.7.0) after separate PayPal setup. It distinguishes the default Drop-in v5.0.0+ `/sessions` flow from an additional-use-case `/payments` flow, then covers PayPal risk data, client configuration, payment outcome, recurring tokens, refunds and Seller Protection. See [[adyen-online-payments]]. This is an integration snapshot, not current PayPal/merchant eligibility, an actual authorization, capture, settlement, refund or recipient-funds record.\n\n## Key takeaways\n\n- **Server and setup scope:** the existing Drop-in and PayPal setup are prerequisites. `/sessions` is described as the v5.0.0+ default; `/payments` is the additional-use-case branch, whose examples send `paymentMethod.type: paypal` and `subtype: sdk`. The HUF section says PayPal expects rounded whole transaction and line-item amounts that add up; Adyen-side rounding can leave a mismatch that PayPal rejects. Sample USD/EUR amounts, library versions and test endpoints are examples. See raw lines 15\u201340, 516\u2013570, 1041\u20131045.\n- **Risk data is conditional:** `additionalData.paypalPairingId` is only for customer-initiated transactions using Fraudnet with the same pairing ID at Fraudnet and Adyen. PayPal risk fields apply to marketplaces and some verticals according to PayPal's instructions, and are sent as a stringified `additional_data` array; the marketplace field table is illustrative and the PayPal account manager determines the applicable fields. Do not infer that every merchant must send it or that three sample fields suffice. See raw lines 42\u201350, 520\u2013528, 1047\u20131119. The `/payments` PHP sample uses placeholder values for `paypalRisk` and `shopperReference` that differ from adjacent samples (raw lines 684\u2013690); it is not a verified complete request.\n- **Client configuration and capabilities:** the `/sessions` tab states no extra PayPal configuration; the `/payments` tab marks global `amount` and `countryCode` required, while its snippet describes `countryCode` as test-only and live-derived. The page gives a popup-policy instruction, then optional CSP nonce (v5.2.0+), button style, shipping/user-input callbacks, PayPal Credit/Pay Later controls, per-payment `intent` (v5.34.0+), and a PayPal Component Venmo-hide option when merchant and shopper are both in the US. Pay Later's listed regions/local-currency and cross-border caveats are dated capability statements, not merchant eligibility. See raw lines 1121\u20131274.\n- **Outcome boundary:** `resultCode` is for showing the shopper current status; even `Authorised` can be followed by a risk-rule failure. Wait for `AUTHORISATION` webhooks for the order decision; `OFFER_CLOSED` is received only when enabled. `Pending`, `Received`, `Error`, `Refused` and `Cancelled` have separate shopper/order treatment. Authorization is distinct from later capture and settlement. See raw lines 1276\u20131313.\n- **Recurring tokens:** the page strongly recommends explicit shopper permission for later recurring charges. Direct merchants need PayPal Vault permissions; marketplaces or indirect-settlement merchants are directed to Adyen Support, and token sharing across PayPal accounts requires suitable account configuration. Zero-value token creation has endpoint/version conditions: `/sessions` needs v5.3.0+; `/payments` needs either `intent: tokenize` on v5.34.0+ or global amount configuration on v5.3.0+. Without the `/payments` configuration, the page says no token is created. For a zero-value request, include `shopperEmail` and `amount.value: 0`; do not include `shopperEmail` under that instruction for non-zero requests. The page routes the actual shopper reference/token receipt to `recurring.token.created`, not merely the request submission. See raw lines 1315\u20131386.\n- **Cancel/refund and protection:** uncaptured PayPal payments are cancelable, while captured payments use refund. For immediate-capture partial refunds the prose calls for refunded-item `lineItems`, although its parameter table does not mark that field required and says Adyen adds a dummy line item for mismatched totals. The example refund response is `received` with a **refund** PSP reference, not final refund completion. The detailed delayed-capture section requires `capturePspReference` only when later capture, multiple partial captures enabled and more than one partial capture are all true; omitting it in that case can fail. Seller Protection is described for physical goods with specified request fields and a test eligibility check, not automatic coverage. See raw lines 1388\u20131522.\n\n> [!warning] Contradiction\n> The partial-refund summary broadly says later-captured payments need `capturePspReference` (raw lines 1392\u20131395), while the detailed rule limits that requirement to the three conditions at lines 1473\u20131481. The immediate-capture prose says include `lineItems`, although its table leaves Required blank (lines 1397\u20131408). The refund illustration also changes from the preceding USD shoes/socks payment to an EUR polo-shirt refund (lines 59\u201384, 1412\u20131442); it cannot establish a valid refund of that earlier sample order. Use the applicable documented condition and actual captured payment/capture reference, and verify the request contract before acting.\n\nThe test section uses PayPal business and personal **sandbox** roles; its live section requires a live PayPal business account and says PayPal is available only when the shopper is logged in with a valid PayPal payment method. These are prerequisites, not evidence a particular merchant or shopper passed them. See raw lines 1524\u20131544.\n\n## Detail locators\n\n- Prerequisites, endpoint-specific fields and test request examples: raw lines 15\u20131040.\n- HUF rounding, conditional Fraudnet/risk fields and stringified formatting: raw lines 1041\u20131119.\n- Sessions/Advanced client configuration and optional button controls: raw lines 1121\u20131274.\n- Synchronous result versus AUTHORISATION/OFFER_CLOSED webhook: raw lines 1276\u20131313.\n- Recurring permission, zero-value token gates and token webhook: raw lines 1315\u20131386.\n- Cancel, refund/capture conditions, illustrative responses and Seller Protection: raw lines 1388\u20131522.\n- Sandbox and live account/shopper prerequisites: raw lines 1524\u20131544.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-refunds]]\n- [[adyen-payment-capture]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/web-drop-in/2026-09-15|PayPal Web Drop-in guide \u2014 collected 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add PayPal to your existing Web Drop-in integration.",
+      "location": "raw line 19, # PayPal Drop-in integration"
+    },
+    {
+      "text": "When this happens, PayPal doesn't accept the transaction.",
+      "location": "raw line 1045, ### Amounts in Hungarian Forints (HUF)"
+    },
+    {
+      "text": "However, the synchronous API response doesn't give you the final outcome.",
+      "location": "raw line 1288, ## Get the payment outcome"
+    },
+    {
+      "text": "No token is created if you send a zero-value authorization request to the `/payments` endpoint without having updated the configuration as described above.",
+      "location": "raw line 1366, ### Prepare for tokenization"
+    },
+    {
+      "text": "Without it, the refund can fail.",
+      "location": "raw line 1481, ### Partial refund when payments are captured later"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypal-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-web-drop-in]] \u2014 2026-09-15 PayPal Web Drop-in Sessions/Advanced guide for setup, conditional risk fields, client buttons, webhook-led outcome, token gates and capture-dependent refunds; see source for material refund-prose/example conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The partial-refund summary and detailed capturePspReference conditions differ; source warning preserves both and notes illustrative refund mismatches."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/web-drop-in/2026-09-15.md",
+  "raw_sha256": "994363ea1462019cef180eafa8ca964b710d574146737cefbcfc8a5dd8c40b3d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-paypal
+
+Q1. What PayPal and Venmo channels, versions and prerequisites does this overview state?
+
+A1. PayPal is presented as a wallet with Web direct flow and mobile iOS/Android redirect flow (raw lines 23–27, 55–87). Web Drop-in/Components buttons are scoped to v3.7.0+ for PayPal/PayPal Credit and v5.12.0+ for Pay Later in listed countries/local currencies (raw lines 65–80). Venmo is a separate US/USD direct-Web option within PayPal Component/Drop-in from v5.42.0+, shown by default when merchant and shopper are both located in the US (the page does not state an exclusive display rule), with no recurring (raw lines 33–49). Some verticals/marketplaces have conditional paypalRisk fields determined with a PayPal account manager (raw lines 89–93). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal]] → [[raw/adyen/docs/payment-methods/paypal/2026-09-15]].
+
+Q2. Which capability and outcome boundaries should a reader retain?
+
+A2. PayPal's matrix marks recurring/refund/capture/chargeback categories but several “See note” marks lack a clear PayPal-specific corresponding note in this page (raw lines 25–27); these marks and International/Multiple labels do not establish merchant enablement or a successful capture. Venmo does not support recurring in its table; multiple partial captures and partial refunds need extra Adyen configuration, default capture follows authorization immediately, and Venmo handles chargebacks directly (raw lines 47–53). Express Web configuration and linked Web/iOS/Android/API-only/Pay-by-Link guides are routes to separate procedures, not execution evidence (raw lines 29–31, 95–125). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal]] → [[raw/adyen/docs/payment-methods/paypal/2026-09-15]].

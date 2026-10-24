@@ -18,6 +18,9 @@ The landing page does not define the detailed legal-entity/account-holder/balanc
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-paypal-setup-paypal-marketplaces]] — 2026-09-15 PayPal Marketplace setup guide for modern Adyen for Platforms, PayPal/Adyen account permission and TEST/LIVE separation, split/risk integration, and marketplace-owned disputes/refund routing; dated settlement-currency scope is qualified in the source.
+
+
 - [[source-adyen-docs-adyen-for-platforms-model]] — 2026-09-15 Adyen for Platforms model-selection guide comparing Marketplace and Platform shopper interaction and capabilities, with a Classic-to-balance-platform upgrade decision branch.
 
 

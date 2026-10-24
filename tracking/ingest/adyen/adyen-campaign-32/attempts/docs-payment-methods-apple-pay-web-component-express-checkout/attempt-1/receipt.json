@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-apple-pay-web-component-express-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Apple Pay Web Component express checkout\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/apple-pay/web-component/express-checkout\"\nraw_files:\n  - \"adyen/docs/payment-methods/apple-pay/web-component/express-checkout/2026-09-15.md\"\ntags: [adyen, apple-pay, web-component, express-checkout]\n---\n\n## Overview\n\nThis [[adyen]] guide adds an **Apple Pay express checkout** option to an existing **Advanced-flow Web Components v6** integration. The button can request shopper billing/shipping contact details to prefill checkout, while callbacks adjust displayed shipping choices and totals. It presumes Apple Pay is added in Customer Area, an Apple Pay certificate is set up with Adyen or the merchant, and the base Apple Pay Web Component integration exists. The page is an add-on, not a complete server payment or outcome flow. [[adyen-online-payments]]\n\n## Key takeaways\n\n- The guide says **v6.10.0+** of the Component can offer Apple Pay on supported third-party browsers; earlier versions have device/browser compatibility limits delegated to another guide. It requires the **API Clientside Encryption Payments role for live processing** and separately routes live certificate/domain setup to the Apple Pay Web Component guide. The page does not establish availability for a particular browser, shopper, merchant, or certificate. See raw lines 27\u201335 and 230\u2013234.\n- Express configuration sets `isExpress: true`; `requiredBillingContactFields` allows only `postalAddress` here, while the example asks for shipping postal address, name, phonetic name, phone, and email. Its `countryCode: 'US'` is an example value, not a universal country restriction. The flow says to check `isAvailable()` before mounting, which is a client availability check, not authorization or live-account proof. See raw lines 39\u201389 and 201\u2013218.\n- For **shipping-address changes**, the callback receives the selected contact and should return updated line items, shipping methods and total, or an error for a rejected address. For **shipping-method changes**, it returns updated line items and total. The examples write a new total to `ApplePayAmountHelper` client application state. They do **not** show recalculating and authorizing a matching amount on the merchant server or updating the eventual payment request, so the examples alone cannot establish charged-amount consistency. See raw lines 91\u2013179 and 272\u2013319.\n- `onAuthorized` receives Apple Pay shopper information **before** `onSubmit`; the handler must resolve or reject to continue. Its name describes a wallet event here, not final Adyen payment authorization. The sample logs raw/preformatted data and immediately resolves, but the prose calls for checks before continuing. Do not treat that log line or automatic resolution as a privacy-reviewed validation implementation. The page contains no final payment-status or webhook/capture/settlement procedure. See raw lines 181\u2013199 and 321\u2013327.\n- The examples are schematic and internally inconsistent: the shipping-contact update table says `newShippingMethod` (singular) while code sends `newShippingMethods` (plural); the mount fragments alternate `applePay`, `applepay`, and `applePayComponent`, though only `applepay` is defined in the combined sample. Helpers such as `fetchNewShippingMethods` and `createApplePayTotal` are placeholders. Verify actual API names and implement validation/amount synchronization in the base integration before use. See raw lines 99\u2013105, 110\u2013140, 203\u2013218, and 260\u2013338.\n- Testing uses Apple's sandbox test cards and Adyen Customer Area test status; live use has the separate API-role and Apple Pay certificate go-live steps. Test-card display or `isAvailable()` is not proof of a successful live authorization or capture. See raw lines 220\u2013234.\n\n## Detail locators\n\n- Required integration, browser-version and certificate prerequisites: raw lines 25\u201335.\n- Express contact fields and client event/update examples: raw lines 67\u2013199.\n- Availability/mount and test/live gate: raw lines 201\u2013234.\n- Consolidated HTML/JavaScript example with name mismatches: raw lines 236\u2013339.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-apple-pay-web-component]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/apple-pay/web-component/express-checkout/2026-09-15|Adyen Apple Pay Web express checkout snapshot]]\n",
+  "quotes": [
+    {
+      "text": "A [an Advanced flow Web Components v6 integration]",
+      "location": "raw line 31, Requirements"
+    },
+    {
+      "text": "On v6.10.0 and later of the Component, you can offer Apple Pay on all supported third-party browsers.",
+      "location": "raw line 33, Requirements > Limitations"
+    },
+    {
+      "text": "The only allowed value is the `postalAddress`.",
+      "location": "raw line 76, express configuration table"
+    },
+    {
+      "text": "This is triggered before [`onSubmit`",
+      "location": "raw line 187, shopper-information callback"
+    },
+    {
+      "text": "your API credential needs to have the **API Clientside Encryption Payments role**.",
+      "location": "raw line 232, Going live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-apple-pay-web-express-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-apple-pay-web-component-express-checkout]] \u2014 2023-modified, 2026-09-15-captured Apple Pay Advanced Web Components v6 express add-on for contact/shipping callbacks and browser/live gates; client total and wallet authorization events are not server amount or payment-outcome proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Shipping-contact field/table and mount variable names conflict with examples; snippets are not copy-ready.",
+          "The page does not show server-side amount reconciliation or final payment outcome after onAuthorized."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/apple-pay/web-component/express-checkout/2026-09-15.md",
+  "raw_sha256": "3f3e57978af5fafd82d903272ad1b4d591ff5467520bede6162f59e2561a5a29",
+  "status": "candidate_ready"
+}

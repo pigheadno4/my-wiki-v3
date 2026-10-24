@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What is the migration's scope, and what changes are made to the Android Google Pay Component UI and activity-result integration?
+Answer: The 2026-09-15 snapshot says migration from earlier 5.x.x to 5.9.x is optional; 5.9.0 simplified the integration. Add `AdyenComponentView` and attach the component (or use the shown Compose adapter), then remove now-unneeded activity-result code. Keep an app button by replacing `startGooglePayScreen(…)` with `submit()`, or display the Component's button through `setSubmitButtonVisible(true)`. Raw lines 15–19, 27–60 and 62–83. Route: [[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-google-pay-android-component-migrate]] → [[raw/adyen/docs/payment-methods/google-pay/android-component/migrate/2026-09-15]].
+
+Q2. How does availability checking change, and what should not be inferred from the migration page?
+Answer: The page says the explicit `GooglePayComponent.PROVIDER.isAvailable(…)` call is no longer needed: the Component checks when initialized and sends a `GooglePayUnavailableException` to `onError` if unavailable (raw lines 85–89). These scoped migration statements do not demonstrate current runtime versions, merchant/device eligibility, authorization, capture or settlement; the guide itself says migration is optional (raw line 19). Route: [[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-google-pay-android-component-migrate]] → [[raw/adyen/docs/payment-methods/google-pay/android-component/migrate/2026-09-15]].

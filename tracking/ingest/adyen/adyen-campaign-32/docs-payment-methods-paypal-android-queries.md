@@ -1,0 +1,5 @@
+# C32 docs-payment-methods-paypal-android retrieval checks
+
+Q1. Which Android PayPal integration routes does this page offer? It links to an all-in-one Android Drop-in child guide and a Redirect Component child guide (raw lines 19–31), then to main Android Drop-in and Components guides through Sessions-flow URLs (raw line 33). The page states no additional prerequisite or version. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal-android]] → [[raw/adyen/docs/payment-methods/paypal/android/2026-09-15]].
+
+Q2. What can this page not establish? Its labels and links are navigation only (raw lines 15–33). It does not state country/currency, account/funding eligibility, component version, request/return behavior, tokenization, authorization, capture or settlement. The selected child and main integration guides own those claims; the Sessions links here do not rule out other flows. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypal-android]] → [[raw/adyen/docs/payment-methods/paypal/android/2026-09-15]].

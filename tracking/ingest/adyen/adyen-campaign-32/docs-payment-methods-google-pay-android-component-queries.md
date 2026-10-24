@@ -1,0 +1,9 @@
+# Retrieval checks — docs-payment-methods-google-pay-android-component
+
+Q1. What does the Android Google Pay Component page require for Sessions versus Advanced?
+
+A1. Sessions requires an existing Android Components Sessions integration, Checkout API v69+, and adding Google Pay in Customer Area; it adds the googlepay module (and components-compose for Compose), GooglePayComponent, and no extra method-specific /sessions parameters (raw lines 25–64, 122–175). Advanced separately requires an existing Advanced Android Components integration and Customer Area setup, selects the method from /paymentMethods, and says no extra method-specific /payments parameters (raw lines 216–246, 304–365). The page only links a 5.9.x migration guide; it does not impose that as a universal SDK minimum (raw lines 17–23). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-google-pay-android-component]] → [[raw/adyen/docs/payment-methods/google-pay/android-component/2026-09-15]].
+
+Q2. What do configuration, test cards and LIVE steps establish?
+
+A2. Optional settings include PAN_ONLY/CRYPTOGRAM_3DS auth-method defaults, account-derived networks and a Google Pay environment that defaults to Adyen's environment (raw lines 66–91, 248–273); these do not prove token processing or 3DS/payment outcome. TEST uses Google's suite or mapped wallet cards, with limited no-suite 3DS2 brands (raw lines 177–201, 367–391). LIVE calls for the API Clientside Encryption Payments role, Google Merchant ID, Google production steps, and shopper login plus a valid wallet method (raw lines 203–214, 393–404), but none alone proves merchant approval, authorization, capture or settlement. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-google-pay-android-component]] → [[raw/adyen/docs/payment-methods/google-pay/android-component/2026-09-15]].

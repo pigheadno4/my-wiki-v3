@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-paypal-ios-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen PayPal with iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypal/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md\"\ntags: [adyen, paypal, ios, drop-in, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds PayPal to an existing **iOS Drop-in** integration after the PayPal setup steps. It calls `/sessions` the default for Drop-in v5.0.0 or later and gives `/payments` for an additional use case. The page's code snippets use test Checkout API v71 for Sessions and v72 for Payments, with older and varied API-library versions; they are examples, not a single version-neutral implementation. [[adyen]] [[adyen-ios-sdk]]\n\n## Key takeaways\n\n- The request tables describe optional `lineItems`; `additionalData.paypalPairingId` applies only to customer-initiated transactions using Fraudnet with the same pairing ID sent to Fraudnet and Adyen. `additionalData.paypalRisk` applies to marketplaces and merchants in specific verticals when PayPal tells them to send risk fields. The required keys can vary by merchant; the fields are sent as a stringified `additional_data` array, and the PayPal account manager is the stated authority for applicability. The example risk payload does not make risk fields universal.\n- For HUF transactions, PayPal expects the transaction and line-item amounts rounded to whole amounts that add up. Adyen warns a mismatch after its own rounding can cause PayPal to reject the transaction; the guide recommends merchant-side rounding and checking the sum.\n- There is no required PayPal-specific Drop-in configuration in the v5.0.0+ or v4.x.x tabs. The synchronous `resultCode` is for current shopper status only: even `Authorised` can later fail under post-authorization risk rules. The guide directs order decisions to the final `AUTHORISATION` webhook; `OFFER_CLOSED` for an unfinished payment is received only if that non-default event is enabled. These outcomes concern payment authorization, not proof of capture, settlement, payout or recipient funds.\n- PayPal recurring payments have extra seller-account steps: PayPal Support must enable Reference Transactions, and the merchant must grant the stated recurring permissions to Adyen. Enable recurring-token lifecycle webhooks; initial token requests include `shopperInteraction: Ecommerce`, a unique `shopperReference`, `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`, and `storePaymentMethod: true`. Include `shopperEmail` for a zero-value authorization (`amount.value: 0`), and omit it when the request is not for a zero-value authorization. The guide says `recurring.token.created` arrives after settlement and carries `storedPaymentMethodId` for later `ContAuth` requests. A requested token is not evidence that the initial payment settled or a later payment succeeded.\n- Before capture, the guide routes to cancellation; after capture, to refund. For immediate capture it says partial refunds need `lineItems`, but its table leaves `lineItems` unmarked as required and ambiguously calls them items the shopper should pay for while the next sentence says to specify only refunded items. For delayed capture, it states `capturePspReference` is needed when later capture, multiple partial captures enabled and more than one partial capture are all true; use the capture reference, not the payment reference, or the refund can fail. The sample refund response says `status: received` and does not prove funds returned.\n- PayPal Seller Protection in this guide is scoped to physical goods and program participation; it asks for delivery address, shopper name and line items and recommends checking test-payment eligibility. Live operation separately requires a live PayPal business account and environment configuration. The page says live PayPal appears only when the shopper is logged in and has a valid PayPal payment method. This snapshot does not prove current merchant, shopper or country eligibility.\n- Treat code as illustrative: the `/payments` PHP example puts `STATE_DATA` in `paypalRisk` and `STRINGIFIED_ADDITIONAL_DATA_ARRAY` in `shopperReference`, unlike the surrounding prose and other examples; Python risk strings are not escaped as valid Python literals, Ruby risk objects use non-JSON syntax, and Go snippets label library v10.4.0 while importing v9 paths. Verify fields and serialization against the chosen API/library version before implementation.\n\n## Detail locators\n\n- Existing Drop-in and PayPal setup prerequisites, endpoint choice, optional/conditional request fields: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 15\u201344 and 510\u2013522.\n- Sessions v71 test examples and library versions: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 46\u2013508.\n- Payments v72 test examples, `paypal`/`sdk` method, PHP/Go/Python/Ruby example discrepancies: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 524\u20131033.\n- HUF rounding and conditional marketplace/vertical risk fields with stringified formatting: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 1035\u20131113.\n- Drop-in configuration, result codes, authorization and optional webhook details: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 1115\u20131162.\n- Reference Transactions, recurring permissions, token creation after settlement and later token charge: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 1164\u20131221.\n- Capture-dependent cancellation/refund routes, line-item wording conflict, refund response and capture-reference condition: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 1223\u20131343.\n- Seller Protection, sandbox test and live-account/shopper conditions: [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|PayPal iOS Drop-in raw]], lines 1345\u20131380.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 native Drop-in and merchant-server integration boundary.\n- [[adyen-tokenization]] \u2014 token lifecycle and stored-method scope.\n- [[adyen-online-payments]] \u2014 payment-result and webhook context.\n- [[adyen-refunds]] \u2014 captured-payment refund context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15|Adyen PayPal iOS Drop-in guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Before you begin, complete the [PayPal setup steps](/payment-methods/paypal/setup-paypal-direct-merchants).",
+      "location": "raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md:26"
+    },
+    {
+      "text": "This is the default with [Drop-in v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in) or later.",
+      "location": "raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "However, the synchronous API response doesn't give you the final outcome.",
+      "location": "raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md:1137"
+    },
+    {
+      "text": "Contact PayPal Support to enable **Reference Transactions** on your seller account.",
+      "location": "raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md:1181"
+    },
+    {
+      "text": "Without it, the refund can fail.",
+      "location": "raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md:1316"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-paypal-ios-drop-in-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypal-ios-drop-in]] \u2014 2026-09-15 PayPal guide for existing iOS Drop-in, covering Sessions/Payments request context, webhook outcomes, recurring-account permissions and capture-dependent refunds.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypal/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "c0aac75521257d73b5e9d059d60b64c6da6546de123051c2044edb37deeba2b1",
+  "status": "candidate_ready"
+}

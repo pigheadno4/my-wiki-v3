@@ -1,0 +1,5 @@
+Q1. Which Android Google Pay routes does this page provide?
+A1. It is a chooser for an Android app: Drop-in links to an all-in-one UI add-on, and Components links to a `GooglePayComponent` child page. It also says to establish a main integration first and links Android Drop-in/Components for both Sessions and Advanced flows. Raw lines 15–36. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-google-pay-android]] → [[raw/adyen/docs/payment-methods/google-pay/android/2026-09-15]].
+
+Q2. Can this chooser establish SDK/version, wallet setup or a successful redirect/payment?
+A2. No. It contains only child-guide and base-guide navigation. The brief Component label mentions redirect handling but gives no execution or return steps; it supplies no API/SDK minimum, TEST/LIVE or merchant eligibility, wallet-token mechanics, authorization, capture or settlement result. Use the selected child guide for those claims. Raw lines 19–36. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-google-pay-android]] → [[raw/adyen/docs/payment-methods/google-pay/android/2026-09-15]].

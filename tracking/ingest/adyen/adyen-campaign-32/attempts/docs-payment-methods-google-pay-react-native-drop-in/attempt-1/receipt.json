@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-google-pay-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Google Pay React Native Drop-in add-on\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/google-pay/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/google-pay/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, google-pay, react-native, drop-in, wallets]\n---\n\n## Overview\n\nThis [[adyen]] page adds **Google Pay** to an **existing React Native Drop-in integration**. It says Drop-in opens the Google Pay sheet and handles a redirect for a selected card requiring 3D Secure verification. It requires the separate Google Pay setup steps and adding Google Pay in Adyen Customer Area. The guide does not pin a React Native wrapper version, native SDK version, or Checkout API minimum, and its add-on text is not a complete client/server payment or final-outcome flow. [[adyen-react-native-sdk]]\n\n## Key takeaways\n\n- The page says no additional **Google-Pay-specific** `/payments` fields or required Drop-in configuration are needed beyond the existing integration. Optional `AdyenCheckout` settings cover allowed networks/auth methods, price status, card types, billing/shipping/email collection and button availability. Its `PAN_ONLY` and `CRYPTOGRAM_3DS` descriptions are Google Pay card/auth-method options, not proof of 3DS completion or a settled payment. See raw lines 23\u201359.\n- The optional table calls `merchantAccount` **\u201cYour Google Merchant ID\u201d**, with a default from the `brands` array of `/paymentMethods`, and says to obtain a Google Merchant ID before live use. That wording needs verification against the applicable React Native SDK configuration because it is easy to confuse a Google Merchant ID with an Adyen merchant account. See raw line 45 and the separate live checklist at raw lines 92\u2013103.\n- The `googlePayEnvironment` row says the value can be `WalletConstants.ENVIRONMENT_TEST` **for both test and live**, an internal contradiction; its stated default follows the `AdyenCheckout` environment. Do not use the repeated TEST constant as production configuration guidance without the version-matched Google Pay/SDK reference. See raw line 57.\n- Recurring payments are only **routed** to separate token-creation and token-payment guides: the page gives no shopper-consent, token payload, or later-charge result procedure. Drop-in showing a Google Pay sheet or handling a 3DS redirect does not establish payment authorization, capture, or settlement. See raw lines 19\u201321 and 61\u201364. [[adyen-tokenization]]\n- TEST instructions distinguish Google's test-card suite (FPAN, Android/Chrome-on-Android DPAN and 3DS2 scenarios) from real wallet cards mapped to Adyen test cards; for 3DS2 without the suite, it specifies American Express or Discover. The page says a real card is not charged by that mapped test route. LIVE calls for the **API Clientside Encryption Payments role**, Google Merchant ID configuration, Google's Android production-deployment steps, and a logged-in shopper with a valid Google Pay method. These are source-stated setup/availability gates, not evidence of actual merchant enablement or a completed live payment. See raw lines 66\u2013103.\n- The guide is labeled React Native but several optional-property links point to **Google Pay Web** request-object references while TEST/LIVE links point to **Android** documentation. Preserve these as linked references, not an assertion that every native platform or wrapper version exposes identical fields. See raw lines 43\u201359 and 66\u2013103.\n\n## Detail locators\n\n- Existing Drop-in and provider/Customer Area prerequisites: raw lines 17\u201329.\n- API note and full optional `AdyenCheckout` table: raw lines 31\u201359.\n- Recurring navigation and TEST/LIVE checklist: raw lines 61\u2013103.\n\n## Related\n\n- [[adyen-react-native-sdk]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/google-pay/react-native-drop-in/2026-09-15|Adyen Google Pay React Native Drop-in snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built your [Drop-in integration]",
+      "location": "raw line 27, Requirements"
+    },
+    {
+      "text": "You do not need to send additional fields for Google Pay.",
+      "location": "raw line 33, API reference"
+    },
+    {
+      "text": "There is no required Google Pay specific integration for Drop-in.",
+      "location": "raw line 37, Drop-in configuration"
+    },
+    {
+      "text": "**WalletConstants.ENVIRONMENT\\_TEST** for live.",
+      "location": "raw line 57, Optional configuration > googlePayEnvironment"
+    },
+    {
+      "text": "To make recurring Google Pay payments, you first need to [create a shopper token]",
+      "location": "raw line 63, Recurring payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c32-google-pay-rn-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-google-pay-react-native-drop-in]] \u2014 2026-09-15 Google Pay React Native Drop-in add-on for existing setup, optional wallet fields, tokenization routes and TEST/LIVE gates; no SDK version or payment outcome is established, and its environment row repeats the TEST constant for live.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Verify the page's Google Merchant ID description of `merchantAccount` against the version-matched React Native SDK; do not conflate it with Adyen merchant account.",
+          "The googlePayEnvironment row lists ENVIRONMENT_TEST for both test and live; do not promote it as live guidance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/google-pay/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "4e28d1daac72b2926f2376be5a158855331702760a4d7880fd2c14c704dec736",
+  "status": "candidate_ready"
+}
