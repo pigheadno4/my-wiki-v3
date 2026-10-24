@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-10-15
+date_updated: 2026-10-24
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
@@ -28,7 +29,9 @@ tags: [paypal, checkout, javascript-sdk, github-repository, venmo, pay-later]
 
 Repository: <https://github.com/paypal/paypal-checkout-components>
 
-Newest ingested release: `@paypal/checkout-components@5.0.437` at `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`, dated October 9 and collected/ingested October 15, 2026. This additive delta delegates the payment Permissions Policy feature to an explicit PayPal domain in Buttons and Checkout iframe configuration. The prior overview and version sections remain historical evidence, not an assertion that `5.0.436` is still the latest ingested version.
+Newest ingested release: `@paypal/checkout-components@5.0.438` at `294b50a11d61ccb458877776e5ba8d481781014b`, dated October 19 and collected/ingested October 24, 2026. The authored Buttons code adds experiment-gated `tools *` iframe permission; the package adds a Webpack development range. The new changelog omits the permission change and the retained bundle does not independently substantiate it. All earlier sections and raw evidence remain below.
+
+Prior October 15 checkpoint: `@paypal/checkout-components@5.0.437` at `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`, dated October 9 and collected/ingested October 15, 2026. This additive delta delegates the payment Permissions Policy feature to an explicit PayPal domain in Buttons and Checkout iframe configuration. The prior overview and version sections remain historical evidence, not an assertion that `5.0.436` is still the latest ingested version.
 
 ## Evidence boundary
 
@@ -44,6 +47,11 @@ Newest ingested release: `@paypal/checkout-components@5.0.437` at `7e1f97d5f50f6
 - The exact `5.0.431` release has the same release-only shape as `5.0.430` and likewise carries forward `5.0.429` behavior.
 
 ## Grounding excerpts
+
+- `isWebMCPEnabled?: boolean,` - `raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/types.js:74`.
+- `iframe: props.experiment?.isWebMCPEnabled` - same snapshot, `files/src/zoid/buttons/component.jsx:252`.
+- ``allow: `${baseIframeAttributes.allow}; tools *`,`` - same component, line 255.
+- `"webpack": "^4.47.0"` - same snapshot, `files/package.json:112`.
 
 > "A set of components allowing easy integration of PayPal Buttons and PayPal Checkout into your site"
 >
@@ -341,6 +349,32 @@ This is version-qualified internal permission delegation, not a new payment meth
 
 The retained `dist/button.js` is 408,914 bytes in both snapshots but differs beyond scoped-style identifier normalization. Neither contains the literal `allowpaymentrequest`. This mechanical check does not independently substantiate the new frame configuration or establish full generated-code semantic equivalence. Claims above rest on authored implementation, not a hosted CDN build, SDK assembly rollout, browser, accessibility or payment test. No upstream code/tests were executed. Review receipt: `tracking/github/repos/paypal/paypal-checkout-components/ingest-review-54919ba6.md`.
 
+## Version 5.0.438 experiment-gated tools permission
+
+Released October 19, 2026 at `294b50a11d61ccb458877776e5ba8d481781014b`, compared with `5.0.437` at `7e1f97d5f50f6cc81a86932fa00c9258f8f7e3f9`. Approved serial delta `github-11e76802c5be6fb12f4d`, collected/ingested October 24.
+
+The [internal experiment type](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/types.js) adds optional `isWebMCPEnabled`. The complete [Buttons component](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/component.jsx) extracts its existing iframe attributes into `baseIframeAttributes`, preserving `allowpaymentrequest`, origin-qualified payment permission, scrolling, funding-qualified title and presentation role. Only a truthy flag adds the tools directive:
+
+```js
+iframe: props.experiment?.isWebMCPEnabled
+  ? {
+      ...baseIframeAttributes,
+      allow: `${baseIframeAttributes.allow}; tools *`,
+    }
+  : baseIframeAttributes,
+```
+
+For the production domain used by the upstream configuration tests, absent/false yields `payment https://www.paypal.com`; enabled yields `payment https://www.paypal.com; tools *`. The origin still comes from `getPayPalDomain()`, not a hard-coded production URL. Those added tests mock Zoid to inspect configuration output and are not browser/permission-enforcement tests; they were not executed here.
+
+The existing `experiment` prop has `value: getButtonExperiments`. The retained [utility](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/util.js) merges `getVenmoEligibility()` and `getFirstRenderExperiments()`, the latter imported from external SDK-client code. This capsule does not establish experiment assignment, rollout or a supported merchant-side method of forcing it. The authored delta adds permission configuration, not a WebMCP tool registration/implementation, agent checkout API, new funding method, saved-payment feature or React wrapper. Do not infer that ancestor restrictions can be overridden or that browsers honor the directive. Checkout's separate component is byte-identical to `5.0.437`.
+
+**Build dependency:** [package metadata](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/package.json) adds `devDependencies.webpack: ^4.47.0`. Runtime dependency ranges, engines and public export declarations remain unchanged. The automated dependency scan reports no changes, but this direct development dependency is demonstrably added; do not treat the scan as exhaustive. No merchant API migration is documented.
+
+> [!warning] Changelog wording and evidence gap
+> The new raw changelog entry says only "fix: pin webpack version", omitting the experiment-gated permission change. Its caret range is not an exact pin. Both old and new retained `dist/button.js` files are 408,914 bytes and contain neither `isWebMCPEnabled` nor literal `tools *`. They remain different after normalizing seven scoped-style identifiers, so there is no full generated-code equivalence result and no independent bundle confirmation of this branch. Literal absence alone does not prove that a production feature is absent: hosted builds, browser support and experiment rollout were not verified. The same limits are recorded in [[paypal-checkout]] and [[changelog-github-paypal-checkout-components]].
+
+**Reading boundary:** approved item-specific focused reading: complete authored Buttons component (1,477 lines), complete changed types/package, new changelog entry, authored comparison/test sections, affected prior attributes and complete cumulative wiki source/changelog. Generated bundle/diff, manifests, inventories and unchanged changelog history checked mechanically. Both 214-file snapshots pass all 428 file size/SHA-256/Git blob-ID checks; five retained changes, 209 unchanged, no retained additions/removals. All seven upstream paths have dispositions (five retained, two test exclusions); old raw changelog is an identical suffix. Release/packet/comparison hashes pass; separate upstream release notes remain unavailable. No build, upstream test suite, browser, accessibility, payment or hosted-deployment test was run.
+
 ## Public and security boundary
 
 The browser-facing `Buttons` component is public on merchant pages. Lower-level checkout controls remain PayPal-domain-only. The iframe helper is therefore not a merchant escape hatch for forcing an unsupported presentation mode.
@@ -358,6 +392,9 @@ The exact snapshot also shows that layout, platform, remembered funding, and ser
 - [[source-paypal-pay-with-venmo]] — current product documentation for mobile app switch and desktop QR
 
 ## Raw sources
+
+- [Snapshot 5.0.438](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json), [release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/manifest.json) and [empty separate-notes record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/release-notes.md)
+- [Comparison 5.0.437 to 5.0.438](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/comparison.json) and [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/diff.patch); generated sections verified mechanically
 
 - [Snapshot 5.0.437](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json) and [release record](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.437/2026-10-15/manifest.json)
 - Complete authored [Buttons](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/src/zoid/buttons/component.jsx) and [Checkout](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/src/zoid/checkout/component.jsx) components; [package](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/files/package.json)

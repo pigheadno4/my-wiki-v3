@@ -200,6 +200,13 @@ The retained comments explain that Zoid navigates these frames without setting t
 
 This is internal frame-permission configuration, not a new payment method, React prop, v6 saved-payment feature, eligibility grant or proof that a parent/browser restriction can be bypassed. No merchant API migration or dependency-range change is detected. Authored source establishes the change; the retained generated bundle and assembly history do not prove hosted rollout. Existing accessibility reverts and window-name monitoring remain preserved in [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]].
 
+### checkout-components `5.0.438` experiment-gated tools permission
+
+The October 19, 2026 release adds optional `isWebMCPEnabled` to the internal experiment type. Buttons iframe configuration appends `; tools *` to its existing origin-qualified payment permission only when `props.experiment?.isWebMCPEnabled` is truthy; absent/false retains the prior attributes. The experiment prop uses `getButtonExperiments()`, which merges external SDK-client first-render experiment data with Venmo eligibility. This establishes conditional permission plumbing, not a new tool implementation, supported merchant configuration recipe, payment method, React API or deployed WebMCP availability. The Checkout component and runtime dependency ranges are unchanged; browser/ancestor policy enforcement was not tested.
+
+> [!warning] Documentation and generated-evidence limits
+> The `5.0.438` changelog names only a Webpack fix, omitting the authored experiment change. It calls the dependency a pin, but `devDependencies.webpack` is `^4.47.0`, not an exact version. The retained generated bundle contains neither the flag name nor literal `tools *` and differs beyond scoped-style normalization, so it neither independently confirms this permission branch nor establishes hosted rollout. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. All earlier permission/accessibility findings remain version-qualified.
+
 ### SDK release assembly baseline: `@paypal/sdk-release@5.0.569`
 
 The independent `paypal/paypal-sdk-release` repository records the component bill of materials used to assemble and release the combined PayPal and Braintree browser SDK. Baseline `5.0.569` pins Checkout Components `5.0.428`, Messaging Components `1.94.0`, Apple Pay Components `1.8.2`, Google Pay Components `1.3.5`, SDK Client `4.0.204`, and seven other direct PayPal component packages.

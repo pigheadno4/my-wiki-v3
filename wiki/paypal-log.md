@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-24] ingest | Checkout Components `5.0.438`
+
+- Approved serial delta `github-11e76802c5be6fb12f4d`, exact SHA `294b50a11d61ccb458877776e5ba8d481781014b`, from `5.0.437`. Item-specific focused-reading approval: complete authored component/types/package, changed raw changelog, authored comparison/test sections, affected prior code and full cumulative wiki source/changelog read. Generated bundle/diff, inventories/manifests and unchanged history checked mechanically. All 428 snapshot file sizes/SHA-256/Git blob IDs pass; five modified retained files, 209 unchanged. Four exact grounding excerpts extracted before edits.
+- Concept audit first: [[paypal-checkout]] records the optional experiment-gated `tools *` iframe directive and Webpack development range. Source/changelog explicitly flag changelog omission, caret-range versus pin wording and absent bundle corroboration; no new deployed tooling/merchant eligibility or React/payment API inferred. Older source/changelog sections and raw references preserved; company source_count remains 177. Provider catalog/company/logs updated; no new concept or cross-company comparison required.
+- No upstream build/tests, browser, accessibility, payment execution, commit or push. Next: focused validation, history/link checks and lifecycle close before reporting findings.
+- Close check: five typed pages, whitespace, seven-page local evidence links, unique provider/company catalog entries and all 13 historical source version sections pass. Complete prior changelog history and raw references preserved. Item is `ingested`; global validator has only the ten pre-existing unrelated errors and zero pending items. Next: report findings, then await scoped commit/push approval.
+
 ## [2026-10-24] ingest | PayPal JS core `11.3.0`
 
 - Approved serial delta `github-0e72035e00894050ad04`, exact SHA `21435c291d38bf375abbc60b5207b8fff13fb69d`, from core `11.2.2`. React remains `10.6.0`. Fully read changed source, cumulative raw changelog, release/comparison records, complete wiki source/changelog and affected prior code. User explicitly approved mechanical verification of generated manifests/packet inventories: all 322 snapshot file sizes, SHA-256 hashes and Git blob IDs pass; six modified and 155 unchanged retained files. Four verbatim grounding excerpts extracted before edits.

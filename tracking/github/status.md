@@ -300,6 +300,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.37.0/2026-08-19/manifest.json)
   Comparison: Not applicable
 
+## `github-11e76802c5be6fb12f4d`
+
+- Repository: `paypal/paypal-checkout-components`
+- SHA: `294b50a11d61ccb458877776e5ba8d481781014b`
+- Collection date: `2026-10-24`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-checkout-components/ingest-packets/github-11e76802c5be6fb12f4d/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/checkout-components@5.0.438` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/comparison.json)
+
 ## `github-16166784785e0ab99eae`
 
 - Repository: `braintree/braintree-web`

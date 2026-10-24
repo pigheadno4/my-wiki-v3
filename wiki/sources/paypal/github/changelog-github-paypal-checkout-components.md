@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-checkout-components"
 type: source
 date_ingested: 2026-09-01
-date_updated: 2026-10-15
+date_updated: 2026-10-24
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-15-7e1f97d/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-10-04-5b2afe0/manifest.json"
   - "github/paypal/paypal-checkout-components/snapshots/2026-09-27-1f668d5/manifest.json"
@@ -25,6 +26,25 @@ tags: [paypal, checkout, javascript-sdk, changelog, github-repository, venmo]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-checkout-components`. Cumulative implementation knowledge belongs in [[source-github-paypal-checkout-components]] and the linked immutable snapshots.
+
+## `@paypal/checkout-components@5.0.438` (2026-10-19)
+
+| Package | From | To | SHA | Ingest mode |
+| --- | --- | --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.437` | `5.0.438` | `294b50a11d61ccb458877776e5ba8d481781014b` | Delta, approved focused reading |
+
+**Finding:** authored Buttons iframe configuration appends `; tools *` to its existing origin-qualified payment permission only for truthy `experiment.isWebMCPEnabled`. Adds an optional internal experiment member and Webpack `^4.47.0` development dependency. Absent/false preserves the previous iframe attributes; Checkout component and runtime dependency ranges remain unchanged. No new React/payment/saved-method API or documented merchant migration.
+
+**Impact and limits:** conditional permission plumbing, not proof of WebMCP tool registration, browser support, merchant eligibility, experiment rollout or hosted deployment. The existing prop obtains merged experiment data via `getButtonExperiments()`; external SDK-client assignment remains outside this capsule. Added tests inspect mocked component configuration and were not run.
+
+> [!warning] Documentation and generated evidence
+> The changelog names only "fix: pin webpack version", omitting this authored behavior change. The caret range is not an exact pin. The retained generated bundle has neither the flag name nor literal `tools *` in either snapshot, and the bundles differ beyond scoped-style normalization; neither deployed inclusion nor absence is proved. Authored source establishes the conditional branch, with limits mirrored in [[source-github-paypal-checkout-components]] and [[paypal-checkout]].
+
+**Reading boundary:** collected/ingested October 24 as `github-11e76802c5be6fb12f4d`. Fully read complete changed authored component, types/package, new changelog entry, authored patch/test sections, affected prior code and cumulative wiki source/changelog. User-approved mechanical checks for generated code/diff, manifests/inventories and unchanged history: 428 file hashes/sizes/Git blob IDs pass, five modified and 209 unchanged retained files, seven upstream changes all classified. Old raw changelog preserved as identical suffix. Separate notes unavailable. No build/browser/payment test, whole-repository review or generated semantic-equivalence claim.
+
+**Updated areas:** checkout concept first, additive cumulative source/changelog, company/provider catalog and logs. All earlier versions, warnings and raw references preserved; source_count unchanged, no new concept or cross-company comparison required.
+
+**Evidence:** [snapshot](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/manifest.json), [release](../../../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.438/2026-10-24/manifest.json), [comparison](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/comparison.json), [patch](../../../../tracking/github/repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.437--5.0.438/diff.patch), [Buttons component](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/zoid/buttons/component.jsx), [types](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/src/types.js) and [package](../../../../raw/github/paypal/paypal-checkout-components/snapshots/2026-10-24-294b50a/files/package.json).
 
 ## `@paypal/checkout-components@5.0.437` (2026-10-09)
 

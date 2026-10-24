@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-24] ingest | Checkout Components `5.0.438`
+
+- Approved additive delta: experiment-gated iframe tools permission and Webpack development range, with changelog omission and generated-bundle limits explicit. Earlier history/source count preserved. Details [[paypal-log]], [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build/browser/payment execution, commit or push.
+
 ## [2026-10-24] ingest | PayPal JS core `11.3.0`
 
 - Approved additive delta: v6 client-token replacement declaration, 60-second loader timeout and non-v6 namespace exclusion. React remains `10.6.0`; earlier history and source count preserved. Details [[paypal-log]], [[source-github-paypal-js]] and [[changelog-github-paypal-js]]. No hosted/payment execution, commit or push.
