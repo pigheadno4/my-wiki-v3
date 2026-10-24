@@ -1,0 +1,9 @@
+# Retrieval checks — DANA Flutter Drop-in
+
+## Q1. What is this source's purpose and scope, and what cannot be inferred?
+
+`source-adyen-docs-payment-methods-dana-flutter-drop-in` is a DANA-specific add-on to an existing Flutter Drop-in integration, split into Sessions and Advanced sections (raw lines 15–23, 25 and 298). It does not provide a full base Flutter implementation, prove merchant enablement or country eligibility, or establish a completed payment. The Sessions requirement text says Sessions but links to an Advanced guide (raw line 33). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/dana/flutter-drop-in/2026-09-15]].
+
+## Q2. What central capability, prerequisites and warnings matter?
+
+Sessions requires Checkout API v68+, redirect handling and DANA setup via a Support-contact instruction (raw lines 31–36); Advanced requires an existing Advanced flow, redirect handling and a Customer Area add-DANA instruction (raw lines 304–308). The page does not reconcile those setup wordings. Ordinary `/sessions` and `/payments` and DANA configuration need no extra method-specific fields (raw lines 40–48 and 312–320), but the separate recurring path requires token-creation fields and a settled initial payment before `recurring.token.created`, followed by stored-method `ContAuth` requests (raw lines 52–87 and 324–359). The test section mixes “live payments” with checking a test Customer Area payment list, while live acceptance separately requires a live Customer Area request (raw lines 288–296 and 560–568). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/dana/flutter-drop-in/2026-09-15]].

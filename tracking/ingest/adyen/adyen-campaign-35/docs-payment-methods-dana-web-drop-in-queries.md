@@ -1,0 +1,9 @@
+# DANA Web Drop-in retrieval questions
+
+## Q1 — What is this guide for, and what cannot be inferred?
+
+It gives DANA-specific additions to an existing Web Drop-in integration, split between Sessions and Advanced redirect flows (raw lines 15–36, 306–316; [[source-adyen-docs-payment-methods-dana-web-drop-in]]). Ordinary base `/sessions` and Advanced `/payments` need no additional DANA fields, and optional tree-shaken import includes `Redirect` (lines 38–54, 318–334). The Advanced integration-type URL contains an unresolved encoded platform template; use stated Web context and Web-scoped step links at lines 315/322. These instructions do not alone establish current eligibility, final payment status or a Web SDK minimum. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-web-drop-in]] → [[raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16]].
+
+## Q2 — What prerequisites and boundaries govern recurring and live use?
+
+Sessions explicitly requires Checkout API v68+, redirect handling and DANA in Customer Area; Advanced repeats redirect/method setup without restating that version minimum (raw lines 29–36, 310–316). Recurring token creation uses `/payments` with `storePaymentMethod: true` and `shopperReference`; a `recurring.token.created` webhook supplies the token **after settlement**, while later charges use stored token, shopper reference, `ContAuth` and `Subscription` or `UnscheduledCardOnFile` according to schedule (lines 56–93, 336–373). The TEST/`v68`/`IDR` snippets and live/test Customer Area statements are examples/prerequisites, not evidence of approved live access or successful settlement (lines 95–304, 375–584; [[source-adyen-docs-payment-methods-dana-web-drop-in]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-web-drop-in]] → [[raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16]].

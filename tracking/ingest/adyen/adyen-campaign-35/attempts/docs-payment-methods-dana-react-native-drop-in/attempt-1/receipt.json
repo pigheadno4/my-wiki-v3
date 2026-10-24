@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-dana-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"DANA React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, dana, react-native, drop-in, wallets]\n---\n\n## Overview\n\nAdyen's 2026-09-15 DANA React Native Drop-in page describes method-specific additions to an existing React Native Drop-in integration, split by Sessions and Advanced server-side flow. The linked base integration guides supply the general request, redirect, and payment-result handling. This snapshot does not prove current DANA eligibility, token issuance, or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** The page requires an existing React Native Drop-in Sessions integration, Checkout API v68 or later, handling `action.type: redirect`, and adding DANA in Customer Area. It says no DANA-specific extra `/sessions` parameters or Drop-in configuration are needed. Its Sessions requirement text links to an **Advanced** React Native Drop-in URL, while the redirect and create-session links point to Sessions; follow the named flow, and treat the prerequisite URL as a source inconsistency. [Raw lines 25\u201348]\n- **Advanced:** The page requires an existing React Native Drop-in Advanced integration, redirect handling, and DANA in Customer Area. It says no DANA-specific extra configuration or ordinary `/payments` parameters are needed. This ordinary-payment statement does not erase the separate recurring request fields below. [Raw lines 298\u2013320]\n- **Recurring:** For token creation, the page instructs `storePaymentMethod: true` and a unique `shopperReference` in `/payments`. After the initial payment settles, a `recurring.token.created` webhook contains `storedPaymentMethodId`; the merchant server needs to receive recurring-token lifecycle webhooks. Later token payments use that ID, the shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` otherwise. Redirect return or initial request is not token issuance or final settlement. [Raw lines 50\u201387, 322\u2013359]\n- **TEST/live:** Example recurring requests use `paymentMethod.type: dana`, IDR amounts, and TEST endpoints or clients, which are examples rather than an eligibility matrix or execution proof. The page says live payment testing needs a real mobile number registered with DANA, test payments can be checked in Customer Area, and a DANA request in live Customer Area precedes live acceptance. The phrase \u201ctest successful DANA live payments\u201d mixes TEST/live wording; do not infer a TEST simulator from it. [Raw lines 89\u2013285, 288\u2013296, 361\u2013568]\n\n## Detail locators\n\n- Server-side recurring `/payments` samples in curl, Java, PHP, C#, Node, Python, and Ruby: raw lines 89\u2013285 and 361\u2013557. The explicit Checkout API v68+ gate is under Sessions only; no React Native SDK version is stated here.\n- Redirect completion, payment authorization/capture/settlement beyond the token-created timing, and failure outcomes require the linked base flow and status evidence.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15|DANA React Native Drop-in (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for DANA.",
+      "location": "raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:66"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:320"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area]",
+      "location": "raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:568"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "dana-react-native-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-react-native-drop-in]] \u2014 2026-09-15 DANA React Native Drop-in Sessions (Checkout API v68+) and Advanced add-on with redirect and settled-payment recurring-token route; Sessions prerequisite link and TEST/live wording are qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "49ea085988cc488f452657c1b7fb2321320615c95ae90d4bab189ca425d02505",
+  "status": "candidate_ready"
+}

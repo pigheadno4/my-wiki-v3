@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-dana-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA iOS Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/ios-drop-in/2026-09-15.md\"\ntags: [adyen, dana, ios, drop-in, recurring]\n---\n\n## Overview\n\nThis [[adyen]] page gives **DANA-specific additions** to an existing **iOS Drop-in** integration, divided into **Sessions** and **Advanced** server-side flows. It describes an ordinary base request and a distinct merchant-server recurring-token path. The source is a 2026 website snapshot and examples use IDR/TEST; it does not establish current merchant enablement, DANA authorization, initial settlement, token creation or later payment success. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions base path:** The Sessions section requires an existing iOS Drop-in Sessions integration, **Checkout API v68 or later**, and adding DANA in Customer Area. It says no additional DANA parameters for the ordinary /sessions request and no extra DANA configuration. This section does not spell out redirect handling in its requirements table; that requirement appears explicitly in the Advanced section. See raw lines 25\u201346.\n- **Advanced base path:** The Advanced section requires an existing iOS Drop-in Advanced integration, `action.type: redirect` handling and DANA added in Customer Area. It says no additional DANA configuration or parameters for the ordinary /payments call. Its requirements table does not state an API minimum; a v68 URL in recurring examples is not the same as an Advanced-flow minimum. See raw lines 298\u2013320 and 361\u2013380.\n- **Recurring route:** Both sections state DANA supports recurring. To create a shopper token they require a separate **/payments** request with `storePaymentMethod: true` and shopper reference. **When the initial payment has settled**, a `recurring.token.created` webhook supplies the `storedPaymentMethodId`; the merchant server is directed to receive recurring-token lifecycle events. Future /payments requests use the token and matching shopper reference with `ContAuth` and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed contracts. The base no-extra-parameters text must not be applied to these token requests, and the page does not detail shopper-consent mechanics. See raw lines 48\u201385 and 322\u2013359.\n- **Examples and environment:** Multi-language token-payment snippets use illustrative DANA type, IDR, TEST endpoints and placeholder credentials/IDs. Both Test and go live sections state that testing **successful live** DANA payments needs a real mobile number registered with DANA, also point to TEST Customer Area payment status, and require a separate request in **live** Customer Area before accepting live payments. These statements retain distinct environment scopes; status lookup/request submission do not prove final transaction outcome. See raw lines 87\u2013296 and 361\u2013570.\n\n## Detail locators\n\n- Sessions requirements and base/recurring paths: raw lines 25\u201385.\n- Sessions examples and test/live text: raw lines 87\u2013296.\n- Advanced requirements and base/recurring paths: raw lines 298\u2013359.\n- Advanced examples and repeated test/live text: raw lines 361\u2013570.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/ios-drop-in/2026-09-15|Adyen DANA iOS Drop-in snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions integration requirement"
+    },
+    {
+      "text": "Before you begin, [add DANA in your Customer Area]",
+      "location": "raw line 34, Sessions setup; repeated line 308 under Advanced"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 64, Sessions token condition; repeated line 338 under Advanced"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 307, Advanced redirect requirement"
+    },
+    {
+      "text": "To test successful DANA live payments, you need to use a real mobile number registered with a [DANA account]",
+      "location": "raw line 290, Sessions test/live wording; repeated line 564 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-ios-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-ios-drop-in]] \u2014 2026-09-15 DANA iOS Drop-in Sessions (Checkout API v68+) and Advanced add-on with a separate settlement-gated recurring-token route, Advanced redirect requirement and qualified TEST/live wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Redirect handling is explicit in Advanced requirements; the Sessions requirements table does not itself state it.",
+          "No-extra-parameter language for ordinary base requests does not cover recurring /payments token fields.",
+          "The test section refers to successful live payments with a real registered DANA mobile number, yet also points to TEST payment status and a separate live request. Keep environment claims distinct."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "86aa2110fe3236c6dd57c641a6ed60e733b948e4f588c3937e6939bb97eab217",
+  "status": "candidate_ready"
+}

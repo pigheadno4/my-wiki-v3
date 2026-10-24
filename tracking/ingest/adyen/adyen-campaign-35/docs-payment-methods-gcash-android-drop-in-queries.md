@@ -1,0 +1,7 @@
+# Retrieval checks — GCash Android Drop-in
+
+Q1. What is the source's purpose and scope, and what cannot be inferred? `source-adyen-docs-payment-methods-gcash-android-drop-in` adds GCash to an existing Android Drop-in integration for Sessions or Advanced flows, with a separate recurring-token route. The guide and PHP/TEST examples do not prove current Philippine/PHP eligibility, wallet registration, token creation or completed authorization/capture/settlement. Raw lines 15–25, 48–85, 87–108, 298–357.
+
+Q2. What are the central capability, prerequisites and warnings? Sessions states Checkout API v68+ and Customer Area method setup; Advanced states redirect handling and setup. Basic requests need no extra GCash-specific fields, while recurring token creation specifies `storePaymentMethod` and a shopper reference of at least three characters, followed by `recurring.token.created` after settlement and subsequent `storedPaymentMethodId`/`ContAuth`/recurring-model use. The Sessions token section itself says `/payments`. The test section mixes a real registered number for successful live tests with test Customer Area status checking; a separate live Customer Area request remains required. Raw lines 29–46, 48–85, 286–318, 320–357, 558–566.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-gcash-android-drop-in]] → [[raw/adyen/docs/payment-methods/gcash/android-drop-in/2026-09-15]].

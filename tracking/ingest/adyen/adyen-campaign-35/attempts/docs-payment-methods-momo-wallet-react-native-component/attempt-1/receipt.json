@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MoMo React Native Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/react-native-component/2026-09-15.md\"\ntags: [adyen, momo, react-native, components, online-payments, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] snapshot, captured 2026-09-15, gives MoMo-specific additions for an **existing React Native Components** integration on the **Advanced flow**. Its frontmatter and H1 say \"MoMo React Component,\" but the canonical path and integration requirement specify React Native; this source entry uses the narrower React Native identity. It is a method-specific add-on, not a complete app integration or proof of current Vietnam/VND eligibility, live enablement, authorization, capture, settlement or token creation. See [[adyen-online-payments]] and raw lines 6\u201323, 25\u201341.\n\n## Key takeaways\n\n- **Sessions flow is explicitly unavailable** for React Native Components on this page. For **Advanced**, prerequisites are an existing React Native Components integration, redirect handling for `action.type: redirect`, and adding MoMo in Customer Area. The Advanced \"Components\" integration-type link itself uses `integration=Drop-in`, while the redirect and make-payment links use `integration=Components`; verify the base guide rather than treating the Drop-in URL as Components instructions. See raw lines 25\u201341, 49\u201353.\n- The guide states no additional MoMo-specific configuration or **base** `/payments` parameters. It does not show a React Native Component constructor or a minimum React Native SDK version. Its recurring-token path below is a separate use case with explicit additional request fields, so the base no-extra-parameter sentence does not cancel those fields. See raw lines 43\u201369.\n- To create a recurring token, the page specifies `storePaymentMethod: true` and unique `shopperReference` in `/payments` and a merchant server able to receive recurring token lifecycle webhooks. It says `recurring.token.created` delivers `storedPaymentMethodId` **when the initial payment has settled**. The page does not describe shopper-consent mechanics. A request, callback or shown token ID is not evidence that settlement or token creation occurred. See raw lines 55\u201378.\n- Later token requests use `paymentMethod.storedPaymentMethodId` (or `/listRecurringDetails` lookup), the same shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. TEST snippets use `momo_wallet` and VND as examples, not evidence of successful future charges or general currency eligibility. The Java example calls `setRecurringDetailReference` where prose and most other examples use `storedPaymentMethodId`; its VND 15000 amount also differs from cURL's VND 1000. Review the applicable API-library model before copying. The cURL `/v68/payments` is an example path, not a stated API-version minimum for this Advanced-only guide. See raw lines 80\u2013146.\n- For testing, the guide points to the MoMo test app and scenario-specific provider test credentials, with payment status in Adyen's **test** Customer Area. It separately requires a MoMo request in the **live** Customer Area before live acceptance. Mobile-browser app download and desktop-browser QR scanning are testing directions on this page; they do not establish React Native Component desktop-QR behavior or a completed payment. See raw lines 293\u2013302.\n\n## Detail locators\n\n- Page identity, explicit no-Sessions boundary, Advanced prerequisites and base method additions: raw lines 6\u201353.\n- Recurring token creation and settlement-gated webhook: raw lines 55\u201378.\n- Later token request fields and cURL/Java field and amount differences: raw lines 80\u2013146.\n- Other language-specific TEST examples: raw lines 149\u2013290.\n- Provider test app/credentials, test Customer Area status and separate live request: raw lines 293\u2013302.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-react-native-sdk]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/react-native-component/2026-09-15|MoMo React Native Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw line 29, Sessions flow Component > Not Available"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 40, Advanced flow Component > Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 53, Advanced flow Component > Add additional parameters to your /payments request"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 71, Advanced flow Component > Create a token"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area]",
+      "location": "raw line 302, Advanced flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "momo-react-native-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-react-native-component]] \u2014 2026-09-15 MoMo React Native Components Advanced-only redirect add-on (Sessions unsupported) with settlement-gated recurring-token route; title/base-guide link and Java example require source qualification.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/react-native-component/2026-09-15.md",
+  "raw_sha256": "51f6d153dc89e74351500276e937348d5bdb8d2472d19ef92ed4aa035b30e801",
+  "status": "candidate_ready"
+}

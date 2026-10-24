@@ -1,0 +1,7 @@
+# DANA React Native Drop-in retrieval checks
+
+**Q1. What is the page for, and what cannot be inferred?** It is a DANA-specific add-on to an existing React Native Drop-in, with Sessions and Advanced branches. It does not establish a standalone integration, current eligibility, token issuance, or payment completion. The Sessions prerequisite label points to an Advanced URL despite Sessions links elsewhere. Raw locators: `raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:17-23,25-48,298-320`. Canonical stem: `https://docs.adyen.com/payment-methods/dana/react-native-drop-in`.
+
+**Q2. What capability, prerequisites, and warnings matter?** Sessions requires Checkout API v68+, redirect handling, and DANA setup; Advanced requires redirect handling and DANA setup. No method-specific ordinary request or configuration fields are added. Recurring uses `storePaymentMethod` and `shopperReference`, with the token-created webhook only after settlement and stored ID for later `/payments`. Live acceptance needs a live Customer Area request; mixed “test successful DANA live payments” wording should remain qualified. Raw locators: `raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15.md:29-87,288-359,560-568`. Canonical stem: `https://docs.adyen.com/payment-methods/dana/react-native-drop-in`.
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/dana/react-native-drop-in/2026-09-15]].

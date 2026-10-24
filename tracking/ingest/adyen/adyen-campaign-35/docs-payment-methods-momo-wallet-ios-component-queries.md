@@ -1,0 +1,7 @@
+# Retrieval checks — MoMo iOS Component
+
+Q1. What is this source's purpose and scope, and what cannot be inferred? `source-adyen-docs-payment-methods-momo-wallet-ios-component` adds `momo_wallet` through `InstantPaymentComponent` to existing iOS Components Sessions/Advanced flows, with method-specific redirect/setup and recurring-token instructions; it does not itself establish current Vietnam/VND eligibility, payment outcome, settlement or successful token creation. Raw lines 15–23, 25–69, 321–364, 72–109, 366–403.
+
+Q2. What are the central prerequisites and warnings? Sessions expressly requires Checkout API v68+, redirect handling and Customer Area method addition; Advanced requires its existing flow, redirect handling and method addition. The Advanced iOS Components requirement links to a Drop-in base guide; recurring-token prose uses `/payments` even in Sessions, ties `recurring.token.created` to initial settlement, and Java examples use `setRecurringDetailReference` where prose uses `storedPaymentMethodId`. Test app/credentials and test Customer Area status are separate from a live Customer Area request and final outcome. Raw lines 29–42, 76–109, 152–155, 310–319, 325–364, 377–403, 446–449, 604–613.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-momo-wallet-ios-component]] → [[raw/adyen/docs/payment-methods/momo-wallet/ios-component/2026-09-15]].

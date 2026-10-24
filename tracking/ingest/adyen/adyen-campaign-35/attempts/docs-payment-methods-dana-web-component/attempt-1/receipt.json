@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-dana-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA Web Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/web-component/2026-09-15.md\"\ntags: [adyen, dana, web, components, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] page describes adding **DANA** to an existing **Web Components** integration, with separate Sessions and Advanced server-side flows and a further recurring-token route. Both base flows use a redirect-oriented `Redirect` Component. It is a method-specific supplement, not an end-to-end proof of current ID/IDR merchant eligibility, a completed shopper return, authorization, capture or settlement. The DANA overview is a separate authority for country/currency and method-display conditions. [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions base flow:** Requires existing Sessions Web Components, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and DANA added in Customer Area. The page says no additional DANA-specific `/sessions` parameters or Component configuration are needed. It imports `Redirect` from `@adyen/adyen-web` and initializes it for DANA; no Web SDK version minimum is stated on this page. See raw lines 23\u201372.\n- **Advanced base flow:** Requires existing Advanced Web Components, redirect handling and DANA in Customer Area. It imports and initializes `Redirect` and says no additional DANA-specific **ordinary** `/payments` parameters are needed. Its requirement table does not restate Sessions' v68+ Checkout API minimum, and this section does not separately repeat the Sessions no-extra-configuration statement. See raw lines 322\u2013360.\n- **Recurring token route:** To create a token, the server adds `storePaymentMethod: true` and a unique `shopperReference` to **`/payments`**. Only **when the initial payment has settled** does `recurring.token.created` deliver `storedPaymentMethodId`; the server must receive recurring-token lifecycle webhooks. For later token payments the guide specifies stored ID, same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. Neither a redirect nor an initial API response is described as a usable-token event. See raw lines 74\u2013111 and 362\u2013399.\n- **Testing and live gate:** The page says a real mobile number registered with a DANA account is needed to test successful **live** DANA payments, points to TEST Customer Area for test-payment status, and says to request DANA in LIVE Customer Area before accepting live payments. That mixed \u201ctest successful live\u201d wording and TEST request examples do not prove either environment is working for a merchant. IDR and amounts in recurring examples do not independently define eligibility; consult [[source-adyen-docs-payment-methods-dana]] for its overview limits. See raw lines 113\u2013320 and 401\u2013608.\n\n> [!warning] Contradiction\n> The base-flow no-extra-parameters statements (raw lines 42 and 360) do **not** cover recurring: both recurring sections require extra `/payments` fields (raw lines 85\u2013111 and 373\u2013399). The displayed `Redirect` initialization snippets use `{ type:dana }` with an **unquoted** `dana` identifier (raw lines 71 and 353); the prose identifies DANA but does not define a JavaScript variable named `dana`. Treat those snippets as incomplete until checked against the applicable Adyen Web API. The recurring request examples also vary: Java uses IDR value 15000 while the other examples use 1000; curl/Node/Python/Ruby omit `returnUrl` while Java/PHP/C# include it (raw lines 115\u2013309 and 403\u2013597).\n\n## Detail locators\n\n- Sessions requirements, import/configuration and Component initialization: raw lines 23\u201372.\n- Sessions recurring token creation and future payments: raw lines 74\u2013111.\n- Sessions request examples and test/live wording: raw lines 113\u2013320.\n- Advanced requirements, import/initialization and base `/payments` statement: raw lines 322\u2013360.\n- Advanced recurring route, examples and repeated test/live wording: raw lines 362\u2013608.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-dana]] \u2014 DANA overview for ID/IDR, redirect-page lifetime and method-display amount floor.\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/web-component/2026-09-15|Adyen DANA Web Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements > Checkout API"
+    },
+    {
+      "text": "const redirectComponent = new Redirect(checkout, { type:dana }).mount('#redirect-container')",
+      "location": "raw line 71, Sessions flow Component > Initialize the Component for DANA"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 90, Sessions flow Component > Recurring payments > Create a token"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 360, Advanced flow Component > Add additional parameters to your /payments request"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area]",
+      "location": "raw line 608, Advanced flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-web-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-web-component]] \u2014 2026-09-15 DANA Web Redirect Component Sessions/Advanced add-on with a separate settled-payment recurring token route; unquoted `type:dana` snippets and base-versus-recurring request scope are qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Displayed Redirect constructor uses unquoted type:dana in both flows (raw lines 71 and 353)."
+        ]
+      },
+      {
+        "update_id": "c35-dana-web-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-web-component]] \u2014 DANA Web Component recurring route: settled initial payment precedes recurring.token.created, then specified stored-method ContAuth requests; base no-extra-fields claim excludes recurring.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/web-component/2026-09-15.md",
+  "raw_sha256": "5079e462393f1e8c6ecaec016ee20f7ec9c263775079e6162e0147ba282d2108",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MoMo Flutter Drop-in integration guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, momo, flutter, drop-in, redirect, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **MoMo** to an existing **Flutter Drop-in** integration under distinct **Sessions** and **Advanced** server-side flows. Both sections require handling a `redirect` action, then provide a separate merchant-server recurring-token path. It is an add-on to the main integration, not a complete independent Drop-in setup or proof of merchant enablement, payment, token creation or settlement. The examples use VND and TEST endpoints; those examples do not set merchant-wide currency or live eligibility. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions setup:** The Sessions section calls for an existing Flutter Drop-in Sessions integration, **Checkout API v68 or later**, redirect handling, and contacting Adyen Support to add MoMo in Customer Area. Its embedded link for the Sessions integration-type row actually points to an **Advanced** guide; the heading and prose still say Sessions, so do not silently treat the link as authoritative Sessions instructions. For the base /sessions request it says no **additional MoMo parameters** are needed, and it says no extra MoMo configuration is needed. See raw lines 23\u201348.\n- **Advanced setup:** The Advanced section calls for an existing Flutter Drop-in Advanced integration with redirect handling and says to add MoMo in Customer Area. It says no extra MoMo configuration or parameters for the **base** /payments call. The setup wording differs from the Sessions section's Support contact; this source does not resolve which route applies to a given merchant. See raw lines 299\u2013321.\n- **Recurring is a separate server route:** In both flow sections, token creation is described on **/payments** with `storePaymentMethod: true` and a shopper reference. Only **when the initial payment has settled** does the described `recurring.token.created` webhook provide a `storedPaymentMethodId`; the merchant server must receive recurring-token lifecycle events. Later /payments calls use that ID with the same shopper reference, `ContAuth`, and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed contracts. No-extra-parameters statements for the ordinary base requests do not cover this recurring route; this page does not spell out shopper consent. See raw lines 50\u201387 and 323\u2013360.\n- **Example qualification:** Curl, Java, PHP, C#, Node, Python and Ruby recurring examples use illustrative tokens, credentials, order IDs and VND/TEST values. The Java examples set `RecurringDetailReference` even though the surrounding prose and other examples say `storedPaymentMethodId`; the page does not reconcile those fields. Example library versions differ by language, and a sample call is not result verification. See raw lines 89\u2013286 and 362\u2013559.\n- **Test/live gate:** Both flow sections describe MoMo's **test app and scenario credentials**, mobile-download versus desktop-QR test navigation, status lookup in TEST Customer Area, and a separate **live Customer Area request** before accepting live MoMo. They do not establish actual approval or an eventual authorization/capture/settlement result. See raw lines 288\u2013297 and 561\u2013570.\n\n## Detail locators\n\n- Sessions prerequisites, no-extra-base-parameter statements and recurring path: raw lines 23\u201387.\n- Sessions example variations and test/live guidance: raw lines 89\u2013297.\n- Advanced prerequisites, base request, recurring path and examples: raw lines 299\u2013559.\n- Advanced test/live guidance: raw lines 561\u2013570.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/flutter-drop-in/2026-09-15|Adyen MoMo Flutter Drop-in snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team]",
+      "location": "raw line 36, Sessions setup"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 66, Sessions token creation; repeated line 339 under Advanced"
+    },
+    {
+      "text": "Before you begin, [add MoMo in your Customer Area]",
+      "location": "raw line 309, Advanced setup"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area]",
+      "location": "raw line 297, Sessions live gate; repeated line 570 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-momo-flutter-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-flutter-drop-in]] \u2014 2026-09-15 MoMo Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with separate settlement-gated recurring-token route, TEST/live steps and source-qualified setup-link/example differences.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions integration-type hyperlink points to an Advanced-flow guide despite Sessions heading and prose.",
+          "Sessions setup says contact Support; Advanced setup says add MoMo in Customer Area. Do not erase the flow-specific wording.",
+          "Java recurring examples use RecurringDetailReference while prose and other examples use storedPaymentMethodId."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "b9f84291a57c89da683e1f134f1139c113244861ce6b24a4b42e0f93e00d8a9e",
+  "status": "candidate_ready"
+}

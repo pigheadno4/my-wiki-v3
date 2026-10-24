@@ -1,0 +1,62 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MoMo iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md\"\ntags: [adyen, momo, ios, drop-in, wallets, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes MoMo-specific additions to an existing iOS Drop-in integration, separately for Sessions and Advanced flow. It is an integration guide, not evidence of current merchant eligibility or a completed payment. See [[adyen]], [[adyen-ios-sdk]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Sessions requires an existing iOS Drop-in Sessions integration, Checkout API v68 or later, and MoMo added in Customer Area. The page specifies no additional MoMo parameters for the base `/sessions` request and no extra MoMo configuration. These statements do not remove the main integration's requirements.\n- Advanced requires an existing iOS Drop-in Advanced integration, MoMo added in Customer Area, and redirect handling for `action.type: redirect`. It specifies no additional MoMo parameters for the base `/payments` request or extra MoMo configuration. The merchant-owned Advanced payment and redirect flow remains in the main guide.\n- For optional recurring payments in either flow, create a shopper token through `/payments` with `storePaymentMethod: true` and a unique `shopperReference`. After the initial payment settles, the `recurring.token.created` lifecycle webhook carries the `storedPaymentMethodId`; the server must receive that webhook. A later `/payments` request uses `paymentMethod.storedPaymentMethodId`, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel` selected as `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. Token creation, redirect handling and a request submission do not themselves prove authorization or settlement.\n- The test instructions use MoMo's test app and scenario credentials, with payment status checked in the Adyen test Customer Area. Live MoMo acceptance requires a request in the live Customer Area. The sample amount is in VND; this page does not state a general country or currency eligibility rule.\n\n## Detail locators\n\n- Sessions prerequisites and base request/configuration: pinned raw lines 25\u201346.\n- Sessions recurring creation and token-payment fields: pinned raw lines 50\u201385; examples at 87\u2013284.\n- Test and live prerequisites: pinned raw lines 286\u2013297, repeated at 561\u2013572.\n- Advanced prerequisites, redirect handling and base request/configuration: pinned raw lines 299\u2013321.\n- Advanced recurring creation and token-payment fields: pinned raw lines 325\u2013360; examples at 362\u2013559.\n- Example qualification: the Java examples use `setRecurringDetailReference` for the token field while the prose and JSON/curl examples use `storedPaymentMethodId` (lines 77, 99\u2013100, 128\u2013130, 352, 374\u2013375, 403\u2013405). Treat this as an SDK example representation, not proof that the fields are interchangeable across API payloads. The curl samples use Checkout test v68 and VND, not a general SDK-version or currency requirement.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 native Drop-in and merchant/server integration boundary\n- [[adyen-tokenization]] \u2014 stored-method and recurring-payment concepts\n- [[adyen-online-payments]] \u2014 Sessions and Advanced payment flows\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15|MoMo iOS Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in). Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md:40"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md:64"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=iOS\\&integration=Drop-in#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md:308"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md:572"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "momo-ios-drop-in-ios-sdk-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-ios-drop-in]] \u2014 2026-09-15 MoMo iOS Drop-in Sessions/Advanced guide for base setup, Advanced redirect handling, recurring-token fields and test/live prerequisites.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "momo-ios-drop-in-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-ios-drop-in]] \u2014 MoMo iOS Drop-in recurring-token creation, settlement-gated lifecycle webhook and later ContAuth token payment route (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "381422d7ec12cb568a4257682a1557e901e80798a24ffbfa1552658770429da6",
+  "status": "candidate_ready"
+}

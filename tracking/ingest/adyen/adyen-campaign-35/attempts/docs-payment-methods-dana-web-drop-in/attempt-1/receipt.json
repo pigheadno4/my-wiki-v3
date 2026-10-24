@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-dana-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md\"\ntags: [adyen, dana, web-drop-in, redirect-payments, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide adds DANA to an **existing Web Drop-in** integration in separate Sessions and Advanced flows. It gives DANA-specific additions, not the whole base Web implementation. The pinned raw is captured **2026-09-16**, while this source was ingested 2026-10-25. See [[adyen-online-payments]] and [[adyen-tokenization]]. Its examples and instructions do not prove current merchant eligibility, a settled initial payment or a reusable token. See raw lines 1\u201323.\n\n## Base requests and redirect\n\n- **Sessions:** Requires an existing Sessions Web Drop-in integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and DANA added in Customer Area. No additional DANA-specific fields are needed for the ordinary `/sessions` request. Optional tree-shaken Adyen Web import includes `Redirect`. See raw lines 25\u201354.\n- **Advanced:** Requires an existing Advanced Web Drop-in integration, redirect handling and DANA added in Customer Area. Its Integration type link contains an **unresolved encoded platform template** at raw line 314 despite saying Web Drop-in; use the stated Web context and Web-scoped Advanced step links at lines 315 and 322, rather than treating that prerequisite URL as reliable. The Advanced section does not repeat the Sessions v68 minimum. No additional DANA-specific fields are needed for the ordinary base `/payments` request; optional tree-shaken import likewise includes `Redirect`. See raw lines 306\u2013334.\n- \u201cNo additional parameters\u201d is a **base-payment** statement only. Both recurring sections then require specific fields in `/payments`; the Sessions recurring subsection uses `/payments` despite the base Sessions payment-session request using `/sessions`. Keep these request contexts distinct. See raw lines 40\u201342, 65\u201393, 332\u2013373.\n\n## Recurring and outcome boundary\n\n- To create a token, include `storePaymentMethod: true` and a merchant-unique `shopperReference` in `/payments`. The merchant server must be configured to receive recurring token lifecycle events. **When the payment has settled**, `recurring.token.created` carries `shopperReference`, the initial payment's `pspReference` as `eventId`, and `storedPaymentMethodId`. Redirect handling or request submission is not itself proof of settlement or token creation. See raw lines 56\u201379 and 336\u2013359.\n- Later token-funded `/payments` includes `paymentMethod.storedPaymentMethodId` from that webhook (or the stated `/listRecurringDetails` alternative), the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed-interval contracts or `UnscheduledCardOnFile` for non-fixed intervals. The sample selects `Subscription` and `IDR`; that does not guarantee payment success or universal model eligibility. See raw lines 81\u2013115 and 361\u2013395.\n- The samples use TEST `/checkout/v68/payments`, API-key placeholders and TEST server-library settings; Node/Python/Ruby snippets name their library versions and show idempotency-key examples. These illustrate request shape, not a live transaction, a Web SDK version minimum or a guarantee that all language snippets are equivalent. See raw lines 95\u2013292 and 375\u2013572.\n- The repeated test/live section says a real DANA-registered mobile number is needed to test successful **live** payments, **test** payment status is checked in test Customer Area, and accepting **live** DANA payments first requires a request in live Customer Area. Those are separate environment/approval conditions, not evidence that a request was accepted or an actual payment completed. See raw lines 294\u2013304 and 574\u2013584.\n\n## Detail locators\n\n- **Sessions requirements, base request and optional import:** raw lines 25\u201354.\n- **Advanced requirements, unresolved template and base request:** raw lines 306\u2013334.\n- **Token creation and settlement-gated webhook:** raw lines 56\u201379 and 336\u2013359.\n- **Later token fields and model choice:** raw lines 81\u201393 and 361\u2013373.\n- **TEST example/library scope:** raw lines 95\u2013292 and 375\u2013572.\n- **Test/live qualification:** raw lines 294\u2013304 and 574\u2013584.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/dana/2026-09-15|DANA overview]] \u2014 ID/IDR method scope, five-minute default redirect lifetime and 300-IDR floor; separate from this Web implementation guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16|DANA Web Drop-in \u2014 captured 2026-09-16]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md:42"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md:72"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md:334"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md:584"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-web-drop-in-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-web-drop-in]] \u2014 2026-09-16 DANA Web Drop-in Sessions/Advanced redirect add-on: no extra base-request fields, separate recurring token `/payments` and post-settlement webhook, with TEST/live scope and an unresolved Advanced prerequisite URL template.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced integration-type prerequisite URL at raw line 314 contains an unresolved encoded platform template; Web-scoped step links at lines 315/322 and the stated Web Drop-in context are more precise.",
+          "No extra base-session/payment fields does not apply to recurring token creation or later token-funded requests.",
+          "TEST examples, redirect handling and live Customer Area request do not prove settled payment, token webhook, merchant approval or successful live operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/web-drop-in/2026-09-16.md",
+  "raw_sha256": "58d145325063f656e2f0e8de57291d015b83e3904295beafe2fe44b890cd1054",
+  "status": "candidate_ready"
+}

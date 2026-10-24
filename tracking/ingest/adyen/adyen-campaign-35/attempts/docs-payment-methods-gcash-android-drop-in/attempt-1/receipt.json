@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-gcash-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GCash Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/android-drop-in/2026-09-15.md\"\ntags: [adyen, gcash, android, drop-in, online-payments, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] snapshot, captured 2026-09-15, adds GCash to an **existing Android Drop-in** integration. It separates Sessions and Advanced server-flow additions, a recurring-token route, and test/live guidance. The page is a method-specific add-on, not proof of current Philippines/PHP merchant eligibility, shopper-wallet access, successful authorization, capture, settlement, refund or token creation. See [[adyen-online-payments]] and raw lines 15\u201325.\n\n## Key takeaways\n\n- **Sessions Drop-in:** an existing Android Sessions Drop-in integration with **Checkout API v68 or later** and adding GCash in Customer Area are stated prerequisites. The page requires no additional GCash-specific `/sessions` parameters or configuration. Its Sessions table does not separately specify redirect handling; shared flow behavior is delegated to the main integration guide. See raw lines 25\u201346.\n- **Advanced Drop-in:** an existing Android Advanced Drop-in integration, handling `action.type: redirect`, and adding GCash in Customer Area are stated prerequisites. The guide requires no additional method-specific configuration or **base** `/payments` parameters; recurring-token requests below do add fields. The Advanced section does not separately state the Sessions v68 minimum. See raw lines 298\u2013318.\n- For recurring transactions, initial token creation calls for `storePaymentMethod: true` and a unique `shopperReference` of **at least three characters** in `/payments`, plus a server that receives token lifecycle webhooks. The guide says `recurring.token.created` supplies `storedPaymentMethodId` **when the initial payment has settled**. This `/payments` wording also appears inside the Sessions section, so it should not be generalized into a claim that every Sessions integration calls `/payments` directly. Shopper-consent mechanics are not specified here. See raw lines 48\u201371 and 320\u2013343.\n- For later token payments, it specifies the received `paymentMethod.storedPaymentMethodId` (or `/listRecurringDetails` lookup), the same shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The request snippets use `gcash`, PHP and TEST as examples; an example token ID, payment request or return URL does not prove an authorized future charge. The Java sample uses `setStoredPaymentMethodId`, consistent with the stated field, but its amount differs from the cURL amount; sample amounts are illustrative. See raw lines 73\u2013139 and 345\u2013411.\n- Under **Test and go live**, the guide says a successful **live** payment test needs a real mobile number registered to a GCash account, directs payment-test issues to Adyen Support, then says to check **test** payments in the test Customer Area. These live-versus-test statements are distinct and do not by themselves establish an equivalent sandbox outcome. A separate request in the live Customer Area is required before live GCash acceptance. No provider/account/financial test was performed for this record. See raw lines 286\u2013296 and 558\u2013566.\n\n## Detail locators\n\n- Sessions prerequisites, no additional request/configuration and recurring-token fields/webhook: raw lines 25\u201385.\n- Sessions TEST recurring request examples: raw lines 87\u2013283. The cURL example uses `/checkout/v68/payments` and PHP 1000, whereas Java uses PHP 15000 (lines 90\u201396, 123\u2013125); neither is an eligibility or outcome contract.\n- Sessions test/live guidance: raw lines 286\u2013296.\n- Advanced prerequisites, redirect and no-extra-base-field statements: raw lines 298\u2013318.\n- Advanced recurring conditions and example requests: raw lines 320\u2013555.\n- Repeated live-number, support, test-status and live-request wording: raw lines 558\u2013566.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/android-drop-in/2026-09-15|GCash Android Drop-in guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API]",
+      "location": "raw line 33, Sessions flow Drop-in > Requirements"
+    },
+    {
+      "text": "minimum length three characters",
+      "location": "raw line 62, Sessions flow Drop-in > Create a token"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 64, Sessions flow Drop-in > Create a token"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 305, Advanced flow Drop-in > Requirements"
+    },
+    {
+      "text": "To test successful GCash live payments, you need to use a real mobile number registered with a GCash account.",
+      "location": "raw line 560, Advanced flow Drop-in > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gcash-android-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-android-drop-in]] \u2014 2026-09-15 GCash Android Drop-in add-on for existing Sessions (Checkout API v68+) or Advanced flow, with settled-payment recurring-token route and qualified live-number versus test-status instructions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/android-drop-in/2026-09-15.md",
+  "raw_sha256": "f08af1018d549776e553b9afbd1eb6b6c0d0daa76617bc4aeb40a9915d2f60cb",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+# GCash Web Component retrieval checks
+
+**Q1. What is the page for, and what cannot be inferred?** This is the method-specific GCash addition for existing Web Components Sessions and Advanced flows, not a standalone base integration or evidence of current eligibility, a finished payment, or a usable token. Raw locators: `raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:17-23,25-36,322-330,90-97`. Canonical stem: `https://docs.adyen.com/payment-methods/gcash/web-component`.
+
+**Q2. What capability, prerequisites, and warnings matter?** Sessions requires Web Components, Checkout API v68+, redirect handling and Customer Area addition; Advanced needs its Web Components flow, redirect handling and GCash setup. Import/use `Redirect`; ordinary GCash request/config additions are unnecessary. Recurring token creation is settlement-gated and requires storage fields plus webhook reception before future stored-method payments. Live acceptance requires a live Customer Area request. Both Component snippets show an unquoted `gcash` token, and the test/live sentence has mixed wording. Raw locators: `raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:29-71,74-111,312-360,362-399,600-608`. Canonical stem: `https://docs.adyen.com/payment-methods/gcash/web-component`.
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-gcash-web-component]] → [[raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15]].

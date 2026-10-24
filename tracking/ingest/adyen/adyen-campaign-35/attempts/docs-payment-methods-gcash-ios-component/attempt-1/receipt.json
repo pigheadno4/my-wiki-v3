@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-gcash-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GCash iOS Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md\"\ntags: [adyen, gcash, ios, components, redirect, tokenization]\n---\n\n## Overview\n\n[[adyen]]'s GCash iOS Component guide is a method-specific add-on to an existing iOS Components integration, with separate Sessions and Advanced server-side flows. It uses `InstantPaymentComponent` for the `gcash` payment method and requires the integration's redirect handling. The page is an implementation guide, not evidence of merchant enablement or a completed payment. See [[adyen-online-payments]] and the fully read raw snapshot.\n\n## Key takeaways\n\n- **Sessions:** An existing Sessions iOS Components integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and GCash setup in Customer Area are listed prerequisites. The page says no GCash-specific `/sessions` parameters or Component configuration are needed. The example obtains `gcash` from the session's payment methods, sets the session as delegate, then calls `initiatePayment()`. See raw lines 25\u201369.\n- **Advanced:** The page lists an existing Advanced iOS Components integration, redirect handling and Customer Area GCash setup. It says no GCash-specific Component configuration or `/payments` parameters are needed; the example assigns the merchant Component delegate before `initiatePayment()`. See raw lines 320\u2013363.\n- **Recurring:** Both flow sections state that GCash supports recurring transactions. For token creation, the page asks for `storePaymentMethod: true` and a shopper-unique `shopperReference` of at least three characters in `/payments`. It places the `recurring.token.created` webhook after settlement, with `storedPaymentMethodId` for subsequent `/payments` requests, and says the server must receive recurring-token lifecycle events. Later requests specify the stored ID, matching shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel` of `Subscription` or `UnscheduledCardOnFile` according to schedule. Token-request instructions do not themselves prove settlement, token creation, or a successful later charge. See raw lines 72\u2013109 and 365\u2013402.\n- **Testing and live gate:** The page says testing successful GCash live payments requires a real mobile number registered to a GCash account, gives a test-payment status route in Customer Area, and says a GCash request in the live Customer Area is needed before accepting live payments. This snapshot does not establish account eligibility or current availability. See raw lines 310\u2013318 and 603\u2013611.\n\n> [!warning] Source link discrepancy\n> The Advanced requirement calls for an iOS **Components** integration, but its linked main-guide URL uses `integration=Drop-in`; the redirect and payment-step links in that section use `integration=Components`. Treat the prerequisite label and URL as conflicting navigation, and verify the intended base guide before implementation. See raw lines 328\u2013329 and 363.\n\n## Detail locators\n\n- Sessions initialization code: raw lines 50\u201369. Advanced initialization code: raw lines 338\u2013357. These are client-side Component examples; merchant-server payment and webhook outcomes remain separate.\n- Recurring request examples in curl, Java, PHP, C#, Node.js, Python and Ruby: raw lines 111\u2013308 and 404\u2013601. They use PHP currency in examples and several TEST environments; examples do not state a universal country, currency, SDK-version or live-eligibility rule.\n- Shopper-return mechanics and final payment status are delegated to the linked main integration guides rather than specified here. See raw lines 21\u201335 and 324\u2013329.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online payment architecture and method routes.\n- [[adyen-tokenization]] \u2014 recurring-token lifecycle and shopper-reference context.\n- [[adyen-ios-sdk]] \u2014 version-qualified native iOS SDK context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15|GCash iOS Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Add GCash to your Components integration.",
+      "location": "raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md:17"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md:88"
+    },
+    {
+      "text": "Before you can accept live GCash payments, you need to submit a request for GCash in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md:318"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [iOS Components integration](/online-payments/build-your-integration/advanced-flow?platform=iOS\\&integration=Drop-in).",
+      "location": "raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md:328"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gcash-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-ios-component]] \u2014 2026-09-15 GCash iOS Components add-on for existing Sessions/Advanced integrations, redirect setup, settlement-gated recurring token route and live Customer Area request; the Advanced Components prerequisite links to a Drop-in URL.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced prerequisite label says Components while its linked main-guide URL selects Drop-in; keep this navigation conflict visible in the source."
+        ]
+      },
+      {
+        "update_id": "gcash-ios-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-ios-component]] \u2014 GCash iOS Components Sessions/Advanced guide with `/payments` token-creation fields, settlement-gated `recurring.token.created` webhook and subsequent stored-method requests (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/ios-component/2026-09-15.md",
+  "raw_sha256": "9670ebdee4fbad4ccdc50ecafef56d0979f5cefc62d443dd763b2be140c86c1c",
+  "status": "candidate_ready"
+}

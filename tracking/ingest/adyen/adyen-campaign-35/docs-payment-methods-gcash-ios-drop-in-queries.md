@@ -1,0 +1,9 @@
+# GCash iOS Drop-in retrieval questions
+
+## Q1 — What is the guide's scope, and what cannot be inferred?
+
+It adds GCash to an existing iOS Drop-in integration. Sessions requires Checkout API v68+ and GCash added in Customer Area; ordinary `/sessions` and GCash configuration need no extra method-specific parameters (raw lines 25–46; [[source-adyen-docs-payment-methods-gcash-ios-drop-in]]). Advanced requires an existing iOS Drop-in integration, `action.type: redirect` handling and GCash setup; ordinary `/payments` similarly needs no GCash-specific additions (lines 298–320). These claims do not by themselves establish an iOS SDK version, merchant approval or final payment outcome. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-gcash-ios-drop-in]] → [[raw/adyen/docs/payment-methods/gcash/ios-drop-in/2026-09-15]].
+
+## Q2 — What are recurring and environment prerequisites?
+
+Token creation uses `/payments` with `storePaymentMethod: true` and a unique `shopperReference` of at least **three characters**; `recurring.token.created` arrives only **after settlement** and requires the merchant to receive token lifecycle webhooks (raw lines 48–71, 322–345). Later calls need token ID, same shopper reference, `ContAuth` and the proper `Subscription` or `UnscheduledCardOnFile` model (lines 73–85, 347–359). Server samples are TEST/`v68`/`PHP`; live testing needs a real registered mobile number and live acceptance first needs a Customer Area request. Neither snippets nor request submission prove token/payment success or approval (lines 87–296, 361–570; [[source-adyen-docs-payment-methods-gcash-ios-drop-in]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-gcash-ios-drop-in]] → [[raw/adyen/docs/payment-methods/gcash/ios-drop-in/2026-09-15]].

@@ -1,0 +1,9 @@
+# MoMo Web Component retrieval checks
+
+Q1. What is this page's purpose and scope, and what cannot be inferred from it?
+
+It adds MoMo to an existing Web Components integration with distinct Sessions and Advanced paths (raw lines 15–23, 25, 323). The guide is limited to MoMo-specific additions: the base flow says no extra MoMo request/configuration fields (lines 40–60, 359–361), while test examples use VND and TEST without establishing universal currency, current merchant eligibility or completed payment (lines 113–134, 312–321). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-momo-wallet-web-component]] → [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15]].
+
+Q2. What are the central prerequisites and material warnings for base and recurring flows?
+
+Sessions requires existing Web Components, Checkout API v68+, redirect handling and MoMo in Customer Area; Advanced requires existing Web Components, redirect handling and the Customer Area addition (raw lines 29–36, 325–331). `Redirect` is imported, but the snippet leaves `momo_wallet` unquoted (lines 46–71). Recurring creation separately needs `storePaymentMethod: true`, `shopperReference` and lifecycle webhook reception; the token ID is described as arriving after settlement and later used with `ContAuth` and the selected recurring model (lines 83–111). The Java example uses `setRecurringDetailReference` rather than the prose's `storedPaymentMethodId` (lines 101–105, 154–157). TEST uses MoMo's app/credentials and desktop QR; LIVE requires a MoMo request in live Customer Area (lines 312–321). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-momo-wallet-web-component]] → [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15]].

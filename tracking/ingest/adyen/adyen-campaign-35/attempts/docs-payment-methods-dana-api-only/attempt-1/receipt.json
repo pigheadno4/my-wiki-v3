@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-dana-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"DANA for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/api-only/2026-09-15.md\"\ntags: [adyen, dana, api-only, wallets, indonesia]\n---\n\n## Overview\n\nAdyen's 2026-09-15 DANA API-only page adds DANA to an existing Web API-only Advanced-flow integration. It covers method discovery, a merchant-built payment form, redirect handling, a separate recurring-token route, and test/live setup. It is a historical snapshot, not proof of current availability, merchant eligibility, or payment execution. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Base flow:** Requires the existing API-only integration, handling `action.type: redirect`, and adding DANA in Customer Area. The shopper chooses DANA; the merchant-built form need not collect extra shopper information for this method. The existing integration handles the redirect. The page says no extra ordinary `/payments` parameters are needed, while its \u201chow it works\u201d step mentions additional item information *if applicable* without specifying a field here; do not infer an unconditional item requirement. [Raw lines 23\u201342, 87\u201389]\n- **Discovery conflict:** The `/paymentMethods` parameter table says `countryCode: IN` and `amount.currency: INR`, but the immediately following example request uses `countryCode: ID`, `currency: IDR`, and locale `id-ID`. The page also gives a **300 IDR** minimum below which DANA does not appear. Preserve this table/example mismatch; this page alone cannot establish the correct country/currency discovery values or eligibility for a merchant. The example uses Checkout v72 TEST and an idempotency-key placeholder; it is illustrative, not a validated live request. [Raw lines 44\u201391]\n- **Recurring:** The separately described token request includes `storePaymentMethod: true` and `shopperReference`. Once the initial payment has settled, a `recurring.token.created` webhook supplies `storedPaymentMethodId`; the merchant server needs the recurring-token lifecycle webhook. Later `/payments` use the stored ID, the shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. A request, redirect or example response does not prove token creation or settlement. [Raw lines 93\u2013128]\n- **Test/live:** The page says successful DANA live payments need a real mobile number registered with DANA, points to Customer Area for test-payment status, and requires a DANA request in live Customer Area before live acceptance. Its phrase \u201ctest successful DANA live payments\u201d mixes environment terms; do not infer a TEST simulator. [Raw lines 329\u2013337]\n\n## Detail locators\n\n- Discovery request/response examples: raw lines 44\u201385. The response shows method `type: dana`; no observed availability is implied.\n- Recurring `/payments` examples in curl and language SDKs use IDR and TEST settings: raw lines 130\u2013327. They do not resolve the discovery table's IN/INR contradiction.\n- Final authorization, capture, settlement, failure and refund outcomes need separate payment-status or base-guide evidence.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/api-only/2026-09-15|DANA for API only (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "| [countryCode]",
+      "location": "raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:50"
+    },
+    {
+      "text": "\"countryCode\": \"ID\"",
+      "location": "raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:65"
+    },
+    {
+      "text": "DANA payments need to be a minimum of **300 IDR**.",
+      "location": "raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:91"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:107"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area]",
+      "location": "raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:337"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "dana-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-api-only]] \u2014 2026-09-15 DANA API-only Advanced Web redirect/discovery guide with 300 IDR minimum and settled-payment token route; the IN/INR table conflicts with ID/IDR examples, so eligibility is unresolved.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The /paymentMethods parameter table says IN/INR while the example says ID/IDR; do not choose one as verified behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md",
+  "raw_sha256": "713823f83a361e7776531229e36a58e5876408d9b175bd75c7a2d16102b25f79",
+  "status": "candidate_ready"
+}

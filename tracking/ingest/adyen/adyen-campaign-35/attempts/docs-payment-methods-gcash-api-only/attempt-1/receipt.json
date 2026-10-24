@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-gcash-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GCash API-only guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/api-only/2026-09-15.md\"\ntags: [adyen, gcash, api-only, redirect, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] guide adds **GCash** to an existing **API-only Advanced-flow** integration. The merchant builds the payment-method UI and handles `action.type: redirect`; the page gives method discovery and a separate recurring-token path. The linked base integration guide supplies the full redirect/return and payment-result flow. This snapshot does not prove current PH/PHP merchant eligibility, a shopper's completed redirect, authorization, capture or settlement. [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Base prerequisites and display:** The guide requires an existing API-only integration, redirect handling, and GCash added in Customer Area. To discover `gcash` in `/paymentMethods`, its table specifies `countryCode: PH`, `amount.currency: PHP`, an amount value, and a `channel` such as Web, iOS or Android; the illustrated response names method type `gcash`. The method appearing in a response is discovery, not payment acceptance or merchant eligibility proof. See raw lines 23\u201329 and 38\u201385.\n- **Payment form and ordinary request:** The dedicated form section says to include GCash in the available-method list and that no GCash shopper information need be collected in the merchant-built form. The ordinary `/payments` section says no additional GCash-specific parameters are needed; it points to the main API-only guide for making the payment and redirect handling. The page does not provide a complete ordinary `/payments` payload or a final webhook/result contract. See raw lines 31\u201342 and 87\u201389.\n- **Recurring is a separate server route:** Token creation adds `storePaymentMethod: true` and a unique `shopperReference` of **at least three characters** to `/payments`. The guide says **after the initial payment has settled** a `recurring.token.created` webhook returns `storedPaymentMethodId`; the server must receive recurring-token lifecycle events. Later token payments specify that ID, the shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The base no-extra-fields sentence does not cover these recurring requests, and a redirect or API response does not itself yield the token. See raw lines 91\u2013126.\n- **TEST/LIVE boundary:** The guide says successful **live** GCash testing needs a real mobile number registered to a GCash account, directs test-payment checks to TEST Customer Area, and says to submit a request in LIVE Customer Area before accepting live payments. The mixed \u201ctest successful live\u201d language and TEST request examples are not evidence of an operating GCash test or live merchant account. The API-only page does not describe GCash-provider onboarding beyond Customer Area addition and shopper account requirement. See raw lines 128\u2013335.\n\n> [!warning] Contradiction\n> The \u201cHow it works\u201d sketch says the shopper enters details in a merchant-built form (raw line 34), but the dedicated form section says **no shopper information needs to be collected** for GCash (raw line 40). Do not add GCash-specific fields solely from the sketch. The `/paymentMethods` table says to specify `channel`, while its example request omits it (raw lines 46\u201353 and 57\u201372); use the table/main integration for channel applicability rather than treating the example as exhaustive. The curl example also shows `-X POST` without a continuation before `-d` (raw lines 62\u201363), so it should not be copied literally.\n>\n> The ordinary `/payments` \u201cno additional parameters\u201d wording (raw line 89) is narrower than the recurring instructions that explicitly add token-creation and token-use fields (raw lines 100\u2013126). Recurring snippets vary in amount (Java uses PHP 15000 while other examples use 1000) and in `returnUrl` presence (raw lines 130\u2013324); none is universal request authority.\n\n## Detail locators\n\n- API-only requirement, redirect and Customer Area setup: raw lines 23\u201329.\n- Form wording, PH/PHP/channel discovery table and example discrepancy: raw lines 31\u201385.\n- Ordinary `/payments` statement and recurring webhook/fields: raw lines 87\u2013126.\n- Language-specific recurring TEST examples: raw lines 128\u2013325.\n- Test/live wording and live Customer Area request: raw lines 327\u2013335.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-gcash]] \u2014 GCash overview for PH/PHP, shopper redirect/expiry and method-level capability context.\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/api-only/2026-09-15|Adyen GCash API-only snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing [API-only integration]",
+      "location": "raw line 27, Requirements > Integration type"
+    },
+    {
+      "text": "The shopper enters their details in the [payment form that you build]",
+      "location": "raw line 34, How it works, step 2"
+    },
+    {
+      "text": "You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 40, Build your payment form"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 105, Recurring payments > Create a token"
+    },
+    {
+      "text": "Before you can accept live GCash payments, you need to submit a request for GCash in your [live Customer Area]",
+      "location": "raw line 335, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-gcash-api-only-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-api-only]] \u2014 2026-09-15 GCash API-only Advanced redirect guide for PH/PHP method discovery and settled-payment recurring token route; form-details wording and discovery-example channel omission are qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "How-it-works form step conflicts with dedicated no-shopper-information form instruction (raw lines 34 and 40); /paymentMethods table lists channel but example omits it (raw lines 46\u201372)."
+        ]
+      },
+      {
+        "update_id": "c35-gcash-api-only-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-api-only]] \u2014 GCash API-only recurring route: shopper reference (minimum three characters), token-creation fields and post-settlement recurring.token.created webhook precede later stored-method ContAuth payments.\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/api-only/2026-09-15.md",
+  "raw_sha256": "1418f8418e37b08d0694f82771e39b391cc4efd3e149910f501e52be6a2ce203",
+  "status": "candidate_ready"
+}

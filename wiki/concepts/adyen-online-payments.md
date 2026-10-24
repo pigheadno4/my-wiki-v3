@@ -21,6 +21,153 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-momo-wallet-android]] — 2026-09-15 MoMo Android chooser linking Drop-in and redirect-oriented InstantPaymentComponent children plus four Sessions/Advanced base routes; child versions, eligibility and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-web]] — 2026-09-15 MoMo Web navigation chooser linking Drop-in/Redirect Components child guides and Sessions/Advanced main Web guides; child requirements and outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-gcash-web]] — 2026-09-15 GCash Web chooser linking Drop-in/Components children and Sessions/Advanced main guides; navigation only, with child implementation and outcomes separate.
+
+
+- [[source-adyen-docs-payment-methods-gcash-android]] — 2026-09-15 GCash Android chooser for Drop-in or InstantPaymentComponent child guides and the Android Sessions/Advanced main integration routes; child setup and outcomes require separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-dana-web]] — 2026-09-15 DANA Web navigation chooser linking Drop-in and Redirect Components child guides plus main Sessions/Advanced Web routes; child requirements and outcomes are separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-dana-android]] — 2026-09-15 DANA Android navigation chooser linking Drop-in, InstantPaymentComponent and Sessions/Advanced base guides; child setup and outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-ios]] — 2026-09-15 MoMo iOS chooser linking Drop-in and InstantPaymentComponent children plus four Sessions/Advanced base-guide routes; child versions, eligibility, token and outcome behavior remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-gcash-ios]] — 2026-09-15 GCash iOS navigation chooser for Drop-in and InstantPaymentComponent child guides plus main Sessions/Advanced iOS routes; child versions, setup and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-dana-ios]] — 2026-09-15 DANA iOS navigation chooser linking Drop-in, InstantPaymentComponent and Sessions/Advanced main integration guides; child requirements and outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-doku-doku-web]] — 2019-modified, 2026-09-15-captured DOKU Indonesia Web chooser linking Drop-in and Components guides for bank-transfer/convenience-store options; child variant, version, eligibility and outcome details remain separate.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-api-only]] — 2026-09-15 MoMo API-only add-on (linked Advanced Web base guide; discovery lists Web, iOS and Android channels) for VN/VND method discovery, redirect, settled-payment token route and TEST/live setup; generic form/fulfillment prose and example discrepancies are qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-doku-drop-in]] — 2019-modified, 2026-09-15-captured Indonesia DOKU Web Drop-in Sessions/Advanced add-on for bank-transfer virtual accounts and convenience-store vouchers, 48-hour default expiry, TEST route and live method request.
+
+
+- [[source-adyen-docs-payment-methods-doku-component]] — 2019-modified, 2026-09-15-captured DOKU Indonesian Web Components guide for bank-transfer/convenience-store variants, local-entity restrictions, v5/v6 creation, 48-hour default account/voucher validity and TEST/live gates.
+
+
+- [[source-adyen-docs-payment-methods-dana-react-native-component]] — 2026-09-15 DANA React Native Components Advanced-only redirect add-on with settled-payment recurring-token route; title, Drop-in prerequisite URL and TEST/live wording are qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-gcash-react-native-component]] — 2026-09-15 GCash React Native Components Advanced-only redirect add-on (Sessions unsupported), with base no-extra-fields, three-character token shopper reference and settlement-gated recurring webhook; prerequisite link misroutes to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-react-native-component]] — 2026-09-15 MoMo React Native Components Advanced-only redirect add-on (Sessions unsupported) with settlement-gated recurring-token route; title/base-guide link and Java example require source qualification.
+
+
+- [[source-adyen-docs-payment-methods-gcash-api-only]] — 2026-09-15 GCash API-only Advanced redirect guide for PH/PHP method discovery and settled-payment recurring token route; form-details wording and discovery-example channel omission are qualified.
+
+
+- [[source-adyen-docs-payment-methods-dana-api-only]] — 2026-09-15 DANA API-only Advanced Web redirect/discovery guide with 300 IDR minimum and settled-payment token route; the IN/INR table conflicts with ID/IDR examples, so eligibility is unresolved.
+
+
+- [[source-adyen-docs-payment-methods-doku-doku-api-only]] — 2019-modified, 2026-09-15-captured Indonesia DOKU API-only guide for ID/IDR variant selection, merchant-owned form and server request, with voucher-specific asynchronous webhook states, 48-hour default validity and BCA/BRI entity caveats.
+
+
+- [[source-adyen-docs-payment-methods-dana-ios-drop-in]] — 2026-09-15 DANA iOS Drop-in Sessions (Checkout API v68+) and Advanced add-on with a separate settlement-gated recurring-token route, Advanced redirect requirement and qualified TEST/live wording.
+
+
+- [[source-adyen-docs-payment-methods-dana-android-drop-in]] — 2026-09-15 DANA Android Drop-in Sessions (Checkout API v68+) and Advanced add-on with Advanced redirect handling and settlement-gated recurring-token route; TEST/live wording and example amounts are qualified.
+
+
+- [[source-adyen-docs-payment-methods-gcash-ios-drop-in]] — 2026-09-15 iOS Drop-in GCash Sessions/Advanced add-on: no extra base fields, Advanced redirect action, three-character token shopper reference and settlement-gated recurring token webhook; TEST/live scopes remain distinct.
+
+
+- [[source-adyen-docs-payment-methods-gcash-android-drop-in]] — 2026-09-15 GCash Android Drop-in add-on for existing Sessions (Checkout API v68+) or Advanced flow, with settled-payment recurring-token route and qualified live-number versus test-status instructions.
+
+
+- [[source-adyen-docs-payment-methods-dana-flutter-component]] — 2026-09-15 DANA Flutter Components Sessions/Advanced redirect add-on with a separate settlement-gated recurring-token route; both Components prerequisite links mistakenly target Drop-in pages.
+
+
+- [[source-adyen-docs-payment-methods-dana-react-native-drop-in]] — 2026-09-15 DANA React Native Drop-in Sessions (Checkout API v68+) and Advanced add-on with redirect and settled-payment recurring-token route; Sessions prerequisite link and TEST/live wording are qualified.
+
+
+- [[source-adyen-docs-payment-methods-dana-flutter-drop-in]] — 2026-09-15 DANA Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with settlement-gated token route; setup wording, Sessions prerequisite link and test/live wording need source qualification.
+
+
+- [[source-adyen-docs-payment-methods-gcash-flutter-component]] — 2026-09-15 GCash Flutter Components add-on for existing Sessions (Checkout API v68+) and Advanced redirects, with separate post-settlement recurring-token route; Integration type URLs point to Drop-in and test/live wording remains qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-gcash-react-native-drop-in]] — 2026-09-15 GCash React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with separate settlement-gated recurring-token route; Sessions guide-link and test/live wording remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-dana-web-drop-in]] — 2026-09-16 DANA Web Drop-in Sessions/Advanced redirect add-on: no extra base-request fields, separate recurring token `/payments` and post-settlement webhook, with TEST/live scope and an unresolved Advanced prerequisite URL template.
+
+
+- [[source-adyen-docs-payment-methods-gcash-flutter-drop-in]] — 2026-09-15 GCash Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with settlement-gated recurring token route; Sessions link, setup paths and TEST/live wording are source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-gcash-web-drop-in]] — 2026-09-15 GCash Web Drop-in Sessions/Advanced add-on for redirect setup, optional import, settlement-gated recurring tokens and live request; its Advanced prerequisite URL has an encoded platform template.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-android-drop-in]] — 2026-09-15 MoMo Android Drop-in add-on for existing Sessions (Checkout API v68+) or Advanced flows, with a separate settlement-gated recurring-token route, test/live prerequisites and qualified Java example.
+
+
+- [[source-adyen-docs-payment-methods-dana-web-component]] — 2026-09-15 DANA Web Redirect Component Sessions/Advanced add-on with a separate settled-payment recurring token route; unquoted `type:dana` snippets and base-versus-recurring request scope are qualified.
+
+
+- [[source-adyen-docs-payment-methods-gcash-web-component]] — 2026-09-15 GCash Web Components Sessions (Checkout API v68+) and Advanced Redirect add-on with settlement-gated recurring token route; example syntax and TEST/live wording remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-flutter-component]] — 2026-09-15 MoMo Flutter Components Sessions (Checkout API v68+) and Advanced redirect add-on with separate settled-payment token route; both prerequisite links point to Drop-in, and Java token example differs from prose.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-react-native-drop-in]] — 2026-09-15 MoMo React Native Drop-in method add-on for existing Sessions (Checkout API v68+) and Advanced flows, redirect handling and separate settlement-gated recurring-token route; base-guide link and Java token-field discrepancies remain qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-flutter-drop-in]] — 2026-09-15 MoMo Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with separate settlement-gated recurring-token route, TEST/live steps and source-qualified setup-link/example differences.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-web-drop-in]] — 2026-09-15 MoMo Web Drop-in Sessions (Checkout API v68+)/Advanced redirect add-on with separate settled-payment recurring-token route, TEST/live prerequisites and qualified example-field mismatch.
+
+
+- [[source-adyen-docs-payment-methods-dana-ios-component]] — 2026-09-15 iOS Components DANA add-on for Sessions/Advanced redirect and InstantPaymentComponent, with separate post-settlement recurring-token webhook and TEST/live qualifications; Advanced prerequisite link mislabels the integration route.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-web-component]] — 2026-09-15 MoMo Web Redirect Component guide for Sessions/Advanced prerequisites, optional recurring tokens and TEST app/QR versus LIVE request boundaries.
+
+
+- [[source-adyen-docs-payment-methods-gcash-ios-component]] — 2026-09-15 GCash iOS Components add-on for existing Sessions/Advanced integrations, redirect setup, settlement-gated recurring token route and live Customer Area request; the Advanced Components prerequisite links to a Drop-in URL.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-ios-component]] — 2026-09-15 MoMo iOS InstantPaymentComponent add-on for existing Sessions/Advanced flows, redirect handling and settled-payment recurring-token route; base-guide link and example-field qualifications remain in source.
+
+
+- [[source-adyen-docs-payment-methods-dana-android-component]] — 2026-09-15 DANA Android Component Sessions/Advanced redirect add-on with a separate settlement-gated recurring-token route; base no-extra-fields wording excludes recurring fields.
+
+
+- [[source-adyen-docs-payment-methods-gcash-android-component]] — 2026-09-15 GCash Android Components Sessions (Checkout API v68+) and Advanced method add-on, with redirect handling and settlement-gated recurring-token route; TEST/live wording and outcomes remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-android-component]] — 2026-09-15 MoMo Android Components Sessions (Checkout API v68+) and Advanced redirect add-on, with separate settled-payment recurring-token route, TEST/live prerequisites and qualified Java token-field example.
+
+
+- [[source-adyen-docs-payment-methods-doku]] — 2023-modified, 2026-09-15-captured Indonesia DOKU overview for expiring order-specific bank-transfer virtual accounts and convenience-store cash vouchers, with authorization-webhook-before-delivery flow, variant/local-entity caveats and Web/API-only navigation.
+
+
+- [[source-adyen-docs-payment-methods-gcash]] — 2026-09-15 GCash PH/PHP redirect-wallet overview covering one-time versus recurring shopper journeys, default 30-minute redirect expiry, capability marks and channel routes; return/SMS and matrix marks do not prove transaction outcome or merchant eligibility.
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet]] — 2026-09-15 MoMo VN/VND redirect-wallet overview with desktop QR, mobile web and app shopper journeys, qualified capability marks and channel-guide routes; no merchant setup or payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-dana]] — 2026-09-15 DANA ID/IDR wallet overview for shopper redirect, five-minute default redirect-page lifetime, 300-IDR display floor, capability matrix and channel child routes; redirect/result display is not merchant-side outcome proof.
+
+
 - [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-ios]] — 2020-modified, 2026-09-15-captured WeChat Pay in-app iOS chooser for Drop-in/Components child pages and Sessions base guides; child setup, app switch and outcomes are separate authority.
 
 

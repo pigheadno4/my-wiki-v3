@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-dana-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA Flutter Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/flutter-component/2026-09-15.md\"\ntags: [adyen, dana, flutter, components, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] page gives **DANA-specific additions** to existing **Flutter Components** integrations, separated into Sessions and Advanced server-side flows, with a further recurring-token route. It relies on linked main guides for base Component construction and redirect return handling; this page supplies no DANA-specific Flutter widget or SDK-version example. It does not establish current merchant eligibility, a completed shopper return, authorization, capture or settlement. [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions base flow:** The text requires an existing Sessions Flutter Components integration, **Checkout API v68 or later**, `action.type: redirect` handling, and DANA added in Customer Area. It says no additional DANA-specific `/sessions` parameters or Component configuration are needed. The main integration still supplies its normal request and return handling. See raw lines 23\u201346.\n- **Advanced base flow:** The text requires an existing Advanced Flutter Components integration, redirect handling and DANA in Customer Area. It says no additional DANA-specific Component configuration or **ordinary** `/payments` parameters. The Advanced requirement table does not independently restate the Sessions v68+ condition. See raw lines 296\u2013318.\n- **Recurring token route:** Token creation adds `storePaymentMethod: true` and a unique `shopperReference` to **`/payments`**. The guide says `recurring.token.created` provides `storedPaymentMethodId` **when the initial payment has settled**, and the server must receive recurring-token lifecycle webhooks. Later token payments use that stored ID, the shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. A redirect or immediate request is not the stated token-creation event. See raw lines 48\u201385 and 320\u2013357.\n- **TEST/LIVE boundary:** The page says a real mobile number registered with a DANA account is needed to test successful **live** DANA payments; it also points to TEST Customer Area for test-payment status and says to request DANA in LIVE Customer Area before accepting live payments. This mixed wording and the TEST snippets do not prove a tested or enabled merchant account. IDR in recurring request examples does not by itself define eligibility; the [[source-adyen-docs-payment-methods-dana]] overview has separate ID/IDR and method-display conditions. See raw lines 87\u2013294 and 359\u2013566.\n\n> [!warning] Contradiction\n> Both **Flutter Components** prerequisite rows point to **Flutter Drop-in** URLs: Sessions' row points to an **Advanced Drop-in** page (raw line 31), and Advanced's row to an **Advanced Drop-in** page (raw line 304). Nearby redirect and request links point to Components flows (raw lines 33, 40, 305, 318). Treat the prerequisite URLs as mismatched navigation, not evidence that this guide is for Drop-in or that Sessions requires Advanced.\n>\n> The base-flow \u201cno additional parameters\u201d statements (raw lines 40 and 318) cannot cover the recurring sections, which expressly require `/payments` token fields (raw lines 59\u201385 and 331\u2013357). The recurring examples differ: Java uses IDR 15000 where the other languages use 1000; curl/Node/Python/Ruby omit `returnUrl` while Java/PHP/C# include it (raw lines 89\u2013283 and 361\u2013555). Do not use a single snippet as universal request authority.\n\n## Detail locators\n\n- Sessions prerequisites, no-extra-fields/configuration statement: raw lines 23\u201346.\n- Sessions token creation, settlement-gated webhook and later token payments: raw lines 48\u201385.\n- Sessions examples and test/live statements: raw lines 87\u2013294.\n- Advanced prerequisites and no-extra-fields/configuration statement: raw lines 296\u2013318.\n- Advanced recurring section, examples and test/live statements: raw lines 320\u2013566.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-dana]] \u2014 DANA overview for ID/IDR and method-display conditions.\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/flutter-component/2026-09-15|Adyen DANA Flutter Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Flutter Components integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in).",
+      "location": "raw line 31, Sessions flow Component > Requirements > Integration type"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions flow Component > Requirements > Checkout API"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 64, Sessions flow Component > Recurring payments > Create a token"
+    },
+    {
+      "text": "`recurringProcessingModel`: Use **Subscription** for a series of transactions following a fixed time interval or **UnscheduledCardOnFile** for contracts with non-fixed time interval.",
+      "location": "raw line 85, Sessions flow Component > Recurring payments > Make a payment with a token"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area]",
+      "location": "raw line 566, Advanced flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-flutter-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-flutter-component]] \u2014 2026-09-15 DANA Flutter Components Sessions/Advanced redirect add-on with a separate settlement-gated recurring-token route; both Components prerequisite links mistakenly target Drop-in pages.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Sessions and Advanced Components prerequisite rows point to Drop-in guides; Sessions row also points to Advanced (raw lines 31 and 304)."
+        ]
+      },
+      {
+        "update_id": "c35-dana-flutter-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-flutter-component]] \u2014 DANA Flutter Components recurring route: initial settlement precedes recurring.token.created, then stored-method ContAuth and interval-specific processing-model requests; base no-extra-fields wording excludes recurring.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/flutter-component/2026-09-15.md",
+  "raw_sha256": "241e97a3ab0dd27068857e685bc5e46e2131b258fdc76b63e354ab209cec0571",
+  "status": "candidate_ready"
+}

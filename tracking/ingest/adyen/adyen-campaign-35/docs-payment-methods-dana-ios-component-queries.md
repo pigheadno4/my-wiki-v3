@@ -1,0 +1,9 @@
+# DANA iOS Component retrieval questions
+
+## Q1 — What is this guide for, and what is its scope?
+
+It adds DANA to an existing iOS Components integration, with Sessions and Advanced `action.type: redirect` paths and `InstantPaymentComponent` examples (raw lines 15–69, 320–363; [[source-adyen-docs-payment-methods-dana-ios-component]]). Sessions expressly requires Checkout API v68+ and DANA in Customer Area (lines 29–36); Advanced requires method addition and redirect handling but does not repeat that version row (lines 324–330). The Advanced integration-type URL points to Drop-in despite Components prose (line 328). Component initiation and shopper return do not establish payment completion. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-ios-component]] → [[raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15]].
+
+## Q2 — What are the material recurring, environment and outcome conditions?
+
+No extra DANA-specific fields/configuration are needed for ordinary base Sessions/Advanced payments (raw lines 38–48, 332–363), but token creation uses `/payments` with `storePaymentMethod: true` and unique `shopperReference`; `recurring.token.created` supplies the token **after settlement** and requires a merchant-received lifecycle webhook (lines 72–95, 365–388). Subsequent charges need the token, reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile` based on schedule (lines 97–110, 390–402). Samples are TEST/`v68`/`IDR` illustrations, while live testing needs a real registered mobile number and live acceptance a Customer Area request; neither proves enablement or payment success (lines 111–318, 404–611; [[source-adyen-docs-payment-methods-dana-ios-component]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-ios-component]] → [[raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15]].

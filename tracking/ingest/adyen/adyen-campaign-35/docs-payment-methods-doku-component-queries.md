@@ -1,0 +1,9 @@
+# DOKU Web Components retrieval questions
+
+## Q1 — What is this guide's purpose and scope?
+
+It adds Indonesian DOKU **bank-transfer and convenience-store** variants to an existing Web Components Sessions or Advanced integration; each desired DOKU payment method must be added in Customer Area (raw lines 15–39; [[source-adyen-docs-payment-methods-doku-component]]). The page says no DOKU-specific extra API fields, describes `/sessions` as default with Components v5+ and `/payments` for additional use cases (lines 49–54). These statements do not prove current account/variant enablement or that the merchant can omit general base request fields. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-doku-component]] → [[raw/adyen/docs/payment-methods/doku/component/2026-09-15]].
+
+## Q2 — What variant, version, expiry and outcome qualifications matter?
+
+The table lists two convenience-store and seven bank-transfer variants; BCA and BRI VA require a **local entity** (raw lines 56–72). Web Components v6 imports `Doku`; v6.0.0+ creates `new Doku(checkout)`, while v5.x.x/earlier uses `checkout.create('doku_alfamart')`; Alfamart is only the example, and the v6 import link points to Drop-in despite Components prose (lines 41–47, 72–102). Virtual bank accounts/vouchers default to **48 hours** and Support handles changes; `id-ID` localizes voucher language (lines 104–108). TEST vouchers and test Customer Area status are distinct from a required live Customer Area method request; neither issue/mount/request nor test listing proves a paid order, final authorization or live approval (lines 110–122; [[source-adyen-docs-payment-methods-doku-component]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-doku-component]] → [[raw/adyen/docs/payment-methods/doku/component/2026-09-15]].

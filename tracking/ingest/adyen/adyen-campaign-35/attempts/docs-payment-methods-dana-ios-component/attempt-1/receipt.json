@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-dana-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA iOS Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/ios-component/2026-09-15.md\"\ntags: [adyen, dana, ios, components, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] page gives DANA-specific additions to an **existing iOS Components** integration in separate Sessions and Advanced flows. It uses `InstantPaymentComponent` for the initial payment and describes later recurring token payments. It is not a standalone iOS integration or proof of current DANA enablement, a completed payment or a stored token. See [[adyen-online-payments]] and [[adyen-tokenization]]. See raw lines 15\u201323, 25\u2013110 and 320\u2013402.\n\n## Base flow and Component\n\n- **Sessions:** Requires an existing Sessions iOS Components integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and DANA added in Customer Area. The ordinary `/sessions` call and DANA Component need no extra method-specific parameters/configuration. The Swift example checks for `.other(\"dana\")`, creates `InstantPaymentComponent`, sets the **session** as delegate and calls `initiatePayment()`. These method-specific omissions do not remove the main flow's base setup or redirect handling. See raw lines 25\u201369.\n- **Advanced:** Requires an existing Advanced iOS Components integration, redirect handling for `action.type: redirect`, and DANA added in Customer Area. The integration-type URL at raw line 328 points to `integration=Drop-in` despite saying **Components**; the redirect and payment step links are Components-scoped. Use the stated Components context and verify the correct main guide rather than relying on that inconsistent prerequisite URL. No additional DANA configuration or ordinary `/payments` parameters are specified. The Swift example checks `.other(\"dana\")`, sets **self** as delegate and initiates the payment. The Advanced table does not repeat the Sessions v68 minimum. See raw lines 320\u2013363.\n- The no-extra-fields claims apply to **ordinary initial** `/sessions` or `/payments` calls. Both recurring sections explicitly add token-creation and later-token fields to `/payments`; the Sessions recurring subsection also uses `/payments`, distinct from its base `/sessions` request. See raw lines 38\u201348, 72\u2013110, 359\u2013402.\n\n## Recurring and outcome boundary\n\n- The page says DANA supports recurring transactions. To create a token, include `storePaymentMethod: true` and a unique `shopperReference` in `/payments`; the merchant server must receive Recurring tokens lifecycle webhooks. **After the payment has settled**, `recurring.token.created` provides the shopper reference, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId`. Request submission, shopper redirect/return or Component initiation does not establish settlement or token issuance. See raw lines 72\u201395 and 365\u2013388.\n- A later token payment includes `paymentMethod.storedPaymentMethodId` from that webhook (or the stated `/listRecurringDetails` lookup), the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The sample chooses `Subscription` and `IDR`; it does not prove an actual payment or universal model eligibility. See raw lines 97\u2013132 and 390\u2013425.\n- The samples use a Checkout **test** `v68/payments` endpoint and TEST client environments. Node/Python/Ruby snippets label particular API-library versions and show idempotency-key examples. These are illustrative server calls and version labels, not an iOS SDK minimum, a live environment switch or completed payment evidence. See raw lines 111\u2013308 and 404\u2013601.\n- The page repeats that testing successful **live** DANA payments requires a real mobile number registered with a DANA account, checking **test** payments uses the test Customer Area, and accepting **live** DANA payments first requires a DANA request in the live Customer Area. This mixed live/test wording distinguishes prerequisites and status lookups; a submitted request is not approval, and this guide does not give a final authorization webhook contract for the initial redirect payment. See raw lines 310\u2013318 and 603\u2013611.\n\n## Detail locators\n\n- **Sessions prerequisites, no extra base fields, Component/delegate:** raw lines 25\u201369.\n- **Sessions token creation and settled-payment webhook:** raw lines 72\u201395.\n- **Advanced prerequisites, anomalous Drop-in URL, base request/Component:** raw lines 320\u2013363.\n- **Advanced repeated recurring fields and webhook:** raw lines 365\u2013402.\n- **Representative test requests/library labels:** raw lines 111\u2013308 and 404\u2013601.\n- **Testing/live account and Customer Area conditions:** raw lines 310\u2013318 and 603\u2013611.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/dana/2026-09-15|DANA overview]] \u2014 ID/IDR, redirect lifetime and amount floor; separate from this iOS Component add-on.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15|DANA iOS Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) DANA, use the `InstantPaymentComponent` class.",
+      "location": "raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15.md:54"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15.md:88"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=iOS\\&integration=Components#make-a-payment).",
+      "location": "raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15.md:363"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15.md:611"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-ios-component-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-ios-component]] \u2014 2026-09-15 iOS Components DANA add-on for Sessions/Advanced redirect and InstantPaymentComponent, with separate post-settlement recurring-token webhook and TEST/live qualifications; Advanced prerequisite link mislabels the integration route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced integration-type URL uses Drop-in despite Components prose; its redirect/payment step links are Components-scoped.",
+          "No extra ordinary base-request fields does not apply to recurring token creation or subsequent token payments.",
+          "The initial Component/redirect flow and token-creation request do not prove settled payment, token webhook or live approval; live/testing instructions have distinct scopes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/ios-component/2026-09-15.md",
+  "raw_sha256": "fccc194bc98e5d344857ac3d348c14b3d6d0f55a85145c3856c1e4174ac78d3d",
+  "status": "candidate_ready"
+}

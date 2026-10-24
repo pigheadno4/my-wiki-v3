@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MoMo Android Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/android-component/2026-09-15.md\"\ntags: [adyen, momo, android, components, wallets, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] MoMo Android Components add-on, captured 2026-09-15, gives method-specific steps for **existing** Sessions or Advanced Android Components integrations. It uses `InstantPaymentComponent` with MoMo method type `momo_wallet`, requires redirect handling, and documents a separate recurring-token route. See [[adyen-online-payments]] and [[adyen-tokenization]]. This is a historical guide, not evidence that a particular merchant has MoMo enabled, that a test or live payment succeeded, or that the examples are a complete integration. See raw lines 15\u201323, 25\u201377 and 377\u2013420.\n\n## Key takeaways\n\n- **Sessions:** Start with an existing Sessions Android Components integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and MoMo added in Customer Area. The base `/sessions` request needs no MoMo-specific parameters; the page shows `instant` and, for Compose, `components-compose` imports, then `InstantPaymentComponent` creation for `momo_wallet`. It gives no concrete Android SDK version in place of `YOUR_VERSION`. See raw lines 25\u201377 and 79\u2013126.\n- **Advanced:** Start with an existing Advanced Android Components integration, additional-action redirect handling, and Customer Area method setup. The base `/payments` request needs no additional MoMo-specific fields. The page again uses `InstantPaymentComponent` with `momo_wallet`; its Compose and View examples derive the method from `/paymentMethods`. The no-extra-fields statement concerns the ordinary payment add-on, not the separate recurring-token requests. See raw lines 377\u2013477.\n- **Recurring:** The guide states MoMo supports recurring transactions. For token creation, its `/payments` request adds `storePaymentMethod: true` and a unique `shopperReference`; it says `recurring.token.created` arrives **when the payment has been settled**, carrying `storedPaymentMethodId`, and calls for a server that receives token-lifecycle webhooks. A later token payment uses that stored ID, the same shopper reference, `shopperInteraction: ContAuth`, and a `recurringProcessingModel` selected for fixed-interval `Subscription` or nonfixed `UnscheduledCardOnFile`. A token request or initial redirect does not itself establish settlement or token creation. See raw lines 128\u2013165 and 479\u2013516.\n- **Example qualification:** Most later-payment examples use `storedPaymentMethodId`, but the Java examples instead call `setRecurringDetailReference` (raw lines 208\u2013211 and 559\u2013562). Treat that as an unresolved example/API-mapping discrepancy, not a verified substitute. The example amounts in VND and TEST endpoint/library snippets are illustrative; this page does not enumerate merchant-country eligibility or establish live account configuration. See raw lines 167\u2013365 and 518\u2013715.\n- **Testing and live:** The test instructions use the MoMo test app and scenario-specific test credentials, and direct checking test-payment status in Customer Area. Accepting live MoMo payments requires a request in the live Customer Area. A downloaded app, selected scenario or live request is not a verified payment outcome or approval. See raw lines 366\u2013375 and 717\u2013726.\n\n## Detail locators\n\n- Sessions prerequisites, base request and component setup: raw lines 25\u2013126.\n- Sessions recurring-token fields, webhook and examples: raw lines 128\u2013365.\n- Advanced prerequisites, component and base request: raw lines 377\u2013477.\n- Advanced recurring-token fields and examples: raw lines 479\u2013715.\n- Test app, credentials, status check and live request: raw lines 366\u2013375 and 717\u2013726.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-android-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/android-component/2026-09-15|MoMo Android Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#create-a-payment-session).",
+      "location": "raw line 42"
+    },
+    {
+      "text": "MoMo supports recurring transactions. To make recurring transactions, you need to:",
+      "location": "raw line 132"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 144"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 375"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-momo-android-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-android-component]] \u2014 2026-09-15 MoMo Android Components Sessions (Checkout API v68+) and Advanced redirect add-on, with separate settled-payment recurring-token route, TEST/live prerequisites and qualified Java token-field example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/android-component/2026-09-15.md",
+  "raw_sha256": "c8ebe26f66210760c22e046e200f0daa3846bdfececf14c93318f21f41fb88e9",
+  "status": "candidate_ready"
+}

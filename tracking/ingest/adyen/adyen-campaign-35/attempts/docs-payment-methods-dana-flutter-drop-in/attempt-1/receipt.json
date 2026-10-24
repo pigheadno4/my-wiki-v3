@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-dana-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA Flutter Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, dana, flutter, drop-in, wallets, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] DANA Flutter Drop-in add-on, captured 2026-09-15, describes method-specific steps for **existing** Sessions or Advanced Flutter Drop-in integrations and a separate recurring-token route. See [[adyen-online-payments]] and [[adyen-tokenization]]. It is not a standalone Flutter integration, evidence of merchant enablement, or proof that a payment or refund completed. See raw lines 15\u201323, 25\u201348 and 298\u2013320.\n\n## Key takeaways\n\n- **Sessions:** The prose requires an existing Sessions Flutter Drop-in integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and DANA setup. Its setup row says to contact Adyen Support to add DANA. The base `/sessions` request and DANA configuration need no additional method-specific parameters. The integration-type link labeled Sessions actually points to an **Advanced** Flutter Drop-in URL, so use the flow-specific prose and verify the main Sessions guide. See raw lines 25\u201348.\n- **Advanced:** The prose requires an existing Advanced Flutter Drop-in integration and redirect handling. Its setup row says to add DANA in Customer Area, unlike the Sessions row's Support-contact wording; the guide does not resolve the difference. It says no additional DANA configuration or ordinary `/payments` request parameters are needed. These no-extra-fields claims do not cover the separate recurring request. See raw lines 298\u2013320.\n- **Recurring:** The guide states DANA supports recurring transactions. Token creation adds `storePaymentMethod: true` and a unique `shopperReference` to `/payments`. It says the `recurring.token.created` webhook, carrying `storedPaymentMethodId`, arrives **when the initial payment has settled**, and the server must receive token-lifecycle webhooks. Later token payments use that stored ID, the matching shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for nonfixed intervals. Request submission or redirect alone does not prove settlement or token creation. See raw lines 50\u201387 and 322\u2013359.\n- **Examples and environments:** The later-payment samples use `type: dana`, IDR amounts and TEST endpoints; they are example server requests rather than a full Flutter client implementation or country/account eligibility matrix. Under **Test and go live**, the page says a real mobile number registered with a DANA account is needed to test successful DANA **live** payments, yet also tells readers to check **test** payment status in test Customer Area. Keep this live/test wording tension and verify the intended environment before operational use. It separately requires a DANA request in live Customer Area before live acceptance. See raw lines 89\u2013286, 288\u2013296, 361\u2013558 and 560\u2013568.\n\n## Detail locators\n\n- Sessions prerequisites, setup, request and configuration: raw lines 25\u201348.\n- Sessions recurring-token fields and examples: raw lines 50\u2013286.\n- Advanced prerequisites, setup, request and configuration: raw lines 298\u2013320.\n- Advanced recurring-token fields and examples: raw lines 322\u2013558.\n- Testing, status check and live request: raw lines 288\u2013296 and 560\u2013568.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/flutter-drop-in/2026-09-15|DANA Flutter Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Flutter Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in).",
+      "location": "raw line 33"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add DANA in your Customer Area.",
+      "location": "raw line 36"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 66"
+    },
+    {
+      "text": "Before you begin, [add DANA in your Customer Area](/payment-methods/add-payment-methods).",
+      "location": "raw line 308"
+    },
+    {
+      "text": "To test successful DANA live payments, you need to use a real mobile number registered with a [DANA account](https://www.dana.id/en/download).",
+      "location": "raw line 290"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-flutter-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-flutter-drop-in]] \u2014 2026-09-15 DANA Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with settlement-gated token route; setup wording, Sessions prerequisite link and test/live wording need source qualification.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "7fbae5580f75239f77453ab9c4a36b5890eafa2b87e30fc9f09f89b57fce9314",
+  "status": "candidate_ready"
+}

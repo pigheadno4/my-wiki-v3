@@ -1,0 +1,9 @@
+# GCash React Native Component retrieval questions
+
+## Q1 — What is the guide's scope and supported flow?
+
+The URL/body concern React Native Components though the title says “GCash React Component.” Sessions is expressly unsupported; the page gives an Advanced-only add-on for an existing React Native Components integration with redirect handling and GCash in Customer Area (raw lines 15–41; [[source-adyen-docs-payment-methods-gcash-react-native-component]]). The Integration type URL points to Drop-in despite Components prose (line 39). No extra GCash-specific configuration or ordinary base `/payments` fields are needed (lines 43–53), which does not remove base-flow work or prove an outcome. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-gcash-react-native-component]] → [[raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15]].
+
+## Q2 — What recurring, version and live limits apply?
+
+Token creation uses `storePaymentMethod: true` and a unique `shopperReference` of at least **three characters**; `recurring.token.created` supplies the token **after settlement**, requiring merchant receipt of lifecycle webhooks (raw lines 55–78). Later `/payments` needs the token, original reference, `ContAuth` and schedule-appropriate `Subscription` or `UnscheduledCardOnFile` (lines 80–92). The `v68`/`PHP` TEST server snippets do not state a React Native SDK/API minimum or prove a live payment; successful live testing calls for a real registered mobile number and live acceptance first requires a Customer Area request, not automatic approval (lines 94–301; [[source-adyen-docs-payment-methods-gcash-react-native-component]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-gcash-react-native-component]] → [[raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15]].

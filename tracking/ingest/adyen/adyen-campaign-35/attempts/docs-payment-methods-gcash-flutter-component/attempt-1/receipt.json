@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-gcash-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GCash Flutter Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/flutter-component/2026-09-15.md\"\ntags: [adyen, gcash, flutter, components, online-payments, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen snapshot gives the **GCash-specific additions** for an existing Flutter Components integration, separated into Sessions and Advanced server-side flows. It is an add-on to the main integration guides, not complete implementation, current eligibility or completed-payment evidence. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions prerequisites:** The page calls for an existing Sessions-flow Flutter Components integration, Checkout API **v68 or later**, handling of a redirect action (`action.type: redirect`), and GCash added in Customer Area. Yet its Integration type link points to an **Advanced-flow Drop-in** URL; the separate redirect and session-creation links point to Sessions-flow Components. Do not treat the mismatched URL as a valid Components base procedure. (raw lines 23\u201340)\n- **Ordinary Sessions additions:** The guide specifies no extra GCash parameters in `/sessions` and no extra GCash Component configuration. That method-specific statement does not waive base integration requirements or the separate recurring-token fields. (raw lines 36\u201362)\n- **Advanced prerequisites and additions:** The Advanced section calls for an existing Advanced-flow Flutter Components integration, redirect handling, and GCash in Customer Area. It says no extra GCash configuration or ordinary `/payments` parameters are needed. Its Integration type link likewise points to **Drop-in**, while its redirect/payment links use Components. The section does not separately assert the Sessions-row API-version minimum; its recurring examples use a v68 TEST endpoint. (raw lines 296\u2013318, 359\u2013379)\n- **Recurring token route:** Both flow sections describe recurring GCash transactions. For token creation, `/payments` includes `storePaymentMethod: true` and a unique `shopperReference` of **at least three characters**. Once the initial payment **has settled**, the `recurring.token.created` webhook yields `storedPaymentMethodId`, and the server must be set up to receive recurring-token lifecycle events. A later `/payments` uses that ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for nonfixed intervals. This is a conditional lifecycle, not evidence that the example payment settled or that a later charge succeeded. (raw lines 48\u201385, 320\u2013357)\n- **TEST/live wording:** The page says \u201cTo test successful GCash live payments,\u201d use a real mobile number registered with a GCash account; that wording appears under **Test and go live**, alongside test Customer Area status checks and a separate request in the **live** Customer Area before accepting live payments. Preserve the test/live ambiguity rather than treating a real number or a test check as authorization or live enablement. (raw lines 286\u2013294, 558\u2013566)\n- **Example limits:** Recurring request samples use `gcash`, `PHP`, placeholder merchant/shopper IDs and TEST endpoints or library environments. They illustrate request shape; this page does not document a final payment result, capture or settlement for those examples. (raw lines 87\u2013108, 110\u2013139, 359\u2013411)\n\n## Detail locators\n\n- Scope and Sessions requirements, including mismatched base link: raw lines 15\u201340.\n- No-extra-method-parameter/configuration statements: raw lines 38\u201346 and 310\u2013318.\n- Token creation and post-settlement webhook fields: raw lines 48\u201371 and 320\u2013343.\n- Subsequent token-payment fields and examples: raw lines 73\u2013139 and 345\u2013411.\n- Advanced Components/Drop-in link mismatch: raw lines 296\u2013306.\n- Test/live guidance: raw lines 286\u2013294 and 558\u2013566.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-gcash]]\n- [[source-adyen-docs-payment-methods-gcash-android-component]]\n- [[source-adyen-docs-payment-methods-gcash-ios-component]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/flutter-component/2026-09-15|Adyen GCash Flutter Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add GCash to your existing integration. The following instructions show only what you must add to your integration specifically for GCash.",
+      "location": "raw line 19, add-on scope"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions API prerequisite"
+    },
+    {
+      "text": "* [shopperReference](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-shopperReference): Your unique identifier for the shopper (minimum length three characters).",
+      "location": "raw line 62, Sessions token creation (repeated raw line 334, Advanced)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 64, Sessions settlement-gated token event (repeated raw line 336, Advanced)"
+    },
+    {
+      "text": "To test successful GCash live payments, you need to use a real mobile number registered with a GCash account.",
+      "location": "raw line 288, TEST/live wording (repeated raw line 560)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gcash-flutter-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-flutter-component]] \u2014 2026-09-15 GCash Flutter Components add-on for existing Sessions (Checkout API v68+) and Advanced redirects, with separate post-settlement recurring-token route; Integration type URLs point to Drop-in and test/live wording remains qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both Integration type links point to Drop-in despite Flutter Components labels; Sessions link also points to Advanced flow. The page's 'test successful GCash live payments' wording does not establish live eligibility or outcome, and recurring token delivery is settlement-gated."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/flutter-component/2026-09-15.md",
+  "raw_sha256": "5be981f536f50220c82cd0e7390ec031ddc6cfb1e6008963161e2ddbf7b3dc92",
+  "status": "candidate_ready"
+}

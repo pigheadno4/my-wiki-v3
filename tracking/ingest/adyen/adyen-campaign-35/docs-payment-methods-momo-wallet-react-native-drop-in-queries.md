@@ -1,0 +1,11 @@
+# docs-payment-methods-momo-wallet-react-native-drop-in — attempt 1
+
+Q1. What purpose and scope does this source serve, and what cannot be inferred?
+
+This is the MoMo-specific add-on for an **existing React Native Drop-in** integration, split by Sessions and Advanced server-side flows, rather than a full base integration or current eligibility/processing certificate (source-adyen-docs-payment-methods-momo-wallet-react-native-drop-in; raw lines 15–25, 29–36, 299–309). The Sessions row's claimed Sessions prerequisite links to an Advanced-flow URL; that cross-link cannot settle which base steps to implement (raw line 33). The historical test/live instructions and request examples cannot establish that a given merchant was enabled, that a shopper completed a redirect, or that a payment settled (raw lines 288–297, 561–570).
+
+Q2. What are its central capability, prerequisites and warnings?
+
+For the ordinary Sessions path, the page requires Checkout API v68+, redirect handling for `action.type: redirect` and MoMo in Customer Area, but no MoMo-specific `/sessions` or configuration additions (raw lines 29–48). Advanced likewise requires an existing Drop-in integration, redirect handling and Customer Area addition, with no extra ordinary `/payments` parameters/configuration; it does not state the Sessions-row version requirement in that section (raw lines 303–321). Recurring is a **separate** path: `storePaymentMethod: true` and `shopperReference` to create a token; the `recurring.token.created` webhook follows **settlement** and yields `storedPaymentMethodId`; subsequent `/payments` use that ID, the shopper reference, `ContAuth` and the appropriate recurring model (raw lines 50–87, 323–360). The Java example's `recurringDetailReference` differs from the prose/JSON `storedPaymentMethodId`; treat it as unresolved, not a silently interchangeable field (raw lines 79–108, 130–133, 403–406). MoMo test-app/credentials and a separate live Customer Area request have distinct purposes (raw lines 288–297, 561–570).
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-momo-wallet-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/momo-wallet/react-native-drop-in/2026-09-15]].

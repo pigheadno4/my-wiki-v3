@@ -15,6 +15,27 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-gcash-api-only]] — GCash API-only recurring route: shopper reference (minimum three characters), token-creation fields and post-settlement recurring.token.created webhook precede later stored-method ContAuth payments.
+
+
+- [[source-adyen-docs-payment-methods-dana-flutter-component]] — DANA Flutter Components recurring route: initial settlement precedes recurring.token.created, then stored-method ContAuth and interval-specific processing-model requests; base no-extra-fields wording excludes recurring.
+
+
+- [[source-adyen-docs-payment-methods-gcash-web-drop-in]] — GCash Web Drop-in guide for `/payments` token fields, settlement-gated recurring-token webhook and subsequent stored-method requests (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-momo-wallet-ios-drop-in]] — MoMo iOS Drop-in recurring-token creation, settlement-gated lifecycle webhook and later ContAuth token payment route (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-dana-web-component]] — DANA Web Component recurring route: settled initial payment precedes recurring.token.created, then specified stored-method ContAuth requests; base no-extra-fields claim excludes recurring.
+
+
+- [[source-adyen-docs-payment-methods-gcash-ios-component]] — GCash iOS Components Sessions/Advanced guide with `/payments` token-creation fields, settlement-gated `recurring.token.created` webhook and subsequent stored-method requests (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-dana-android-component]] — DANA Android Component recurring route: token ID arrives by recurring.token.created after initial settlement, then specified ContAuth Subscription or UnscheduledCardOnFile payments; examples vary.
+
+
 - [[source-adyen-docs-payment-methods-upi-upi-autopay-web]] — 2026-09-15 UPI Autopay Web signup and mandate-display guide for Web SDK v6.22.0, Sessions/Advanced mandate fields, Collect/QR/Intent and test/live gates; full recurring backend remains in the API-only guide and examples omit prose-listed fields.
 
 

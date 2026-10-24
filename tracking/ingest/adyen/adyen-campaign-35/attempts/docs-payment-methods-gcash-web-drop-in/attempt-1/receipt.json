@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-gcash-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GCash Web Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md\"\ntags: [adyen, gcash, web, drop-in, redirect, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] page explains GCash-specific additions to an **existing Web Drop-in** integration for separate Sessions and Advanced server-side flows. It requires redirect handling and describes an optional recurring-token route. It is not a complete checkout guide or evidence that a merchant is enabled or a payment has completed. See [[adyen-online-payments]] and the pinned raw. The [[source-adyen-docs-payment-methods-gcash|GCash overview]] supplies the separate PH/PHP method and shopper-journey context.\n\n## Key takeaways\n\n- **Sessions base flow:** The prerequisites are an existing Sessions Web Drop-in integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and GCash added in Customer Area. The page says no additional GCash `/sessions` parameters are needed. See raw lines 25\u201342.\n- **Advanced base flow:** The prerequisites are an existing Advanced Web Drop-in integration, redirect handling, and GCash setup in Customer Area. The page says no additional GCash `/payments` parameters are needed for this base flow. Its requirement link has a malformed encoded platform template; see the warning below. See raw lines 306\u2013334.\n- **Optional Web import:** For individual-payment-method tree shaking, the page says to include `Redirect` when importing Adyen Web, and shows `AdyenCheckout`, `Dropin` and `Redirect` imports. This is optional import guidance, not a required GCash-specific configuration field or a stated Web SDK version. See raw lines 44\u201354 and 318\u2013328.\n- **Recurring route:** Both flow sections say GCash supports recurring transactions. For token creation, `/payments` includes `storePaymentMethod: true` and a unique `shopperReference` of at least three characters. After the initial payment **has been settled**, a `recurring.token.created` webhook supplies `storedPaymentMethodId`; the merchant server must receive recurring-token lifecycle events. Later `/payments` token charges specify the stored ID, matching shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The base-flow no-extra-parameter statements do not remove these separate recurring fields. Token instructions and example requests do not establish a completed initial or later payment. See raw lines 56\u201393 and 336\u2013373.\n- **Testing and live gate:** The page says successful **live-payment testing** needs a real mobile number registered to a GCash account, points to Customer Area for test-payment status, and requires a GCash request in the **live Customer Area** before live acceptance. The snapshot does not prove current account eligibility or live operation. See raw lines 294\u2013304 and 574\u2013584.\n\n> [!warning] Advanced prerequisite link\n> The Advanced requirement names a **Web Drop-in** integration, but its URL has an encoded `{{getParameter('platform')}}` expression instead of `platform=Web`; the neighboring redirect and import links explicitly select Web Drop-in. Use the page's stated scope and verify the main-guide destination before following this prerequisite link. See raw lines 314\u2013322.\n\n## Detail locators\n\n- Recurring curl, Java, PHP, C#, Node.js, Python and Ruby request examples: raw lines 95\u2013291 and 375\u2013571. Their `PHP` currency and TEST-library settings are examples, not a universal currency or live-readiness guarantee.\n- The page links to main integration guides for redirect handling and session creation; it does not spell out the shopper's return handling or final payment-status contract. See raw lines 21\u201342 and 314\u2013334.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main integration architecture.\n- [[adyen-tokenization]] \u2014 stored-method and recurring-token context.\n- [[source-adyen-docs-payment-methods-gcash]] \u2014 method-level PH/PHP and shopper journey overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15|GCash Web Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Add GCash to your Drop-in integration.",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md:17"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md:72"
+    },
+    {
+      "text": "Before you can accept live GCash payments, you need to submit a request for GCash in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md:304"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [Web Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=%7B%7BgetParameter%28%27platform%27%29%7D%7D\\&integration=Drop-in).",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md:314"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gcash-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-web-drop-in]] \u2014 2026-09-15 GCash Web Drop-in Sessions/Advanced add-on for redirect setup, optional import, settlement-gated recurring tokens and live request; its Advanced prerequisite URL has an encoded platform template.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced Web Drop-in prerequisite URL contains an encoded platform template although neighboring links select Web; preserve that navigation defect."
+        ]
+      },
+      {
+        "update_id": "gcash-web-drop-in-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-web-drop-in]] \u2014 GCash Web Drop-in guide for `/payments` token fields, settlement-gated recurring-token webhook and subsequent stored-method requests (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/web-drop-in/2026-09-15.md",
+  "raw_sha256": "d44c8af202887175ec4838c2e88196fd6699c1a2957c0ba17f9d08e5a4301a60",
+  "status": "candidate_ready"
+}

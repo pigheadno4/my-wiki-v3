@@ -1,0 +1,7 @@
+# Retrieval checks — docs-payment-methods-dana-ios-drop-in
+
+Q1. What is this DANA iOS page's purpose and scope, and what is not established?
+Answer: It gives DANA-specific additions to an existing iOS Drop-in integration, split into Sessions and Advanced flows (raw lines 17–25, 298–320). It is not evidence of current DANA enablement, settlement, token creation or completed payment; examples use IDR/TEST values (raw lines 87–108, 361–382). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-ios-drop-in]] → [[raw/adyen/docs/payment-methods/dana/ios-drop-in/2026-09-15]].
+
+Q2. Which prerequisites, recurring conditions and environment qualifications matter?
+Answer: Sessions requires Checkout API v68+ and Customer Area addition (raw lines 29–34); Advanced requires redirect handling and Customer Area addition (raw lines 302–308). Both describe a separate /payments token request, recurring.token.created after initial settlement, and later stored-ID ContAuth payments (raw lines 48–85, 322–359). The test section mixes real-number successful-live wording, TEST status lookup and a separate live Customer Area request (raw lines 288–296, 562–570); these are not one verified outcome. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-ios-drop-in]] → [[raw/adyen/docs/payment-methods/dana/ios-drop-in/2026-09-15]].

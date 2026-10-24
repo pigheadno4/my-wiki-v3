@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MoMo Flutter Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/flutter-component/2026-09-15.md\"\ntags: [adyen, momo, flutter, components, wallets, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] MoMo Flutter Components add-on, captured 2026-09-15, describes MoMo-specific requirements for **existing** Sessions or Advanced Flutter Components integrations and a separate recurring-token path. See [[adyen-online-payments]] and [[adyen-tokenization]]. It is not a standalone Flutter Component implementation, merchant-enablement proof, or a verified payment outcome. See raw lines 15\u201323, 25\u201346 and 297\u2013319.\n\n## Key takeaways\n\n- **Sessions:** The prose calls for an existing Sessions Flutter Components integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and MoMo added in Customer Area. The base `/sessions` request needs no extra MoMo parameters, and the guide says no additional MoMo Component configuration is needed. The requirement-row link labeled Flutter Components points instead to an **Advanced Drop-in** URL; its label and destination conflict, so use the flow-specific prose and verify the base guide. See raw lines 25\u201346.\n- **Advanced:** The prose calls for an existing Advanced Flutter Components integration, redirect handling and Customer Area method setup. It says the ordinary `/payments` request and Component configuration need no additional MoMo-specific parameters. Its integration-type requirement row also links to an Advanced Drop-in URL rather than Components. This page provides no Flutter Component launch snippet or complete redirect-result procedure. See raw lines 297\u2013319.\n- **Recurring:** The guide states MoMo supports recurring transactions. Token creation adds `storePaymentMethod: true` and a shopper-unique `shopperReference` to `/payments`. The `recurring.token.created` webhook, carrying `storedPaymentMethodId`, is described as arriving **when the initial payment has settled**, and the server must receive token-lifecycle events. Later `/payments` calls use that stored ID, the matching shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for fixed schedules or `UnscheduledCardOnFile` for nonfixed schedules. The ordinary-payment no-extra-fields statements do not override these recurring fields. See raw lines 48\u201385 and 321\u2013358.\n- **Example qualification:** The Java examples call `setRecurringDetailReference` while the prose and other request examples use `paymentMethod.storedPaymentMethodId`; the page does not reconcile those field mappings. TEST endpoint snippets and VND amounts illustrate server requests, not actual Flutter runtime behavior, payment status, eligibility or live configuration. See raw lines 77\u2013283 and 350\u2013556, especially 128\u2013130 and 401\u2013404.\n- **Testing and live:** The test instructions use MoMo's test app and scenario-specific credentials, and say to check test-payment status in Customer Area. Before live acceptance, a MoMo request must be submitted through live Customer Area. Neither a test app login nor a live request proves enablement or transaction success. See raw lines 286\u2013295 and 559\u2013568.\n\n## Detail locators\n\n- Sessions requirements and ordinary request/configuration: raw lines 25\u201346.\n- Sessions token creation, webhook and later-payment fields: raw lines 48\u201385; examples at 87\u2013283.\n- Advanced requirements, ordinary request/configuration: raw lines 297\u2013319.\n- Advanced token creation, webhook and later-payment fields: raw lines 321\u2013358; examples at 360\u2013556.\n- TEST and live gates: raw lines 286\u2013295 and 559\u2013568.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/flutter-component/2026-09-15|MoMo Flutter Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Flutter Components integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in).",
+      "location": "raw line 31"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 64"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Flutter\\&integration=Components#make-a-payment).",
+      "location": "raw line 319"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 568"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-momo-flutter-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-flutter-component]] \u2014 2026-09-15 MoMo Flutter Components Sessions (Checkout API v68+) and Advanced redirect add-on with separate settled-payment token route; both prerequisite links point to Drop-in, and Java token example differs from prose.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/flutter-component/2026-09-15.md",
+  "raw_sha256": "45fafdce8d34fe46735df6b8e75d7595b4f5f7a698d055decf300c5e13890fe8",
+  "status": "candidate_ready"
+}

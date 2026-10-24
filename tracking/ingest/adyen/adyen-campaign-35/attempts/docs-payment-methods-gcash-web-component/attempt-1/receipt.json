@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-gcash-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GCash Web Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/web-component/2026-09-15.md\"\ntags: [adyen, gcash, web, components, wallets]\n---\n\n## Overview\n\nAdyen's 2026-09-15 GCash Web Component page gives GCash-specific additions to an existing Web Components integration, with separate Sessions and Advanced server-side flow branches. The linked main guides remain the authority for the base flow, redirect and payment-result handling. This snapshot does not establish current eligibility or a successful payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Web Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and GCash added in Customer Area. The page calls for no additional GCash-specific `/sessions` parameters or Component configuration. Import Adyen Web's `Redirect` class and initialize a Redirect Component for GCash. [Raw lines 25\u201371]\n- **Advanced:** Requires an existing Web Components Advanced integration, redirect handling, and GCash added in Customer Area. Import and initialize `Redirect`; the page calls for no additional GCash-specific ordinary `/payments` request parameters. [Raw lines 322\u2013360]\n- **Recurring:** The separate token route asks for `storePaymentMethod: true` and a `shopperReference` of at least three characters on `/payments`. Only after the initial payment settles does the `recurring.token.created` webhook deliver `storedPaymentMethodId`; the merchant server must receive recurring-token lifecycle webhooks. Subsequent `/payments` use that ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile` according to interval. A redirect or initial request alone is not a token or final payment outcome. [Raw lines 74\u2013111, 362\u2013399]\n- **TEST and live:** The examples show TEST API endpoints/clients and PHP amounts, not a general eligibility matrix or proof of execution. The page says successful GCash live payments use a real mobile number registered with GCash, test status can be checked in Customer Area, and live acceptance requires a GCash request in the live Customer Area. Its phrase \u201ctest successful GCash live payments\u201d mixes environment terms, so do not infer a TEST simulator from it. [Raw lines 113\u2013310, 312\u2013320, 401\u2013608]\n\n## Detail locators\n\n- Both flow examples initialize `new Redirect(checkout, { type:gcash })` (raw lines 70\u201372, 352\u2013354). The token `gcash` is unquoted in the literal snippet; treat it as source example text, not verified executable JavaScript.\n- Recurring `/payments` examples by language, including `paymentMethod.type: gcash`, stored method ID and PHP amounts: raw lines 113\u2013310 and 401\u2013598. The explicit Checkout API v68+ prerequisite is in the Sessions branch, not stated for Advanced here.\n- Redirect return processing, authentication/authorization, final status, capture and settlement beyond the token-created timing are outside this method add-on and require the linked base guides or payment-status evidence.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15|GCash Web Component (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "include `Redirect`.",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:48"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:90"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:360"
+    },
+    {
+      "text": "Before you can accept live GCash payments, you need to submit a request for GCash in your [live Customer Area]",
+      "location": "raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md:608"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gcash-web-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-web-component]] \u2014 2026-09-15 GCash Web Components Sessions (Checkout API v68+) and Advanced Redirect add-on with settlement-gated recurring token route; example syntax and TEST/live wording remain qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/web-component/2026-09-15.md",
+  "raw_sha256": "56b9fd4a3440511ac23554e69e111edcffc1954b692c97f319d39155506c2e52",
+  "status": "candidate_ready"
+}

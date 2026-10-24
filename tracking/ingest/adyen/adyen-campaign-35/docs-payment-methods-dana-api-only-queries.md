@@ -1,0 +1,7 @@
+# DANA API-only retrieval checks
+
+**Q1. What is the page for, and what cannot be inferred?** It adds DANA to an existing Web API-only Advanced redirect integration, with merchant-built method selection and a separate recurring route. It does not prove current method availability, merchant eligibility or any payment outcome. Its discovery table says IN/INR while its example says ID/IDR, so this page cannot settle country/currency prerequisites. Raw locators: `raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:17-42,44-85`. Canonical stem: `https://docs.adyen.com/payment-methods/dana/api-only`.
+
+**Q2. What capability, prerequisites, and warnings matter?** DANA setup and redirect handling are prerequisites; the merchant-built form needs no extra shopper input. The page states a 300 IDR minimum for visibility and says no extra ordinary `/payments` fields, while its item-information mention is conditional. Recurring adds storage fields and requires settlement before the token-created webhook; later token payments use the stored ID and recurring fields. Live acceptance needs a live Customer Area request, and TEST/live wording is mixed. Raw locators: `raw/adyen/docs/payment-methods/dana/api-only/2026-09-15.md:23-42,87-128,329-337`. Canonical stem: `https://docs.adyen.com/payment-methods/dana/api-only`.
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-dana-api-only]] → [[raw/adyen/docs/payment-methods/dana/api-only/2026-09-15]].

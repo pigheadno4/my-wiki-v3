@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-dana-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"DANA React Native Component integration\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/react-native-component/2026-09-15.md\"\ntags: [adyen, dana, react-native, components, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page adds **DANA** to an existing **React Native Components** integration using **Advanced flow**. Its page title says \u201cDANA React Component,\u201d while the path and requirement text say React Native Components; the Sessions section explicitly says that React Native Components do **not** support Sessions. It documents an add-on and examples, not an observed payment or live eligibility. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Flow boundary:** despite introducing additions by server-side flow, the Sessions section consists of \u201cNot Available\u201d and explicitly excludes React Native Components Sessions. The Advanced requirement is an existing React Native Components integration, `action.type: redirect` handling, and DANA added in Customer Area. Its integration-type link is labeled Components but has `integration=Drop-in`; the separate redirect and payment links use `integration=Components`. Use the labeled Advanced Components requirement and verify the base guide, rather than treating the mismatched link as Drop-in authority. (raw lines 23\u201341, 51\u201353)\n- **Ordinary Advanced scope:** no DANA-specific configuration parameters or additional ordinary `/payments` parameters are listed. The section gives no Checkout API minimum; the v68 TEST curl request later is an example version rather than a stated minimum. (raw lines 43\u201353, 94\u2013114)\n- **Conditional recurring route:** token creation sends `storePaymentMethod: true` and a unique `shopperReference` in `/payments`. Only **after the initial payment has settled** does the page say a `recurring.token.created` webhook carries shopper identity, initial-payment `eventId` and `storedPaymentMethodId`; the server must receive token lifecycle events. Later token payments use `paymentMethod.storedPaymentMethodId`, the same shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed contracts. These conditional fields qualify the ordinary no-extra-parameter statement. (raw lines 55\u201392)\n- **Example and environment limits:** multi-language examples show `dana`, IDR and TEST-oriented placeholder credentials and token IDs. The Java example uses IDR 15000 while most others use IDR 1000; neither amount establishes a required minimum or a successful token charge. (raw lines 94\u2013291)\n- **TEST/LIVE wording:** under \u201cTest and go live,\u201d the page says testing **successful DANA live payments** needs a real DANA-registered mobile number, but also directs readers to a **test** Customer Area payment list and Support for testing issues. It separately says live acceptance needs a request in **live** Customer Area. This wording does not prove TEST success, live approval, authorization, capture or settlement. (raw lines 293\u2013301)\n\n## Detail locators\n\n- Title, Sessions unsupported boundary and Advanced requirements/link mismatch: raw lines 15\u201341.\n- Ordinary Advanced configuration and request statements: raw lines 43\u201353.\n- Recurring token sequence and later request fields: raw lines 55\u201392.\n- TEST-oriented examples and differing amounts: raw lines 94\u2013291.\n- Test/live wording and live request: raw lines 293\u2013301.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-dana]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/react-native-component/2026-09-15|Adyen DANA React Native Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "# DANA React Component",
+      "location": "raw line 15"
+    },
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw line 29"
+    },
+    {
+      "text": "Advanced flow [React Native Components integration](/online-payments/build-your-integration/advanced-flow?platform=React%2BNative\\&integration=Drop-in)",
+      "location": "raw line 39"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 71"
+    },
+    {
+      "text": "To test successful DANA live payments, you need to use a real mobile number registered with a [DANA account](https://www.dana.id/en/download).",
+      "location": "raw line 295"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-react-native-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-react-native-component]] \u2014 2026-09-15 DANA React Native Components Advanced-only redirect add-on with settled-payment recurring-token route; title, Drop-in prerequisite URL and TEST/live wording are qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Page title says React Component while body specifies React Native; Advanced Components prerequisite URL uses integration=Drop-in; Sessions is explicitly unsupported."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/react-native-component/2026-09-15.md",
+  "raw_sha256": "dd3d675b9de5d9aad28e2f5c761d7949aae5845272a63089e79381dfdac86c14",
+  "status": "candidate_ready"
+}

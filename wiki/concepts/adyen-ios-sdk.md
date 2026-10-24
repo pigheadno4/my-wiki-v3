@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-momo-wallet-ios-drop-in]] — 2026-09-15 MoMo iOS Drop-in Sessions/Advanced guide for base setup, Advanced redirect handling, recurring-token fields and test/live prerequisites.
+
+
 - [[source-adyen-docs-payment-methods-kakaopay-ios-component]] — 2026-09-15 iOS Components Sessions/Advanced KakaoPay guide for redirect prerequisites, recurring-token creation and TEST/LIVE wording boundaries.
 
 

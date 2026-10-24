@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gcash-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GCash React Native Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, gcash, react-native, drop-in, redirect, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide describes **GCash-specific additions** to an existing **React Native Drop-in** integration, with separate **Sessions** and **Advanced** server-side sections. It requires redirect handling and provides a distinct merchant-server recurring-token path. It is not a complete standalone integration or evidence of a successful shopper return, settled payment, merchant enablement or live approval. The examples are PHP/TEST illustrations, not proof of runtime behavior. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions base path:** The page calls for an existing React Native Drop-in **Sessions** integration, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and adding GCash in Customer Area. Its Sessions integration-type hyperlink goes to an **Advanced** guide even though the heading/prose say Sessions; use the flow-specific text and verify the main guide. It says no *additional GCash-specific* /sessions parameters or configuration are needed for the ordinary base path. See raw lines 23\u201348.\n- **Advanced base path:** The Advanced section calls for an existing Advanced React Native Drop-in integration, redirect handling and GCash added in Customer Area. It says no extra GCash configuration or additional parameters for the ordinary base /payments request. The v68 minimum is stated in the Sessions requirements, while Advanced examples show v68; do not turn an example into a stated Advanced minimum. See raw lines 298\u2013320 and 361\u2013380.\n- **Separate recurring token path:** In both sections the initial **/payments** token request needs `storePaymentMethod: true` and a `shopperReference` of at least **three characters**. The page says a `recurring.token.created` webhook supplies the `storedPaymentMethodId` **when the payment has settled**, and directs the merchant server to receive recurring token lifecycle events. Later /payments requests use that ID and matching shopper reference with `ContAuth`, and `Subscription` for fixed or `UnscheduledCardOnFile` for non-fixed schedules. The no-extra-base-parameter statements do not negate these recurring fields. This guide does not spell out shopper-consent mechanics. See raw lines 50\u201387 and 322\u2013359.\n- **Examples and status:** The recurring examples use GCash type, PHP, TEST settings and placeholders across curl, Java, PHP, C#, Node, Python and Ruby; they do not establish a transaction result or current API-library compatibility. The Test and go live sections unusually say that testing **successful live** GCash payments needs a real registered GCash mobile number, also point to a **test** Customer Area payment list, and separately require a request in **live** Customer Area before accepting live payments. Keep those environment statements distinct; neither a status lookup nor a request proves authorization or settlement. See raw lines 89\u2013296 and 361\u2013568.\n\n## Detail locators\n\n- Sessions prerequisites, base request and recurring route: raw lines 23\u201387.\n- Sessions code examples and test/live language: raw lines 89\u2013296.\n- Advanced prerequisites, base request and recurring route: raw lines 298\u2013359.\n- Advanced examples and repeated test/live language: raw lines 361\u2013568.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/react-native-drop-in/2026-09-15|Adyen GCash React Native Drop-in snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "Before you begin, [add GCash in your Customer Area]",
+      "location": "raw line 36, Sessions setup; repeated line 308 under Advanced"
+    },
+    {
+      "text": "minimum length three characters",
+      "location": "raw line 64, shopperReference token prerequisite; repeated line 336 under Advanced"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 66, Sessions token event; repeated line 338 under Advanced"
+    },
+    {
+      "text": "To test successful GCash live payments, you need to use a real mobile number registered with a GCash account.",
+      "location": "raw line 290, test/live wording; repeated line 562 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-gcash-react-native-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-react-native-drop-in]] \u2014 2026-09-15 GCash React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with separate settlement-gated recurring-token route; Sessions guide-link and test/live wording remain source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions integration-type link at raw line 33 points to Advanced flow despite Sessions heading and prose.",
+          "The test section says 'successful GCash live payments' require a real registered GCash mobile number, while also linking TEST Customer Area status and requiring a separate live request; do not conflate these environments.",
+          "No-extra-parameter wording applies to ordinary base requests, not the separate recurring /payments token fields."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "ad2fa6c175aed88f50be6665d4758ba2c242bcabde3debdb5f4e48bbc2e1d054",
+  "status": "candidate_ready"
+}

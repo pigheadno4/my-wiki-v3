@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-dana-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DANA Android Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/dana/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/dana/android-component/2026-09-15.md\"\ntags: [adyen, dana, android, component, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] guide adds **DANA** to an existing **Android Components** integration. It separates Sessions and Advanced server-side flows, both with redirect action handling, from a further tokenized recurring route. It is a method-specific supplement; it does not itself prove current Indonesia/IDR merchant eligibility, an operating DANA account, successful shopper return, authorization, capture or settlement. [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions base flow:** Requires an existing Sessions Android Components integration, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and DANA added in Customer Area. The page says no additional DANA-specific `/sessions` fields or Component configuration are needed. Android imports `com.adyen.checkout:instant:YOUR_VERSION` and, for Jetpack Compose, `components-compose`; it gets `dana` from `checkoutSession` and creates `InstantPaymentComponent`. The Compose key must change for a different screen or payment session/reset. See raw lines 23\u2013125.\n- **Advanced base flow:** Requires an existing Advanced Android Components integration, additional redirect-action handling and DANA in Customer Area. It says no additional DANA-specific ordinary `/payments` parameters or Component configuration are needed. The client selects `type == \"dana\"` from `/paymentMethods` and creates `InstantPaymentComponent`. Its requirement table does not independently restate the Sessions v68+ minimum. See raw lines 376\u2013476.\n- **Recurring token route:** To create a token, the server adds `storePaymentMethod: true` and a unique `shopperReference` to **`/payments`**. Only **when the initial payment has settled** does the guide say `recurring.token.created` delivers `storedPaymentMethodId`; the server must receive recurring-token lifecycle webhooks. Later token payments add the stored ID, same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The page does not specify a separate shopper-consent screen or make the redirect/API response proof of token creation. See raw lines 128\u2013165 and 478\u2013515.\n- **Testing and live gate:** The page says a real mobile number registered with a DANA account is needed to test successful **live** DANA payments, directs test-payment status checks to TEST Customer Area, and requires a DANA request in LIVE Customer Area before accepting live payments. Its \u201ctest successful live\u201d wording spans environments; it does not document a completed test or live merchant enablement. IDR, TEST API clients and amounts in the recurring snippets are examples, not a standalone country/currency eligibility matrix. See raw lines 167\u2013374 and 517\u2013724.\n\n> [!warning] Contradiction\n> The base-flow \u201cno additional parameters\u201d statements (raw lines 42 and 476) must not be applied to **recurring**: its token-creation and token-use sections expressly add `/payments` fields (raw lines 139\u2013165 and 489\u2013515). Also, the recurring request examples are not identical: Java uses an IDR amount of 15000 while the other language examples use 1000; curl/Node/Python/Ruby omit `returnUrl` while Java/PHP/C# include it (raw lines 169\u2013363 and 519\u2013713). Do not copy an example as a universal complete request.\n\n## Detail locators\n\n- Sessions prerequisite, method-specific additions, dependencies and Component: raw lines 23\u2013125.\n- Sessions token creation, settlement-gated webhook and token-payment fields: raw lines 128\u2013165.\n- Sessions recurring examples and TEST/LIVE statements: raw lines 167\u2013374.\n- Advanced prerequisite, Component and base `/payments` statement: raw lines 376\u2013476.\n- Advanced repeated recurring route, examples and TEST/LIVE statements: raw lines 478\u2013724.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/dana/android-component/2026-09-15|Adyen DANA Android Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements > Checkout API"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 35, Sessions flow Component > Requirements > Redirect handling"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 144, Sessions flow Component > Recurring payments > Create a token"
+    },
+    {
+      "text": "`recurringProcessingModel`: Use **Subscription** for a series of transactions following a fixed time interval or **UnscheduledCardOnFile** for contracts with non-fixed time interval.",
+      "location": "raw line 165, Sessions flow Component > Recurring payments > Make a payment with a token"
+    },
+    {
+      "text": "Before you can accept live DANA payments, you need to submit a request for DANA in your [live Customer Area]",
+      "location": "raw line 374, Sessions flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-dana-android-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-android-component]] \u2014 2026-09-15 DANA Android Component Sessions/Advanced redirect add-on with a separate settlement-gated recurring-token route; base no-extra-fields wording excludes recurring fields.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Base no-extra-parameters statements have a narrower scope than recurring /payments fields (raw lines 42, 139\u2013165, 476, 489\u2013515)."
+        ]
+      },
+      {
+        "update_id": "c35-dana-android-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-dana-android-component]] \u2014 DANA Android Component recurring route: token ID arrives by recurring.token.created after initial settlement, then specified ContAuth Subscription or UnscheduledCardOnFile payments; examples vary.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/dana/android-component/2026-09-15.md",
+  "raw_sha256": "707a53873eef2d22f406123e6af9a7a678ce9d8601ace9fb2678c237b6b80686",
+  "status": "candidate_ready"
+}

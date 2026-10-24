@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MoMo Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/android-drop-in/2026-09-15.md\"\ntags: [adyen, momo, android, drop-in, online-payments, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, captured 2026-09-15, adds MoMo wallet to an **existing Android Drop-in** integration. It splits the method-specific additions by Sessions and Advanced server flows, and includes a separate recurring-token route and test/live guidance. It is not a full Android integration, a desktop-QR guide, or evidence of present merchant eligibility or successful authorization, capture, settlement or refund. See [[adyen-online-payments]] and raw lines 15\u201325.\n\n## Key takeaways\n\n- **Sessions Drop-in:** the page requires an existing Android Sessions Drop-in integration, **Checkout API v68 or later**, and adding MoMo in Customer Area. It states no additional MoMo-specific `/sessions` parameters or configuration. The Sessions requirements table does not separately specify redirect handling; the page points to the main integration guide for shared steps. See raw lines 19\u201346.\n- **Advanced Drop-in:** the page requires an existing Android Advanced Drop-in integration, redirect handling for `action.type: redirect`, and adding MoMo in Customer Area. It states no additional MoMo configuration or base `/payments` parameters. Its Advanced requirements do **not** separately state the Sessions v68 minimum. The no-extra-parameter statement is for the base MoMo payment path; recurring-token requests below have additional fields. See raw lines 299\u2013358.\n- The recurring section says MoMo supports token-based future transactions. For initial token creation it specifies `storePaymentMethod: true` and a unique `shopperReference` in `/payments`, with a server able to receive recurring token lifecycle webhooks. It says `recurring.token.created`, carrying `storedPaymentMethodId`, is received **when the initial payment has settled**. This `/payments` wording also appears within the Sessions section; it is page wording, not proof that every Sessions integration directly calls `/payments`. Shopper-consent mechanics are not described here. See raw lines 48\u201371 and 321\u2013344.\n- For a later token payment, the page specifies `paymentMethod.storedPaymentMethodId` (or lookup through `/listRecurringDetails`), the same `shopperReference`, `shopperInteraction: ContAuth`, and a `recurringProcessingModel`: `Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The cURL/language samples show `momo_wallet`, VND and TEST values as examples, not proof of a created token or successful later charge. The Java samples use `setRecurringDetailReference` instead of the prose's `storedPaymentMethodId`; review the applicable library/model before copying that example. See raw lines 73\u2013139 and 346\u2013412.\n- The page directs testers to MoMo's test app and scenario-specific MoMo test credentials, then to payment status in Adyen's **test** Customer Area. It separately requires a request for MoMo in the **live** Customer Area before accepting live payments. Its test directions mention mobile-browser app download and desktop-browser QR scanning; those are test contexts, not a change of this page's Android Drop-in scope. Setup, redirect and test status lookup alone do not establish a final payment outcome. See raw lines 286\u2013297 and 559\u2013568.\n\n## Detail locators\n\n- Sessions prerequisites and no-extra-fields/configuration: raw lines 25\u201346.\n- Sessions recurring fields, settlement-gated token webhook and sample requests: raw lines 48\u2013283. The cURL path uses `/v68/payments`; the Java example uses `setRecurringDetailReference` (lines 128\u2013130) versus the stated `paymentMethod.storedPaymentMethodId` (line 77).\n- Test app, credentials, test Customer Area and live request after Sessions: raw lines 286\u2013297.\n- Advanced prerequisites, redirect, configuration/request statements and recurring route: raw lines 299\u2013358.\n- Advanced TEST examples and repeated test/live instructions: raw lines 360\u2013568.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/android-drop-in/2026-09-15|MoMo Android Drop-in guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API]",
+      "location": "raw line 33, Sessions flow Drop-in > Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 40, Sessions flow Drop-in > Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 64, Sessions flow Drop-in > Create a token"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 306, Advanced flow Drop-in > Requirements"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area]",
+      "location": "raw line 568, Advanced flow Drop-in > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "momo-android-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-android-drop-in]] \u2014 2026-09-15 MoMo Android Drop-in add-on for existing Sessions (Checkout API v68+) or Advanced flows, with a separate settlement-gated recurring-token route, test/live prerequisites and qualified Java example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/android-drop-in/2026-09-15.md",
+  "raw_sha256": "7bce47886a3d649b9ab4053a4c7bccd004b9320e43d154d39090b40e2b9e9f29",
+  "status": "candidate_ready"
+}

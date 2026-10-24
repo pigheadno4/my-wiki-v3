@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MoMo Wallet Web Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md\"\ntags: [adyen, momo, wallet, web, components, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page describes MoMo-specific additions to an **existing Web Components** integration, with separate Sessions and Advanced server-side flows. It uses a redirect Component for the base payment path and describes an optional recurring-token path. The page is supplemental to the main integration guides; it does not establish current MoMo merchant eligibility or a completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Sessions requires an existing Web Components Sessions flow, Checkout API v68 or later, `action.type: redirect` handling and MoMo added in Customer Area. Advanced requires an existing Web Components Advanced flow, redirect handling and the Customer Area addition; this page states no distinct Advanced API minimum. Both import `Redirect` from Adyen Web, say no MoMo-specific configuration parameters are needed, and say no extra base `/sessions` or `/payments` fields are needed. The normal main-flow request, redirect-return and outcome duties still apply.\n- Both flow examples initialize `Redirect` with a `momo_wallet` type and mount it to a container. The JavaScript snippet renders `type:momo_wallet` without quotes or a defined variable, so it is not a self-contained, copy-ready example; check the actual method type and selected Adyen Web version before implementation. No Adyen Web version is specified on this page.\n- **Recurring is an explicit exception to the no-extra-base-fields text.** For token creation, the guide requires `storePaymentMethod: true` and a unique `shopperReference` in `/payments`, plus a server able to receive Recurring tokens lifecycle events. It says `recurring.token.created` is sent after the initial payment has settled and carries `storedPaymentMethodId`. A later `/payments` request uses that ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The page does not spell out a shopper consent UI or assert that a token request itself proves settlement or a later charge.\n- The recurring examples use TEST clients/endpoints and VND amounts; they are illustrative, not a general currency or country eligibility rule. The Java example calls `setRecurringDetailReference` with the token even though the prose and other examples call for `storedPaymentMethodId`, and its amount is VND 15000 while neighboring examples use VND 1000. Verify the chosen API/library version and field mapping before using the snippets.\n- In TEST, the guide directs a mobile-browser shopper to a MoMo test-app download link and a desktop-browser shopper to scan a QR code with the test app, using MoMo-provided test credentials for the chosen scenario. Test payment status can be checked in the test Customer Area. Before accepting LIVE MoMo payments, it says to request MoMo in the live Customer Area. Download, QR scan, redirect, token webhook or request acceptance alone does not prove final authorization, capture, settlement or refund; this page supplies no separate final-outcome procedure.\n\n## Detail locators\n\n- Page identity and Sessions/Advanced selection: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 15\u201323.\n- Sessions prerequisites, no extra base request/configuration, Redirect import and initializer snippet: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 25\u201372.\n- Sessions recurring token creation, post-settlement webhook and later token-request fields: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 74\u2013111.\n- Sessions TEST/VND examples including Java token-field and amount discrepancies: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 113\u2013310.\n- TEST app/QR/credential paths and live Customer Area request: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 312\u2013321, repeated at 601\u2013610.\n- Advanced prerequisites, Redirect import/init, no extra base `/payments` fields and recurring route: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 323\u2013400.\n- Advanced TEST/VND recurring examples and Java discrepancy: [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|MoMo Web Component raw]], lines 402\u2013599.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web Components, server flow and outcome context.\n- [[adyen-tokenization]] \u2014 stored-method lifecycle and consent context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15|Adyen MoMo Web Component guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "const redirectComponent = new Redirect(checkout, { type:momo_wallet }).mount('#redirect-container')",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md:71"
+    },
+    {
+      "text": "* `storePaymentMethod`: **true**",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md:87"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md:90"
+    },
+    {
+      "text": "If you are testing on a desktop browser, use the test app to scan the QR code.",
+      "location": "raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md:316"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "docs-momo-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-web-component]] \u2014 2026-09-15 MoMo Web Redirect Component guide for Sessions/Advanced prerequisites, optional recurring tokens and TEST app/QR versus LIVE request boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/web-component/2026-09-15.md",
+  "raw_sha256": "7d0a55ea7e3246400ebe820e6baa56507e651c24af369d17643dda6e4c384ef3",
+  "status": "candidate_ready"
+}

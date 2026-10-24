@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gcash-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GCash React Native Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gcash/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md\"\ntags: [adyen, gcash, react-native, components, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] page is at the **React Native Component** URL but titled \u201cGCash React Component\u201d in the raw heading. Its body gives GCash-specific additions to an existing React Native **Components** integration. It explicitly says React Native Components **do not support Sessions flow**; the supported route described here is Advanced. See [[adyen-online-payments]] and [[adyen-tokenization]]. The historical instructions and examples do not establish current merchant enablement, an approved live integration or a completed payment. See raw lines 15\u201331.\n\n## Advanced base payment\n\n- Requires an existing Advanced React Native Components integration, `action.type: redirect` handling, and GCash added in Customer Area. The **Integration type** link says Components but its URL has `integration=Drop-in`; the redirect and payment step links are Components-scoped. Use the stated Components flow and verify the main guide rather than relying on that mismatched prerequisite link. See raw lines 31\u201341.\n- The guide states no extra GCash configuration and no extra GCash-specific fields for the **ordinary base `/payments`** request. This does not waive the base Advanced integration, redirect handling or later recurring-specific request fields. See raw lines 43\u201353.\n\n## Recurring and outcome boundary\n\n- To create a GCash shopper token, include `storePaymentMethod: true` and a merchant-unique `shopperReference` of **at least three characters** in `/payments`. The server must receive recurring token lifecycle webhooks. **After the initial payment settles**, `recurring.token.created` carries `shopperReference`, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId`. A request or redirect return is not settlement/token proof. See raw lines 55\u201378.\n- A later token-funded `/payments` request uses `paymentMethod.storedPaymentMethodId` from the webhook (or the stated `/listRecurringDetails` alternative), the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The sample uses `PHP` and `Subscription`; these are illustrative, not a successful payment or universal model guarantee. See raw lines 80\u2013115.\n- Example server calls use Checkout **TEST** `/checkout/v68/payments`, placeholder keys and TEST language-client settings; Node/Python/Ruby snippets label specific library versions and show idempotency keys. The `v68` example is not a separately stated minimum for this Advanced React Native guide, nor an SDK-version requirement or a live transaction. See raw lines 94\u2013291.\n- To test successful **live** payments the page says a real GCash-registered mobile number is needed; **test** status is checked in the test Customer Area; and before live acceptance a GCash request must be submitted in the live Customer Area. These statements are distinct environment/setup conditions and do not prove approval or a completed transaction. The page does not specify a final authorization webhook contract for the initial redirect payment. See raw lines 293\u2013301.\n\n## Detail locators\n\n- **URL/title scope and unsupported Sessions:** raw lines 5\u201329.\n- **Advanced prerequisites and mismatched Drop-in URL:** raw lines 31\u201341.\n- **Base no-extra configuration/payment fields:** raw lines 43\u201353.\n- **Three-character shopper reference and settled-payment token webhook:** raw lines 55\u201378.\n- **Subsequent token payment and models:** raw lines 80\u201392.\n- **TEST snippets/library labels:** raw lines 94\u2013291.\n- **Test/live conditions:** raw lines 293\u2013301.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/gcash/2026-09-15|GCash overview]] \u2014 PH/PHP, redirect lifetime and shopper journey; separate from this React Native Component add-on.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15|GCash React Native Component URL \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md:29"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md:40"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=React%2BNative\\&integration=Components#make-a-payment).",
+      "location": "raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md:53"
+    },
+    {
+      "text": "Your unique identifier for the shopper (minimum length three characters).",
+      "location": "raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md:69"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md:71"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c35-gcash-react-native-component-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gcash-react-native-component]] \u2014 2026-09-15 GCash React Native Components Advanced-only redirect add-on (Sessions unsupported), with base no-extra-fields, three-character token shopper reference and settlement-gated recurring webhook; prerequisite link misroutes to Drop-in.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw title says GCash React Component while URL/body scope says React Native Components; Advanced integration-type URL points to Drop-in despite Components prose.",
+          "No extra ordinary /payments fields does not apply to recurring token creation or subsequent token payments.",
+          "TEST v68 server example and live Customer Area request do not establish an Advanced API/SDK minimum, merchant approval or settled payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gcash/react-native-component/2026-09-15.md",
+  "raw_sha256": "aa5dfebaf54d801e0cd3cdb470406c97cd29f79482994953a8e48834224e8fa3",
+  "status": "candidate_ready"
+}

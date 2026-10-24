@@ -1,0 +1,7 @@
+# Retrieval checks — MoMo Android Drop-in
+
+Q1. What is this source's purpose and scope, and what cannot be inferred? `source-adyen-docs-payment-methods-momo-wallet-android-drop-in` adds MoMo to an existing Android Drop-in integration in separate Sessions and Advanced flows. It includes a recurring-token route and test/live instructions, but the page and examples do not establish current eligibility, payment authorization/capture/settlement, a created token or a successful future charge. Raw lines 15–25, 48–85, 286–319, 321–358.
+
+Q2. What central capability, prerequisites and warnings matter? Sessions expressly needs Checkout API v68+ and Customer Area method addition; Advanced needs its existing Drop-in flow, redirect handling and method addition. Base payments need no extra MoMo-specific fields/configuration, while recurring requests do: initial `storePaymentMethod` and shopper reference; `recurring.token.created` is described after settlement; later payments use the stored method ID, same shopper reference, `ContAuth` and a recurring model. The Sessions recurring subsection itself says `/payments`, and Java samples use `setRecurringDetailReference` where prose says `storedPaymentMethodId`. Test app/credentials and live Customer Area request are distinct. Raw lines 29–46, 48–85, 128–130, 286–319, 321–358, 401–403, 559–568.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-momo-wallet-android-drop-in]] → [[raw/adyen/docs/payment-methods/momo-wallet/android-drop-in/2026-09-15]].

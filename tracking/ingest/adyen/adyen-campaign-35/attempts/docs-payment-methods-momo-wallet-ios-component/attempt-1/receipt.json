@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-momo-wallet-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MoMo iOS Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/momo-wallet/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/momo-wallet/ios-component/2026-09-15.md\"\ntags: [adyen, momo, ios, components, online-payments, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, captured 2026-09-15, adds MoMo wallet to an **existing iOS Components integration**. It separates Sessions and Advanced flow instructions, uses `InstantPaymentComponent` for the `momo_wallet` method, and includes a recurring-token route and test/live setup. It is a method-specific add-on, not a complete iOS integration or proof of current Vietnam/VND merchant eligibility, successful authorization, capture, settlement, refund or token creation. See [[adyen-online-payments]] and raw lines 15\u201323.\n\n## Key takeaways\n\n- **Sessions:** Existing iOS Components Sessions flow, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and Customer Area method addition are prerequisites. No extra `/sessions` or MoMo configuration parameters are stated. The Swift sample checks for `.other(\"momo_wallet\")` in session payment methods, creates `InstantPaymentComponent`, sets the **session** as delegate, and initiates payment. See raw lines 25\u201369.\n- **Advanced:** Existing Advanced iOS Components flow, redirect handling and Customer Area method addition are listed, with no extra MoMo configuration or `/payments` parameters. Its Swift sample checks `momo_wallet`, creates the same Component, sets **self** as delegate and initiates payment. The Advanced requirement text says iOS Components but its integration-type link points to `integration=Drop-in`; follow the Components-specific steps and verify that base-guide link before using it as implementation authority. The Advanced section does not separately state the Sessions v68 minimum. See raw lines 321\u2013364.\n- The page says MoMo supports recurring transactions through creating a shopper token, then using it later. For token creation it calls for `storePaymentMethod: true` and a unique `shopperReference` in `/payments`; it says a `recurring.token.created` webhook with `storedPaymentMethodId` arrives **when the initial payment has settled**, and requires the merchant server to receive token lifecycle webhooks. These instructions appear under **both** server-flow sections, including Sessions, yet the Sessions subsection specifically describes a `/payments` request; treat that request route as page wording rather than assuming every Sessions integration calls `/payments` directly. The page does not state shopper-consent handling. See raw lines 72\u201395 and 366\u2013389.\n- Subsequent token payments use the received `paymentMethod.storedPaymentMethodId` (or a value retrieved through `/listRecurringDetails`), the same `shopperReference`, `shopperInteraction: ContAuth`, and `Subscription` for fixed-interval or `UnscheduledCardOnFile` for non-fixed-interval contracts. The TEST examples use `momo_wallet` and VND, which do not establish actual token creation, future authorization or current country/currency support. The Java examples use `setRecurringDetailReference` where the prose and other examples use `storedPaymentMethodId`; do not copy across library versions without checking the intended field. See raw lines 97\u2013163 and 391\u2013457.\n- For testing, the page points to MoMo's test app and scenario-specific test credentials and directs checking payment status in Adyen's **test** Customer Area. It separately says a request in the **live** Customer Area is needed before live MoMo acceptance. The test instructions mention mobile-browser app download and desktop QR scanning as testing context; this iOS Component guide does not thereby become a desktop-QR integration guide. Neither a redirect/app return nor a test status lookup by itself proves final payment outcome. See raw lines 310\u2013319 and 604\u2013613.\n\n## Detail locators\n\n- Sessions prerequisites, no extra request/configuration, iOS Component initialization and delegate: raw lines 25\u201369.\n- Sessions recurring requirements and TEST request/library examples: raw lines 72\u2013308. cURL uses Checkout `/v68/payments` and VND as an example; the page's stated v68 minimum belongs to its Sessions prerequisites (lines 33\u201334).\n- Advanced prerequisites, Drop-in-link mismatch, Component initialization and no extra request fields: raw lines 321\u2013364.\n- Advanced recurring instructions and repeated language examples: raw lines 366\u2013603. Java `setRecurringDetailReference` versus stated `storedPaymentMethodId`: raw lines 395\u2013403, 446\u2013449.\n- Test app, test credentials, Customer Area status and separate live request: raw lines 310\u2013319 and 604\u2013613.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/momo-wallet/ios-component/2026-09-15|MoMo iOS Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements"
+    },
+    {
+      "text": "guard let paymentMethod = paymentMethods.paymentMethod(ofType: .other(\"momo_wallet\")) else { return }",
+      "location": "raw line 61, Sessions flow Component > Initialize the Component for MoMo"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 88, Sessions flow Component > Create a token"
+    },
+    {
+      "text": "component.delegate = self",
+      "location": "raw line 356, Advanced flow Component > Initialize the Component for MoMo"
+    },
+    {
+      "text": "Before you can accept live MoMo payments, you need to submit a request for MoMo in your [live Customer Area]",
+      "location": "raw line 613, Advanced flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "momo-ios-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-momo-wallet-ios-component]] \u2014 2026-09-15 MoMo iOS InstantPaymentComponent add-on for existing Sessions/Advanced flows, redirect handling and settled-payment recurring-token route; base-guide link and example-field qualifications remain in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/momo-wallet/ios-component/2026-09-15.md",
+  "raw_sha256": "9677600031a621cf9eaad45ea215729448087154fd4a241cca3b3974c3236fba",
+  "status": "candidate_ready"
+}
