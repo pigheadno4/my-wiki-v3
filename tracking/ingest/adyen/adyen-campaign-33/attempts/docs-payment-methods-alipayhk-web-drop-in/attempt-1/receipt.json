@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-alipayhk-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay HK Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipayhk/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipayhk/web-drop-in/2026-09-15.md\"\ntags: [adyen, alipayhk, web-drop-in, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide describes **Alipay HK method-specific additions** to an existing **Web Drop-in** integration. It separates Sessions and Advanced server-side flows, each requiring existing **`action.type: redirect` handling** and Alipay HK method setup in Adyen Customer Area. The base integration guides own the full payment, redirect-return and outcome flow; this page does not demonstrate a completed redirect or successful payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The page requires an existing Sessions Web Drop-in integration using **Checkout API v68 or later**, existing redirect handling and Alipay HK added in Customer Area. It says no extra **Alipay HK-specific** `/sessions` parameters are needed. The v68 minimum appears in the Sessions tab and is not stated as an Advanced-flow minimum here. (raw lines 25\u201342)\n- **Advanced:** The page requires an existing Advanced Web Drop-in integration with redirect handling and Customer Area setup. It says no extra **Alipay HK-specific** `/payments` parameters are needed. The Advanced integration hyperlink contains an unresolved encoded `{{getParameter('platform')}}` value; follow the intended Web/Advanced route rather than treating that URL as a verified literal link. (raw lines 70\u201380, 94\u201398)\n- In either flow, importing individual Adyen Web methods for tree shaking is **optional**, and the guide's example includes `Redirect` alongside `AdyenCheckout` and `Dropin`. It does not specify a Web SDK minimum or claim that this is mandatory for all import patterns. (raw lines 44\u201354, 82\u201392)\n- The page provides **TEST AlipayHK credentials** and points to test Customer Area payment-list status. Those are test fixtures and an observation route, not live enablement or payment finality. Before accepting LIVE AlipayHK payments, the page requires a **request for AlipayHK in live Customer Area**; it does not say that submission alone is approval or successful processing. (raw lines 56\u201368, 100\u2013112)\n- Redirect handling is listed as an existing-integration prerequisite, but this add-on page gives no shopper return/deep-link, webhook-finality, authorization, capture, settlement, or refund procedure. \u201cNo additional parameters\u201d does not waive the underlying Sessions/Advanced integration's own requirements. (raw lines 19\u201323, 31\u201342, 76\u201398)\n\n## Detail locators\n\n- Sessions requirements and `/sessions` statement: raw lines 25\u201342.\n- Sessions optional import and TEST/LIVE gates: raw lines 44\u201368.\n- Advanced requirements, optional import and `/payments` statement: raw lines 70\u201398.\n- Advanced TEST/LIVE gates: raw lines 100\u2013112.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-alipayhk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipayhk/web-drop-in/2026-09-15|Adyen Alipay HK Web Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Alipay HK.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 35, Sessions redirect handling"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 42"
+    },
+    {
+      "text": "Before you can accept live AlipayHK payments, you need to submit a request for AlipayHK in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 68"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "alipayhk-web-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipayhk-web-drop-in]] \u2014 2026-09-15 Alipay HK Web Drop-in add-on for existing Sessions/Advanced redirect flows, Sessions v68+ and separate TEST/LIVE setup; no full return or outcome procedure.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced integration hyperlink contains unresolved encoded platform template; test credentials and live request do not establish payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipayhk/web-drop-in/2026-09-15.md",
+  "raw_sha256": "4aebe419f377bea934bfba3ddabcd6ec940c53485bdac0250817fa1ae60fe47d",
+  "status": "candidate_ready"
+}

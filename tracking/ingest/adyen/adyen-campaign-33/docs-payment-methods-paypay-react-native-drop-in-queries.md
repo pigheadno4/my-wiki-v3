@@ -1,0 +1,9 @@
+# Retrieval checks — PayPay React Native Drop-in
+
+Q1. What does this PayPay add-on require in Sessions versus Advanced React Native Drop-in, and which parameters does it add?
+
+A1. It assumes an existing React Native Drop-in integration in the chosen server flow, PayPay added in Customer Area and redirect handling (`action.type: redirect`) (raw lines 23–36, 63–73). The Sessions branch uniquely states Checkout API v68+ (raw line 34), and says no method-specific `/sessions` or client configuration fields (raw lines 38–48). The Advanced branch states no additional method-specific configuration or `/payments` parameters (raw lines 75–85). The Sessions integration-type link points to an Advanced-flow URL despite the Sessions heading and other Sessions links (raw lines 25–42). Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/paypay/react-native-drop-in/2026-09-15]].
+
+Q2. What changes between TEST and LIVE, and does simulator/status inspection prove an actual payment?
+
+A2. Both branches name DGFT closed-loop AUTHFlow/SALEFlow acquirer accounts for TEST, redirect to a DGFT simulator without the PayPay app, and point to TEST Customer Area for transaction-status inspection (raw lines 50–59, 87–96). LIVE instead requires an activated PayPay smartphone app accessed through a Japan local IP address (raw lines 61, 98). The method-specific page does not describe redirect-return processing or final payment verification; those remain in the base flow, and a simulator or list entry is not live authorization/capture/settlement proof. Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/paypay/react-native-drop-in/2026-09-15]].

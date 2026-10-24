@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-paypay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayPay for API only\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypay/api-only/2026-09-15.md\"\ntags: [adyen, paypay, api-only, redirect, japan]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes adding PayPay to an **existing API-only integration**. It requires redirect handling and Customer Area method setup, shows JP/JPY payment-method discovery, and gives TEST simulator versus LIVE app/IP instructions. It is an add-on guide, not evidence that any merchant is enabled or transaction succeeded. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Prerequisites are an existing API-only Advanced/Web integration, redirect handling for `action.type: redirect`, and PayPay added in Customer Area. The merchant builds the payment form; the page links its base request/redirect behavior to the main integration guide. (raw lines 19\u201329, 31\u201342)\n- For `/paymentMethods`, the guide specifies `countryCode: JP`, `amount.currency: JPY`, and `amount.value` in minor units so PayPay can appear. The TEST v72 example illustrates those values and a response `paymentMethod.type: paypay`; it does not establish current merchant eligibility or a mandatory API-version floor. `shopperLocale: jp-JP` appears in the example, not in the stated parameter table. (raw lines 44\u201384)\n- The numbered flow says to include additional information about purchase items in the payment request, but both the payment-form and `/payments` sections state that no extra parameters are needed. This unresolved prose conflict matters for item-data requirements; do not infer an item schema or treat the no-extra-parameters sentence as settling it. The flow also places fulfillment after the payment-request step without showing a final result, so that sequence is not proof of authorization or a safe fulfillment trigger. (raw lines 31\u201340, 86\u201388)\n- In TEST, the page names two DGFT acquirer accounts (AUTHFlow and SALEFlow) and says the redirect leads to a DGFT simulator, without needing the PayPay app. It points to test Customer Area for status checks. For LIVE integration, it states that an activated PayPay smartphone app must be accessed through a Japan local IP address. These are environment-specific instructions, not live approval or payment, capture, settlement, or webhook proof. (raw lines 90\u2013101)\n- The curl discovery illustration has `-X POST` followed immediately by `-d` on the next line without a continuation slash. Treat that shell snippet as illustrative and verify syntax before reuse. (raw lines 56\u201370)\n\n## Detail locators\n\n- API-only/redirect/Customer Area prerequisites and abbreviated flow: raw lines 19\u201342.\n- JP/JPY discovery parameters and TEST v72 response example: raw lines 44\u201384.\n- Contradictory item-information versus no-extra-parameters wording: raw lines 31\u201340 and 86\u201388.\n- TEST simulator accounts/status and LIVE app/Japan-IP condition: raw lines 90\u2013101.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paypay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypay/api-only/2026-09-15|Adyen PayPay API-only, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "| **Redirect handling** | Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#handle-the-redirect). `action.type`: **redirect**. |   |",
+      "location": "raw line 28"
+    },
+    {
+      "text": "3. When you make the payment request, you [include additional information about the items that the shopper intends to purchase](#additional-parameters-payments).",
+      "location": "raw line 35"
+    },
+    {
+      "text": "You do not need to add any parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 40"
+    },
+    {
+      "text": "You do not need to add any parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 88"
+    },
+    {
+      "text": "For the LIVE environment integration, you must access your activated PayPay smartphone app through a Japan local IP address.",
+      "location": "raw line 101"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-paypay-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypay-api-only]] \u2014 2026-09-15 PayPay API-only add-on for JP/JPY discovery, redirect, TEST DGFT simulator and LIVE app/Japan-IP conditions; item-data prose conflicts with no-extra-parameters wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypay/api-only/2026-09-15.md",
+  "raw_sha256": "7534bcfa79fc13a109a1f3960bdafcc651e828e80465641bd14a9042ab3debe6",
+  "status": "candidate_ready"
+}

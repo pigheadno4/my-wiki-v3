@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-paypay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPay Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypay/android-drop-in/2026-09-15.md\"\ntags: [adyen, paypay, android, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 PayPay page gives **method-specific additions** for existing Android Drop-in integrations in either Sessions or Advanced server flow. The prerequisite is adding PayPay in Adyen Customer Area. The page does not replace the corresponding base Android integration's server request, action/return, SDK and final-result handling, and does not establish live merchant eligibility or payment completion. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** requires an existing Android Sessions Drop-in integration and **Checkout API v68 or later**. It says there are no additional PayPay-specific `/sessions` request parameters or client configuration parameters. The Sessions branch does not separately list a redirect-handling requirement, although its TEST description says the shopper is redirected to a simulator; keep that distinct from the Advanced branch's explicit `action.type: redirect` prerequisite.\n- **Advanced:** requires an existing Android Advanced Drop-in integration, `action.type: redirect` handling and PayPay Customer Area setup. It says no additional PayPay-specific configuration or `/payments` request parameters. Its section does not state a separate Checkout API version minimum, so the Sessions-only v68 gate should not be applied to it without independent authority. In both branches 'no additional' concerns this method add-on, not all fields or server work in the base flow.\n- **TEST:** each branch names `DGFT_AcquirerAccount_Adyen_closedLoop_AUTHFlow` and `DGFT_AcquirerAccount_Adyen_closedLoop_SALEFlow` as acquirer accounts in the TEST environment. The shopper is redirected to a DGFT simulator and does not need the PayPay app; the page points to Adyen TEST Customer Area's Payment list for inspecting test status. Neither a simulator path nor a displayed status proves a live authorization, capture or settlement.\n- **LIVE:** each branch says the integration must access an **activated PayPay smartphone app through a Japan local IP address**. The LIVE gate is distinct from the TEST simulator and is not evidence that a particular device/account/merchant currently qualifies or has completed a payment.\n\n## Detail locators\n\n- Add-on scope and server-flow split: raw lines 19\u201325. Sessions integration/API v68 gate and Customer Area step: raw lines 29\u201334. No PayPay-specific Sessions request/configuration additions: raw lines 36\u201346.\n- Sessions TEST acquirer/simulator/status and LIVE condition: raw lines 48\u201361. Advanced integration, redirect and Customer Area prerequisites: raw lines 63\u201371. No PayPay-specific Advanced configuration/payment fields: raw lines 73\u201383. Advanced TEST/LIVE repetition: raw lines 85\u201396.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 parent server-flow and outcome context.\n- [[adyen-android-sdk]] \u2014 native Android Drop-in and action-handling context.\n- [[source-adyen-docs-payment-methods-paypay]] \u2014 PayPay overview for separate country/currency and capability matrix.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypay/android-drop-in/2026-09-15|PayPay Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 40"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 70"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 83"
+    },
+    {
+      "text": "For the LIVE environment integration, you must access your activated PayPay smartphone app through a Japan local IP address.",
+      "location": "raw line 96"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-paypay-android-drop-in-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypay-android-drop-in]] \u2014 2026-09-15 PayPay Android Drop-in Sessions/Advanced add-on for Sessions-only Checkout v68+, Advanced redirect prerequisite, no extra PayPay fields, DGFT TEST simulator and LIVE activated-app/Japan-local-IP condition; outcome remains unproven.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions lists Checkout API v68+; the Advanced section does not provide its own version minimum.",
+          "The Sessions section omits an explicit redirect prerequisite, whereas Advanced states action.type redirect; both TEST branches describe redirection to DGFT simulator.",
+          "No additional PayPay-specific parameters does not remove existing base-flow request, return or result-verification requirements.",
+          "DGFT TEST simulator and Customer Area status inspection are not LIVE eligibility, authorization, capture or settlement proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "b963743a549df1acd4173a83e636b7d8daa3415ee1d8f59068ccdae20bf5de0f",
+  "status": "candidate_ready"
+}

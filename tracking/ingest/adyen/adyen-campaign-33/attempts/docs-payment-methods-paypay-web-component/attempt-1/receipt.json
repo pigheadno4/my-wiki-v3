@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPay Web Component integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypay/web-component/2026-09-15.md\"\ntags: [adyen, paypay, web, component, redirect]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **PayPay** to an existing **Web Components** integration through the `Redirect` Component. It provides method-specific additions for **Sessions** and **Advanced** server-side flows; the linked main integration guides still supply the general payment and redirect lifecycle. Component setup or a TEST simulator redirect is not authorization, capture, settlement or a final shopper outcome. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The guide requires an existing Sessions Web Components integration, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and PayPay added in Customer Area. It says no additional PayPay parameters are needed when creating `/sessions`. Import `Redirect` from `@adyen/adyen-web` and initialize/mount it; the page states no extra PayPay configuration parameters. These are PayPay-specific additions, not a replacement for the main Sessions request or redirect handling. See raw lines 25\u201372.\n- **Advanced:** The guide separately requires an existing Advanced Web Components integration, redirect handling and PayPay added in Customer Area. It imports and initializes the same `Redirect` Component, and says no additional PayPay parameters are needed for `/payments`. The Advanced requirements table does **not** state the Sessions section's v68+ minimum; do not transfer it across flows from this page. See raw lines 87\u2013125.\n- Both initialization examples show `new Redirect(checkout, { type:paypay })`; `paypay` is unquoted and no variable declaration appears in the pinned page. Treat this as an incomplete JavaScript example requiring verification in the applicable SDK rather than a copy-ready snippet. See raw lines 70\u201372 and 115\u2013119.\n- **TEST and LIVE:** For TEST, the page names `DGFT_AcquirerAccount_Adyen_closedLoop_AUTHFlow` and `DGFT_AcquirerAccount_Adyen_closedLoop_SALEFlow`; it says the shopper is redirected to a DGFT simulator and does not need a PayPay app, and test transactions can be checked in Customer Area. For LIVE, it says the activated PayPay smartphone app must be accessed through a Japan local IP address. These are page-scoped test/live instructions, not proof of a merchant's live enablement, PayPay-provider outcome or a completed payment. See raw lines 74\u201385 and 127\u2013138.\n\n## Detail locators\n\n- Add-on scope and flow split: raw lines 15\u201325.\n- Sessions prerequisites, request, import, configuration and initialization: raw lines 27\u201372.\n- Advanced prerequisites, import, initialization and request: raw lines 87\u2013125.\n- Duplicated TEST acquirer/simulator and LIVE app/IP guidance: raw lines 74\u201385 and 127\u2013138.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paypay]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypay/web-component/2026-09-15|Adyen PayPay Web Component guide]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 42, Sessions /sessions parameters"
+    },
+    {
+      "text": "const redirectComponent = new Redirect(checkout, { type:paypay }).mount('#redirect-container')",
+      "location": "raw line 71, Sessions initialization example; repeated line 118 under Advanced"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 125, Advanced /payments parameters"
+    },
+    {
+      "text": "For the LIVE environment integration, you must access your activated PayPay smartphone app through a Japan local IP address.",
+      "location": "raw line 85, Sessions test and go live; repeated line 138 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-paypay-web-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypay-web-component]] \u2014 2026-09-15 PayPay Web Components add-on for Sessions (Checkout v68+) and Advanced redirect flows, TEST simulator and LIVE app/IP instructions; the unquoted `paypay` snippet and flow-specific version scope are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both initialization snippets use unquoted `paypay` without a declaration in this page; do not treat as copy-ready JavaScript."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypay/web-component/2026-09-15.md",
+  "raw_sha256": "e53bbb8b33263e2c836b428cbcde3beb31d5b9ea896cc52d844281b81f9199ba",
+  "status": "candidate_ready"
+}

@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-24] ingest | Adyen website C33
+
+- Fifty independently approved Alipay, AlipayHK, PayPay and NaverPay documentation sources; first full-review approvals 49/50 and 1 targeted correction reviews. 2 concepts touched (0 new); source_count 1664 = 1650 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-33/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-24] ingest | Adyen website C32
 
 - Fifty independently approved Apple Pay, Google Pay, PayPal, Samsung Pay, India-wallet and express-checkout documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 5 concepts touched (0 new); source_count 1614 = 1600 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-32/`; details [[adyen-log]]. No commit/push.

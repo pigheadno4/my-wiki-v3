@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-alipay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipay/web-drop-in/2026-09-15.md\"\ntags: [adyen, alipay, web, drop-in, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, modified and captured 2026-09-15, describes Alipay-specific additions to an **existing Web Drop-in** integration under Sessions or Advanced. It does not replace the main flow's request, client, redirect or outcome handling. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alipay|Alipay overview]] for the separate dated outside-China processing boundary. This page's setup and test instructions are not proof of current merchant eligibility, successful return, authorization, capture or settlement. See primary raw lines 15\u201336 and 74\u2013120.\n\n## Key takeaways\n\n- **Sessions:** the existing Web Drop-in integration must use Sessions and **Checkout API v68 or later**, handle `action.type: redirect`, and have Alipay added in Customer Area. The guide says there are no *additional Alipay-specific* `/sessions` parameters or Drop-in configuration parameters. The base Sessions request and redirect flow remain governed by the main integration. The v68+ gate appears in the Sessions requirements table only; the Advanced table does not state a Checkout API minimum. See raw lines 23\u201342, 56\u201360 and 74\u201384.\n- **Advanced:** the existing Web Drop-in Advanced flow must handle `action.type: redirect` and have Alipay added in Customer Area. It says there are no *additional Alipay-specific* `/payments` parameters or configuration parameters; this is not permission to omit base request fields. Its integration-type link has an unresolved encoded `{{getParameter('platform')}}` value, while the redirect and optional-import links explicitly use Web. Read the text requirement and resolved Web links rather than relying on the templated URL. See raw lines 74\u2013108.\n- Both branches call the individual-method import optional for tree shaking and say to include `Redirect`, but the displayed import snippet is `import { AdyenCheckout, Dropin, Alipay } from '@adyen/adyen-web';`. The prose and code name different imports. Do not treat the snippet alone as a verified recipe for this version. See raw lines 44\u201354 and 86\u201396.\n- Both branches recommend **live penny tests** with an Alipay wallet/card and checking those payments in the **live** Customer Area. They state that a request for Alipay in live Customer Area is needed before live acceptance. This page does not give a separate TEST-mode procedure or webhook/final-status instruction, and a submitted request or visible test payment does not prove live enablement, authorization, capture or settlement. See raw lines 62\u201372 and 110\u2013120.\n\n## Detail locators\n\n- **Sessions prerequisite, v68+ gate, redirect and no-extra-field statements:** raw lines 23\u201342, 56\u201360.\n- **Optional import prose/snippet conflict:** raw lines 44\u201354, 86\u201396.\n- **Advanced prerequisites, unresolved URL and no-extra-field statements:** raw lines 74\u2013108.\n- **Live penny-test recommendation and Customer Area request:** raw lines 62\u201372, 110\u2013120.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-alipay]]\n- [[adyen-payment-testing]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipay/web-drop-in/2026-09-15|Alipay Web Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "To do this, include `Redirect`.",
+      "location": "raw line 48, Sessions optional import prose"
+    },
+    {
+      "text": "import { AdyenCheckout, Dropin, Alipay } from '@adyen/adyen-web';",
+      "location": "raw line 53, Sessions import snippet"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [Web Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=%7B%7BgetParameter%28%27platform%27%29%7D%7D\\&integration=Drop-in).",
+      "location": "raw line 82, Advanced requirements"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw line 108, Advanced Alipay-specific request section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-alipay-web-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipay-web-drop-in]] \u2014 2026-09-15 Alipay Web Drop-in Sessions/Advanced add-on for redirect, Sessions-only Checkout v68+ gate and live request/test steps; optional-import prose/snippet and Advanced URL conflict remain source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Optional import prose says Redirect but the shown code imports Alipay (raw lines 48\u201353, 90\u201395).",
+          "Advanced integration-type URL retains encoded getParameter('platform') template (raw line 82); v68+ is stated only for Sessions (raw line 34).",
+          "No additional Alipay parameters does not waive base /sessions or /payments integration requirements."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "cb2e538400725220b86287b1a8a089dc031b64ee53402ec9d5d50adfa05b2b38",
+  "status": "candidate_ready"
+}

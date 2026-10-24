@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-paypay-ios-component]] — 2026-09-15 PayPay-specific iOS Components Sessions/Advanced guide for redirects, TEST simulator and LIVE app/IP conditions, with unresolved `None`/configuration and Advanced-link examples.
+
+
 - [[source-adyen-docs-payment-methods-paypal-ios-drop-in]] — 2026-09-15 PayPal guide for existing iOS Drop-in, covering Sessions/Payments request context, webhook outcomes, recurring-account permissions and capture-dependent refunds.
 
 

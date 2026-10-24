@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-alipay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay iOS Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipay/ios-component/2026-09-15.md\"\ntags: [adyen, alipay, ios, components, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, modified and captured 2026-09-15, adds Alipay to an **existing iOS Components** integration. It separates Sessions and Advanced server-side flows, uses `InstantPaymentComponent`, and relies on existing redirect handling. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alipay|Alipay overview]] for the dated outside-China merchant-processing boundary. This page's setup and example are not evidence of live method availability, completed return, final authorization, capture or settlement. See primary raw lines 15\u201336 and 81\u2013133.\n\n## Key takeaways\n\n- **Sessions:** the existing iOS Components integration must use Sessions and **Checkout API v68 or later**; it must handle `action.type: redirect`, and Alipay must be added in Customer Area. This branch says no Alipay-specific `/sessions` fields or Component configuration parameters are needed. The v68+ condition is stated only in this Sessions requirements table; the Advanced table below does not state a Checkout API minimum. See raw lines 23\u201348 and 85\u201397.\n- **Sessions client:** obtain the `alipay` method from the session's payment methods, then create `InstantPaymentComponent`, assign the session as delegate and call `initiatePayment()`. The sample guards method support before showing it. Initiating the Component is a shopper-flow action, not a server payment result. See raw lines 50\u201369.\n- **Advanced:** the page requires an existing iOS Components Advanced flow, `action.type: redirect` handling and Customer Area Alipay addition; it says no Alipay-specific Component configuration or `/payments` fields. The Advanced sample creates `InstantPaymentComponent`, sets the Component's delegate to `self` and initiates it, but references `paymentMethods` without defining it within that snippet; it assumes existing integration context. The Advanced requirements' **integration-type link points to `integration=Drop-in`** despite the row saying Components, while its redirect/payment links point to Components. Keep the stated Components requirement primary and treat the link/sample as incomplete navigation/code. See raw lines 81\u2013123.\n- Both branches recommend **live penny tests** with an Alipay wallet and viewing test-payment details in **live** Customer Area. They also say a request for Alipay in live Customer Area is required before accepting live payments. These are page instructions, not proof a request was approved or a payment executed. This historical guide gives no country/currency matrix, callback result interpretation, webhook/final-status rule, refund or capture procedure; use the appropriate main integration and outcome guides. See raw lines 71\u201379 and 125\u2013133.\n\n## Detail locators\n\n- **Sessions prerequisites, v68+ gate, request/configuration and component snippet:** raw lines 23\u201369.\n- **Advanced prerequisites, Drop-in-link mismatch, snippet and no-extra-field statements:** raw lines 81\u2013123.\n- **Live penny-test recommendation and live method request:** raw lines 71\u201379, 125\u2013133.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-alipay]]\n- [[adyen-payment-testing]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipay/ios-component/2026-09-15|Alipay iOS Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Components#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw line 35, Sessions redirect requirement"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Alipay, use the `InstantPaymentComponent` class.",
+      "location": "raw line 54, Sessions initialization"
+    },
+    {
+      "text": "Before you can accept live Alipay payments, you need to submit a request for Alipay in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 79, Sessions go-live"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [iOS Components integration](/online-payments/build-your-integration/advanced-flow?platform=iOS\\&integration=Drop-in).",
+      "location": "raw line 89, Advanced integration requirement"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-alipay-ios-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipay-ios-component]] \u2014 2026-09-15 Alipay iOS InstantPaymentComponent add-on for Sessions/Advanced redirects, Sessions-only Checkout v68+ prerequisite and live request/test steps; Advanced integration link and sample have qualifications.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced requirement says iOS Components but links integration=Drop-in (raw line 89); its code snippet references paymentMethods without a declaration within that snippet (raw lines 107\u2013117).",
+          "Checkout API v68+ is stated in Sessions requirements only (raw line 34), not Advanced; live penny tests and request instructions are not outcome proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipay/ios-component/2026-09-15.md",
+  "raw_sha256": "52850904a0870e011a142c5539ca276bea5003178835e231736d0d84b8c81aba",
+  "status": "candidate_ready"
+}

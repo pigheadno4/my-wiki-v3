@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-alipayhk-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay HK API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipayhk/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipayhk/api-only/2026-09-15.md\"\ntags: [adyen, alipayhk, api-only, web, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, modified and captured 2026-09-15, adds Alipay HK to an existing **Web-linked Advanced API-only** integration. It covers `HK`/`HKD` method discovery, merchant-built selection, redirect handling and TEST/live setup. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alipayhk|Alipay HK overview]] for the separate dated HK/HKD wallet/redirect matrix. Method lookup, setup and sample response do not establish current merchant eligibility, final authorization, capture or settlement. See primary raw lines 15\u201329 and 44\u201399.\n\n## Key takeaways\n\n- The prerequisite is an existing API-only integration linked here to a **Web Advanced** main flow, `action.type: redirect` handling and Alipay HK added in Customer Area. The guide describes a merchant-built payment-method choice and says the existing integration handles the redirect. It does not provide a deep-link/return callback, final webhook or payment-state procedure itself. See raw lines 23\u201342 and 101\u2013103.\n- To retrieve Alipay HK with `/paymentMethods`, the page specifies `countryCode: HK` and `amount.currency: HKD`. Its Checkout TEST `/v72/paymentMethods` HK/HKD example shows `type: alipay_hk`; this is a dated sample, not a stated minimum API version or proof of current merchant enablement. See raw lines 44\u201383.\n- The high-level **How it works** list says the shopper enters details in the merchant form and that item information is sent \u201cif applicable,\u201d while the more specific form section says no shopper information needs collecting and the `/payments` section says no additional Alipay HK parameters. The high-level shopper-detail wording does not establish a required field; the item-data instruction is conditional and gives no Alipay HK field schema. Preserve that distinction and follow the base Advanced integration for ordinary request fields. See raw lines 31\u201340 and 85\u201387.\n- The shown curl command has `-X POST` without a line-continuation character before `-d`; it is not paste-ready as shown. The `idempotency-key` header appears in the example, not as a stated Alipay HK-specific requirement. See raw lines 53\u201370.\n- The TEST section publishes test credentials and directs readers to TEST Customer Area's payment list. It separately says a live Customer Area request for AlipayHK is needed before accepting live payments. The existence of those credentials, a method-list response or request submission does not establish an executed test, approved live account or successful payment. See raw lines 89\u201399.\n\n## Detail locators\n\n- **Web Advanced prerequisite, redirect and shopper-form wording:** raw lines 19\u201342.\n- **HK/HKD method discovery, TEST v72 sample, `alipay_hk` type and curl defect:** raw lines 44\u201383.\n- **No extra Alipay HK `/payments` fields, TEST credentials and live request:** raw lines 85\u2013103.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-alipayhk]]\n- [[adyen-payment-testing]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipayhk/api-only/2026-09-15|Alipay HK API-only \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#handle-the-redirect). `action.type`: **redirect**.",
+      "location": "raw line 28, requirements"
+    },
+    {
+      "text": "Include AlipayHK in the list of available payment methods. You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 40, merchant form"
+    },
+    {
+      "text": "****HKD****",
+      "location": "raw line 51, paymentMethods currency"
+    },
+    {
+      "text": "\"type\": \"alipay_hk\"",
+      "location": "raw line 79, example method response"
+    },
+    {
+      "text": "Before you can accept live AlipayHK payments, you need to submit a request for AlipayHK in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 99, live request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-alipayhk-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipayhk-api-only]] \u2014 2026-09-15 Web Advanced API-only Alipay HK add-on for HK/HKD method discovery, redirect and TEST/live setup; high-level form/item wording requires qualification against specific no-extra-field sections, and TEST curl is incomplete.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "High-level steps mention shopper details and conditional item information, while specific form and /payments sections require no additional Alipay HK collection or fields; do not infer a required shopper or item field (raw lines 33\u201340, 85\u201387).",
+          "TEST curl lacks continuation after -X POST before -d (raw lines 55\u201369); /v72 is example version, not a stated minimum.",
+          "TEST credentials and a listed alipay_hk response do not prove current account enablement or payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipayhk/api-only/2026-09-15.md",
+  "raw_sha256": "ba6aa26fae61e4dadcf15ef7b9b50aae8cbdd46dff5a4cea28dc6981b92dccc1",
+  "status": "candidate_ready"
+}

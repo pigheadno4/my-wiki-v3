@@ -1,0 +1,5 @@
+Q1. What does this Alipay HK page establish, and where does an integrator go next?
+A1. It describes the shopper QR/app authentication and lists a wallet redirect flow for HK/HKD, then points to separate Web, iOS, Android, React Native, Flutter and API-only guides (raw lines 23–29, 31–67). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipayhk]] → [[raw/adyen/docs/payment-methods/alipayhk/2026-09-15]]
+
+Q2. Does the capability matrix or QR authentication prove recurring support or final payment/refund status?
+A2. No. The snapshot marks recurring and separate/partial captures and chargebacks with X; refunds and partial/multiple partial refunds have checks (raw lines 27–29). It supplies no child integration procedure, redirect/return/webhook result or transaction outcome; shopper app authentication is described only at raw lines 23–25. [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipayhk]] → [[raw/adyen/docs/payment-methods/alipayhk/2026-09-15]]

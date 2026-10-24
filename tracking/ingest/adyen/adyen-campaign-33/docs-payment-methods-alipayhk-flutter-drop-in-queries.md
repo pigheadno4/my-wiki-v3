@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What does this guide add to existing Flutter Drop-in Sessions and Advanced integrations?
+Answer: Sessions requires existing Flutter Drop-in Sessions, Checkout API v68+, redirect handling and Customer Area Alipay HK; it says no additional method-specific `/sessions` or configuration parameters (raw lines 25–48). Advanced separately requires its Drop-in/redirect/Customer Area setup and says no extra Alipay HK configuration or `/payments` parameters; it does not restate v68+ (raw lines 62–84). The base payment flow remains in the main guides. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipayhk-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/alipayhk/flutter-drop-in/2026-09-15]].
+
+Q2. What are the test/live boundary and documentation conflict?
+Answer: The page provides test fixture credentials and a test Customer Area payment-list route, then says a separate Alipay HK request in live Customer Area is needed before accepting live payments (raw lines 50–60, 86–96). This is not live approval or payment outcome proof. The Sessions integration-type row links to an Advanced-flow URL even though its text says Sessions Flutter Drop-in (raw line 33). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipayhk-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/alipayhk/flutter-drop-in/2026-09-15]].

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypay-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPay Flutter Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, paypay, flutter, drop-in, redirect]\n---\n\n## Overview\n\nThis [[adyen]] guide gives **PayPay-specific additions** to an existing **Flutter Drop-in** integration, separately for Sessions and Advanced server-side flows. It routes the shopper through a redirect, with different TEST simulator and LIVE PayPay-app conditions. It does not itself establish current merchant enablement, a completed shopper return, authorization, capture or settlement. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions flow:** The page requires an existing Sessions Flutter Drop-in integration, **Checkout API v68 or later**, PayPay added in Customer Area, and existing redirect handling for `action.type: redirect`. It says no additional PayPay-specific `/sessions` parameters or Drop-in configuration are needed. These statements do not waive the main Sessions request/return flow. See raw lines 23\u201348.\n- **Advanced flow:** The page requires an existing Advanced Flutter Drop-in integration, PayPay added in Customer Area, and existing redirect handling for `action.type: redirect`. It says no additional PayPay-specific `/payments` parameters or Drop-in configuration are needed. The Advanced requirement table does **not** restate the Sessions table's v68+ minimum. See raw lines 63\u201385.\n- **TEST versus LIVE:** For TEST, the guide lists `DGFT_AcquirerAccount_Adyen_closedLoop_AUTHFlow` and `DGFT_AcquirerAccount_Adyen_closedLoop_SALEFlow`; the shopper is redirected to a **DGFT simulator**, with no PayPay app needed. It directs merchants to TEST Customer Area Payment list for test status. For LIVE integration, it says an **activated PayPay smartphone app** must be accessed through a **Japan local IP address**. The AUTHFlow/SALEFlow names and simulator redirect do not establish a final authorization or sale outcome. See raw lines 50\u201361 and 87\u201398.\n\n> [!warning] Contradiction\n> The **Sessions** requirement row labels an existing Sessions Flutter Drop-in integration but links to an **Advanced-flow** URL (raw line 33); the following Sessions redirect and session-creation links point to Sessions-flow URLs (raw lines 35 and 42). Treat that requirement link as mismatched navigation, not a change to the stated Sessions prerequisite.\n\n## Detail locators\n\n- Flow split, Sessions requirement and no-extra-parameters/configuration statements: raw lines 23\u201348.\n- Sessions TEST simulator and LIVE app/Japan-IP conditions: raw lines 50\u201361.\n- Advanced requirement and no-extra-parameters/configuration statements: raw lines 63\u201385.\n- Advanced repeated TEST/LIVE conditions: raw lines 87\u201398.\n- This page does not provide a currency rule, final webhook contract, refund procedure or post-redirect payment lifecycle; use the appropriate linked main guide and specific PayPay overview for those separate questions.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypay/flutter-drop-in/2026-09-15|Adyen PayPay Flutter Drop-in snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Flutter Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in).",
+      "location": "raw line 33, Sessions flow Drop-in > Requirements > Integration type"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 35, Sessions flow Drop-in > Requirements > Redirect handling"
+    },
+    {
+      "text": "You will be redirected you to a DGFT simulator tool to complete the transaction. You do not need the PayPay app.",
+      "location": "raw line 57, Sessions flow Drop-in > Test and go live"
+    },
+    {
+      "text": "For the LIVE environment integration, you must access your activated PayPay smartphone app through a Japan local IP address.",
+      "location": "raw line 61, Sessions flow Drop-in > Test and go live"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 85, Advanced flow Drop-in > Add additional parameters to your /payments request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-paypay-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypay-flutter-drop-in]] \u2014 2026-09-15 PayPay Flutter Drop-in add-on for existing Sessions (v68+) or Advanced redirect flows, with TEST DGFT simulator and LIVE app/Japan-IP conditions; the Sessions prerequisite link is mismatched.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions integration-type requirement links to an Advanced-flow URL despite the Sessions label and adjacent Sessions links (raw lines 33, 35, 42)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "f40935ee5c11c4569675738de29633539c243661e14b6d78fb8584dbf222bd23",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,5 @@
+Q1. Which PayPay Android integration paths does the chooser provide?
+A1. It links Android Drop-in and Components child guides; its Component label mentions InstantPaymentComponent for a PayPay redirect. It also links main Drop-in and Components guides for Sessions and Advanced flows (raw lines 19–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-android]] → [[raw/adyen/docs/payment-methods/paypay/android/2026-09-15]]
+
+Q2. Does this page establish API/SDK versions or completed PayPay processing?
+A2. No. It says to build the main integration first and supplies navigation rather than child prerequisites or a redirect/return implementation (raw lines 29–36). The short redirect description is not a payment result or merchant live-eligibility proof (raw lines 25–27). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-android]] → [[raw/adyen/docs/payment-methods/paypay/android/2026-09-15]]

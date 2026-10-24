@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPay Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypay/web-drop-in/2026-09-15.md\"\ntags: [adyen, paypay, web, drop-in, redirect]\n---\n\n## Overview\n\nThis [[adyen]] guide adds PayPay to an existing **Web Drop-in** integration, splitting PayPay-specific additions between **Sessions** and **Advanced** server-side flows. The linked main integration supplies the base payment and redirect lifecycle. PayPay appearing in Drop-in, a simulator redirect, or a Customer Area status view does not itself prove final authorization, capture or settlement. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The guide requires an existing Sessions Web Drop-in integration, **Checkout API v68 or later**, `action.type: redirect` handling and PayPay added in Customer Area. It says no additional PayPay parameters are needed when creating `/sessions`; the base Sessions request still applies. Importing individual methods for tree shaking is **optional**, and if used the import includes `Redirect`. See raw lines 25\u201354.\n- **Advanced:** The section requires an existing Advanced Web Drop-in integration, redirect handling and PayPay added in Customer Area. It likewise presents an optional individual-method import including `Redirect`, and says no additional PayPay parameters are needed for `/payments`. It does **not** restate the Sessions v68+ minimum as an Advanced requirement. The Advanced integration-type link contains the encoded unresolved `{{getParameter('platform')}}` placeholder; use the text's intended Advanced Web Drop-in route rather than relying on that literal URL. See raw lines 71\u201399.\n- **TEST and LIVE:** The page names the TEST acquirer accounts `DGFT_AcquirerAccount_Adyen_closedLoop_AUTHFlow` and `DGFT_AcquirerAccount_Adyen_closedLoop_SALEFlow`; it says the test route redirects to a DGFT simulator, without a PayPay app, and test transactions can be viewed in Customer Area. The LIVE instruction says to access an activated PayPay smartphone app through a Japan local IP address. These are historical test/live instructions, not evidence of current merchant enablement or a successful payment. See raw lines 56\u201369 and 101\u2013114.\n\n## Detail locators\n\n- Scope and Sessions prerequisites/parameters/optional import: raw lines 15\u201354.\n- Advanced prerequisites/optional import/parameters: raw lines 71\u201399.\n- Duplicated TEST account, simulator and LIVE app/IP guidance: raw lines 56\u201369 and 101\u2013114.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paypay]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypay/web-drop-in/2026-09-15|Adyen PayPay Web Drop-in guide]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 42, Sessions /sessions add-on"
+    },
+    {
+      "text": "you can optionally import individual payment methods to optimize performance",
+      "location": "raw line 48, Sessions optional import; repeated line 87 under Advanced"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 99, Advanced /payments add-on"
+    },
+    {
+      "text": "For the LIVE environment integration, you must access your activated PayPay smartphone app through a Japan local IP address.",
+      "location": "raw line 69, Sessions test and go live; repeated line 114 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-paypay-web-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypay-web-drop-in]] \u2014 2026-09-15 PayPay Web Drop-in add-on for Sessions (Checkout v68+) and Advanced redirect flows, optional method import, DGFT TEST and LIVE app/IP instructions; Advanced guide URL has an unresolved template placeholder.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced integration-type link at raw line 79 includes an encoded unresolved template placeholder."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "e984f91c879dbaf2b818eea1baee8773f6e90e90d8e7c2d5179d5a3a9d41743a",
+  "status": "candidate_ready"
+}

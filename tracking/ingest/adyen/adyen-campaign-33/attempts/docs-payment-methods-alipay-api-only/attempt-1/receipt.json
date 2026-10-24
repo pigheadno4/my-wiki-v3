@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-alipay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipay/api-only/2026-09-15.md\"\ntags: [adyen, alipay, api-only, web, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, modified and captured 2026-09-15, adds Alipay to an existing **Advanced API-only integration** whose linked main flow is Web. It covers `/paymentMethods` discovery filters, merchant-built selection UI, `/payments` and redirect handoff, then live-request and penny-test guidance. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alipay|Alipay overview]] for the separate outside-China merchant-processing boundary. This page's method response and examples do not prove current eligibility, final authorization, capture or settlement. See primary raw lines 15\u201329 and 44\u201397.\n\n## Key takeaways\n\n- Prerequisites are an existing Web-linked Advanced API-only integration, `action.type: redirect` handling, and Alipay added in Customer Area. The shopper chooses Alipay in the merchant-built UI; the existing integration handles the redirect. The page does not itself specify app deep links, a return callback, webhook/final-result handling or a Checkout API minimum. See raw lines 23\u201340 and 99\u2013101.\n- For `/paymentMethods`, the page lists eligible `countryCode` values **AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HK, HR, HU, ID, IS, IT, JP, KR, LT, LU, LV, MT, MY, NL, NO, NZ, PH, PL, PR, PT, RO, SE, SG, SI, SK, TH, TW, US, VN**, and `amount.currency` values **AUD, CAD, CHF, DKK, EUR, GBP, HKD, JPY, MYR, NOK, NZD, SEK, SGD, THB, USD** to include Alipay in the response. This is a source-dated discovery list, not approval for every country/currency pair or merchant. The TEST `/v72/paymentMethods` NL/EUR request and `alipay` response are examples, not a required API version or observed live availability. See raw lines 44\u201383.\n- The page's **How it works** steps say the shopper enters details in the payment form and that the request includes extra item information; its specific **Build your payment form** section says no shopper information needs collecting, and its **/payments** section says no extra Alipay parameters are needed. These statements conflict. Keep the specific Alipay-only field guidance qualified; base Advanced request fields still come from the main flow, and the high-level steps do not establish required item fields. See raw lines 31\u201340 and 85\u201387.\n- The curl example has `-X POST` without a continuation before the next `-d` line, so its shown shell command is not paste-ready. It also includes an `idempotency-key` as an example; this page does not say that header is an Alipay-specific requirement. See raw lines 53\u201370.\n- The guide recommends live penny tests with an Alipay wallet/card and viewing payment details in **live Customer Area**. It says a live Customer Area request for Alipay is required before accepting live payments. This is provider configuration guidance; no actual account, wallet, card or financial operation is performed here, and the guide does not show a final webhook, capture or settlement. See raw lines 89\u201397.\n\n## Detail locators\n\n- **Advanced Web API-only prerequisites, redirect and high-level/form conflict:** raw lines 19\u201340.\n- **Country/currency method-discovery list and versioned TEST samples:** raw lines 44\u201383.\n- **No-extra-Alipay `/payments` fields and live setup:** raw lines 85\u2013101.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-alipay]]\n- [[adyen-payment-testing]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipay/api-only/2026-09-15|Alipay API-only \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#handle-the-redirect). `action.type`: **redirect**.",
+      "location": "raw line 28, requirements"
+    },
+    {
+      "text": "Include Alipay in the list of available payment methods. You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 40, Build your payment form"
+    },
+    {
+      "text": "**AUD, CAD, CHF, DKK, EUR, GBP, HKD, JPY, MYR, NOK, NZD, SEK, SGD, THB, USD**",
+      "location": "raw line 51, paymentMethods currency row"
+    },
+    {
+      "text": "You do not need to add any parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 87, /payments additional parameters"
+    },
+    {
+      "text": "Before you can accept live Alipay payments, you need to submit a request for Alipay in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 97, go-live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-alipay-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipay-api-only]] \u2014 2026-09-15 Web Advanced API-only Alipay add-on for country/currency-filtered discovery, redirect and live request/test guidance; form/item-field prose conflicts with specific no-extra-field sections and TEST curl has a continuation defect.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "High-level How it works says shopper enters details and request includes item info (raw lines 33\u201336), whereas form and /payments sections say no extra collection or parameters (raw lines 38\u201340, 85\u201387).",
+          "The TEST curl example has no line continuation after -X POST before -d (raw lines 55\u201369); /v72 is an example, not a stated minimum.",
+          "Country/currency discovery values and a listed alipay response do not prove a merchant is enabled or a final payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipay/api-only/2026-09-15.md",
+  "raw_sha256": "82be8e0cf13dcf08d93e5c016c5cab9a79e75a885736b099e8dc55d4729e6142",
+  "status": "candidate_ready"
+}

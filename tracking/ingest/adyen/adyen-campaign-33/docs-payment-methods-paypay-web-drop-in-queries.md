@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What PayPay-specific additions does Web Drop-in require in Sessions and Advanced flows?
+Answer: Sessions requires an existing Web Drop-in Sessions flow, Checkout API v68+, PayPay in Customer Area and redirect handling; it says no extra PayPay `/sessions` parameters and offers an optional `Redirect` individual-method import (raw lines 25–54). Advanced requires its own existing Web Drop-in/redirect setup and PayPay in Customer Area, offers the optional import and says no extra PayPay `/payments` parameters; it does not restate v68+ (raw lines 71–99). Base flow requirements remain in the main guides. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-web-drop-in]] → [[raw/adyen/docs/payment-methods/paypay/web-drop-in/2026-09-15]].
+
+Q2. What are the test/live and source-link limitations?
+Answer: The page names two TEST DGFT closed-loop acquirer accounts, a simulator redirect without the PayPay app, Customer Area status lookup and a LIVE instruction for an activated PayPay app via Japan local IP (raw lines 56–69, 101–114). Its Advanced integration-type URL contains an unresolved encoded template expression (raw line 79). These instructions and links do not prove merchant enablement, final authorization, capture or settlement. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-web-drop-in]] → [[raw/adyen/docs/payment-methods/paypay/web-drop-in/2026-09-15]].

@@ -21,6 +21,153 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-paypay-web]] — 2026-09-15 PayPay for Web chooser linking Drop-in, Redirect Component and main Sessions/Advanced Web integration guides; navigation only, with child requirements and outcomes separate.
+
+
+- [[source-adyen-docs-payment-methods-paypay-android]] — 2026-09-15 PayPay Android chooser for Drop-in/Components and Sessions/Advanced main guides; it labels InstantPaymentComponent for redirect but leaves child behavior and outcomes to linked guides.
+
+
+- [[source-adyen-docs-payment-methods-naverpay-web]] — 2026-09-15 NaverPay Web navigation chooser for Drop-in, Redirect Components and Sessions/Advanced main guides; child setup and outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-alipay-web]] — 2026-09-15 Alipay Web navigation chooser linking Drop-in and Redirect Components child guides plus four main Web Sessions/Advanced integration routes; child behavior, version and merchant eligibility remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-alipay-android]] — 2026-09-15 Alipay Android chooser linking Drop-in, InstantPaymentComponent and main Sessions/Advanced Android integration guides; navigation only, with child conditions and outcomes left to their sources.
+
+
+- [[source-adyen-docs-payment-methods-paypay-ios]] — 2026-09-15 PayPay iOS navigation chooser for Drop-in/Components and Sessions/Advanced main guides; its Components label contains an unresolved `None` placeholder.
+
+
+- [[source-adyen-docs-payment-methods-alipay-ios]] — 2026-09-15 Alipay iOS navigation chooser for Drop-in, InstantPaymentComponent and Sessions/Advanced main guides; child version, redirect and outcome details remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-naverpay-web-drop-in]] — 2026-09-15 NaverPay Web Drop-in add-on for existing Sessions (Checkout v68+) and Advanced redirect flows; no NaverPay-specific extra request fields and no test environment, with a qualified live-small-amount recommendation.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-web]] — 2026-09-15 Alipay HK Web integration chooser linking Drop-in and Components child guides plus Web Sessions and Advanced base guides; no standalone method procedure.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-android]] — 2026-09-15 Alipay HK Android chooser linking Drop-in, InstantPaymentComponent and main Sessions/Advanced Android integration guides; navigation only, without child-guide eligibility or outcome claims.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-ios]] — 2026-09-15 Alipay HK iOS navigation chooser for Drop-in/Components and Sessions/Advanced main guides; its Components label contains an unresolved `None` placeholder.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-react-native-component]] — 2026-09-15 React Native Alipay HK Component guide stating Sessions unavailable and Advanced redirect/no-extra-method-field setup, with TEST credentials/live request; Advanced Components label links to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-paypay-react-native-component]] — 2026-09-15 PayPay React Native Components Advanced-only add-on (Sessions explicitly unsupported), with redirect/no-extra-method-fields, DGFT TEST simulator and LIVE app/Japan-IP conditions; title and Drop-in-link mismatches are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-alipay-react-native-component]] — 2026-09-15-captured Alipay React Native Components guide: Sessions unsupported, Advanced redirect plus Customer Area setup, no additional Alipay-specific fields, recommended live penny tests and separate live request gate; Integration type link points to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-ios-drop-in]] — 2026-09-15 Alipay HK iOS Drop-in add-on for Sessions (Checkout v68+) and Advanced (explicit redirect) flows, no extra method-specific fields, test fixture and separate live request; no payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-android-drop-in]] — 2026-09-15 Alipay HK Android Drop-in add-on for existing Sessions (Checkout v68+) and Advanced flows, with Advanced redirect wording, no extra method fields, test credentials and a separate live request.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-api-only]] — 2026-09-15 Web Advanced API-only Alipay HK add-on for HK/HKD method discovery, redirect and TEST/live setup; high-level form/item wording requires qualification against specific no-extra-field sections, and TEST curl is incomplete.
+
+
+- [[source-adyen-docs-payment-methods-alipay-ios-drop-in]] — 2026-09-15 Alipay iOS Drop-in add-on for existing Sessions (Checkout v68+) and Advanced redirect flows, with method-specific no-extra fields and distinct recommended live penny tests/live request.
+
+
+- [[source-adyen-docs-payment-methods-alipay-android-drop-in]] — 2026-09-15 Alipay Android Drop-in add-on for Sessions (Checkout v68+) and Advanced (explicit redirect) flows, no extra method-specific fields and live request/penny-test guidance; no payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-paypay-api-only]] — 2026-09-15 PayPay API-only add-on for JP/JPY discovery, redirect, TEST DGFT simulator and LIVE app/Japan-IP conditions; item-data prose conflicts with no-extra-parameters wording.
+
+
+- [[source-adyen-docs-payment-methods-paypay-ios-drop-in]] — 2026-09-15 PayPay iOS Drop-in Sessions/Advanced add-on with Sessions-only Checkout v68+, Advanced redirect, no extra method fields, TEST DGFT simulator and LIVE activated-app/Japan-IP condition.
+
+
+- [[source-adyen-docs-payment-methods-paypay-android-drop-in]] — 2026-09-15 PayPay Android Drop-in Sessions/Advanced add-on for Sessions-only Checkout v68+, Advanced redirect prerequisite, no extra PayPay fields, DGFT TEST simulator and LIVE activated-app/Japan-local-IP condition; outcome remains unproven.
+
+
+- [[source-adyen-docs-payment-methods-naverpay-web-component]] — 2026-09-15 NaverPay Web Redirect Component add-on for existing Sessions (v68+) or Advanced flows; no test environment, live-small-amount recommendation and unquoted type example remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-flutter-drop-in]] — 2026-09-15 Alipay HK Flutter Drop-in add-on for Sessions (Checkout v68+) and Advanced redirect flows, no extra method-specific fields, test fixture and live request; Sessions integration-type URL points to Advanced.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-flutter-component]] — 2026-09-15 Alipay HK Flutter Components add-on for existing Sessions (Checkout v68+) and Advanced redirects, with test/live gates and mismatched prerequisite URLs pointing to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-react-native-drop-in]] — 2026-09-15 Alipay HK React Native Drop-in Sessions/Advanced redirect add-on with Sessions-only Checkout v68+, no extra method fields, TEST credentials and live request gate; Sessions requirement URL points to Advanced.
+
+
+- [[source-adyen-docs-payment-methods-alipay-flutter-drop-in]] — 2026-09-15 Alipay Flutter Drop-in add-on for Sessions (v68+/redirect) and Advanced, with method-specific no-extra fields, live-request gate and malformed Advanced version/link text.
+
+
+- [[source-adyen-docs-payment-methods-alipay-flutter-component]] — 2026-09-15 Alipay Flutter Components add-on for Sessions (Checkout v68+) and Advanced redirect flows, no extra method-specific fields, live request and penny-test guidance; integration-type URLs conflict with their labels.
+
+
+- [[source-adyen-docs-payment-methods-alipay-react-native-drop-in]] — 2026-09-15 Alipay React Native Drop-in add-on for existing Sessions (Checkout v68+) and Advanced redirects, with no extra method parameters, live request gate and Sessions-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-alipay-api-only]] — 2026-09-15 Web Advanced API-only Alipay add-on for country/currency-filtered discovery, redirect and live request/test guidance; form/item-field prose conflicts with specific no-extra-field sections and TEST curl has a continuation defect.
+
+
+- [[source-adyen-docs-payment-methods-alipay-web-component]] — 2026-09-15 Alipay Web Redirect Component add-on for existing Sessions (Checkout v68+) and Advanced flows, with separate live request gate and inconsistent initialization snippets.
+
+
+- [[source-adyen-docs-payment-methods-paypay-flutter-drop-in]] — 2026-09-15 PayPay Flutter Drop-in add-on for existing Sessions (v68+) or Advanced redirect flows, with TEST DGFT simulator and LIVE app/Japan-IP conditions; the Sessions prerequisite link is mismatched.
+
+
+- [[source-adyen-docs-payment-methods-paypay-flutter-component]] — 2026-09-15-captured PayPay Flutter Components Sessions/Advanced add-on with redirect handling, no extra PayPay-specific fields, TEST DGFT simulator and LIVE activated-app/Japan-local-IP condition; Integration type links point to Drop-in and outcomes remain unproven.
+
+
+- [[source-adyen-docs-payment-methods-paypay-react-native-drop-in]] — 2026-09-15 PayPay React Native Drop-in Sessions/Advanced add-on for redirect handling, method-specific parameter absence, TEST DGFT simulator and LIVE activated-app/Japan-local-IP gate; Sessions URL mismatch and outcome limits are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-web-drop-in]] — 2026-09-15 Alipay HK Web Drop-in add-on for existing Sessions/Advanced redirect flows, Sessions v68+ and separate TEST/LIVE setup; no full return or outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-paypay-web-drop-in]] — 2026-09-15 PayPay Web Drop-in add-on for Sessions (Checkout v68+) and Advanced redirect flows, optional method import, DGFT TEST and LIVE app/IP instructions; Advanced guide URL has an unresolved template placeholder.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-web-component]] — 2026-09-15 Alipay HK Web Redirect Component add-on for existing Sessions (Checkout v68+) and Advanced flows, with test/live gates and an unresolved unquoted type example.
+
+
+- [[source-adyen-docs-payment-methods-alipay-web-drop-in]] — 2026-09-15 Alipay Web Drop-in Sessions/Advanced add-on for redirect, Sessions-only Checkout v68+ gate and live request/test steps; optional-import prose/snippet and Advanced URL conflict remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-paypay-web-component]] — 2026-09-15 PayPay Web Components add-on for Sessions (Checkout v68+) and Advanced redirect flows, TEST simulator and LIVE app/IP instructions; the unquoted `paypay` snippet and flow-specific version scope are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-alipay-ios-component]] — 2026-09-15 Alipay iOS InstantPaymentComponent add-on for Sessions/Advanced redirects, Sessions-only Checkout v68+ prerequisite and live request/test steps; Advanced integration link and sample have qualifications.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-ios-component]] — 2026-09-15 iOS Alipay HK Components add-on for existing Sessions/Advanced redirect flows, with Sessions v68+ requirement, live Customer Area request gate and unresolved `None`/configuration snippet plus Advanced Drop-in link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk-android-component]] — 2026-09-15 Alipay HK Android Component add-on for existing Sessions (Checkout API v68+) or Advanced flows, with redirect handling and separate test/live Customer Area steps; no payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-alipay-android-component]] — 2026-09-15 Alipay Android Component add-on for existing Sessions (Checkout API v68+) and Advanced flows, redirect handling, InstantPaymentComponent and a live Customer Area request; payment outcomes remain in main guides.
+
+
+- [[source-adyen-docs-payment-methods-paypay-android-component]] — 2026-09-15-captured PayPay Android Components Sessions/Advanced supplement for redirect handling, InstantPaymentComponent imports, TEST DGFT simulator accounts and LIVE activated-app/Japan-local-IP condition; no payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-naverpay-api-only]] — 2026-09-15 NaverPay API-only Advanced-flow add-on for KR/KRW discovery and redirect response, with no NaverPay test environment; item-data/no-extra-parameters and incomplete-payment-example tensions are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-naverpay]] — 2026-09-15 NaverPay KR/KRW redirect-wallet overview with refund/capture/recurring matrix and Web/API-only child-guide routes; no onboarding or outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-paypay]] — 2026-09-15 PayPay overview for JP/JPY wallet redirect, qualified capability matrix and Web/native/API-only routes; its unresolved “See note” markers and links do not establish live eligibility or payment outcome.
+
+
+- [[source-adyen-docs-payment-methods-alipayhk]] — 2026-09-15 Alipay HK wallet overview for HK/HKD redirect, capability marks and Web/native/API-only navigation; child guides and payment outcomes remain separate.
+
+
+- [[source-adyen-docs-payment-methods-alipay]] — 2026-09-15 Alipay overview for outside-China merchant processing boundary, 12-hour offer, refund/recurring/capture capability marks and Web/native/API-only/Pay by Link/POS routes; overview marks do not prove current eligibility or payment outcomes.
+
+
 - [[source-adyen-docs-payment-methods-apple-pay-ios]] — 2026-09-15 Apple Pay for iOS chooser linking Drop-in, Component and general iOS integration pages; navigation only, with certificate, version and outcome questions left to child guides.
 
 

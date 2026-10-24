@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What is required to add Alipay to Android Drop-in in each server-side flow?
+Answer: Sessions lists an existing Android Drop-in Sessions flow, Checkout API v68+ and Customer Area Alipay, with no extra method-specific `/sessions` or configuration parameters (raw lines 25–46). Advanced lists an existing Android Drop-in Advanced flow, `action.type: redirect` handling and Customer Area Alipay, with no extra method-specific `/payments` or configuration parameters (raw lines 60–80). The Sessions table does not separately state redirect handling; the Advanced table does not restate v68+. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipay-android-drop-in]] → [[raw/adyen/docs/payment-methods/alipay/android-drop-in/2026-09-15]].
+
+Q2. What do the page's live-test and live-request instructions establish?
+Answer: It recommends live penny tests using an Alipay wallet app/card and inspection in live Customer Area, while separately saying an Alipay request must be submitted in live Customer Area before accepting live payments (raw lines 48–58 and 82–90). The page gives no separate TEST-environment procedure and no proof that the request was approved or a payment authorized, captured or settled. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipay-android-drop-in]] → [[raw/adyen/docs/payment-methods/alipay/android-drop-in/2026-09-15]].

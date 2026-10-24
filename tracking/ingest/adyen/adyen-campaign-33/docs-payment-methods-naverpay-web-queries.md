@@ -1,0 +1,5 @@
+# C33 docs-payment-methods-naverpay-web retrieval checks
+
+Q1. Which NaverPay Web routes and prerequisite does the page identify? It links all-in-one Web Drop-in and a Components child described as “the Redirect” (raw lines 19–27). It tells readers to create the main integration before adding NaverPay and lists Web Drop-in and Components main guides for both Sessions and Advanced (raw lines 29–36). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-naverpay-web]] → [[raw/adyen/docs/payment-methods/naverpay/web/2026-09-15]].
+
+Q2. What does this chooser not establish? Its only substantive content is navigation links and labels (raw lines 15–36). It does not specify KR/KRW scope, current merchant eligibility, a child API/SDK minimum, redirect callback/return, TEST/LIVE gates, payment result or final webhook. The child/main guides own those details, and no authorization, capture or settlement can be inferred from this page. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-naverpay-web]] → [[raw/adyen/docs/payment-methods/naverpay/web/2026-09-15]].

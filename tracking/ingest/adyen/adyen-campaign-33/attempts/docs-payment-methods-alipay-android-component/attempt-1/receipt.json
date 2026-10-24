@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-alipay-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay Android Component guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipay/android-component/2026-09-15.md\"\ntags: [adyen, alipay, android, component, wallets]\n---\n\n## Overview\n\nThis [[adyen]] guide adds Alipay to an **existing Android Components integration**, with separate Sessions and Advanced server-side flows and Jetpack Compose/non-Compose client examples. It describes method-specific additions, not a standalone integration or proof of current merchant eligibility, authorization, capture or settlement. It states no country or currency restriction on this page; use the main integration and applicable Alipay eligibility authority for those questions. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions prerequisites and server request:** Use an existing Sessions-flow Android Components integration, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and Alipay added in Customer Area. The guide says no **additional Alipay-specific** parameters are needed when creating `/sessions`; the main flow's request and redirect requirements still apply. See raw lines 23\u201342.\n- **Advanced prerequisites and server request:** Use an existing Advanced-flow Android Components integration, redirect handling for `action.type: redirect`, and Alipay added in Customer Area. It says no additional Alipay-specific `/payments` parameters are needed. The Advanced requirement table does **not** restate the Sessions section's v68+ prerequisite as an Advanced-specific version rule. See raw lines 138\u2013146 and 234\u2013238.\n- **Client Component:** Both flows import `com.adyen.checkout:instant:YOUR_VERSION`; Compose also imports `components-compose`. Both use `InstantPaymentComponent` and state no extra Alipay configuration parameters. Sessions obtains the `alipay` payment method from `checkoutSession`; Advanced selects `type == \"alipay\"` from the `/paymentMethods` response. Compose examples require a new unique key for a different screen or payment session. These are client setup/selection examples, not payment-result handling. See raw lines 44\u2013125 and 148\u2013232.\n- **Live gate and outcome boundary:** The guide recommends live penny tests with an Alipay wallet app and viewing resulting payment details in the live Customer Area. Before accepting live Alipay payments it says to submit a request in the **live** Customer Area. It does not specify a final webhook, authorization result, capture, settlement or refund flow here; follow the linked main integration and lifecycle authorities for those states. See raw lines 128\u2013136 and 240\u2013248.\n\n## Detail locators\n\n- Sessions prerequisites, request and redirect links: raw lines 23\u201342.\n- Sessions dependency, configuration and Compose/non-Compose launch: raw lines 44\u2013125.\n- Advanced prerequisites, dependency, configuration, Component and request: raw lines 138\u2013238.\n- Live testing recommendation and live Customer Area request, repeated for each flow: raw lines 128\u2013136 and 240\u2013248.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipay/android-component/2026-09-15|Adyen Alipay Android Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements > Checkout API"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 35, Sessions flow Component > Requirements > Redirect handling"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 42, Sessions flow Component > Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "Before you can accept live Alipay payments, you need to submit a request for Alipay in your [live Customer Area]",
+      "location": "raw line 136, Sessions flow Component > Test and go live"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 238, Advanced flow Component > Add additional parameters to your /payments request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-alipay-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipay-android-component]] \u2014 2026-09-15 Alipay Android Component add-on for existing Sessions (Checkout API v68+) and Advanced flows, redirect handling, InstantPaymentComponent and a live Customer Area request; payment outcomes remain in main guides.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipay/android-component/2026-09-15.md",
+  "raw_sha256": "6c4bf35cc029f6500cdd2f7fff303f51e369a68cfe3418c52ef57ef94026765b",
+  "status": "candidate_ready"
+}

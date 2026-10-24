@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What does the Alipay Flutter Component page add to Sessions and Advanced integrations?
+Answer: Sessions lists an existing Flutter Components Sessions flow, Checkout API v68+, redirect handling and Customer Area Alipay; it says no extra Alipay `/sessions` or configuration parameters (raw lines 25–46). Advanced lists its existing Flutter Components/redirect/Customer Area setup and says no extra Alipay configuration or `/payments` parameters; it does not restate v68+ (raw lines 58–80). These are method-specific additions, not the whole base flow. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipay-flutter-component]] → [[raw/adyen/docs/payment-methods/alipay/flutter-component/2026-09-15]].
+
+Q2. What are the live gate and source conflicts?
+Answer: The page recommends live penny tests and live Customer Area payment-list review, but separately requires submitting an Alipay request in live Customer Area before accepting live payments (raw lines 48–56, 82–90); request or testing is not approval or outcome proof. Both integration-type rows are labeled Flutter Components yet link to Advanced Drop-in URLs, including in the Sessions row (raw lines 31 and 66), while other step links point to Components. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-alipay-flutter-component]] → [[raw/adyen/docs/payment-methods/alipay/flutter-component/2026-09-15]].

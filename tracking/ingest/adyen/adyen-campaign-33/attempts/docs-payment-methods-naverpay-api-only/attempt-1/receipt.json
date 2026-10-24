@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-naverpay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen NaverPay API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/naverpay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/naverpay/api-only/2026-09-15.md\"\ntags: [adyen, naverpay, api-only, korea, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 NaverPay guide adds method-specific steps to an **existing API-only Advanced flow** integration. It requires redirect handling (`action.type: redirect`) and NaverPay addition in Adyen Customer Area. The API-only form lists the available NaverPay method without collecting extra shopper information. It is a historical guide; configuration, a listed method or a redirect response is not proof of current merchant eligibility or a completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- For `/paymentMethods` discovery, the page specifies `countryCode: KR` and `amount.currency: KRW`; its example response names NaverPay with type `kcp_naverpay`. This is a method-discovery example, not a guarantee that a given merchant will receive it. The curl examples target Adyen Checkout **v72 TEST**, while the page also displays versioned Java, PHP, .NET, Node, Go, Python and Ruby snippets; use the matching API/library version and environment instead of treating the snippets as universal code.\n- The payment examples supply KRW amount, reference, return URL and merchant account, then show a `RedirectShopper` response with `action.type: redirect`, `method: GET` and a checkoutshopper TEST URL. The existing integration is responsible for the redirect/return handling linked by the prerequisite. This page does not spell out `/payments/details`, webhook processing or a final authorization/capture/settlement result.\n- **Source conflict/incompleteness:** The 'How it works' list says the payment request includes additional information about the items the shopper intends to purchase, yet the `/payments` section says no additional parameters are needed. Its payment examples contain neither item details nor an explicit `paymentMethod`/`kcp_naverpay` field. The examples therefore should not be represented as a complete validated NaverPay request; verify against the core Advanced flow and current API contract before implementation. The form section separately says no additional *shopper information* is collected.\n- The page says NaverPay has **no test environment** and recommends live testing with real details and small amounts. That coexists with Adyen Checkout TEST endpoint/examples and a TEST redirect URL in the guide: these illustrate Adyen request/redirect shapes, not a successful NaverPay sandbox payment. No live test or financial operation was performed.\n\n## Detail locators\n\n- Existing API-only, redirect and Customer Area prerequisites; flow and form: raw lines 19\u201344. Discovery KR/KRW fields: raw lines 46\u201353. TEST v72 `/paymentMethods` example, versioned library snippets and illustrative `kcp_naverpay` response: raw lines 55\u2013342.\n- Conflicting item-data prose versus no-extra-parameters statement: raw lines 33\u201336 and 344\u2013346. TEST v72 `/payments` request shape and versioned snippets: raw lines 348\u2013622. Redirect response: raw lines 624\u2013638. No-NaverPay-test-environment statement: raw lines 640\u2013642.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Advanced flow and server/client boundary context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/naverpay/api-only/2026-09-15|NaverPay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **redirect**.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "you [include additional information about the items that the shopper intends to purchase](#additional-parameters-payments).",
+      "location": "raw line 35"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 346"
+    },
+    {
+      "text": "The response includes the `action.type`: ****redirect****.",
+      "location": "raw line 624"
+    },
+    {
+      "text": "There is no test environment for NaverPay. We recommend that you test NaverPay in your live environment with real details and small amounts.",
+      "location": "raw line 642"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-naverpay-api-only-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-naverpay-api-only]] \u2014 2026-09-15 NaverPay API-only Advanced-flow add-on for KR/KRW discovery and redirect response, with no NaverPay test environment; item-data/no-extra-parameters and incomplete-payment-example tensions are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page simultaneously says the request includes item details and needs no additional parameters; payment examples omit both item details and explicit paymentMethod, so do not present them as complete validated code.",
+          "Adyen Checkout TEST example URLs coexist with a no-NaverPay-test-environment statement; they do not prove a provider sandbox transaction.",
+          "RedirectShopper/action.type redirect is an intermediate action, not final authorization, capture or settlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/naverpay/api-only/2026-09-15.md",
+  "raw_sha256": "cf4d86314f872dc86c991a2b192067f489dae5561d9a83e51aef4f0642040935",
+  "status": "candidate_ready"
+}

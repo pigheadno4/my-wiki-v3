@@ -1,0 +1,9 @@
+# NaverPay Web Drop-in retrieval check
+
+Q1. What does this NaverPay page add to a Web Drop-in integration, and what must already be in place?
+
+It is a method-specific add-on for existing Web Drop-in integrations, with separate Sessions and Advanced paths. Sessions lists Checkout API v68+, redirect handling and Customer Area addition; Advanced lists redirect handling and Customer Area addition, without a separate API minimum. Neither path asks for NaverPay-specific extra request parameters. Optional `Redirect` import is for individual-method tree shaking. The Advanced Integration type URL at raw line 70 contains an unresolved encoded `getParameter('platform')` template, while neighboring Advanced redirect and import links at raw lines 71 and 78 explicitly use `platform=Web`; do not silently treat the templated URL as a resolved Web guide link. See raw lines 19–23, 25–54 and 62–90. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-naverpay-web-drop-in]] → [[raw/adyen/docs/payment-methods/naverpay/web-drop-in/2026-09-15]].
+
+Q2. Can this page support a TEST-environment NaverPay transaction or prove a live payment completed after a redirect?
+
+No. Both sections say NaverPay has no test environment and recommend live testing with real details and small amounts (raw lines 56–60, 92–96). The page lists redirect handling as a prerequisite but gives no shopper-return, webhook or final payment result procedure. The recommendation is not evidence a live operation happened, and the historical snapshot does not establish current eligibility or authorization/capture/settlement. See raw lines 19–23, 25–96. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-naverpay-web-drop-in]] → [[raw/adyen/docs/payment-methods/naverpay/web-drop-in/2026-09-15]].

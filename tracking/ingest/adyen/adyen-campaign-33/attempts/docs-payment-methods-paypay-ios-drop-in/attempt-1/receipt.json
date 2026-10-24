@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-paypay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPay iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, paypay, ios, drop-in, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, modified and captured 2026-09-15, adds PayPay to an existing **iOS Drop-in** integration under Sessions or Advanced. It gives method-specific field/configuration scope, TEST DGFT simulator routes and a LIVE PayPay app/Japan-local-IP condition. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-paypay|PayPay overview]] for the dated JP/JPY redirect matrix (related raw lines 23\u201327). These are setup and testing descriptions, not proof of current merchant eligibility, a completed return, authorization, capture or settlement. See primary raw lines 15\u201334 and 48\u2013100.\n\n## Key takeaways\n\n- **Sessions:** the existing iOS Drop-in Sessions flow must use **Checkout API v68 or later** and have PayPay added in Customer Area. The page says no *additional PayPay-specific* `/sessions` request or Drop-in configuration parameters. The Sessions requirements table does not restate a redirect-handling requirement, but its TEST section says the shopper is redirected to the DGFT simulator; the base integration still owns action/return handling. The v68+ gate is stated here only; the Advanced table does not give an API minimum. See raw lines 25\u201346 and 50\u201359.\n- **Advanced:** the existing iOS Drop-in Advanced flow explicitly requires handling `action.type: redirect` and adding PayPay in Customer Area. It says there are no *additional PayPay-specific* configuration or `/payments` parameters. This does not waive the base Advanced request and redirect/return work. See raw lines 63\u201385.\n- For **TEST**, the guide names two DGFT acquirer accounts, with `AUTHFlow` and `SALEFlow` in their identifiers, and says the shopper is redirected to a DGFT simulator to complete the test without the PayPay app. It points to the TEST Customer Area payment list for status. These identifiers label test paths; the page does not establish an actual authorization, capture or sale from the names. See raw lines 50\u201359 and 87\u201398.\n- For **LIVE**, both branches say an **activated PayPay smartphone app** must be accessed through a **Japan-local IP address**. The guide does not demonstrate app activation, shopper authentication, provider approval, a final result webhook or settlement. See raw lines 61 and 100. The linked overview's JP/JPY capability marks are separate high-level scope, not proof of this merchant's live availability.\n\n## Detail locators\n\n- **Sessions version, Customer Area setup and no-extra-method-fields:** raw lines 25\u201346.\n- **Advanced redirect and no-extra-method-fields:** raw lines 63\u201385.\n- **TEST DGFT simulator accounts, redirection and status route:** raw lines 50\u201359, 87\u201398.\n- **LIVE app and Japan-local-IP condition:** raw lines 61 and 100.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paypay]]\n- [[adyen-payment-testing]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypay/ios-drop-in/2026-09-15|PayPay iOS Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions integration requirement"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 40, Sessions PayPay-specific request"
+    },
+    {
+      "text": "You will be redirected you to a DGFT simulator tool to complete the transaction. You do not need the PayPay app.",
+      "location": "raw line 57, Sessions TEST simulator"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=iOS\\&integration=Drop-in#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw line 72, Advanced redirect requirement"
+    },
+    {
+      "text": "For the LIVE environment integration, you must access your activated PayPay smartphone app through a Japan local IP address.",
+      "location": "raw line 100, Advanced LIVE condition"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c33-paypay-ios-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypay-ios-drop-in]] \u2014 2026-09-15 PayPay iOS Drop-in Sessions/Advanced add-on with Sessions-only Checkout v68+, Advanced redirect, no extra method fields, TEST DGFT simulator and LIVE activated-app/Japan-IP condition.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Checkout API v68+ is stated in Sessions requirements only (raw line 33), while Advanced explicitly states redirect handling (raw line 72).",
+          "AUTHFlow/SALEFlow are TEST account identifier names, not evidence that an authorization or capture executed (raw lines 52\u201359, 91\u201398).",
+          "TEST simulator does not need PayPay app; LIVE does require activated app via Japan-local IP (raw lines 57, 61, 96, 100)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "94089b5d1532e3c39a0195e2db2a5c5670bf53a22ac536a76e8a036d6fe38570",
+  "status": "candidate_ready"
+}

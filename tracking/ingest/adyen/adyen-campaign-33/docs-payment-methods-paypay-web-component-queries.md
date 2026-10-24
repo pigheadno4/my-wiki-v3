@@ -1,0 +1,7 @@
+# Retrieval checks
+
+Q1. What are the PayPay Web Component add-ons for Sessions and Advanced flows?
+Answer: The Sessions section requires an existing Web Components Sessions integration, Checkout API v68+, PayPay in Customer Area and `action.type: redirect` handling; it adds the `Redirect` import/mount and says no extra PayPay `/sessions` or configuration parameters (raw lines 25–72). The Advanced section separately requires its existing Web Components/redirect setup and PayPay in Customer Area, adds `Redirect`, and says no extra PayPay `/payments` parameters; it does not state the Sessions v68+ minimum (raw lines 87–125). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-web-component]] → [[raw/adyen/docs/payment-methods/paypay/web-component/2026-09-15]].
+
+Q2. What are the test/live and sample-code limits, and does this prove a payment outcome?
+Answer: TEST names two DGFT closed-loop acquirer accounts and a simulator redirect without the PayPay app; LIVE text calls for an activated PayPay smartphone app reached through a Japan local IP (raw lines 74–85 and 127–138). Both examples use unquoted `type:paypay` without a declaration (raw lines 71 and 118), so their literal code needs validation. No final webhook, authorization, capture or settlement result is supplied. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paypay-web-component]] → [[raw/adyen/docs/payment-methods/paypay/web-component/2026-09-15]].
