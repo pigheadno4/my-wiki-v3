@@ -1033,22 +1033,17 @@ def read_upstream_changes(
     from_sha: str,
     to_sha: str,
     pathspecs: Sequence[str] = (),
+    *,
+    detect_renames: bool = True,
 ) -> Tuple[UpstreamChange, ...]:
-    """Return strict rename-aware changes between two local Git objects."""
+    """Return strict changes, optionally avoiding blob-based rename scoring."""
     if not _OBJECT_ID.fullmatch(from_sha) or not _OBJECT_ID.fullmatch(to_sha):
         raise PilotStoreError("comparison SHA is invalid")
     normalized_paths = tuple(sorted(set(pathspecs)))
     if any(not safe_policy_path(path) for path in normalized_paths):
         raise PilotStoreError("comparison paths are invalid")
-    args = (
-        "diff",
-        "--name-status",
-        "-z",
-        "-M",
-        "--find-renames=50%",
-        from_sha,
-        to_sha,
-    )
+    rename_options = ("-M", "--find-renames=50%") if detect_renames else ("--no-renames",)
+    args = ("diff", "--name-status", "-z") + rename_options + (from_sha, to_sha)
     if normalized_paths:
         args += ("--",) + normalized_paths
     output = _run_git_bytes(repo_root, args)

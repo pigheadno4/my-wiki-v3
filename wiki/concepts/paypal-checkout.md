@@ -243,6 +243,10 @@ Assembly `@paypal/sdk-release@5.0.582` (after `5.0.581`): Checkout Components `5
 
 Resolution after the assembly checkpoint (2026-10-15): Messaging `1.99.0` is now independently ingested, documenting prequalification amount forwarding and source-level accessibility/disclaimer changes in [[source-github-paypal-messaging-components]] and [[changelog-github-paypal-messaging-components]]. This closes the earlier collection/ingest gap, not the hosted-rollout or merchant-eligibility boundary.
 
+### SDK release assembly update: `@paypal/sdk-release@5.0.583`
+
+The October 19, 2026 assembly (delta ingested October 25) advances Checkout Components `5.0.437` -> `5.0.438`, Common Components `1.0.62` -> `1.0.63`, Messaging Components `1.99.0` -> `1.99.1`, and SDK Client `4.0.204` -> `4.0.205`. Eight other direct pins and ten other retained files remain unchanged. Only retained `package.json` changes; wrapper/workflows, scripts and engine requirements do not. These pins establish composition, not hosted rollout, eligibility or a merchant migration. Consult independent component evidence before assigning behavior; assembly numbering does not update the PayPal JS loader or React wrapper. Prior assembly history remains above. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 

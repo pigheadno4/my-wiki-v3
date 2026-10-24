@@ -6,6 +6,13 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-25] ingest | SDK release assembly `5.0.583`
+
+- Approved serial delta `github-23561d27ca73a6844368`, from `5.0.582`, exact SHA `b544787bd6b5df35e64b98bf91744b24d99cf34d`. Read both packet formats, all ten assigned paths (including complete cumulative source/changelog), and prior package. Four grounding excerpts: current `files/package.json` lines 70, 71, 76 and 78, recording Checkout `5.0.438`, Common `1.0.63`, Messaging `1.99.1`, SDK Client `4.0.205`.
+- Concept audit/update first, then additive source/changelog history, company and provider catalog. Eight other direct pins and ten other retained files unchanged. Release notes unavailable; excluded lockfile/CDN contents, independent component implementation and hosted rollout remain bounded evidence gaps. No new concept/comparison or source-count increase; PayPal source_count remains 177.
+- Preserves all earlier assembly history and raw references. No upstream build, runtime/payment execution, commit or push.
+- Close check: five typed pages and whitespace pass; all 22 current/prior file sizes, SHA-256 hashes and Git blob IDs verified; all old source/changelog body paragraphs (except the explicitly updated latest overview), raw references and linked evidence preserved. Company/provider catalog entries remain unique; source_count unchanged. CLI marked the item `ingested`; global GitHub validation retains only the 12 existing unrelated errors, with zero pending items. Next: report findings, then await scoped commit/push approval.
+
 ## [2026-10-24] ingest | Checkout Components `5.0.438`
 
 - Approved serial delta `github-11e76802c5be6fb12f4d`, exact SHA `294b50a11d61ccb458877776e5ba8d481781014b`, from `5.0.437`. Item-specific focused-reading approval: complete authored component/types/package, changed raw changelog, authored comparison/test sections, affected prior code and full cumulative wiki source/changelog read. Generated bundle/diff, inventories/manifests and unchanged history checked mechanically. All 428 snapshot file sizes/SHA-256/Git blob IDs pass; five modified retained files, 209 unchanged. Four exact grounding excerpts extracted before edits.

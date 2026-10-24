@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-10-24`
+Generated: `2026-10-25`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -57,13 +57,13 @@ Generated: `2026-10-24`
 | paypal | `paypal/paypal-messages-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | paypal | `paypal/paypal-sdk-logos` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-06 | ingested | 2026-11-06 | `wait` |
-| paypal | `paypal/paypal-sdk-release` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-15 | ingested | 2026-11-15 | `wait` |
+| paypal | `paypal/paypal-sdk-release` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-24 | ingested | 2026-11-24 | `wait` |
 | paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `wait` |
 | paypal | `paypal/postman-collections` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-16 | ingested | 2026-10-23 | `collect-baseline` |
 | stripe | `stripe/stripe-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-20 | ingested | 2026-10-27 | `wait` |
 | stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-20 | ingested | 2026-10-27 | `wait` |
-| stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-18 | ingested | 2026-10-25 | `wait` |
+| stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-18 | ingested | 2026-10-25 | `collect-baseline` |
 | stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-21 | ingested | 2026-10-28 | `wait` |
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-16 | ingested | 2026-10-23 | `manual-review` |

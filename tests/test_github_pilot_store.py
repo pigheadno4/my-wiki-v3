@@ -87,6 +87,25 @@ class GitHubPilotStoreTests(unittest.TestCase):
             b"original release notes\n",
         )
 
+    def test_metadata_only_changes_do_not_read_excluded_blobs(self):
+        before = commit_files(self.repo, {"cdn/old.txt": "old artifact\n"}, "old artifact")
+        blob = subprocess.check_output(
+            ["git", "rev-parse", before + ":cdn/old.txt"], cwd=self.repo, text=True
+        ).strip()
+        subprocess.run(["git", "rm", "cdn/old.txt"], cwd=self.repo, check=True, capture_output=True)
+        after = commit_files(
+            self.repo,
+            {"cdn/new.txt": "new artifact\n", "src/index.ts": "export const value = 2;\n"},
+            "update artifacts",
+        )
+        (self.repo / ".git" / "objects" / blob[:2] / blob[2:]).unlink()
+        changes = read_upstream_changes(self.repo, before, after, detect_renames=False)
+        self.assertEqual(set(changes), {
+            UpstreamChange("deleted", "cdn/old.txt", ""),
+            UpstreamChange("added", "", "cdn/new.txt"),
+            UpstreamChange("modified", "src/index.ts", "src/index.ts"),
+        })
+
     def capsule(self):
         return CapsuleConfig(
             id="widget-source",

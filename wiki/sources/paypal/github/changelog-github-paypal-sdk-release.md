@@ -2,9 +2,10 @@
 title: "GitHub changelog: paypal/paypal-sdk-release"
 type: source
 date_ingested: 2026-08-21
-date_updated: 2026-10-15
+date_updated: 2026-10-25
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-04-27aa46b/manifest.json"
@@ -25,6 +26,14 @@ tags: [paypal, javascript-sdk, release-automation, changelog, github-repository]
 ## Overview
 
 Package-qualified release history for `paypal/paypal-sdk-release`. Durable assembly and release behavior belongs in [[source-github-paypal-sdk-release]]; this page records version transitions and their evidence.
+
+## `@paypal/sdk-release@5.0.583` (2026-10-19)
+
+- **Transition:** `@paypal/sdk-release@5.0.582` -> `@paypal/sdk-release@5.0.583`; SHA `b544787bd6b5df35e64b98bf91744b24d99cf34d`; serial delta ingest 2026-10-25.
+- **Changes:** Checkout Components `5.0.437` -> `5.0.438`, Common Components `1.0.62` -> `1.0.63`, Messaging Components `1.99.0` -> `1.99.1`, SDK Client `4.0.204` -> `4.0.205`. Eight other direct pins unchanged. Only retained `package.json` changes; ten other retained files, scripts and engine requirements unchanged.
+- **Impact/migration:** component bill of materials only, not hosted rollout or eligibility. Component implementation requires independent version-qualified evidence. No implied PayPal JS loader/React release or merchant migration. Release notes unavailable; excluded lockfile/CDN artifacts remain outside this implementation evidence.
+- **Updated:** additive assembly section and raw links, Checkout concept, company/catalog/logs. All prior version sections and raw references retained.
+- **Evidence:** [snapshot](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json), [package](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/files/package.json), [release](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.583/2026-10-24/manifest.json), [notes](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.583/2026-10-24/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/comparison.json), [details](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/comparison.md), [patch](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/diff.patch). See [[source-github-paypal-sdk-release]].
 
 ## `@paypal/sdk-release@5.0.582` (2026-10-12)
 

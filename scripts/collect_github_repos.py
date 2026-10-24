@@ -1389,6 +1389,7 @@ def _package_packet_input(
                 clone_path,
                 prior.sha,
                 context.candidate.commit_sha,
+                detect_renames=_one_capsule(config).adapter != TAGGED_TREE_ADAPTER,
             )
             if prior is not None
             else ()
@@ -1782,7 +1783,10 @@ def compare_one(
                     _snapshot_manifest_for_sha(
                         Path(root).resolve(), config, prior.sha
                     ),
-                    read_upstream_changes(clone_path, prior.sha, current.sha),
+                    read_upstream_changes(
+                        clone_path, prior.sha, current.sha,
+                        detect_renames=capsule.adapter != TAGGED_TREE_ADAPTER,
+                    ),
                 ),
             ),
             "ad-hoc",
@@ -2124,8 +2128,13 @@ def _tagged_changed_paths(
     prior: WorkspacePackage,
     current: WorkspacePackage,
 ) -> Tuple[str, ...]:
-    output = run_git(["diff", "--name-only", from_sha, to_sha, "--"], clone_path)
     owned = frozenset(prior.owned_paths).union(current.owned_paths)
+    # Enumerate retained names without fetching excluded blobs for rename scoring.
+    output = run_git(
+        ["diff", "--no-renames", "--name-only", from_sha, to_sha, "--"]
+        + sorted(owned),
+        clone_path,
+    )
     return tuple(
         sorted(path for path in output.splitlines() if path and path in owned)
     )

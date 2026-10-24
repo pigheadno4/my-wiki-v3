@@ -2,9 +2,10 @@
 title: "GitHub: paypal/paypal-sdk-release"
 type: source
 date_ingested: 2026-08-21
-date_updated: 2026-10-15
+date_updated: 2026-10-25
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-15-d37489b/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-04-27aa46b/manifest.json"
@@ -28,7 +29,7 @@ tags: [paypal, javascript-sdk, release-automation, dependency-manifest, github-r
 
 Repository: <https://github.com/paypal/paypal-sdk-release>
 
-Latest locally ingested assembly in this history: `@paypal/sdk-release@5.0.582` (released 2026-10-12, ingested 2026-10-15). It pins Checkout `5.0.437`, Messaging `1.99.0` and Common `1.0.62`; the other nine direct pins match baseline `5.0.569`. Each intermediate version remains below and in [[changelog-github-paypal-sdk-release]]. This is not a live upstream-latest or deployed-traffic assertion.
+Latest locally ingested assembly in this history: `@paypal/sdk-release@5.0.583` (released 2026-10-19, ingested 2026-10-25). It pins Checkout `5.0.438`, Messaging `1.99.1`, Common `1.0.63` and SDK Client `4.0.205`; the other eight direct pins match baseline `5.0.569`. Each intermediate version remains below and in [[changelog-github-paypal-sdk-release]]. This is not a live upstream-latest or deployed-traffic assertion.
 
 ## Evidence boundary
 
@@ -182,6 +183,25 @@ Grounding in this snapshot's `files/package.json`: line 3 `"version": "5.0.582",
 
 Exact package and release evidence appears under Raw Sources; comparison: [5.0.581 -> 5.0.582](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/comparison.json), [details](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/comparison.md), [patch](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.581--5.0.582/diff.patch). Earlier version knowledge is preserved.
 
+## Assembly update: `@paypal/sdk-release@5.0.583`
+
+Released 2026-10-19 at SHA `b544787bd6b5df35e64b98bf91744b24d99cf34d`; delta ingested 2026-10-25 after `5.0.582`.
+
+| Direct component | At `5.0.582` | At `5.0.583` |
+| --- | --- | --- |
+| `@paypal/checkout-components` | `5.0.437` | `5.0.438` |
+| `@paypal/common-components` | `1.0.62` | `1.0.63` |
+| `@paypal/messaging-components` | `1.99.0` | `1.99.1` |
+| `@paypal/sdk-client` | `4.0.204` | `4.0.205` |
+
+The other eight direct pins, development dependencies, scripts and engine requirements are unchanged. Only `package.json` changes within the eleven-file retained capsule; the ten other files, including the wrapper and workflows, are hash-identical. No GitHub release notes are available. The packet records excluded lockfile/CDN changes but does not retain their contents; this is not whole-repository equivalence or proof of deployed traffic.
+
+This assembly includes Checkout `5.0.438`; its separately maintained implementation evidence belongs to [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. The manifest alone does not establish Common `1.0.63`, Messaging `1.99.1` or SDK Client `4.0.205` implementation behavior. No new merchant API, eligibility, migration or PayPal JS loader/React release follows from these assembly pins.
+
+Grounding in `raw/github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/files/package.json`: line 70 `"@paypal/checkout-components": "5.0.438",`; line 71 `"@paypal/common-components": "1.0.63",`; line 76 `"@paypal/messaging-components": "1.99.1",`; line 78 `"@paypal/sdk-client": "4.0.205"`.
+
+Evidence: [comparison manifest](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/comparison.json), [details](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/comparison.md), [patch](tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/diff.patch). Exact raw and release evidence appears below. All earlier assembly history is preserved.
+
 ## Upgrade, publish, and deployment flow
 
 The README exposes add, upgrade, remove, release, and activation operations. It explicitly warns that release triggers npm publication and production deployment, while activation moves a published version into traffic and supports selecting a prior version for rollback.
@@ -219,6 +239,8 @@ For future `@paypal/sdk-release` updates, compare `package.json` first. A compon
 - SDK artwork: [[source-github-paypal-sdk-logos]]
 
 ## Raw Sources
+
+- `5.0.583`: [snapshot](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json), [package](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/files/package.json), [release](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.583/2026-10-24/manifest.json), [notes](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.583/2026-10-24/release-notes.md).
 
 - `5.0.582`: [snapshot](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/manifest.json), [package](raw/github/paypal/paypal-sdk-release/snapshots/2026-10-15-9e81e2b/files/package.json), [release](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.582/2026-10-15/manifest.json), [notes](raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.582/2026-10-15/release-notes.md).
 

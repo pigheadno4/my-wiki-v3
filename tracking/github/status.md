@@ -556,6 +556,31 @@
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.10.0/2026-09-15/manifest.json)
   Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.9.0--6.10.0/comparison.json)
 
+## `github-23561d27ca73a6844368`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `b544787bd6b5df35e64b98bf91744b24d99cf34d`
+- Collection date: `2026-10-24`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-23561d27ca73a6844368/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.583` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.583/2026-10-24/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.582--5.0.583/comparison.json)
+
 ## `github-236dd1f1ac8a3f30f537`
 
 - Repository: `braintree/braintree-web`

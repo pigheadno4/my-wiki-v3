@@ -490,6 +490,62 @@ class CollectGitHubReposTests(unittest.TestCase):
         )
         self.assertFalse(context.public_exports_changed)
 
+    def test_tagged_changed_paths_keeps_both_sides_of_retained_rename(self):
+        prior_sha = commit_files(
+            self.remote, {"Native/old.swift": "public struct Checkout {}\n"},
+            "retained baseline",
+        )
+        (self.remote / "Native/old.swift").rename(self.remote / "Native/new.swift")
+        run_git(self.remote, "add", "-A")
+        run_git(self.remote, "commit", "-m", "rename retained source")
+        current_sha = run_git(self.remote, "rev-parse", "HEAD")
+        prior = collect_github_repos.WorkspacePackage(
+            "native-sdk", "", "1.0.0", "focus",
+            owned_paths=("Native/old.swift",),
+        )
+        current = replace(prior, version="1.0.1", owned_paths=("Native/new.swift",))
+
+        self.assertEqual(
+            ("Native/new.swift", "Native/old.swift"),
+            collect_github_repos._tagged_changed_paths(
+                self.remote, prior_sha, current_sha, prior, current,
+            ),
+        )
+
+    def test_tagged_changed_paths_does_not_read_excluded_artifact_blobs(self):
+        prior_sha = commit_files(
+            self.remote,
+            {
+                "Native/Checkout.swift": "public struct Checkout {}\n",
+                "cdn/old.txt": "old artifact\n" * 100,
+            },
+            "artifact baseline",
+        )
+        missing_blob = run_git(self.remote, "rev-parse", prior_sha + ":cdn/old.txt")
+        run_git(self.remote, "rm", "cdn/old.txt")
+        current_sha = commit_files(
+            self.remote,
+            {
+                "Native/Checkout.swift": "public struct Checkout { let ready = true }\n",
+                "cdn/new.txt": "new artifact\n" * 100,
+            },
+            "replace excluded artifact",
+        )
+        (self.remote / ".git/objects" / missing_blob[:2] / missing_blob[2:]).unlink()
+        prior = collect_github_repos.WorkspacePackage(
+            "native-sdk", "", "1.0.0", "focus",
+            owned_paths=("Native/Checkout.swift",),
+        )
+        current = replace(prior, version="1.0.1")
+
+        try:
+            changed = collect_github_repos._tagged_changed_paths(
+                self.remote, prior_sha, current_sha, prior, current,
+            )
+        except collect_github_repos.GitCommandError as error:
+            self.fail("Retained path enumeration read an excluded blob: " + str(error))
+        self.assertEqual(("Native/Checkout.swift",), changed)
+
     def test_tagged_baseline_collects_without_synthetic_package_manifest(self):
         native_parent = Path(self.directory.name) / "native-fixture"
         native_parent.mkdir()
