@@ -1,0 +1,9 @@
+# PayNow Web Drop-in retrieval questions
+
+## Q1 — What is this page's purpose and scope, and what cannot be inferred?
+
+It is a PayNow-specific add-on to an existing **Web Drop-in** Sessions or Advanced integration, not a standalone Web integration (raw lines 19–35, 67–77; [[source-adyen-docs-payment-methods-paynow-web-drop-in]]). It states neither a QR expiry nor a complete webhook/finality process, so QR display/scan, import, setup or request submission cannot be read as proof of authorization or settlement. The Advanced base-guide URL has an encoded platform template (line 75), despite the explicit Web guide/action link (line 76). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paynow-web-drop-in]] → [[raw/adyen/docs/payment-methods/paynow/web-drop-in/2026-09-15]].
+
+## Q2 — What are the material flow, version and testing conditions?
+
+Sessions requires Checkout API **v68+**, an existing Web Drop-in Sessions flow and Customer Area addition; no extra PayNow `/sessions` parameters are required (raw lines 25–41). Advanced requires an existing Web Drop-in Advanced flow, Customer Area addition and handling `action.type: qrCode`; no extra PayNow `/payments` parameters are required (lines 67–77, 91–95). The import shown in each flow is optional (lines 43–53, 79–89). Live acceptance requires contacting Support for live Customer Area addition; the page describes small-amount testing with a **real banking app in live** and a live payment-list check (lines 57–63, 99–105). It warns against test Customer Area testing because the transfer cannot be reversed and funds are deducted (lines 65, 107). These are real-funds cautions, not a successful-payment claim ([[source-adyen-docs-payment-methods-paynow-web-drop-in]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paynow-web-drop-in]] → [[raw/adyen/docs/payment-methods/paynow/web-drop-in/2026-09-15]].

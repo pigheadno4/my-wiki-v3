@@ -1,0 +1,7 @@
+# Retrieval checks — GrabPay iOS Component
+
+Q1. What is the purpose and scope, and what cannot be inferred? `source-adyen-docs-payment-methods-grabpay-ios-component` adds GrabPay to an existing iOS Components Sessions or Advanced integration, distinguishes Wallet from PayLater fields, and gives v5/v4 native Component examples. TEST requests, a Component initiation and a simulator login do not prove current merchant/region/currency eligibility or a completed authorization, capture or settlement. Raw lines 15–48, 811–877.
+
+Q2. What capability, prerequisites and warnings matter? Add GrabPay in Customer Area; PayLater postpaid/installment needs `deliveryAddress` and `lineItems` on `/sessions` or `/payments`, while Wallet collection is recommended rather than required. The iOS page confusingly labels API tabs with **Web Components** version rules; country/currency examples are blank, and order/line-item amounts differ. Java `/payments` builds but does not set the delivery address; v5 native examples use `InstantPaymentComponent` with session/self delegates, whereas v4 uses `GrabPayComponent`. Test credentials come from Support and live acceptance needs a separate live request. Raw lines 21–57, 59–93, 510–604, 811–877.
+
+Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-grabpay-ios-component]] → [[raw/adyen/docs/payment-methods/grabpay/ios-component/2026-09-15]].

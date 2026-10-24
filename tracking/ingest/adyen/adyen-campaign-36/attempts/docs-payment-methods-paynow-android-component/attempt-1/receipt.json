@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paynow-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayNow Android Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paynow/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paynow/android-component/2026-09-15.md\"\ntags: [adyen, paynow, android, components, qr-code, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page gives **PayNow-specific additions** to existing Android Components integrations, with separate Sessions and Advanced flow sections. It uses `InstantPaymentComponent` and, for Advanced, a QR-code action. It is not a complete base integration or evidence that a merchant is live-enabled or a bank payment completed. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions route:** The guide calls for an existing Android Components Sessions integration, Checkout API **v68 or later**, and PayNow added in Customer Area. It says no PayNow-specific `/sessions` parameters or configuration are needed. It imports the `instant` Android module, plus `components-compose` if using Jetpack Compose, and creates `InstantPaymentComponent` for the `paynow` method. In Compose, the example says a unique key is required for each different screen/session and a new key when resetting the Component. The module's `YOUR_VERSION` placeholder is not a specified SDK minimum. (raw lines 25\u2013125)\n- **Advanced route:** The guide calls for an existing Android Components Advanced integration, PayNow in Customer Area, and additional-action handling for **`action.type: qrCode`**. It gives Compose/non-Compose `InstantPaymentComponent` examples using the `paynow` method from `/paymentMethods`, and says no additional PayNow configuration or ordinary `/payments` parameters are needed. The no-extra wording concerns PayNow additions to the base flow; it does not remove base requests, QR-action handling or result verification. (raw lines 137\u2013237)\n- **Live and test warning:** Before accepting live payments, the page says to contact Adyen Support to add PayNow in the **live Customer Area**. It describes penny testing in that live area with small amounts and a **real banking app** scanning a test QR. It recommends against testing in the test Customer Area because bank transfers there **cannot be reversed** and funds will be deducted from the bank account. This is a consequential source warning, not a request to perform a real-money test, and neither a QR scan nor a status-list instruction proves final authorization, capture, refund or settlement. (raw lines 127\u2013135, 239\u2013247)\n- **Scope and outcome limit:** The guide supplies Component imports/launch steps and a QR action prerequisite, but gives no QR expiry time, scan-to-result webhook/status sequence or completed-payment response on this page. Consult the base integration and PayNow QR lifecycle authority before interpreting a displayed code or shopper scan as a final payment outcome. (raw lines 19\u201323, 137\u2013145, 233\u2013247)\n\n## Detail locators\n\n- Sessions requirements, Checkout API minimum and ordinary no-extra fields: raw lines 25\u201341.\n- Module imports, Compose key and Component launch: raw lines 43\u2013125.\n- Advanced QR-code action requirement and Component examples: raw lines 137\u2013230.\n- Advanced ordinary `/payments` no-extra statement: raw lines 233\u2013237.\n- Repeated live setup and consequential bank-transfer test warning: raw lines 127\u2013135, 239\u2013247.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paynow]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paynow/android-component/2026-09-15|Adyen PayNow Android Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add PayNow to your existing integration. The following instructions show only what you must add to your integration specifically for PayNow.",
+      "location": "raw line 19, add-on scope"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions API prerequisite"
+    },
+    {
+      "text": "To [create the Component](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#launch-and-show) for PayNow, use the `InstantPaymentComponent` class.",
+      "location": "raw line 76, Sessions Component class"
+    },
+    {
+      "text": "`action.type`: **qrCode**.",
+      "location": "raw line 144, Advanced action requirement"
+    },
+    {
+      "text": "We recommend not to test PayNow payments in your test Customer Area. You cannot reverse bank transfers in the test environment, and the funds will be deducted from the bank account.",
+      "location": "raw line 135, consequential test warning (repeated raw line 247)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paynow-android-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paynow-android-component]] \u2014 2026-09-15 PayNow Android `InstantPaymentComponent` add-on for Sessions (Checkout API v68+) and Advanced (`qrCode` action), with separate live Support setup and an explicit real-funds/nonreversible TEST warning; no QR outcome procedure on this page.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page warns that test Customer Area bank transfers cannot be reversed and deduct real bank funds; do not perform payment testing. QR code/action/setup and status-list instructions do not establish final outcome; SDK module version is a placeholder."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paynow/android-component/2026-09-15.md",
+  "raw_sha256": "167c1f80757d2f763ce449730619e47869902023b28e2aed707341dfb5b3ef90",
+  "status": "candidate_ready"
+}

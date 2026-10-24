@@ -1,0 +1,7 @@
+# Retrieval checks — docs-payment-methods-boost-android-drop-in
+
+Q1. What is this Boost Wallet Android Drop-in page for, and what cannot be inferred?
+Answer: It lists Boost-specific additions for existing Android Drop-in Sessions and Advanced integrations (raw lines 17–25, 54–74). It does not demonstrate current merchant enablement or successful authorization, capture, settlement or refund; the Advanced section specifies a redirect action, but no final-result procedure (raw lines 60–78). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-boost-android-drop-in]] → [[raw/adyen/docs/payment-methods/boost/android-drop-in/2026-09-15]].
+
+Q2. Which version/setup and testing boundary is consequential?
+Answer: Sessions requires Checkout API v68+ and Customer Area setup, with no extra method-specific base /sessions fields or configuration (raw lines 29–46). Advanced requires redirect handling and Customer Area setup, with no extra base /payments fields (raw lines 56–74). Both sections state Boost has no TEST environment and refer to penny tests in LIVE (raw lines 48–52, 76–78); this is a real-money boundary, not a safe sandbox or evidence that a payment was executed. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-boost-android-drop-in]] → [[raw/adyen/docs/payment-methods/boost/android-drop-in/2026-09-15]].

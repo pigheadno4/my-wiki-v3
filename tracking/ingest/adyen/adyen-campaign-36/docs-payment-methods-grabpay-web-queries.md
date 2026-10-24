@@ -1,0 +1,5 @@
+Q1. What does the GrabPay Web page cover, and what cannot be inferred?
+A1. It is a Web navigation chooser that links GrabPay Drop-in and Components guides and general Web documentation (raw lines 15–29). It does not establish country/currency or Wallet/PayLater eligibility, SDK/API versions, Sessions/Advanced flow details, current merchant enablement or a successful payment (raw lines 15–29). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-grabpay-web]] → [[raw/adyen/docs/payment-methods/grabpay/web/2026-09-15]]
+
+Q2. What central capability or prerequisite does this page itself provide?
+A2. It offers an all-in-one Drop-in route and a pre-built Components route for adding GrabPay to a website, then links their general documentation (raw lines 19–29). The chooser gives no method-specific setup or payment warnings; consult the chosen child and base guide before making such claims (raw lines 15–29). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-grabpay-web]] → [[raw/adyen/docs/payment-methods/grabpay/web/2026-09-15]]

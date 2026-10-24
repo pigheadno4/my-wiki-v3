@@ -1,0 +1,7 @@
+# PayNow iOS Component retrieval checks
+
+**Q1. What is the page for, and what cannot be inferred?** It adds PayNow to existing iOS Components Sessions or Advanced flows, with InstantPaymentComponent examples. It does not prove account eligibility, bank transfer completion or final payment status; this page has no country/currency or QR-expiry rule. Raw locators: `raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:17-23,25-69,81-124`. Canonical stem: `https://docs.adyen.com/payment-methods/paynow/ios-component`.
+
+**Q2. What capability, prerequisites, and warnings matter?** Sessions needs Checkout API v68+, PayNow setup and the base iOS Components flow; Advanced needs the iOS Components flow, QR-code action handling and setup, though its prerequisite link mistakenly targets Drop-in. Neither branch adds method-specific ordinary request/config fields. Live PayNow requires Support-assisted addition; penny testing uses a real banking app in live Customer Area, while testing bank transfers in test Customer Area is discouraged because they cannot be reversed and funds are deducted. Raw locators: `raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:29-79,85-134`. Canonical stem: `https://docs.adyen.com/payment-methods/paynow/ios-component`.
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paynow-ios-component]] → [[raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15]].

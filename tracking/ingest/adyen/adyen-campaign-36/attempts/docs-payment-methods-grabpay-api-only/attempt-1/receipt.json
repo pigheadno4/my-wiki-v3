@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-grabpay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GrabPay API-only integration guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/grabpay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/grabpay/api-only/2026-09-15.md\"\ntags: [adyen, grabpay, api-only, wallets, paylater, redirects]\n---\n\n## Overview\n\nThis [[adyen]] GrabPay API-only guide, captured 2026-09-15 (page metadata last modified 2019-09-06), describes a merchant-built Web form, country-qualified Wallet versus PayLater requests, redirect handling and payment-result checks. It names existing **Web API-only Sessions and Advanced** integrations as prerequisites, while the detailed example sequence uses `/payments` and `/payments/details`. See [[adyen-online-payments]]. This historical guide does not prove current merchant enablement, PayLater eligibility, a completed payment, capture or settlement. See raw lines 15\u201337, 39\u201367 and 897\u2013985.\n\n## Key takeaways\n\n- **Country and method scope:** After the shopper selects GrabPay, the merchant passes `grabpay_MY` for Malaysia/MYR, `grabpay_PH` for the Philippines/PHP, or `grabpay_SG` for Singapore/SGD; the `/paymentMethods` response can also supply the type. The page expressly says **GrabPay PayLater is unavailable in the Philippines**. These mappings and that exclusion are source-snapshot scope, not proof a merchant account is enabled. The requirements say to add GrabPay in Customer Area for both Sessions and Advanced. See raw lines 21\u201363.\n- **Wallet versus PayLater requests:** Both paths send `/payments` with `grabpay_XX`, a return URL, merchant reference and amount. Wallet prose limits the reference to 32 alphanumeric/dash/underscore characters; PayLater prose states the 32-character maximum but does not repeat that character-set rule. PayLater, whether postpaid or installment, additionally calls for `deliveryAddress` and `lineItems`; its `amountIncludingTax` cannot be zero. Do not extend PayLater to PH. The `grabpay_SG` TEST samples illustrate requests; `/payments` v68 and `/payments/details` v72 examples are mixed, so API/version compatibility needs separate verification. See raw lines 65\u201379, 397\u2013409, 410\u2013445 and 897\u2013922.\n- **Redirect and result:** The `/payments` response example has `resultCode: RedirectShopper` and an `action.url`; this is a redirect instruction, not final authorization. After the shopper returns, the guide says to POST URL-decoded `redirectResult` in `/payments/details`, then use its `resultCode` to display the result. For mobile integrations it recommends the device default browser; for GET redirects shown in-app it recommends SFSafariViewController or Chrome Custom Tabs rather than WebView. These are redirect recommendations inside this Web API-only guide, not a complete native-integration specification. See raw lines 381\u2013395 and 881\u2013957.\n- **Asynchronous outcomes:** `Authorised`, `Cancelled` and `Refused` are documented result codes. `Pending` or `Received` means final status is not yet known and the guide says an **AUTHORISATION webhook** supplies the final result. If the shopper closes the browser without returning, it says to wait for webhooks. The webhook table distinguishes AUTHORISATION success true/false and OFFER_CLOSED success true. A shopper return or sample `Authorised` response does not prove an actual capture, settlement or merchant payout. See raw lines 955\u2013974. The PayLater details response may include `additionalData.paymentMethodVariant`, with wallet and PayLater subvariants listed at raw lines 938\u2013953; that field is not the initial `paymentMethod.type`.\n- **Testing and live:** Testing requires Support-provided test-wallet credentials and a simulator login using a registered phone number and its one-time password; test payment status is checked in Customer Area. Live acceptance requires a separate GrabPay request in live Customer Area. The page's See also tokenization link is navigation, not an on-page recurring-payment procedure. See raw lines 976\u2013992.\n\n## Detail locators\n\n- Prerequisites, country/currency/type mapping and PH PayLater exclusion: raw lines 21\u201363.\n- Wallet request, examples and redirect action: raw lines 65\u2013395.\n- PayLater request, item constraint and examples: raw lines 397\u2013895.\n- Redirect return, details, result codes and webhook outcomes: raw lines 897\u2013974.\n- TEST and live setup: raw lines 976\u2013985.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-webhooks]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/grabpay/api-only/2026-09-15|GrabPay API only \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built a Sessions flow [Web API-only integration](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=API-only).",
+      "location": "raw line 29"
+    },
+    {
+      "text": "GrabPay PayLater is not available in Philippines.",
+      "location": "raw line 61"
+    },
+    {
+      "text": "`amountIncludingTax` cannot be 0.",
+      "location": "raw line 408"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known. You will receive the final result of the payment in an [AUTHORISATION webhook](/development-resources/webhooks/webhook-types).",
+      "location": "raw line 966"
+    },
+    {
+      "text": "Before you can accept live GrabPay payments, you need to [submit a request for GrabPay](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 985"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-grabpay-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-grabpay-api-only]] \u2014 2019-modified, 2026-09-15-captured GrabPay Web API-only Wallet/PayLater guide for MY/SG/PH method mapping, PH PayLater exclusion, redirect/details flow and webhook-qualified outcomes; TEST/live gates and mixed API examples remain source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/grabpay/api-only/2026-09-15.md",
+  "raw_sha256": "a36ced4df983592a26b5b61fa7f8371093c04ec8158139687820280828550aad",
+  "status": "candidate_ready"
+}

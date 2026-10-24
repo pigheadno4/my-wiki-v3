@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-paynow-android]] — 2026-09-15 PayNow Android navigation chooser linking Drop-in and InstantPaymentComponent children plus main Sessions/Advanced guides; its “redirect” label is not an API action-type or payment-outcome specification.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-web]] — 2019-modified, 2026-09-15-captured GrabPay Web chooser for Drop-in and Components child guides plus general Web docs; flow requirements and outcomes belong to child evidence.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-ios]] — 2019-modified, 2026-09-15-captured GrabPay iOS chooser linking Drop-in/Components child guides and general iOS Sessions-flow guides; child versions, PayLater conditions and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-web]] — 2019-modified, 2026-09-15-captured Touch'n Go Web chooser for Drop-in or Components and general Web guides; implementation and outcome claims require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-android]] — 2019-modified, 2026-09-15-captured Android GrabPay chooser linking Drop-in and Components child guides plus Sessions base guides; child prerequisites and outcomes are separate authority.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-ios]] — 2019-modified, 2026-09-15-captured Touch'n Go iOS chooser for Drop-in/Components child guides and Sessions-flow base links; implementation and outcomes remain child-guide authority.
+
+
+- [[source-adyen-docs-payment-methods-paynow-web]] — 2026-09-15 PayNow Web chooser for Drop-in/Components child guides and Web Sessions/Advanced base routes; the page gives navigation, not QR implementation, eligibility or outcome semantics.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-android]] — 2019-modified, 2026-09-15-captured Touch'n Go Android chooser linking Drop-in/Components child guides and Sessions base routes; navigation only, with implementation and outcomes in the linked guides.
+
+
+- [[source-adyen-docs-payment-methods-paynow-ios]] — 2026-09-15 PayNow iOS navigation chooser linking Drop-in, InstantPaymentComponent and four Sessions/Advanced base guides; child setup, QR behavior and outcomes require their own evidence.
+
+
+- [[source-adyen-docs-payment-methods-boost-web]] — 2026-09-15 Boost Wallet Web chooser linking Drop-in/Components child guides and Web Sessions/Advanced main integrations; child prerequisites, redirect mechanics, TEST/live limits and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-boost-android]] — 2026-09-15 Boost Wallet Android chooser for Drop-in or InstantPaymentComponent and their Sessions/Advanced base guides; child pages carry implementation and outcome limits.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-web-drop-in]] — 2026-09-15 Touch'n Go Web Drop-in Sessions/Advanced add-on with Support-gated setup, no extra method-specific API/configuration fields and separate live Support request; `/sessions` v5+ wording is a default, not a method minimum.
+
+
+- [[source-adyen-docs-payment-methods-boost-ios]] — 2026-09-15 Boost Wallet iOS navigation chooser for Drop-in or InstantPaymentComponent child guides and Sessions/Advanced base guides; implementation and outcomes are separate authority.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-ios-drop-in]] — 2026-09-15 Touch'n Go iOS Drop-in add-on for Sessions/Advanced base integrations with Support setup, no extra method fields or version-tab configuration and a separate live Support gate; v5.0.0 is Drop-in, not Checkout API, and outcomes require other evidence.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-android-drop-in]] — 2026-09-15-captured Touch 'n Go Android Drop-in v5.0.0+ Sessions/Advanced add-on with no extra method-specific base fields/configuration and a live Support gate; redirect/result behavior remains separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-paynow-react-native-component]] — 2026-09-15 PayNow React Native Components guide: Sessions unsupported, Advanced `qrCode` action with no extra method fields/configuration, Components/Drop-in link mismatch and real-funds test warning.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-android-component]] — 2026-09-15 Touch'n Go Android Components v5.0.0 Sessions/Advanced add-on with Customer Area setup, no additional method fields/configuration and live Support gate; app-return and final outcomes remain outside this guide.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-web-component]] — 2019-modified, 2026-09-15-captured Touch 'n Go Web Components Sessions/Advanced add-on with v6 Redirect versus v5 create snippets, Support-gated live setup and no on-page webhook-outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-android-drop-in]] — 2026-09-15 GrabPay Android Drop-in v5.0.0 Sessions/Advanced add-on with no method-specific fields/configuration, test credential steps and live-request gate; Wallet/PayLater and final outcomes are not detailed.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-android-component]] — 2026-09-15 GrabPay Android Components v5.0.0 Sessions/Advanced add-on with Customer Area setup, no additional method fields/configuration stated, simulator testing and live request gate; its broad no-fields wording leaves PayLater scope unresolved against other GrabPay guides.
+
+
+- [[source-adyen-docs-payment-methods-boost-ios-drop-in]] — 2026-09-15 Boost Wallet iOS Drop-in add-on for Sessions (Checkout API v68+) and Advanced redirect flows, with no method-specific extra fields and a no-TEST/live-penny-test warning; no final outcome procedure on this page.
+
+
+- [[source-adyen-docs-payment-methods-boost-android-drop-in]] — 2026-09-15 Boost Wallet Android Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on; no Boost TEST environment, with live penny-test guidance only and no payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-boost-web-drop-in]] — 2026-09-15 Boost Wallet Web Drop-in Sessions/Advanced redirect add-on with Sessions Checkout v68+, optional `Redirect` import, malformed Advanced base-guide platform link and explicit no-TEST limit; no outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-ios-component]] — 2026-09-15 Touch'n Go iOS Components Sessions/Advanced add-on with Support setup, no extra method fields, v5+ InstantPaymentComponent versus v4.x.x TouchnGoComponent examples and live Support gate; setup is not payment-result proof.
+
+
+- [[source-adyen-docs-payment-methods-boost-web-component]] — 2026-09-15 Boost Wallet Web Components Sessions (Checkout API v68+) and Advanced redirect add-on; source examples have malformed placeholders, and the guide states no TEST environment.
+
+
+- [[source-adyen-docs-payment-methods-paynow-ios-drop-in]] — 2026-09-15 PayNow iOS Drop-in Sessions (Checkout API v68+) and Advanced QR-action add-on, with Support-assisted live setup and real-funds/nonreversible TEST transfer warning.
+
+
+- [[source-adyen-docs-payment-methods-paynow-android-drop-in]] — 2026-09-15 PayNow Android Drop-in Sessions (Checkout API v68+) and Advanced `qrCode` add-on, with Support-gated live setup and explicit real-funds/nonreversible TEST transfer warning.
+
+
+- [[source-adyen-docs-payment-methods-paynow-react-native-drop-in]] — 2026-09-15 PayNow React Native Drop-in add-on for Sessions (Checkout API v68+) and Advanced (`qrCode` action), with live Support setup and nonreversible real-funds TEST warning; Sessions base URL and Advanced action anchor are qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-paynow-flutter-drop-in]] — 2026-09-15 PayNow Flutter Drop-in Sessions (Checkout API v68+) and Advanced (qrCode action) add-on, with live Support setup, Sessions guide-link conflict and explicit real-funds/nonreversible TEST warning.
+
+
+- [[source-adyen-docs-payment-methods-boost-ios-component]] — 2026-09-15 Boost Wallet iOS InstantPaymentComponent Sessions/Advanced redirect guide, with Sessions Checkout v68+ prerequisite, an Advanced Components/Drop-in link mismatch and explicit no-TEST limit; no observed outcome.
+
+
+- [[source-adyen-docs-payment-methods-paynow-web-drop-in]] — 2026-09-15 PayNow Web Drop-in Sessions (Checkout API v68+) and Advanced QR-action add-on with no extra method request fields, live Support gate and nonreversible test-transfer warning; Advanced prerequisite URL retains an encoded platform template.
+
+
+- [[source-adyen-docs-payment-methods-paynow-ios-component]] — 2026-09-15 PayNow iOS Components Sessions (Checkout API v68+) and Advanced QR-action add-on, with live bank-app testing/reversibility warning and Advanced prerequisite-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-paynow-web-component]] — 2026-09-15 PayNow Web Components Sessions/Advanced QR guide with v68+ Sessions prerequisite, flow-specific configuration, live Support enablement and consequential test bank-transfer warning; no observed outcome.
+
+
+- [[source-adyen-docs-payment-methods-boost-android-component]] — 2026-09-15 Boost Wallet Android Components Sessions (Checkout API v68+) and Advanced redirect add-on using `InstantPaymentComponent`/`molpay_boost`; no TEST environment, with live penny-test guidance only.
+
+
+- [[source-adyen-docs-payment-methods-paynow-android-component]] — 2026-09-15 PayNow Android `InstantPaymentComponent` add-on for Sessions (Checkout API v68+) and Advanced (`qrCode` action), with separate live Support setup and an explicit real-funds/nonreversible TEST warning; no QR outcome procedure on this page.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-android-component-earlier-versions]] — 2019-modified Touch 'n Go Android earlier-version Redirect Component guide for Advanced request/return-details flow, with Sessions-link conflict, blank discovery channel and v68/v72 example split qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-android-drop-in-earlier-versions]] — 2026-09-15-captured earlier-version Android Drop-in Advanced-flow Touch'n Go guide for MY/MYR display, server payment/redirect/details handoff and test/live Support gates; Sessions links and return-URL casing differ from requirement prose/examples.
+
+
+- [[source-adyen-docs-payment-methods-boost-api-only]] — 2026-09-15 Boost Wallet MY/MYR Advanced Web API-only add-on for method discovery and redirect; payment-request item-data and TEST/LIVE examples conflict with prose, with no observed final outcome.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-web-component]] — 2026-09-15 snapshot of GrabPay Web Components Sessions/Advanced guide for PayLater-only additional fields, MY/PH/SG method variants and v5/v6 mounting.
+
+
+- [[source-adyen-docs-payment-methods-touchngo-api-only]] — 2019-modified, 2026-09-15-captured MY/MYR Touch'n Go API-only redirect guide with Support-gated setup, return `/payments/details`, pending/webhook outcome branches and separate TEST/live requirements; sample v68/v72 endpoints are not a stated minimum.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-ios-drop-in]] — 2026-09-15 GrabPay iOS Drop-in Sessions/Advanced add-on for Customer Area setup, PayLater delivery/item request data, no extra Drop-in-specific configuration and TEST/live gates; Web-version wording within the iOS guide remains source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-web-drop-in]] — 2026-09-15 GrabPay Web Drop-in Sessions/Advanced guide distinguishing required PayLater address/items from recommended Wallet data, with v5+ `/sessions` versus conditional `/payments` routes and a live-request gate; examples have an unexplained amount/item mismatch.
+
+
+- [[source-adyen-docs-payment-methods-boost]] — 2026-09-15 Boost Wallet overview: Adyen's RMS-mediated MY/MYR redirect-wallet route, refund-only positive capability mark and Web/iOS/Android/API-only navigation; matrix does not prove merchant enablement or outcome.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-ios-component]] — 2026-09-15 GrabPay iOS Components Sessions/Advanced guide with required PayLater address/items, v5/v4 native Component routes and qualified Web-version/example inconsistencies.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-android-drop-in-earlier-versions]] — 2026-09-15 earlier-version GrabPay Android Advanced Drop-in Wallet/PayLater guide for MY/SG/PH, with PH PayLater exclusion, PayLater-only extra fields and webhook-final pending states; Sessions navigation and return-URL examples are qualified.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-android-component-earlier-versions]] — 2019-modified, 2026-09-15-captured GrabPay Android Components v4.x.x Advanced guide for MY/SG/PH Wallet and qualified PayLater, redirect/details and asynchronous webhook outcomes; Sessions-link/API-example differences remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-grabpay-api-only]] — 2019-modified, 2026-09-15-captured GrabPay Web API-only Wallet/PayLater guide for MY/SG/PH method mapping, PH PayLater exclusion, redirect/details flow and webhook-qualified outcomes; TEST/live gates and mixed API examples remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-paynow]] — 2026-09-15 PayNow SG/SGD overview limiting Adyen integration to QR-code payments, with a historical capability row and Web/iOS/Android/React Native/Flutter child routes; QR lifecycle and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-touchngo]] — 2022-modified, 2026-09-15-captured Touch'n Go MY/MYR redirect-wallet overview for desktop QR and mobile app/browser shopper routes, capability marks and Web/native/API-only links; no merchant setup or outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-grabpay]] — 2026-09-15 GrabPay overview for shopper redirect, Wallet/PayLater geography, Wallets capability matrix, refund-reference rule and channel routes; the matrix is Wallets-scoped, and shopper confirmation is not merchant payment-outcome proof.
+
+
 - [[source-adyen-docs-payment-methods-momo-wallet-android]] — 2026-09-15 MoMo Android chooser linking Drop-in and redirect-oriented InstantPaymentComponent children plus four Sessions/Advanced base routes; child versions, eligibility and outcomes remain separate evidence.
 
 

@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-grabpay-web-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen GrabPay Web Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/grabpay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md\"\ntags: [adyen, grabpay, web, components, wallet, paylater]\n---\n\n## Overview\n\nThis captured Adyen guide adds GrabPay to an existing Web Components integration in Sessions or Advanced flow. It separates GrabPay Wallet from PayLater request data and provides country-specific Component choices. It is a historical documentation snapshot (page metadata last modified 2019-11-13), not proof of current method availability, merchant eligibility or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- An existing Sessions or Advanced Web Components integration and GrabPay enablement in Customer Area are prerequisites. For GrabPay **PayLater**, whether postpaid or installment, send `deliveryAddress` and `lineItems` in the applicable `/sessions` or `/payments` request. The page recommends the same data for GrabPay **Wallet** to ease a later PayLater addition; it does not call those fields mandatory for Wallet.\n- The guide labels `/sessions` the default with Web Components v5.0.0 or later and presents `/payments` for an additional use case or integrations before v5.0.0. These are endpoint routes in the page, not a claim that v5+ cannot use Advanced flow.\n- Choose the Component according to shopper location and currency: `grabpay_MY` for Malaysia/MYR, `grabpay_PH` for Philippines/PHP, or `grabpay_SG` for Singapore/SGD. The request samples show the Singapore case, including `paymentMethod.type: grabpay_SG` for `/payments`; they do not prove a merchant's eligibility for every listed country.\n- For Web v6.0.0 or later, the Singapore example mounts `new Redirect(checkout, { type: 'grabpay_SG' })`; for v5.x.x or earlier, it uses `checkout.create('grabpay_SG')`. Both examples assume an `AdyenCheckout` instance and a target DOM element. The source includes a stray `**` after the v6 code block and the Sessions Node examples reference `Config` and `EnvironmentEnum` without imports. The Advanced Java `/payments` PayLater example creates `merchantAccount` and `deliveryAddress` values but never assigns either to `paymentsRequest` (lines 559\u2013604), despite the delivery-address requirement at lines 514\u2013517; do not treat that snippet as a complete PayLater request.\n- Testing requires Support-provided test wallet credentials and logging in to the Grab simulator with a registered phone number and received one-time password. Check test-payment status in the Adyen test Customer Area. Live acceptance requires a separate GrabPay request in the live Customer Area. Setup, simulator login, Component mount and API submission are not payment-outcome evidence.\n\n## Detail locators\n\n- Sessions/Advanced integration and Customer Area prerequisites: pinned raw lines 21\u201342.\n- PayLater-only additional-data distinction and endpoint selection: pinned raw lines 44\u201357 and 510\u2013517.\n- `/sessions` examples (test v69, Singapore): pinned raw lines 59\u2013508; `/payments` examples (curl test v72, Singapore `grabpay_SG`): lines 519\u2013809. The examples mix server API-library versions and amounts; use the endpoint contract for a specific implementation.\n- Country/currency Component mapping and Web v6 versus v5 mounting: pinned raw lines 811\u2013849.\n- Test and live prerequisites: pinned raw lines 851\u2013860.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web Components and Sessions/Advanced architecture\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15|GrabPay Web Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Collecting and sending additional information is only needed for GrabPay **PayLater** payments. However, we highly recommend you do the same in your initial integration for GrabPay **Wallet** because it will help save development resources if you plan to enable GrabPay PayLater afterwards.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md:46"
+    },
+    {
+      "text": "This is the default with Web Components v5.0.0 or later.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md:52"
+    },
+    {
+      "text": "The Component to use depends on the shopper's country/region:",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md:813"
+    },
+    {
+      "text": "const grabPaySG = new Redirect(checkout, { type: 'grabpay_SG' }).mount('#grabpay_SG-container');",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md:838"
+    },
+    {
+      "text": "Before you can accept live GrabPay payments, you need to [submit a request for GrabPay](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md:860"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "grabpay-web-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-grabpay-web-component]] \u2014 2026-09-15 snapshot of GrabPay Web Components Sessions/Advanced guide for PayLater-only additional fields, MY/PH/SG method variants and v5/v6 mounting.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/grabpay/web-component/2026-09-15.md",
+  "raw_sha256": "13fc384e8b2d95932ed2a88fe98d3abe5b8fe7cb6427ea04d261df13dca209d6",
+  "status": "candidate_ready"
+}

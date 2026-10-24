@@ -1,0 +1,5 @@
+Q1. What is the purpose and scope of the PayNow iOS page, and what cannot be inferred?
+A1. It is an iOS navigation chooser for PayNow Drop-in and Components, with the Components choice naming `InstantPaymentComponent` (raw lines 15–27). It does not establish child version requirements, merchant eligibility, QR behavior, test/live setup or payment outcome (raw lines 15–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paynow-ios]] → [[raw/adyen/docs/payment-methods/paynow/ios/2026-09-15]]
+
+Q2. What prerequisite or warning does this chooser itself provide?
+A2. It says to create the main integration before adding PayNow and links iOS Drop-in and Components base guides for both Sessions and Advanced flows (raw lines 29–36). These are routes only; the applicable child and base guide must supply flow-specific requirements and warnings (raw lines 19–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-paynow-ios]] → [[raw/adyen/docs/payment-methods/paynow/ios/2026-09-15]]

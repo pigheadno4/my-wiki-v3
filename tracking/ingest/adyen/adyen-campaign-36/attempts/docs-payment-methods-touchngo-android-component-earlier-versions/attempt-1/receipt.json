@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-touchngo-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Touch 'n Go Android Redirect Component earlier-version guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/touchngo/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/touchngo/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, touchngo, android, component, redirect, earlier-versions]\n---\n\n## Overview\n\nThis [[adyen]] **earlier-version Touch 'n Go Android Component** guide describes a merchant-server **Advanced** payment request, Android Redirect Component handoff, and a server-side `/payments/details` call after shopper return. The displayed title is malformed (\u201cTouch v4.x.x integration'n Go Android Component\u201d); treat **v4.x.x** as the page's historical label, not a verified current Android SDK minimum. The source was recorded as last modified in 2019 and captured in 2026. Its example responses and status lookup are illustrative, not evidence of a completed or final transaction. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Integration/setup conflict:** The introduction and See also route to a **Sessions-flow Android Components** guide, but the Requirements table explicitly says to have an **Advanced-flow Android Components** integration. The redirect-handling step also links a Sessions guide. Preserve this mismatch and use the flow-specific requirements plus the main guide rather than combining the links into a single supported flow. Before setup, the page directs contacting Adyen Support to add Touch 'n Go in Customer Area; live acceptance has a further Support/live Customer Area instruction. See raw lines 19\u201326, 366\u2013368 and 399\u2013409.\n- **Method discovery and request:** The guide says no shopper fields need be collected in the payment form. It instructs `/paymentMethods` discovery with **MY** country and **MYR** currency, but its `channel` value is blank (`****`), so this page cannot supply that value. It identifies response `paymentMethod.type: touchngo`. For server `/payments`, it lists `paymentMethod.type: touchngo` and a return URL no longer than **1024 characters**, obtained from `RedirectComponent.getReturnUrl(context)`. Prose spells the field `returnURL`, while code examples use `returnUrl`; do not silently normalize this conflict. See raw lines 28\u201347 and 49\u2013348.\n- **Redirect and return:** The page says to use the Redirect Component to send the shopper to Touch 'n Go, then submit `actionComponentData.details` in server `POST /payments/details` after return. An example `/payments` response has `RedirectShopper` and a redirect action; an example details response has `Authorised` and `pspReference`. The examples show **v68 /payments** but **v72 /payments/details**, and library examples have differing versions. The page does not establish a single API-version minimum or webhook-final outcome rule; the Webhooks item is only a link. A sample Authorised response is not evidence for any real payment. See raw lines 49\u2013348 and 350\u2013409.\n- **Environment boundary:** Examples use TEST endpoints and placeholder credentials. The guide directs test-status lookup in TEST Customer Area and says to contact Support to add Touch 'n Go in **live** Customer Area before live acceptance. Neither operation proves live merchant eligibility or successful authorization, capture or settlement. See raw lines 49\u2013101 and 399\u2013403.\n\n## Detail locators\n\n- Historical title, route conflict and setup: raw lines 6\u201326.\n- MY/MYR discovery, incomplete channel and request/return URL: raw lines 28\u201347.\n- Multi-language TEST examples and version variation: raw lines 49\u2013348.\n- Redirect action, details call and illustrative responses: raw lines 350\u2013397.\n- TEST/live status and navigation: raw lines 399\u2013409.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/touchngo/android-component/earlier-versions/2026-09-15|Adyen Touch 'n Go Android earlier-version snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Components integration]",
+      "location": "raw line 25, Requirements"
+    },
+    {
+      "text": "[channel](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-channel): Specify ****.",
+      "location": "raw line 36, incomplete discovery instruction"
+    },
+    {
+      "text": "This URL can have a maximum of 1024 characters.",
+      "location": "raw line 47, return URL constraint"
+    },
+    {
+      "text": "After the shopper returns to your app, make a POST [/payments/details]",
+      "location": "raw line 369, return processing"
+    },
+    {
+      "text": "To accept live Touch'n Go payments, you must contact our [Support Team]",
+      "location": "raw line 403, live setup"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-touchngo-android-component-earlier-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-touchngo-android-component-earlier-versions]] \u2014 2019-modified Touch 'n Go Android earlier-version Redirect Component guide for Advanced request/return-details flow, with Sessions-link conflict, blank discovery channel and v68/v72 example split qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introduction, redirect step and See also point to Sessions guides, while Requirements specify Advanced; the source does not reconcile these routes.",
+          "The /paymentMethods channel instruction is blank and request prose spells returnURL while code uses returnUrl.",
+          "Illustrative /payments v68 and /payments/details v72 responses are not a unified version rule or actual payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/touchngo/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "7a0adc7e3445c23f5e7921d310a1161c1a308571adec09e254a406d2f5d8ba6d",
+  "status": "candidate_ready"
+}

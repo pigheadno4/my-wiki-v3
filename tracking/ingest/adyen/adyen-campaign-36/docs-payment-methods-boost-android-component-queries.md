@@ -1,0 +1,9 @@
+# Retrieval checks — Boost Wallet Android Component
+
+## Q1. What is this source's purpose and scope, and what cannot be inferred?
+
+`source-adyen-docs-payment-methods-boost-android-component` is a Boost-specific add-on for an existing Android Components integration, with separate Sessions and Advanced sections (raw lines 15–25 and 132–140). It does not provide a complete base integration, country/currency matrix, recurring-token flow, final-result contract or account eligibility proof. The lack of a test environment and live penny-test instruction are historical guidance, not proof of a successful or approved live payment (raw lines 128–130 and 234–236). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-boost-android-component]] → [[raw/adyen/docs/payment-methods/boost/android-component/2026-09-15]].
+
+## Q2. What central capability, prerequisites and warnings matter?
+
+Sessions requires Checkout API v68+, existing Android Components, redirect handling and Customer Area setup; no additional Boost fields go in the base `/sessions` request (raw lines 29–42). Advanced requires an existing Components flow, redirect action handling and Customer Area setup, with no extra Boost configuration or ordinary `/payments` fields (raw lines 134–140 and 165–175, 228–232). Both use `InstantPaymentComponent` and method `molpay_boost`; Sessions gets it from the checkout session, Advanced from `/paymentMethods` (raw lines 75–125 and 171–226). The page provides only `YOUR_VERSION` SDK placeholders and says no TEST environment exists, directing live penny tests (raw lines 54–56, 128–130 and 152–154); no payment was executed or verified here. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-boost-android-component]] → [[raw/adyen/docs/payment-methods/boost/android-component/2026-09-15]].

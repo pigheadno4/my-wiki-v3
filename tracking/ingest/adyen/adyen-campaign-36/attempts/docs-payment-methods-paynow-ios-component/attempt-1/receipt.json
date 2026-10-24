@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-paynow-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayNow iOS Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paynow/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md\"\ntags: [adyen, paynow, ios, components, qr-code]\n---\n\n## Overview\n\nAdyen's 2026-09-15 PayNow iOS Component page gives method-specific additions for existing iOS Components Sessions and Advanced flows. It initializes an `InstantPaymentComponent` for method type `paynow`; the Advanced branch explicitly handles a QR-code action. This page does not prove a bank transfer, payment authorization, or current account eligibility. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** Requires an existing iOS Components Sessions integration, Checkout API v68 or later, and PayNow added in Customer Area. No extra PayNow-specific `/sessions` parameters or Component configuration are specified. The Swift example checks that `.other(\"paynow\")` exists in the session's methods before showing the Component, sets `session` as delegate, then initiates payment. [Raw lines 25\u201369]\n- **Advanced:** Requires an existing iOS Components Advanced integration and handling the additional `action.type: qrCode`; PayNow must be added in Customer Area. No extra PayNow-specific configuration or ordinary `/payments` parameters are specified. The example uses `InstantPaymentComponent` with the calling object as delegate. Its **Advanced Components** prerequisite label links to a **Drop-in** URL; the separately linked action and payment steps point to Components. Preserve that source inconsistency rather than treating Drop-in as the required integration. [Raw lines 81\u2013124]\n- **Live and testing warning:** Before live acceptance, contact Adyen Support to add PayNow in the live Customer Area. The page describes small-amount \u201cpenny\u201d testing in the **live** Customer Area using a real banking app to scan a test QR and checking status in the live payment list. It recommends against test Customer Area payment testing because test-environment bank transfers cannot be reversed and funds are deducted from the bank account. A scan or Component callback alone is no payment-status proof. [Raw lines 71\u201379, 126\u2013134]\n\n## Detail locators\n\n- The Sessions and Advanced Swift examples differ in delegate assignment: `component.delegate = session` versus `component.delegate = self`; raw lines 57\u201369 and 107\u2013118. These are flow-specific snippets, not a stated iOS SDK version requirement.\n- The page itself gives no country/currency table, QR expiry period, recurring-token route, or final result-code/webhook semantics. Follow the relevant base integration and payment-status evidence for those behaviors.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15|PayNow iOS Component (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "guard let paymentMethod = paymentMethods.paymentMethod(ofType: .other(\"paynow\")) else { return }",
+      "location": "raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:60"
+    },
+    {
+      "text": "`action.type`: **qrCode**.",
+      "location": "raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:90"
+    },
+    {
+      "text": "You can penny test PayNow payments in your **live** Customer Area",
+      "location": "raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:130"
+    },
+    {
+      "text": "You cannot reverse bank transfers in the test environment, and the funds will be deducted from the bank account.",
+      "location": "raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md:134"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paynow-ios-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paynow-ios-component]] \u2014 2026-09-15 PayNow iOS Components Sessions (Checkout API v68+) and Advanced QR-action add-on, with live bank-app testing/reversibility warning and Advanced prerequisite-link mismatch.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paynow/ios-component/2026-09-15.md",
+  "raw_sha256": "ede3899bb89cd9ca96be04534ad43bea3d7e7ab516c384f461fa0eef2c2070c1",
+  "status": "candidate_ready"
+}

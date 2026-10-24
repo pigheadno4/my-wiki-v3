@@ -1,0 +1,9 @@
+# GrabPay overview retrieval questions
+
+## Q1 — What is this page's purpose and scope, and what cannot be inferred?
+
+It is a GrabPay overview of the shopper's website/app redirect to GrabPay login, phone-number and Grab OTP authentication, option selection and confirmation (raw line 25), plus Wallet/PayLater scope (lines 27–32) and integration navigation (lines 40–76; [[source-adyen-docs-payment-methods-grabpay]]). The redirect and shopper confirmation alone do not prove merchant-side authorization, capture or settlement. Channel links do not establish their child SDK/API versions, implementation behavior or current eligibility. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-grabpay]] → [[raw/adyen/docs/payment-methods/grabpay/2026-09-15]].
+
+## Q2 — What central capability, prerequisites and warnings does it give?
+
+The page says Wallet pays the full amount immediately, while PayLater is described as next-month or four-installment payment; Adyen's Wallet offer covers Malaysia, Singapore and the Philippines, while PayLater is listed only for Malaysia and Singapore (raw lines 27–32). The **Wallets** matrix lists redirect, MY/PH/SG and MYR/PHP/SGD; recurring, capture variants and chargebacks are marked unavailable while refunds including partial/multiple partial are marked available (lines 34–36). It does not explicitly map each currency to each country or give a PayLater capability row. Refund requests require a `reference` of up to 32 alphanumeric, dash or underscore characters (line 38); a supported refund mark or valid reference does not show an executed refund. This is historical documentation, not a current merchant enablement or successful-payment check ([[source-adyen-docs-payment-methods-grabpay]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-grabpay]] → [[raw/adyen/docs/payment-methods/grabpay/2026-09-15]].

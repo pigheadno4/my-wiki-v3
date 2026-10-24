@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-grabpay-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GrabPay Android Drop-in earlier versions\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/grabpay/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/grabpay/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, grabpay, android, drop-in, paylater]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen]] page is titled **GrabPay Drop-in v4.x.x integration** and documents adding GrabPay Wallet or PayLater to an existing **Advanced-flow Android Drop-in** integration. Drop-in displays the method and redirects the shopper to GrabPay. The title identifies an earlier-version guide; its language-specific TEST API/library versions are examples, not a stated universal SDK or Checkout API minimum. This snapshot does not prove current merchant/variant enablement, authorization, capture, settlement or funds receipt. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Method and geography:** Add GrabPay in Customer Area. `/paymentMethods` uses `countryCode` and `amount.currency`: **MY/MYR**, **SG/SGD**, or **PH/PHP** in the table. The response method type is country-specific `grabpay_XX`. Its footnote says **GrabPay PayLater is unavailable in the Philippines**; the PH row therefore cannot be used as PayLater evidence. These are dated guide conditions, not present-day account eligibility. See raw lines 21\u201342.\n- **Wallet versus PayLater request:** Drop-in gives the Android client `paymentComponentData.paymentMethod`, which the client sends to the merchant server for `/payments`. Both routes specify a `returnUrl` from `RedirectComponent.getReturnUrl(context)`, a unique `reference` of at most 32 alphanumeric/dash/underscore characters, and the amount. **PayLater** additionally requires `deliveryAddress` and `lineItems` for GrabPay risk checks. The guide says collecting those fields is needed only for PayLater, though it recommends gathering them early for a Wallet integration that may add PayLater. Do not make that recommendation a Wallet requirement. See raw lines 44\u201370 and 391\u2013404.\n- **Redirect, details and webhook:** The example `/payments` response is `RedirectShopper` with a redirect `action`; the server passes the action to Drop-in. On return, Drop-in supplies `actionComponentData.details`, which the server sends in POST `/payments/details`. The details response has `resultCode` and `pspReference`; for PayLater it may also carry `additionalData.paymentMethodVariant`, whose Wallet/PayLater variant strings are listed. `Authorised`, `Cancelled`, `Refused`, and `Pending`/`Received` have distinct meanings. Pending/Received is **not final**: the guide says an AUTHORISATION webhook supplies the final result. If the shopper closes the browser and does not return, wait for webhook outcome; AUTHORISATION false/true and OFFER_CLOSED true lead to distinct order actions. See raw lines 373\u2013389, 877\u2013966.\n- **TEST/LIVE:** For testing, the guide says to obtain test wallet credentials from Adyen Support and log in to a simulator using the registered phone number and its one-time password. It points to TEST Customer Area for status. Live acceptance requires a GrabPay request in LIVE Customer Area. This is setup guidance, not evidence of an actual provider account, test result or live approval. See raw lines 968\u2013977.\n\n> [!warning] Contradiction\n> The requirement table explicitly says **Advanced flow**, but the introduction and closing \u201cSee also\u201d point to **Sessions-flow** Android Drop-in guides (raw lines 19, 25 and 981). Treat those links as mismatched navigation for this page's Advanced `/payments` \u2192 redirect \u2192 `/payments/details` procedure.\n>\n> The Wallet and PayLater parameter lists say to derive `returnUrl` from `RedirectComponent.getReturnUrl(context)` (raw lines 68 and 400), but the language examples use a generic HTTPS checkout URL (for example raw lines 74\u201389 and 408\u2013441). The examples do not establish that URL as a working Android return route. The API/library versions in snippets and TEST redirect response are example scopes, not proof of production compatibility or completed payment.\n\n## Detail locators\n\n- Earlier-version title, Advanced prerequisite and country/PayLater table: raw lines 15\u201342.\n- Wallet/PayLater field distinction and server `/payments` instructions: raw lines 44\u201370 and 391\u2013404.\n- Wallet and PayLater language-specific example payloads: raw lines 72\u2013370 and 406\u2013875.\n- Action, return/details and variant/result/webhook handling: raw lines 373\u2013389 and 877\u2013966.\n- Simulator credentials and live Customer Area gate: raw lines 968\u2013977.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/grabpay/android-drop-in/earlier-versions/2026-09-15|Adyen GrabPay Android Drop-in earlier-versions snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Drop-in integration]",
+      "location": "raw line 25, Requirements > Integration type"
+    },
+    {
+      "text": "GrabPay PayLater is not available in Philippines.",
+      "location": "raw line 40, Show GrabPay in your payment form > country footnote"
+    },
+    {
+      "text": "Collecting additional information is only needed for GrabPay PayLater payments.",
+      "location": "raw line 46, Collect additional information in your payment form"
+    },
+    {
+      "text": "Get this URL from the Component in the `RedirectComponent.getReturnUrl(context)`.",
+      "location": "raw line 68, Make a payment > Wallet > returnUrl"
+    },
+    {
+      "text": "You will receive the final result of the payment in an [AUTHORISATION webhook]",
+      "location": "raw line 958, Present the payment result > Pending or Received"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-grabpay-android-dropin-earlier-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-grabpay-android-drop-in-earlier-versions]] \u2014 2026-09-15 earlier-version GrabPay Android Advanced Drop-in Wallet/PayLater guide for MY/SG/PH, with PH PayLater exclusion, PayLater-only extra fields and webhook-final pending states; Sessions navigation and return-URL examples are qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced prerequisite conflicts with Sessions intro/See also links (raw lines 19, 25, 981); returnUrl prose conflicts with generic example URLs (raw lines 68, 400 and examples)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/grabpay/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "3879fc9a60b45150f77734b7b963e7afe7da9bfebc5f4e5fd2f2248dcd012fed",
+  "status": "candidate_ready"
+}

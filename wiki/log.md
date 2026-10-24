@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-25] ingest | Adyen website C36
+
+- Fifty independently approved GrabPay, Touch n Go, Boost and PayNow documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 1 concepts touched (0 new); source_count 1814 = 1800 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-36/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-25] ingest | Adyen website C35
 
 - Fifty independently approved DANA, MoMo, GCash and DOKU documentation sources; first full-review approvals 49/50 and 1 targeted correction reviews. 3 concepts touched (0 new); source_count 1764 = 1750 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-35/`; details [[adyen-log]]. No commit/push.

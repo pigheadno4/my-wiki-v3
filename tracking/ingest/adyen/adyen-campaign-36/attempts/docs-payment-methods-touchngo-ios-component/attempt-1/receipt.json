@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-touchngo-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Touch'n Go iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/touchngo/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md\"\ntags: [adyen, touchngo, ios, components, wallets]\n---\n\n## Overview\n\nThis [[adyen]] method guide adds Touch'n Go to an **existing iOS Components** integration, with separate Sessions/Advanced base-flow prerequisites and version-specific Component creation. See [[adyen-online-payments]] and [[adyen-ios-sdk]]. This captured guide is not evidence of current merchant enablement or a completed payment.\n\n## Key takeaways\n\n- Sessions and Advanced tabs each require the corresponding **existing iOS Components** integration and say to contact Adyen Support to add Touch'n Go in Customer Area before beginning. The page does not give a Checkout API minimum. See raw lines 21\u201337.\n- Its API section says **no additional Touch'n Go-specific fields** are needed. It links `/sessions` as the default for **Components v5.0.0 or later** and `/payments` for an additional use case; optional general-payment-method fields remain possible. Do not read that as a claim that the merchant needs no base flow or server request. See raw lines 39\u201344.\n- For **iOS Components v5.0.0+**, the examples check for payment method `.other(\"touchngo\")`, instantiate `InstantPaymentComponent`, retain it, set the delegate, and call `initiatePayment()`. In the Sessions example the delegate is `session`; in Advanced it is `self`. This is method/component setup, not payment authorization or a complete app-return/outcome contract. See raw lines 46\u201383.\n- The **v4.x.x** example instead looks up `TouchnGoPaymentMethod` and presents `TouchnGoComponent` with `FormComponentStyle`. The page then says no further Touch'n Go-specific Components configuration is required. Do not generalize the v4 type/constructor to v5 or the v5 delegate pattern to v4. See raw lines 85\u2013101.\n- The guide directs test payment status checks to the test Customer Area, and requires contacting Support to add Touch'n Go in the **live Customer Area** before live acceptance. A status-list check or Support request is not evidence that a specific authorization or settlement succeeded. This page does not detail app return, `/payments/details`, QR expiry, webhook timing or final payment status. See raw lines 103\u2013113.\n\n## Detail locators\n\n- **Sessions/Advanced prerequisites and Support setup:** raw lines 21\u201337.\n- **No extra method fields and endpoint context:** raw lines 39\u201344.\n- **v5+ InstantPaymentComponent and delegate split:** raw lines 46\u201383.\n- **v4.x.x specialized component:** raw lines 85\u2013101.\n- **Test status and live addition:** raw lines 103\u2013107.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n- [[source-adyen-docs-payment-methods-touchngo]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15|Touch'n Go iOS Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built a Sessions flow",
+      "location": "raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md:29"
+    },
+    {
+      "text": "You do not need to send additional fields for Touch'n Go.",
+      "location": "raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md:41"
+    },
+    {
+      "text": "If your integration uses iOS Components v5.0.0 or later, configure and create an instance of the Touch'n Go Component:",
+      "location": "raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md:50"
+    },
+    {
+      "text": "guard let paymentMethod = paymentMethods.paymentMethod(ofType: TouchnGoPaymentMethod.self) else { return }",
+      "location": "raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md:93"
+    },
+    {
+      "text": "To accept live Touch'n Go payments, you must contact our [Support Team]",
+      "location": "raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md:107"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-touchngo-ios-component-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-touchngo-ios-component]] \u2014 2026-09-15 Touch'n Go iOS Components Sessions/Advanced add-on with Support setup, no extra method fields, v5+ InstantPaymentComponent versus v4.x.x TouchnGoComponent examples and live Support gate; setup is not payment-result proof.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v5+ Sessions example delegates to session, while Advanced delegates to self; the v4.x.x example uses a different specialized component.",
+          "The page does not supply an app-return, details, webhook or final-outcome procedure; component initiation is not payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/touchngo/ios-component/2026-09-15.md",
+  "raw_sha256": "b712e85e497d4dfac74f8b991523d716195f44842123b0897da342a7581f6a31",
+  "status": "candidate_ready"
+}

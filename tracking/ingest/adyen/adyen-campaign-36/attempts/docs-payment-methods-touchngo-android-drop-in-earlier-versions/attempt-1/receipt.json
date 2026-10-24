@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-touchngo-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Touch'n Go Android Drop-in earlier-versions integration\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/touchngo/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, touchngo, android, drop-in, advanced-flow, malaysia]\n---\n\n## Overview\n\nThis [[adyen]] earlier-versions Android Drop-in guide describes adding Touch'n Go to an existing integration, passing a payment method through a merchant server, handing a redirect action back to Drop-in, and checking returned details. See [[adyen-online-payments]]. The captured heading is malformed (`Touch v4.x.x integration'n Go Drop-in integration`); its v4.x wording identifies historical scope, not a verified current SDK minimum. This snapshot does not prove merchant enablement or a real payment outcome.\n\n## Key takeaways\n\n- The **Requirements** table specifies an existing **Advanced-flow Android Drop-in** integration and contacting Adyen Support to add Touch'n Go in the **test Customer Area**. The introductory Android Drop-in link and closing See also link instead point to Sessions-flow guides; preserve this source inconsistency rather than treating the links as a Sessions prerequisite or supported Sessions procedure here. The page says Drop-in redirects the shopper to the Touch'n Go app. See raw lines 15\u201326 and 409\u2013413.\n- To show the method, the `/paymentMethods` request supplies `countryCode: MY`, `amount.currency: MYR` and payment `amount.value`; Drop-in uses country/currency to display available methods. These values are method-display inputs, not a guarantee that an account is enabled or that a payment will succeed. See raw lines 28\u201336.\n- On shopper pay, the client passes `paymentComponentData.paymentMethod` to the merchant server, which sends `/payments` with that method and a return URL (maximum **1024 characters**) obtained from `RedirectComponent.getReturnUrl(context)`. The prose spells the field `returnURL`, while examples use `returnUrl`; use the example spelling only as an example, and resolve exact API casing against the linked API reference before implementation. The TEST curl example uses Checkout API v68, `touchngo` and an illustrative app-scheme return URL. See raw lines 38\u201367.\n- The merchant server checks the `/payments` response `action` and passes it to the client for redirection. After shopper return, Drop-in provides `actionComponentData`; the server posts its `details` to `/payments/details`, then uses the returned `resultCode` for shopper display and `pspReference` as transaction identifier. The shown `RedirectShopper` and `Authorised` JSON are examples, not proof of an actual authorization, capture or settlement; the `/payments/details` curl example uses v72, separate from the v68 `/payments` example. See raw lines 350\u2013401.\n- The page directs test-status checks to Customer Area and requires contacting Support to add Touch'n Go in the **live Customer Area** before accepting live payments. TEST setup/status checks and a live-add request are not payment execution evidence. See raw lines 403\u2013407.\n\n## Detail locators\n\n- **Earlier-version heading, app redirect, Advanced versus Sessions-link inconsistency:** raw lines 15\u201326 and 409\u2013413.\n- **Method display request:** raw lines 28\u201336.\n- **Client/server request and return URL:** raw lines 38\u201367.\n- **Illustrative library TEST snippets:** raw lines 69\u2013348.\n- **Redirect action, returned details, response examples:** raw lines 350\u2013401.\n- **TEST/live gates:** raw lines 403\u2013407.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-touchngo]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15|Touch'n Go Android Drop-in earlier versions \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md:25"
+    },
+    {
+      "text": "* [countryCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods): **MY**",
+      "location": "raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md:34"
+    },
+    {
+      "text": "This URL can have a maximum of 1024 characters.",
+      "location": "raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md:47"
+    },
+    {
+      "text": "When the shopper returns back to your app, Drop-in provides the `actionComponentData` object.",
+      "location": "raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md:370"
+    },
+    {
+      "text": "To accept live Touch'n Go payments, you must contact our [Support Team]",
+      "location": "raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md:407"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-touchngo-android-drop-in-earlier-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-touchngo-android-drop-in-earlier-versions]] \u2014 2026-09-15-captured earlier-version Android Drop-in Advanced-flow Touch'n Go guide for MY/MYR display, server payment/redirect/details handoff and test/live Support gates; Sessions links and return-URL casing differ from requirement prose/examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requirements specify Advanced flow, while introductory and See also Android links point to Sessions-flow guides; do not infer a Sessions procedure from this page.",
+          "The prose uses returnURL but snippets use returnUrl; exact request-field casing should be checked in the linked API reference.",
+          "RedirectShopper and Authorised response bodies are illustrative, not evidence of an executed payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/touchngo/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "d9d1e274be65054ad902753b598eb5a6a8643daee694d838bc65cf6752daf8a8",
+  "status": "candidate_ready"
+}

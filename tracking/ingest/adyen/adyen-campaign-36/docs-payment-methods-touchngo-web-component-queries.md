@@ -1,0 +1,7 @@
+# Retrieval checks — docs-payment-methods-touchngo-web-component
+
+Q1. What is this Touch 'n Go Web Component page's purpose and scope, and what cannot be inferred?
+Answer: It is an add-on to an existing Web Components integration, with Sessions and Advanced prerequisite tabs (raw lines 17–37), endpoint pointers and versioned Component snippets (raw lines 39–76). It does not document a completed redirect, webhook-final status or current merchant eligibility; the Webhooks item is only a link (raw lines 78–88). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-touchngo-web-component]] → [[raw/adyen/docs/payment-methods/touchngo/web-component/2026-09-15]].
+
+Q2. Which prerequisites and version/example qualifications matter?
+Answer: Both server-flow tabs require Support contact to add Touch 'n Go in Customer Area, and live acceptance requires Support addition in live Customer Area (raw lines 25–37, 78–82). The page says no extra Touch 'n Go fields, calls /sessions default for Components v5+, and gives v6 Redirect versus v5 create snippets (raw lines 39–44, 58–76). The v6 example lacks an import and is followed by stray markup (raw lines 64–70); it is not proof of running code. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-touchngo-web-component]] → [[raw/adyen/docs/payment-methods/touchngo/web-component/2026-09-15]].

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-grabpay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GrabPay iOS Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/grabpay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/grabpay/ios-component/2026-09-15.md\"\ntags: [adyen, grabpay, ios, components, wallet, paylater, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide, captured 2026-09-15, adds GrabPay to an **existing iOS Components** integration using Sessions or Advanced server flow. It distinguishes GrabPay **Wallet** from **PayLater** request requirements and gives versioned native Component examples. It does not establish current merchant/region/currency eligibility, a completed shopper redirect or return, authorization, capture, settlement or refund. See [[adyen-online-payments]] and raw lines 15\u201348.\n\n## Key takeaways\n\n- Either an existing **Sessions** or **Advanced** iOS Components integration and adding GrabPay in Customer Area are stated prerequisites. For **PayLater**, including postpaid or installment payments, the merchant must collect and send delivery address and purchased-item information: `deliveryAddress` and `lineItems` are marked required in both `/sessions` and `/payments` tables. Sending those fields for **Wallet** is described as a strong recommendation for future PayLater development, not a Wallet requirement. See raw lines 21\u201357 and 510\u2013517.\n- The `/sessions` examples use a custom-scheme `returnUrl` (`my-app://adyen`) and TEST `/v69/sessions`; the `/payments` examples use TEST `/v72/payments` and `paymentMethod.type: grabpay_SG`. Those endpoint versions and the `grabpay_SG` sample are examples, not stated minimum Checkout API versions or a complete region/method matrix. Many sample country and currency values are empty placeholders, and the illustrated order amount is 1000 while its lone line item has `amountIncludingTax: 400`; do not copy these as a complete, balanced live request. See raw lines 59\u201393 and 519\u2013555.\n- The page labels `/sessions` \"default with Web Components v5.0.0 or later\" and `/payments` for an additional use case or Web Components before v5.0.0, even though this guide is for **iOS** Components. Keep that Web-version wording as a source inconsistency; the separate native Component section gives the relevant **iOS** version split. The Java `/payments` example constructs a delivery address but never calls a setter for it on the payment request, despite the PayLater table marking it required. The Node `/sessions` samples refer to `Config` and `EnvironmentEnum` without declaring/importing them in the shown snippet. Review examples against the actual API-library version and base iOS guide. See raw lines 50\u201352, 266\u2013310, 510\u2013517, 557\u2013604 and 457\u2013507.\n- With **iOS Components v5.0.0 or later**, the guide checks for `.other(\"grabpay_SG\")`, creates `InstantPaymentComponent`, and assigns the **session** as delegate in Sessions or **self** in Advanced before `initiatePayment()`. Its earlier **v4.x.x** example instead uses `GrabPayPaymentMethod` and `GrabPayComponent`. It states no GrabPay-specific Component configuration beyond the illustrated setup. The presence of a method in a response and invoking the Component are not payment-outcome proof. See raw lines 811\u2013866.\n- For testing, the guide directs merchants to Adyen Support for test-wallet credentials, then logging into Grab in a simulator with a registered phone number and its one-time password. It directs test-payment status checks in the test Customer Area and a separate live Customer Area request before accepting live GrabPay. These are setup/test instructions, not evidence that any account is eligible or a payment completed. No recurring/token flow, capture or refund procedure is specified on this page; its See also links merely route to separate authorities. See raw lines 868\u2013884.\n\n## Detail locators\n\n- Sessions/Advanced prerequisites and PayLater versus Wallet field scope: raw lines 21\u201357, 510\u2013517.\n- `/sessions` TEST cURL and language samples, return URL and blank country/currency placeholders: raw lines 59\u2013508. Node snippet missing displayed `Config`/`EnvironmentEnum` definitions: lines 266\u2013278 and 457\u2013469.\n- `/payments` TEST examples, `grabpay_SG`, blank currency and Java delivery-address omission: raw lines 519\u2013809, especially 575\u2013603.\n- Native v5.0.0+ Sessions/Advanced delegates, v4.x.x Component, and no extra configuration: raw lines 811\u2013866.\n- Support-provided test credentials, simulator OTP, test status and live request: raw lines 868\u2013877.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/grabpay/ios-component/2026-09-15|GrabPay iOS Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To make a GrabPay [PayLater]",
+      "location": "raw line 39, Requirements"
+    },
+    {
+      "text": "Collecting and sending additional information is only needed for GrabPay **PayLater** payments.",
+      "location": "raw line 46, API reference"
+    },
+    {
+      "text": "This is the default with Web Components v5.0.0 or later.",
+      "location": "raw line 52, API reference > /sessions"
+    },
+    {
+      "text": "If your integration uses iOS Components v5.0.0 or later, configure and create an instance of the GrabPay Component:",
+      "location": "raw line 815, Component configuration > v5.0.0 or later"
+    },
+    {
+      "text": "Before you can accept live GrabPay payments, you need to [submit a request for GrabPay]",
+      "location": "raw line 877, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "grabpay-ios-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-grabpay-ios-component]] \u2014 2026-09-15 GrabPay iOS Components Sessions/Advanced guide with required PayLater address/items, v5/v4 native Component routes and qualified Web-version/example inconsistencies.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/grabpay/ios-component/2026-09-15.md",
+  "raw_sha256": "29fd9c9c463237fae5fcff688baa5e64e8262b24106d62c2a7adec1daf61fbff",
+  "status": "candidate_ready"
+}

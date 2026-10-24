@@ -1,0 +1,9 @@
+# Touch'n Go Android Component retrieval questions
+
+## Q1 — What is this page's purpose and scope, and what cannot be inferred?
+
+It is a Touch'n Go add-on to **existing Android Components** Sessions or Advanced flows, scoped to **v5.0.0** and routing earlier versions to a different guide (raw lines 19–39; [[source-adyen-docs-payment-methods-touchngo-android-component]]). The body has truncated/doubled-apostrophe method text (lines 17–21), but canonical URL and requirements identify Touch'n Go. It does not establish current merchant eligibility, a Checkout API minimum, complete app-return/webhook handling or actual payment success. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-touchngo-android-component]] → [[raw/adyen/docs/payment-methods/touchngo/android-component/2026-09-15]].
+
+## Q2 — What are the request, configuration and environment conditions?
+
+Each flow requires the matching existing Android Components integration at **minimum 5.0.0** and adding Touch'n Go in Customer Area (raw lines 23–39). The guide says no additional Touch'n Go fields for `/sessions` or `/payments` and no additional method-specific Component configuration (lines 41–59); the base flow remains necessary. Sessions links to creating a checkout session, while Advanced links to launching/showing the Component (lines 61–67). Test status is checked in test Customer Area, and live acceptance requires contacting Support for live Customer Area addition (lines 69–73). These steps do not demonstrate authorization, capture or settlement ([[source-adyen-docs-payment-methods-touchngo-android-component]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-touchngo-android-component]] → [[raw/adyen/docs/payment-methods/touchngo/android-component/2026-09-15]].

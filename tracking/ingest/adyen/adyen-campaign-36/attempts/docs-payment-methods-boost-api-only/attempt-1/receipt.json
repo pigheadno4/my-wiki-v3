@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-boost-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Boost Wallet for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boost/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/boost/api-only/2026-09-15.md\"\ntags: [adyen, boost, wallet, malaysia, api-only, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 capture describes Boost Wallet as an add-on to an existing Adyen Advanced Web API-only integration. The page covers MY/MYR payment-method discovery and redirect handling, rather than a complete standalone checkout or evidence of a successful payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and roles:** the merchant must already have the linked API-only Web integration, handle a redirect action, and add Boost Wallet in Customer Area. The merchant builds the payment form; the guide says no extra form fields. These are documented setup steps, not proof of merchant eligibility or an enabled account. (raw lines 17\u201340)\n- **Method discovery:** the guide says to send `countryCode: MY` and `amount.currency: MYR` to `/paymentMethods`; its example response identifies Boost as `molpay_boost`. The `/v72` endpoint and MYR 1000 amount are example values, not a universal minimum or proof of current availability. (raw lines 42\u201349, 52\u2013338)\n- **Payment request and redirect:** the illustrated `/v72/payments` request carries amount, reference, return URL and merchant account. The illustrated response has `resultCode: RedirectShopper` and a GET redirect action for `molpay_boost`. This is an example of an intermediate redirect response, not observed authorization, capture or settlement. The example request omits a `paymentMethod` field; do not treat it as independently verified executable payload. (raw lines 340\u2013634)\n- **Source inconsistencies:** the \u201cHow it works\u201d sequence tells the merchant to include additional item information in the payment request, yet the linked additional-parameters section says none are needed and its payment examples show no item information. The guide also uses checkout TEST URLs in examples while stating there is no Boost Wallet test environment and describing penny tests in LIVE. These statements remain unresolved in this snapshot; the examples cannot establish a usable Boost TEST path. (raw lines 31\u201336, 340\u2013618, 624\u2013638)\n- **Limits:** the page does not establish a current live setup, final asynchronous outcome, tokenization, recurring payments, capture or refund behavior. It documents a historical integration route only. (raw lines 17\u201321, 620\u2013642)\n\n## Detail locators\n\n- Existing API-only Web integration, redirect support and Customer Area setup: raw lines 23\u201329.\n- Merchant-built form, item-information statement and no extra form fields: raw lines 31\u201340.\n- MY/MYR discovery and `molpay_boost` example: raw lines 42\u201349, 327\u2013338.\n- Additional-parameter contradiction and payment request examples: raw lines 340\u2013618.\n- Redirect response example and TEST/LIVE contradiction: raw lines 620\u2013638.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boost/api-only/2026-09-15|Adyen Boost Wallet API-only guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **redirect**.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "include additional information about the items that the shopper intends to purchase",
+      "location": "raw line 35"
+    },
+    {
+      "text": "| **MYR** |",
+      "location": "raw line 49"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you",
+      "location": "raw line 342"
+    },
+    {
+      "text": "There is no test environment available for Boost Wallet. You have to perform penny tests in the live environment.",
+      "location": "raw line 638"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c36-boost-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boost-api-only]] \u2014 2026-09-15 Boost Wallet MY/MYR Advanced Web API-only add-on for method discovery and redirect; payment-request item-data and TEST/LIVE examples conflict with prose, with no observed final outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw lines 35 and 342 conflict on additional item/payment parameters; examples omit item data and paymentMethod.",
+          "Raw line 638 says no Boost test environment although lines 52\u2013618 and 624\u2013634 show TEST URLs; do not infer a working Boost TEST path."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boost/api-only/2026-09-15.md",
+  "raw_sha256": "886dd34bcf7f02829adf57ac236d8f9ef606df287f10e497eff68f4c16f543c2",
+  "status": "candidate_ready"
+}

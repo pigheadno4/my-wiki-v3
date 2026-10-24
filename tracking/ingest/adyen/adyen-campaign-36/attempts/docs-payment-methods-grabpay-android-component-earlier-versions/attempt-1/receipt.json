@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-grabpay-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GrabPay Android Component v4.x.x integration\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/grabpay/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, grabpay, android, components, wallet, paylater]\n---\n\n## Overview\n\nAdyen's GrabPay **Android Component v4.x.x** earlier-version guide (last-modified 2019-09-06; captured 2026-09-15) covers an existing **Advanced-flow Android Components** integration. The Component renders GrabPay and sends the shopper to GrabPay's webpage. This historical versioned page is not evidence of current SDK behavior, country availability, merchant eligibility, or executed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Discovery and scope:** Add GrabPay in Customer Area. For `/paymentMethods`, the page maps Malaysia to MY/MYR, Singapore to SG/SGD, and Philippines to PH/PHP, and says to select a `grabpay_XX` country-suffixed method object. The Philippines footnote excludes **GrabPay PayLater**, not GrabPay Wallet. The examples mainly use `grabpay_SG`; they do not prove merchant enablement or other market behavior. [Raw lines 26\u201347]\n- **Wallet versus PayLater:** Wallet passes `paymentComponentState.data.paymentMethod` from Android client to server and sends it with `returnUrl`, reference and amount in server `/payments`. The return URL is obtained using `RedirectComponent.getReturnUrl(context)`. PayLater (postpaid or installment) additionally needs shopper `deliveryAddress` and `lineItems`, collected client-side and sent to the server for GrabPay risk checks. The guide recommends collecting these early for Wallet only to ease a possible future PayLater integration; it does **not** require them for Wallet. [Raw lines 49\u201375, 396\u2013410]\n- **Redirect and outcome:** A `/payments` example returns `RedirectShopper` and an `action.type: redirect`; pass the action to the client Redirect Component. After the shopper returns to the app, the server posts the Component's `actionComponentData.details` to `/payments/details`. Its `resultCode` and `pspReference` support shopper-facing status. `Pending` or `Received` still lack a final result; use the later `AUTHORISATION` webhook. If the shopper never returns, wait for webhooks; `OFFER_CLOSED` indicates timeout/incompletion. A redirect or example `Authorised` response is not proof of a real transaction or settlement. [Raw lines 378\u2013394, 882\u2013969]\n- **TEST/live:** The page directs merchants to Support for test-wallet credentials, then a simulator login with a registered phone and one-time password; live acceptance needs a GrabPay request in live Customer Area. Example API calls use TEST and versioned library snippets; several say a live endpoint URL prefix is additionally needed for live. No actual credential or payment operation is evidenced here. [Raw lines 77\u2013376, 971\u2013980]\n\n## Detail locators\n\n- PayLater variants in `additionalData.paymentMethodVariant` are listed only after `/payments/details`: Wallet and PayLater values for SG/MY, Wallet values for PH. See raw lines 933\u2013947. Treat them as response possibilities, not all enabled variants for a merchant.\n- The redirect section's link to a **Sessions-flow** Android Components guide appears inside this Advanced-flow v4.x.x page; the page's own stated prerequisite remains Advanced. See raw lines 26\u201331, 900\u2013904. The `/payments` examples use v68 while the `/payments/details` curl uses v72; these are example endpoint versions, not an express minimum Checkout API requirement. [Raw lines 80, 414, 909]\n- `/payments/details` result table distinguishes Authorised, Cancelled, Refused, and non-final Pending/Received, with `AUTHORISATION` and `OFFER_CLOSED` webhook paths: raw lines 950\u2013969. It does not establish capture, settlement, refund, or recurring support for this route.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15|GrabPay Android Component v4.x.x (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "Our GrabPay Component renders GrabPay in your payment form and redirects the shopper to GrabPay's webpage.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "GrabPay PayLater is not available in Philippines.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md:45"
+    },
+    {
+      "text": "Collecting additional information is only needed for GrabPay PayLater payments.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md:51"
+    },
+    {
+      "text": "After the shopper returns to your app, make a POST [/payments/details]",
+      "location": "raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md:903"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md:961"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "grabpay-android-component-earlier-versions-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-grabpay-android-component-earlier-versions]] \u2014 2019-modified, 2026-09-15-captured GrabPay Android Components v4.x.x Advanced guide for MY/SG/PH Wallet and qualified PayLater, redirect/details and asynchronous webhook outcomes; Sessions-link/API-example differences remain source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/grabpay/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "4f85d9b7a36a34074f718be9764c0d09514914c6c56ad5befa8500b37f8a28ec",
+  "status": "candidate_ready"
+}

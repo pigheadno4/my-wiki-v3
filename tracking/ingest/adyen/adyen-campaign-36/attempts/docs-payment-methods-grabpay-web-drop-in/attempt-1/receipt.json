@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-grabpay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GrabPay Web Drop-in integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/grabpay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md\"\ntags: [adyen, grabpay, web, drop-in, paylater, wallet]\n---\n\n## Overview\n\nThis [[adyen]] guide adds GrabPay to an existing **Web Drop-in** integration. It separates Sessions and Advanced base-flow prerequisites, then gives GrabPay **PayLater** request fields for `/sessions` and `/payments`. It also distinguishes those fields from GrabPay **Wallet**, for which the same information is recommended but not stated as required. See [[adyen-online-payments]] and the pinned raw. The guide does not provide a final payment-outcome procedure.\n\n## Key takeaways\n\n- **Base prerequisites:** Sessions requires an existing Sessions Web Drop-in integration; Advanced requires an existing Advanced Web Drop-in integration. Both require adding GrabPay in Customer Area before proceeding. These are integration/setup conditions, not proof of present merchant enablement. See raw lines 21\u201337.\n- **PayLater versus Wallet:** PayLater, whether postpaid or installment, needs the delivery address and purchased-item information. The page marks `deliveryAddress` and `lineItems` required for PayLater in both endpoint tables. It highly recommends sending those fields for an initial GrabPay Wallet integration to ease a possible later PayLater enablement, but calls them needed **only for PayLater**. Do not convert the Wallet recommendation into a requirement. See raw lines 39\u201357 and 510\u2013517.\n- **Endpoint/version split:** `/sessions` is described as the default with Web Drop-in v5.0.0 or later. The `/payments` tab is for an additional use case or an integration made before Web Drop-in v5.0.0. Both tables identify the PayLater address/item fields; the SG/SGD `grabpay_SG` requests are examples, not proof of every supported country or currency. See raw lines 48\u201357, 61\u201393 and 510\u2013555.\n- **Drop-in and live scope:** The guide says there are no GrabPay-specific Drop-in configuration steps. For testing, it directs merchants to Support for test wallet credentials and describes a simulator login using a registered phone number and one-time password. Before live acceptance it says to submit a GrabPay request in the live Customer Area. No example request, simulator step or return URL proves authorization, capture or settlement. See raw lines 811\u2013824.\n\n> [!warning] Example amount mismatch\n> The PayLater `/sessions` curl example has an order amount of **1000 SGD minor units** while its sole line item has quantity `1` and `amountIncludingTax: 400`. The `/payments` curl example repeats this 1000-versus-400 pattern. The page does not explain the difference, so do not treat these sample totals as a validated itemization rule. See raw lines 65\u201391 and 525\u2013554.\n\n## Detail locators\n\n- `/sessions` PayLater fields and curl, Java, PHP, C#, Node.js, Go, Python, Ruby and TypeScript examples: raw lines 50\u2013508. The examples name library versions and TEST environments independently; they do not define a universal SDK minimum.\n- `/payments` PayLater fields and curl, Java, PHP, C#, Node.js, Python and Ruby examples: raw lines 510\u2013809. The `grabpay_SG` type appears in these examples, not in a method-wide country matrix on this page.\n- No token/recurring, capture, refund, cancellation, callback or webhook outcome procedure is specified here; the See also links at raw lines 826\u2013831 are navigation to separate authority.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online payment architecture and method routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15|GrabPay Web Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add GrabPay to your existing Web Drop-in integration.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Collecting and sending additional information is only needed for GrabPay **PayLater** payments. However, we highly recommend you do the same in your initial integration for GrabPay **Wallet** because it will help save development resources if you plan to enable GrabPay PayLater afterwards.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md:46"
+    },
+    {
+      "text": "This is the default with Web Drop-in v5.0.0 or later.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md:52"
+    },
+    {
+      "text": "If you implemented an additional use case, or integrated with Web Drop-in before v5.0.0.",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md:512"
+    },
+    {
+      "text": "Before you can accept live GrabPay payments, you need to [submit a request for GrabPay](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md:824"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "grabpay-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-grabpay-web-drop-in]] \u2014 2026-09-15 GrabPay Web Drop-in Sessions/Advanced guide distinguishing required PayLater address/items from recommended Wallet data, with v5+ `/sessions` versus conditional `/payments` routes and a live-request gate; examples have an unexplained amount/item mismatch.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "PayLater example order amount 1000 differs from the only quantity-1 line item's amountIncludingTax 400; do not use examples as a validated amount rule."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/grabpay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "8f3717416efc2c0223d7b523a856cba9743f96a3f964c7fe9e34f6d31605773c",
+  "status": "candidate_ready"
+}
