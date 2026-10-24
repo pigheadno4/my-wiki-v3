@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-upi-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI React Native Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md\"\ntags: [adyen, upi, react-native, components, india]\n---\n\n## Overview\n\nThis [[adyen]] page at the **React Native Component** URL is titled \u201cUPI React Component\u201d in its raw heading. It gives UPI-specific additions to an existing React Native **Components** integration and explicitly says **Sessions flow is unsupported**; the documented route is Advanced only. See [[adyen-online-payments]]. It covers UPI Intent request fields and testing, not a native QR/Collect implementation, a React Native SDK minimum or a live payment outcome. See raw lines 15\u201331 and 49\u2013101.\n\n## Advanced requirements and request\n\n- Requires an existing Advanced React Native Components integration, UPI added in Customer Area, and handling of additional `action.type: await`. It says no UPI-specific configuration parameters are needed. The Integration type link is inconsistent with its label: `platform=React+Native&integration=Drop-in` despite saying **Components**. The action-handling link is Components-scoped but its anchor is `handle-the-redirect` although the explicit action type is **await**. Select the intended Advanced Components main flow from its own evidence. See raw lines 31\u201347.\n- For **UPI Intent** (`paymentMethod.type: upi_intent`), `paymentMethod.appId` is required and denotes the shopper's third-party application provider. The table lists provider IDs including `gpay`, `phonepe`, `bhim`, `paytm`, `amazonpay`, `cred`, `wapay` (WhatsApp Pay), `jupiter`, `navi`, `supermoney`, `mobikwik` and `freecharge`. A listed provider ID is not evidence of app installation or merchant eligibility. See raw lines 49\u201357.\n- The example calls **TEST** `/v72/payments` with `INR`, country `IN`, `upi_intent`, `appId: gpay`, merchant account and return URL. This is an illustrative request, not an explicit minimum Checkout version for this page or proof of app return, authorization or settlement. The page has no separate React Native SDK-version requirement. See raw lines 59\u201379.\n\n## Testing and outcome boundary\n\n- The TEST checklist sends **UPI Intent** to Adyen's Payment Simulator; its QR sentence is explicitly **\u201con web\u201d**, so it does not describe a React Native QR Component flow. The tester chooses an outcome, checks integration handling, then checks webhook and Customer Area record, with modification testing recommended. Its webhook `eventCode` spelling is literally **`AUTHORISED`** in this checklist (raw line 98). The separately retained UPI API-only outcome tables instead say **`AUTHORISATION`** (raw API-only lines 112\u2013117, 216\u2013221, 382\u2013387), while that guide's own TEST checklists repeat `AUTHORISED`. These snapshots conflict; neither checklist establishes the webhook implementation contract. Verify the authoritative webhook schema or live evidence before relying on an event name. See raw lines 81\u2013101.\n- Redirecting to a simulator, choosing an outcome or presenting a return URL is not proof of a successful live payment. This guide gives no Collect migration/deprecation date or actual native app-return callback procedure. See raw lines 59\u2013101.\n\n## Detail locators\n\n- **React Native URL versus raw \u201cReact Component\u201d title and unsupported Sessions:** raw lines 5\u201329.\n- **Advanced prerequisites, action and anomalous main-guide link:** raw lines 31\u201347.\n- **Intent `appId` TPAP list:** raw lines 49\u201357.\n- **Illustrative TEST `v72` request and return URL:** raw lines 59\u201379.\n- **Simulator, web-only QR mention and checklist event spelling:** raw lines 81\u2013101.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-react-native-sdk]]\n- [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/upi/2026-09-15|UPI overview]] \u2014 broader Intent/QR/Collect and dated transition context; separate from this Component page.\n- [[raw/adyen/docs/payment-methods/upi/api-only/2026-09-15|UPI API-only]] \u2014 separate flow/outcome tables and conflicting event-name spellings.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15|UPI React Native Component URL \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md:29"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md:40"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for UPI.",
+      "location": "raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md:47"
+    },
+    {
+      "text": "Required when the payment option is UPI Intent (`paymentMethod.type`: **upi\\_intent**).",
+      "location": "raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md:57"
+    },
+    {
+      "text": "* Your webhook server: Your server must accept the corresponding webhook message with `eventCode`: **AUTHORISED**.",
+      "location": "raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md:98"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-react-native-component-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-react-native-component]] \u2014 2026-09-15 UPI React Native Components: Sessions unsupported; Advanced `await`, conditional Intent `appId` and TEST v72 example; QR is web-only in simulator checklist and AUTHORISED spelling conflicts with API-only AUTHORISATION outcome tables.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw title says UPI React Component while URL and body scope are React Native Components; Advanced integration-type link points to Drop-in despite Components prose, and action link's redirect anchor accompanies an await action.",
+          "The QR simulator sentence is labeled on web; this page has no React Native QR/Collect flow, Collect cutoff date or SDK minimum.",
+          "Its TEST checklist says eventCode AUTHORISED, whereas retained API-only outcome tables say AUTHORISATION; neither spelling is a verified webhook contract without authoritative schema or live evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15.md",
+  "raw_sha256": "d0dd19f3616ba9f601ca06ab758fbd3b085a644829d585233bf54436ada57d77",
+  "status": "candidate_ready"
+}

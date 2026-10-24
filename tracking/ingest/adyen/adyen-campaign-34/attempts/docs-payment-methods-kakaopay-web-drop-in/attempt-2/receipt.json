@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-web-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen KakaoPay Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md\"\ntags: [adyen, kakaopay, web-drop-in, wallets, recurring-payments]\n---\n\n## Overview\n\nThis [[adyen]] guide specifies KakaoPay-specific additions to an **existing Web Drop-in** integration, split between Sessions and Advanced flows. It is not a standalone Web integration recipe; the linked main integration guides supply base setup and redirect handling. See [[adyen-online-payments]] and [[adyen-tokenization]]. The September 2026 page and examples do not prove current enablement, live payment acceptance or actual token/payment settlement. See raw lines 15\u201348 and 308\u2013336.\n\n## Requirements and one-time flow\n\n- **Sessions:** Existing Sessions Web Drop-in; Checkout API **v68 or later**; redirect handling for `action.type: redirect`; and KakaoPay added in Customer Area. The page says no KakaoPay-specific parameters are needed when creating a **base payment session**. Optionally import `Redirect` with Adyen Web for tree shaking. See raw lines 25\u201353.\n- **Advanced:** Existing Advanced Web Drop-in, redirect handling and KakaoPay added in Customer Area. It says no extra KakaoPay-specific parameters are needed for the **base `/payments` request**, and likewise shows optional `Redirect` import. The integration-type URL at raw line 316 contains an unresolved encoded platform template; use the stated Web Drop-in context and the Web-scoped Advanced redirect/import step links at raw lines 317 and 324 instead of treating that prerequisite URL as a reliable route. This section does **not** restate the Sessions section's v68 minimum, so do not silently generalize that table row to Advanced. See raw lines 308\u2013336.\n- The \u201cno additional parameters\u201d statements apply to the one-time base request only. The same guide subsequently requires extra `/payments` fields for token creation and token-funded recurring charges in **both** flow sections. The Sessions section moves to `/payments` for tokenization even though the base Sessions section discusses `/sessions`; keep those request contexts distinct. See raw lines 40\u201342, 65\u201395, 334\u2013377.\n\n## Recurring and outcome boundary\n\n- For token creation, the guide says include `storePaymentMethod: true` and merchant-unique `shopperReference` in `/payments`. This triggers a Kakao account login and confirmation of the recurring transaction by the shopper. The merchant server must receive recurring token lifecycle events; **after the payment has settled**, `recurring.token.created` carries `shopperReference`, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId`. Consent/login, a submitted request or an initial response is not itself evidence that settlement or token creation occurred. See raw lines 58\u201381 and 340\u2013363.\n- For a subsequent payment, use `paymentMethod.storedPaymentMethodId` from that webhook (or the stated `/listRecurringDetails` alternative), the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The example request chooses `Subscription` and `KRW`; it is an illustration, not proof every amount, currency or model is enabled or that a payment succeeded. See raw lines 83\u2013116 and 365\u2013399.\n- The samples show Checkout test `v68/payments`, API-key placeholders and language-library TEST configurations (with LIVE comments), plus examples of idempotency-key use in Node/Python/Ruby. These are example scopes, not a live transaction, a blanket environment switch or proof that all snippets use the same current client version. See raw lines 97\u2013294 and 379\u2013576.\n- The guide says successful **live** payment testing needs a real mobile number registered to a KakaoPay account; test payment status is checked in the test Customer Area; and accepting live payments first requires a KakaoPay request in the live Customer Area. Those are distinct test/live prerequisites and status checks, not evidence that a request was approved or a payment completed. See raw lines 296\u2013306 and 578\u2013588.\n\n## Detail locators\n\n- **Sessions prerequisites and no-extra-base-session parameters:** raw lines 25\u201353.\n- **Sessions token creation, settlement webhook and subsequent-token request:** raw lines 56\u201395.\n- **Advanced prerequisites and no-extra-base-payment parameters:** raw lines 308\u2013336.\n- **Advanced repeated token flow:** raw lines 338\u2013377.\n- **Representative request snippets and environments:** raw lines 97\u2013294 and 379\u2013576.\n- **Test/live qualifications:** raw lines 296\u2013306 and 578\u2013588.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/kakaopay/2026-09-15|KakaoPay overview]] \u2014 method scope and linked channels; distinct from this Web Drop-in procedure.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15|KakaoPay Web Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md:42"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md:74"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md:336"
+    },
+    {
+      "text": "Before you can accept live KakaoPay payments, you need to submit a request for KakaoPay in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md:588"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-web-drop-in-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-web-drop-in]] \u2014 2026-09-15 KakaoPay Web Drop-in: existing Sessions/Advanced redirect flow, no extra base request parameters, but recurring token requests need shopper identity and storage fields; token creation follows settled initial payment/webhook, with separate TEST/live prerequisites.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced integration-type prerequisite URL at raw line 316 contains an unresolved encoded platform template; use the stated Web Drop-in context and Web-scoped Advanced step links at raw lines 317/324 instead.",
+          "Sessions v68+ requirement is explicit in that section; Advanced does not restate it.",
+          "Base-request 'no extra parameters' statements do not apply to recurring token creation or subsequent token-funded payments.",
+          "Shopper login, tokenization request and redirect are not proof of token webhook, settled payment or live enablement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "9dcfd6f886707bdc07bac5da237b8835a1cb71f17c9b2d8c45bdc3dd5b7a9864",
+  "status": "candidate_ready"
+}

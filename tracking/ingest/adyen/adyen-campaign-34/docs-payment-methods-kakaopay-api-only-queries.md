@@ -1,0 +1,9 @@
+# Retrieval checks — KakaoPay API-only
+
+Q1. What are the first-payment prerequisites and how is a recurring token obtained and reused?
+
+A1. The page assumes an API-only Advanced Web integration with `action.type: redirect` handling and KakaoPay added in Customer Area (raw lines 23–29). `/paymentMethods` discovery specifies KR/KRW and illustrates `kakaopay` type (raw lines 44–83). The ordinary path says no additional KakaoPay-specific `/payments` fields (raw lines 85–87). The optional recurring path adds `storePaymentMethod: true` and shopper reference; shopper Kakao login/confirmation precedes a `recurring.token.created` webhook **after initial settlement**, carrying stored method ID and initial payment event ID (raw lines 89–112). Later charges use stored ID, same shopper reference, ContAuth and Subscription or UnscheduledCardOnFile (raw lines 114–126). Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-kakaopay-api-only]] → [[raw/adyen/docs/payment-methods/kakaopay/api-only/2026-09-15]].
+
+Q2. Which example, environment and outcome limits prevent overreading this guide?
+
+A2. The flow conditionally mentions item information but gives no item fields and later says no extra ordinary-payment parameters (raw lines 31–36, 85–87); token paths are expressly different. Discovery uses TEST v72, recurring curl TEST v68 and code examples differ in amount (raw lines 53–70, 128–180). The testing text mixes 'test' and 'live' while pointing to TEST Customer Area, and live acceptance separately needs a live Customer Area request (raw lines 327–335). A method listing, redirect, token request or sample does not prove settlement/token creation or a later payment result; no provider operation occurred. Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-kakaopay-api-only]] → [[raw/adyen/docs/payment-methods/kakaopay/api-only/2026-09-15]].

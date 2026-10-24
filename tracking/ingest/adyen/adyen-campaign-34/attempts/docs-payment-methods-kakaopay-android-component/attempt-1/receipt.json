@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen KakaoPay Android Component guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/android-component/2026-09-15.md\"\ntags: [adyen, kakaopay, android, component, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **KakaoPay** to an existing **Android Components** integration, with separate Sessions and Advanced server-side flows and an additional tokenized recurring-payment route. Both flows require redirect action handling; the page does not specify an app deep-link implementation or establish current account eligibility, successful shopper return, authorization, capture or settlement. [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Base Sessions flow:** Requires an existing Sessions Android Components integration, **Checkout API v68 or later**, `action.type: redirect` handling, and KakaoPay added in Customer Area. The guide says no additional KakaoPay-specific `/sessions` parameters or Component configuration are needed for this base route. The client imports `com.adyen.checkout:instant:YOUR_VERSION` (plus `components-compose` for Compose), obtains `kakaopay` from `checkoutSession`, and creates `InstantPaymentComponent`. A new Compose key is required for each different screen or payment session/reset in the example. See raw lines 23\u2013125.\n- **Base Advanced flow:** Requires an existing Advanced Android Components integration, additional redirect-action handling, and KakaoPay added in Customer Area. It likewise says no extra KakaoPay configuration or ordinary `/payments` parameters. Here the client selects `kakaopay` from the `/paymentMethods` response and creates `InstantPaymentComponent`. The Advanced prerequisites do not restate the Sessions table's v68+ version minimum. See raw lines 378\u2013478.\n- **Recurring is a separate qualified route:** To request token creation, the server adds `storePaymentMethod: true` and a unique `shopperReference` to **`/payments`**; the shopper logs in to Kakao and confirms the recurring transaction. **After the initial payment has settled**, the `recurring.token.created` webhook provides `storedPaymentMethodId` and related identifiers; the server must receive recurring-token lifecycle webhooks. For later token payments, the guide specifies that token ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. This does not say that a redirect, initial API response or Kakao confirmation alone creates a usable token. See raw lines 128\u2013167 and 480\u2013519.\n- **TEST/LIVE boundary:** The page says a real mobile number registered to a KakaoPay account is needed to test successful KakaoPay live payments, directs test-status checks to TEST Customer Area, and says to submit a KakaoPay request in LIVE Customer Area before accepting live payments. The wording mixes \u201ctest\u201d and \u201clive\u201d; it is no proof of a successful test or live merchant activation. KRW values and TEST clients in the recurring snippets are examples, not a standalone country/currency rule. See raw lines 169\u2013366, 368\u2013376, 521\u2013718 and 720\u2013728.\n\n> [!warning] Contradiction\n> The base-flow statements that no additional `/sessions` or `/payments` parameters are needed (raw lines 42 and 478) cannot be extended to **recurring**: both recurring sections require extra `/payments` fields for token creation and later token use (raw lines 139\u2013167 and 491\u2013519). Keep the ordinary and recurring scopes separate. The snippets also differ: the curl/Node/Python/Ruby token-payment examples omit `returnUrl`, while Java/PHP/C# include it, and Java uses `KRW` value 15000 where the other examples use 1000 (raw lines 171\u2013365 and 523\u2013717). Do not treat any one example as a complete, universally required request.\n\n## Detail locators\n\n- Sessions prerequisites, redirect, library and Component examples: raw lines 23\u2013125.\n- Sessions token creation, settlement-gated webhook and future token request fields: raw lines 128\u2013167.\n- Sessions recurring language-specific request examples and test/live notes: raw lines 169\u2013376.\n- Advanced prerequisites, Component and ordinary `/payments` statement: raw lines 378\u2013478.\n- Advanced repeated recurring route, examples and test/live notes: raw lines 480\u2013728.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/android-component/2026-09-15|Adyen KakaoPay Android Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements > Checkout API"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 35, Sessions flow Component > Requirements > Redirect handling"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 146, Sessions flow Component > Recurring payments > Create a token"
+    },
+    {
+      "text": "`recurringProcessingModel`: Use **Subscription** for a series of transactions following a fixed time interval or **UnscheduledCardOnFile** for contracts with non-fixed time interval.",
+      "location": "raw line 167, Sessions flow Component > Recurring payments > Make a payment with a token"
+    },
+    {
+      "text": "Before you can accept live KakaoPay payments, you need to submit a request for KakaoPay in your [live Customer Area]",
+      "location": "raw line 376, Sessions flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-android-component]] \u2014 2026-09-15 KakaoPay Android Component Sessions/Advanced redirect add-on with separate settlement-gated recurring token route; base no-extra-fields wording excludes recurring fields.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "Base no-extra-request-fields wording must not override recurring /payments fields (raw lines 42, 139\u2013167, 478, 491\u2013519)."
+        ]
+      },
+      {
+        "update_id": "c34-kakaopay-android-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-android-component]] \u2014 KakaoPay Android Component recurring route: shopper confirms, token ID arrives in recurring.token.created after initial settlement, then specified ContAuth token payments; request examples vary.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/android-component/2026-09-15.md",
+  "raw_sha256": "0b9108639019ef866ece4f56552bca9193a3ca0ba8edff325b0376c7d896d47c",
+  "status": "candidate_ready"
+}

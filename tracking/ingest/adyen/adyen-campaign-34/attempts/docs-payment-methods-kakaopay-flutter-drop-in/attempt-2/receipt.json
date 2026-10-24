@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-flutter-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"KakaoPay Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, kakaopay, flutter, drop-in, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds KakaoPay to an **existing Flutter Drop-in integration** for Sessions or Advanced server-side flow. Its base payment add-on and its optional recurring-token path have different request requirements. It delegates redirect handling to the main integration guides and gives no observed payment or token outcome. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions base flow:** requires an existing Flutter Drop-in Sessions integration, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and contacting **Adyen Support** to add KakaoPay in Customer Area. It says no additional KakaoPay-specific `/sessions` or Drop-in configuration parameters are needed for the base flow. The Sessions integration-type label links to an **advanced-flow** URL, while its redirect and session links point to Sessions. (raw lines 25\u201348)\n- **Advanced base flow:** requires an existing Advanced Flutter Drop-in integration, redirect handling for `action.type: redirect`, and adding KakaoPay in Customer Area. It says no additional KakaoPay-specific Drop-in configuration or `/payments` parameters for the base payment. The section does not state a Checkout API minimum; the v68 prerequisite is in Sessions. Its Customer Area setup phrasing differs from the Sessions Support-contact instruction. (raw lines 300\u2013322)\n- **Recurring is conditional and separate:** to create a shopper token, the guide says to include `storePaymentMethod: true` and `shopperReference` in a `/payments` request. That initiates the Kakao account login and shopper confirmation route; it does not mean every base Sessions/Advanced payment needs those fields. The page says a `recurring.token.created` webhook arrives **when the initial payment has settled**, with `shopperReference`, `eventId` equal to the initial `pspReference`, and `storedPaymentMethodId`. The merchant server needs to receive recurring token lifecycle events. Token creation should not be inferred from redirect or request submission alone. (raw lines 50\u201375, 324\u2013349)\n- For a later token payment, the stated `/payments` fields are `paymentMethod.storedPaymentMethodId` (from the webhook or `/listRecurringDetails`), matching `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. Examples show `paymentMethod.type: kakaopay`, KRW, TEST Checkout v68 curl and language-specific API-library code. These examples illustrate a request shape, not consent, token issuance, authorization, capture or settlement results. (raw lines 77\u201389, 91\u2013288, 351\u2013363, 365\u2013562)\n- Example details differ: curl and most language samples use KRW **1000**, while Java uses **15000**; Java/PHP/C# include `returnUrl` where curl/Node/Python/Ruby examples omit it. No universal amount or return-URL rule should be derived from those snippets. (raw lines 93\u2013143, 154\u2013170, 175\u2013197, 200\u2013288; repeated at 367\u2013561)\n- The test/live prose says a **real mobile number registered with a KakaoPay account** is needed to test successful **live** payments, points separately to test Customer Area for test-payment status, and requires a KakaoPay request in live Customer Area before live acceptance. This mixed test/live wording should be preserved rather than treated as proof that TEST and LIVE use the same credentials or that a live request was approved. (raw lines 290\u2013298, 564\u2013572)\n\n## Detail locators\n\n- Sessions prerequisites, redirect, Support setup and no-extra base fields/config: raw lines 25\u201348.\n- Sessions recurring creation, settlement-gated webhook and later token request: raw lines 50\u201389.\n- TEST recurring request/library examples and their amount/returnUrl differences: raw lines 91\u2013288.\n- Advanced base-flow requirements and recurring parallel: raw lines 300\u2013363.\n- Advanced example repetition and test/live instructions: raw lines 365\u2013572.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-kakaopay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/flutter-drop-in/2026-09-15|Adyen KakaoPay Flutter Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "| **Integration type**  | Make sure that you have an existing Sessions flow [Flutter Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in).                                             |   |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "| **Setup steps**       | Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add KakaoPay in your Customer Area.                                                                   |   |",
+      "location": "raw line 36"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 68"
+    },
+    {
+      "text": "* `storedPaymentMethodId`: the token that you need to make recurring payments for this shopper.",
+      "location": "raw line 73"
+    },
+    {
+      "text": "To test successful KakaoPay live payments, you need to use a real mobile number registered with a [KakaoPay account](https://www.kakaopay.com).",
+      "location": "raw line 566"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-flutter-dropin-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-flutter-drop-in]] \u2014 2026-09-15 KakaoPay Flutter Drop-in Sessions/Advanced add-on, with conditional settled-payment recurring token/webhook route, differing setup/example wording and separate TEST/LIVE gates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "2039200a3b01f8c1ad4fdfe326d5cc07003f776d918648f17fdffd99b7738b81",
+  "status": "candidate_ready"
+}

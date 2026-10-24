@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-upi-upi-autopay-web",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI Autopay Web signup integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/upi-autopay/web\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/upi-autopay/web/2026-09-15.md\"\ntags: [adyen, upi, autopay, india, web, mandate, recurring]\n---\n\n## Overview\n\nThis [[adyen]] page covers **Web SDK configuration for UPI Autopay signup**, where Indian shoppers review and authorize a recurring mandate in a UPI app through Collect, QR or Intent. It supports existing Web Drop-in or Components integrations with Sessions or Advanced flows. The page explicitly sends full backend requirements\u2014including pre-debit notices, later recurring payments and billing-plan cancellation\u2014to its API-only guide. Rendering mandate information, obtaining a shopper PIN, sending a request or receiving a client result does not alone prove mandate registration, first-payment success, token creation or later charge/refund completion. [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Prerequisite and version scope:** The requirements list existing Web Components or Drop-in under Sessions or Advanced, plus a backend implementing all UPI Autopay recurring flows. The page names **Adyen Web SDK v6.22.0** for mandate information displayed in checkout, phrased as integrating to the \u201clatest web version\u201d; this dated snapshot does not establish a current latest version. The Web page is scoped to signup UI, while the linked API-only guide owns full backend requirements. See raw lines 19\u201328.\n- **Shopper paths and display:** Collect apps show the **mandate amount**; QR/Intent apps show both mandate and first-transaction amounts. The described flow has the shopper review mandate details in the UPI app and authorize with a UPI PIN; the page describes mandate creation and the first payment as the intended result. From Web SDK v6.22.0, a checkout information box can show mandate details. Its text varies with transaction `amount`, known `mandate.amount` limit, `frequency` and `amountRule` (`exact` or `max`); examples cover monthly, weekly and ad hoc amounts. No client display alone proves provider acceptance or first-payment outcome. See raw lines 30\u201352 and 63\u2013100.\n- **Mandate-only/free-trial example:** The page describes a no-upfront-payment path in which a small minimum amount is authorized and automatically refunded, instructing a minimum **2 INR** in `additionalAmount` and information about authorization/refund shown **outside** the Component. This is page advice for that example, not evidence a particular authorization/refund has happened or a universal no-charge mandate. See raw lines 54\u201361.\n- **Sessions signup fields:** Prose instructs passing the complete `mandate` object, `recurringProcessingModel`, `shopperReference` and `storePaymentMethod` in `/sessions`, then passing the **same mandate object** to the UPI Component configuration and mounting it. The adjacent `createSession` snippet shows `mandate` but does not spell out the other three fields, despite a generic \u201cother session configuration\u201d comment; do not treat it as a complete request. See raw lines 103\u2013141.\n- **Advanced signup fields:** Prose instructs the `mandate` object in UPI Component configuration and the complete mandate plus `recurringProcessingModel`, `shopperReference` and `storePaymentMethod` in `/payments` initiated within `onSubmit`. The example passes `{ ...state.data, mandate }` to `makePayment` without explicitly showing those three other named fields, so its server request cannot be verified from the snippet alone. `actions.resolve({ resultCode, action })` is a client callback handoff, not final payment proof. See raw lines 143\u2013187.\n- **TEST and LIVE:** The page says to contact Adyen to set up a UPI Autopay test environment and lists **scenario-specific magic amounts** for signup, pre-debit notice, recurring charge, mandate revoke and refund outcomes; one amount can label different outcomes in different scenarios. It separately says to contact Adyen to begin **live onboarding** before accepting live UPI Autopay payments. Those fixtures and contacts do not show actual notifications, cancellation, refund or live enablement. See raw lines 189\u2013206.\n\n## Detail locators\n\n- Requirements, provider/app roles and Web-only scope: raw lines 19\u201328.\n- Collect versus QR/Intent shopper journey and mandate display: raw lines 30\u2013100.\n- Sessions and Advanced prose versus snippets: raw lines 103\u2013187.\n- Scenario-specific TEST fixtures and LIVE onboarding: raw lines 189\u2013206.\n\n## Related\n\n- [[adyen-tokenization]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-upi-upi-autopay]]\n- [[source-adyen-docs-payment-methods-upi-upi-autopay-api-only]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/upi-autopay/web/2026-09-15|Adyen UPI Autopay Web signup guide]]\n",
+  "quotes": [
+    {
+      "text": "Make sure you integrate to the latest web version to display the mandate information on UPI Autopay [v6.22.0]",
+      "location": "raw line 25, Requirements integration type"
+    },
+    {
+      "text": "This page only covers Web SDK configuration for the signup flow.",
+      "location": "raw line 28, scope boundary"
+    },
+    {
+      "text": "Pass a minimum value of 2 INR in the `additionalAmount` field in your payment request.",
+      "location": "raw line 60, mandate-only example"
+    },
+    {
+      "text": "* `recurringProcessingModel`",
+      "location": "raw line 112, Sessions signup fields; repeated line 152 under Advanced"
+    },
+    {
+      "text": "Before you can accept live UPI Autopay payments, reach out to your Adyen contact to begin the onboarding process.",
+      "location": "raw line 206, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-autopay-web-tokenization",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-upi-autopay-web]] \u2014 2026-09-15 UPI Autopay Web signup and mandate-display guide for Web SDK v6.22.0, Sessions/Advanced mandate fields, Collect/QR/Intent and test/live gates; full recurring backend remains in the API-only guide and examples omit prose-listed fields.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions and Advanced snippets at raw lines 124\u2013140 and 162\u2013186 do not explicitly show every prose-listed recurring field.",
+          "The v6.22.0 'latest' phrase is historical to the captured page, not a current-version assertion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/upi-autopay/web/2026-09-15.md",
+  "raw_sha256": "fa4a8b6888d1ba82421f03b8522d2ab9d04a410c397a0e0eb583768f6c3eaf96",
+  "status": "candidate_ready"
+}

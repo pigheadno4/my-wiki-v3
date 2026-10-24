@@ -1,0 +1,40 @@
+---
+title: "Adyen WeChat Pay desktop QR and mobile-browser H5 overview"
+type: source
+date_ingested: 2026-10-24
+original_format: webpage
+canonical_url: "https://docs.adyen.com/payment-methods/wechat-pay/wechat-pay-desktop-qr-payments"
+raw_files:
+  - "adyen/docs/payment-methods/wechat-pay/wechat-pay-desktop-qr-payments/2026-09-15.md"
+tags: [adyen, wechat-pay, desktop-qr, h5, web, online-payments]
+---
+
+## Overview
+
+This Adyen page, last modified 2019-07-04 and captured 2026-09-15, is an overview/chooser for **WeChat Pay on websites accessed through desktop or mobile browsers**. It distinguishes a **desktop-browser QR** path from a **mobile-browser H5 app-redirect** path, and links Drop-in, Components and API-only child guides. It does not itself provide the payment API, QR-expiry, return-status or final-outcome procedure. [[adyen]] [[adyen-online-payments]]
+
+## Key takeaways
+
+- **Desktop browser:** The page says a Drop-in or Component can show a WeChat Pay checkout button; a desktop shopper is shown a QR code to scan with their WeChat Pay app. It says this flow works out of the box after adding WeChat Pay in Adyen Customer Area. That is the dated page's setup claim, not evidence of actual merchant enablement, QR rendering, a scan, or successful payment. (raw lines 15–23)
+- **Mobile browser H5:** The page describes redirecting the shopper from the mobile browser to the WeChat Pay app and back to the merchant payment page. It expressly says to contact Adyen Support with the **web shop URL for enrolment with WeChat Pay**. For a shopper inside the merchant's **mobile app**, it points instead to the separate in-app flow; browser and native-app implementations are not interchangeable. (raw lines 25–27)
+- **Snapshot capability row:** The table labels this a wallet with an additional-action **QR code**, country/region **International**, and listed currencies **AUD, CAD, CNY, EUR, GBP, HKD, JPY, NZD, SGD, USD**. Its symbols mark recurring and chargebacks with x and refunds/partial refunds with checks. This is the page's historical capability matrix, not a current country, currency, merchant-account or refund-outcome guarantee. It gives no QR lifetime/expiry or asynchronous result rule. (raw lines 29–31)
+- **Navigation limit:** The chooser links Web Drop-in, Web Components and API-only child pages. The API-only card copy says 'website, iOS or Android app' even though the preceding instruction routes mobile-app shoppers to the distinct in-app flow. Treat that card as navigation copy rather than proof that this desktop-QR/H5 overview implements native in-app payments. Child-guide configuration, API version, capture, settlement and webhook behavior require their own evidence. (raw lines 27, 33–53)
+
+## Detail locators
+
+- Desktop-browser QR button and Customer Area statement: raw lines 15–23.
+- Mobile-browser H5 redirect, web shop URL enrolment and separate in-app route: raw lines 25–27.
+- Historical method/currency/capability matrix: raw lines 29–31.
+- Web Drop-in, Components and API-only navigation cards: raw lines 33–53.
+
+## Related
+
+- [[adyen]]
+- [[adyen-online-payments]]
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments-web-drop-in]]
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments-web-component]]
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments-api-only]]
+
+## Raw Sources
+
+- [[raw/adyen/docs/payment-methods/wechat-pay/wechat-pay-desktop-qr-payments/2026-09-15|Adyen WeChat Pay desktop QR/mobile-browser H5 overview, 2026-09-15 snapshot]]

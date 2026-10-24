@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen WeChat Pay in-app Android Component, earlier versions\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/wechat-pay/wechat-pay-in-app-payments/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/wechat-pay/wechat-pay-in-app-payments/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, wechat-pay, android, components, in-app, earlier-versions, online-payments]\n---\n\n## Overview\n\nThis Adyen earlier-version guide, captured 2026-09-15 with a 2019-07-04 last-modified value, adds **WeChat Pay in-app** to an existing **Advanced-flow Android Components** integration. The title says **Component v4.x.x**, while the body says WeChat Pay is supported from Android Components **3.5.0 and later**; neither statement establishes today's SDK support or merchant eligibility. The Component handles an app switch to the shopper's WeChat app. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Setup and discovery:** The guide requires an existing Advanced Android Components integration and adding the method in Adyen Customer Area. Preparation also points to a **WeChat Open Platform developer account** and registration of the merchant's mobile app with WeChat. For `/paymentMethods`, `countryCode` and `amount.currency` must be supported values; **CN** and **CNY** are examples, not exclusive eligibility limits. Select returned method type `wechatpaySDK`, add the Android WeChat Pay module, and check availability on the device before offering it. The code explicitly says `WeChatPayProvider` only checks availability and is not an actual payment provider. (raw lines 19\u201370)\n- **Server and client roles:** If the shopper chooses the method, the server sends `/payments` with `wechatpaySDK`, an amount, merchant account, reference and return URL. The sample uses Checkout **v72 TEST** and language-library versions as examples, not as a stated API minimum. The `/payments` response carries an `action` for the client; its sample `Pending` and `sdkData.appid` are response examples, not a merchant app-ID configuration or final success. The client passes the action to `WeChatPayActionComponent` to switch apps. (raw lines 70\u201393, 96\u2013128, 217\u2013244, 377\u2013421)\n- **Return and result:** The returning Android `Intent` is passed to the Action Component (via `onCreate` or `onNewIntent` depending on launch mode); observed `actionComponentData` goes to the server's `/payments/details`. Its `resultCode` is used for shopper presentation. **Pending/Received** mean the order was received and the final result will arrive through an **AUTHORISATION webhook**; they are not payment success. The table separately describes Authorised, Error and Refused. An app switch or Intent alone proves neither authorization nor settlement. (raw lines 409\u2013464)\n- **Environment and live gate:** Despite TEST endpoints/environment in request and Component snippets, the page says WeChat Pay had **no test platform**. It recommends cancelling at verification using a personal WeChat account, or a low-value **live** payment; neither was performed for this ingest. It also says a WeChat Pay request must be submitted in **live Customer Area** before accepting live payments. A request or Customer Area status check is not evidence of approval or successful processing. (raw lines 79\u201380, 108\u2013109, 414\u2013416, 466\u2013475)\n- **Guide-link mismatch:** Requirements link to the **Advanced** Android Components base guide (raw line 29), but the final 'Android Components integration guide' See also link points to a **Sessions** URL (raw line 481). Preserve the selected flow when following a base guide; this page does not explain the mismatch. (raw lines 25\u201330, 477\u2013483)\n\n## Detail locators\n\n- Historical version, Advanced prerequisite, Adyen and WeChat setup: raw lines 15\u201335.\n- Discovery, module and availability-only provider: raw lines 37\u201370.\n- Server payment examples and `sdk` action response: raw lines 72\u2013407.\n- Android app switch, Intent, `/payments/details` and result-code table: raw lines 409\u2013464.\n- No-test-platform guidance, live request and conflicting See also base link: raw lines 466\u2013483.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/wechat-pay/wechat-pay-in-app-payments/android-component/earlier-versions/2026-09-15|Adyen WeChat Pay Android Component earlier-version guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "WeChat Pay is supported from Android Components version 3.5.0 and later.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "raw line 29, Requirements integration type"
+    },
+    {
+      "text": "WeChatPayProvider is not an actual provider, it only checks whether WeChat Pay is available.",
+      "location": "raw line 61, Kotlin availability comment"
+    },
+    {
+      "text": "You will receive the final result of the payment in an [AUTHORISATION webhook](/development-resources/webhooks/webhook-types).",
+      "location": "raw line 463, Pending or Received result-code row"
+    },
+    {
+      "text": "WeChat Pay currently has no test platform.",
+      "location": "raw line 468, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "wechat-inapp-android-component-earlier-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android-component-earlier-versions]] \u2014 2019-modified, 2026-09-15-captured WeChat Pay in-app Android Component v4.x.x/3.5.0+ Advanced guide for server `wechatpaySDK`, SDK app switch and webhook-qualified result handling; TEST examples/no-test-platform and Advanced/See-also Sessions tension are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v4.x.x title and 3.5.0+ support prose are distinct historical statements. TEST code does not override the page's no-test-platform warning; Pending/Received is not final authorization."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/wechat-pay/wechat-pay-in-app-payments/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "e3cc77a0b4d8c50dc41350959c87918e64dcddfd1563656b4994ece8660d8722",
+  "status": "candidate_ready"
+}

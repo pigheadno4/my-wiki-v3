@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen KakaoPay Web Component guide\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/web-component/2026-09-15.md\"\ntags: [adyen, kakaopay, web-components, online-payments, redirects, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide, last modified and captured 2026-09-15, describes **KakaoPay-specific additions** to an existing **Web Components** integration. It separates Sessions and Advanced server flows, both with redirect handling and Customer Area method setup, and describes a recurring-token path. It is not a standalone checkout guide or evidence of current KakaoPay availability, a shopper's completed redirect, authorization, capture, settlement or successful later charge. See [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- The **Sessions** branch requires an existing Web Components Sessions flow, **Checkout API v68 or later**, `action.type: redirect` handling, and KakaoPay added in Customer Area. It says no extra KakaoPay parameters for the ordinary `/sessions` creation or extra KakaoPay configuration. The **Advanced** branch similarly requires an existing Web Components Advanced flow, redirect handling and Customer Area setup, and says no extra KakaoPay `/payments` parameters. The v68 minimum appears in the Sessions table only; these no-extra-field statements presuppose the base integration. See raw lines 23\u201360 and 324\u2013362.\n- Both branches import `Redirect` from Adyen Web and show mounting a redirect Component. The literal snippet uses `{ type:kakaopay }` without quotes or a declared `kakaopay` variable, so its method identifier is unresolved as written; the instructions establish the intended Redirect class, not copy-ready code. See raw lines 44\u201372 and 334\u2013356.\n- For recurring use, the page directs an initial server `/payments` request with `storePaymentMethod: true` and a unique `shopperReference`. It says the shopper logs in to a Kakao account and **confirms the recurring transaction**. Only **when the initial payment has settled** does the page say a `recurring.token.created` webhook supplies `storedPaymentMethodId`; receiving that token requires recurring-token lifecycle webhook configuration. Do not equate a setup request, login or confirmation with token receipt or payment settlement. See raw lines 74\u201399 and 364\u2013389.\n- A later token payment uses the stored method ID, matching shopper reference, `shopperInteraction: ContAuth`, and `Subscription` for a fixed interval or `UnscheduledCardOnFile` for a non-fixed interval. The code shows **KRW** test examples at Checkout `/checkout/v68/payments`; the Java examples use 15000 while curl and several other languages use 1000, so these amounts are illustrative, not a single consistent transaction or a complete currency/region availability rule. Several server examples name older libraries and test environments; none proves a live authorization. See raw lines 101\u2013312 and 391\u2013602.\n- The testing section says a real mobile number registered with a KakaoPay account is needed to test successful **live** payments, while separately mentioning test-payment status in test Customer Area. It also says a KakaoPay request in live Customer Area is needed before accepting live payments. Treat test/live context as the page states, without inferring an approved account or completed result. The guide does not describe a one-off final-result webhook, refund or capture procedure; those remain with the main integration and other method guidance. See raw lines 314\u2013322 and 604\u2013612.\n\n## Detail locators\n\n- **Sessions requirements, import and redirect initialization:** raw lines 23\u201372.\n- **Sessions recurring token and subsequent `/payments` examples:** raw lines 74\u2013312.\n- **Advanced requirements, import, initialization and ordinary payment request:** raw lines 324\u2013362.\n- **Advanced recurring token and subsequent `/payments` examples:** raw lines 364\u2013602.\n- **Test/live wording and Customer Area method-request gate:** raw lines 314\u2013322 and 604\u2013612.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/web-component/2026-09-15|KakaoPay Web Component \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add KakaoPay to your Components integration.",
+      "location": "raw line 17, opening description"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Requirements"
+    },
+    {
+      "text": "KakaoPay supports recurring transactions.",
+      "location": "raw line 78, Sessions flow Recurring payments; repeated raw line 368 under Advanced"
+    },
+    {
+      "text": "This triggers the [recurring flow](/payment-methods/kakaopay?tab=recurring_2), where the shopper logs in to their Kakao account, then confirms the recurring transaction.",
+      "location": "raw line 90, Sessions flow Create a token; repeated raw line 380 under Advanced"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 92, Sessions flow Create a token; repeated raw line 382 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "kakaopay-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-web-component]] \u2014 2026-09-15 KakaoPay Web Components add-on for existing Sessions/Advanced redirect flows and settled-payment recurring-token route; unquoted method identifier and differing test amounts remain source-qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both raw initialization snippets use unquoted `type:kakaopay` with no declaration in this page; the KRW test amounts also differ between language examples. Do not treat snippets as verified runnable code."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/web-component/2026-09-15.md",
+  "raw_sha256": "42e2eda2af5fac881be2d915effa0563bd61769a73a3d3ad04c36259d6a298f3",
+  "status": "candidate_ready"
+}

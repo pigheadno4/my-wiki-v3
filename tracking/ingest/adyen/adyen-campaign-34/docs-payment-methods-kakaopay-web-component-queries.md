@@ -1,0 +1,9 @@
+# KakaoPay Web Component retrieval checks
+
+Q1. What base integration and KakaoPay-specific setup does the Web Component page require?
+
+It adds KakaoPay to an existing Web Components Sessions or Advanced flow. Both require redirect handling (`action.type: redirect`) and KakaoPay added in Customer Area; only the Sessions table states Checkout API v68 or later. The page says no extra KakaoPay fields for ordinary `/sessions` or `/payments` requests and instructs importing/mounting `Redirect` (raw lines 23–72, 324–362). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-kakaopay-web-component]] → [[raw/adyen/docs/payment-methods/kakaopay/web-component/2026-09-15]].
+
+Q2. What prevents treating redirect or recurring setup as final payment proof, and what examples need care?
+
+The initial recurring `/payments` request includes `storePaymentMethod: true` and shopper reference; the shopper logs in and confirms, but the guide says `recurring.token.created` with `storedPaymentMethodId` arrives **when the payment has settled**. Later requests use that token, same shopper reference, `ContAuth`, and a recurring model (raw lines 74–113, 364–403). Both Web snippets use unquoted `type:kakaopay` without declaring that identifier (raw lines 66–72, 350–356). Test KRW examples vary in amount, and the page separately calls for a live Customer Area method request plus a registered real mobile number for successful live testing (raw lines 117–167, 314–322, 407–457, 604–612). None of this proves authorization, capture, settlement or live merchant eligibility. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-kakaopay-web-component]] → [[raw/adyen/docs/payment-methods/kakaopay/web-component/2026-09-15]].

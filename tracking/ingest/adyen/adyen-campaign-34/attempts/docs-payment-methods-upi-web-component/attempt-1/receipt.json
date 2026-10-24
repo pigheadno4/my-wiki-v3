@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-upi-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI Web Component integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/web-component/2026-09-15.md\"\ntags: [adyen, upi, web, component, intent, qr]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **UPI** to existing Web Components integrations, with separate **Sessions** and **Advanced** sections. The pinned page supplies method setup, component import/init, an Advanced **Intent app ID** request field and TEST simulator guidance. It does not give a UPI Collect migration date or a LIVE onboarding procedure; those must come from separate evidence. Selecting UPI, showing a QR code or returning from a simulator is not proof of final authorization, capture or settlement. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The guide requires existing Web Components Sessions, **Checkout API v68 or later**, and UPI added in Customer Area. It says no extra UPI parameters for the base `/sessions` request or UPI configuration; import `UPI` from `@adyen/adyen-web` and initialize the Component. \u201cNo extra\u201d is method-specific, not a waiver of the base session. The Sessions section does not separately state an additional action requirement. See raw lines 23\u201375.\n- **Advanced:** The guide requires existing Web Components Advanced, handling an additional `action.type: await` action and Customer Area UPI setup. It imports and initializes `UPI`, says no extra UPI configuration, and requires `paymentMethod.appId` **when** `paymentMethod.type` is `upi_intent`; its table lists TPAP app IDs. The example uses `gpay`, INR/IN and TEST Checkout v72. That example version is not stated as a general Advanced minimum, and the Intent field must not be generalized to QR or Collect. See raw lines 99\u2013175.\n- **Snippet limits:** Both initialization snippets say `newUPI(checkout, ...)` without a space or declaration for `newUPI`, while prose says to use the `UPI` class; their comment also refers to a UPI configuration object despite prose saying no extra parameters. Treat these as source-example discrepancies, not copy-ready code or proof that configuration is required. See raw lines 55\u201375 and 121\u2013143.\n- **TEST outcomes:** The page says UPI Intent redirects to an Adyen-hosted Payment Simulator page and Web UPI QR uses a scanned QR to reach it; testers choose a simulated outcome and check handling. It asks them to check both webhook receipt and Customer Area transaction listing. Yet the webhook substep names `eventCode: AUTHORISED` for the \u201coutcome that you selected,\u201d which is not a reliable assertion for non-authorized simulated outcomes; preserve the inconsistency and verify each scenario's actual webhook. The page recommends testing modifications after outcomes. It does not provide a LIVE setup step despite the \u201cTest and go live\u201d heading. See raw lines 77\u201397 and 177\u2013197.\n- **Scope:** This page's substantive payment-option and TEST instructions cover Intent and Web QR. It does not set out a Collect cutoff, dated migration rule, UPI app-switch mechanics outside simulator testing, recurring mandate flow or final financial lifecycle. See raw lines 77\u201397 and 145\u2013197.\n\n## Detail locators\n\n- Sessions prerequisites, request, import and initialization: raw lines 23\u201375.\n- Advanced await action, conditional Intent app ID and example: raw lines 99\u2013175.\n- Duplicated TEST simulator/verification steps: raw lines 77\u201397 and 177\u2013197.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-upi]]\n- [[source-adyen-docs-payment-methods-upi-api-only]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/web-component/2026-09-15|Adyen UPI Web Component guide]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions requirements"
+    },
+    {
+      "text": "const upiComponent = newUPI(checkout,",
+      "location": "raw line 68, Sessions initialization; repeated line 136 under Advanced"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw line 106, Advanced action handling"
+    },
+    {
+      "text": "Required when the payment option is UPI Intent",
+      "location": "raw line 153, Advanced appId table"
+    },
+    {
+      "text": "Your server must accept the corresponding webhook message with `eventCode`: **AUTHORISED**.",
+      "location": "raw line 94, Sessions TEST outcome verification; repeated line 194 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-web-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-web-component]] \u2014 2026-09-15 UPI Web Component Sessions (Checkout v68+) and Advanced guide with await action, Intent-only appId, TEST Intent/QR simulator and qualified webhook checks; sample `newUPI` and outcome wording need review.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Initialization snippets at raw lines 68/136 use `newUPI` although prose names the `UPI` class.",
+          "TEST steps at raw lines 88\u201395 and 188\u2013195 permit selecting an outcome but prescribe an AUTHORISED webhook regardless; failure-case webhook behavior is unresolved."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/web-component/2026-09-15.md",
+  "raw_sha256": "1aa548e273068ff3e3a062d49a8f9106cc20bb4ec4f75bb3c6dffc8bc84ad2d3",
+  "status": "candidate_ready"
+}

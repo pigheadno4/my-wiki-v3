@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-24] ingest | Adyen website C34
+
+- Fifty independently approved WeChat Pay, UPI including AutoPay and KakaoPay documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 3 concepts touched (0 new); source_count 1714 = 1700 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-34/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-24] ingest | Adyen website C33
 
 - Fifty independently approved Alipay, AlipayHK, PayPay and NaverPay documentation sources; first full-review approvals 49/50 and 1 targeted correction reviews. 2 concepts touched (0 new); source_count 1664 = 1650 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-33/`; details [[adyen-log]]. No commit/push.

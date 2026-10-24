@@ -15,6 +15,15 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-upi-upi-autopay-web]] — 2026-09-15 UPI Autopay Web signup and mandate-display guide for Web SDK v6.22.0, Sessions/Advanced mandate fields, Collect/QR/Intent and test/live gates; full recurring backend remains in the API-only guide and examples omit prose-listed fields.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-android-component]] — KakaoPay Android Component recurring route: shopper confirms, token ID arrives in recurring.token.created after initial settlement, then specified ContAuth token payments; request examples vary.
+
+
+- [[source-adyen-docs-payment-methods-upi-upi-autopay-api-only]] — 2026-09-15 UPI Autopay API-only mandate/token, initial approval, 24-hour pre-debit, recurring charge, webhook, retry and cancellation guide; Collect transition, conflicting rule text and sample faults are qualified in the source.
+
+
 - [[source-adyen-docs-payment-methods-cards-cards-recurring-india]] — 2021-modified India locally acquired recurring-card guide for issuer mandate, pre-debit notification and later token charge; mixed v66/v72 examples, later 48-hour cooling guidance and broad /disable omission effect are qualified in the source.
 
 

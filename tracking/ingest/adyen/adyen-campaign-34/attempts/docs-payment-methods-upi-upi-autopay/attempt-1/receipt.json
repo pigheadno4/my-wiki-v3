@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-upi-upi-autopay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI Autopay\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/upi-autopay\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/upi-autopay/2026-09-15.md\"\ntags: [adyen, upi, autopay, recurring-payments, mandates, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes **UPI Autopay recurring payments**, where a shopper uses a participating UPI app linked to a bank account to approve a mandate and an initial charge. It covers subscription and automatic-top-up models, initial approval, subsequent debits, failure and free-trial handling. It is distinct from one-off UPI checkout, and its historical description does not establish current app, bank, merchant or account eligibility. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The guide maps fixed-interval subscriptions to Adyen's **Subscription** recurring processing model and non-fixed automatic top-ups to **UnscheduledCardOnFile**. At signup it presents UPI Collect (VPA entry), QR (scan), and Intent (mobile/mobile web only) as options for approving Autopay in a UPI app. The shopper sees mandate details including frequency, amount and start/end dates, then uses a UPI PIN for approval. (raw lines 19\u201340)\n- Mandate creation, first charge and later charges are **separate states**. The described successful path shows mandate creation followed by an initial payment, checkout status on return, and a pre-debit SMS/email/push notification from the UPI app at least **24 hours** before later charges. The page says a subsequent amount below **\u20b915,000** is debited, while **\u20b915,000 or above** prompts the shopper for a UPI PIN to authorize that charge. These steps describe the guide's flow, not evidence a specific mandate or debit succeeded. (raw lines 34\u201346)\n- **First-payment failure:** A mandate can be created successfully while its first payment fails. In that case, the page says Adyen automatically **cancels** the mandate, the shopper sees cancellation in the UPI app, and the merchant may initiate a fresh transaction and signup. It explains that mandates without a successful first payment within five minutes require a later PIN re-entry, and says Adyen tokenizes details **only after a successful initial payment**. Do not treat mandate approval as stored-token or first-payment success. (raw lines 48\u201354)\n- **Front end:** The guide recommends at least two methods per device: QR/Collect on desktop because Intent is unsupported there, and Intent/Collect on mobile. For Android it describes a generic intent app drawer; on iOS it calls for app-specific intent URLs. Its Adyen Web SDK **v6.22.0 or later** statement is specifically about automatic display of mandate information, not a general API minimum or proof of native-SDK support. Native app SDK inquiries go to an Implementation Manager. (raw lines 56\u201375)\n- **Free-trial workaround:** UPI Autopay cannot create a mandate with a **0 INR initial charge**. The page directs a minimum **2 INR authorization** using `additionalAmount` in `/payments`, followed by an Adyen-initiated refund **after successful authorization**. If the automatic refund fails, a `REFUND_FAILED` webhook is sent and the merchant should retry via the standard refund flow. An authorization or refund initiation alone does not prove capture, settlement, or completed refund. (raw lines 77\u201387)\n- This page does not give a mandate amendment API, a manual cancellation procedure, a general mandate expiry rule, an API-version minimum, or a TEST/LIVE execution result. The See also links are navigation to API-only integration, webhooks and API Explorer. (raw lines 1\u201393)\n\n## Detail locators\n\n- Recurring models and Collect/QR/Intent signup options: raw lines 19\u201332.\n- Mandate approval, first payment, notice and \u20b915,000 PIN threshold: raw lines 34\u201346.\n- Failed first payment, automatic mandate cancellation and tokenization condition: raw lines 48\u201354.\n- Device recommendations and Web SDK v6.22.0 mandate-information feature: raw lines 56\u201375.\n- Zero-INR constraint, 2-INR authorization and automatic-refund failure handling: raw lines 77\u201387.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/upi-autopay/2026-09-15|Adyen UPI Autopay guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "These payments use the **UnscheduledCardOnFile**",
+      "location": "raw line 24, automatic top-ups"
+    },
+    {
+      "text": "For payments \u20b915,000 and above, shoppers are prompted to enter their UPI PIN to authorise the charge.",
+      "location": "raw line 46, subsequent payments"
+    },
+    {
+      "text": "There may be cases during the signup where the Autopay mandate creation is successful, but the first payment fails.",
+      "location": "raw line 50, first-payment failure"
+    },
+    {
+      "text": "UPI Autopay does not support creating a mandate without an initial charge.",
+      "location": "raw line 79, free trials"
+    },
+    {
+      "text": "If the auto refund fails, a `REFUND_FAILED` [webhook](https://docs.adyen.com/api-explorer/Webhooks/1/post/REFUND_FAILED) will be sent. Retry the refund using the standard refund flow.",
+      "location": "raw line 87, free-trial refund failure"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "upi-autopay-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-upi-autopay]] \u2014 2026-09-15 UPI Autopay recurring-mandate guide covering Collect/QR/mobile Intent signup, first-payment-dependent tokenization/cancellation, later PIN threshold and 2-INR free-trial refund path.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Mandate approval is distinct from successful first payment, token creation and later debits; the refund path does not establish refund completion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/upi-autopay/2026-09-15.md",
+  "raw_sha256": "fddbcf02ca96f5d493fd68d0d3563eb8f96755b8abbb043ec5374d576cebf7ea",
+  "status": "candidate_ready"
+}

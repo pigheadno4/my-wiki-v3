@@ -21,6 +21,147 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-ios]] — 2020-modified, 2026-09-15-captured WeChat Pay in-app iOS chooser for Drop-in/Components child pages and Sessions base guides; child setup, app switch and outcomes are separate authority.
+
+
+- [[source-adyen-docs-payment-methods-upi-web]] — 2026-09-15 UPI Web navigation chooser for Drop-in/Components child guides and Sessions/Advanced main Web guides; child requirements and payment outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android]] — 2019-modified, 2026-09-15-captured WeChat Pay Android chooser for Drop-in/Components child guides and general Sessions-flow routes; child behavior, versions and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-upi-android]] — 2026-09-15 UPI Android navigation chooser for Drop-in or redirect-oriented UPIComponent, plus four Android Sessions/Advanced base guides; child versions, method flows and outcomes require separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-upi-ios]] — 2026-09-15 UPI iOS chooser linking Drop-in/UPIComponent child guides and Sessions/Advanced main iOS integration routes; child prerequisites and outcome behavior are outside this navigation page.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-web]] — 2026-09-15 KakaoPay Web navigation chooser linking Drop-in and Redirect Components child guides and main Web Sessions/Advanced integration routes; child requirements and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-android]] — 2026-09-15 Android KakaoPay navigation chooser linking Drop-in, InstantPaymentComponent and Sessions/Advanced base guides; child setup, support and outcomes require their own sources.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-ios]] — 2026-09-15 iOS navigation chooser linking KakaoPay Drop-in and InstantPaymentComponent children plus four Sessions/Advanced main integration routes; child requirements, versions, eligibility and outcomes are separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-mini-program]] — 2019-modified, 2026-09-15-captured Mini Program overview for API-only `wechatpayMiniProgram` and a typical WeChat shopper journey; shopper pays wallet CNY even if processing currency differs, with implementation and payment outcomes left to separate authority.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments]] — 2026-09-15 WeChat Pay mobile-app overview for Android integration or WeChat mobile-SDK route, shopper app switch, historical capability matrix and iOS/Android/API-only child navigation; no provider-registration, device-version or payment-outcome procedure on this page.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments]] — 2019-modified, 2026-09-15-captured WeChat Pay website overview separating desktop QR, enrolled mobile-browser H5 redirect and native in-app flow, with a historical capability row and child-guide links but no QR-expiry or final-outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-enable-wechat-pay]] — 2020-modified, 2026-09-15-captured WeChat Pay in-app setup guide for WeChat developer/app registration, AppID/AppSecret handoff to Adyen Support and conditional own-integration mobile SDK steps; setup does not prove payment or settlement.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments-web-drop-in]] — 2020-modified, 2026-09-15-captured WeChat Pay Web Drop-in Sessions/Advanced add-on with separate desktop QR versus mobile-browser enrollment, v6 import guidance and live request gate; QR/outcome mechanics are not specified.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android-drop-in]] — 2026-09-15 Android Drop-in WeChat Pay v5.0.0 guide: Sessions/Advanced base integrations and Customer Area setup, no additional method-specific fields/configuration, and historical no-TEST-platform/live-request gate; earlier versions and result mechanics have separate sources.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android-component]] — 2026-09-15 WeChat Pay in-app Android Component v5.0.0 add-on for existing Sessions or Advanced flows, with no extra method-specific fields/configuration and a no-test-platform/live-request qualification; earlier-version app-switch details are separate.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments-web-component]] — 2019-modified, 2026-09-15-captured WeChat Pay Web Components guide under desktop-QR path, with distinct desktop QR/mobile-browser setup and v6/v5 mount routes; no QR payload, expiry or webhook-outcome mechanics.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-ios-drop-in]] — 2026-09-15 iOS in-app WeChat Pay Drop-in Sessions/Advanced add-on guide for WeChat/Xcode setup, version-qualified request/configuration scope, and no-test-platform plus live-request boundary.
+
+
+- [[source-adyen-docs-payment-methods-upi-react-native-component]] — 2026-09-15 UPI React Native Components: Sessions unsupported; Advanced `await`, conditional Intent `appId` and TEST v72 example; QR is web-only in simulator checklist and AUTHORISED spelling conflicts with API-only AUTHORISATION outcome tables.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-ios-component]] — 2025-modified, 2026-09-15-captured in-app WeChat Pay iOS Components guide for app registration, Xcode schemes/SDK packaging, v5+ Sessions versus Advanced, no test platform and live request gate; app switch is not payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-upi-flutter-drop-in]] — 2026-09-15 UPI Flutter Drop-in Sessions (Checkout v68+) and Advanced (`await`, Intent appId) add-on with TEST simulator instructions; Sessions URL, redirect-anchor and AUTHORISED/AUTHORISATION webhook wording differences are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-upi-react-native-drop-in]] — 2026-09-15 UPI React Native Drop-in Sessions (Checkout v68+) and Advanced add-on for conditional Intent `appId` and TEST simulator; Sessions base link, `await`/redirect contexts, Web-only QR wording and webhook spelling remain qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-upi-android-drop-in]] — 2026-09-15 UPI Android Drop-in Sessions (Checkout v68+) and Advanced add-on with await action, Intent-only appId and TEST simulator guidance; Web-qualified QR step, Kotlin snippet and generic AUTHORISED checklist are source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-upi-android-component]] — 2026-09-15 UPI Android Components Sessions (Checkout v68+) and Advanced guide for await action, conditional Intent TPAP appId and TEST simulator/webhook checklist; QR text is web-scoped.
+
+
+- [[source-adyen-docs-payment-methods-upi-ios-component]] — 2026-09-15 iOS Components guide for UPI Intent: Sessions v68+ and Smart Intent declared app schemes, Advanced `await` handling plus required Intent `appId`; simulator/web-only QR mention and webhook/Customer Area test checks do not prove an iOS QR/Collect flow or live result.
+
+
+- [[source-adyen-docs-payment-methods-upi-web-drop-in]] — 2026-09-15 UPI Web Drop-in Sessions (Checkout v68+) and Advanced add-on for Intent/QR TEST simulator paths, conditional Advanced Intent `appId` and qualified action/webhook wording; Collect migration belongs to the separate API-only source.
+
+
+- [[source-adyen-docs-payment-methods-upi-web-component]] — 2026-09-15 UPI Web Component Sessions (Checkout v68+) and Advanced guide with await action, Intent-only appId, TEST Intent/QR simulator and qualified webhook checks; sample `newUPI` and outcome wording need review.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-react-native-component]] — 2026-09-15 KakaoPay React Native Components Advanced-only redirect add-on (Sessions unsupported) with settlement-gated recurring token route; title and Drop-in prerequisite-link mismatch remain qualified.
+
+
+- [[source-adyen-docs-payment-methods-upi-ios-drop-in]] — 2026-09-15 iOS Drop-in UPI Intent guide: Sessions v68+, Smart Intent privacy-limited declared schemes, Advanced `await` and required Intent `appId`; QR is mentioned only for web testing, while webhook/Customer Area checks bound simulator outcomes.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-api-only]] — 2026-09-15 KakaoPay API-only Advanced Web redirect guide for KR/KRW discovery, ordinary versus recurring fields and token-created webhook after settlement; conditional item text, versioned examples and mixed TEST/LIVE wording are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-mini-program-api-only]] — 2019-modified, 2026-09-15-captured WeChat Mini Program API-only guide for merchant-server Adyen calls, WeChat `prepay_id`, `wx.requestPayment()` and webhook-qualified results; details-request example and test/live tensions remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android-drop-in-earlier-versions]] — 2019-modified WeChat Pay earlier-version Android Drop-in Advanced app-switch guide (support stated from 3.5.0), with Pending/Received webhook-final outcome and no TEST platform; Sessions navigation links conflict.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-desktop-qr-payments-api-only]] — 2019-modified, 2026-09-15-captured WeChat Pay web API-only redirect guide under a desktop-QR path; body gives `wechatpayWeb` request/return/webhook flow, not QR or expiry mechanics, and TEST/LIVE qualifications remain in the source.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-flutter-drop-in]] — 2026-09-15 KakaoPay Flutter Drop-in Sessions/Advanced add-on, with conditional settled-payment recurring token/webhook route, differing setup/example wording and separate TEST/LIVE gates.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-web-drop-in]] — 2026-09-15 KakaoPay Web Drop-in: existing Sessions/Advanced redirect flow, no extra base request parameters, but recurring token requests need shopper identity and storage fields; token creation follows settled initial payment/webhook, with separate TEST/live prerequisites.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-api-only]] — 2026-09-15 WeChat Pay in-app API-only guide for merchant-server `/payments`, WeChat mobile-SDK handoff, `/payments/details` and webhook-qualified outcome; TEST examples and details prose conflict with stated boundaries.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-android-component-earlier-versions]] — 2019-modified, 2026-09-15-captured WeChat Pay in-app Android Component v4.x.x/3.5.0+ Advanced guide for server `wechatpaySDK`, SDK app switch and webhook-qualified result handling; TEST examples/no-test-platform and Advanced/See-also Sessions tension are qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-ios-drop-in]] — 2026-09-15 KakaoPay iOS Drop-in Sessions (Checkout v68+) and Advanced add-on with settlement-conditioned recurring-token webhook and later token payments; mixed live/test wording and example limits remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-android-drop-in]] — 2026-09-15 KakaoPay Android Drop-in Sessions (Checkout v68+)/Advanced add-on with conditional settled-payment recurring token webhook and qualified TEST/LIVE example scope.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-flutter-component]] — 2026-09-15 Flutter Components guide: Sessions/Advanced redirect prerequisites and base no-extra-parameter claims, separate recurring /payments fields and post-settlement token webhook; the integration-type links misroute to Drop-in (and Sessions to Advanced), so follow flow-specific prose and verify the main guide.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-react-native-drop-in]] — 2026-09-15 KakaoPay React Native Drop-in Sessions (Checkout v68+) and Advanced redirect add-on with settlement-conditioned recurring-token webhook and later token payments; Sessions link and live/test wording remain qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-web-component]] — 2026-09-15 KakaoPay Web Components add-on for existing Sessions/Advanced redirect flows and settled-payment recurring-token route; unquoted method identifier and differing test amounts remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay-android-component]] — 2026-09-15 KakaoPay Android Component Sessions/Advanced redirect add-on with separate settlement-gated recurring token route; base no-extra-fields wording excludes recurring fields.
+
+
+- [[source-adyen-docs-payment-methods-upi-api-only]] — 2022-modified, 2026-09-15-captured India UPI API-only guide for INR Intent app redirects, QR display and legacy Collect VPA, with November 2025 new-merchant Collect cutoff, conditional validation and webhook-final outcomes; TEST checklist event spelling conflicts with webhook tables.
+
+
+- [[source-adyen-docs-payment-methods-upi-upi-autopay]] — 2026-09-15 UPI Autopay recurring-mandate guide covering Collect/QR/mobile Intent signup, first-payment-dependent tokenization/cancellation, later PIN threshold and 2-INR free-trial refund path.
+
+
+- [[source-adyen-docs-payment-methods-kakaopay]] — 2026-09-15 KakaoPay KR/KRW wallet-redirect overview for one-time QR and recurring login journeys, default 30-minute redirect expiry, capability marks and child integration routes; shopper steps do not prove mandate or payment outcome.
+
+
+- [[source-adyen-docs-payment-methods-upi]] — 2026-09-15 UPI overview for India local-entity/integration prerequisite, Intent/QR/Collect routes and November 2025 Collect transition notice; recurring “See note” lacks an on-page mandate explanation.
+
+
+- [[source-adyen-docs-payment-methods-wechat-pay]] — 2026-09-15 WeChat Pay overview: separate desktop QR/H5, in-app, Mini Program and POS routes; mobile-web initiation is limited to the WeChat app, some outcomes require webhook confirmation, and the matrix limits recurring/capture/chargeback while permitting refunds in this snapshot.
+
+
 - [[source-adyen-docs-payment-methods-paypay-web]] — 2026-09-15 PayPay for Web chooser linking Drop-in, Redirect Component and main Sessions/Advanced Web integration guides; navigation only, with child requirements and outcomes separate.
 
 

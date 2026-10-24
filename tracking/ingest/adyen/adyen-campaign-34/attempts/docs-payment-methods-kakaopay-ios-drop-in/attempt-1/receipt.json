@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen KakaoPay iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, kakaopay, ios, drop-in, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide adds KakaoPay to an existing **iOS Drop-in** integration with **Sessions** and **Advanced** server-side paths. A separate recurring section describes initial token creation and later server-side token payments. Base method setup, shopper confirmation, the settlement-conditioned token webhook and a future charge are distinct stages; none alone proves a future authorization, capture or settlement. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Base Sessions add-on:** The guide requires existing iOS Drop-in Sessions with **Checkout API v68 or later** and KakaoPay added in Customer Area. It says no extra KakaoPay parameters are needed for the base `/sessions` request and no extra client configuration. The Sessions requirements table does **not** separately state redirect handling; follow the linked base flow for action/return behavior. \u201cNo extra\u201d is method-specific, not a waiver of base requests or the recurring `/payments` fields below. See raw lines 25\u201346.\n- **Base Advanced add-on:** The Advanced table requires existing iOS Drop-in Advanced, explicit `action.type: redirect` handling and KakaoPay in Customer Area; it says no extra KakaoPay configuration or base `/payments` parameters. It does not restate the Sessions v68+ minimum as an Advanced-specific prerequisite. See raw lines 300\u2013322.\n- **Create a recurring token:** In either recurring section, the initial `/payments` request adds `storePaymentMethod: true` and a merchant-unique `shopperReference`. The guide says the shopper logs into Kakao and confirms the recurring transaction; **when the payment has settled**, a `recurring.token.created` webhook contains the shopper reference, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId`. The server must receive token lifecycle events. The page does not specify a separate consent-record mechanism; storage request or shopper return is not the token-created event. See raw lines 48\u201373 and 324\u2013349.\n- **Pay with the token:** A subsequent `/payments` request uses the webhook token or a value from `/listRecurringDetails`, the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. The curl example targets TEST Checkout v68; Node, Python and Ruby examples name API-library versions. Example amounts differ: Java uses KRW 15000 while several others use KRW 1000. These examples do not define a universal iOS SDK version, current live behavior or payment result. See raw lines 75\u2013285 and 351\u2013561.\n- **Test/live wording:** Both sections say successful **live** testing needs a real registered KakaoPay mobile number, then point to the **test** Customer Area list for \u201ctest payments,\u201d without reconciling those environments. Live acceptance separately calls for a KakaoPay request in **live** Customer Area. A request submission or list lookup does not establish approval or final transaction state. See raw lines 288\u2013298 and 564\u2013574.\n\n## Detail locators\n\n- Sessions base requirements and method-specific additions: raw lines 25\u201346.\n- Sessions token creation/webhook/reuse and examples: raw lines 48\u2013285.\n- Advanced base requirements and recurring section/examples: raw lines 300\u2013561.\n- Duplicated test/live statements: raw lines 288\u2013298 and 564\u2013574.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-kakaopay]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/ios-drop-in/2026-09-15|Adyen KakaoPay iOS Drop-in guide]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions requirements"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 66, Sessions token creation; repeated line 342 under Advanced"
+    },
+    {
+      "text": "`paymentMethod.storedPaymentMethodId`: The `storedPaymentMethodId` from the [recurring.token.created]",
+      "location": "raw line 79, Sessions token reuse; repeated line 355 under Advanced"
+    },
+    {
+      "text": "To test successful KakaoPay live payments, you need to use a real mobile number registered with a [KakaoPay account]",
+      "location": "raw line 292, Sessions test and go live; repeated line 568 under Advanced"
+    },
+    {
+      "text": "Before you can accept live KakaoPay payments, you need to submit a request for KakaoPay in your [live Customer Area]",
+      "location": "raw line 298, Sessions test and go live; repeated line 574 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-ios-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-ios-drop-in]] \u2014 2026-09-15 KakaoPay iOS Drop-in Sessions (Checkout v68+) and Advanced add-on with settlement-conditioned recurring-token webhook and later token payments; mixed live/test wording and example limits remain source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw lines 292/568 say live-payment testing needs a real KakaoPay number, while lines 296/572 point to test Customer Area; the page does not reconcile environments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "2ddc2691f47e54bf11b62e9ca99f3e4d7e2db5c3d7e4e286e04984177863b999",
+  "status": "candidate_ready"
+}

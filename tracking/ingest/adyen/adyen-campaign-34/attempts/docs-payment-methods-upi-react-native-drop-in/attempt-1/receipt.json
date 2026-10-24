@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-upi-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, upi, react-native, drop-in, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page gives **UPI-specific additions** for an existing **React Native Drop-in** integration, split by Sessions and Advanced server-side flows. It points to the base guides for the wider payment integration. The page's simulator steps do not establish current UPI eligibility, a live app redirect, or a completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The stated prerequisites are an existing Sessions React Native Drop-in integration, **Checkout API v68 or later**, and UPI added in Customer Area. The guide says no UPI-specific extra `/sessions` fields or configuration are needed. Its **Integration type** link nevertheless points to an **Advanced-flow** React Native Drop-in URL, while its `/sessions` link points to Sessions; follow the named flow rather than silently accepting that mismatched base-guide link. (raw lines 25\u201347)\n- **Advanced:** The stated prerequisites are existing Advanced React Native Drop-in, additional-action handling labelled **`action.type: await`**, and Customer Area setup. It says no extra UPI configuration, but its `/payments` table requires **`paymentMethod.appId` when `paymentMethod.type: upi_intent`** to identify the shopper's TPAP app. The TEST v72 INR/IN `gpay` request is an example, not an explicit API minimum or live eligibility proof. No separate Advanced minimum is stated. The action-handling link ends in `#handle-the-redirect` even though the row labels the action `await`; keep both exact contexts. (raw lines 71\u2013119)\n- **Simulator scope:** In both sections the page says UPI can be tested with Adyen's **Payment Simulator**. It describes UPI Intent redirect to a hosted simulator page, but its QR instruction is expressly **'UPI QR (on web)'**\u2014do not generalize that line into a React Native in-app QR scan guarantee. The tester selects an outcome, checks integration handling, and confirms the corresponding webhook and Customer Area list item. This is a TEST procedure, not an observed outcome. The Advanced `await` row and simulator Intent redirect are different descriptions on the page; neither alone defines every UPI action path. (raw lines 49\u201369, 75\u201380, 121\u2013141)\n- **Webhook wording:** The simulator checklist spells `eventCode: AUTHORISED`; the separate UPI API-only guide's payment-outcome tables use `AUTHORISATION`. Retain the source-specific spelling mismatch rather than treating this checklist as proof of the actual final webhook schema. A chosen simulator outcome, redirected browser, or Customer Area entry is not itself live authorisation, capture, settlement or refund evidence. (raw lines 64\u201369, 136\u2013141; [[source-adyen-docs-payment-methods-upi-api-only]])\n- The page does not cover UPI Collect migration, recurring UPI AutoPay mandates, a live go-live requirement, or implementation of the base React Native bridge. The payment-modification test link is a recommendation after outcome tests. (raw lines 15\u2013141)\n\n## Detail locators\n\n- Sessions version, Customer Area, base-link mismatch and no-extra-fields/configuration: raw lines 25\u201347.\n- Sessions Intent simulator and Web-only QR wording plus webhook checklist: raw lines 49\u201369.\n- Advanced `await` action/link, conditional `appId` and TEST v72 sample: raw lines 71\u2013119.\n- Advanced repeated simulator/outcome checklist: raw lines 121\u2013141.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-react-native-sdk]]\n- [[source-adyen-docs-payment-methods-upi-api-only]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/react-native-drop-in/2026-09-15|Adyen UPI React Native Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=React%2BNative\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 41, Sessions request"
+    },
+    {
+      "text": "`action.type`: **await**",
+      "location": "raw line 80, Advanced action handling"
+    },
+    {
+      "text": "Required when the payment option is UPI Intent",
+      "location": "raw line 97, Advanced paymentMethod.appId table"
+    },
+    {
+      "text": "Your server must accept the corresponding webhook message with `eventCode`: **AUTHORISED**.",
+      "location": "raw line 66, Sessions TEST checklist (also raw line 138, Advanced)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "upi-react-native-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-react-native-drop-in]] \u2014 2026-09-15 UPI React Native Drop-in Sessions (Checkout v68+) and Advanced add-on for conditional Intent `appId` and TEST simulator; Sessions base link, `await`/redirect contexts, Web-only QR wording and webhook spelling remain qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions Integration type link points to Advanced; Advanced action row says await while linking a redirect section; QR simulator wording is expressly on web; AUTHORISED checklist spelling differs from sibling API-only AUTHORISATION outcome tables."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "34ca3e62a60041bd03f1412707c1c0a5b19694cdab706c6d780af07ca9927802",
+  "status": "candidate_ready"
+}

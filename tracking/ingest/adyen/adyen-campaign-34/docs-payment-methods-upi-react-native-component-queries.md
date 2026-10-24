@@ -1,0 +1,9 @@
+# UPI React Native Component retrieval questions
+
+## Q1 — What route and prerequisites does this page give?
+
+Its URL says React Native Component while the raw title says “UPI React Component”; the body expressly says React Native Components do **not** support Sessions and gives an Advanced-only route (raw lines 5–31). That route needs an existing Advanced Components integration, additional `action.type: await` handling and UPI added in Customer Area, with no UPI-specific Component configuration (lines 35–47). The prerequisite link points to Drop-in despite Components prose and the action link's anchor says redirect despite `await` (lines 39–40). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-upi-react-native-component]] → [[raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15]].
+
+## Q2 — What limits Intent, testing and webhook conclusions?
+
+For `upi_intent`, the merchant includes required `paymentMethod.appId` identifying the shopper's TPAP; the `v72`/`INR`/`IN`/`gpay` TEST request with return URL is illustrative, not an SDK/API minimum or payment completion (raw lines 49–79). The simulator's QR sentence is expressly **on web**, not a React Native QR/Collect flow (lines 81–90). Its TEST checklist spells `eventCode: AUTHORISED` (line 98), conflicting with `AUTHORISATION` in the retained UPI API-only outcome tables (raw API-only lines 112–117, 216–221, 382–387; its own TEST checklist also says `AUTHORISED`). Neither spelling is verified as an implementation contract from these snapshots; consult authoritative webhook schema or live evidence. Simulator selection and Customer Area listing are not live authorization proof (lines 92–101). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-upi-react-native-component]] → [[raw/adyen/docs/payment-methods/upi/react-native-component/2026-09-15]].

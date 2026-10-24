@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-upi-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md\"\ntags: [adyen, upi, ios, drop-in, india]\n---\n\n## Overview\n\nThis [[adyen]] guide adds UPI-specific steps to an **existing iOS Drop-in** integration in separate Sessions and Advanced flows. Its iOS-specific implementation covers **UPI Intent** app discovery and, for Advanced, an Intent `appId` request field. The test checklist's QR reference is explicitly **on web**; this page does not specify an iOS QR or Collect integration, a Collect migration/deprecation date, an iOS manual-return callback, or an iOS SDK minimum. Those require separate source guides rather than inference here. See [[adyen-online-payments]]. This captured guide and test request do not prove current availability or a successful live payment. See raw lines 15\u201323, 25\u2013234.\n\n## Sessions flow\n\n- Requires an existing Sessions iOS Drop-in integration, Checkout API **v68 or later**, and UPI added in Customer Area. The guide says there are no UPI-specific extra fields in the base `/sessions` request. See raw lines 25\u201340.\n- For UPI Intent, Smart Intent detects installed UPI apps only if their URL schemes are declared in the merchant iOS app's `Info.plist` `LSApplicationQueriesSchemes`. The guide lists twelve app/scheme pairs as a dated snapshot (for example Google Pay/`tez` and PhonePe/`phonepe`). iOS privacy rules restrict detection to declared schemes, the list is limited to **50** schemes per app, and the Component handles no detected UPI apps. A listed provider or declared scheme is not proof that the app is installed, usable or a payment has completed. See raw lines 42\u201391.\n\n## Advanced flow\n\n- Requires an existing Advanced iOS Drop-in integration, UPI in Customer Area and handling of the additional `action.type: await`. Its action-handling link's anchor says \u201chandle-the-redirect\u201d; preserve the explicit **await** type and verify the base flow's actual action handling rather than treating the anchor text as another action type. The Advanced table does not repeat the Sessions v68+ requirement. See raw lines 117\u2013127.\n- The same Smart Intent scheme declaration and 50-scheme/no-app conditions are repeated for Advanced. See raw lines 129\u2013178.\n- For the Advanced **UPI Intent** option (`paymentMethod.type: upi_intent`), `paymentMethod.appId` is required and identifies the shopper's third-party application provider; the table enumerates IDs such as `gpay`, `phonepe` and `wapay` (WhatsApp Pay). The illustrative **test** `/v72/payments` request uses `INR`, country `IN`, `appId: gpay`, and a merchant return URL. The v72 URL is an example endpoint, not an explicit minimum for the entire Advanced integration. A return URL and submitted request are not payment-outcome proof. See raw lines 180\u2013210.\n\n## Test and outcome boundary\n\n- In a **test** integration, UPI Intent redirects to Adyen's Payment Simulator; its UPI QR step says **\u201con web\u201d** and therefore cannot establish an iOS QR Drop-in procedure. The tester chooses an outcome, checks integration handling, then confirms the matching **`AUTHORISED` webhook** and Customer Area Payments record; the guide also recommends modification tests. Simulator selection, redirection and app return do not by themselves prove authorization or live success. See raw lines 93\u2013115 and 212\u2013234.\n- This page contains no QR/Collect iOS steps, Collect cut-off date, production deep-link/manual-return setup, specific iOS SDK version, or live enablement approval process. Follow the linked main flow and separate method sources for those questions. See raw lines 15\u2013234.\n\n## Detail locators\n\n- **Sessions requirements and no-extra-session fields:** raw lines 25\u201340.\n- **Intent provider schemes, privacy and 50-scheme cap:** raw lines 42\u201391 and 129\u2013178.\n- **Advanced `await` action and prerequisite:** raw lines 117\u2013127.\n- **Intent `appId` and illustrative test v72 request:** raw lines 180\u2013210.\n- **Simulator, web-only QR mention and webhook/status verification:** raw lines 93\u2013115 and 212\u2013234.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n- [[adyen-webhooks]]\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/upi/2026-09-15|UPI overview]] \u2014 broader Intent/QR/Collect and dated migration context; distinct from this iOS Drop-in guide.\n- [[raw/adyen/docs/payment-methods/upi/api-only/2026-09-15|UPI API-only]] \u2014 separate API/Collect request detail and dated notices.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15|UPI iOS Drop-in \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "To enable Smart Intent, you must declare in `Info.plist` the URL schemes for the UPI apps that your app intends to display. This is required by iOS for privacy reasons. Apps cannot detect other installed apps without this explicit declaration.",
+      "location": "raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md:65"
+    },
+    {
+      "text": "* iOS limits this list to 50 schemes per app.",
+      "location": "raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md:90"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md:126"
+    },
+    {
+      "text": "Required when the payment option is UPI Intent (`paymentMethod.type`: **upi\\_intent**).",
+      "location": "raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md:188"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-ios-drop-in-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-ios-drop-in]] \u2014 2026-09-15 iOS Drop-in UPI Intent guide: Sessions v68+, Smart Intent privacy-limited declared schemes, Advanced `await` and required Intent `appId`; QR is mentioned only for web testing, while webhook/Customer Area checks bound simulator outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This raw iOS Drop-in page has no Collect migration date, iOS QR implementation, manual app-return setup or iOS SDK version; consult separate sources before claiming them.",
+          "Advanced action-handling prose specifies await although its step-link anchor says handle-the-redirect.",
+          "The v72 test request and simulator outcome are examples, not proof of authorization, current provider availability or live enablement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "8a7d2cf38f40054f80f7d0d0649b2c4c646325bf27b1ee5993489cf24728ac72",
+  "status": "candidate_ready"
+}

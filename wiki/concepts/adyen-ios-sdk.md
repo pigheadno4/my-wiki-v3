@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-kakaopay-ios-component]] — 2026-09-15 iOS Components Sessions/Advanced KakaoPay guide for redirect prerequisites, recurring-token creation and TEST/LIVE wording boundaries.
+
+
 - [[source-adyen-docs-payment-methods-paypay-ios-component]] — 2026-09-15 PayPay-specific iOS Components Sessions/Advanced guide for redirects, TEST simulator and LIVE app/IP conditions, with unresolved `None`/configuration and Advanced-link examples.
 
 

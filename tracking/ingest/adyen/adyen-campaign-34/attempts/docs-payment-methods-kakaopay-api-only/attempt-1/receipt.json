@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen KakaoPay API-only integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/api-only/2026-09-15.md\"\ntags: [adyen, kakaopay, api-only, korea, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 KakaoPay guide adds method-specific instructions to an existing **API-only Advanced Web integration**. It requires `action.type: redirect` handling and KakaoPay setup in Adyen Customer Area. The first-payment route and the optional recurring/token route have different fields and lifecycle gates. A listed method, redirect, token request or sample payment does not establish current merchant eligibility, final authorization, capture or settlement. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- For `/paymentMethods` discovery, the guide specifies `countryCode: KR` and `amount.currency: KRW`; its illustrative response has type `kakaopay`. The API-only payment form need not collect additional shopper information. In the **ordinary first-payment** path, the page says no further KakaoPay-specific `/payments` parameters are needed and relies on the pre-existing redirect flow. Its 'How it works' list conditionally mentions extra item information, but the following `/payments` section provides no item fields or request example; do not infer a complete item-data schema or omit base payment fields.\n- For a **recurring token**, the initial `/payments` request adds `storePaymentMethod: true` and a unique `shopperReference`. The shopper logs into Kakao and confirms the recurring transaction. Only **when the initial payment has settled** does the guide say `recurring.token.created` arrives with `shopperReference`, initial-payment `pspReference` as `eventId`, and `storedPaymentMethodId`; the merchant server must receive the token-lifecycle webhook. The page does not describe a separate consent-screen implementation, guarantee settlement or promise a token immediately on redirect/authorization.\n- A later server `/payments` token charge uses `paymentMethod.storedPaymentMethodId` (also discoverable via `/listRecurringDetails`), the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` otherwise. Code samples include `paymentMethod.type: kakaopay`, amount, reference and merchant account. This is a request recipe, not proof of approval or settled funds; the base integration remains responsible for response and final-status handling.\n- The examples use Adyen Checkout TEST **v72** for `/paymentMethods` and TEST **v68** for a recurring `/payments` curl request, with older language-library examples. The Java recurring amount is 15000 while curl and other examples show 1000; those values illustrate requests, not a uniform amount requirement. No explicit current minimum version or cross-version compatibility is established.\n- The Test and go live section awkwardly says 'test successful KakaoPay live payments' using a real KakaoPay-registered mobile number, then directs test status checks to TEST Customer Area; it separately requires a request in **live** Customer Area before live acceptance. Preserve that TEST/LIVE wording conflict instead of treating it as a safe test method or proven live payment. No real account or payment test was performed.\n\n## Detail locators\n\n- API-only/redirect/Customer Area prerequisites, flow and form: raw lines 19\u201342. KR/KRW discovery, TEST v72 example and `kakaopay` response: raw lines 44\u201383. Base no-extra-fields sentence versus conditional item-information sentence: raw lines 31\u201336 and 85\u201387.\n- Initial token request, shopper confirmation and **post-settlement** token-created webhook fields: raw lines 89\u2013112. Later token request and recurring-model fields: raw lines 114\u2013126; TEST v68 curl and versioned language examples: raw lines 128\u2013325. Ambiguous testing and separate live Customer Area gate: raw lines 327\u2013335.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main payment-flow context.\n- [[adyen-tokenization]] \u2014 stored payment method and token lifecycle context.\n- [[source-adyen-docs-payment-methods-kakaopay]] \u2014 separately captured KakaoPay overview; route/capability descriptions do not prove this merchant's enablement.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/api-only/2026-09-15|KakaoPay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **redirect**.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "When you make the [/paymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods) to [get available payment methods](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#get-available-payment-methods), specify the following so that KakaoPay is included in the response.",
+      "location": "raw line 46"
+    },
+    {
+      "text": "You do not need to add any parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 87"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 105"
+    },
+    {
+      "text": "To test successful KakaoPay live payments, you need to use a real mobile number registered with a [KakaoPay account](https://www.kakaopay.com).",
+      "location": "raw line 329"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-api-only-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-api-only]] \u2014 2026-09-15 KakaoPay API-only Advanced Web redirect guide for KR/KRW discovery, ordinary versus recurring fields and token-created webhook after settlement; conditional item text, versioned examples and mixed TEST/LIVE wording are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Ordinary-payment no-extra-parameters wording does not apply to the separately specified token-creation and token-charge fields or remove base Advanced request handling.",
+          "The flow mentions item information only if applicable, but provides no item schema; do not manufacture one.",
+          "The recurring token-created webhook is stated to follow settlement, not merely request, redirect or authorization.",
+          "The test section says 'test successful ... live payments' and separately points to TEST Customer Area; keep environment ambiguity visible.",
+          "TEST v72 discovery and TEST v68 recurring curl plus varying example amounts do not prove version/amount requirements or payment outcomes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/api-only/2026-09-15.md",
+  "raw_sha256": "4a1522a4fcb01cf768b91390d7006ebf8533366caa5fbce2991a491ae2075d2e",
+  "status": "candidate_ready"
+}

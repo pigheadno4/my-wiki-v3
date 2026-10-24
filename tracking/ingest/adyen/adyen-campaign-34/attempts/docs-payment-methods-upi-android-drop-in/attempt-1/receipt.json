@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-upi-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/android-drop-in/2026-09-15.md\"\ntags: [adyen, upi, android, drop-in, intent]\n---\n\n## Overview\n\nThis [[adyen]] guide adds UPI to an existing **Android Drop-in** integration under **Sessions** or **Advanced** server-side flows. It states an optional submit-button setting, a conditional Advanced **Intent app ID** and TEST simulator checks. The QR simulator step in this Android page is explicitly marked **\u201con web\u201d**; the page does not establish an Android QR scan implementation, UPI Collect migration rule or LIVE onboarding procedure. A simulator selection or client action is not proof of final authorization, capture or settlement. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The page requires existing Android Drop-in Sessions with **Checkout API v68 or later** and UPI added in Customer Area. It says no extra UPI parameters for the base `/sessions` request. The UPI configuration table lists `setSubmitButtonVisible` with no required mark to control button display. The base Sessions request still applies; no separate action-handling prerequisite is stated in this table. See raw lines 23\u201360.\n- **Advanced:** The page requires existing Android Drop-in Advanced, handling an additional `action.type: await` action and UPI in Customer Area. It lists the same optional submit-button setting. For a `/payments` request using `paymentMethod.type: upi_intent`, the table requires `paymentMethod.appId` identifying the shopper's TPAP; the listed app IDs and TEST v72 `gpay`/INR example are flow-specific. The v72 sample is not stated as a general Advanced minimum, and Intent's app ID should not be applied to QR. The await-action link itself ends in a `#handle-the-redirect` anchor, so follow the action type text and applicable base guide rather than treating the anchor as an action-type synonym. See raw lines 86\u2013148.\n- **Snippet limit:** Both Kotlin configuration snippets contain an extra bare opening brace before `setSubmitButtonVisible(value)`. They are illustrative and need SDK/version verification before reuse; the page does not state a mandatory UPI configuration object. See raw lines 44\u201360 and 100\u2013116.\n- **TEST simulator and outcome check:** The page says UPI Intent redirects to an Adyen-hosted simulator; it separately says UPI QR **\u201con web\u201d** uses a scanned QR to reach the simulator. Testers select an outcome and validate handling and Customer Area listing. The generic webhook step prescribes `eventCode: AUTHORISED` for the selected outcome, which does not explain non-authorized selections. Do not infer that every simulator result produces AUTHORISED or that a listed transaction proves a final successful payment. Testing payment modifications is recommended afterward. See raw lines 62\u201384 and 150\u2013170.\n- **Scope:** The substantive page does not give a Collect migration cutoff/date, UPI AutoPay mandate flow or a separate live enablement checklist despite its \u201cTest and go live\u201d headings. See raw lines 15\u2013170.\n\n## Detail locators\n\n- Sessions requirements, base request and optional configuration: raw lines 23\u201360.\n- Advanced await action, conditional Intent app ID and sample: raw lines 86\u2013148.\n- Duplicated TEST simulator and webhook-check wording: raw lines 62\u201384 and 150\u2013170.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n- [[source-adyen-docs-payment-methods-upi]]\n- [[source-adyen-docs-payment-methods-upi-api-only]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/android-drop-in/2026-09-15|Adyen UPI Android Drop-in guide]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 31, Sessions requirements"
+    },
+    {
+      "text": "| setSubmitButtonVisible |          | Set if you want the submit button to be visible. |",
+      "location": "raw line 48, Sessions optional configuration; repeated line 104 under Advanced"
+    },
+    {
+      "text": "`action.type`: **await**.",
+      "location": "raw line 93, Advanced action handling"
+    },
+    {
+      "text": "Required when the payment option is UPI Intent",
+      "location": "raw line 126, Advanced appId table"
+    },
+    {
+      "text": "For UPI QR (on web): Scan the QR code to go to an Adyen-hosted Payment Simulator page.",
+      "location": "raw line 73, Sessions TEST step; repeated line 159 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-android-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-android-drop-in]] \u2014 2026-09-15 UPI Android Drop-in Sessions (Checkout v68+) and Advanced add-on with await action, Intent-only appId and TEST simulator guidance; Web-qualified QR step, Kotlin snippet and generic AUTHORISED checklist are source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Kotlin snippets at raw lines 52\u201360 and 108\u2013116 have an extra bare brace.",
+          "TEST steps at raw lines 75\u201382 and 161\u2013168 allow outcome selection but prescribe AUTHORISED generically; failure-case webhook behavior is unresolved.",
+          "The QR simulator step says '(on web)' despite this Android Drop-in page."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/android-drop-in/2026-09-15.md",
+  "raw_sha256": "aecce7fc1ac6d7a8c6bd0d2d2e9d30b4f7e2268d8a655563e1e9e9a9ea0bf0e1",
+  "status": "candidate_ready"
+}

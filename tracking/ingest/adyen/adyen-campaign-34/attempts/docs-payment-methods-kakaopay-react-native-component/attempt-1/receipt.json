@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"KakaoPay React Native Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/react-native-component/2026-09-15.md\"\ntags: [adyen, kakaopay, react-native, components, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide at a **React Native Component** URL says React Native Components **do not support Sessions flow** and gives only an **Advanced** KakaoPay add-on. The page title itself reads \u201cKakaoPay React Component,\u201d while its prerequisite names React Native; preserve that title/URL discrepancy rather than treating it as a separate Web React guide. Setup and recurring request examples do not prove a live payment or token was created. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The Sessions section explicitly says **React Native Components do not support Sessions flow**. Advanced requires an existing React Native Components Advanced integration, redirect handling for `action.type: redirect`, and KakaoPay added in Customer Area. The Advanced **Integration type** link points to `integration=Drop-in` despite its Components label; the redirect and payment links point to Components. No SDK or Checkout API minimum is stated for the Advanced integration on this page. (raw lines 25\u201341, 49\u201353)\n- For a **base Advanced payment**, the page says no additional KakaoPay-specific configuration or `/payments` parameters. That statement does not remove the separate conditional fields for requesting a recurring token. (raw lines 43\u201353, 55\u201380)\n- To request a **recurring token**, include `storePaymentMethod: true` and `shopperReference` in the initial `/payments` request. This triggers Kakao account login and shopper confirmation. The guide says a `recurring.token.created` webhook containing `shopperReference`, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId` is received **when the payment has settled**; the merchant server must receive token lifecycle events. Request submission or redirect is not token issuance. (raw lines 55\u201380)\n- A later token payment uses `paymentMethod.storedPaymentMethodId` (from the webhook or `/listRecurringDetails`), matching `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. TEST Checkout **v68** curl and several language-library examples illustrate `paymentMethod.type: kakaopay` and KRW; these are sample requests, not a stated minimum version or an observed authorization/capture/settlement. (raw lines 82\u2013117, 119\u2013293)\n- The samples vary: curl and most libraries use KRW **1000**, while Java uses **15000**; Java/PHP/C# include `returnUrl`, while curl/Node/Python/Ruby omit it. Do not infer a universal amount or return-URL requirement from these examples. (raw lines 98\u2013148, 159\u2013203, 205\u2013293)\n- The test/live prose says a **real mobile number registered with a KakaoPay account** is needed to test successful **live** payments, separately points to **test Customer Area** for test-payment status, and requires a request for KakaoPay in **live Customer Area** before live acceptance. It reports neither method approval nor an actual payment or recurring webhook outcome. (raw lines 295\u2013303)\n\n## Detail locators\n\n- Sessions unsupported and Advanced prerequisites/link mismatch: raw lines 25\u201341.\n- Base Advanced configuration/parameter statements: raw lines 43\u201353.\n- Initial recurring request, Kakao confirmation and settlement-gated token webhook: raw lines 55\u201380.\n- Later token payment fields and TEST examples: raw lines 82\u2013293.\n- TEST/live wording and separate live request: raw lines 295\u2013303.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-kakaopay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/react-native-component/2026-09-15|Adyen KakaoPay React Native Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw line 29"
+    },
+    {
+      "text": "| **Integration type**  | Make sure that you have an existing Advanced flow [React Native Components integration](/online-payments/build-your-integration/advanced-flow?platform=React%2BNative\\&integration=Drop-in).                                         |   |",
+      "location": "raw line 39"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=React%2BNative\\&integration=Components#make-a-payment).",
+      "location": "raw line 53"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 73"
+    },
+    {
+      "text": "* `storedPaymentMethodId`: the token that you need to make recurring payments for this shopper.",
+      "location": "raw line 78"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-reactnative-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-react-native-component]] \u2014 2026-09-15 KakaoPay React Native Components Advanced-only redirect add-on (Sessions unsupported) with settlement-gated recurring token route; title and Drop-in prerequisite-link mismatch remain qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/react-native-component/2026-09-15.md",
+  "raw_sha256": "56f0493ceaf0a6d7139fea6b50d3e4b1514a3964a7aa9358487e32be62edc408",
+  "status": "candidate_ready"
+}

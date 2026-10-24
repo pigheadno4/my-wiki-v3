@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen KakaoPay React Native Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, kakaopay, react-native, drop-in, recurring, redirect]\n---\n\n## Overview\n\nThis [[adyen]] guide adds KakaoPay to an existing **React Native Drop-in** integration using **Sessions** or **Advanced** server-side flows. It separately documents recurring-token creation and later token payments through `/payments`. The method add-on, shopper redirect, token-creation request, settlement-conditioned token webhook and later payment request are distinct events; none alone proves final authorization, capture or settlement of a later charge. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Base Sessions add-on:** The guide requires existing React Native Drop-in Sessions, **Checkout API v68 or later**, `action.type: redirect` handling and KakaoPay added in Customer Area. It says no extra KakaoPay parameters for the base `/sessions` request and no extra KakaoPay client configuration. Its integration-type label says Sessions but its URL points to **Advanced** Drop-in; the other Sessions-step URLs point to Sessions. The no-extra statement is method-specific, not an empty base request or a waiver of the recurring `/payments` fields below. See raw lines 25\u201348.\n- **Base Advanced add-on:** The Advanced section requires an existing React Native Drop-in Advanced flow, redirect handling and Customer Area method setup. It says no extra KakaoPay client configuration or base `/payments` parameters. The Advanced table does **not** restate the Sessions v68+ requirement. The later recurring-token instructions are conditional additions for tokenization and use, not a contradiction of the one-time base add-on. See raw lines 300\u2013322 and 324\u2013363.\n- **Create a recurring token:** For the recurring flow, the guide instructs a `/payments` request with `storePaymentMethod: true` and a merchant-unique `shopperReference`, followed by the shopper's Kakao login and confirmation. It says **when the payment has settled**, a `recurring.token.created` webhook carries `shopperReference`, initial-payment `pspReference` as `eventId`, and `storedPaymentMethodId`. The server must receive recurring-token lifecycle events. Requesting storage or observing shopper confirmation is not the token-created event. The page does not specify a separate consent-record mechanism or guarantee that settlement will occur. See raw lines 50\u201375 and 324\u2013349.\n- **Use a token later:** The later `/payments` request uses the webhook token (or a value obtained from `/listRecurringDetails`), the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. Example requests show `type: kakaopay`, KRW and merchant/reference placeholders. The curl sample targets TEST Checkout v68; Node, Python and Ruby snippets name particular API-library versions, so none defines a universal React Native SDK or current API requirement. Sample amounts differ, including Java's KRW 15000 versus KRW 1000 in other examples. See raw lines 77\u2013288 and 351\u2013562.\n- **TEST/LIVE wording:** Both sections say successful **live** payment testing needs a real mobile number registered with a KakaoPay account, then point to the **test** Customer Area payment list for \u201ctest payments\u201d; the page does not reconcile those environments. It separately says to submit a KakaoPay request in **live** Customer Area before accepting live payments. A submitted request or payment-list lookup does not prove live approval or a final outcome. See raw lines 290\u2013298 and 564\u2013572.\n\n## Detail locators\n\n- Sessions base requirements and method-specific additions: raw lines 25\u201348.\n- Sessions token creation/webhook/reuse: raw lines 50\u201389; versioned example variants: raw lines 91\u2013288.\n- Advanced base requirements and token lifecycle: raw lines 300\u2013363; examples: raw lines 365\u2013562.\n- Test/live statements: raw lines 290\u2013298 and 564\u2013572.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-kakaopay]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/react-native-drop-in/2026-09-15|Adyen KakaoPay React Native Drop-in guide]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw line 68, Sessions create a token; repeated line 342 under Advanced"
+    },
+    {
+      "text": "`paymentMethod.storedPaymentMethodId`: The `storedPaymentMethodId` from the [recurring.token.created]",
+      "location": "raw line 81, Sessions token reuse; repeated line 355 under Advanced"
+    },
+    {
+      "text": "To test successful KakaoPay live payments, you need to use a real mobile number registered with a [KakaoPay account]",
+      "location": "raw line 292, Sessions test and go live; repeated line 566 under Advanced"
+    },
+    {
+      "text": "Before you can accept live KakaoPay payments, you need to submit a request for KakaoPay in your [live Customer Area]",
+      "location": "raw line 298, Sessions test and go live; repeated line 572 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-react-native-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-react-native-drop-in]] \u2014 2026-09-15 KakaoPay React Native Drop-in Sessions (Checkout v68+) and Advanced redirect add-on with settlement-conditioned recurring-token webhook and later token payments; Sessions link and live/test wording remain qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions integration-type URL at raw line 33 points to Advanced Drop-in.",
+          "Live-payment test wording at raw lines 292/566 is juxtaposed with test Customer Area payment-list wording at lines 296/570; do not merge environments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "315f182c77c5b43b6d2f2315705bd5ca67935e6086aaea79aafb147732c1e721",
+  "status": "candidate_ready"
+}

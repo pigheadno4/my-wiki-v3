@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-upi-upi-autopay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen UPI Autopay API-only recurring integration\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/upi-autopay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/upi-autopay/api-only/2026-09-15.md\"\ntags: [adyen, upi, autopay, recurring, mandates, api-only]\n---\n\n## Overview\n\nThis 2026-09-15 UPI Autopay API-only guide covers **shopper-approved mandate registration**, later pre-debit notifications and recurring charges, then mandate cancellation. It assumes an existing API-only Advanced integration. The shopper approves the mandate in a UPI app; the UPI provider and issuing bank use it to track the billing plan. A request, app return, pending response, successful notification or stored-token reference alone does not establish successful authorization, capture, settlement or a usable live mandate. [[adyen]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Registration and consent:** send a server `/payments` request with UPI `upi_intent`, `upi_qr` or legacy `upi_collect`, `storePaymentMethod: true`, `shopperInteraction: Ecommerce`, `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`, shopper reference, INR initial amount and mandate cap/rule/frequency/end date and related fields. Collect requires VPA; Intent appId targets a UPI app and is mandatory on iOS, with omitted/null appId yielding an Android generic drawer. Intent is mobile app/mobile web only, not desktop. The guide says the initial authorization happens automatically within five minutes **after successful mandate registration** and initial `amount.value` cannot exceed `mandate.amount`; these are historical source claims, not an outcome guarantee. Monthly/weekly billing day and attempt rule differ from adhoc.\n- **Approval and final state:** Intent launches the app from `action.url`, with Android auto-return versus manual iOS app closing; QR displays `action.qrCode`; Collect asks the shopper to approve in-app within a five-minute countdown. The examples return `Pending` with `await` or `qrCode` actions, while the guide directs the merchant to an AUTHORISATION webhook for the payment result. Optional Standard webhook settings expose mandate ID/status and UPI metadata; store the NPCI Unique Mandate Number for later use. `AUTHORISATION` false/true has distinct failed/success handling, and its initial true description says the payment completed and a mandate was created. A stated 2\u20133-day return of any debited amount after failure is guidance, not proof of a refund.\n- **Subsequent cycles:** a merchant triggers `/notifyShopper` with stored method, merchant, shopper, amount, billing date and, for adhoc mandates, a unique billing sequence number. Adyen forwards to UPI network/issuer for shopper alert; the page says the notification must precede each charge by at least **24 hours**, and shoppers may cancel the mandate. On successful notification, retain `shopperNotificationReference` for the later server `/payments` call with `shopperInteraction: ContAuth`, stored method ID, matching reference and adhoc sequence, and INR amount within the mandate rule. Its `Received` response indicates initiation; use the recurring AUTHORISATION webhook for the payment outcome. The snapshot also states non-customer-initiated work must run in specified IST non-peak windows and limits failed recurring authorization retries to three, at least one hour apart, then a new notification after exhaustion.\n- **Cancellation and lifecycle:** shopper cancellation occurs in the UPI app; merchant cancellation deletes `/storedPaymentMethods/{storedPaymentMethodId}` to remove the stored token and cancel the linked mandate. The guide points to `recurring.token.disabled` webhook for cancellation status; deleting/requesting is not itself confirmation. `mandate.endsAt` sets a billing-plan end date, but this page gives no amendment flow.\n- **Material source tensions:** the registration table's `mandate.amountRule` says `max`/`exact` compare with initial `amount.value`, whereas the later `/notifyShopper` table compares with `mandate.amount`. The acquirer rule says merchant-defined values are alphanumeric, while `mandate.remarks` says spaces are allowed and sample references/remarks contain spaces or underscores. Intent and QR response snippets have malformed JSON (missing comma after `paymentData`); the recurring response has an unterminated shopper-reference string. The recurring AUTHORISATION-success row repeats 'mandate was created' although it sits in the subsequent-charge section. Treat snippets and contradictory thresholds as unverified until the current contract is checked.\n- **Historical method/test scope:** the captured page says NPCI announced a UPI Collect deprecation plan in November 2025, Adyen will no longer offer Collect for **new** integrations, and custom API/UI merchants should migrate toward Intent/QR; the Collect example remains in the page. TEST magic amounts are scenario examples requiring Implementation Manager setup; LIVE acceptance requires Account Manager onboarding. Neither statement proves current provider eligibility or an executed mandate/payment.\n\n## Detail locators\n\n- API-only prerequisite, alphanumeric warning, registration fields, amount/frequency/expiry/remark rules: raw lines 21\u201358. Intent app-switch/return/webhook and TEST v72 sample: raw lines 60\u2013126. QR approval and sample: raw lines 128\u2013185. Collect deprecation, five-minute wait and sample: raw lines 187\u2013248.\n- Optional webhook settings, mandate/UPI fields, initial AUTHORISATION outcomes and example: raw lines 250\u2013322. Non-peak IST windows, pre-debit roles/24-hour lead time, `/notifyShopper` fields and v67 TEST example/response: raw lines 324\u2013395. Recurring request, `Received` response, webhook/retry table: raw lines 397\u2013471. Cancellation and TEST/LIVE gates: raw lines 473\u2013503.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 recurring stored-payment-method and token lifecycle concept.\n- [[adyen-online-payments]] \u2014 initial and subsequent server payment/webhook flow context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/upi-autopay/api-only/2026-09-15|UPI Autopay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To initiate a billing plan for a shopper, you need to get shopper approval to create an Autopay mandate in their UPI app and store their payment details when the mandate is approved successfully",
+      "location": "raw line 34"
+    },
+    {
+      "text": "We send a webhook to you with the final status of the payment.",
+      "location": "raw line 74"
+    },
+    {
+      "text": "the pre-debit notification **must be sent at least 24 hours before** each recurring payment.",
+      "location": "raw line 345"
+    },
+    {
+      "text": "You can retry the authorization request up to 3 times, with a minimum 1-hour interval between each attempt.",
+      "location": "raw line 470"
+    },
+    {
+      "text": "Send a [delete request](/online-payments/tokenization/managing-tokens#delete-stored-details) using `/storedPaymentMethods/{storedPaymentMethodId}` to remove the shopper\u2019s stored token and cancel the mandate.",
+      "location": "raw line 479"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-autopay-api-only-tokenization-source",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-upi-autopay-api-only]] \u2014 2026-09-15 UPI Autopay API-only mandate/token, initial approval, 24-hour pre-debit, recurring charge, webhook, retry and cancellation guide; Collect transition, conflicting rule text and sample faults are qualified in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Mandate amountRule compares with amount.value in the registration table but with mandate.amount in the later notifyShopper table; do not resolve silently.",
+          "Global alphanumeric-only merchant-value rule conflicts with remarks allowing spaces and example references/remarks; examples also contain malformed JSON.",
+          "Recurring AUTHORISATION success row repeats mandate-created wording from the initial payment, so interpret its object/action within the recurring section cautiously.",
+          "UPI Collect new-integration phaseout, 15,000 INR authentication note, IST windows and 24-hour notice are historical source statements, not current regulatory/merchant eligibility proof.",
+          "A successful notifyShopper response, Received recurring payment response, token delete or app return does not itself establish charge or cancellation completion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/upi-autopay/api-only/2026-09-15.md",
+  "raw_sha256": "0d005305c9b4c3ba1e36130c9bb1a3324f9bb251ec68c1b2b40029820ce66561",
+  "status": "candidate_ready"
+}

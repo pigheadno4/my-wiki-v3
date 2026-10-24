@@ -1,0 +1,5 @@
+Q1. Where does this KakaoPay Android page route an integration, and what comes first?
+A1. It links Android Drop-in and Components child guides, with the Components link naming InstantPaymentComponent for the KakaoPay redirect (raw lines 19–27). It says to create the main integration first and links Android Drop-in/Components base guides for Sessions and Advanced flows (raw lines 29–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-kakaopay-android]] → [[raw/adyen/docs/payment-methods/kakaopay/android/2026-09-15]]
+
+Q2. Does this chooser prove child-guide flow support, required versions or a payment result?
+A2. No. It is a navigation page with a sequencing note and links; it gives no child-specific API/SDK minimum, merchant setup, return/webhook behavior, TEST/LIVE procedure or completed payment result. Those need the linked guides (raw lines 15–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-kakaopay-android]] → [[raw/adyen/docs/payment-methods/kakaopay/android/2026-09-15]]

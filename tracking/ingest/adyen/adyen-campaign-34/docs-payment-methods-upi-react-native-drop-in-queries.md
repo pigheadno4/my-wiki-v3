@@ -1,0 +1,9 @@
+# UPI React Native Drop-in retrieval check
+
+Q1. What are the Sessions and Advanced UPI additions and their version/request differences?
+
+Sessions lists existing React Native Drop-in, Checkout API v68+, Customer Area UPI setup, and no method-specific extra `/sessions` fields or configuration (raw lines 25–47). Its Integration type link at line 33 points to Advanced despite saying Sessions. Advanced lists existing React Native Drop-in, `action.type: await` handling, Customer Area setup, no extra configuration, and conditional `paymentMethod.appId` for `upi_intent` in `/payments`; no separate Advanced API minimum is given (raw lines 71–119). The TEST v72 request is an example. Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-upi-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/upi/react-native-drop-in/2026-09-15]].
+
+Q2. Does the simulator passage establish a native QR route or a final live payment result?
+
+No. The page describes a TEST UPI Intent redirect to an Adyen-hosted simulator; its QR wording explicitly says 'on web', so it cannot establish native React Native QR behavior. Tester-selected outcomes and the `AUTHORISED`-spelled webhook/Customer Area checklist are instructions, not observed live finality (raw lines 49–69, 121–141). The Advanced row says `await` but links to `#handle-the-redirect`, and the sibling UPI API-only outcome tables spell the webhook AUTHORISATION; those differences need flow-specific verification (raw lines 79–80, 129–139; [[source-adyen-docs-payment-methods-upi-api-only]]). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-upi-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/upi/react-native-drop-in/2026-09-15]].

@@ -1,0 +1,9 @@
+# Retrieval checks — UPI Flutter Drop-in
+
+Q1. What does this UPI add-on require in Sessions and Advanced Flutter Drop-in?
+
+A1. The Sessions branch says existing Flutter Drop-in Sessions integration, Checkout API v68+, UPI added in Customer Area and no additional UPI-specific `/sessions` or configuration fields (raw lines 25–47). Its Integration type link points to Advanced despite the Sessions heading/create-session link (raw lines 33, 41). The Advanced branch says existing Flutter Drop-in Advanced integration, `action.type: await`, UPI setup and no extra client configuration (raw lines 71–87); for UPI Intent, `/payments` requires `paymentMethod.appId`, with a TEST v72 example (raw lines 89–119). Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-upi-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/upi/flutter-drop-in/2026-09-15]].
+
+Q2. What can the simulator and action-link wording establish about outcomes and QR support?
+
+A2. The TEST checklist describes Intent redirect to simulator, QR scan **on web**, selected simulated outcome, webhook receipt and Payment-list inspection (raw lines 49–69, 121–141). It does not demonstrate Flutter QR rendering or a real final payment. Advanced requires `await` but links a `#handle-the-redirect` anchor (raw line 80), and the checklist spells `AUTHORISED` (raw lines 66, 138), while the separately ingested UPI API-only source states final AUTHORISATION webhook in its one-off flow; verify the event contract. No LIVE eligibility or successful authorization/capture/settlement is evidenced. Retrieve via [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-upi-flutter-drop-in]] → [[raw/adyen/docs/payment-methods/upi/flutter-drop-in/2026-09-15]].

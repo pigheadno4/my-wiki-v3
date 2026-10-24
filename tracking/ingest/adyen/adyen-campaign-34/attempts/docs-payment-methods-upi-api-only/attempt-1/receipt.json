@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-upi-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"UPI API-only payments\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/api-only/2026-09-15.md\"\ntags: [adyen, upi, india, api-only, redirects, qr]\n---\n\n## Overview\n\nThis 2022-modified, 2026-09-15-captured [[adyen]] **India UPI API-only** guide describes a merchant-built checkout form and three one-off paths: UPI **Intent** app redirect, **QR** scan and legacy **Collect** UPI ID/VPA. It routes through [[adyen-online-payments]]. The body also contains a November 2025 UPI Collect change, so the old metadata date is not a reliable freshness marker. A `Pending` request result, app launch, QR display or VPA validation is not final payment evidence.\n\n## Key takeaways\n\n- The stated prerequisite is an existing **API-only Advanced Web** integration and adding the payment method in **test Customer Area**. The examples use INR in minor units and TEST Checkout URLs, with **v72** for Intent, **v68** for QR and Collect, and a **v71** validation example. These are example endpoint versions, not a common minimum version or proof of current live eligibility.\n- **UPI Intent:** the `/payments` request specifies `paymentMethod.type: upi_intent`, an `appId` for the chosen third-party UPI app, and INR amount. The page lists app IDs including gpay, phonepe, bhim, paytm, amazonpay and others at the raw locator. It recommends Intent for mobile shoppers and screen-size detection; the response's `Pending` and `action.url` direct a mobile app switch. Android may offer compatible apps; iOS chooses a default. The recommended iOS/Android browser containers for GET redirects are advice, not a guarantee of safe return or successful debit.\n- **UPI QR:** the `/payments` request uses `paymentMethod.type: upi_qr` and INR amount. `action.qrCodeData` is rendered at checkout for a shopper to scan in a UPI app; the page recommends QR for desktop/tablet and a five-minute **reminder timer**, without asserting a five-minute transaction expiry. The illustrative response shows `Pending`, `qrCode`, `details` and `redirect` data; its fields are example output, not a complete universal contract.\n- **UPI Collect:** the page says NPCI informed partners in **November 2025** of planned Collect deprecation, and Adyen would stop offering Collect to **new merchant integrations** while strongly recommending that existing custom Checkout API/UI Collect merchants migrate toward Intent/QR. It does not say existing Collect transactions had already ended. Collect requests use `paymentMethod.type: upi_collect`, shopper-entered `virtualPaymentAddress` and INR; `action.type: await` means to await the webhook.\n- Optional `/validateShopperId` can check Collect VPA format/current recognition only on **Adyen Direct**, not legacy Billdesk/PayU. It does **not guarantee a later debit**. The table allows `valid` or technical `unknown` to proceed and blocks explicit `invalid`; the prose says HTTP 4xx/5xx validation failures should also proceed rather than block. A successful VPA check is not authorization.\n- Intent, QR and Collect instruct the merchant to use **AUTHORISATION** webhook success/failure for payment outcome after shopper action; `Pending` means the final status is unavailable. A recommended five-minute waiting/countdown screen and subsequent shopper redirect/presentation depend on that asynchronous result. The repeated TEST simulator checklist instead spells the eventCode **AUTHORISED**, conflicting with the guide's **AUTHORISATION** webhook tables; retain this mismatch rather than treating either spelling as established from the test example. Simulator selections, Customer Area listing and recommended modification tests are instructions, not observed outcomes.\n\n## Detail locators\n\n- [[raw/adyen/docs/payment-methods/upi/api-only/2026-09-15|Pinned raw]], lines 14\u201323: API-only/India scope and prerequisite; lines 25\u201399: Intent fields, app list, TEST v72 example, Pending/action URL and app redirect.\n- Same raw, lines 101\u2013139: recommended browser/waiting UI, AUTHORISATION webhook and TEST simulator checklist with differing `AUTHORISED` spelling.\n- Same raw, lines 141\u2013251: QR fields, TEST v68 example, QR render/wait, webhook status and repeated simulator checklist.\n- Same raw, lines 253\u2013325: dated Collect change, optional VPA validation, Adyen Direct/legacy split and invalid versus technical-error handling.\n- Same raw, lines 327\u2013425: Collect TEST v68 example, await/webhook outcome and repeated simulator guidance; code samples include placeholders and should not be treated as a production implementation.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 separate token lifecycle context; this page concerns the UPI one-off flows, not AutoPay mandates.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/api-only/2026-09-15|UPI API only]]\n",
+  "quotes": [
+    {
+      "text": "Accept UPI payments in India using our APIs, and build your own payment form",
+      "location": "line 16, API only"
+    },
+    {
+      "text": "This means that the final status of the payment is not available yet.",
+      "location": "line 94, Redirect the shopper"
+    },
+    {
+      "text": "`action.qrCodeData`: Use this to render the QR code on your checkout page.",
+      "location": "line 180, UPI QR Make a payment"
+    },
+    {
+      "text": "we will no longer offer UPI Collect for *new* merchant integrations",
+      "location": "line 256, UPI Collect tab"
+    },
+    {
+      "text": "does not guarantee that a subsequent debit will succeed",
+      "location": "line 278, Validate UPI ID"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-api-only-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-api-only]] \u2014 2022-modified, 2026-09-15-captured India UPI API-only guide for INR Intent app redirects, QR display and legacy Collect VPA, with November 2025 new-merchant Collect cutoff, conditional validation and webhook-final outcomes; TEST checklist event spelling conflicts with webhook tables.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "November 2025 Collect policy appears in the body despite 2022 last_modified metadata; retain both dates rather than treating metadata as freshness proof.",
+          "TEST simulator checklists say eventCode AUTHORISED, while all flow outcome tables say AUTHORISATION.",
+          "Five-minute timers are recommendations/reminders, not documented payment expiry.",
+          "Collect VPA validation is optional, connection-limited and cannot prove subsequent debit success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/api-only/2026-09-15.md",
+  "raw_sha256": "6bb2bb784d49fa9509f245eaa6fb421c0d9e11757a7c7236cf601eb619426809",
+  "status": "candidate_ready"
+}

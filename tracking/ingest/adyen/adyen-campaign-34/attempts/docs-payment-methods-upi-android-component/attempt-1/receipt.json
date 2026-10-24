@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-upi-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"UPI Android Component\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/upi/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/upi/android-component/2026-09-15.md\"\ntags: [adyen, upi, android, components, india]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes UPI-specific Android Component setup for **existing Sessions or Advanced** integrations. It shows a general UPI Component, an Advanced-flow UPI Intent `appId` request field, and a TEST simulator checklist. It does not specify UPI AutoPay mandates or a live merchant approval procedure. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** requires an existing Android Components Sessions integration with **Checkout API v68 or later** and UPI added in Customer Area. It says no additional UPI-specific `/sessions` parameters. The UPI module is imported with `YOUR_VERSION`; Compose also imports `components-compose`. The optional `setSubmitButtonVisible` configuration has a blank Required column, and the page shows Compose and non-Compose `UPI.PROVIDER.get` routes using a payment method from `checkoutSession`. (raw lines 23\u2013139)\n- **Advanced:** requires an existing Android Components Advanced integration, UPI added in Customer Area, and handling an additional `action.type: await`. Its Component obtains the UPI payment method from a `/paymentMethods` response, with Compose and non-Compose routes. The same optional submit-button setting is listed. This section has no stated Checkout API minimum; its example `/payments` URL uses **v72**, which is an example version, not a universal floor. (raw lines 163\u2013274, 275\u2013305)\n- For **Advanced UPI Intent only** (`paymentMethod.type: upi_intent`), `paymentMethod.appId` is required and identifies the shopper's Third Party Application Provider (TPAP); the raw table lists possible app IDs. The TEST v72 request illustrates `gpay`, IN/INR and a `returnUrl`. Do not generalize the `appId` condition to all UPI options or infer a mandatory app/device selection flow from this example. (raw lines 275\u2013305)\n- The TEST checklist describes an Adyen-hosted Payment Simulator redirect for UPI Intent and a **\u201cUPI QR (on web)\u201d** scan path, then says to select and validate an outcome through webhook/Customer Area. That QR phrase is web-scoped text inside this Android guide, so it does not by itself establish an Android QR UI. Its `eventCode: AUTHORISED` is the listed expected webhook for that test checklist; the page presents no observed webhook, payment success or capture/settlement proof. (raw lines 141\u2013161, 307\u2013327)\n- The page contains placeholder dependencies/keys and a configuration snippet with nested bare braces around `setSubmitButtonVisible(value)`; those snippets need SDK/version-aware implementation review. This page does not state the UPI Collect transition dates or give Collect/AutoPay instructions; the method overview and their own guides are separate evidence. (raw lines 51\u201383, 96\u2013139, 183\u2013215, 228\u2013273)\n\n## Detail locators\n\n- Sessions prerequisites, imports, optional configuration and component mounting: raw lines 23\u2013139.\n- Sessions TEST simulator and webhook/Customer Area checklist: raw lines 141\u2013161.\n- Advanced action/Component setup and optional configuration: raw lines 163\u2013274.\n- Advanced UPI Intent `appId` condition and TEST v72 example: raw lines 275\u2013305.\n- Advanced TEST simulator/checklist: raw lines 307\u2013327.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-upi]]\n- [[source-adyen-docs-payment-methods-upi-api-only]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/upi/android-component/2026-09-15|Adyen UPI Android Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "| **Checkout API**     | Make sure that you use Checkout API v68 or later.                                                                                                           |   |",
+      "location": "raw line 32"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#create-a-payment-session).",
+      "location": "raw line 39"
+    },
+    {
+      "text": "| **Action handling**  | Make sure that your existing integration is set up to [handle the additional action](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Components#handle-the-redirect). `action.type`: **await**. |   |",
+      "location": "raw line 170"
+    },
+    {
+      "text": "| [paymentMethod.appId](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-paymentMethod-UpiIntentDetails-appId) | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | Required when the payment option is UPI Intent (`paymentMethod.type`: **upi\\_intent**). The identifier of the Third Party Application Provider (TPAP) that the shopper uses to make the UPI payment. Possible values: - **gpay**: Google Pay - **phonepe**: PhonePe - **bhim**: BHIM (Bharat Interface for Money) - **paytm**: Paytm - **amazonpay**: Amazon Pay - **cred**: Cred - **wapay**: WhatsApp Pay - **jupiter**: Jupiter - **navi**: navi - **supermoney**: Super.money - **mobikwik**: MobiKwik - **freecharge**: Freecharge |",
+      "location": "raw line 283"
+    },
+    {
+      "text": "   * Your webhook server: Your server must accept the corresponding webhook message with `eventCode`: **AUTHORISED**.",
+      "location": "raw line 324"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-upi-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-upi-android-component]] \u2014 2026-09-15 UPI Android Components Sessions (Checkout v68+) and Advanced guide for await action, conditional Intent TPAP appId and TEST simulator/webhook checklist; QR text is web-scoped.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/upi/android-component/2026-09-15.md",
+  "raw_sha256": "98afd619c65d281a3f2571e425ac0d9f0a3a18a0f96b845ff797ad3bc75ebed2",
+  "status": "candidate_ready"
+}

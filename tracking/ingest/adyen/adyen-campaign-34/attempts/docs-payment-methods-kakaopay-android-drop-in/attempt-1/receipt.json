@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-kakaopay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"KakaoPay Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/kakaopay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/kakaopay/android-drop-in/2026-09-15.md\"\ntags: [adyen, kakaopay, android, drop-in, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds KakaoPay to an **existing Android Drop-in integration**, split between Sessions and Advanced server-side flows. The base payment instructions and the conditional recurring-token route have different request requirements; neither a redirect nor a token-request field proves a completed payment or issued token. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions base flow:** requires an existing Android Drop-in Sessions integration with **Checkout API v68 or later** and KakaoPay added in Customer Area. It says no additional KakaoPay-specific `/sessions` or Drop-in configuration parameters are needed. This Sessions requirements table does **not** state redirect handling; the explicit `action.type: redirect` row is in Advanced. (raw lines 25\u201346, 300\u2013309)\n- **Advanced base flow:** requires an existing Advanced Android Drop-in integration, redirect handling for `action.type: redirect`, and KakaoPay added in Customer Area. It says no additional KakaoPay-specific Drop-in configuration or `/payments` parameters for a base payment. The Advanced section states no Checkout API minimum; v68 is stated for Sessions and illustrated in recurring curl examples. (raw lines 300\u2013320, 363\u2013384)\n- **Recurring creation is conditional:** the guide says to include `storePaymentMethod: true` and `shopperReference` in a `/payments` request. This triggers a Kakao account login and shopper confirmation flow. It says the `recurring.token.created` webhook arrives **when the initial payment has settled**, containing `shopperReference`, `eventId` equal to the initial `pspReference`, and `storedPaymentMethodId`; the merchant server must be able to receive token lifecycle events. These recurring fields qualify the base-flow no-extra-fields wording. (raw lines 48\u201373, 322\u2013347)\n- A later token payment uses `paymentMethod.storedPaymentMethodId` from the webhook or `/listRecurringDetails`, the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` for fixed intervals or `UnscheduledCardOnFile` for non-fixed intervals. TEST curl and API-library snippets show KRW and `paymentMethod.type: kakaopay`; sample requests do not demonstrate token issuance, approval, authorization, capture or settlement. (raw lines 75\u201387, 89\u2013285, 349\u2013361, 363\u2013559)\n- Examples differ: Java uses **KRW 15000** while curl and most others use **KRW 1000**; Java/PHP/C# include `returnUrl` while curl/Node/Python/Ruby do not. Treat these as sample variations, not a universal amount or return-URL rule. (raw lines 91\u2013141, 152\u2013195, 198\u2013285; repeated at 365\u2013559)\n- The test/live prose says a real mobile number registered with a KakaoPay account is needed to test successful **live** payments, separately points to test Customer Area for test-payment status, and requires a KakaoPay request in **live Customer Area** before live acceptance. The wording does not establish actual TEST/LIVE success or live method approval. (raw lines 288\u2013298, 562\u2013570)\n\n## Detail locators\n\n- Sessions prerequisites and base no-extra request/configuration: raw lines 25\u201346.\n- Sessions recurring creation, settlement-gated webhook and later token request: raw lines 48\u201387.\n- TEST recurring examples and variation: raw lines 89\u2013285.\n- Advanced redirect/base setup and recurring parallel: raw lines 300\u2013361.\n- Advanced examples and test/live wording: raw lines 363\u2013570.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-kakaopay]]\n- [[source-adyen-docs-payment-methods-kakaopay-android-component]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/kakaopay/android-drop-in/2026-09-15|Adyen KakaoPay Android Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "| **Integration type** | Make sure that you have an existing Sessions flow [Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=Android). Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later. |",
+      "location": "raw line 33"
+    },
+    {
+      "text": "* `storePaymentMethod`: **true**",
+      "location": "raw line 61"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 66"
+    },
+    {
+      "text": "* `storedPaymentMethodId`: the token that you need to make recurring payments for this shopper.",
+      "location": "raw line 71"
+    },
+    {
+      "text": "| **Redirect handling** | Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in#handle-the-redirect). `action.type`: **redirect** |   |",
+      "location": "raw line 307"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c34-kakaopay-android-dropin-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-kakaopay-android-drop-in]] \u2014 2026-09-15 KakaoPay Android Drop-in Sessions (Checkout v68+)/Advanced add-on with conditional settled-payment recurring token webhook and qualified TEST/LIVE example scope.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/kakaopay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "59c70bd9008a597c25d078a8a2714ae7ccd56ba0a546ef881f7ca71489bc0b1c",
+  "status": "candidate_ready"
+}

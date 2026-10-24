@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-api-only",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"WeChat Pay in-app for API only\"\ntype: source\ndate_ingested: 2026-10-24\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/wechat-pay/wechat-pay-in-app-payments/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/wechat-pay/wechat-pay-in-app-payments/api-only/2026-09-15.md\"\ntags: [adyen, wechat-pay, in-app-payments, api-only, mobile-sdk]\n---\n\n## Overview\n\nThis [[adyen]] snapshot, captured 2026-09-15, describes **WeChat Pay in-app payments** through an existing API-only integration and WeChat's iOS or Android mobile SDK, not desktop QR or mini-program checkout. The merchant server creates the Adyen payment, passes returned SDK data to the mobile app, and checks the result after the shopper uses WeChat. See [[adyen-online-payments]] and raw lines 15\u201319, 47\u201353, 356\u2013394.\n\n## Key takeaways\n\n- Prerequisites are an existing API-only integration and adding the method in the **test Customer Area**; preparation separately routes merchants to a WeChat Open Platform developer account, mobile-app registration, and WeChat mobile SDK integration. The app should check WeChat availability on the shopper's device before presenting the option. These provider/app steps and Adyen setup are separate; the links contain the detailed onboarding instructions. See raw lines 21\u201338.\n- A `/paymentMethods` request **can** specify a supported country/region and currency; `CN` and `CNY` are examples, not an exhaustive eligibility list. Its response identifies `paymentMethod.type: wechatpaySDK`. When selected, the **server** sends `/payments` with that type. The cURL and library requests show CNY and a `returnUrl` as examples; the cURL endpoint is `checkout-test.adyen.com/v72`, not a stated minimum supported Checkout API version. See raw lines 40\u201373 and 75\u2013354.\n- The illustrated `/payments` response is `Pending` with an `action` of type `sdk` and `sdkData`. Pass the returned `sdkData` to the **WeChat Pay SDK**, which launches WeChat for shopper continuation, then obtain its result. The illustrated `appid`, partner, nonce, prepay and signature values are response examples, not credentials to reuse or proof of payment completion. See raw lines 356\u2013390.\n- After the shopper completes the WeChat-app step, the page directs a `/payments/details` request using the SDK `resultCode`. Its prose also specifies encoded `paymentData` and conditions it on `/payments` result codes `AuthenticationNotRequired` or `AuthenticationFinished`; however, the preceding illustrated `/payments` response is `Pending` with no `paymentData`, and the cURL example includes both `details.resultCode` and a top-level `paymentData` placeholder with literal `{hint:...}` markup in its keys, while the later language-library examples show only `details.resultCode`. That prose/example mismatch leaves the exact `paymentData` source for the illustrated SDK path unresolved here; do not treat the snippets as a complete request contract. See raw lines 362\u2013386, 392\u2013413 and 416\u2013628.\n- Use the `/payments/details` `resultCode` to display the current shopper result. The table distinguishes `Authorised`, `Error` with `refusalReason`, unresolved `Pending`/`Received`, and `Refused`; for the unresolved states, it explicitly says the final result arrives by **AUTHORISATION webhook**. A WeChat SDK callback, `Pending` API response or shopper-facing display is not itself final authorization, capture or settlement proof. The table's funds-timing statements are historical guidance, not observed receipt. See raw lines 630\u2013641.\n- The page says WeChat Pay had **no test platform** at snapshot time; it suggests canceling at verification or making a low-value live payment with a personal WeChat account to test, and separately requires a request in the **live Customer Area** before live acceptance. That is source guidance, not an instruction to execute a provider or financial operation. Its numerous `checkout-test`/`Environment.TEST` code samples therefore do not establish an operational WeChat sandbox. See raw lines 57\u201373, 87\u201388, 643\u2013652.\n\n## Detail locators\n\n- API-only and provider/app/SDK preparation, method availability and discovery: raw lines 21\u201345.\n- Server `/payments` request and language-specific TEST examples, including library-version comments and live endpoint-prefix notes: raw lines 47\u2013354. The Go examples label library v10.4.0 but import `/v9/` paths (raw lines 227\u2013234, 534\u2013540); review before copying.\n- SDK action/result and `/payments/details` prose/examples mismatch: raw lines 356\u2013628.\n- Current display results, asynchronous webhook boundary and test/live guidance: raw lines 630\u2013652.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n- [[adyen-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/wechat-pay/wechat-pay-in-app-payments/api-only/2026-09-15|WeChat Pay in-app API-only guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Accept WeChat Pay in-app payments using our APIs, and build your integration using WeChat Pay mobile SDKs.",
+      "location": "raw line 19, WeChat Pay in-app for API only"
+    },
+    {
+      "text": "In the response, you receive `paymentMethod.type`: **wechatpaySDK**.",
+      "location": "raw line 45, Build your payment form for WeChat Pay"
+    },
+    {
+      "text": "Pass the values in the `sdkData` object to the WeChat Pay SDK.",
+      "location": "raw line 388, Make a payment"
+    },
+    {
+      "text": "If you received `resultCode`: **AuthenticationNotRequired**",
+      "location": "raw line 400, Check the payment result"
+    },
+    {
+      "text": "WeChat Pay currently has no test platform.",
+      "location": "raw line 645, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "wechat-in-app-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-wechat-pay-wechat-pay-in-app-payments-api-only]] \u2014 2026-09-15 WeChat Pay in-app API-only guide for merchant-server `/payments`, WeChat mobile-SDK handoff, `/payments/details` and webhook-qualified outcome; TEST examples and details prose conflict with stated boundaries.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/wechat-pay/wechat-pay-in-app-payments/api-only/2026-09-15.md",
+  "raw_sha256": "acdf9a72610703324561837c0319b29bf627415f638340bf61a33c825452cce7",
+  "status": "candidate_ready"
+}
