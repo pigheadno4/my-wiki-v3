@@ -1,0 +1,5 @@
+Q1. What does the Napas card Web page cover, and what cannot be inferred?
+A1. It is a Web integration chooser linking Napas card Drop-in and Components child guides and general Web docs (raw lines 15–29). It does not establish country/currency or issuer eligibility, SDK/API minimum, method identifier, TEST/LIVE requirements or successful payment outcome (raw lines 15–29). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-napas-card-web]] → [[raw/adyen/docs/payment-methods/napas-card/web/2026-09-15]]
+
+Q2. What central capability or prerequisite does this chooser itself give?
+A2. It offers an all-in-one Drop-in route and a pre-built Components route for rendering Napas card on a website, with links to general Web documentation (raw lines 19–29). The chooser gives no method-specific setup, redirect/3DS or transaction warning; use the selected child and base guide for those details (raw lines 15–29). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-napas-card-web]] → [[raw/adyen/docs/payment-methods/napas-card/web/2026-09-15]]

@@ -1,0 +1,7 @@
+# Retrieval checks — docs-payment-methods-rakutenpay-ios-component
+
+Q1. What is this Rakuten Pay iOS Component page's purpose and scope, and what cannot be inferred?
+Answer: It is a Rakuten Pay add-on to existing iOS Components, split into Sessions and Advanced flows (raw lines 17–25, 88–110), with InstantPaymentComponent and redirect handling (raw lines 33–69, 96–125). It does not state a country/currency restriction on this page, live enablement, a final webhook outcome or successful settlement. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-rakutenpay-ios-component]] → [[raw/adyen/docs/payment-methods/rakutenpay/ios-component/2026-09-15]].
+
+Q2. Which version, recurring and TEST qualifications matter?
+Answer: Sessions requires Checkout API v68+ and redirect handling (raw lines 29–36); Advanced requires Components but its prerequisite link points to Drop-in (raw lines 92–98). Card-on-file is review/cadence/category conditioned, with an application for every Recurring Processing Model, and explicit shopper permission strongly recommended for future recurring (raw lines 72–78, 133–139). TEST uses a DGFT acquirer account and simulator, not the Rakuten Pay app (raw lines 80–86, 141–147); this is not live outcome proof. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-rakutenpay-ios-component]] → [[raw/adyen/docs/payment-methods/rakutenpay/ios-component/2026-09-15]].

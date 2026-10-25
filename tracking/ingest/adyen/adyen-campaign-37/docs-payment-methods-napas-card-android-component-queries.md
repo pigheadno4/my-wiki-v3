@@ -1,0 +1,9 @@
+# Napas card Android Component retrieval questions
+
+## Q1 — What is this page's purpose and scope, and what cannot be inferred?
+
+It is a Napas card add-on to existing **Android Components** Sessions or Advanced flows, explicitly for **v5.0.0** with earlier versions routed elsewhere (raw lines 19–39; [[source-adyen-docs-payment-methods-napas-card-android-component]]). It does not supply a Checkout API minimum, v5 payment-method type, complete redirect-return/webhook path or proof of current merchant eligibility and successful card authorization/settlement. The customer-facing card/PIN/OTP handling is outside this page; the pinned overview locates it at the provider gateway. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-napas-card-android-component]] → [[raw/adyen/docs/payment-methods/napas-card/android-component/2026-09-15]].
+
+## Q2 — What are the request, configuration, testing and live conditions?
+
+Both Sessions and Advanced tabs require the corresponding existing Android Components integration at **minimum v5.0.0** plus Customer Area method addition (raw lines 23–39). No additional Napas-specific `/sessions` or `/payments` fields or Component configuration are stated; the normal base integration still applies (lines 41–67). The TEST table gives successful, blocked, insufficient-funds and amount-limit card/OTP scenarios after bank selection and points to the test payment list for status (lines 69–80). A live Customer Area request is required before live acceptance (line 82). Test fixtures, a submitted request and status lookup are not proof of an actual live payment result ([[source-adyen-docs-payment-methods-napas-card-android-component]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-napas-card-android-component]] → [[raw/adyen/docs/payment-methods/napas-card/android-component/2026-09-15]].

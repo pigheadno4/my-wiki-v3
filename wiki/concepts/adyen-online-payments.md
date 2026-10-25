@@ -21,6 +21,153 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-napas-card-web]] — 2026-09-15 Napas card Web chooser for Drop-in and Components child guides plus general Web docs; version, payment flow, eligibility and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-ios]] — 2020-modified, 2026-09-15-captured Napas card iOS chooser linking Drop-in/Redirect Component child guides and general Sessions-flow guides; child versions, card/gateway handling and outcomes require separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-android]] — 2026-09-15 Napas card Android chooser linking Drop-in, Redirect Component and general Sessions-flow guides; child implementation and outcomes require separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-payco-web]] — 2026-09-15 PAYCO Web chooser for Drop-in/`Redirect` Components child guides and Web Sessions/Advanced base routes; setup, eligibility and payment outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-payco-android]] — 2026-09-15 PayCo Android chooser linking Drop-in and InstantPaymentComponent children plus main Sessions/Advanced guides; implementation requirements remain child-guide evidence.
+
+
+- [[source-adyen-docs-payment-methods-payco-ios]] — 2026-09-15 PayCo iOS chooser linking Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced base routes; child setup, eligibility and outcomes require separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-web]] — 2026-09-15 Rakuten Pay Web chooser linking Drop-in/Redirect Components child guides and four Sessions/Advanced main integration routes; child prerequisites and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-android]] — 2026-09-15 Rakuten Pay Android chooser for Drop-in or InstantPaymentComponent plus four main Sessions/Advanced integration routes; implementation and outcomes belong to child/base guides.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-ios]] — 2026-09-15 Rakuten Pay iOS chooser for Drop-in/`InstantPaymentComponent` child guides and four iOS Sessions/Advanced base routes; child setup, recurring eligibility and outcomes require separate authority.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-web]] — 2026-09-15 Bank Transfer via KCP Web chooser linking Drop-in and Redirect Components children plus main Web Sessions/Advanced guides; implementation requirements remain child-guide evidence.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-android]] — 2026-09-15 KCP bank-transfer Android chooser linking Drop-in and InstantPaymentComponent children plus four Sessions/Advanced base-guide routes; child requirements and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-ios]] — 2026-09-15 KCP bank-transfer iOS chooser linking Drop-in/InstantPaymentComponent child guides and four Sessions/Advanced main integration routes; child requirements and outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-web-drop-in]] — 2026-09-15 Napas card Web Drop-in add-on with no extra method fields/configuration, four TEST scenario fixtures and a separate live Customer Area request.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-ios-drop-in]] — 2026-09-15 Napas card iOS Drop-in add-on with test Customer Area prerequisite, no extra method fields/configuration, Drop-in v5.0.0 `/sessions` default and separate live request; See-also link points to Components.
+
+
+- [[source-adyen-docs-payment-methods-payco-ios-drop-in]] — 2026-09-15 PayCo iOS Drop-in Sessions (Checkout API v68+) and Advanced add-on, with redirect handling specified in Advanced requirements and Support-assisted testing guidance.
+
+
+- [[source-adyen-docs-payment-methods-payco-android-drop-in]] — 2026-09-15 PayCo Android Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with no extra method fields/configuration and Support-assisted testing; no final outcome or live-enable procedure.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-ios-drop-in]] — 2026-09-15 KCP bank-transfer iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with no method-specific request/configuration fields and no KCP testing credentials due to PIC authorization.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-android-drop-in]] — 2026-09-15 KCP bank-transfer Android Drop-in Sessions/Advanced add-on, with Sessions Checkout API v68+ and Advanced redirect prerequisites, no extra method parameters and no KCP test credentials.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-react-native-component]] — 2026-09-15 Rakuten Pay React Native Components guide explicitly excluding Sessions and covering Advanced redirect only, with review/application-gated recurring models and DGFT TEST simulator; the Advanced Components prerequisite URL points to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-payco-web-drop-in]] — 2026-09-15 PayCo Web Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with optional `Redirect` tree-shaking import, Support-assisted testing and an unresolved Advanced prerequisite URL template.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-android-drop-in]] — 2026-09-15 Napas card Android Drop-in v5.0.0 Sessions/Advanced add-on with no extra method fields/configuration, four TEST scenarios and live Customer Area request; no action or final-outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-android-component]] — 2026-09-15 Napas card Android Components v5.0.0 Sessions/Advanced add-on with no extra method fields/configuration, four TEST card scenarios and live Customer Area request; final redirect/authorization handling is outside this page.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-web-component]] — 2019-modified, 2026-09-15-captured Napas card Web Components add-on for Sessions/Advanced bases, versioned `momo_atm` Redirect/create snippets, TEST fixtures and separate live request; Napas title versus method identifier stays qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-payco-web-component]] — 2026-09-15 PayCo Web Components Sessions (Checkout API v68+) and Advanced redirect add-on using `Redirect`, with an unquoted `kcp_payco` sample and Support-assisted testing guidance.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-web-drop-in]] — 2026-09-15 KCP bank-transfer Web Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with optional `Redirect` import, no testing credentials due to certificate-based authorization and malformed Advanced platform URL.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-ios-component]] — 2026-09-15 Napas card iOS Components add-on with v5+ `InstantPaymentComponent` examples using `momo_atm`, generic v4 example, test scenarios and live Customer Area request; identifier scope and final outcomes remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-payco-ios-component]] — 2026-09-15 PAYCO iOS InstantPaymentComponent Sessions (Checkout API v68+) and Advanced redirect add-on, with no specific test credentials and a qualified Advanced Components/Drop-in prerequisite-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-web-component]] — 2026-09-15 KCP bank-transfer Web Components Sessions/Advanced redirect add-on, with Sessions Checkout API v68+ requirement, an illustrative unquoted-type snippet and no KCP test credentials.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-api-only]] — 2026-09-15 Rakuten Pay JP/JPY API-only redirect guide with conditional recurring-model approval and DGFT TEST simulator; purchased-item versus no-extra-field prose and mislabeled `/paymentMethods` sample require source-qualified review.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-ios-component]] — 2026-09-15 Bank Transfer via KCP iOS Components Sessions (Checkout API v68+) and Advanced redirect add-on using InstantPaymentComponent/`kcp_banktransfer`, with no KCP bank-transfer testing credentials; Advanced prerequisite link points to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-ios-drop-in]] — 2026-09-15 Rakuten Pay iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with review/cadence-qualified card-on-file use, per-model application and DGFT TEST simulator.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-flutter-component]] — 2026-09-15 Rakuten Pay Flutter Components Sessions (Checkout API v68+) and Advanced redirect add-on with review/cadence-qualified recurring models and DGFT TEST simulator; both prerequisite links misroute to Flutter Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-react-native-drop-in]] — 2026-09-15 Rakuten Pay React Native Drop-in Sessions/Advanced redirect guide with Sessions v68+, qualified recurring-model review/application restrictions, TEST DGFT simulator and Sessions/Advanced link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-flutter-drop-in]] — 2026-09-15 Rakuten Pay Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with review-gated recurring model claims and DGFT TEST simulator; Sessions prerequisite link points to Advanced.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-web-drop-in]] — 2026-09-15 Rakuten Pay Web Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with review/application-gated card-on-file models and DGFT TEST simulator; Advanced prerequisite URL has unresolved template text.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-android-drop-in]] — 2026-09-15 Rakuten Pay Android Drop-in Sessions/Advanced add-on, with flow-specific prerequisites, conditional card-on-file use and a DGFT TEST simulator path.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-web-component]] — 2026-09-15 Rakuten Pay Web Redirect Component add-on for Sessions (Checkout API v68+) and Advanced flows, with per-model recurring review/application restrictions and DGFT TEST simulator; unresolved unquoted `rakutenpay` sample remains qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-ios-component]] — 2026-09-15 Rakuten Pay iOS Components Sessions (Checkout API v68+) and Advanced redirect add-on, with review/cadence-qualified card-on-file models and DGFT TEST simulator; Advanced prerequisite URL points to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-payco-android-component]] — 2026-09-15 PayCo Android InstantPaymentComponent Sessions (Checkout API v68+) and Advanced redirect guide using `kcp_payco`, Compose/non-Compose examples and Support-assisted testing; no final outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-android-component]] — 2026-09-15 KCP bank-transfer Android Components Sessions (Checkout API v68+) and Advanced redirect add-on using InstantPaymentComponent/`kcp_banktransfer`, with no method-specific request fields and no KCP testing credentials due to PIC authorization.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay-android-component]] — 2026-09-15 Rakuten Pay Android Components Sessions (Checkout API v68+) and Advanced redirect add-on, with review-gated recurring conditions and DGFT TEST simulator scope.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-android-drop-in-earlier-versions]] — 2026-09-15 snapshot of Napas card Android Drop-in v4.x.x Advanced guide for VN/VND discovery, redirect, details and webhook-qualified results; `momo_atm` samples and Sessions links conflict with its Napas/Advanced prose.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-api-only]] — 2019-modified, 2026-09-15-captured VN/VND NAPAS card API-only redirect guide with `/payments/details` and webhook outcome; its NAPAS title versus `momo_atm` method identifier conflict remains unresolved.
+
+
+- [[source-adyen-docs-payment-methods-payco-api-only]] — 2026-09-15 PAYCO Web API-only Advanced guide for KR/KRW discovery, `kcp_payco` redirect payments and TEST setup; purchased-item prose versus no-extra-field examples remains qualified.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp-api-only]] — 2026-09-15 Bank Transfer via KCP Web API-only add-on for KR/KRW method discovery and redirect handling, with an on-page item-parameter conflict and no KCP bank-transfer test credentials.
+
+
+- [[source-adyen-docs-payment-methods-napas-card]] — 2023-modified, 2026-09-15-captured Vietnam Napas card overview via partner MoMo, with bank/gateway/PIN/OTP redirect journey, VN/VND capability row and channel links; refund “See note” is unresolved in the captured page.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-kcp]] — 2026-09-15 Bank Transfer via KCP KR/KRW Online Banking redirect overview with dated Korean merchant assurance claim, local-bank responsibility, capability marks and Web/native/API-only routes; no compliance or payment-outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-payco]] — 2026-09-15 PayCo overview: KCP-provided, card-linked KR/KRW redirect-wallet route, historical refund/capture/recurring capability marks and Web/native/API-only child links; no setup or outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-rakutenpay]] — 2026-09-15 Rakuten Pay JP/JPY redirect-wallet overview for Ecommerce/IPP and channel routes; positive capability marks repeatedly say “See note” without an explanatory note in the pinned page, so their conditions remain unresolved.
+
+
 - [[source-adyen-docs-payment-methods-paynow-android]] — 2026-09-15 PayNow Android navigation chooser linking Drop-in and InstantPaymentComponent children plus main Sessions/Advanced guides; its “redirect” label is not an API action-type or payment-outcome specification.
 
 

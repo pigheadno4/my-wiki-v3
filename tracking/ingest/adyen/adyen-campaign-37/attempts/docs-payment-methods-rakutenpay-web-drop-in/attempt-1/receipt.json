@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-rakutenpay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Rakuten Pay Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/rakutenpay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md\"\ntags: [adyen, rakuten-pay, web, drop-in, redirect]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Rakuten Pay Web Drop-in page gives method-specific additions for existing Web Drop-in Sessions and Advanced flows. It routes a redirect action through the existing integration and separately qualifies Rakuten Pay's card-on-file/recurring use. It does not prove current merchant eligibility or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Web Drop-in Sessions integration, Checkout API v68 or later, `action.type: redirect` handling, and Rakuten Pay added in Customer Area. The page says no extra method-specific `/sessions` parameters. Importing `Redirect` separately is **optional** for tree-shaken Adyen Web imports, not a universal integration prerequisite. [Raw lines 25\u201353]\n- **Advanced:** Requires an existing Web Drop-in Advanced integration, redirect handling and Rakuten Pay added in Customer Area. The page says no extra method-specific ordinary `/payments` parameters. Its Advanced prerequisite URL contains an unresolved template expression in the `platform` query, while the surrounding label and action link say Web Drop-in; use the stated flow rather than that literal malformed URL as behavioral evidence. [Raw lines 76\u2013104]\n- **Conditional recurring/card-on-file:** The page says Rakuten Pay permits one-off card-on-file transactions **after review** for a business model based on subscription and unscheduled card-on-file payments. Without a periodic charging cadence, it says Rakuten Pay prohibits initiating the card-on-file Recurring Processing Model, which it says is primarily allowed for Food & Beverage. Merchants must apply for **every** Recurring Processing Model when requesting Rakuten Pay. The page points to general token creation and strongly recommends explicit shopper permission and transparency about schedule and amount; that recommendation is not phrased as a page-specific mandatory consent field. No token-created event or recurring payment outcome is documented here. [Raw lines 56\u201364, 106\u2013114]\n- **TEST:** The page names `DGFT_AcquirerAccount_RakutenPay_closedLoop` for TEST payments and says the shopper is redirected to a DGFT simulator rather than needing the Rakuten Pay app; test transaction status is checked in Customer Area. This is a test route, not a live setup rule or evidence of successful payment. [Raw lines 66\u201374, 116\u2013124]\n\n## Detail locators\n\n- Both flows require redirect handling through the linked base guide. The page gives no Rakuten Pay-specific return, webhook, authorization, capture or settlement procedure; a simulator redirect or request does not establish any final status.\n- No Japan country/currency discovery table, minimum Web SDK version, refund/cancellation route or live activation sequence is stated in this page. Apply those only from separately read authority.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15|Rakuten Pay Web Drop-in (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "If you do not have a periodic charging cadence, Rakuten Pay prohibits you from initiating the Recurring Processing Model for card-on-file",
+      "location": "raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:60"
+    },
+    {
+      "text": "You must apply for every Recurring Processing Model when you request Rakuten Pay.",
+      "location": "raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:60"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:104"
+    },
+    {
+      "text": "You do not need the Rakuten Pay app.",
+      "location": "raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:122"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "rakutenpay-web-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-rakutenpay-web-drop-in]] \u2014 2026-09-15 Rakuten Pay Web Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with review/application-gated card-on-file models and DGFT TEST simulator; Advanced prerequisite URL has unresolved template text.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "b886b058bb468c221dc9002c237ec6a7662f7bce17bbb6c6ad355f3d2cf5c3b0",
+  "status": "candidate_ready"
+}

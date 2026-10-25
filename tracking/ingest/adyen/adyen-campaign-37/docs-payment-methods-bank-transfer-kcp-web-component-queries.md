@@ -1,0 +1,9 @@
+# KCP bank-transfer Web Component retrieval checks
+
+## Q1 — Purpose, scope, and non-inferences
+
+`source-adyen-docs-payment-methods-bank-transfer-kcp-web-component` is the 2026-09-15 method-specific guide for adding KCP bank transfer to existing Adyen Web Components integrations, split into Sessions and Advanced flows (raw lines 15–25, 78–84). It does not prove a complete standalone implementation, a runnable copy-paste initializer, current account eligibility or a successful TEST/LIVE transfer; the page explicitly says there are no KCP bank-transfer testing credentials (raw lines 70–76, 108–120). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-web-component]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/web-component/2026-09-15]].
+
+## Q2 — Central capability, prerequisites, warnings
+
+Sessions requires an existing Web Components Sessions flow, Checkout API v68+, redirect handling and Customer Area setup; it needs no extra `/sessions` parameters or KCP configuration (raw lines 29–42, 56–60). Advanced requires an existing Web Components Advanced flow, redirect handling and Customer Area setup, and states no extra `/payments` parameters (raw lines 80–86, 112–116). Both direct importing and initializing `Redirect`, but the sample uses unquoted `type:kcp_banktransfer` with no variable definition shown, so it should not be treated as verified runnable code (raw lines 48–72, 92–110). KCP test credentials are unavailable because authorization requires a Public Identification Certificate (raw lines 74–76, 118–120). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-web-component]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/web-component/2026-09-15]].

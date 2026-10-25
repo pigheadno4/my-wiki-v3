@@ -1,0 +1,5 @@
+Q1. What is the purpose and scope of the PayCo iOS page, and what cannot be inferred?
+A1. It is a navigation chooser for PayCo iOS Drop-in and an InstantPaymentComponent child guide (raw lines 15–27). It does not provide KCP/provider setup, region/currency/merchant eligibility, SDK/API minimum, action or final payment outcome (raw lines 15–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-payco-ios]] → [[raw/adyen/docs/payment-methods/payco/ios/2026-09-15]]
+
+Q2. What prerequisite or warning does this chooser itself give?
+A2. It says to create the main integration before adding PayCo and links iOS Drop-in and Components under Sessions and Advanced flows (raw lines 29–36). Those links are navigation, not proof that every child route has identical request, redirect, test or live requirements (raw lines 19–36). [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-payco-ios]] → [[raw/adyen/docs/payment-methods/payco/ios/2026-09-15]]

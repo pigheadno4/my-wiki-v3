@@ -1,0 +1,9 @@
+# Bank Transfer via KCP iOS Drop-in retrieval questions
+
+## Q1 — What is this page's purpose and scope, and what cannot be inferred?
+
+It is a **KCP bank-transfer method add-on** to existing iOS Drop-in Sessions or Advanced integrations (raw lines 15–23, 25–34, 54–64; [[source-adyen-docs-payment-methods-bank-transfer-kcp-ios-drop-in]]). It does not establish current merchant eligibility, a standalone integration, a complete bank-return/webhook outcome procedure or actual authorization/settlement. The TEST/live heading gives no live setup sequence (lines 48–52, 78–82). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-ios-drop-in]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/ios-drop-in/2026-09-15]].
+
+## Q2 — What are the flow, request/configuration and credential conditions?
+
+Sessions needs an existing iOS Drop-in Sessions integration, **Checkout API v68+** and Customer Area method addition; no extra method `/sessions` parameters/configuration are stated (raw lines 25–46). Advanced needs its base flow, explicit `action.type: redirect` handling and Customer Area addition; no extra `/payments` parameters/configuration are stated, and no Advanced API minimum appears (lines 54–76). Both TEST/live sections say there are **no KCP bank-transfer testing credentials** because authorization requires a Public Identification Certificate/Digital Signature for individuals (lines 48–52, 78–82). This does not imply no TEST environment, and request/redirect handling does not prove a successful transfer ([[source-adyen-docs-payment-methods-bank-transfer-kcp-ios-drop-in]]). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-ios-drop-in]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/ios-drop-in/2026-09-15]].

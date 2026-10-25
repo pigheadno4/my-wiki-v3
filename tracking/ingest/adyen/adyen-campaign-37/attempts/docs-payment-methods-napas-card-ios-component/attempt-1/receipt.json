@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-napas-card-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Napas card iOS Redirect Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/napas-card/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md\"\ntags: [adyen, napas, vietnam, ios, components, cards]\n---\n\n## Overview\n\nThis [[adyen]] guide adds **Napas card** to an existing iOS Components integration. It identifies a method add-on, version-specific Component examples and test/live steps; it does not supply a full bank/gateway return, `/payments/details` or webhook outcome procedure. See [[adyen-online-payments]], [[adyen-ios-sdk]] and [[source-adyen-docs-payment-methods-napas-card]]. This is a 2026-09-15 snapshot, not proof of current merchant enablement or a successful card payment.\n\n## Key takeaways\n\n- The prerequisites are an existing iOS Components integration and adding Napas card in the **test Customer Area**. The page says no additional Napas-specific request fields, identifies `/sessions` as default for Components **v5.0.0+**, and links `/payments` for an additional use case. It does not state an overall Checkout API minimum or waive ordinary base-flow fields. See raw lines 21\u201333.\n- In the **v5.0.0+** Sessions and Advanced examples, the guide looks up `.other(\"momo_atm\")` and constructs `InstantPaymentComponent`; Sessions delegates to `session`, Advanced to `self`, then invokes `initiatePayment()`. The `momo_atm` identifier is the source's example even though the page calls the method Napas card. The separate Napas overview says Adyen offers these ATM-card payments through partner MoMo, but this guide does not explain the identifier contract; do not silently rename it or assume it covers every Napas product. See raw lines 35\u201372 and [[source-adyen-docs-payment-methods-napas-card]].\n- For **v4.x.x**, the snippet instead uses a generic `PaymentMethod.self` lookup and `Component(...)` presentation, then states no Napas-specific Components configuration is needed. The generic symbols are a source example, not a verified drop-in implementation. Do not transfer the v5 `InstantPaymentComponent` pattern to v4 without separate evidence. See raw lines 74\u201390.\n- The test section gives bank selection and separate test-card/OTP scenarios for **successful, blocked, insufficient-funds and amount-limit** outcomes. These are test fixtures, not real card-processing evidence or a guarantee that submitting credentials produces a particular live result. It directs status checking to the test Customer Area and says a Napas card request must be submitted in **live Customer Area** before live acceptance. This page does not detail where the shopper enters sensitive card/PIN/OTP data; the overview places those steps at the provider gateway. See raw lines 92\u2013105 and [[source-adyen-docs-payment-methods-napas-card]].\n\n## Detail locators\n\n- **Prerequisite, no extra fields and endpoint/version context:** raw lines 21\u201333.\n- **v5+ `momo_atm`, delegates and initiatePayment examples:** raw lines 35\u201372.\n- **v4 generic Component example:** raw lines 74\u201390.\n- **Test scenarios, test status and live request:** raw lines 92\u2013105.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n- [[source-adyen-docs-payment-methods-napas-card]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15|Napas card iOS Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you begin, [add Napas card in your test Customer Area]",
+      "location": "raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md:26"
+    },
+    {
+      "text": "You do not need to send additional fields for Napas card.",
+      "location": "raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md:30"
+    },
+    {
+      "text": "paymentMethod(ofType: .other(\"momo_atm\"))",
+      "location": "raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md:48"
+    },
+    {
+      "text": "guard let paymentMethod = paymentMethods.paymentMethod(ofType: PaymentMethod.self) else { return }",
+      "location": "raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md:82"
+    },
+    {
+      "text": "Before you can accept live Napas card payments, you need to submit a request for Napas card in your [live Customer Area]",
+      "location": "raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md:105"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c37-napas-ios-component-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-napas-card-ios-component]] \u2014 2026-09-15 Napas card iOS Components add-on with v5+ `InstantPaymentComponent` examples using `momo_atm`, generic v4 example, test scenarios and live Customer Area request; identifier scope and final outcomes remain source-qualified.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v5+ Napas card examples use momo_atm; the overview describes MoMo as partner, but this guide does not explain the exact method-identifier mapping.",
+          "The v4 example uses generic PaymentMethod/Component symbols; do not present it as proven compilable production code.",
+          "Test PAN/OTP scenarios and Component initiation do not prove actual authorization or live-payment success."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/napas-card/ios-component/2026-09-15.md",
+  "raw_sha256": "327bd2a7b59204b88a8b02226821195e3cb1ca1dcf5488c54f46a2bea9a987ec",
+  "status": "candidate_ready"
+}

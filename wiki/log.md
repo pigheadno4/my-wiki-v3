@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-25] ingest | Adyen website C37
+
+- Fifty independently approved Rakuten Pay, PAYCO, South Korea bank transfer/KCP and Napas Card documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 2 concepts touched (0 new); source_count 1864 = 1850 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-37/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-25] ingest | Messaging Components `1.101.0`
 
 - Serial focused-reading delta with exact-SHA component/style supplement: TikTok information sections, authored HTML and style wiring. Earlier history and runtime/security boundaries preserved; details [[paypal-log]] and [[source-github-paypal-messaging-components]]. No upstream execution, commit or push.

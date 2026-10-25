@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-rakutenpay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Rakuten Pay iOS Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/rakutenpay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/rakutenpay/ios-component/2026-09-15.md\"\ntags: [adyen, rakuten-pay, ios, component, redirect, recurring]\n---\n\n## Overview\n\nThis [[adyen]] page adds **Rakuten Pay** to an existing **iOS Components** integration under separate **Sessions** and **Advanced** server-side flows. It uses `InstantPaymentComponent` and requires `redirect` action handling. It also gives unusually conditional card-on-file/recurring language and a **DGFT simulator** TEST route. The page itself states no merchant-country/currency eligibility, final webhook condition, live enablement result or proven payment outcome. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions base path:** The Sessions section requires an existing iOS Components integration, **Checkout API v68 or later**, redirect handling and Rakuten Pay added in Customer Area. It says no additional Rakuten Pay-specific /sessions parameters or configuration. Its Swift example checks for `.other(\"rakutenpay\")`, creates `InstantPaymentComponent`, sets the session as delegate and initiates payment. Those client steps do not confirm an authorization or final outcome. See raw lines 25\u201369.\n- **Advanced base path and link mismatch:** The Advanced section requires existing iOS Components and redirect handling, with Customer Area addition. However, its Integration type link points to `integration=Drop-in` despite its Components text. It says no extra method-specific configuration or ordinary /payments parameters. Its Swift example sets the Component's delegate to `self`, versus the Sessions sample's `session`; code fragments depend on main integration context. No Advanced API minimum is stated here. See raw lines 88\u2013131.\n- **Narrow recurring/card-on-file claim:** Both sections say that when the business model is based on **subscription and unscheduled card-on-file**, Rakuten Pay permits **one-off card-on-file** transactions only **after review**. Without a periodic charging cadence, the page says initiating the card-on-file Recurring Processing Model is prohibited; it says this is primarily allowed for the **Food & Beverage** category. It also says to apply for **each Recurring Processing Model** when requesting Rakuten Pay. The wording should not be flattened into broad recurring or token eligibility. The page links token creation and strongly recommends explicit shopper permission plus transparent schedule/amount for future recurring payments; it does not document an obtained consent or token. See raw lines 72\u201378 and 133\u2013139.\n- **TEST scope:** The page identifies `DGFT_AcquirerAccount_RakutenPay_closedLoop` for **TEST** and says a **DGFT simulator**, not the Rakuten Pay app, completes the test route. It points to Customer Area payment-list status for test account transactions. Simulator redirection and status lookup are not production or final settlement evidence; this page gives no specific live setup procedure. See raw lines 80\u201386 and 141\u2013147.\n\n## Detail locators\n\n- Sessions prerequisites, base request and Swift initialization: raw lines 25\u201369.\n- Sessions recurring qualification and TEST simulator: raw lines 72\u201386.\n- Advanced prerequisites, mislinked Components URL and base request: raw lines 88\u2013131.\n- Repeated recurring qualification and TEST route: raw lines 133\u2013147.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-rakutenpay]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/rakutenpay/ios-component/2026-09-15|Adyen Rakuten Pay iOS Component snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirement"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 35, Sessions redirect requirement; repeated line 97 under Advanced"
+    },
+    {
+      "text": "Rakuten Pay permits one-off [card-on-file]",
+      "location": "raw line 74, qualified recurring prose; repeated line 135 under Advanced"
+    },
+    {
+      "text": "You must apply for every Recurring Processing Model when you request Rakuten Pay.",
+      "location": "raw line 74, recurring application condition; repeated line 135 under Advanced"
+    },
+    {
+      "text": "To test Rakuten Pay payments, use the acquirer account `DGFT_AcquirerAccount_RakutenPay_closedLoop` in the TEST environment.",
+      "location": "raw line 82, TEST simulator gate; repeated line 143 under Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c37-rakutenpay-ios-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-rakutenpay-ios-component]] \u2014 2026-09-15 Rakuten Pay iOS Components Sessions (Checkout API v68+) and Advanced redirect add-on, with review/cadence-qualified card-on-file models and DGFT TEST simulator; Advanced prerequisite URL points to Drop-in.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Card-on-file permission is conditional on review, business model/cadence and application for each Recurring Processing Model; do not infer broad recurring enablement.",
+          "Advanced Integration type link points to Drop-in despite Components prose.",
+          "DGFT simulator and TEST account are not Rakuten Pay app use or live payment proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/rakutenpay/ios-component/2026-09-15.md",
+  "raw_sha256": "319705f912ec1e1561a0e0c8f8777550373dbf983e32e9e19146d77c1bc0a19d",
+  "status": "candidate_ready"
+}

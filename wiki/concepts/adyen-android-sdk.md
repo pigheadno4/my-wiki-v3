@@ -64,6 +64,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-napas-card-android-component-earlier-versions]] — historical v4.x.x Advanced Android Redirect Component guide for Napas card, with unresolved `momo_atm` method-type wording and webhook result boundaries.
+
+
+- [[source-adyen-docs-payment-methods-napas-card-android-drop-in-earlier-versions]] — historical v4.x.x Napas card Android Drop-in Advanced guide for VN/VND discovery, redirect and webhook-qualified outcomes; MoMo example type and Sessions-link discrepancies remain in the source.
+
+
 - [[source-adyen-docs-payment-methods-google-pay-android-component-migrate]] — 2026-09-15 Google Pay Android Component guide for optional earlier-5.x.x to 5.9.x migration, View/Compose attachment, button submission and initialization-time availability errors; migration examples do not establish current SDK behavior or payment outcome.
 
 

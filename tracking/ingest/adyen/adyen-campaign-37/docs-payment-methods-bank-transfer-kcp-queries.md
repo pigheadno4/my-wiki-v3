@@ -1,0 +1,7 @@
+# Retrieval checks — docs-payment-methods-bank-transfer-kcp
+
+Q1. What is Bank Transfer via KCP's scope in this page, and what cannot be inferred?
+Answer: The snapshot labels the method Online Banking redirect for KR/KRW (raw lines 15–17, 27–29) and routes to Web, iOS, Android and API-only guides (raw lines 72–96). It does not prove current merchant eligibility, current Korean-law compliance, completed bank transfer, delivery confirmation or transaction result. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/2026-09-15]].
+
+Q2. Which merchant assurance/provider responsibility and capability warnings matter?
+Answer: The dated page says Korea-registered e-commerce merchants accepting bank transfer require escrow or electronic surety, describes bank-held shopper funds until delivery confirmation, and says Adyen/KCP cannot provide the service; it points to a local Korean bank (raw lines 23–25). The matrix marks refunds including partial/multiple partial available but recurring, separate/partial/multiple partial captures and chargebacks unavailable (raw lines 27–29); it does not settle ordinary capture or prove refund execution. Its labelled Read more link points to Korean cards (raw line 21). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/2026-09-15]].

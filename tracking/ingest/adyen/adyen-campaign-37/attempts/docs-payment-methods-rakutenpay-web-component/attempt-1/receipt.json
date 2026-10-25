@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-rakutenpay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Rakuten Pay Web Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/rakutenpay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/rakutenpay/web-component/2026-09-15.md\"\ntags: [adyen, rakuten-pay, web, components, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page describes **Rakuten Pay-specific additions** to an existing Web Components integration, separately for Sessions and Advanced flows. It gives Redirect Component use, exceptional recurring-model conditions and a TEST simulator route. It does not prove that a merchant is approved for any recurring model or that a transaction was authorized. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions prerequisites and base additions:** The page requires an existing Web Components Sessions integration, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and Rakuten Pay added in Customer Area. It states no extra Rakuten Pay `/sessions` parameters or configuration are needed for the ordinary flow. It imports `Redirect` from Adyen Web and initializes Rakuten Pay through that class. (raw lines 25\u201371)\n- **Advanced prerequisites and base additions:** The Advanced section requires an existing Web Components Advanced integration, redirect handling and Customer Area addition, then imports/initializes `Redirect`. It says no extra ordinary `/payments` parameters are needed. This section does not separately state the Sessions-row API minimum. The no-extra wording does not waive base integration requirements or the distinct review/application conditions for recurring. (raw lines 90\u2013128)\n- **Recurring restrictions:** Both sections say that for business models based on subscription and unscheduled card-on-file, Rakuten Pay permits **one-off card-on-file transactions only after a review process**. They say that without a periodic charging cadence, Rakuten Pay **prohibits initiating the card-on-file Recurring Processing Model**, described as primarily allowed for Food & Beverage. The merchant **must apply for every Recurring Processing Model** when requesting Rakuten Pay. The page routes tokenization implementation to a separate Create tokens guide and **strongly recommends** explicit shopper permission for future recurring payments; this recommendation is not worded as a blanket source requirement. The paragraph's subscription/unscheduled/one-off wording is nuanced and does not establish general recurring availability for a merchant. (raw lines 74\u201380, 130\u2013136)\n- **Example qualification:** Both initialization snippets use `new Redirect(checkout, { type:rakutenpay })`, but this page does not define a `rakutenpay` variable. Treat it as an unresolved sample-value ambiguity and consult the matching Adyen Web API/base guide before implementing; the snippet does not prove the code runs as printed or a checkout completes. The page gives no explicit Adyen Web SDK minimum. (raw lines 48\u201371, 104\u2013121)\n- **TEST scope:** The page names `DGFT_AcquirerAccount_RakutenPay_closedLoop` for TEST and says the shopper is redirected to a DGFT simulator without needing the Rakuten Pay app. It directs status checks to Customer Area. Despite a \u201cTest and go live\u201d heading, this snapshot gives no separate LIVE enablement steps or a final payment webhook/status sequence. TEST simulator completion does not establish live merchant eligibility or settlement. (raw lines 82\u201388, 138\u2013144)\n\n## Detail locators\n\n- Sessions API/redirect/Customer Area prerequisites and no-extra statements: raw lines 25\u201360.\n- Redirect import/initialization and undefined sample identifier: raw lines 48\u201371, 104\u2013121.\n- Recurring review, cadence/category limits, per-model application and consent recommendation: raw lines 74\u201380, 130\u2013136.\n- Advanced base prerequisites, no-extra ordinary request fields: raw lines 90\u2013128.\n- TEST DGFT acquirer/simulator and status-list route: raw lines 82\u201388, 138\u2013144.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-rakutenpay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/rakutenpay/web-component/2026-09-15|Adyen Rakuten Pay Web Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add Rakuten Pay to your existing integration. The following instructions show only what you must add to your integration specifically for Rakuten Pay.",
+      "location": "raw line 19, add-on scope"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions API prerequisite"
+    },
+    {
+      "text": "To [initialize](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#initialize-the-payment-session) Rakuten Pay, use the `Redirect` class.",
+      "location": "raw line 66, Sessions Component class"
+    },
+    {
+      "text": "You must apply for every Recurring Processing Model when you request Rakuten Pay.",
+      "location": "raw line 76, recurring model application (repeated raw line 132, Advanced)"
+    },
+    {
+      "text": "To test Rakuten Pay payments, use the acquirer account `DGFT_AcquirerAccount_RakutenPay_closedLoop` in the TEST environment.",
+      "location": "raw line 84, TEST acquirer account (repeated raw line 140, Advanced)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "rakutenpay-web-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-rakutenpay-web-component]] \u2014 2026-09-15 Rakuten Pay Web Redirect Component add-on for Sessions (Checkout API v68+) and Advanced flows, with per-model recurring review/application restrictions and DGFT TEST simulator; unresolved unquoted `rakutenpay` sample remains qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Recurring model use is restricted by review, cadence/category and per-model application; shopper permission is strongly recommended. Both snippets use an undefined rakutenpay identifier in type config. TEST simulator and status check are not live enablement or payment-outcome proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/rakutenpay/web-component/2026-09-15.md",
+  "raw_sha256": "2366ffe52ea18eaf31eae2b9c1da110fc709feb8fcddc9df31b157b4a9e124c7",
+  "status": "candidate_ready"
+}

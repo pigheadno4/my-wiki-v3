@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-napas-card-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Napas card for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/napas-card/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/napas-card/api-only/2026-09-15.md\"\ntags: [adyen, napas-card, vietnam, api-only, redirect, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, metadata-modified 2019-09-06 and captured 2026-09-15, describes a **NAPAS card API-only** add-on to an existing integration with a merchant-built payment form. The shopper is redirected to the NAPAS website or app, then the merchant checks `/payments/details` after return or waits for webhooks if the shopper does not return. The page is a historical guide, not proof of current VN/VND merchant eligibility or successful authorization, capture, settlement or refund. See [[adyen-online-payments]] and raw lines 15\u201326, 150\u2013228.\n\n## Key takeaways\n\n- Prerequisites are an existing API-only integration and adding NAPAS card in the **test Customer Area**. The merchant form may show NAPAS card without collecting shopper information on that form; the subsequent NAPAS redirect handles the shopper's payment step. If using `/paymentMethods` discovery, the guide specifies `countryCode: VN`, `amount.currency: VND`, payment amount, and channel `Web`, `iOS`, or `Android`. Those are this page's discovery parameters, not general merchant approval or a complete native SDK integration. See raw lines 21\u201341.\n- **Material identifier conflict:** despite the NAPAS card title and flow prose, the page says `/paymentMethods` returns `paymentMethod.type: momo_atm` and repeats `momo_atm` in `/payments` requests and the redirect action. This may be a copied or shared identifier, but the snapshot does not resolve why a NAPAS-labeled guide uses a MoMo-prefixed type. Verify the method mapping from the applicable current provider response before implementing; do not silently relabel `momo_atm` as a NAPAS-specific code. See raw lines 15\u201319, 41\u201347, 62\u201365 and 154\u2013164.\n- The merchant server sends `/payments` with the returned method type and a `returnUrl`; the illustrated response is `RedirectShopper` with `action.type: redirect`, GET method and an `action.url`. Redirect the shopper to that returned URL, with the guide recommending system/default-browser approaches for mobile compatibility rather than in-app WebView. The cURL `/v68/payments` and `/v72/payments/details` paths are separate **examples**, not a stated cross-version requirement. Request/action and shopper redirect are not authorization. See raw lines 43\u201367, 150\u2013176 and 182\u2013193.\n- After the shopper returns, the page instructs POST `/payments/details` with URL-decoded `redirectResult`; use its `resultCode` to present a shopper status and `pspReference` as Adyen's transaction identifier. The `Authorised` sample is illustrative, not observed outcome. `Cancelled` and `Refused` call for different shopper follow-up, while `Pending`/`Received` explicitly require waiting for the **AUTHORISATION webhook** for the final result. If the browser closes without returning, rely on webhooks: `AUTHORISATION` false/true distinguishes failed versus successful payment, and `OFFER_CLOSED` true indicates the shopper did not complete the payment and the order timed out. None of these statements alone proves capture, settlement or refund. See raw lines 178\u2013228.\n- Test directions give scenario-specific NAPAS card/OTP fixtures and test Customer Area status lookup; they do not show a real transaction or authorize use of live credentials. A separate request for NAPAS card in the **live Customer Area** is required before live acceptance. This page does not provide recurring-token, capture or refund procedure. See raw lines 230\u2013249.\n\n## Detail locators\n\n- API-only prerequisite, form scope, VN/VND/channels and `momo_atm` discovery mismatch: raw lines 21\u201341.\n- TEST `/payments` request examples and return URL: raw lines 43\u2013148.\n- Redirect action, mobile browser advice, `/payments/details` and illustrative `Authorised` response: raw lines 150\u2013207.\n- Shopper-facing result states and browser-close webhook outcomes: raw lines 209\u2013228.\n- Test scenarios, test-status lookup and separate live request: raw lines 230\u2013243.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/napas-card/api-only/2026-09-15|NAPAS card API-only guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 30, Build your payment form for Napas card"
+    },
+    {
+      "text": "The response contains `paymentMethod.type`: **momo\\_atm**.",
+      "location": "raw line 41, Build your payment form for Napas card"
+    },
+    {
+      "text": "redirect the shopper to Napas card's website or app.",
+      "location": "raw line 168, Handle the redirect"
+    },
+    {
+      "text": "To know the final result of the payment, wait for the **AUTHORISATION** webhook.",
+      "location": "raw line 219, Present the payment result"
+    },
+    {
+      "text": "Before you can accept live Napas card payments, you need to submit a request for Napas card in your [live Customer Area]",
+      "location": "raw line 243, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "napas-card-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-napas-card-api-only]] \u2014 2019-modified, 2026-09-15-captured VN/VND NAPAS card API-only redirect guide with `/payments/details` and webhook outcome; its NAPAS title versus `momo_atm` method identifier conflict remains unresolved.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/napas-card/api-only/2026-09-15.md",
+  "raw_sha256": "9e196847510e7fae4f9915b508d871518004f00daed43236d8d99dc35e103600",
+  "status": "candidate_ready"
+}

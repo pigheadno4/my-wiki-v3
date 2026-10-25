@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-napas-card-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Napas card Web Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/napas-card/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/napas-card/web-component/2026-09-15.md\"\ntags: [adyen, napas, vietnam, web, components, redirect, cards]\n---\n\n## Overview\n\nThis Adyen page, last modified 2019-09-06 and captured 2026-09-15, describes adding **Napas card to an existing Web Components integration**. It gives Sessions/Advanced prerequisites, versioned Component snippets, test-card fixture locations and a separate live request. It does not document final authorization, capture or settlement. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Base flows and method fields:** Sessions and Advanced tabs each require the corresponding existing Web Components integration and Napas card added in Customer Area. The page says no extra Napas-specific API fields are required. It calls `/sessions` the default with **Components v5.0.0 or later**, and links `/payments` for an additional use case; v5.0.0 is a **Components/Web SDK version**, not a Checkout API minimum. Generic optional fields belong to the endpoint reference. (raw lines 21\u201344)\n- **Versioned Component setup:** The page creates a DOM mount element, then for **v6.0.0 or later** shows `new Redirect(checkout, { type: 'momo_atm' })`; for **v5.x.x or earlier** it shows `checkout.create('momo_atm')`. Both mount to `#momo_atm-container`. The page calls the method Napas card but uses **`momo_atm` in its examples**; retain that source identifier without assuming it is interchangeable with any other Napas type or asserting the snippet is runnable without base imports/configuration. A stray `**` appears between version sections and has no explained semantic role. (raw lines 46\u201376)\n- **TEST and live boundary:** The guide lists TEST card and one-time-password fixtures for success, blocked card, insufficient funds and amount-over-limit scenarios. Treat them as test-only data, not live card or security-operation instructions; the values remain in raw lines 80\u201387. It points to test Customer Area payment status, while live acceptance separately requires a Napas card request in the **live Customer Area**. A listed \u201cSuccessful\u201d fixture or status check does not prove that a transaction was actually authorized. (raw lines 78\u201391)\n- **Flow limit:** This page does not spell out the shopper bank/gateway/PIN/OTP redirect sequence or return/details/webhook processing; the Napas overview and base Web Components guide are separate authority. Component mounting and test credentials alone are not a completed payment. (raw lines 19\u201323, 46\u201397)\n\n## Detail locators\n\n- Sessions/Advanced requirements and Customer Area setup: raw lines 21\u201337.\n- No extra Napas fields and Components v5.0.0 `/sessions` default: raw lines 39\u201344.\n- DOM and v6/v5 `momo_atm` snippets plus stray marker: raw lines 46\u201376.\n- TEST scenario fixtures, test status and separate live request: raw lines 78\u201391.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-napas-card]]\n- [[source-adyen-docs-payment-methods-napas-card-api-only]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/napas-card/web-component/2026-09-15|Adyen Napas card Web Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Napas card to your existing Web Components integration.",
+      "location": "raw line 19, page scope"
+    },
+    {
+      "text": "You do not need to send additional fields for Napas card. To see optional fields that you can send for all payment methods, choose the endpoint you integrated:",
+      "location": "raw line 41, method-specific field scope"
+    },
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components) or later.",
+      "location": "raw line 43, /sessions and version qualifier"
+    },
+    {
+      "text": "const napasCard = new Redirect(checkout, { type: 'momo_atm' }).mount('#momo_atm-container');",
+      "location": "raw line 65, v6+ sample identifier"
+    },
+    {
+      "text": "Before you can accept live Napas card payments, you need to submit a request for Napas card in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 91, live prerequisite"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "napas-card-web-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-napas-card-web-component]] \u2014 2019-modified, 2026-09-15-captured Napas card Web Components add-on for Sessions/Advanced bases, versioned `momo_atm` Redirect/create snippets, TEST fixtures and separate live request; Napas title versus method identifier stays qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page labels Napas card but examples use momo_atm; do not silently replace or equate identifiers. Components v5.0.0 is not a Checkout API minimum. TEST card/OTP fixtures are test-only and neither mounting nor a 'Successful' scenario label proves payment outcome."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/napas-card/web-component/2026-09-15.md",
+  "raw_sha256": "0b0546229b4e636e3a63de41edf02229a5b871afef6ccc22e3e9b25c956b6233",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,70 @@
+{
+  "job_id": "docs-payment-methods-napas-card-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Napas card Android Drop-in v4.x.x | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/napas-card/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, napas-card, vietnam, android, drop-in, earlier-versions]\n---\n\n## Overview\n\nThis [[adyen]] page documents **Napas card Android Drop-in v4.x.x** in an existing **Advanced-flow** integration. It covers VN/VND payment-method discovery, client-to-server payment handoff, redirect and `/payments/details`, plus result-code and webhook outcomes. Its v4.x.x scope is historical; the page does not establish current support or live merchant eligibility. See [[adyen-online-payments]] and [[adyen-android-sdk]].\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The requirements call for an Advanced Android Drop-in integration and Napas card added in Customer Area. The `/paymentMethods` request uses `countryCode: VN`, `amount.currency: VND` and an amount value so Drop-in can show eligible methods. This is a documented discovery input, not a guarantee that a particular merchant/shopper sees Napas card. See raw lines 21\u201336.\n- **Client/server redirect sequence:** Drop-in returns `paymentComponentData.paymentMethod`; the client passes it to the merchant server, which sends it in `/payments` with a `returnUrl` obtained from `RedirectComponent.getReturnUrl(context)`. The merchant passes the response `action` back to Drop-in. After the shopper returns, Drop-in provides `actionComponentData.details`, which the server sends to `/payments/details`; its `resultCode` is used to present a result and `pspReference` identifies the transaction. A redirect or app return is not itself a final authorization result. See raw lines 38\u201347 and 150\u2013205.\n- **Outcome boundaries:** The page lists `Authorised`, `Cancelled`, `Pending`/`Received`, and `Refused`. For `Pending` or `Received`, it says the final result is unknown and to wait for the **AUTHORISATION** webhook. If the shopper does not return, it also directs the merchant to webhooks: `AUTHORISATION` success true/false or `OFFER_CLOSED` success true for an incomplete, timed-out payment. The page's result table is the outcome authority here; the illustrated `Authorised` response is only an example. See raw lines 203\u2013222.\n- **Testing and live gate:** The page supplies test-card scenarios for success, blocked card, insufficient funds and exceeded amount, a Customer Area route for test-payment status, and a live Customer Area request before live Napas acceptance. These are historical test fixtures and setup instructions, not evidence of live execution. See raw lines 224\u2013237.\n\n> [!warning] Contradiction\n> Despite the Napas card title and VN/VND discovery instructions, the `/payments` examples in curl, Node.js, Python and Ruby use `paymentMethod.type: momo_atm`; the redirect response example also says `paymentMethodType: momo_atm`. The page does not reconcile this MoMo type with Napas. Do not copy that type as a validated Napas identifier or treat the response as observed Napas behavior. See raw lines 15, 32\u201335, 62\u201364, 87\u201390, 115\u2013118, 141\u2013144 and 154\u2013163.\n\n> [!warning] Flow and example versions\n> The requirement names **Advanced** Android Drop-in, while the introductory and See also links point to **Sessions** guides. The example payment call uses Checkout v68 and its later `/payments/details` example uses v72; the page does not demonstrate a single tested API-version sequence. Follow the stated v4.x.x/Advanced scope and verify the relevant base guide and API version separately. See raw lines 19, 25, 51\u201352, 178\u2013185 and 239\u2013243.\n\n## Detail locators\n\n- `/payments` curl and Node.js, Python, Ruby examples: raw lines 49\u2013148. The return URL and TEST environments are examples, not a guaranteed redirect callback contract.\n- Redirect action and `/payments/details` examples: raw lines 150\u2013205. The illustrated `Authorised` response is not a live-payment result.\n- Test-card values and OTP fixture: raw lines 224\u2013233. Keep these within the page's test context; do not use them as live credentials.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[adyen-android-sdk]] \u2014 native Android versioned SDK context; its retained 5.x code baseline is separate from this v4 guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15|Napas card Android Drop-in v4.x.x snapshot]]\n",
+  "quotes": [
+    {
+      "text": "# Napas card Drop-in v4.x.x integration",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md:15"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Drop-in integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in).",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md:25"
+    },
+    {
+      "text": "* [countryCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods): **VN**",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md:34"
+    },
+    {
+      "text": "\"paymentMethodType\":\"momo_atm\",",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md:158"
+    },
+    {
+      "text": "| **Pending** or **Received** | The shopper has completed the payment but the final result is not yet known. | Inform the shopper that you have received their order, and are waiting for the payment to be completed. To know the final result of the payment, wait for the **AUTHORISATION** webhook. |",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md:213"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "napas-android-drop-in-v4-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-napas-card-android-drop-in-earlier-versions]] \u2014 2026-09-15 snapshot of Napas card Android Drop-in v4.x.x Advanced guide for VN/VND discovery, redirect, details and webhook-qualified results; `momo_atm` samples and Sessions links conflict with its Napas/Advanced prose.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "All shown payment-method type examples use momo_atm despite Napas title/discovery; do not infer that this is the Napas type.",
+          "The Advanced requirement conflicts with Sessions navigation links; v68 /payments and v72 /payments/details samples are not a verified single-version execution."
+        ]
+      },
+      {
+        "update_id": "napas-android-drop-in-v4-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-napas-card-android-drop-in-earlier-versions]] \u2014 historical v4.x.x Napas card Android Drop-in Advanced guide for VN/VND discovery, redirect and webhook-qualified outcomes; MoMo example type and Sessions-link discrepancies remain in the source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/napas-card/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "f483a8115d12fee410b62c69becd6e0ac4930b384202d51dfdf5c351ba8bddd8",
+  "status": "candidate_ready"
+}

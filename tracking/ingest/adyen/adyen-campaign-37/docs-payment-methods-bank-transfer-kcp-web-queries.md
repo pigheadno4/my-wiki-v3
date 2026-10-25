@@ -1,0 +1,7 @@
+# Q1 — Purpose, scope, and inference limit
+
+[[source-adyen-docs-payment-methods-bank-transfer-kcp-web]] is Adyen's 2026-09-15 Web chooser for Bank Transfer via KCP, linking Drop-in and Components child guides plus four main Web Sessions/Advanced guides (pinned raw raw/adyen/docs/payment-methods/bank-transfer-kcp/web/2026-09-15.md:15–36). It provides navigation rather than method-specific API/SDK versions, request fields, test setup, merchant eligibility, or payment outcome (raw/adyen/docs/payment-methods/bank-transfer-kcp/web/2026-09-15.md:19–36). Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-web]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/web/2026-09-15]].
+
+# Q2 — Central capability, prerequisites, warnings
+
+The page offers Drop-in as the all-in-one UI path and Components as the Redirect path (raw/adyen/docs/payment-methods/bank-transfer-kcp/web/2026-09-15.md:21–27). It instructs readers to create the main integration before adding this method and links Web Drop-in/Components for both Sessions and Advanced (raw/adyen/docs/payment-methods/bank-transfer-kcp/web/2026-09-15.md:29–36). The Redirect label does not specify `action.type` or final payment behavior; those implementation claims require the child guides. Same retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-web]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/web/2026-09-15]].

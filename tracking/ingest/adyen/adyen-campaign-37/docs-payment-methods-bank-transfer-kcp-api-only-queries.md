@@ -1,0 +1,9 @@
+# KCP Bank Transfer API-only retrieval checks
+
+## Q1 — Purpose, scope, and non-inferences
+
+The 2026-09-15 `source-adyen-docs-payment-methods-bank-transfer-kcp-api-only` is a method-specific add-on to an existing Web API-only integration for South Korea (`KR`) and `KRW`, requiring Customer Area method setup and existing redirect handling (raw lines 15–29, 44–51). It does not by itself establish a complete standalone integration, current merchant eligibility, a successful TEST/LIVE transaction, authorization, capture or settlement; its TEST examples are limited by the explicit no-testing-credentials statement (raw lines 678–680). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-api-only]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/api-only/2026-09-15]].
+
+## Q2 — Central capability, prerequisites, warnings
+
+The guide shows `/paymentMethods` with `countryCode: KR` and `amount.currency: KRW`, an example response with type `kcp_banktransfer`, and `/payments` using that type followed by a `RedirectShopper`/`redirect` action handled by the existing integration (raw lines 44–51, 329–340, 342–368, 660–676). It says the form needs no additional method-specific fields (raw lines 38–40). A material on-page conflict is that How it works says to include item information, while the `/payments` section says no additional parameters are needed and the sample has no item fields (raw lines 31–36, 342–368); no KCP bank-transfer test credentials are provided because authorization requires a Public Identification Certificate (raw lines 678–680). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bank-transfer-kcp-api-only]] → [[raw/adyen/docs/payment-methods/bank-transfer-kcp/api-only/2026-09-15]].

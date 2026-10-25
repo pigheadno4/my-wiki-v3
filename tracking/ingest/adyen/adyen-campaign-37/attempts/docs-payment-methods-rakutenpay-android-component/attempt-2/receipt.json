@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-rakutenpay-android-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Rakuten Pay Android Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/rakutenpay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/rakutenpay/android-component/2026-09-15.md\"\ntags: [adyen, rakuten-pay, android, components, redirect, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page describes Rakuten Pay additions to an existing Android Components integration, separately for Sessions and Advanced flows. Both use `InstantPaymentComponent` to create and show the Rakuten Pay Component; the existing Sessions or Advanced integration must handle the redirect action. The page is a method-specific add-on, not a standalone integration or proof of live merchant eligibility or completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions prerequisites and method data:** Use an existing Android Components Sessions flow, Checkout API v68 or later, redirect handling and Customer Area method setup. No additional `/sessions` parameters are stated. The example obtains `rakutenpay` from the checkout session and uses `InstantPaymentComponent` with or without Jetpack Compose. (raw lines 25\u201342, 89\u2013142)\n- **Advanced prerequisites and method data:** Use an existing Android Components Advanced flow that handles the additional `redirect` action, with Rakuten Pay added in Customer Area. The examples select `rakutenpay` from a `/paymentMethods` response; the page says no additional `/payments` parameters are needed. It does not state an Advanced Checkout API minimum. (raw lines 160\u2013168, 215\u2013276)\n- **Android module/configuration scope:** Both flows show `com.adyen.checkout:instant:YOUR_VERSION`; the Compose variant also shows `components-compose:YOUR_VERSION`. `setSubmitButtonVisible` is optional and defaults to true. The shown configuration snippets contain an unexplained nested brace and placeholder `value`; they should not be treated as verified runnable Kotlin or as a fixed SDK version. The Compose examples call for a distinct key per different screen or session/reset. (raw lines 44\u201387, 95\u2013123, 170\u2013213, 221\u2013250)\n- **Recurring restriction:** In the source's subscription and unscheduled card-on-file context, Rakuten Pay allows one-off card-on-file transactions only after review. It says a merchant without a periodic charging cadence must not initiate the card-on-file Recurring Processing Model, describes that model as primarily allowed for Food & Beverage, and requires application for every Recurring Processing Model when requesting Rakuten Pay. Tokenization is linked as a separate integration; the page strongly recommends explicit shopper permission for future recurring charges. These words do not establish automatic approval or unrestricted recurring capability. (raw lines 144\u2013150, 278\u2013284)\n- **TEST boundary:** The page names `DGFT_AcquirerAccount_RakutenPay_closedLoop` for TEST payments and says the redirect goes to a DGFT simulator without the Rakuten Pay app. Payment-list status inspection is mentioned. A simulator flow or status-location instruction does not prove LIVE readiness, authorization, capture or settlement. (raw lines 152\u2013158, 286\u2013292)\n\n## Detail locators\n\n- Sessions requirements and request additions: raw lines 25\u201342.\n- Sessions imports, optional configuration and Compose/non-Compose launch: raw lines 44\u2013142.\n- Advanced requirements, imports, optional configuration and launch: raw lines 160\u2013270.\n- Advanced `/payments`, recurring qualification and TEST simulator: raw lines 272\u2013292.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/rakutenpay/android-component/2026-09-15|Adyen Rakuten Pay Android Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements > Checkout API"
+    },
+    {
+      "text": "To [create the Component](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#launch-and-show) for Rakuten Pay, use the `InstantPaymentComponent` class.",
+      "location": "raw line 93, Sessions flow Component > Launch and show"
+    },
+    {
+      "text": "If you do not have a periodic charging cadence, Rakuten Pay prohibits you from initiating the Recurring Processing Model for card-on-file, which is primarily allowed for the Food & Beverage business category.",
+      "location": "raw line 146, Sessions flow Component > Recurring"
+    },
+    {
+      "text": "You must apply for every Recurring Processing Model when you request Rakuten Pay.",
+      "location": "raw line 146, Sessions flow Component > Recurring"
+    },
+    {
+      "text": "To test Rakuten Pay payments, use the acquirer account `DGFT_AcquirerAccount_RakutenPay_closedLoop` in the TEST environment.",
+      "location": "raw line 154, Sessions flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "rakutenpay-android-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-rakutenpay-android-component]] \u2014 2026-09-15 Rakuten Pay Android Components Sessions (Checkout API v68+) and Advanced redirect add-on, with review-gated recurring conditions and DGFT TEST simulator scope.",
+        "quote_indexes": [
+          0,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep recurring review/cadence conditions in the source; do not infer a granted card-on-file approval or live payment result."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/rakutenpay/android-component/2026-09-15.md",
+  "raw_sha256": "93eeecfd5c049efc4fa5238c38a48feda11bc0bac8d68264790d44706eaab5dc",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-rakutenpay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Rakuten Pay API-only guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/rakutenpay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/rakutenpay/api-only/2026-09-15.md\"\ntags: [adyen, rakuten-pay, japan, api-only, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page describes **Rakuten Pay-specific additions** to an existing API-only Web integration: merchant-owned payment form, JP/JPY method discovery, redirect handling and conditional recurring-model guidance. Its request/example contradictions require verification against the matching base/API guide; it does not establish current merchant eligibility or an authorized payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Base integration and form:** The page requires an existing API-only integration, redirect handling for **`action.type: redirect`**, and Rakuten Pay added in Customer Area. It says to list Rakuten Pay on the merchant payment form, with **no additional form fields** for this method. The shopper selects it and the existing integration handles the redirect. Those steps are not themselves final payment confirmation. (raw lines 23\u201340)\n- **Discovery scope and mislabeled sample:** The `/paymentMethods` prose requests **`countryCode: JP`** and **`amount.currency: JPY`** so Rakuten Pay can be returned. But its \u201cExample request for available payment methods\u201d calls a **v72 TEST `/payments` URL**, includes `paymentMethod.type: rakutenpay`, and is paired with a `paymentMethods` response example. The sample cannot be treated as a trustworthy `/paymentMethods` request or as an executed payment; use the endpoint-specific reference/base guide to resolve the discrepancy. (raw lines 44\u201386)\n- **Item-data contradiction:** The \u201cHow it works\u201d list says to include **additional information about the purchased items** in the payment request, while the later `/payments` section says **no additional parameters** are needed. This snapshot gives no item schema or rule resolving the difference. Do not silently claim that item fields are mandatory or unnecessary for every merchant/use case. (raw lines 31\u201336, 88\u201390)\n- **Recurring restrictions:** The page says that for subscription and unscheduled card-on-file business models, Rakuten Pay permits **one-off card-on-file transactions after a review process**. Without periodic charging cadence, it says initiating the card-on-file Recurring Processing Model is prohibited, primarily allowing it in Food & Beverage, and every Recurring Processing Model requires an application when requesting Rakuten Pay. It routes tokenization implementation elsewhere and **strongly recommends** explicit shopper permission for future recurring charges; that recommendation is not phrased as an unqualified mandate. Nothing here proves a merchant's recurring model has been approved. (raw lines 92\u201398)\n- **TEST scope:** The page names `DGFT_AcquirerAccount_RakutenPay_closedLoop` for TEST, says testing redirects to a DGFT simulator without the Rakuten Pay app, and points to Customer Area transaction-status checks. Despite \u201cTest and go live,\u201d it gives no separate live setup procedure or final result/webhook semantics. A simulator route or status-list instruction is not authorization/settlement proof. (raw lines 100\u2013106)\n\n## Detail locators\n\n- API-only/redirect/Customer Area requirements and no-extra-form-fields claim: raw lines 23\u201340.\n- JP/JPY discovery prose versus `/payments` example/`paymentMethods` response mismatch: raw lines 44\u201386.\n- Purchased-item instruction versus no-extra-`/payments` contradiction: raw lines 31\u201336, 88\u201390.\n- Recurring review, cadence/category, per-model application and shopper-permission recommendation: raw lines 92\u201398.\n- DGFT TEST simulator and Customer Area status route: raw lines 100\u2013106.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-rakutenpay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/rakutenpay/api-only/2026-09-15|Adyen Rakuten Pay API-only, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "When you make the payment request, you [include additional information about the items that the shopper intends to purchase](#additional-parameters-payments).",
+      "location": "raw line 35, item-data statement"
+    },
+    {
+      "text": "There are no additional fields that you have to include in your form.",
+      "location": "raw line 40, method-specific form fields"
+    },
+    {
+      "text": "curl https://checkout-test.adyen.com/v72/payments",
+      "location": "raw line 56, available-methods-labeled sample uses /payments"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw line 90, conflicts with raw line 35 item-data statement"
+    },
+    {
+      "text": "You must apply for every Recurring Processing Model when you request Rakuten Pay.",
+      "location": "raw line 94, per-model application"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "rakutenpay-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-rakutenpay-api-only]] \u2014 2026-09-15 Rakuten Pay JP/JPY API-only redirect guide with conditional recurring-model approval and DGFT TEST simulator; purchased-item versus no-extra-field prose and mislabeled `/paymentMethods` sample require source-qualified review.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "How-it-works requires item data while /payments section says no extra parameters; available-methods example calls /payments and shows a paymentMethods response. Do not infer runnable discovery code or resolve item-field requirements from this source alone. Recurring models need review/application and TEST is not live/outcome evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/rakutenpay/api-only/2026-09-15.md",
+  "raw_sha256": "c9a764f2b2145daecfa371d935934f835561194ee690c0806dfcb4a4bf003649",
+  "status": "candidate_ready"
+}

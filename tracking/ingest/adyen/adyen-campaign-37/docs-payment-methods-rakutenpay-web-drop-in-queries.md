@@ -1,0 +1,7 @@
+# Rakuten Pay Web Drop-in retrieval checks
+
+**Q1. What is the page for, and what cannot be inferred?** It adds Rakuten Pay to existing Web Drop-in Sessions or Advanced redirect integrations, not a standalone checkout or evidence of current eligibility or payment completion. It does not give country/currency or final-status rules. Raw locators: `raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:17-36,76-104`. Canonical stem: `https://docs.adyen.com/payment-methods/rakutenpay/web-drop-in`.
+
+**Q2. What capability, prerequisites, and warnings matter?** Sessions requires Checkout API v68+, redirect handling and Customer Area addition; Advanced requires its Drop-in flow and redirect handling, with an unresolved template in its prerequisite URL. No extra ordinary request fields are listed, and separate `Redirect` import is optional. One-off card-on-file/recurring use is review- and model-application-qualified; without a periodic charging cadence the page prohibits initiating that model. TEST uses a named DGFT acquirer account and simulator, not the Rakuten Pay app. Raw locators: `raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15.md:29-74,80-124`. Canonical stem: `https://docs.adyen.com/payment-methods/rakutenpay/web-drop-in`.
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-rakutenpay-web-drop-in]] → [[raw/adyen/docs/payment-methods/rakutenpay/web-drop-in/2026-09-15]].

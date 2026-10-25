@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-napas-card-android-component-earlier-versions",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Napas card Android Redirect Component earlier versions\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/napas-card/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, napas-card, android, redirect, components, earlier-versions]\n---\n\n## Overview\n\nThis historical Adyen page, titled \u201cNapas card Redirect Component v4.x.x integration,\u201d adds a redirect payment route to an existing **Advanced-flow Android Components** integration. It describes server-owned payment requests, Android redirect handling, return details and provisional versus final results. The page metadata says last modified 2019-09-06; the 2026-09-15 capture does not establish current availability, merchant eligibility or a successful payment. See [[adyen]] and [[adyen-android-sdk]].\n\n## Key takeaways\n\n- The stated prerequisites are an existing Advanced Android Components integration and Napas card added in Customer Area. The payment form need not collect extra shopper details for this method. The server's `/paymentMethods` request specifies `countryCode: VN`, VND amount currency and amount value.\n- **Method-identity conflict:** although the page calls this Napas card, it names the discovered `paymentMethod.type` as `momo_atm` and repeats `momo_atm` in `/payments` prose, request examples and redirect response. Preserve this exact historical text; the page alone cannot resolve whether the type is correct for NAPAS or a copied MoMo ATM value. Verify against authoritative, version-matched method data before implementing.\n- From the merchant server, the page says to send `paymentMethod.type: momo_atm` and a `returnUrl` obtained through `RedirectComponent.getReturnUrl(context)` in `/payments`. Pass the response `action` to the Android client; the Redirect Component handles the redirect. After the shopper returns, the server posts `actionComponentData.details` to `/payments/details`. The Redirect Component hyperlink at line 177 targets a Sessions-flow Android Components guide even though this page requires Advanced flow at line 30; the link does not establish Sessions support here. The curl `/payments` body is syntactically JSON, but its literal `{hint:...}paymentMethod{/hint}` property at lines 69\u201370 is not the ordinary `paymentMethod` request field and should not be copied as a valid `/payments` request; the Node/Python/Ruby examples use the ordinary key.\n- `/payments/details` supplies a `resultCode` to present, but `Pending` or `Received` means the final result is unknown and requires an `AUTHORISATION` webhook. If the shopper never returns, the page says to await webhooks; it distinguishes `AUTHORISATION` success true/false from `OFFER_CLOSED` success true for an incomplete timed-out offer. A redirect or shopper return is not proof of authorization, capture or settlement.\n- Test fixtures cover successful, blocked-card, insufficient-funds and amount-limit scenarios. The page says to check test status in Customer Area and submit a separate live Customer Area request before accepting live Napas card payments. Test cards and OTPs are historical fixtures, not evidence of live provider operation.\n\n## Detail locators\n\n- Scope, prerequisites and VN/VND discovery: pinned raw lines 15\u201345.\n- `/payments` fields, examples and redirect action: pinned raw lines 47\u2013173. The curl sample targets test v68; its syntactically valid but incorrect hinted request property is at lines 69\u201370.\n- Android return and server `/payments/details`: pinned raw lines 175\u2013208. The example uses test v72 for details while the payment example uses test v68; the page does not explain this version difference.\n- Result codes and webhook outcome handling: pinned raw lines 210\u2013229. Its no-return sentence says \u201cwebsite\u201d despite the Android app context (line 223); use the stated webhook principle without treating that noun as platform guidance.\n- Test fixtures and live request: pinned raw lines 231\u2013244.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 native Components, redirect and merchant-server boundaries\n- [[adyen-online-payments]] \u2014 broader Checkout and outcome concepts\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15|Napas card Android Redirect Component v4.x.x guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you have an existing Android Components integration, you can use our Redirect Component to redirect the shopper to the Napas card app or website where they can complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "The response contains `paymentMethod.type`: **momo\\_atm**.",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md:43"
+    },
+    {
+      "text": "* `paymentMethod.type`: Set this to **momo\\_atm**.",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md:53"
+    },
+    {
+      "text": "| **Pending** or **Received** | The shopper has completed the payment but the final result is not yet known. | Inform the shopper that you have received their order, and are waiting for the payment to be completed. To know the final result of the payment, wait for the **AUTHORISATION** webhook. |",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md:220"
+    },
+    {
+      "text": "| **OFFER\\_CLOSED** | **true**      | The shopper did not complete the payment.       | Cancel the order and inform the shopper that the payment timed out.                 |",
+      "location": "raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md:229"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "napas-card-android-earlier-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-napas-card-android-component-earlier-versions]] \u2014 historical v4.x.x Advanced Android Redirect Component guide for Napas card, with unresolved `momo_atm` method-type wording and webhook result boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Napas title conflicts with `momo_atm` in the page's method discovery, request and action examples; do not normalize the type without separate authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/napas-card/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "9443f3df1eb5ba6572ce62124ca20200292a337fc16c7f235c6268dcd117feb3",
+  "status": "candidate_ready"
+}

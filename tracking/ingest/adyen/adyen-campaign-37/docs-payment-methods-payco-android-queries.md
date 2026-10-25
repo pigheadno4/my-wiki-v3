@@ -1,0 +1,7 @@
+# Q1 — Purpose, scope, and inference limit
+
+[[source-adyen-docs-payment-methods-payco-android]] is Adyen's 2026-09-15 Android PayCo chooser, linking Drop-in and Components children and four main Android Sessions/Advanced guides (pinned raw raw/adyen/docs/payment-methods/payco/android/2026-09-15.md:15–36). It does not specify child SDK/API versions, method configuration, test setup, merchant eligibility, or a final payment result (raw/adyen/docs/payment-methods/payco/android/2026-09-15.md:19–36). Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-payco-android]] → [[raw/adyen/docs/payment-methods/payco/android/2026-09-15]].
+
+# Q2 — Central capability, prerequisites, warnings
+
+The page offers an all-in-one Drop-in route and an `InstantPaymentComponent` Components route described as handling a redirect to PayCo (raw/adyen/docs/payment-methods/payco/android/2026-09-15.md:21–27). It says to create the main integration first and links Android Drop-in and Components for both Sessions and Advanced (raw/adyen/docs/payment-methods/payco/android/2026-09-15.md:29–36). That redirect description is a child-route label; completion and outcome require separate evidence. Same retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-payco-android]] → [[raw/adyen/docs/payment-methods/payco/android/2026-09-15]].

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-payco-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayCo for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payco/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/payco/api-only/2026-09-15.md\"\ntags: [adyen, payco, api-only, south-korea, redirect]\n---\n\n## Overview\n\nAdyen's 2026-09-15 PAYCO API-only guide adds PayCo to an existing **Web API-only Advanced-flow** integration. It covers method discovery, a merchant-built form, server payment request and redirect action; the linked base guide owns the general redirect and result handling. This snapshot is not evidence of current merchant eligibility or an executed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Prerequisites and method discovery:** Requires an existing API-only integration set up for `action.type: redirect` and PayCo added in Customer Area. The `/paymentMethods` table gives `countryCode: KR` and `amount.currency: KRW`; its example response identifies `type: kcp_payco`. Examples also use `shopperLocale: kr-KR` and Checkout v72 TEST, but example response presence is not a guarantee that a particular merchant is enabled. [Raw lines 23\u201329, 44\u201353, 53\u201372, 329\u2013340]\n- **Shopper form and request:** The merchant-built form lists PayCo but needs no additional PayCo-specific fields. The payment examples submit `paymentMethod.type: kcp_payco`, KRW amount, reference, return URL and merchant account from the server. The page says no additional `/payments` parameters for PayCo, yet its \u201chow it works\u201d step tells the reader to include additional purchased-item information without naming a field or including items in its payment examples. Preserve that prose/example tension; do not infer an unconditional `lineItems` requirement or suppress the earlier statement. [Raw lines 31\u201342, 342\u2013368, 492\u2013523]\n- **Redirect and outcome:** A `/payments` example returns `RedirectShopper` with an `action.type: redirect`, and the existing API-only integration handles that action. A redirect response or shopper return is not final authorization, capture, settlement or a successful transaction. This page does not specify a PayCo-specific result-code/webhook completion procedure. [Raw lines 660\u2013676]\n- **Testing/environment:** The page says there are no specific PayCo test credentials and directs testing assistance to Adyen Support. Server examples use TEST settings and some mention an additional live endpoint URL prefix for LIVE; they do not establish live merchant activation or a real payment. [Raw lines 53\u2013327, 370\u2013658, 678\u2013682]\n\n## Detail locators\n\n- `/paymentMethods` examples by language: raw lines 53\u2013327; payment examples: lines 346\u2013658. The Node JavaScript/TypeScript snippets refer to `Config` and `EnvironmentEnum` without imports in the shown snippets, so they should not be assumed to be standalone runnable code. [Raw lines 180\u2013208, 297\u2013327, 492\u2013523, 623\u2013658]\n- Country/currency and `kcp_payco` type are documented here; no recurring token route, 3DS step, cancellation/refund behavior, or final payment-status guarantee is defined.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payco/api-only/2026-09-15|PayCo for API only (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "There are no additional fields that you have to include in your form.",
+      "location": "raw/adyen/docs/payment-methods/payco/api-only/2026-09-15.md:40"
+    },
+    {
+      "text": "\"type\": \"kcp_payco\"",
+      "location": "raw/adyen/docs/payment-methods/payco/api-only/2026-09-15.md:336"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment]",
+      "location": "raw/adyen/docs/payment-methods/payco/api-only/2026-09-15.md:344"
+    },
+    {
+      "text": "The response includes the `action.type`: ****redirect****.",
+      "location": "raw/adyen/docs/payment-methods/payco/api-only/2026-09-15.md:660"
+    },
+    {
+      "text": "There are no specific test credentials for PayCo.",
+      "location": "raw/adyen/docs/payment-methods/payco/api-only/2026-09-15.md:680"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payco-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payco-api-only]] \u2014 2026-09-15 PAYCO Web API-only Advanced guide for KR/KRW discovery, `kcp_payco` redirect payments and TEST setup; purchased-item prose versus no-extra-field examples remains qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The how-it-works step mentions item information while the parameter section says no additional fields and examples omit items."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payco/api-only/2026-09-15.md",
+  "raw_sha256": "2fbc5ecfdca993ef4e532e4045740b0dd5e83a410da7efa0907207b4c80c0b8b",
+  "status": "candidate_ready"
+}
