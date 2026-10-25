@@ -1739,6 +1739,12 @@ class RegistryTests(unittest.TestCase):
                     False,
                     ("5.8.0",),
                 ),
+                VersionTrack(
+                    "package:StripeTerminal@6",
+                    "all-stable",
+                    "all-stable",
+                    False,
+                ),
             ),
             repo.version_tracks,
         )
@@ -1758,8 +1764,6 @@ class RegistryTests(unittest.TestCase):
                 "Example/Example/Info.plist",
                 "Example/Example/PaymentViewController.swift",
                 "Example/Example/ReaderDiscoveryViewController.swift",
-                "Example/Podfile",
-                "Example/Podfile.lock",
                 "LICENSE",
                 "Package.swift",
                 "README.md",
@@ -1774,6 +1778,12 @@ class RegistryTests(unittest.TestCase):
         self.assertEqual(380, capsule.max_packet_files)
         self.assertEqual(5000000, capsule.max_packet_utf8_bytes)
         self.assertIn("PublicHeaders", repo.ingest_required_paths)
+        self.assertNotIn("Example/Podfile", capsule.include_paths)
+        self.assertNotIn("Example/Podfile.lock", capsule.include_paths)
+        self.assertIn(
+            "c9f5b38c2f72d20733535b2ba321b96373a5af2152cbfbd0e7ab582154263f64",
+            capsule.historical_policy_hashes,
+        )
         self.assertIn(
             "Example/Example/PaymentViewController.swift",
             repo.ingest_required_paths,

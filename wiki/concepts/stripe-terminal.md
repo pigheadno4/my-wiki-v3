@@ -49,7 +49,7 @@ Five distinct ways to integrate Terminal, ranging from full custom builds to no-
 | SDK | Platform | Version | Notes |
 | --- | --- | --- | --- |
 | JavaScript SDK v1 | Web / browser-based POS | v1 | Load from `js.stripe.com` only; Chrome 142+ needs local network permission; same-network + local DNS required |
-| iOS SDK | Native iOS | 5.8.0 retained baseline | iOS 15+; explicit `Terminal.initWithTokenProvider`; location mandatory |
+| iOS SDK | Native iOS | 6.0.0 full ingest; 5.8.0/5.8.1 history retained | v6 iOS 16+; SPM updates; explicit `Terminal.initWithTokenProvider`; location mandatory |
 | Android SDK | Native Android | 5.8.0 retained baseline | API 26+; Java 8/Kotlin; lifecycle delegate; separate matched Tap to Pay artifacts |
 | React Native SDK | Cross-platform mobile | latest (public preview) | `requestNeededAndroidPermissions` helper; Android 12+ needs `exported=true` |
 
@@ -70,6 +70,24 @@ The approved `stripeterminal@5.8.0` repository capsule confirms `ACCESS_COARSE_L
 Standard integrations use `com.stripe:stripeterminal`; Tap to Pay uses matching `stripeterminal-taptopay` and `stripeterminal-core` versions. Version 5 provides both split collect/confirm APIs and combined `processPaymentIntent`, `processSetupIntent`, and `processRefund` APIs. Manual capture, ConnectionToken creation, and authoritative reconciliation remain backend responsibilities.
 
 The SDK implementation is proprietary. Generated API docs and open Java/Kotlin examples establish the public contract and integration patterns, not internal runtime behavior or merchant/device eligibility.
+
+### iOS 5.8.1 offline maintenance update
+
+`StripeTerminal@5.8.1` reports a fix for offline PaymentIntents dropping merchant creation parameters, affecting Tap to Pay destination charges using `onBehalfOf`. The retained public-source delta changes only release history, binary URL/checksum and the SDK version constant; the proprietary runtime fix was not executed or independently inspected. No new payment API or general offline availability follows. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+
+### iOS 6.0.0 migration boundary
+
+The additive `StripeTerminal@6.0.0` ingest preserves both v5 releases. Version 6 requires iOS 16+, with Xcode 16+/Swift 6+ required for integrators; Stripe built the binary using Xcode 27/Swift 6.4. The raw changelog says new releases, including patches to earlier majors, are published through SPM only; existing CocoaPods versions continue working but receive no further updates there. The README points SPM users to `stripe/stripe-terminal-ios-spm`.
+
+- **Capture:** `PaymentIntentParametersBuilder` defaults to `.automaticAsync`, not `.manual`. Explicitly select `.manual` for on-receipt tipping, incremental or extended authorization. Inspect the resulting Intent state and reconcile on the backend; this is a client-builder default, not a claim about every server-created Intent.
+- **Consent and models:** initialize `CollectSetupIntentConfigurationBuilder(allowRedisplay: ...)` with consent-appropriate `.always` or `.limited`, and pass the configuration to collect/process. `SetupIntent.paymentMethod` is now the expanded object; use `paymentMethodId` for its ID. Use `PaymentIntent.latestCharge`/`latestChargeId` instead of `charges`. Instrument details and transaction details are separate; card brand, funding and read-method fields use strings rather than old enums, with nullable funding and nullable instrument expiry.
+- **Reader UI:** migrate the five Tap to Pay lifecycle/display callbacks to shared `reader(...)` forms. Payment selection/QR UI uses a separate retained `ReaderPaymentInteractionDelegate`, configured on the connection and completed via `PaymentInteraction` subclasses. Reader-originated cancellation is `.canceledByReader` (2021), distinct from SDK `.canceled` (2020).
+- **Refunds/previews:** `ProcessRefundParameters` replaces `RefundParameters`; deprecated split refund calls are removed. The new private-preview `confirmRefund(parameters)` requires a connected reader for authentication but no card collection or reader UI. Mexico MSI installments and Swish are previews, not general merchant availability. Simulator offline access is broader, not proof that live offline payments are generally available.
+
+> [!warning] Contradiction
+> The v6 creation header and release notes specify automatic-async capture by default, but `SCPTerminal.h` retains an unqualified comment saying successful confirmation only authorizes and requires synchronous backend capture. Apply that comment to a manual-capture flow, not every v6 payment; choose the capture method explicitly and inspect state. The same evidence conflict is recorded in [[source-github-stripe-terminal-ios]].
+
+The v5 maintenance tip and v6 tip diverge from their common 5.8.0 baseline. Do not infer that the proprietary v6 binary includes or excludes the 5.8.1 offline fix from version ordering or changelog absence. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]] for both comparisons and migration detail.
 
 ## Key Features
 

@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-terminal-ios"
 type: source
 date_ingested: 2026-08-31
-date_updated: 2026-08-31
+date_updated: 2026-10-25
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/manifest.json"
+  - "github/stripe/stripe-terminal-ios/snapshots/2026-10-25-00cd46d/manifest.json"
   - "github/stripe/stripe-terminal-ios/snapshots/2026-08-31-c027d6d/manifest.json"
 tags: [stripe, terminal, ios, swift, mobile, sdk, card-present, tap-to-pay, offline-payments, github-repository]
 ---
@@ -13,12 +15,14 @@ tags: [stripe, terminal, ios, swift, mobile, sdk, card-present, tap-to-pay, offl
 
 `stripe/stripe-terminal-ios` distributes Stripe's proprietary native iOS SDK for custom in-person checkout. This cumulative page establishes the approved `StripeTerminal@5.8.0` baseline at exact commit `c027d6dc2258c774412cb7933cbb959488c16b63` from public headers, the open-source example application, support policy, and release history.
 
+Additive ingests on 2026-10-25 retain the `5.8.1` maintenance delta and the `6.0.0` full major boundary at `79cfb3225553a7a5cceb8325f1c1f9087f792128`. The general sections below retain the v5 baseline; the version-qualified v6 section overrides incompatible APIs and defaults without deleting that history.
+
 Repository: <https://github.com/stripe/stripe-terminal-ios>
 
 ## Evidence Boundary
 
 - Stripe states that the SDK implementation is proprietary and closed source. The retained public headers are authoritative for the exposed API contract, while the example application demonstrates integration patterns rather than internal runtime behavior.
-- The capsule retains 235 files: 169 public API files, 60 example files, build metadata, documentation, license, and release history. Tests, generated binaries, assets, CI, and unrelated tooling are excluded.
+- The v5 capsule retains 235 files: 169 public API files, 60 example files, build metadata, documentation, license, and release history. The v6 capsule retains 243 files. Tests, generated binaries, assets, CI, and unrelated tooling are excluded.
 - API presence does not prove merchant eligibility, country or currency availability, preview access, reader firmware compatibility, or account configuration.
 - Several retained surfaces are preview-gated or conditionally compiled, including surcharging, MOTO, collect-data, Tap to Pay offline mode, and USB support.
 - An SDK completion does not independently prove capture or settlement. Manual-capture integrations must synchronously notify their backend to capture, and fulfillment should follow server-side payment state.
@@ -27,11 +31,12 @@ Repository: <https://github.com/stripe/stripe-terminal-ios>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `StripeTerminal` | `5.8.0` | `c027d6dc2258c774412cb7933cbb959488c16b63` | Approved full baseline |
+| `StripeTerminal` v6 | `6.0.0` | `79cfb3225553a7a5cceb8325f1c1f9087f792128` | Approved additive full ingest; v5 history preserved |
+| `StripeTerminal` v5 | `5.8.1` | `00cd46de3ad9a7847c5d8ccb30abcf311a1e26e0` | Approved delta; 5.8.0 baseline preserved |
 
 This table reports wiki ingest progress, not the latest release published upstream.
 
-## Platform and Installation
+## Platform and Installation (v5 Baseline)
 
 - `StripeTerminal@5.8.0` requires iOS 15 or later. Its binary Swift Package target downloads `StripeTerminal.xcframework` for the exact `5.8.0` release; CocoaPods supports `pod 'StripeTerminal', '~> 5.0'`.
 - Location services are mandatory for accepting payments. Bluetooth reader integrations also require the Bluetooth usage description and `bluetooth-central` background mode.
@@ -87,7 +92,7 @@ The SDK reports offline status for both the app and connected smart reader, incl
 
 The simulator can independently place the SDK and smart reader in immediate-failure, timeout, or intermittent offline modes. These controls are test-only and fail for live-mode readers. Tap to Pay offline processing entered private preview in 5.6.0 and must not be treated as generally available.
 
-## Refunds
+## Refunds (v5 Baseline)
 
 `processRefund` combines collection and confirmation for in-person refund methods such as Interac. The older split refund methods are deprecated. Ordinary refunds that do not require cardholder presence remain server-side or Dashboard operations.
 
@@ -141,15 +146,106 @@ The retained upstream history adds EasyConnect; internet-reader filtering; mPOS 
 - Test both split and combined flows only if the application supports both; do not mix their state transitions accidentally.
 - Review the migration guide and support lifecycle before every major upgrade because end-of-life versions are eventually blocked.
 
+## `StripeTerminal@5.8.1` Offline Maintenance Delta
+
+Delta-ingested 2026-10-25 from `5.8.0`. GitHub publication is October 9 UTC; the release note labels October 8. Three retained files change and 232 remain unchanged. No exposed payment API change is present in the retained comparison; iOS 15 remains the package minimum.
+
+Stripe reports that offline PaymentIntents previously dropped merchant-supplied creation parameters, causing Tap to Pay collection failures for destination charges using `onBehalfOf`. This is an upstream binary-fix statement, not independently inspected SDK implementation or a reproduced payment result. Existing consent, Connect configuration, reader/account prerequisites, offline reconciliation and capture responsibilities remain.
+
+The public source changes only the cumulative changelog, `Package.swift` binary download/checksum and `SCPSDKVersion`. The example and other public headers are unchanged. All changed assigned content and affected prior code were read; unchanged files/history and inventories were mechanically verified under the approved focused-reading exception. No SDK binary, build, physical reader or payment test was executed. All older version knowledge remains preserved.
+
+### Located Grounding
+
+- `releases/stripeterminal/5.8.1/2026-10-25/release-notes.md:3`: "offline PaymentIntents dropped merchant-supplied creation parameters".
+- `snapshots/2026-10-25-00cd46d/files/Package.swift:8`: `.iOS(.v15)`.
+- `snapshots/2026-10-25-00cd46d/files/PublicHeaders/SCPTerminal.h:55`: `static NSString *const SCPSDKVersion = @"5.8.1";`.
+
+Paths above are under `raw/github/stripe/stripe-terminal-ios/`. See [[changelog-github-stripe-terminal-ios]] for the complete package-qualified evidence boundary.
+
+## `StripeTerminal@6.0.0` Additive Full Ingest
+
+Full-ingested 2026-10-25 after completing the 5.8.1 delta. Release date 2026-10-07; exact SHA `79cfb3225553a7a5cceb8325f1c1f9087f792128`. This is a public-header/example integration baseline, not a read of the proprietary binary. All earlier wiki knowledge and immutable raw evidence remain available.
+
+### Branch and Reading Boundary
+
+The maintenance tip 5.8.1 and major tip 6.0.0 diverge from common baseline 5.8.0; 5.8.1 was published later. The immutable queued packet compares 5.8.1 -> 6.0.0 as endpoints. The additional 5.8.0 -> 6.0.0 comparison establishes v6 evolution from the common ancestor. Both were reviewed; their patches differ only in prior changelog/version/binary metadata. Neither comparison establishes whether the closed-source v6 binary contains or excludes the 5.8.1 offline fix.
+
+The v6 snapshot contains ten added, 56 modified, two removed and 177 unchanged retained files relative to 5.8.1. Under the user's focused-reading exception, changed headers/examples, affected prior code, release notes, both branch comparisons and cumulative wiki history were read; unchanged raw, historical changelog sections and generated inventories were mechanically verified. The historical changelog suffix beginning at 5.8.0 is identical across all three snapshots. No SDK build, simulator, physical reader, payment or settlement verification was performed.
+
+### Distribution and Compatibility
+
+- iOS 16 is the deployment minimum. The binary is built using Xcode 27/Swift 6.4, but the notes require Xcode 16+/Swift 6+ for integrators; a module-interface compiler flag avoids requiring the newer module-selector syntax.
+- The cumulative changelog announces SPM-only publication of new releases **including patches to earlier SDK versions**. Existing CocoaPods versions keep working but receive no further updates there. The README changes the SPM URL to `https://github.com/stripe/stripe-terminal-ios-spm`; manual binary installation remains documented.
+- The example now opens `Example.xcodeproj`, removes its Podfile/lock, and shifts window setup from AppDelegate toward scene configuration. The bounded capsule does not retain the referenced SceneDelegate, so it does not establish a complete buildable example or its launch implementation.
+- Retained `SUPPORT.md` is unchanged and still ends its dated table at v5. Preserve the v5 lifecycle evidence; do not invent a v6 hard-block date from an annual-release pattern.
+
+### Capture and Checkout State
+
+`PaymentIntentParametersBuilder` changes its default from `.manual` to `.automaticAsync`; `.automatic` and explicit `.manual` remain choices. This concerns SDK-side creation, not a retroactive change to every backend-created PaymentIntent. On-receipt tipping, incremental authorization and extended authorization require explicit manual capture. The example chooses manual for those options and only calls its capture backend when the returned Intent requires capture and capture was not skipped. Offline forwarding and unknown-outcome reconciliation still require backend state checks.
+
+> [!warning] Contradiction
+> `SCPPaymentIntentParameters.h:65` and the release notes specify automatic-async capture as the default, while `SCPTerminal.h:554-561` still says confirmation authorizes but does not capture and requires synchronous backend capture without qualifying the capture method. Apply that latter guidance to manual-capture flows, not universally to v6. Select the capture method explicitly and inspect the Intent state. The reciprocal warning is in [[stripe-terminal]].
+
+### Required Consent and Public-Model Migration
+
+| Area | v6 contract / migration |
+| --- | --- |
+| SetupIntent collection | Build `CollectSetupIntentConfigurationBuilder(allowRedisplay: ...)`; pass the required configuration as `setupConfig` to collect or `collectConfig` to process. Consent remains mandatory; the header documents `.always` or `.limited`. The demo's selectable `.unspecified` and default `.always` do not override that contract. |
+| SetupIntent PaymentMethod | `paymentMethod` now returns the expanded object formerly named `paymentMethodExpanded`; `paymentMethodId` supplies the former ID-valued `paymentMethod`. |
+| PaymentIntent Charge | Replace `charges` with nullable `latestCharge`/`latestChargeId`; the note describes compatibility with either `latest_charge` or a legacy charges list. The note directs invoice-relationship retrieval to the server API. |
+| Instrument vs transaction | `PaymentMethod.cardPresent`/`interacPresent` return `PaymentMethodCardPresentDetails`, including available/preferred networks and nullable expiry. Transaction-only receipt, generated-card, authorization and capture fields remain under `PaymentMethodDetails.cardPresent`/`interacPresent`. `CardPresentDetails.networks` is removed; instrument `networks` replaces it. |
+| Strings, not old enums | Brand, network, funding and read-method values become API strings where declared. Missing funding is nil; missing read method is `"unknown"`; new API values are preserved. Replace enum comparisons and removed `stringFromCardBrand`/`stringFromReadMethod` helpers. The umbrella drops the old enum imports even though historical header files remain in the retained tree. |
+| Additional fields | Card-present details expose nullable `paymentAccountReference`, described as linking a physical card and wallet tokens to the same underlying payment account; absence must remain supported. PaymentIntent also exposes optional `application` and `review` IDs. |
+| Removed aliases | Use `stripeDescription`, not deprecated parameter `description` aliases. Replace simulator `availableReaderUpdate`/old update enum with connection `testReaderUpdate`. |
+
+These are SDK model/compile migrations, not evidence of general card-saving eligibility, customer attachment, account enablement or new legal consent.
+
+### Reader Delegates, Cancellation and Updates
+
+`MobileReaderDelegate` and `TapToPayReaderDelegate` inherit shared `ReaderInteractionDelegate`. Rename the five Tap to Pay update/input/display callbacks to `reader(...)` forms. Implement the concrete reader delegate, not the shared base directly. Mobile optional-update availability stays on `MobileReaderDelegate`; shared installation callbacks also cover mandatory Tap to Pay configuration during connection, not optional Tap to Pay update discovery.
+
+Blocking payment selection and QR display move to separate `ReaderPaymentInteractionDelegate.reader(_:didRequestInteraction:)`. Set it on Bluetooth/USB/Tap to Pay connection configuration and retain it until disconnect; the connection references it weakly. Handle `PaymentMethodSelectionInteraction` or `QrCodeDisplayInteraction` and call its completion to continue payment. The example's persistent announcers forward these events to participating view controllers.
+
+Reader/customer cancellation is `.canceledByReader` (2021), including Tap to Pay sheet dismissal/PIN back-out; SDK-requested cancellation remains `.canceled` (2020). Audit cancellation branches for both. The retained `PaymentViewController.handlePaymentError` still tests only `.canceled` before invoking its cancel-PaymentIntent branch; do not copy that as complete v6 cancellation handling. This is a static example observation, not a reproduced runtime SDK defect.
+
+Internet connection `allowCustomerCancel` is removed; use per-collection `customerCancellation`, enabled by default on supported readers. Printer-low-battery error becomes general `.readerBatteryLow` (same numeric code 4007). The release reports a reconnect fix preserving a refined peer-removed-pairing reason. Simulator offline configuration loses its account-access error, but live-mode rejection remains; this does not promote real offline processing to GA.
+
+### Refund Migration and Preview Features
+
+- **In-person refund:** rename `RefundParameters`/Builder to `ProcessRefundParameters`/Builder. `processRefund` still collects and confirms where cardholder presence is required. Deprecated split collection and old parameterless confirmation overloads are removed.
+- **Private-preview no-collection refund:** new `confirmRefund(parameters)` uses a connected reader for authentication without reader UI/card presentation. Supply PaymentIntent ID/client secret, optionally amount (omission refunds all remaining refundable amount), reason, metadata, Connect reversal/application-fee flags or instructions email. Wait for completion; if an error contains no Refund, reconcile with the backend **before creating another refund**. Do not confuse this with the removed split confirmation API or treat it as bypassing Interac presence requirements.
+- **Refund response:** `stripeId` becomes nullable. Handle `canceled`, `requiresAction` and optional `nextAction` details (instruction-email metadata/expiry), not only a successful object return.
+- **Mexico MSI installments preview:** enable installments under card-present PaymentIntent options. Read `availablePlans` after collection and cardholder-selected `plan` after confirmation. Symbols and example wiring do not prove country/card/account eligibility or preview access.
+- **Swish preview:** adds the method type and location/reader details on PaymentMethod and transaction details. Presence is not general release or eligibility proof.
+- **WisePad 3 surcharge:** notes add amount surcharge and confirm-time consent; collect-time `surchargeNotice` remains unsupported. Existing preview/account/firmware gates still apply.
+
+### Located Grounding
+
+Paths are under `raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/`:
+
+- `CHANGELOG.md:6`: "including patches to earlier SDK versions" (within the SPM-only publication announcement).
+- `PublicHeaders/SCPPaymentIntentParameters.h:65`: "Defaults to `SCPCaptureMethodAutomaticAsync`."
+- `PublicHeaders/SCPCollectSetupIntentConfiguration.h:44`: "`allowRedisplay` must be set to `always` or `limited`."
+- `PublicHeaders/SCPReaderPaymentInteractionDelegate.h:22`: "The provided delegate must be retained by your application until the reader disconnects."
+- `PublicHeaders/SCPTerminal.h:774-775`: "The connected reader is used to authenticate the request, but this method does" / "not display reader UI or ask the cardholder to present a payment method."
+
 ## Related
 
 - Company: [[stripe]]
 - Concept: [[stripe-terminal]]
+- Affected concepts: [[stripe-terminal-save-payment-details]], [[stripe-terminal-refunds]], [[stripe-terminal-tipping]], [[stripe-terminal-incremental-authorizations]], [[stripe-terminal-extended-authorizations]]
 - General iOS payments SDK: [[source-github-stripe-ios]]
 - History: [[changelog-github-stripe-terminal-ios]]
 
 ## Raw Sources
 
+- [6.0.0 snapshot](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/manifest.json), [release](raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/6.0.0/2026-10-25/manifest.json), [notes](raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/6.0.0/2026-10-25/release-notes.md), [common-baseline comparison](tracking/github/repos/stripe/stripe-terminal-ios/comparisons/stripeterminal/5.8.0--6.0.0/comparison.json), and [cross-branch endpoint comparison](tracking/github/repos/stripe/stripe-terminal-ios/comparisons/stripeterminal/5.8.1--6.0.0/comparison.json).
+- [v6 cumulative changelog](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/CHANGELOG.md), [README](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/README.md), [package](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/Package.swift), and [support policy](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/SUPPORT.md).
+- [v6 capture creation contract](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPPaymentIntentParameters.h), [Terminal APIs and capture comment](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPTerminal.h), [SetupIntent consent](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPCollectSetupIntentConfiguration.h), [SetupIntent model](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPSetupIntent.h), and [PaymentIntent model](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPPaymentIntent.h).
+- [v6 instrument details](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPPaymentMethodCardPresentDetails.h), [transaction details](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPCardPresentDetails.h), [payment interaction delegate](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPReaderPaymentInteractionDelegate.h), and [interaction types](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPPaymentInteraction.h).
+- [v6 payment example](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/Example/Example/PaymentViewController.swift), [creation/options example](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/Example/Example/StartPaymentViewController.swift), and [SetupIntent example](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/Example/Example/StartSetupIntentViewController.swift).
+- [v6 refund parameters](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPConfirmRefundParameters.h), [in-person parameters](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPProcessRefundParameters.h), [installments](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPInstallmentsParameters.h), and [Swish](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/files/PublicHeaders/SCPSwishDetails.h).
+- [5.8.1 snapshot](raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-00cd46d/manifest.json), [release](raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.1/2026-10-25/manifest.json), [notes](raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.1/2026-10-25/release-notes.md), and [5.8.0 to 5.8.1 comparison](tracking/github/repos/stripe/stripe-terminal-ios/comparisons/stripeterminal/5.8.0--5.8.1/comparison.json).
 - `raw/github/stripe/stripe-terminal-ios/snapshots/2026-08-31-c027d6d/manifest.json` - exact-SHA bounded source capsule
 - `raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.0/2026-08-31/manifest.json` - package-qualified release record
 - `raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.0/2026-08-31/release-notes.md` - exact `5.8.0` release notes

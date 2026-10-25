@@ -27,6 +27,8 @@ Available on Visa, Mastercard, Amex, and Discover. **Not available** on single-m
 
 ## Integration
 
+For iOS `StripeTerminal@6.0.0`, SDK-side `PaymentIntentParametersBuilder` now defaults to `.automaticAsync`. Explicitly choose `.setCaptureMethod(.manual)` for extended authorization; the retained example enforces manual capture when this option is selected. Eligibility and `capture_before` checks remain necessary. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+
 Set at PaymentIntent creation:
 
 ```javascript

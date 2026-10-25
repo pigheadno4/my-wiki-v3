@@ -1,0 +1,3888 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index daf6c5b..08ba431 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,10 +3,85 @@
+ This document details changes made to the SDK by version. The current status
+ of each release can be found in the [Support Lifecycle](SUPPORT.md).
+ 
+-If you are using CocoaPods, update your Podfile:
+-```
+-pod 'StripeTerminal', '~> 5.0'
+-```
++Starting with Terminal iOS SDK 6.0.0, we'll only publish new SDK versions—including patches to earlier SDK versions—to Swift Package Manager (SPM).
++Versions already published to CocoaPods will keep working, but won't receive any further updates there.
++To get 6.0.0, future releases, or patches to your current version, switch your integration to SPM.
++
++# 6.0.0 2026-10-07
++* Built with Xcode 27.0, Swift version 6.4.
++* The framework is built with `-Xfrontend -disable-module-selectors-in-module-interface`, so the public `.swiftinterface` uses the pre-6.3 dot-qualified spelling instead of the SE-0491 `Module::Type` selector syntax Swift 6.3+ emits by default. Minimum requirement for integrators: Xcode 16.0+, Swift 6.0+.
++### New
++* WisePad 3 now supports amount surcharge and confirm-time on-reader surcharge consent. Collect-time `surchargeNotice` remains unsupported on WisePad 3.
++* Added `SCPErrorCanceledByReader`, returned when an operation is canceled on the reader: the physical cancel button on a mobile reader, or the customer canceling on a smart reader. Programmatic cancellations initiated through the SDK continue to return `SCPErrorCanceled`.
++* Tap to Pay on iPhone now returns `SCPErrorCanceledByReader` when the customer dismisses the payment sheet or backs out of PIN entry. Cancellations the integration requests through `SCPCancelable` continue to return `SCPErrorCanceled`.
++* Added [`SCPPaymentMethodCardPresentDetails`](https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentMethodCardPresentDetails.html), which exposes the instrument fields returned by `payment_method.card_present` and `payment_method.interac_present`, including available and preferred card networks.
++* Added `latestCharge` and `latestChargeId` to `SCPPaymentIntent`, exposing the PaymentIntent's most recent Charge from either `latest_charge` or the legacy `charges` list.
++* Preview: Refunds - Added `confirmRefund`, which creates a Refund for a PaymentIntent without collecting a payment method or displaying reader UI.
++  * Added `SCPConfirmRefundParameters` to configure full or partial refunds and optional Refund fields.
++  * Added `SCPRefundStatusCanceled` and `SCPRefundStatusRequiresAction`.
++  * Added `SCPRefundNextAction` to expose required follow-up details.
++  * To request access to this feature, please contact [Stripe Support](https://support.stripe.com/).
++* Preview: Added support for Mexico installments (meses sin intereses, or MSI) for eligible card-present transactions. Use `SCPInstallmentsParametersBuilder` to enable installments when creating a PaymentIntent. After payment method collection, `SCPInstallmentsParameters.availablePlans` contains the eligible installment plans. After confirmation, `SCPInstallmentsParameters.plan` contains the plan selected by the cardholder.
++  * To request access to this feature, please contact [Stripe Support](https://support.stripe.com/).
++* Preview: Swish — Added `SCPPaymentMethodTypeSwish` and `SCPSwishDetails`, and exposed Swish details through `SCPPaymentMethod.swish` and `SCPPaymentMethodDetails.swish`. 
++  * To request access to this feature, please contact [Stripe Support](https://support.stripe.com/).
++
++
++### Updates
++* **Breaking:** `SCPRefund.stripeId` now returns a nullable string. In Swift, `Refund.stripeId` is now `String?`. Check for a value before using it.
++* **Breaking:** Standardized the PaymentMethod properties on `SCPSetupIntent` to match `SCPPaymentIntent`. The expanded `SCPPaymentMethod` is now exposed as `paymentMethod`, and its ID is exposed as `paymentMethodId`. Replace uses of the previous ID-valued `paymentMethod` property with `paymentMethodId`, and replace `paymentMethodExpanded` with `paymentMethod`.
++* **Breaking:** Removed `SCPPaymentIntent.charges`. Use `latestCharge` for the expanded most recent Charge and `latestChargeId` for its ID.
++* **Breaking:** Removed `SCPPaymentIntent.invoice`. Retrieve the PaymentIntent's invoice relationship through the Stripe API from your server.
++* **Breaking:** `SCPPaymentMethod.cardPresent` and `SCPPaymentMethod.interacPresent` now return `SCPPaymentMethodCardPresentDetails` instead of `SCPCardPresentDetails`. Transaction-only properties remain on `SCPPaymentMethodDetails.cardPresent` and `SCPPaymentMethodDetails.interacPresent`. `SCPCardPresentDetails.networks` has been removed; use the corresponding `SCPPaymentMethodCardPresentDetails.networks` property instead. Expiration month and year on the new model are nullable to preserve their absence in API responses.
++* **Breaking:** Removed `SCPCardBrand` (`CardBrand`). The `brand` properties on
++  `SCPCardDetails`, `SCPCardPresentDetails`, and `SCPOfflineCardPresentDetails`
++  are now strings. `SCPCardPresentDetails.network` and the entries in
++  `SCPNetworks.available` are also strings, and `SCPNetworks.preferred` now
++  exposes the API's preferred network. Replace enum comparisons such as `.visa`
++  with string comparisons such as `"visa"`.
++* **Breaking:** Replaced `SCPErrorPrinterLowBattery` with the more general `SCPErrorReaderBatteryLow`, returned when a reader remains connected but cannot complete an operation, such as printing, because its battery is too low.
++* **Breaking:** Removed `SCPCardFundingType` (`CardFundingType`). The `funding`
++  properties on `SCPCardDetails` (`CardDetails`) and `SCPCardPresentDetails`
++  (`CardPresentDetails`) are now nullable strings containing the value returned
++  by the Stripe API. Replace enum comparisons such as `.credit` with string
++  comparisons such as `"credit"`. Missing funding values are returned as `nil`,
++  and values introduced after the installed SDK version are preserved.
++* **Breaking:** Removed `SCPTerminal.stringFromCardBrand:` (`Terminal.stringFromCardBrand`).
++  `brand` values are now strings directly, so no conversion is necessary.
++* **Breaking:** Removed `SCPReadMethod` (`ReadMethod`). The `readMethod`
++  properties on `SCPCardPresentDetails` (`CardPresentDetails`) and
++  `SCPOfflineCardPresentDetails` (`OfflineCardPresentDetails`) are now strings
++  containing canonical Stripe API values such as `"contact_emv"`. Values
++  introduced after the installed SDK version are preserved, and missing values
++  are returned as `"unknown"`.
++* **Breaking:** Removed `SCPTerminal.stringFromReadMethod:`
++  (`Terminal.stringFromReadMethod`). `readMethod` values are now strings
++  directly, so no conversion is necessary.
++* **Breaking:** Removed `SCPErrorSimulatedOfflineModeNotAvailableForAccount`.
++  Simulated offline mode is now generally available and is no longer gated
++  per-account, so this error is never returned.
++  `setSimulatedOfflineModeConfiguration:error:` no longer fails when a reader is
++  connected, and connecting a testmode reader no longer disconnects it for
++  lacking access. Remove any handling for this error code. Connecting to a
++  livemode reader still returns
++  `SCPErrorSimulatedOfflineModeNotAvailableInLivemode`.
++* **Breaking:** `SCPPaymentIntentParametersBuilder` now defaults `captureMethod` to `SCPCaptureMethodAutomaticAsync` instead of `SCPCaptureMethodManual`. Integrations that require separate capture, including those using on-receipt tipping, incremental authorization, or extended authorization, must explicitly set `SCPCaptureMethodManual`.
++* **Breaking:** `allowRedisplay` is now required when initializing `CollectSetupIntentConfigurationBuilder`, and all SetupIntent collection and processing methods require a `CollectSetupIntentConfiguration`. In Swift, migrate from `CollectSetupIntentConfigurationBuilder()` to `CollectSetupIntentConfigurationBuilder(allowRedisplay: .always)` (or another appropriate value), then pass the built configuration as `setupConfig` to `collectSetupIntentPaymentMethod` or as `collectConfig` to `processSetupIntent`.
++* **Breaking:** Renamed `SCPRefundParameters` (`RefundParameters`) and `SCPRefundParametersBuilder` (`RefundParametersBuilder`) to `SCPProcessRefundParameters` (`ProcessRefundParameters`) and `SCPProcessRefundParametersBuilder` (`ProcessRefundParametersBuilder`). Update integrations that call `processRefund` to use the new names. Refund behavior is unchanged.
++* **Breaking:** Added `ReaderInteractionDelegate` as the shared base protocol for `MobileReaderDelegate` and `TapToPayReaderDelegate`. The five reader lifecycle and display callbacks shared by Mobile Reader and Tap to Pay now use the `reader` method prefix, allowing integrations that support both reader types to implement these callbacks once.
++  * Rename the five required Swift callbacks from `tapToPayReader(_:didStartInstallingUpdate:cancelable:)`, `tapToPayReader(_:didReportReaderSoftwareUpdateProgress:)`, `tapToPayReader(_:didFinishInstallingUpdate:error:)`, `tapToPayReader(_:didRequestReaderInput:)`, and `tapToPayReader(_:didRequestReaderDisplayMessage:)` to their corresponding `reader(_:` forms. In Objective-C, rename the corresponding selectors from `tapToPayReader:didStartInstallingUpdate:cancelable:`, `tapToPayReader:didReportReaderSoftwareUpdateProgress:`, `tapToPayReader:didFinishInstallingUpdate:error:`, `tapToPayReader:didRequestReaderInput:`, and `tapToPayReader:didRequestReaderDisplayMessage:` to selectors beginning with `reader:`.
++  * Payment callbacks are not part of `ReaderInteractionDelegate`. Mobile Reader and Tap to Pay connections use the separate `ReaderPaymentInteractionDelegate.reader(_:didRequestInteraction:)` callback and `PaymentInteraction` wrapper types for blocking payment UI. Set the delegate on the connection configuration with `setReaderPaymentInteractionDelegate(_:)`.
++  * The update API split is intentional: `MobileReaderDelegate.reader(_:didReportAvailableUpdate:)` reports a deferred optional update whose installation is user-triggered for Mobile Readers, while the shared installation callbacks also report mandatory Tap to Pay configuration installation during connection. Tap to Pay doesn't report available optional updates.
++* **Breaking:** Removed `allowCustomerCancel` and `setAllowCustomerCancel:` from [`SCPInternetConnectionConfiguration`](https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPInternetConnectionConfiguration.html). Customer-initiated cancellation is controlled per-collection by [`customerCancellation`](https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPCollectPaymentIntentConfiguration.html#/c:objc(cs)SCPCollectPaymentIntentConfiguration(py)customerCancellation) on the collect configuration, which is enabled by default on readers that support it.
++* **Breaking:** Removed the deprecated collect-then-confirm refund APIs: all `collectRefundPaymentMethod` overloads and the parameterless `confirmRefund(completion:)` and `confirmRefund(reader:completion:)` overloads. Use `processRefund` instead.
++* **Breaking:** Removed the deprecated `SCPSimulateReaderUpdate` enum and `SCPSimulatorConfiguration.availableReaderUpdate`. Use `testReaderUpdate` on the Bluetooth, USB, or Tap to Pay connection configuration instead.
++* **Breaking:** Removed the deprecated `description` properties from `SCPPaymentIntentParameters` and `SCPSetupIntentParameters`. Use `stripeDescription` instead.
++* **Breaking:** The minimum supported iOS version is now iOS 16.
++
++
++### Fixes
++* Fixed automatic reconnect to report [`SCPDisconnectReasonPeerRemovedPairingInformation`](https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPDisconnectReason.html#/c:@E@SCPDisconnectReason@SCPDisconnectReasonPeerRemovedPairingInformation) when a peer-removal error refines an initially unknown disconnect reason.
++
+ 
+ # 5.8.0 2026-08-18
+ ### New
+diff --git a/Example/Example/APIClient.swift b/Example/Example/APIClient.swift
+index 24353eb..f2e82d8 100644
+--- a/Example/Example/APIClient.swift
++++ b/Example/Example/APIClient.swift
+@@ -81,6 +81,14 @@ class APIClient: NSObject, ConnectionTokenProvider {
+             cardPresent["request_incremental_authorization_support"] = String(requestIncrementalAuth)
+         }
+ 
++        if let installments = params.paymentMethodOptionsParameters.cardPresentParameters.installments {
++            var installmentsParams: Parameters = [:]
++            if let enabled = installments.enabled {
++                installmentsParams["enabled"] = enabled.boolValue
++            }
++            cardPresent["installments"] = installmentsParams
++        }
++
+         AF.request(
+             url,
+             method: .post,
+diff --git a/Example/Example/AppDelegate.swift b/Example/Example/AppDelegate.swift
+index 48b03be..34e8612 100644
+--- a/Example/Example/AppDelegate.swift
++++ b/Example/Example/AppDelegate.swift
+@@ -17,8 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
+ 
+      https://github.com/stripe/example-terminal-backend
+ 
+-     After deploying your backend, replace nil on the line below with the URL
+-     of your backend.
++     After deploying your backend, update the URL on the line below with the URL of your backend.
+ 
+      static var backendUrl: String? = "https://your-app-backend.com"
+      */
+@@ -26,8 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
+ 
+     static var apiClient: APIClient?
+ 
+-    var window: UIWindow?
+-
+     public let defaultCurrency = "USD"
+ 
+     // This can be used to set the location in the ConnectionConfiguration.
+@@ -54,11 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
+         // To log events from the SDK to the console:
+         // Terminal.shared.logLevel = .verbose
+ 
+-        let window = UIWindow(frame: UIScreen.main.bounds)
+-        window.rootViewController = RootViewController()
+-        window.makeKeyAndVisible()
+-        self.window = window
+-
+         return true
+     }
+ 
+diff --git a/Example/Example/CaptureMethod+String.swift b/Example/Example/CaptureMethod+String.swift
+index c5774ee..459e6d2 100644
+--- a/Example/Example/CaptureMethod+String.swift
++++ b/Example/Example/CaptureMethod+String.swift
+@@ -15,6 +15,8 @@ extension CaptureMethod {
+             return "automatic"
+         case .manual:
+             return "manual"
++        case .automaticAsync:
++            return "automatic_async"
+         @unknown default:
+             fatalError()
+         }
+diff --git a/Example/Example/DataRequest+StripeJSON.swift b/Example/Example/DataRequest+StripeJSON.swift
+index 025d950..df33de2 100644
+--- a/Example/Example/DataRequest+StripeJSON.swift
++++ b/Example/Example/DataRequest+StripeJSON.swift
+@@ -7,6 +7,7 @@
+ //
+ 
+ import Alamofire
++import Foundation
+ 
+ extension DataRequest {
+     /**
+diff --git a/Example/Example/DelegateAnnouncer.swift b/Example/Example/DelegateAnnouncer.swift
+index 4931a82..f069701 100644
+--- a/Example/Example/DelegateAnnouncer.swift
++++ b/Example/Example/DelegateAnnouncer.swift
+@@ -92,7 +92,9 @@ class ReaderDelegateAnnouncer<T: ReaderDelegate>: DelegateAnnouncer<T>, ReaderDe
+  Allows the Example app to use a single persistent MobileReaderDelegate for the life of the connection
+  and still have the view controllers receive the MobileReaderDelegate events.
+  */
+-class MobileReaderDelegateAnnouncer: ReaderDelegateAnnouncer<MobileReaderDelegate>, MobileReaderDelegate {
++class MobileReaderDelegateAnnouncer: ReaderDelegateAnnouncer<MobileReaderDelegate>, MobileReaderDelegate,
++    ReaderPaymentInteractionDelegate
++{
+     static let shared = MobileReaderDelegateAnnouncer()
+ 
+     // MARK: - MobileReaderDelegate
+@@ -150,30 +152,11 @@ class MobileReaderDelegateAnnouncer: ReaderDelegateAnnouncer<MobileReaderDelegat
+         }
+     }
+ 
+-    func reader(
+-        _ reader: Reader,
+-        didRequestPaymentMethodSelection paymentIntent: PaymentIntent,
+-        availablePaymentOptions: [PaymentOption],
+-        completion: @escaping PaymentMethodSelectionCompletionBlock
+-    ) {
+-        announce { delegate in
+-            delegate.reader?(
+-                reader,
+-                didRequestPaymentMethodSelection: paymentIntent,
+-                availablePaymentOptions: availablePaymentOptions,
+-                completion: completion
+-            )
+-        }
+-    }
++    // MARK: - ReaderPaymentInteractionDelegate
+ 
+-    func reader(
+-        _ reader: Reader,
+-        didRequestQrCodeDisplay paymentIntent: PaymentIntent,
+-        qrData: QrCodeDisplayData,
+-        completion: @escaping QrCodeDisplayCompletionBlock
+-    ) {
++    func reader(_ reader: Reader, didRequestInteraction interaction: PaymentInteraction) {
+         announce { delegate in
+-            delegate.reader?(reader, didRequestQrCodeDisplay: paymentIntent, qrData: qrData, completion: completion)
++            (delegate as? ReaderPaymentInteractionDelegate)?.reader(reader, didRequestInteraction: interaction)
+         }
+     }
+ }
+@@ -184,30 +167,32 @@ class MobileReaderDelegateAnnouncer: ReaderDelegateAnnouncer<MobileReaderDelegat
+  Allows the Example app to use a single persistent TapToPayReaderDelegate for the life of the connection
+  and still have the view controllers receive the TapToPayReaderDelegate events.
+  */
+-class TapToPayReaderDelegateAnnouncer: ReaderDelegateAnnouncer<TapToPayReaderDelegate>, TapToPayReaderDelegate {
++class TapToPayReaderDelegateAnnouncer: ReaderDelegateAnnouncer<TapToPayReaderDelegate>, TapToPayReaderDelegate,
++    ReaderPaymentInteractionDelegate
++{
+     static let shared = TapToPayReaderDelegateAnnouncer()
+ 
+     // MARK: - TapToPayReaderDelegate
+ 
+-    func tapToPayReader(
++    func reader(
+         _ reader: Reader,
+         didStartInstallingUpdate update: ReaderSoftwareUpdate,
+         cancelable: Cancelable?
+     ) {
+         announce { delegate in
+-            delegate.tapToPayReader(reader, didStartInstallingUpdate: update, cancelable: cancelable)
++            delegate.reader(reader, didStartInstallingUpdate: update, cancelable: cancelable)
+         }
+     }
+ 
+-    func tapToPayReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
++    func reader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+         announce { delegate in
+-            delegate.tapToPayReader(reader, didReportReaderSoftwareUpdateProgress: progress)
++            delegate.reader(reader, didReportReaderSoftwareUpdateProgress: progress)
+         }
+     }
+ 
+-    func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
++    func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+         announce { delegate in
+-            delegate.tapToPayReader(reader, didFinishInstallingUpdate: update, error: error)
++            delegate.reader(reader, didFinishInstallingUpdate: update, error: error)
+         }
+     }
+ 
+@@ -217,47 +202,23 @@ class TapToPayReaderDelegateAnnouncer: ReaderDelegateAnnouncer<TapToPayReaderDel
+         }
+     }
+ 
+-    func tapToPayReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
++    func reader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+         announce { delegate in
+-            delegate.tapToPayReader(reader, didRequestReaderInput: inputOptions)
++            delegate.reader(reader, didRequestReaderInput: inputOptions)
+         }
+     }
+ 
+-    func tapToPayReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
++    func reader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+         announce { delegate in
+-            delegate.tapToPayReader(reader, didRequestReaderDisplayMessage: displayMessage)
++            delegate.reader(reader, didRequestReaderDisplayMessage: displayMessage)
+         }
+     }
+ 
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didRequestPaymentMethodSelection paymentIntent: PaymentIntent,
+-        availablePaymentOptions: [PaymentOption],
+-        completion: @escaping (PaymentOption?, (any Error)?) -> Void
+-    ) {
+-        announce { delegate in
+-            delegate.tapToPayReader?(
+-                reader,
+-                didRequestPaymentMethodSelection: paymentIntent,
+-                availablePaymentOptions: availablePaymentOptions,
+-                completion: completion
+-            )
+-        }
+-    }
++    // MARK: - ReaderPaymentInteractionDelegate
+ 
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didRequestQrCodeDisplay paymentIntent: PaymentIntent,
+-        qrData: QrCodeDisplayData,
+-        completion: @escaping QrCodeDisplayCompletionBlock
+-    ) {
++    func reader(_ reader: Reader, didRequestInteraction interaction: PaymentInteraction) {
+         announce { delegate in
+-            delegate.tapToPayReader?(
+-                reader,
+-                didRequestQrCodeDisplay: paymentIntent,
+-                qrData: qrData,
+-                completion: completion
+-            )
++            (delegate as? ReaderPaymentInteractionDelegate)?.reader(reader, didRequestInteraction: interaction)
+         }
+     }
+ }
+diff --git a/Example/Example/EventDisplayingViewController.swift b/Example/Example/EventDisplayingViewController.swift
+index 880680d..8ed6061 100644
+--- a/Example/Example/EventDisplayingViewController.swift
++++ b/Example/Example/EventDisplayingViewController.swift
+@@ -228,39 +228,9 @@ extension EventDisplayingViewController: MobileReaderDelegate {
+ 
+ // MARK: TapToPayReaderDelegate
+ extension EventDisplayingViewController: TapToPayReaderDelegate {
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didStartInstallingUpdate update: ReaderSoftwareUpdate,
+-        cancelable: Cancelable?
+-    ) {
+-        // No-op.
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+-        // No-op.
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+-        // No-op.
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+-        self.events.append(
+-            {
+-                var event = LogEvent(method: .requestReaderInput)
+-                event.result = .message(Terminal.stringFromReaderInputOptions(inputOptions))
+-                return event
+-            }()
+-        )
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+-        self.events.append(
+-            {
+-                var event = LogEvent(method: .requestReaderDisplayMessage)
+-                event.result = .message(Terminal.stringFromReaderDisplayMessage(displayMessage))
+-                return event
+-            }()
+-        )
++    func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
++        var event = LogEvent(method: .tapToPayReaderDidAcceptTermsOfService)
++        event.result = .succeeded
++        self.events.append(event)
+     }
+ }
+diff --git a/Example/Example/Info.plist b/Example/Example/Info.plist
+index 3ef730b..3aa5cc4 100644
+--- a/Example/Example/Info.plist
++++ b/Example/Example/Info.plist
+@@ -32,6 +32,23 @@
+ 	<array>
+ 		<string>bluetooth-central</string>
+ 	</array>
++	<key>UIApplicationSceneManifest</key>
++	<dict>
++		<key>UIApplicationSupportsMultipleScenes</key>
++		<false/>
++		<key>UISceneConfigurations</key>
++		<dict>
++			<key>UIWindowSceneSessionRoleApplication</key>
++			<array>
++				<dict>
++					<key>UISceneConfigurationName</key>
++					<string>Default Configuration</string>
++					<key>UISceneDelegateClassName</key>
++					<string>SceneDelegate</string>
++				</dict>
++			</array>
++		</dict>
++	</dict>
+ 	<key>UILaunchStoryboardName</key>
+ 	<string>LaunchScreen</string>
+ 	<key>UISupportedInterfaceOrientations</key>
+diff --git a/Example/Example/LogEventViewController.swift b/Example/Example/LogEventViewController.swift
+index 2684a8d..bedf7c7 100644
+--- a/Example/Example/LogEventViewController.swift
++++ b/Example/Example/LogEventViewController.swift
+@@ -49,6 +49,7 @@ struct LogEvent: CustomStringConvertible, Event {
+         case reportReaderEvent = "delegate.didReportReaderEvent"
+         case didRequestPaymentMethodSelection = "delegate.didRequestPaymentMethodSelection"
+         case didRequestQrCodeDisplay = "delegate.didRequestQrCodeDisplay"
++        case tapToPayReaderDidAcceptTermsOfService = "delegate.tapToPayReaderDidAcceptTermsOfService"
+         case attachPaymentMethod = "backend.attachPaymentMethod"
+         case collectRefundPaymentMethod = "terminal.collectRefundPaymentMethod"
+         case cancelCollectRefundPaymentMethod = "terminal.cancelCollectRefundPaymentMethod"
+@@ -112,7 +113,8 @@ struct LogEvent: CustomStringConvertible, Event {
+             .reportReaderEvent,
+             .requestReaderDisplayMessage,
+             .didRequestPaymentMethodSelection,
+-            .didRequestQrCodeDisplay:
++            .didRequestQrCodeDisplay,
++            .tapToPayReaderDidAcceptTermsOfService:
+             return result.description
+         case .createPaymentIntent, .backendCreatePaymentIntent:
+             switch result {
+diff --git a/Example/Example/OfflinePaymentsLogDetailViewController.swift b/Example/Example/OfflinePaymentsLogDetailViewController.swift
+index 22893ae..7078a0a 100644
+--- a/Example/Example/OfflinePaymentsLogDetailViewController.swift
++++ b/Example/Example/OfflinePaymentsLogDetailViewController.swift
+@@ -7,6 +7,7 @@
+ //
+ 
+ import Static
++import UIKit
+ 
+ class OfflinePaymentsLogDetailViewController: TableViewController {
+ 
+diff --git a/Example/Example/OfflinePaymentsLogViewController.swift b/Example/Example/OfflinePaymentsLogViewController.swift
+index 199c091..95a27e4 100644
+--- a/Example/Example/OfflinePaymentsLogViewController.swift
++++ b/Example/Example/OfflinePaymentsLogViewController.swift
+@@ -8,6 +8,7 @@
+ 
+ import Static
+ import StripeTerminal
++import UIKit
+ 
+ class OfflinePaymentsLogViewController: TableViewController {
+ 
+diff --git a/Example/Example/OfflineUIHandler.swift b/Example/Example/OfflineUIHandler.swift
+index 4631bc8..e104dd4 100644
+--- a/Example/Example/OfflineUIHandler.swift
++++ b/Example/Example/OfflineUIHandler.swift
+@@ -50,9 +50,7 @@ extension OfflineUIHandler: OfflineDelegate {
+             failedForwardCount += 1
+ 
+             // Show the error right away (these may stack)
+-            if let rootViewController =
+-                ((UIApplication.shared.delegate as? AppDelegate)?.window?.rootViewController as? RootViewController)
+-            {
++            if let rootViewController = UIApplication.shared.rootViewController as? RootViewController {
+                 let labelOverlayView = LabelOverlayView(
+                     labelText:
+                         "⚠️ Error forwarding payment \(intent.offlineId ?? intent.description)\n\(error.localizedDescription)"
+@@ -71,8 +69,7 @@ extension OfflineUIHandler: OfflineDelegate {
+ 
+     func terminal(_ terminal: Terminal, didReportForwardingError error: Error) {
+         guard
+-            let rootViewController =
+-                ((UIApplication.shared.delegate as? AppDelegate)?.window?.rootViewController as? RootViewController)
++            let rootViewController = UIApplication.shared.rootViewController as? RootViewController
+         else { return }
+         let labelOverlayView = LabelOverlayView(
+             labelText: "⚠️ Error forwarding: \(error.localizedDescription)"
+@@ -82,8 +79,7 @@ extension OfflineUIHandler: OfflineDelegate {
+ 
+     func reportForwardCountsAndReset() {
+         guard
+-            let rootViewController = (UIApplication.shared.delegate as? AppDelegate)?.window?.rootViewController
+-                as? RootViewController,
++            let rootViewController = UIApplication.shared.rootViewController as? RootViewController,
+             failedForwardCount > 0 || successfulForwardCount > 0
+         else {
+             return
+diff --git a/Example/Example/PaymentViewController.swift b/Example/Example/PaymentViewController.swift
+index c6ebefb..5342da7 100644
+--- a/Example/Example/PaymentViewController.swift
++++ b/Example/Example/PaymentViewController.swift
+@@ -35,7 +35,7 @@ class PaymentViewController: EventDisplayingViewController {
+     private let paymentParams: PaymentIntentParameters
+     private let collectConfig: CollectPaymentIntentConfiguration
+     private let confirmConfig: ConfirmPaymentIntentConfiguration
+-    private let declineCardBrand: CardBrand?
++    private let declineCardBrand: String?
+     private let recollectAfterCardBrandDecline: Bool
+     private var offlineCreateConfig: CreateConfiguration?
+     private let isSposReader: Bool
+@@ -49,7 +49,7 @@ class PaymentViewController: EventDisplayingViewController {
+         paymentParams: PaymentIntentParameters,
+         collectConfig: CollectPaymentIntentConfiguration,
+         confirmConfig: ConfirmPaymentIntentConfiguration,
+-        declineCardBrand: CardBrand?,
++        declineCardBrand: String?,
+         recollectAfterCardBrandDecline: Bool,
+         isSposReader: Bool,
+         offlineTransactionLimit: Int,
+@@ -212,7 +212,7 @@ class PaymentViewController: EventDisplayingViewController {
+         if let declineCardBrand = self.declineCardBrand,
+             let paymentMethod = collectedIntent.paymentMethod,
+             let details = paymentMethod.cardPresent ?? paymentMethod.interacPresent,
+-            details.brand == declineCardBrand
++            details.brand.caseInsensitiveCompare(declineCardBrand) == .orderedSame
+         {
+             collectEvent.result = .errored
+             let error = NSError(
+@@ -335,7 +335,7 @@ class PaymentViewController: EventDisplayingViewController {
+             #endif
+ 
+             // Show a refund button if this was an Interac charge to make it easy to refund.
+-            if let charge = intent.charges.first,
++            if let charge = intent.latestCharge,
+                 charge.paymentMethodDetails?.interacPresent != nil
+             {
+                 self.intentToRefund = intent
+@@ -371,7 +371,7 @@ class PaymentViewController: EventDisplayingViewController {
+     private func refundButtonTapped() {
+         guard let intent = intentToRefund,
+             let intentId = intent.stripeId,
+-            let charge = intent.charges.first,
++            let charge = intent.latestCharge,
+             let clientSecret = intent.clientSecret
+         else {
+             fatalError("Intent or charge to refund was nil: \(intentToRefund?.description ?? "nil intent")")
+@@ -546,65 +546,23 @@ extension PaymentViewController {
+     }
+ }
+ 
+-// MARK: - MobileReaderDelegate (MPOS QR Payments)
++// MARK: - ReaderPaymentInteractionDelegate
+ 
+-extension PaymentViewController {
+-
+-    func reader(
+-        _ reader: Reader,
+-        didRequestPaymentMethodSelection paymentIntent: PaymentIntent,
+-        availablePaymentOptions: [PaymentOption],
+-        completion: @escaping PaymentMethodSelectionCompletionBlock
+-    ) {
+-        handlePaymentMethodSelection(
+-            paymentIntent: paymentIntent,
+-            availablePaymentOptions: availablePaymentOptions,
+-            completion: completion
+-        )
+-    }
+-
+-    func reader(
+-        _ reader: Reader,
+-        didRequestQrCodeDisplay paymentIntent: PaymentIntent,
+-        qrData: QrCodeDisplayData,
+-        completion: @escaping QrCodeDisplayCompletionBlock
+-    ) {
+-        handleQrCodeDisplay(
+-            paymentIntent: paymentIntent,
+-            qrData: qrData,
+-            completion: completion
+-        )
+-    }
+-}
+-
+-// MARK: - TapToPayReaderDelegate (QR Payments)
+-
+-extension PaymentViewController {
+-
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didRequestPaymentMethodSelection paymentIntent: PaymentIntent,
+-        availablePaymentOptions: [PaymentOption],
+-        completion: @escaping PaymentMethodSelectionCompletionBlock
+-    ) {
+-        handlePaymentMethodSelection(
+-            paymentIntent: paymentIntent,
+-            availablePaymentOptions: availablePaymentOptions,
+-            completion: completion
+-        )
+-    }
+-
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didRequestQrCodeDisplay paymentIntent: PaymentIntent,
+-        qrData: QrCodeDisplayData,
+-        completion: @escaping QrCodeDisplayCompletionBlock
+-    ) {
+-        handleQrCodeDisplay(
+-            paymentIntent: paymentIntent,
+-            qrData: qrData,
+-            completion: completion
+-        )
++extension PaymentViewController: ReaderPaymentInteractionDelegate {
++    func reader(_ reader: Reader, didRequestInteraction interaction: PaymentInteraction) {
++        if let interaction = interaction as? PaymentMethodSelectionInteraction {
++            handlePaymentMethodSelection(
++                paymentIntent: interaction.paymentIntent,
++                availablePaymentOptions: interaction.availableOptions,
++                completion: interaction.complete(paymentOption:error:)
++            )
++        } else if let interaction = interaction as? QrCodeDisplayInteraction {
++            handleQrCodeDisplay(
++                paymentIntent: interaction.paymentIntent,
++                qrData: interaction.qrData,
++                completion: interaction.complete(error:)
++            )
++        }
+     }
+ }
+ 
+diff --git a/Example/Example/ReaderDiscoveryViewController.swift b/Example/Example/ReaderDiscoveryViewController.swift
+index 446ddcb..a7a9789 100644
+--- a/Example/Example/ReaderDiscoveryViewController.swift
++++ b/Example/Example/ReaderDiscoveryViewController.swift
+@@ -208,6 +208,7 @@ class ReaderDiscoveryViewController: TableViewController, CancelableViewControll
+                         delegate: MobileReaderDelegateAnnouncer.shared,
+                         locationId: presentLocationId
+                     )
++                    .setReaderPaymentInteractionDelegate(MobileReaderDelegateAnnouncer.shared)
+                     .setAutoReconnectOnUnexpectedDisconnect(autoReconnectOnUnexpectedDisconnect)
+                     .setTestReaderUpdate(buildTestReaderUpdate())
+                     .build()
+@@ -216,6 +217,7 @@ class ReaderDiscoveryViewController: TableViewController, CancelableViewControll
+                         delegate: MobileReaderDelegateAnnouncer.shared,
+                         locationId: presentLocationId
+                     )
++                    .setReaderPaymentInteractionDelegate(MobileReaderDelegateAnnouncer.shared)
+                     .setAutoReconnectOnUnexpectedDisconnect(autoReconnectOnUnexpectedDisconnect)
+                     .setTestReaderUpdate(buildTestReaderUpdate())
+                     .build()
+@@ -234,7 +236,6 @@ class ReaderDiscoveryViewController: TableViewController, CancelableViewControll
+                 delegate: InternetReaderDelegateAnnouncer.shared
+             )
+             .setFailIfInUse(failIfInUse)
+-            .setAllowCustomerCancel(true)
+             .build()
+             return connectionConfig
+         case .tapToPay:
+@@ -245,6 +246,7 @@ class ReaderDiscoveryViewController: TableViewController, CancelableViewControll
+                     delegate: TapToPayReaderDelegateAnnouncer.shared,
+                     locationId: presentLocationId
+                 )
++                .setReaderPaymentInteractionDelegate(TapToPayReaderDelegateAnnouncer.shared)
+                 .setMerchantDisplayName(nil)  // use the location name
+                 .setOnBehalfOf(useOBO ? onBehalfOfTextField.textField.text : nil)
+                 .setAutoReconnectOnUnexpectedDisconnect(self.autoReconnectOnUnexpectedDisconnect)
+@@ -788,39 +790,9 @@ extension ReaderDiscoveryViewController: MobileReaderDelegate {
+ 
+ // MARK: - TapToPayReaderDelegate
+ extension ReaderDiscoveryViewController: TapToPayReaderDelegate {
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didStartInstallingUpdate update: ReaderSoftwareUpdate,
+-        cancelable: Cancelable?
+-    ) {
+-        updateReaderVC = UpdateReaderViewController(
+-            reader: reader,
+-            updateBeingInstalled: update,
+-            cancelable: cancelable,
+-            updateInstalledCompletion: { [unowned self] in
+-                self.updateReaderVC?.dismiss(animated: true, completion: nil)
+-            }
+-        )
+-        if let vc = updateReaderVC {
+-            self.present(LargeTitleNavigationController(rootViewController: vc), animated: true, completion: nil)
+-        }
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+-    }
+-
+     func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
+     }
+ 
+-    func tapToPayReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+-    }
+-
+     // MARK: - Helper Methods
+ 
+     private func validateDeviceSupport() -> Bool {
+diff --git a/Example/Example/ReaderRegistrationViewController.swift b/Example/Example/ReaderRegistrationViewController.swift
+index 65b4e01..2cc1104 100644
+--- a/Example/Example/ReaderRegistrationViewController.swift
++++ b/Example/Example/ReaderRegistrationViewController.swift
+@@ -108,7 +108,7 @@ class ReaderRegistrationViewController: TableViewController, DiscoveryDelegate,
+             if let error = error {
+                 self.registrationInProgress = false
+                 self.setAllowedCancelMethods(.all)
+-                self.message = "Could not register reader."
++                self.message = "Could not register reader. \(error.localizedDescription)"
+                 print(error)
+             } else if let response = response {
+                 self.readerId = response["id"] as? String
+@@ -122,7 +122,7 @@ class ReaderRegistrationViewController: TableViewController, DiscoveryDelegate,
+                         if let error = error {
+                             self.registrationInProgress = false
+                             self.setAllowedCancelMethods(.all)
+-                            self.message = "Could not discover readers."
++                            self.message = "Could not discover readers. \(error.localizedDescription)"
+                             print(error)
+                         }
+                     }
+@@ -160,7 +160,9 @@ class ReaderRegistrationViewController: TableViewController, DiscoveryDelegate,
+     private func updateContent() {
+         let messageSection: Section? =
+             (message != nil)
+-            ? Section(rows: [Row(text: message ?? "")])
++            // Errors surfaced here can be long (e.g. the Wifi-mismatch guidance for a
++            // connection timeout), so the row has to wrap rather than truncate.
++            ? Section(rows: [Row(text: message ?? "", cellClass: Value1MultilineCell.self)])
+             : nil
+ 
+         let sections = [
+@@ -226,7 +228,7 @@ class ReaderRegistrationViewController: TableViewController, DiscoveryDelegate,
+             [unowned self] connectedReader, error in
+             self.setAllowedCancelMethods(.all)
+             if let error = error {
+-                self.message = "Could not connect to reader."
++                self.message = "Could not connect to reader. \(error.localizedDescription)"
+                 print(readers, error)
+             } else if let connectedReader = connectedReader {
+                 self.onConnectedToReader(connectedReader)
+diff --git a/Example/Example/ReaderViewController.swift b/Example/Example/ReaderViewController.swift
+index 9065c24..9173961 100644
+--- a/Example/Example/ReaderViewController.swift
++++ b/Example/Example/ReaderViewController.swift
+@@ -334,7 +334,9 @@ class ReaderViewController: TableViewController, CancelingViewController {
+             let connectionConfig = try TapToPayConnectionConfigurationBuilder(
+                 delegate: TapToPayReaderDelegateAnnouncer.shared,
+                 locationId: location.stripeId
+-            ).build()
++            )
++            .setReaderPaymentInteractionDelegate(TapToPayReaderDelegateAnnouncer.shared)
++            .build()
+             easyConnectConfig = TapToPayEasyConnectConfiguration(
+                 discoveryConfiguration: discoveryConfig,
+                 connectionConfiguration: connectionConfig
+@@ -872,26 +874,7 @@ extension ReaderViewController: MobileReaderDelegate {
+ }
+ 
+ // MARK: TapToPayReaderDelegate
+-extension ReaderViewController: TapToPayReaderDelegate {
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didStartInstallingUpdate update: ReaderSoftwareUpdate,
+-        cancelable: Cancelable?
+-    ) {
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+-    }
+-}
++extension ReaderViewController: TapToPayReaderDelegate {}
+ 
+ extension ReaderViewController: OfflineDelegate {
+     func terminal(_ terminal: Terminal, didChange offlineStatus: OfflineStatus) {
+diff --git a/Example/Example/RefundViewController.swift b/Example/Example/RefundViewController.swift
+index 89ce363..7c2c85d 100644
+--- a/Example/Example/RefundViewController.swift
++++ b/Example/Example/RefundViewController.swift
+@@ -11,10 +11,10 @@ import StripeTerminal
+ import UIKit
+ 
+ class RefundViewController: EventDisplayingViewController {
+-    private let refundParameters: RefundParameters
++    private let refundParameters: ProcessRefundParameters
+     private let refundConfig: CollectRefundConfiguration
+ 
+-    init(refundParams: RefundParameters, refundConfig: CollectRefundConfiguration) {
++    init(refundParams: ProcessRefundParameters, refundConfig: CollectRefundConfiguration) {
+         self.refundParameters = refundParams
+         self.refundConfig = refundConfig
+         super.init()
+diff --git a/Example/Example/SetupIntentViewController.swift b/Example/Example/SetupIntentViewController.swift
+index 0f6a29d..86908bc 100644
+--- a/Example/Example/SetupIntentViewController.swift
++++ b/Example/Example/SetupIntentViewController.swift
+@@ -13,18 +13,15 @@ import UIKit
+ class SetupIntentViewController: EventDisplayingViewController {
+     private let setupParams: SetupIntentParameters
+     private let setupConfig: CollectSetupIntentConfiguration
+-    private let allowRedisplay: AllowRedisplay
+     private let useProcessSetupIntent: Bool
+ 
+     init(
+         setupParams: SetupIntentParameters,
+         setupConfig: CollectSetupIntentConfiguration,
+-        allowRedisplay: AllowRedisplay,
+         useProcessSetupIntent: Bool
+     ) {
+         self.setupParams = setupParams
+         self.setupConfig = setupConfig
+-        self.allowRedisplay = allowRedisplay
+         self.useProcessSetupIntent = useProcessSetupIntent
+         super.init()
+         self.currentCancelLogMethod = .cancelCollectSetupIntentPaymentMethod
+@@ -88,7 +85,6 @@ class SetupIntentViewController: EventDisplayingViewController {
+             self.events.append(event)
+             let collectedSetupIntent = try await Terminal.shared.collectSetupIntentPaymentMethod(
+                 intent,
+-                allowRedisplay: self.allowRedisplay,
+                 setupConfig: self.setupConfig
+             )
+             self.handleSetupResult(collectedSetupIntent, event: &event)
+@@ -120,7 +116,6 @@ class SetupIntentViewController: EventDisplayingViewController {
+         do {
+             let processedSetupIntent = try await Terminal.shared.processSetupIntent(
+                 intent,
+-                allowRedisplay: self.allowRedisplay,
+                 collectConfig: self.setupConfig
+             )
+ 
+diff --git a/Example/Example/StartPaymentViewController.swift b/Example/Example/StartPaymentViewController.swift
+index a003ac4..651a4eb 100644
+--- a/Example/Example/StartPaymentViewController.swift
++++ b/Example/Example/StartPaymentViewController.swift
+@@ -20,16 +20,23 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+     private var collectSurchargeConsent = false
+     private var enableCustomerCancellation = true
+     private var interacPresentEnabled = false
+-    private var automaticCaptureEnabled = false
++    private var captureMethod = CaptureMethod.automaticAsync
++    private var requiresManualCapture: Bool {
++        requestExtendedAuthorization || requestIncrementalAuthorizationSupport
++    }
++    private var effectiveCaptureMethod: CaptureMethod {
++        requiresManualCapture ? .manual : captureMethod
++    }
+     private var manualPreferredEnabled = false
+     private var setupFutureUsage: String?
+     private var requestedPriority: String?
+     private var requestExtendedAuthorization = false
++    private var requestInstallments = false
+     private var requestIncrementalAuthorizationSupport = false
+     private var requestPartialAuthorization: String?
+     private var requestMulticapture: String?
+     private var requestReauthorization: CardPresentRequestReauthorization?
+-    private var declineCardBrand: CardBrand?
++    private var declineCardBrand: String?
+     private var recollectAfterCardBrandDecline = false
+     private let isSposReader: Bool
+     private var updatePaymentIntent = false
+@@ -44,6 +51,7 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+         .paynow,
+         .paypay,
+         .klarna,
++        .swish,
+     ]
+     private var selectedPaymentMethodTypes: [PaymentMethodType] = [.cardPresent]
+     private var allowRedisplay: AllowRedisplay = AllowRedisplay.always
+@@ -305,14 +313,15 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+     }
+ 
+     private func createPaymentParamsBuilder() -> PaymentIntentParametersBuilder {
+-        let captureMethod = self.automaticCaptureEnabled ? CaptureMethod.automatic : CaptureMethod.manual
++        let onReceiptTipRequested = (UInt(postAuthTipAmountTextField.textField.text ?? "0") ?? 0) > 0
++        let effectiveCaptureMethod = onReceiptTipRequested ? CaptureMethod.manual : self.effectiveCaptureMethod
+ 
+         let paymentParamsBuilder = PaymentIntentParametersBuilder(
+             amount: amountView.amount,
+             currency: currencyView.currency
+         )
+         .setPaymentMethodTypes(self.selectedPaymentMethodTypes)
+-        .setCaptureMethod(captureMethod)
++        .setCaptureMethod(effectiveCaptureMethod)
+         .setSetupFutureUsage(setupFutureUsage)
+         .setPaymentMethodOptionsParameters(makePaymentMethodOptionsParameters())
+         .setMetadata([PaymentIntent.offlineIdMetadataKey: UUID().uuidString])
+@@ -468,6 +477,11 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+         }
+ 
+         do {
++            if requestInstallments {
++                cardPresentParamsBuilder.setInstallments(
++                    try InstallmentsParametersBuilder().setEnabled(true).build()
++                )
++            }
+             return try PaymentMethodOptionsParametersBuilder(
+                 cardPresentParameters: try cardPresentParamsBuilder.build()
+             ).build()
+@@ -586,13 +600,7 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+         let paymentMethodSection = Section(
+             header: Section.Extremity.title("Payment Method Options"),
+             rows: [
+-                Row(
+-                    text: "Enable Automatic Capture",
+-                    accessory: .switchToggle(value: self.automaticCaptureEnabled) { [unowned self] _ in
+-                        self.automaticCaptureEnabled.toggle()
+-                        self.updateContent()
+-                    }
+-                ),
++                makeCaptureMethodRow(),
+                 Row(
+                     text: "Enable Manual Preferred",
+                     accessory: .switchToggle(value: self.manualPreferredEnabled) { [unowned self] _ in
+@@ -615,14 +623,29 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+                 Row(
+                     text: "Request Extended Authorization",
+                     accessory: .switchToggle(value: self.requestExtendedAuthorization) { [unowned self] _ in
++                        let wasManualCaptureRequired = self.requiresManualCapture
+                         self.requestExtendedAuthorization.toggle()
++                        if !wasManualCaptureRequired && self.requiresManualCapture {
++                            self.showManualCaptureToast()
++                        }
++                        self.updateContent()
++                    }
++                ),
++                Row(
++                    text: "Enable Installments",
++                    accessory: .switchToggle(value: self.requestInstallments) { [unowned self] _ in
++                        self.requestInstallments.toggle()
+                         self.updateContent()
+                     }
+                 ),
+                 Row(
+                     text: "Request Incremental Authorization Support",
+                     accessory: .switchToggle(value: self.requestIncrementalAuthorizationSupport) { [unowned self] _ in
++                        let wasManualCaptureRequired = self.requiresManualCapture
+                         self.requestIncrementalAuthorizationSupport.toggle()
++                        if !wasManualCaptureRequired && self.requiresManualCapture {
++                            self.showManualCaptureToast()
++                        }
+                         self.updateContent()
+                     }
+                 ),
+@@ -672,6 +695,44 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+         return paymentMethodSection
+     }
+ 
++    private func makeCaptureMethodRow() -> Row {
++        if requiresManualCapture {
++            return Row(
++                text: "Capture Method",
++                detailText: effectiveCaptureMethod.toString(),
++                accessory: .none,
++                cellClass: Value1Cell.self
++            )
++        }
++
++        return Row(
++            text: "Capture Method",
++            detailText: effectiveCaptureMethod.toString(),
++            selection: { [unowned self] in
++                self.presentValuePicker(options: ["automatic_async", "automatic", "manual"]) { picked in
++                    switch picked {
++                    case "automatic_async": self.captureMethod = .automaticAsync
++                    case "automatic": self.captureMethod = .automatic
++                    case "manual": self.captureMethod = .manual
++                    default: break
++                    }
++                    self.updateContent()
++                }
++            },
++            accessory: .disclosureIndicator,
++            cellClass: Value1Cell.self
++        )
++    }
++
++    private func showManualCaptureToast() {
++        guard let rootViewController = UIApplication.shared.rootViewController as? RootViewController else { return }
++        rootViewController.toastView(
++            viewToToast: LabelOverlayView(
++                labelText: "Manual capture is required for extended or incremental authorization."
++            )
++        )
++    }
++
+     // Makes the UPDATE PAYMENT INTENT section
+     private func makeUpdatePaymentIntentSection() -> Section? {
+         let switchRow: [Row] = [
+@@ -690,27 +751,27 @@ class StartPaymentViewController: TableViewController, CancelingViewController {
+                 text: "Decline Card Brand",
+                 detailText: {
+                     if let brand = declineCardBrand {
+-                        return Terminal.stringFromCardBrand(brand)
++                        return brand
+                     } else {
+                         return "None"
+                     }
+                 }(),
+                 selection: { [unowned self] in
+-                    let brands: [CardBrand] = [
+-                        .visa,
+-                        .amex,
+-                        .masterCard,
+-                        .discover,
+-                        .JCB,
+-                        .dinersClub,
+-                        .interac,
+-                        .unionPay,
+-                        .eftposAu,
++                    let brands = [
++                        "visa",
++                        "amex",
++                        "mastercard",
++                        "discover",
++                        "jcb",
++                        "diners",
++                        "interac",
++                        "unionpay",
++                        "eftpos_au",
+                     ]
+-                    self.presentValuePicker(options: ["None"] + brands.map { Terminal.stringFromCardBrand($0) }) {
++                    self.presentValuePicker(options: ["None"] + brands) {
+                         picked in
+                         self.declineCardBrand = nil
+-                        for brand in brands where picked == Terminal.stringFromCardBrand(brand) {
++                        for brand in brands where picked == brand {
+                             self.declineCardBrand = brand
+                             break
+                         }
+diff --git a/Example/Example/StartRefundViewController.swift b/Example/Example/StartRefundViewController.swift
+index bb5fee4..c9d0e83 100644
+--- a/Example/Example/StartRefundViewController.swift
++++ b/Example/Example/StartRefundViewController.swift
+@@ -106,15 +106,15 @@ class StartRefundViewController: TableViewController {
+     }
+ 
+     internal func startRefund() {
+-        let refundParamsBuilder: RefundParametersBuilder
++        let refundParamsBuilder: ProcessRefundParametersBuilder
+         if self.refundWithChargeId == true {
+-            refundParamsBuilder = RefundParametersBuilder(
++            refundParamsBuilder = ProcessRefundParametersBuilder(
+                 chargeId: paymentOrChargeIdView.textField.text ?? "",
+                 amount: amountView.amount,
+                 currency: "cad"
+             )
+         } else {
+-            refundParamsBuilder = RefundParametersBuilder(
++            refundParamsBuilder = ProcessRefundParametersBuilder(
+                 paymentIntentId: paymentOrChargeIdView.textField.text ?? "",
+                 clientSecret: clientSecretView.textField.text ?? "",
+                 amount: amountView.amount,
+diff --git a/Example/Example/StartSetupIntentViewController.swift b/Example/Example/StartSetupIntentViewController.swift
+index f8ea74a..16a0c9d 100644
+--- a/Example/Example/StartSetupIntentViewController.swift
++++ b/Example/Example/StartSetupIntentViewController.swift
+@@ -63,7 +63,7 @@ class StartSetupIntentViewController: TableViewController {
+             let setupIntentParams = try SetupIntentParametersBuilder()
+                 .setPaymentMethodTypes([PaymentMethodType.card, PaymentMethodType.cardPresent])
+                 .build()
+-            let setupIntentConfigBuilder = CollectSetupIntentConfigurationBuilder()
++            let setupIntentConfigBuilder = CollectSetupIntentConfigurationBuilder(allowRedisplay: allowRedisplay)
+                 .setCustomerCancellation(enableCustomerCancellation ? .enableIfAvailable : .disableIfAvailable)
+                 .setCollectionReason(collectionReason)
+             if moto {
+@@ -77,7 +77,6 @@ class StartSetupIntentViewController: TableViewController {
+             let vc = SetupIntentViewController(
+                 setupParams: setupIntentParams,
+                 setupConfig: setupIntentConfig,
+-                allowRedisplay: allowRedisplay,
+                 useProcessSetupIntent: useProcessSetupIntent
+             )
+             let navController = LargeTitleNavigationController(rootViewController: vc)
+diff --git a/Example/Example/UpdateReaderViewController.swift b/Example/Example/UpdateReaderViewController.swift
+index 7c86464..31e285e 100644
+--- a/Example/Example/UpdateReaderViewController.swift
++++ b/Example/Example/UpdateReaderViewController.swift
+@@ -331,32 +331,7 @@ extension UpdateReaderViewController: MobileReaderDelegate {
+ 
+ // MARK: TapToPayReaderDelegate
+ extension UpdateReaderViewController: TapToPayReaderDelegate {
+-    func tapToPayReader(
+-        _ reader: Reader,
+-        didStartInstallingUpdate update: ReaderSoftwareUpdate,
+-        cancelable: Cancelable?
+-    ) {
+-        self.cancelable = cancelable
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didReportReaderSoftwareUpdateProgress progress: Float) {
+-        self.updateProgress = progress
+-        self.updateContent()
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
+-        // No-op.
+-    }
+-
+     func tapToPayReaderDidAcceptTermsOfService(_ reader: Reader) {
+         // No-op.
+     }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+-        // No-op.
+-    }
+-
+-    func tapToPayReader(_ reader: Reader, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+-        // No-op.
+-    }
+ }
+diff --git a/Example/Example/Value1MultilineCell.swift b/Example/Example/Value1MultilineCell.swift
+index 3d13ce6..09ed135 100644
+--- a/Example/Example/Value1MultilineCell.swift
++++ b/Example/Example/Value1MultilineCell.swift
+@@ -7,6 +7,7 @@
+ //
+ 
+ import Static
++import UIKit
+ 
+ /**
+  Same as Static.Value1Cell, but supports wrapping in the text label if needed.
+diff --git a/Example/Podfile b/Example/Podfile
+deleted file mode 100644
+index a76e7c6..0000000
+--- a/Example/Podfile
++++ /dev/null
+@@ -1,22 +0,0 @@
+-platform :ios, '15.0'
+-use_frameworks!
+-
+-target 'Example' do
+-  # The Example uses the bundled StripeTerminal.xcframework. Uncomment this line
+-  # to install the framework via cocoapods in your project.
+-  # pod 'StripeTerminal', '~>2.0'
+-  pod 'Alamofire', '~> 5.0'
+-  pod 'Static', inhibit_warnings: true, git: 'https://github.com/venmo/Static', tag: 'v4.0.0'
+-end
+-
+-post_install do |installer|
+-  installer.pods_project.targets.each do |target|
+-    target.build_configurations.each do |config|
+-      # Set deployment target to 15.0, minimum required by Stripe Terminal
+-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+-      # Suppress warnings from any of the pods we depend on.
+-      config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = "YES"
+-      config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = "YES"
+-    end
+-  end
+-end
+diff --git a/Example/Podfile.lock b/Example/Podfile.lock
+deleted file mode 100644
+index 7f1339f..0000000
+--- a/Example/Podfile.lock
++++ /dev/null
+@@ -1,29 +0,0 @@
+-PODS:
+-  - Alamofire (5.9.0)
+-  - Static (4.0.0)
+-
+-DEPENDENCIES:
+-  - Alamofire (~> 5.0)
+-  - Static (from `https://github.com/venmo/Static`, tag `v4.0.0`)
+-
+-SPEC REPOS:
+-  trunk:
+-    - Alamofire
+-
+-EXTERNAL SOURCES:
+-  Static:
+-    :git: https://github.com/venmo/Static
+-    :tag: v4.0.0
+-
+-CHECKOUT OPTIONS:
+-  Static:
+-    :git: https://github.com/venmo/Static
+-    :tag: v4.0.0
+-
+-SPEC CHECKSUMS:
+-  Alamofire: 02b772c9910e8eba1a079227c32fbd9e46c90a24
+-  Static: 3204aad2dc648cfe08dc7aa4a26d65ee37e4853a
+-
+-PODFILE CHECKSUM: b471169a5df7d2b52835ce16d57c7d9fc376b654
+-
+-COCOAPODS: 1.16.2
+diff --git a/Package.swift b/Package.swift
+index f2bd48c..22f040d 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -1,10 +1,10 @@
+-// swift-tools-version:5.5
++// swift-tools-version:5.7
+ import PackageDescription
+ 
+ let package = Package(
+   name: "StripeTerminal",
+     platforms: [
+-      .iOS(.v15)
++      .iOS(.v16)
+     ],
+   products: [
+     .library(
+@@ -15,8 +15,8 @@ let package = Package(
+   targets: [
+     .binaryTarget(
+       name: "StripeTerminal",
+-      url: "https://github.com/stripe/stripe-terminal-ios/releases/download/5.8.0/StripeTerminal.xcframework.zip",
+-      checksum: "92c65013c4d92ce9dcba2310a0103651756bb65eeca409324ec54ed9896da4f7"
++      url: "https://github.com/stripe/stripe-terminal-ios/releases/download/6.0.0/StripeTerminal.xcframework.zip",
++      checksum: "90f370b39edee8a45ab50c512d6c054e7d6d3304931a7aeef80916ea97010129"
+     )
+   ]
+ )
+diff --git a/PublicHeaders/SCPBlocks.h b/PublicHeaders/SCPBlocks.h
+index 303ae87..fdf7b7f 100644
+--- a/PublicHeaders/SCPBlocks.h
++++ b/PublicHeaders/SCPBlocks.h
+@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
+     SCPReader,
+     SCPLocation,
+     SCPPaymentIntent,
+-    SCPRefundParameters,
++    SCPProcessRefundParameters,
+     SCPRefund,
+     SCPSetupIntent,
+     SCPSetupIntentParameters,
+diff --git a/PublicHeaders/SCPBluetoothConnectionConfiguration.h b/PublicHeaders/SCPBluetoothConnectionConfiguration.h
+index c337c34..d20ffd0 100644
+--- a/PublicHeaders/SCPBluetoothConnectionConfiguration.h
++++ b/PublicHeaders/SCPBluetoothConnectionConfiguration.h
+@@ -14,6 +14,7 @@
+ #import <StripeTerminal/SCPBuilder.h>
+ #import <StripeTerminal/SCPConnectionConfiguration.h>
+ #import <StripeTerminal/SCPMobileReaderDelegate.h>
++#import <StripeTerminal/SCPReaderPaymentInteractionDelegate.h>
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+@@ -33,6 +34,11 @@ NS_SWIFT_NAME(BluetoothConnectionConfiguration)
+  */
+ @property (nonatomic, weak, readonly) id<SCPMobileReaderDelegate> delegate;
+ 
++/**
++ The ReaderPaymentInteractionDelegate to use for payment interactions during this reader connection.
++ */
++@property (nonatomic, weak, readonly, nullable) id<SCPReaderPaymentInteractionDelegate> readerPaymentInteractionDelegate;
++
+ /**
+  The ID of the [Location](https://stripe.com/docs/api/terminal/locations) which the reader should be registered to during connection.
+ 
+@@ -94,6 +100,9 @@ NS_SWIFT_NAME(BluetoothConnectionConfigurationBuilder)
+ /// Set the autoReconnectOnUnexpectedDisconnect property for the `BluetoothConnectionConfiguration` object that will be built.
+ - (SCPBluetoothConnectionConfigurationBuilder *)setAutoReconnectOnUnexpectedDisconnect:(BOOL)autoReconnectOnUnexpectedDisconnect;
+ 
++/// Set the ReaderPaymentInteractionDelegate to use for payment interactions during this reader connection.
++- (SCPBluetoothConnectionConfigurationBuilder *)setReaderPaymentInteractionDelegate:(nullable id<SCPReaderPaymentInteractionDelegate>)readerPaymentInteractionDelegate;
++
+ /// Set the testReaderUpdate property for the `BluetoothConnectionConfiguration` object that will be built.
+ - (SCPBluetoothConnectionConfigurationBuilder *)setTestReaderUpdate:(nullable SCPTestReaderUpdate *)testReaderUpdate;
+ 
+diff --git a/PublicHeaders/SCPCardDetails.h b/PublicHeaders/SCPCardDetails.h
+index 1d7e869..9958e72 100644
+--- a/PublicHeaders/SCPCardDetails.h
++++ b/PublicHeaders/SCPCardDetails.h
+@@ -11,9 +11,6 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
+-#import <StripeTerminal/SCPCardBrand.h>
+-#import <StripeTerminal/SCPCardFundingType.h>
+-
+ NS_ASSUME_NONNULL_BEGIN
+ 
+ @class SCPGeneratedFrom;
+@@ -27,9 +24,9 @@ NS_SWIFT_NAME(CardDetails)
+ @interface SCPCardDetails : NSObject
+ 
+ /**
+- The issuer of the card.
++ The issuer of the card as returned by the Stripe API.
+  */
+-@property (nonatomic, readonly) SCPCardBrand brand;
++@property (nonatomic, copy, readonly) NSString *brand;
+ 
+ /**
+  Two-letter ISO code representing the country of the card.
+@@ -49,9 +46,10 @@ NS_SWIFT_NAME(CardDetails)
+ @property (nonatomic, readonly) NSInteger expYear;
+ 
+ /**
+- Card funding type. Ex: credit, debit, etc.
++ Card funding type as returned by the Stripe API. Will be nil if funding type
++ information is not available.
+  */
+-@property (nonatomic, readonly) SCPCardFundingType funding;
++@property (nonatomic, nullable, copy, readonly) NSString *funding;
+ 
+ /**
+  The last four digits of the card.
+diff --git a/PublicHeaders/SCPCardPresentDetails.h b/PublicHeaders/SCPCardPresentDetails.h
+index e6f0249..7df676b 100644
+--- a/PublicHeaders/SCPCardPresentDetails.h
++++ b/PublicHeaders/SCPCardPresentDetails.h
+@@ -11,14 +11,11 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
+-#import <StripeTerminal/SCPCardBrand.h>
+-#import <StripeTerminal/SCPCardFundingType.h>
+ #import <StripeTerminal/SCPDynamicCurrencyConversion.h>
+-#import <StripeTerminal/SCPReadMethod.h>
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+-@class SCPReceiptDetails, SCPNetworks;
++@class SCPReceiptDetails;
+ @class SCPWallet;
+ 
+ /**
+@@ -137,14 +134,15 @@ NS_SWIFT_NAME(CardPresentDetails)
+ @property (nonatomic, nullable, readonly) NSString *cardholderName;
+ 
+ /**
+- The card's funding type.
++ The card's funding type as returned by the Stripe API. Will be nil if
++ funding type information is not available.
+  */
+-@property (nonatomic, readonly) SCPCardFundingType funding;
++@property (nonatomic, nullable, copy, readonly) NSString *funding;
+ 
+ /**
+- The issuing brand of the card.
++ The issuing brand of the card as returned by the Stripe API.
+  */
+-@property (nonatomic, readonly) SCPCardBrand brand;
++@property (nonatomic, copy, readonly) NSString *brand;
+ 
+ /**
+  ID of a `card` PaymentMethod that may be attached to a Customer for future
+@@ -180,21 +178,12 @@ NS_SWIFT_NAME(CardPresentDetails)
+  */
+ @property (nonatomic, copy, nullable, readonly) NSArray<NSString *> *preferredLocales;
+ 
+-/**
+- Contains information about card networks that can be used to process the payment.
+-
+- Only available after collectPaymentMethod when using updatePaymentIntent on the CollectConfiguration.
+- */
+-@property (nonatomic, copy, nullable, readonly) SCPNetworks *networks;
+-
+ /**
+  Identifies which network this charge was processed on.
+ 
+- Contains SCPCardBrand represented as a nullable NSNumber.
+-
+  Only available after confirming the PaymentIntent.
+  */
+-@property (nonatomic, copy, nullable, readonly) NSNumber *network;
++@property (nonatomic, copy, nullable, readonly) NSString *network;
+ 
+ /**
+  * Whether this payment method is eligible for incremental authorizations.
+@@ -235,9 +224,10 @@ NS_SWIFT_NAME(CardPresentDetails)
+ @property (nonatomic, nullable, readonly) NSDate *reauthorizeBefore;
+ 
+ /**
+- How the card was read in this transaction.
++ How the card was read in this transaction, using the value returned by the
++ Stripe API (for example, `contact_emv` or `contactless_emv`).
+  */
+-@property (nonatomic, readonly, assign) SCPReadMethod readMethod;
++@property (nonatomic, readonly, copy) NSString *readMethod;
+ 
+ /**
+  If this payment is from a card wallet, this contains the details of the card wallet.
+@@ -283,6 +273,13 @@ NS_SWIFT_NAME(CardPresentDetails)
+  */
+ @property (nonatomic, copy, nullable, readonly) NSString *retrievalReferenceNumber;
+ 
++/**
++ A unique identifier assigned by the card network to the underlying payment
++ account. This value can identify the same account across a physical card and
++ its wallet tokens.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *paymentAccountReference;
++
+ /**
+  You cannot directly instantiate this class.
+  */
+diff --git a/PublicHeaders/SCPCardPresentParameters.h b/PublicHeaders/SCPCardPresentParameters.h
+index 1e44769..5558a94 100644
+--- a/PublicHeaders/SCPCardPresentParameters.h
++++ b/PublicHeaders/SCPCardPresentParameters.h
+@@ -13,6 +13,7 @@
+ 
+ #import <StripeTerminal/SCPAadeData.h>
+ #import <StripeTerminal/SCPBuilder.h>
++#import <StripeTerminal/SCPInstallmentsParameters.h>
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+@@ -158,6 +159,11 @@ NS_SWIFT_NAME(CardPresentParameters)
+  */
+ @property (nonatomic, strong, nullable, readonly) NSNumber *captureDelayDays;
+ 
++/**
++ Card-present installment configuration for the PaymentIntent.
++ */
++@property (nonatomic, nullable, readonly) SCPInstallmentsParameters *installments;
++
+ /**
+  AADE e-invoicing data required for card-present transactions in Greece.
+ 
+@@ -210,6 +216,9 @@ NS_SWIFT_NAME(CardPresentParametersBuilder)
+ /// @see `SCPCardPresentParameters.captureDelayDays`
+ - (SCPCardPresentParametersBuilder *)setCaptureDelayDays:(NSInteger)captureDelayDays;
+ 
++/// @see `SCPCardPresentParameters.installments`
++- (SCPCardPresentParametersBuilder *)setInstallments:(SCPInstallmentsParameters *)installments;
++
+ /// @see `SCPCardPresentParameters.aadeData`
+ - (SCPCardPresentParametersBuilder *)setAadeData:(SCPAadeData *)aadeData;
+ 
+diff --git a/PublicHeaders/SCPCollectSetupIntentConfiguration.h b/PublicHeaders/SCPCollectSetupIntentConfiguration.h
+index 76b0465..d5c3689 100644
+--- a/PublicHeaders/SCPCollectSetupIntentConfiguration.h
++++ b/PublicHeaders/SCPCollectSetupIntentConfiguration.h
+@@ -11,6 +11,7 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
++#import <StripeTerminal/SCPAllowRedisplay.h>
+ #import <StripeTerminal/SCPBuilder.h>
+ #import <StripeTerminal/SCPCustomerCancellation.h>
+ #import <StripeTerminal/SCPMotoConfiguration.h>
+@@ -25,6 +26,26 @@ NS_ASSUME_NONNULL_BEGIN
+ NS_SWIFT_NAME(CollectSetupIntentConfiguration)
+ @interface SCPCollectSetupIntentConfiguration : NSObject <NSCopying>
+ 
++/**
++ Controls whether the payment method may be shown again to its customer in a checkout flow.
++
++ Collecting cardholder consent
++ -----------------------------
++
++ Card networks require that you collect consent from the customer before saving
++ and reusing their card information. The SetupIntent confirmation API method
++ normally takes a `mandate_data` hash that lets you specify details about the
++ customer's consent. The Stripe Terminal SDK will fill in the `mandate_data`
++ hash with relevant information, but in order for it to do so, you must specify
++ whether you have gathered consent from the cardholder using this property.
++
++ The payment method will not be collected without the cardholder's consent.
++
++ `allowRedisplay` must be set to `always` or `limited`.
++
++ */
++@property (nonatomic, assign, readonly) SCPAllowRedisplay allowRedisplay;
++
+ /**
+  Controls whether customer-initiated cancellation is enabled during setup intent collection.
+ 
+@@ -63,6 +84,16 @@ NS_SWIFT_NAME(CollectSetupIntentConfiguration)
+ NS_SWIFT_NAME(CollectSetupIntentConfigurationBuilder)
+ @interface SCPCollectSetupIntentConfigurationBuilder : SCPBuilder <SCPCollectSetupIntentConfiguration *>
+ 
++/**
++ Initializes `SCPCollectSetupIntentConfigurationBuilder` with the given `allowRedisplay` value.
++
++ @param allowRedisplay Indicates whether the customer consented to redisplaying the saved payment method.
++ */
++- (instancetype)initWithAllowRedisplay:(SCPAllowRedisplay)allowRedisplay NS_DESIGNATED_INITIALIZER;
++
++/// Set the allowRedisplay property for the `CollectSetupIntentConfiguration` object that will be built.
++- (SCPCollectSetupIntentConfigurationBuilder *)setAllowRedisplay:(SCPAllowRedisplay)allowRedisplay;
++
+ /// Set the customerCancellation property for the `CollectSetupIntentConfiguration` object that will be built.
+ - (SCPCollectSetupIntentConfigurationBuilder *)setCustomerCancellation:(SCPCustomerCancellation)customerCancellation;
+ 
+@@ -73,6 +104,16 @@ NS_SWIFT_NAME(CollectSetupIntentConfigurationBuilder)
+ /// Applicable only for Tap to Pay devices. The default value is `SCPSetupIntentCollectionReasonSaveCard`.
+ - (SCPCollectSetupIntentConfigurationBuilder *)setCollectionReason:(SCPSetupIntentCollectionReason)collectionReason;
+ 
++/**
++ Use `initWithAllowRedisplay:`.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ Use `initWithAllowRedisplay:`.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
+ @end
+ 
+ NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPConfirmRefundError.h b/PublicHeaders/SCPConfirmRefundError.h
+index b2096e3..d08e910 100644
+--- a/PublicHeaders/SCPConfirmRefundError.h
++++ b/PublicHeaders/SCPConfirmRefundError.h
+@@ -17,11 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ @class SCPApiError;
+ @class SCPRefund;
+-@class SCPRefundParameters;
+ 
+ /**
+- An error from `-[SCPTerminal confirmRefund:completion:]`.
++ An error from `confirmRefund` or `processRefund`.
+ 
++ @see https://docs.stripe.com/api/refunds
+  @see https://stripe.com/docs/terminal/canada#interac-refunds
+  */
+ NS_SWIFT_NAME(ConfirmRefundError)
+diff --git a/PublicHeaders/SCPConfirmRefundParameters.h b/PublicHeaders/SCPConfirmRefundParameters.h
+new file mode 100644
+index 0000000..e9a48b4
+--- /dev/null
++++ b/PublicHeaders/SCPConfirmRefundParameters.h
+@@ -0,0 +1,137 @@
++//
++//  SCPConfirmRefundParameters.h
++//  StripeTerminal
++//
++//  Created by Stripe on 9/11/26.
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++#import <StripeTerminal/SCPBuilder.h>
++#import <StripeTerminal/SCPRefundReason.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ Parameters for confirming a refund without collecting a payment method.
++
++ @note This feature is in private preview and is subject to change.
++
++ @see https://docs.stripe.com/api/refunds/create
++ */
++NS_SWIFT_NAME(ConfirmRefundParameters)
++@interface SCPConfirmRefundParameters : NSObject
++
++/**
++ The ID of the PaymentIntent to refund.
++ */
++@property (nonatomic, copy, readonly) NSString *paymentIntentId;
++
++/**
++ The client secret for the PaymentIntent.
++ */
++@property (nonatomic, copy, readonly) NSString *clientSecret;
++
++/**
++ The amount to refund, in the currency's smallest unit.
++
++ If omitted, the entire remaining refundable amount is refunded.
++ */
++@property (nonatomic, nullable, readonly) NSNumber *amount;
++
++/**
++ The reason for the refund.
++ */
++@property (nonatomic, nullable, readonly) SCPRefundReason reason;
++
++/**
++ Set of key-value pairs to attach to the Refund.
++
++ @see https://docs.stripe.com/api/refunds/create#create_refund-metadata
++ */
++@property (nonatomic, nullable, copy, readonly) NSDictionary<NSString *, NSString *> *metadata;
++
++/**
++ Connect only: Whether to reverse the transfer when refunding this payment.
++
++ This nullable NSNumber represents a nullable Boolean. A value of 0 represents
++ `false`, while any non-zero value represents `true`.
++ */
++@property (nonatomic, nullable, readonly) NSNumber *reverseTransfer;
++
++/**
++ Connect only: Whether to refund the application fee when refunding this
++ payment.
++
++ This nullable NSNumber represents a nullable Boolean. A value of 0 represents
++ `false`, while any non-zero value represents `true`.
++ */
++@property (nonatomic, nullable, readonly) NSNumber *refundApplicationFee;
++
++/**
++ Email address to send refund instructions to.
++ */
++@property (nonatomic, nullable, copy, readonly) NSString *instructionsEmail;
++
++/**
++ Use `SCPConfirmRefundParametersBuilder`.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ Use `SCPConfirmRefundParametersBuilder`.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ Builder class for `SCPConfirmRefundParameters`.
++ */
++NS_SWIFT_NAME(ConfirmRefundParametersBuilder)
++@interface SCPConfirmRefundParametersBuilder : SCPBuilder <SCPConfirmRefundParameters *>
++
++/**
++ Initializes the builder with the PaymentIntent to refund.
++
++ @param paymentIntentId The ID of the PaymentIntent to refund.
++ @param clientSecret The client secret for the PaymentIntent.
++ */
++- (instancetype)initWithPaymentIntentId:(NSString *)paymentIntentId
++                           clientSecret:(NSString *)clientSecret;
++
++/// @see `SCPConfirmRefundParameters.amount`
++- (SCPConfirmRefundParametersBuilder *)setAmount:(NSUInteger)amount;
++
++/// @see `SCPConfirmRefundParameters.reason`
++- (SCPConfirmRefundParametersBuilder *)setReason:(nullable SCPRefundReason)reason;
++
++/// @see `SCPConfirmRefundParameters.metadata`
++- (SCPConfirmRefundParametersBuilder *)setMetadata:(nullable NSDictionary<NSString *, NSString *> *)metadata;
++
++/// @see `SCPConfirmRefundParameters.reverseTransfer`
++- (SCPConfirmRefundParametersBuilder *)setReverseTransfer:(BOOL)reverseTransfer;
++
++/// @see `SCPConfirmRefundParameters.refundApplicationFee`
++- (SCPConfirmRefundParametersBuilder *)setRefundApplicationFee:(BOOL)refundApplicationFee;
++
++/// @see `SCPConfirmRefundParameters.instructionsEmail`
++- (SCPConfirmRefundParametersBuilder *)setInstructionsEmail:(nullable NSString *)instructionsEmail;
++
++/**
++ Use `initWithPaymentIntentId:clientSecret:`.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ Use `initWithPaymentIntentId:clientSecret:`.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPDeprecations.h b/PublicHeaders/SCPDeprecations.h
+index 31cf0b4..29ae263 100644
+--- a/PublicHeaders/SCPDeprecations.h
++++ b/PublicHeaders/SCPDeprecations.h
+@@ -21,117 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ @interface SCPTerminal (Deprecations)
+ 
+-/**
+- Initiates an in-person refund with a given set of `SCPRefundParameters` by
+- collecting the payment method that is to be refunded.
+-
+- Some payment methods, like Interac Debit payments, require that in-person payments
+- also be refunded while the cardholder is present. The cardholder must present
+- the Interac card to the card reader; these payments cannot be refunded via the
+- dashboard or the API.
+-
+- For payment methods that don't require the cardholder be present, see
+- https://stripe.com/docs/terminal/payments/refunds
+-
+- This method, along with `confirmRefund`, allow you to design an in-person refund
+- flow into your app.
+-
+- If collecting a payment method fails, the completion block will be called with
+- an error. After resolving the error, you may call `collectRefundPaymentMethod`
+- again to either try the same card again, or try a different card.
+-
+- If collecting a payment method succeeds, the completion block will be called
+- with an `nil` error. At that point, you can call `confirmRefund` to finish
+- refunding the payment method.
+-
+- Calling any other SDK methods between `collectRefundPaymentMethod` and
+- `confirmRefund` will result in undefined behavior.
+-
+- Note that if `collectRefundPaymentMethod` is canceled, the completion block
+- will be called with a `Canceled` error.
+-
+- @see https://stripe.com/docs/terminal/canada#interac-refunds
+-
+- @param refundParams  The SCPRefundParameters object that describes how the
+- refund will be created.
+- @param completion  The completion block called when the command completes.
+- */
+-- (nullable SCPCancelable *)collectRefundPaymentMethod:(SCPRefundParameters *)refundParams
+-                                            completion:(SCPErrorCompletionBlock)completion
+-    NS_SWIFT_NAME(collectRefundPaymentMethod(_:completion:))
+-        DEPRECATED_MSG_ATTRIBUTE("collectRefundPaymentMethod has been replaced by processRefund");
+-
+-/**
+- Initiates an in-person refund with a given set of `SCPRefundParameters` by
+- collecting the payment method that is to be refunded.
+-
+- Some payment methods, like Interac Debit payments, require that in-person payments
+- also be refunded while the cardholder is present. The cardholder must present
+- the Interac card to the card reader; these payments cannot be refunded via the
+- dashboard or the API.
+-
+- For payment methods that don't require the cardholder be present, see
+- https://stripe.com/docs/terminal/payments/refunds
+-
+- This method, along with `confirmRefund`, allow you to design an in-person refund
+- flow into your app.
+-
+- If collecting a payment method fails, the completion block will be called with
+- an error. After resolving the error, you may call `collectRefundPaymentMethod`
+- again to either try the same card again, or try a different card.
+-
+- If collecting a payment method succeeds, the completion block will be called
+- with an `nil` error. At that point, you can call `confirmRefund` to finish
+- refunding the payment method.
+-
+- Calling any other SDK methods between `collectRefundPaymentMethod` and
+- `confirmRefund` will result in undefined behavior.
+-
+- Note that if `collectRefundPaymentMethod` is canceled, the completion block
+- will be called with a `Canceled` error.
+-
+- @see https://stripe.com/docs/terminal/canada#interac-refunds
+-
+- @param refundParams  The SCPRefundParameters object that describes how the
+- refund will be created.
+- @param refundConfig An optional SCPCollectRefundConfiguration to configure per-refund overrides.
+- @param completion  The completion block called when the command completes.
+- */
+-- (nullable SCPCancelable *)collectRefundPaymentMethod:(SCPRefundParameters *)refundParams
+-                                          refundConfig:(nullable SCPCollectRefundConfiguration *)refundConfig
+-                                            completion:(SCPErrorCompletionBlock)completion
+-    NS_SWIFT_NAME(collectRefundPaymentMethod(_:refundConfig:completion:))
+-        DEPRECATED_MSG_ATTRIBUTE("collectRefundPaymentMethod has been replaced by processRefund");
+-
+-/**
+- Confirms an in-person refund after the refund payment method has been collected.
+-
+- The completion block will either be called with the successful `SCPRefund` or
+- with an `SCPConfirmRefundError`.
+-
+- When `confirmRefund` fails, the SDK returns an error that either includes the
+- failed `SCPRefund` or the `SCPRefundParameters` that led to a failure.
+- Your app should inspect the `SCPConfirmRefundError` to decide how to proceed.
+-
+- 1. If the refund property is `nil`, the request to Stripe's servers timed
+- out and the refund's status is unknown. We recommend that you retry
+- `confirmRefund` with the original `SCPRefundParameters`.
+-
+- 2. If the `SCPConfirmRefundError` has a `failure_reason`, the refund was declined.
+- We recommend that you take action based on the decline code you received.
+-
+- @note `collectRefundPaymentMethod:completion` and `confirmRefund` are only
+- available for payment methods that require in-person refunds. For all other
+- refunds, use the Stripe Dashboard or the Stripe API.
+-
+- @see https://stripe.com/docs/terminal/canada#interac-refunds
+-
+- @param completion  The completion block called when the command completes.
+- */
+-- (nullable SCPCancelable *)confirmRefund:(SCPConfirmRefundCompletionBlock)completion
+-    NS_SWIFT_NAME(confirmRefund(completion:))
+-        DEPRECATED_MSG_ATTRIBUTE("confirmRefund has been replaced by processRefund");
+-
+ @end
+ 
+ NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPErrors.h b/PublicHeaders/SCPErrors.h
+index ba44e00..04332bc 100644
+--- a/PublicHeaders/SCPErrors.h
++++ b/PublicHeaders/SCPErrors.h
+@@ -83,7 +83,7 @@ typedef NS_ERROR_ENUM(SCPErrorDomain, SCPError){
+      */
+     SCPErrorNilRefundPaymentMethod = 1550,
+     /**
+-     The RefundParameters object has invalid values. The Charge ID (ch_123abc) or PaymentIntent ID (pi_123abc)
++     The ProcessRefundParameters object has invalid values. The Charge ID (ch_123abc) or PaymentIntent ID (pi_123abc)
+      can be found on the `PaymentIntent` object, which you should get from
+      your backend. You must have only one of a charge or payment intent ID set.
+      */
+@@ -287,10 +287,15 @@ typedef NS_ERROR_ENUM(SCPErrorDomain, SCPError){
+      */
+ 
+     /**
+-     The command was canceled by your app.
++     The operation was canceled.
+      */
+     SCPErrorCanceled = 2020,
+ 
++    /**
++     The operation was cancelled on the reader.
++     */
++    SCPErrorCanceledByReader = 2021,
++
+     /**
+      Access to location services is currently disabled. This may be because:
+      - The user disabled location services in the system settings.
+@@ -704,10 +709,10 @@ typedef NS_ERROR_ENUM(SCPErrorDomain, SCPError){
+     SCPErrorPrinterError = 4006,
+ 
+     /**
+-     * The reader's battery is too low to complete this printer operation.
+-     * Charge the reader before trying again.
++     * The requested reader operation failed because the reader's battery is too low.
++     * Charge the reader before retrying the operation.
+      */
+-    SCPErrorPrinterLowBattery = 4007,
++    SCPErrorReaderBatteryLow = 4007,
+ 
+     /**
+      * The reader cannot be connected to because it is already connected to a different device.
+@@ -867,12 +872,6 @@ typedef NS_ERROR_ENUM(SCPErrorDomain, SCPError){
+      */
+     SCPErrorSimulatedOfflineModeNotAvailableInLivemode = 6908,
+ 
+-    /**
+-     Simulated offline mode is not available for this account. Contact Stripe
+-     to request access.
+-     */
+-    SCPErrorSimulatedOfflineModeNotAvailableForAccount = 6909,
+-
+     /*
+      NETWORK ERRORS
+      */
+@@ -939,7 +938,7 @@ typedef NS_ERROR_ENUM(SCPErrorDomain, SCPError){
+      * `-[SCPTerminal collectRefundMethod:parameters]` if connected to an Internet reader
+      * `-[SCPTerminal confirmRefund:completion]`
+      * `-[SCPTerminal createSetupIntent:completion:]`
+-     * `-[SCPTerminal collectSetupIntentPaymentMethod:customerConsentCollected:completion:]` if connected to an Internet reader
++     * `-[SCPTerminal collectSetupIntentPaymentMethod:setupConfig:completion:]` if connected to an Internet reader
+      * `-[SCPTerminal confirmSetupIntent:completion:]`
+      * `-[SCPTerminal cancelSetupIntent:completion:]`
+      * `-[SCPTerminal collectInputs:completion:]`
+diff --git a/PublicHeaders/SCPInstallmentsParameters.h b/PublicHeaders/SCPInstallmentsParameters.h
+new file mode 100644
+index 0000000..f1bbc52
+--- /dev/null
++++ b/PublicHeaders/SCPInstallmentsParameters.h
+@@ -0,0 +1,125 @@
++//
++//  SCPInstallmentsParameters.h
++//  StripeTerminal
++//
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++#import <StripeTerminal/SCPBuilder.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ The type of an installment plan.
++ */
++typedef NS_ENUM(NSUInteger, SCPInstallmentPlanType) {
++    /**
++    An installment plan with a fixed number of payments.
++    */
++    SCPInstallmentPlanTypeFixedCount,
++    /**
++     An installment plan with a bonus payment structure.
++     */
++    SCPInstallmentPlanTypeBonus,
++    /**
++     An installment plan with a revolving payment structure.
++     */
++    SCPInstallmentPlanTypeRevolving,
++} NS_SWIFT_NAME(InstallmentPlanType);
++
++/**
++ The interval between payments in an installment plan.
++ */
++typedef NS_ENUM(NSUInteger, SCPInstallmentPlanInterval) {
++    /**
++     Payments are made monthly.
++     */
++    SCPInstallmentPlanIntervalMonth,
++} NS_SWIFT_NAME(InstallmentPlanInterval);
++
++/**
++ Details about an installment plan available for or selected on a PaymentIntent.
++ */
++NS_SWIFT_NAME(InstallmentPlanDetails)
++@interface SCPInstallmentPlanDetails : NSObject <NSCopying>
++
++/**
++ The installment plan type. `SCPInstallmentPlanType` as a nullable NSNumber.
++ */
++@property (nonatomic, copy, nullable, readonly) NSNumber *type;
++
++/**
++ The number of payments in a fixed-count installment plan.
++ */
++@property (nonatomic, copy, nullable, readonly) NSNumber *count;
++
++/**
++ The interval between payments. `SCPInstallmentPlanInterval` as a nullable NSNumber.
++ */
++@property (nonatomic, copy, nullable, readonly) NSNumber *interval;
++
++/**
++ You cannot directly instantiate `SCPInstallmentPlanDetails`.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ You cannot directly instantiate `SCPInstallmentPlanDetails`.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ Parameters for card-present installments on a PaymentIntent.
++ */
++NS_SWIFT_NAME(InstallmentsParameters)
++@interface SCPInstallmentsParameters : NSObject <NSCopying>
++
++/**
++ Whether card-present installments are enabled for the PaymentIntent.
++ */
++@property (nonatomic, copy, nullable, readonly) NSNumber *enabled;
++
++/**
++ Installment plans returned after payment method collection. This property is readonly.
++ */
++@property (nonatomic, copy, nullable, readonly) NSArray<SCPInstallmentPlanDetails *> *availablePlans;
++
++/**
++ The installment plan selected by the cardholder, returned after confirmation. This property is readonly.
++ */
++@property (nonatomic, copy, nullable, readonly) SCPInstallmentPlanDetails *plan;
++
++/**
++ Use `SCPInstallmentsParametersBuilder`.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ Use `SCPInstallmentsParametersBuilder`.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ Builder for `SCPInstallmentsParameters`.
++ */
++NS_SWIFT_NAME(InstallmentsParametersBuilder)
++@interface SCPInstallmentsParametersBuilder : SCPBuilder <SCPInstallmentsParameters *>
++
++/// @see `SCPInstallmentsParameters.enabled`
++- (SCPInstallmentsParametersBuilder *)setEnabled:(BOOL)enabled;
++
++/// Build the `SCPInstallmentsParameters` instance.
++- (SCPInstallmentsParameters *)build:(NSError **)error;
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPInternetConnectionConfiguration.h b/PublicHeaders/SCPInternetConnectionConfiguration.h
+index 7ad325e..f5cc5a4 100644
+--- a/PublicHeaders/SCPInternetConnectionConfiguration.h
++++ b/PublicHeaders/SCPInternetConnectionConfiguration.h
+@@ -44,18 +44,6 @@ NS_SWIFT_NAME(InternetConnectionConfiguration)
+  */
+ @property (nonatomic, readonly) BOOL failIfInUse;
+ 
+-/**
+- If set to true, the customer will be able to press the red X button on the
+- Verifone P400 to cancel a `collectPaymentMethod`, `collectReusableCard`, or
+- `collectRefundPaymentMethod` command.
+-
+- The property defaults to `NO` if not set.
+-
+- @note This behavior is part of a private beta. Setting this property will have
+- no effect if you are not part of the allowCustomerCancel beta program.
+- */
+-@property (nonatomic, readonly) BOOL allowCustomerCancel;
+-
+ /**
+  Use `SCPInternetConnectionConfigurationBuilder`.
+  */
+@@ -80,9 +68,6 @@ NS_SWIFT_NAME(InternetConnectionConfigurationBuilder)
+ /// Set the `failIfInUse` property for the `SCPInternetConnectionConfiguration` object that will be built.
+ - (SCPInternetConnectionConfigurationBuilder *)setFailIfInUse:(BOOL)failIfInUse;
+ 
+-/// Set the `allowCustomerCancel` property for the `SCPInternetConnectionConfiguration` object that will be built.
+-- (SCPInternetConnectionConfigurationBuilder *)setAllowCustomerCancel:(BOOL)allowCustomerCancel;
+-
+ /**
+  Use `initWithDelegate:`
+  */
+diff --git a/PublicHeaders/SCPMobileReaderDelegate.h b/PublicHeaders/SCPMobileReaderDelegate.h
+index cf38e3c..1171bfa 100644
+--- a/PublicHeaders/SCPMobileReaderDelegate.h
++++ b/PublicHeaders/SCPMobileReaderDelegate.h
+@@ -12,18 +12,11 @@
+ #import <Foundation/Foundation.h>
+ 
+ #import <StripeTerminal/SCPBatteryStatus.h>
+-#import <StripeTerminal/SCPBlocks.h>
+-#import <StripeTerminal/SCPDisconnectReason.h>
+-#import <StripeTerminal/SCPReaderDelegate.h>
+-#import <StripeTerminal/SCPReaderDisplayMessage.h>
+ #import <StripeTerminal/SCPReaderEvent.h>
+-#import <StripeTerminal/SCPReaderInputOptions.h>
++#import <StripeTerminal/SCPReaderInteractionDelegate.h>
+ 
+ @class SCPReader;
+ @class SCPReaderSoftwareUpdate;
+-@class SCPCancelable;
+-@class SCPPaymentIntent;
+-@class SCPQrCodeDisplayData;
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+@@ -37,12 +30,16 @@ NS_ASSUME_NONNULL_BEGIN
+  The provided delegate must be retained by your application until the reader disconnects.
+  */
+ NS_SWIFT_NAME(MobileReaderDelegate)
+-@protocol SCPMobileReaderDelegate <SCPReaderDelegate>
++@protocol SCPMobileReaderDelegate <SCPReaderInteractionDelegate>
+ 
+ /**
+- The SDK is reporting that an update is available for the reader.
+- This update should be installed at the earliest convenience via
+- `-[SCPTerminal installUpdate:]`
++ The SDK is reporting a deferred software update that is available for the
++ Mobile Reader. This callback is only used for Mobile Reader updates that an
++ integration can install later by calling `-[SCPTerminal installUpdate:]`.
++
++ Tap to Pay readers don't report available optional updates. Mandatory Tap to
++ Pay configuration installation during connection is reported through the
++ installation lifecycle callbacks on `SCPReaderInteractionDelegate`.
+ 
+  Check the `SCPReaderSoftwareUpdate.requiredAt` field to see when this update
+  will be a required update. Required updates are installed immediately upon connection.
+@@ -58,83 +55,6 @@ NS_SWIFT_NAME(MobileReaderDelegate)
+  */
+ - (void)reader:(SCPReader *)reader didReportAvailableUpdate:(SCPReaderSoftwareUpdate *)update;
+ 
+-/**
+- The SDK is reporting that the reader has started installing a software update.
+-
+- There are two scenarios when a reader's software update can be installed. Some
+- updates must be installed immediately, and may be being installed automatically
+- during `connectReader:`. Other updates can be delayed, and will be installed
+- when your integration calls `installAvailableUpdate`.
+-
+- Required updates will only start installing during `connectReader:`. Once your app's
+- `connectReader:` completion is called, `didStartInstallingUpdate:` will only fire
+- from requests to install via `installUpdate:`.
+-
+- Note that required updates are critical for the reader to have the
+- correct configuration and prevent receiving `SCPErrorUnsupportedReaderVersion`.
+- Updates that aren't yet required are reported by `reader:didReportUpdateAvailable:`.
+-
+- @see https://stripe.com/docs/terminal/readers/bbpos-chipper2xbt#updating-reader-software
+-
+- @param reader      The originating reader.
+- @param update      The `SCPReaderSoftwareUpdate` with an `durationEstimate` that
+- can be used to communicate how long the update is expected to take.
+- @param cancelable  This cancelable is provided to cancel the
+- installation if needed. Canceling a required update will result in a failed
+- connect with error `SCPErrorUnsupportedReaderVersion`. Incremental only updates will
+- have a nil cancelable because these updates can not be canceled.
+- */
+-- (void)reader:(SCPReader *)reader didStartInstallingUpdate:(SCPReaderSoftwareUpdate *)update cancelable:(nullable SCPCancelable *)cancelable;
+-
+-/**
+- The reader reported progress on a software update.
+-
+- @param reader              The originating reader.
+- @param progress            An estimate of the progress of the software update
+- (in the range [0, 1]).
+- */
+-- (void)reader:(SCPReader *)reader didReportReaderSoftwareUpdateProgress:(float)progress NS_SWIFT_NAME(reader(_:didReportReaderSoftwareUpdateProgress:));
+-
+-/**
+- The reader is reporting that an installation has finished. If the install was
+- successful, error will be nil.
+-
+- @param reader      The originating reader.
+- @param update      The update that was being installed, if any. Calls to `installAvailableUpdate`
+-                    when no update is available will still report didFinishInstallingUpdate, but with
+-                    a nil update.
+- @param error       If the installed failed, this will describe the error preventing install.
+- */
+-- (void)reader:(SCPReader *)reader didFinishInstallingUpdate:(nullable SCPReaderSoftwareUpdate *)update error:(nullable NSError *)error NS_SWIFT_NAME(reader(_:didFinishInstallingUpdate:error:));
+-
+-/**
+- This method is called when the reader begins waiting for input. Your app
+- should prompt the customer to present a payment method using one of the given input
+- options. If the reader emits a prompt, the `didRequestReaderDisplayMessage` method
+- will be called.
+-
+- Use `- [SCPTerminal stringFromReaderInputOptions]` to get a user facing string for the input
+- options.
+-
+- @param reader            The originating reader.
+- @param inputOptions      The armed input options on the reader.
+- */
+-- (void)reader:(SCPReader *)reader didRequestReaderInput:(SCPReaderInputOptions)inputOptions NS_SWIFT_NAME(reader(_:didRequestReaderInput:));
+-
+-/**
+- This method is called to request that a prompt be displayed in your app.
+- For example, if the prompt is `SwipeCard`, your app should instruct the
+- user to present the card again by swiping it.
+-
+- Use `- [SCPTerminal stringFromReaderDisplayMessage]` to get a user facing string for the prompt.
+-
+- @see SCPReaderDisplayMessage
+-
+- @param reader              The originating reader.
+- @param displayMessage      The message to display to the user.
+- */
+-- (void)reader:(SCPReader *)reader didRequestReaderDisplayMessage:(SCPReaderDisplayMessage)displayMessage NS_SWIFT_NAME(reader(_:didRequestReaderDisplayMessage:));
+-
+ @optional
+ 
+ /**
+@@ -165,36 +85,6 @@ NS_SWIFT_NAME(MobileReaderDelegate)
+  */
+ - (void)readerDidReportLowBatteryWarning:(SCPReader *)reader NS_SWIFT_NAME(readerDidReportLowBatteryWarning(_:));
+ 
+-/**
+- This method is called when payment method selection is required during payment collection.
+- Payment collection will block until the completion block is invoked with either the selected
+- payment option or a failure.
+-
+- @param reader                      The originating reader.
+- @param paymentIntent               The PaymentIntent being processed.
+- @param availablePaymentOptions     Array of available payment options for the customer to choose from.
+- @param completion                  The completion block to invoke with the selected payment option or failure.
+- */
+-- (void)reader:(SCPReader *)reader
+-    didRequestPaymentMethodSelection:(SCPPaymentIntent *)paymentIntent
+-             availablePaymentOptions:(NSArray<SCPPaymentOption *> *)availablePaymentOptions
+-                          completion:(SCPPaymentMethodSelectionCompletionBlock)completion NS_SWIFT_NAME(reader(_:didRequestPaymentMethodSelection:availablePaymentOptions:completion:));
+-
+-/**
+- This method is called when a QR code should be displayed to the user during payment processing.
+- Your app should display the QR code to the customer and call the completion block once the QR code
+- is successfully shown. Payment confirmation will block until the completion block is invoked.
+-
+- @param reader              The originating reader.
+- @param paymentIntent       The PaymentIntent being processed.
+- @param qrData              The QrCodeDisplayData containing the QR code image URLs and expiration information.
+- @param completion          The completion block to invoke when the QR code is successfully displayed or fails.
+- */
+-- (void)reader:(SCPReader *)reader
+-    didRequestQrCodeDisplay:(SCPPaymentIntent *)paymentIntent
+-                     qrData:(SCPQrCodeDisplayData *)qrData
+-                 completion:(SCPQrCodeDisplayCompletionBlock)completion NS_SWIFT_NAME(reader(_:didRequestQrCodeDisplay:qrData:completion:));
+-
+ @end
+ 
+ NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPNetworks.h b/PublicHeaders/SCPNetworks.h
+index 68323be..dadf661 100644
+--- a/PublicHeaders/SCPNetworks.h
++++ b/PublicHeaders/SCPNetworks.h
+@@ -22,10 +22,13 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ /**
+  All available networks for the card.
++ */
++@property (nonatomic, copy, readonly, nullable) NSArray<NSString *> *available;
+ 
+- Contains SCPCardBrand's represented as NSNumber.
++/**
++ The preferred network for the card, if one was selected.
+  */
+-@property (nonatomic, copy, readonly, nullable) NSArray<NSNumber *> *available;
++@property (nonatomic, copy, readonly, nullable) NSString *preferred;
+ 
+ /**
+  You cannot directly instantiate this class.
+diff --git a/PublicHeaders/SCPOfflineCardPresentDetails.h b/PublicHeaders/SCPOfflineCardPresentDetails.h
+index 194141f..a94e96a 100644
+--- a/PublicHeaders/SCPOfflineCardPresentDetails.h
++++ b/PublicHeaders/SCPOfflineCardPresentDetails.h
+@@ -11,9 +11,6 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
+-#import <StripeTerminal/SCPCardBrand.h>
+-#import <StripeTerminal/SCPReadMethod.h>
+-
+ NS_ASSUME_NONNULL_BEGIN
+ 
+ @class SCPReceiptDetails;
+@@ -28,7 +25,7 @@ NS_SWIFT_NAME(OfflineCardPresentDetails)
+  The issuer of the card. In some cases, the brand may not be available until
+  the PaymentIntent is forwarded to Stripe.
+  */
+-@property (nonatomic, readonly, assign) SCPCardBrand brand;
++@property (nonatomic, readonly, copy) NSString *brand;
+ 
+ /**
+  Two-digit number representing the card’s expiration month.
+@@ -48,9 +45,10 @@ NS_SWIFT_NAME(OfflineCardPresentDetails)
+ @property (nonatomic, nullable, readonly) NSString *last4;
+ 
+ /**
+- How the card was read in this transaction.
++ How the card was read in this transaction, using the canonical Stripe API
++ value (for example, `contact_emv` or `contactless_emv`).
+  */
+-@property (nonatomic, readonly, assign) SCPReadMethod readMethod;
++@property (nonatomic, readonly, copy) NSString *readMethod;
+ 
+ /**
+  The cardholder name as read from the card, in ISO 7813 format. May include
+diff --git a/PublicHeaders/SCPPaymentIntent.h b/PublicHeaders/SCPPaymentIntent.h
+index 770f06d..f85860e 100644
+--- a/PublicHeaders/SCPPaymentIntent.h
++++ b/PublicHeaders/SCPPaymentIntent.h
+@@ -113,6 +113,11 @@ NS_SWIFT_NAME(PaymentIntent)
+  */
+ @property (nonatomic, nullable, readonly) NSNumber *amountTip;
+ 
++/**
++ ID of the Connect application that created the PaymentIntent, if any.
++ */
++@property (nonatomic, nullable, readonly) NSString *application;
++
+ /**
+  The amount of the application fee (if any) for the resulting payment.
+  */
+@@ -134,9 +139,14 @@ NS_SWIFT_NAME(PaymentIntent)
+ @property (nonatomic, readonly) SCPCaptureMethod captureMethod;
+ 
+ /**
+- Charges that were created by this PaymentIntent, if any.
++ The most recent Charge created by this PaymentIntent, when expanded by the API.
+  */
+-@property (nonatomic, readonly) NSArray<SCPCharge *> *charges;
++@property (nonatomic, nullable, readonly) SCPCharge *latestCharge;
++
++/**
++ ID of the most recent Charge created by this PaymentIntent.
++ */
++@property (nonatomic, nullable, readonly) NSString *latestChargeId;
+ 
+ /**
+  The client secret for this intent.
+@@ -232,6 +242,11 @@ NS_SWIFT_NAME(PaymentIntent)
+  */
+ @property (nonatomic, nullable, readonly) NSString *receiptEmail;
+ 
++/**
++ ID of the review associated with this PaymentIntent, if any.
++ */
++@property (nonatomic, nullable, readonly) NSString *review;
++
+ /**
+  Indicates that you intend to make future payments with this PaymentIntent's payment method.
+ 
+diff --git a/PublicHeaders/SCPPaymentIntentParameters.h b/PublicHeaders/SCPPaymentIntentParameters.h
+index 4d1603b..c0907c6 100644
+--- a/PublicHeaders/SCPPaymentIntentParameters.h
++++ b/PublicHeaders/SCPPaymentIntentParameters.h
+@@ -28,6 +28,12 @@ typedef NS_ENUM(NSUInteger, SCPCaptureMethod) {
+ 
+     /// Stripe automatically captures funds when the customer authorizes the payment.
+     SCPCaptureMethodAutomatic,
++
++    /// Stripe asynchronously captures funds when the customer authorizes the payment.
++    /// Recommended over `SCPCaptureMethodAutomatic` due to improved latency.
++    ///
++    /// @see https://docs.stripe.com/payments/payment-intents/asynchronous-capture
++    SCPCaptureMethodAutomaticAsync,
+ } NS_SWIFT_NAME(CaptureMethod);
+ 
+ /**
+@@ -56,7 +62,7 @@ NS_SWIFT_NAME(PaymentIntentParameters)
+ @property (nonatomic, readonly) NSArray<NSNumber *> *paymentMethodTypes;
+ 
+ /**
+- The capture method that this PaymentIntent should use. Defaults to `SCPCaptureMethodManual`.
++ The capture method that this PaymentIntent should use. Defaults to `SCPCaptureMethodAutomaticAsync`.
+  */
+ @property (nonatomic, readonly) SCPCaptureMethod captureMethod;
+ 
+@@ -182,11 +188,6 @@ NS_SWIFT_NAME(PaymentIntentParameters)
+  */
+ + (instancetype)new NS_UNAVAILABLE;
+ 
+-/**
+- Use stripeDescription for the string attached to the object.
+- */
+-@property (nonatomic, copy, readonly) NSString *description DEPRECATED_MSG_ATTRIBUTE("Did you mean to use stripeDescription?");
+-
+ @end
+ 
+ /**
+diff --git a/PublicHeaders/SCPPaymentInteraction.h b/PublicHeaders/SCPPaymentInteraction.h
+new file mode 100644
+index 0000000..3b13840
+--- /dev/null
++++ b/PublicHeaders/SCPPaymentInteraction.h
+@@ -0,0 +1,92 @@
++//
++//  SCPPaymentInteraction.h
++//  StripeTerminal
++//
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++@class SCPPaymentIntent;
++@class SCPPaymentOption;
++@class SCPQrCodeDisplayData;
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ A payment interaction that requires your application to display UI and provide a response before
++ the payment can continue.
++
++ Use the concrete subclasses to handle each interaction type.
++ */
++NS_SWIFT_NAME(PaymentInteraction)
++@interface SCPPaymentInteraction : NSObject
++
++/**
++ You cannot directly instantiate `SCPPaymentInteraction`.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ You cannot directly instantiate `SCPPaymentInteraction`.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ An interaction that requires the customer to select a payment method during payment collection.
++ */
++NS_SWIFT_NAME(PaymentMethodSelectionInteraction)
++@interface SCPPaymentMethodSelectionInteraction : SCPPaymentInteraction
++
++/**
++ The PaymentIntent being processed.
++ */
++@property (nonatomic, strong, readonly) SCPPaymentIntent *paymentIntent;
++
++/**
++ The payment options available for selection.
++ */
++@property (nonatomic, copy, readonly) NSArray<SCPPaymentOption *> *availableOptions;
++
++/**
++ Completes the interaction with either the selected payment option or an error.
++
++ @param paymentOption The selected payment option, or nil if selection failed.
++ @param error         An error if selection failed, or nil if successful.
++ */
++- (void)completeWithPaymentOption:(nullable SCPPaymentOption *)paymentOption
++                            error:(nullable NSError *)error NS_SWIFT_NAME(complete(paymentOption:error:));
++
++@end
++
++/**
++ An interaction that requires a QR code to be displayed during payment confirmation.
++ */
++NS_SWIFT_NAME(QrCodeDisplayInteraction)
++@interface SCPQrCodeDisplayInteraction : SCPPaymentInteraction
++
++/**
++ The PaymentIntent being processed.
++ */
++@property (nonatomic, strong, readonly) SCPPaymentIntent *paymentIntent;
++
++/**
++ The data required to display the QR code.
++ */
++@property (nonatomic, strong, readonly) SCPQrCodeDisplayData *qrData;
++
++/**
++ Completes the interaction after the QR code is displayed, or reports an error.
++
++ @param error An error if QR code display failed, or nil if successful.
++ */
++- (void)completeWithError:(nullable NSError *)error NS_SWIFT_NAME(complete(error:));
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPPaymentMethod.h b/PublicHeaders/SCPPaymentMethod.h
+index b92ef6e..8eff0ab 100644
+--- a/PublicHeaders/SCPPaymentMethod.h
++++ b/PublicHeaders/SCPPaymentMethod.h
+@@ -15,7 +15,7 @@
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+-@class SCPCardDetails, SCPCardPresentDetails, SCPWechatPayDetails, SCPAffirmDetails, SCPPaynowDetails, SCPPaypayDetails, SCPKlarnaDetails;
++@class SCPCardDetails, SCPPaymentMethodCardPresentDetails, SCPWechatPayDetails, SCPAffirmDetails, SCPPaynowDetails, SCPPaypayDetails, SCPKlarnaDetails, SCPSwishDetails;
+ 
+ /**
+  PaymentMethod objects represent your customer's payment instruments.
+@@ -52,12 +52,12 @@ NS_SWIFT_NAME(PaymentMethod)
+ /**
+  If this is a card_present PaymentMethod (ie `self.type == SCPPaymentMethodTypeCardPresent`), this contains additional details.
+  */
+-@property (nonatomic, nullable, readonly) SCPCardPresentDetails *cardPresent;
++@property (nonatomic, nullable, readonly) SCPPaymentMethodCardPresentDetails *cardPresent;
+ 
+ /**
+  If this is an Interac_present PaymentMethod (ie `self.type == SCPPaymentMethodTypeInteracPresent`), this contains additional details.
+  */
+-@property (nonatomic, nullable, readonly) SCPCardPresentDetails *interacPresent;
++@property (nonatomic, nullable, readonly) SCPPaymentMethodCardPresentDetails *interacPresent;
+ 
+ /**
+  If this is a wechat_pay PaymentMethod (ie `self.type == SCPPaymentMethodTypeWechatPay`), this contains additional details.
+@@ -84,6 +84,11 @@ NS_SWIFT_NAME(PaymentMethod)
+  */
+ @property (nonatomic, nullable, readonly) SCPKlarnaDetails *klarna;
+ 
++/**
++ If this is a Swish PaymentMethod (ie `self.type == SCPPaymentMethodTypeSwish`), this contains additional details.
++ */
++@property (nonatomic, nullable, readonly) SCPSwishDetails *swish;
++
+ /**
+  The Customer that this PaymentMethod is attached to, or nil.
+  */
+diff --git a/PublicHeaders/SCPPaymentMethodCardPresentDetails.h b/PublicHeaders/SCPPaymentMethodCardPresentDetails.h
+new file mode 100644
+index 0000000..7808e23
+--- /dev/null
++++ b/PublicHeaders/SCPPaymentMethodCardPresentDetails.h
+@@ -0,0 +1,120 @@
++//
++//  SCPPaymentMethodCardPresentDetails.h
++//  StripeTerminal
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++@class SCPNetworks, SCPWallet;
++
++/**
++ Instrument details for a PaymentMethod of type `card_present` or
++ `interac_present`.
++
++ @see https://docs.stripe.com/api/payment_methods/object#payment_method_object-card_present
++ */
++NS_SWIFT_NAME(PaymentMethodCardPresentDetails)
++@interface SCPPaymentMethodCardPresentDetails : NSObject
++
++/**
++ The issuing brand of the card.
++ */
++@property (nonatomic, copy, readonly) NSString *brand;
++
++/**
++ The product identifier for the card's brand.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *brandProduct;
++
++/**
++ The cardholder name as read from the card.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *cardholderName;
++
++/**
++ Two-letter ISO code representing the country of the card.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *country;
++
++/**
++ A high-level description of the type of cards issued in this range.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *stripeDescription;
++
++/**
++ The card's expiration month. 1-indexed (i.e. 1 == January).
++ */
++@property (nonatomic, copy, nullable, readonly) NSNumber *expMonth;
++
++/**
++ The card's expiration year.
++ */
++@property (nonatomic, copy, nullable, readonly) NSNumber *expYear;
++
++/**
++ The card's funding type.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *funding;
++
++/**
++ Issuer identification number of the card.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *iin;
++
++/**
++ The name of the card's issuing bank.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *issuer;
++
++/**
++ The last four digits of the card.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *last4;
++
++/**
++ Contains information about card networks that can be used to process the
++ payment.
++ */
++@property (nonatomic, copy, nullable, readonly) SCPNetworks *networks;
++
++/**
++ EMV tag 5F2D. Preferred languages specified by the integrated circuit chip.
++ */
++@property (nonatomic, copy, nullable, readonly) NSArray<NSString *> *preferredLocales;
++
++/**
++ A unique identifier assigned by the card network to the underlying payment
++ account. This value can identify the same account across a physical card and
++ its wallet tokens.
++ */
++@property (nonatomic, copy, nullable, readonly) NSString *paymentAccountReference;
++
++/**
++ How the card details were read, using the value returned by the Stripe API
++ (for example, `contact_emv` or `contactless_emv`).
++ */
++@property (nonatomic, copy, readonly) NSString *readMethod;
++
++/**
++ If this PaymentMethod is from a card wallet, this contains the wallet details.
++ */
++@property (nonatomic, nullable, readonly) SCPWallet *wallet;
++
++/**
++ You cannot directly instantiate this class.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ You cannot directly instantiate this class.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPPaymentMethodDetails.h b/PublicHeaders/SCPPaymentMethodDetails.h
+index a860dfd..0309019 100644
+--- a/PublicHeaders/SCPPaymentMethodDetails.h
++++ b/PublicHeaders/SCPPaymentMethodDetails.h
+@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
+ @class SCPPaynowDetails;
+ @class SCPPaypayDetails;
+ @class SCPKlarnaDetails;
++@class SCPSwishDetails;
+ 
+ /**
+  Details about a PaymentMethod at a specific time. ex: at time of transaction
+@@ -91,6 +92,12 @@ NS_SWIFT_NAME(PaymentMethodDetails)
+  */
+ @property (nonatomic, nullable, readonly) SCPKlarnaDetails *klarna;
+ 
++/**
++ If this is a Swish payment method (ie `self.type == SCPPaymentMethodTypeSwish`),
++ this contains additional information.
++ */
++@property (nonatomic, nullable, readonly) SCPSwishDetails *swish;
++
+ /**
+  You cannot directly instantiate this class.
+  */
+diff --git a/PublicHeaders/SCPPaymentMethodType.h b/PublicHeaders/SCPPaymentMethodType.h
+index 5538adc..6b85376 100644
+--- a/PublicHeaders/SCPPaymentMethodType.h
++++ b/PublicHeaders/SCPPaymentMethodType.h
+@@ -59,6 +59,11 @@ typedef NS_ENUM(NSUInteger, SCPPaymentMethodType) {
+      */
+     SCPPaymentMethodTypeKlarna,
+ 
++    /**
++     A Swish payment method.
++     */
++    SCPPaymentMethodTypeSwish,
++
+     /**
+      An unknown type.
+      */
+diff --git a/PublicHeaders/SCPProcessRefundParameters.h b/PublicHeaders/SCPProcessRefundParameters.h
+new file mode 100644
+index 0000000..e7c59b2
+--- /dev/null
++++ b/PublicHeaders/SCPProcessRefundParameters.h
+@@ -0,0 +1,176 @@
++//
++//  SCPProcessRefundParameters.h
++//  StripeTerminal
++//
++//  Created by James Little on 2/10/20.
++//  Copyright © 2020 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++#import <StripeTerminal/SCPBuilder.h>
++#import <StripeTerminal/SCPPaymentIntent.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ Parameters for processing an in-person `SCPRefund`.
++
++ @see https://stripe.com/docs/api/refunds/create
++ */
++NS_SWIFT_NAME(ProcessRefundParameters)
++@interface SCPProcessRefundParameters : NSObject
++
++/**
++ The ID of the payment intent to be refunded.
++ */
++@property (nonatomic, nullable, readonly) NSString *paymentIntentId;
++
++/**
++ The client secret for the PaymentIntent.
++ */
++@property (nonatomic, nullable, readonly) NSString *clientSecret;
++
++/**
++ The ID of the charge to be refunded.
++ */
++@property (nonatomic, nullable, readonly) NSString *chargeId;
++
++/**
++ The amount of the refund, provided in the currency's smallest unit.
++ */
++@property (nonatomic, readonly) NSUInteger amount;
++
++/**
++ Three-letter ISO currency code. Must be a supported currency.
++ */
++@property (nonatomic, readonly) NSString *currency;
++
++/**
++ Set of key-value pairs that you can attach to an object. This can be useful for
++ storing additional information about the object in a structured format.
++
++ @note The metadata property is not set when issuing refunds with the Verifone P400 reader.
++
++ @see https://stripe.com/docs/api#metadata
++ */
++@property (nonatomic, nullable, readonly) NSDictionary<NSString *, NSString *> *metadata;
++
++/**
++ Connect only: Nullable boolean indicating whether the transfer should be
++ reversed when refunding this charge. The transfer will be reversed proportionally
++ to the amount being refunded (either the entire or partial amount).
++
++ @note This property is a nullable NSNumber being used to represent a nullable
++ boolean. A value of 0 represents `false`, while any non-zero value represents
++ `true`.
++
++ @see https://stripe.com/docs/api/refunds/create#create_refund-reverse_transfer
++ */
++@property (nonatomic, nullable, readonly) NSNumber *reverseTransfer;
++
++/**
++ Connect only: Nullable boolean indicating whether the application fee should be
++ refunded when refunding this charge. If a full charge refund is given, the
++ full application fee will be refunded. Otherwise, the application fee will be
++ refunded in an amount proportional to the amount of the charge refunded.
++
++ @note This property is a nullable NSNumber being used to represent a nullable
++ boolean. A value of 0 represents `false`, while any non-zero value represents
++ `true`.
++
++ @see https://stripe.com/docs/api/refunds/create#create_refund-refund_application_fee
++ */
++@property (nonatomic, nullable, readonly) NSNumber *refundApplicationFee;
++
++/**
++ Use `SCPProcessRefundParametersBuilder`
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ Use `SCPProcessRefundParametersBuilder`
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ Builder class for `SCPProcessRefundParameters`.
++ */
++NS_SWIFT_NAME(ProcessRefundParametersBuilder)
++@interface SCPProcessRefundParametersBuilder : SCPBuilder <SCPProcessRefundParameters *>
++
++/**
++ Initializes `SCPProcessRefundParametersBuilder` with the given payment intent, client secret, amount, and currency.
++
++ @param paymentIntentId    The ID of the PaymentIntent to be refunded.
++
++ @param clientSecret       The client secret for the PaymentIntent.
++
++ @param amount      The amount to be refunded, provided in the currency's
++ smallest unit.
++
++ @param currency    The currency of the original charge. You cannot refund a charge
++ with a different currency than the currency that was used to create the charge.
++ */
++- (instancetype)initWithPaymentIntentId:(NSString *)paymentIntentId
++                           clientSecret:(NSString *)clientSecret
++                                 amount:(NSUInteger)amount
++                               currency:(NSString *)currency;
++
++/**
++ Initializes `SCPProcessRefundParametersBuilder` with the given charge, amount, and currency.
++
++ @param chargeId    The ID of the charge to be refunded.
++
++ @param amount      The amount to be refunded, provided in the currency's
++ smallest unit.
++
++ @param currency    The currency of the original charge. You cannot refund a charge
++ with a different currency than the currency that was used to create the charge.
++ */
++- (instancetype)initWithChargeId:(NSString *)chargeId
++                          amount:(NSUInteger)amount
++                        currency:(NSString *)currency;
++
++/// @see SCPProcessRefundParameters.chargeId
++- (SCPProcessRefundParametersBuilder *)setChargeId:(NSString *)chargeId;
++
++/// @see SCPProcessRefundParameters.paymentIntentId
++- (SCPProcessRefundParametersBuilder *)setPaymentIntentId:(NSString *)paymentIntentId;
++
++/// @see SCPProcessRefundParameters.clientSecret
++- (SCPProcessRefundParametersBuilder *)setClientSecret:(NSString *)clientSecret;
++
++/// @see SCPProcessRefundParameters.amount
++- (SCPProcessRefundParametersBuilder *)setAmount:(NSUInteger)amount;
++
++/// @see SCPProcessRefundParameters.currency
++- (SCPProcessRefundParametersBuilder *)setCurrency:(NSString *)currency;
++
++/// @see SCPProcessRefundParameters.metadata
++- (SCPProcessRefundParametersBuilder *)setMetadata:(nullable NSDictionary<NSString *, NSString *> *)metadata;
++
++/// @see SCPProcessRefundParameters.reverseTransfer
++- (SCPProcessRefundParametersBuilder *)setReverseTransfer:(BOOL)reverseTransfer;
++
++/// @see SCPProcessRefundParameters.refundApplicationFee
++- (SCPProcessRefundParametersBuilder *)setRefundApplicationFee:(BOOL)refundApplicationFee;
++
++/**
++ Use `initWithChargeId:amount:currency:` or `initWithPaymentIntentId:clientSecret:amount:currency:`
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ Use `initWithChargeId:amount:currency:`
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPReader.h b/PublicHeaders/SCPReader.h
+index 51080c0..cb7d7e7 100644
+--- a/PublicHeaders/SCPReader.h
++++ b/PublicHeaders/SCPReader.h
+@@ -137,7 +137,6 @@ NS_SWIFT_NAME(Reader)
+  If the reader does not have a battery, or the battery level is unknown, this
+  value is `nil`.
+ 
+- (Bluetooth readers only.)
+  */
+ @property (atomic, nullable, readonly) NSNumber *batteryLevel;
+ 
+diff --git a/PublicHeaders/SCPReaderDelegate.h b/PublicHeaders/SCPReaderDelegate.h
+index 0858e14..47224c6 100644
+--- a/PublicHeaders/SCPReaderDelegate.h
++++ b/PublicHeaders/SCPReaderDelegate.h
+@@ -19,7 +19,7 @@
+ NS_ASSUME_NONNULL_BEGIN
+ 
+ /**
+- This is a base reader delegate protocol that all reader delegates inherit from.
++ This is the base reader delegate protocol that all reader delegates inherit from.
+ 
+  Don't implement this directly but instead implement the specific delegates needed for the reader types you'll use:
+  SCPMobileReaderDelegate, SCPInternetReaderDelegate, or SCPTapToPayReaderDelegate
+diff --git a/PublicHeaders/SCPReaderDisplayMessage.h b/PublicHeaders/SCPReaderDisplayMessage.h
+index be28ed2..6b7b406 100644
+--- a/PublicHeaders/SCPReaderDisplayMessage.h
++++ b/PublicHeaders/SCPReaderDisplayMessage.h
+@@ -14,7 +14,7 @@
+ NS_ASSUME_NONNULL_BEGIN
+ 
+ /**
+- The display messages that a reader may request be displayed by your app. Used by `[SCPMobileReaderDelegate reader:didRequestReaderDisplayMessage:]`.
++ The display messages that a reader may request be displayed by your app. Used by `[SCPReaderInteractionDelegate reader:didRequestReaderDisplayMessage:]`.
+  */
+ typedef NS_ENUM(NSUInteger, SCPReaderDisplayMessage) {
+     /**
+diff --git a/PublicHeaders/SCPReaderInputOptions.h b/PublicHeaders/SCPReaderInputOptions.h
+index c29e22c..bc02708 100644
+--- a/PublicHeaders/SCPReaderInputOptions.h
++++ b/PublicHeaders/SCPReaderInputOptions.h
+@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
+ 
+ /**
+  This OptionSet represents all of the input methods available to your user when
+- the reader begins waiting for input. Used by `[SCPMobileReaderDelegate reader:didRequestReaderInput:]`.
++ the reader begins waiting for input. Used by `[SCPReaderInteractionDelegate reader:didRequestReaderInput:]`.
+  */
+ typedef NS_OPTIONS(NSUInteger, SCPReaderInputOptions) {
+     /**
+diff --git a/PublicHeaders/SCPReaderInteractionDelegate.h b/PublicHeaders/SCPReaderInteractionDelegate.h
+new file mode 100644
+index 0000000..237c36b
+--- /dev/null
++++ b/PublicHeaders/SCPReaderInteractionDelegate.h
+@@ -0,0 +1,99 @@
++//
++//  SCPReaderInteractionDelegate.h
++//  StripeTerminal
++//
++//  Created by Stripe on 8/17/2026.
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++#import <StripeTerminal/SCPReaderDelegate.h>
++#import <StripeTerminal/SCPReaderDisplayMessage.h>
++#import <StripeTerminal/SCPReaderInputOptions.h>
++
++@class SCPCancelable;
++@class SCPReader;
++@class SCPReaderSoftwareUpdate;
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ A base delegate for interactions shared by mobile and Tap to Pay readers.
++
++ Don't implement this protocol directly. Instead, implement `SCPMobileReaderDelegate`
++ or `SCPTapToPayReaderDelegate` for the reader types your integration supports.
++ */
++NS_SWIFT_NAME(ReaderInteractionDelegate)
++@protocol SCPReaderInteractionDelegate <SCPReaderDelegate>
++
++/**
++ The reader has started installing a software update.
++
++ The installation lifecycle callbacks cover both Mobile Reader software
++ updates and mandatory Tap to Pay configuration installation during
++ `-[SCPTerminal connectReader:completion:]`.
++
++ @param reader The originating reader.
++ @param update The `SCPReaderSoftwareUpdate` with a `durationEstimate` that can be
++ used to communicate how long the update is expected to take.
++ @param cancelable A cancelable that can be used to cancel the installation when
++ cancellation is supported.
++ */
++- (void)reader:(SCPReader *)reader
++    didStartInstallingUpdate:(SCPReaderSoftwareUpdate *)update
++                  cancelable:(nullable SCPCancelable *)cancelable
++    NS_SWIFT_NAME(reader(_:didStartInstallingUpdate:cancelable:));
++
++/**
++ The reader reported progress on a software update.
++
++ @param reader The originating reader.
++ @param progress An estimate of the progress of the software update in the range
++ `[0.0, 1.0]`.
++ */
++- (void)reader:(SCPReader *)reader
++    didReportReaderSoftwareUpdateProgress:(float)progress
++    NS_SWIFT_NAME(reader(_:didReportReaderSoftwareUpdateProgress:));
++
++/**
++ The reader has finished installing an update.
++
++ @param reader The originating reader.
++ @param update The update that was being installed, if any.
++ @param error The error that prevented installation, or `nil` if the installation
++ succeeded.
++ */
++- (void)reader:(SCPReader *)reader
++    didFinishInstallingUpdate:(nullable SCPReaderSoftwareUpdate *)update
++                        error:(nullable NSError *)error
++    NS_SWIFT_NAME(reader(_:didFinishInstallingUpdate:error:));
++
++/**
++ This method is called when the reader begins waiting for input. Your app should
++ prompt the customer to present one of the given payment methods.
++
++ @param reader The originating reader.
++ @param inputOptions The armed input options on the reader.
++ */
++- (void)reader:(SCPReader *)reader
++    didRequestReaderInput:(SCPReaderInputOptions)inputOptions
++    NS_SWIFT_NAME(reader(_:didRequestReaderInput:));
++
++/**
++ This method is called when the reader requests that a prompt be displayed in
++ your app.
++
++ @param reader The originating reader.
++ @param displayMessage The message to display to the user.
++ */
++- (void)reader:(SCPReader *)reader
++    didRequestReaderDisplayMessage:(SCPReaderDisplayMessage)displayMessage
++    NS_SWIFT_NAME(reader(_:didRequestReaderDisplayMessage:));
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPReaderPaymentInteractionDelegate.h b/PublicHeaders/SCPReaderPaymentInteractionDelegate.h
+new file mode 100644
+index 0000000..43e2f0e
+--- /dev/null
++++ b/PublicHeaders/SCPReaderPaymentInteractionDelegate.h
+@@ -0,0 +1,41 @@
++//
++//  SCPReaderPaymentInteractionDelegate.h
++//  StripeTerminal
++//
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++@class SCPPaymentInteraction;
++@class SCPReader;
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ Implement this protocol to handle payment interactions for mobile and tap to pay readers that require your application to display
++ UI and provide a response before the payment can continue.
++
++ The provided delegate must be retained by your application until the reader disconnects.
++ */
++NS_SWIFT_NAME(ReaderPaymentInteractionDelegate)
++@protocol SCPReaderPaymentInteractionDelegate <NSObject>
++
++/**
++ This method is called when a payment interaction requires a response from your application.
++
++ Inspect the concrete `SCPPaymentInteraction` subclass to determine which UI to display and use
++ its completion method to continue the payment.
++
++ @param reader      The originating reader.
++ @param interaction The payment interaction requiring a response.
++ */
++- (void)reader:(SCPReader *)reader
++    didRequestInteraction:(SCPPaymentInteraction *)interaction NS_SWIFT_NAME(reader(_:didRequestInteraction:));
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPRefund.h b/PublicHeaders/SCPRefund.h
+index 7fb11c0..ada6337 100644
+--- a/PublicHeaders/SCPRefund.h
++++ b/PublicHeaders/SCPRefund.h
+@@ -36,10 +36,20 @@ typedef NS_ENUM(NSUInteger, SCPRefundStatus) {
+     /**
+      Unknown refund state.
+      */
+-    SCPRefundStatusUnknown
++    SCPRefundStatusUnknown,
++
++    /**
++     The refund was canceled.
++     */
++    SCPRefundStatusCanceled,
++
++    /**
++     The refund requires an additional action to continue processing.
++     */
++    SCPRefundStatusRequiresAction,
+ } NS_SWIFT_NAME(RefundStatus);
+ 
+-@class SCPPaymentMethodDetails;
++@class SCPPaymentMethodDetails, SCPRefundNextAction;
+ 
+ /**
+  An object representing a Stripe refund.
+@@ -51,12 +61,9 @@ typedef NS_ENUM(NSUInteger, SCPRefundStatus) {
+ 
+  @see https://stripe.com/docs/terminal/canada#interac-refunds
+ 
+- The `collectRefundPaymentMethod:completion` and `confirmRefund` SDK methods
+- allow you to build an in-person refund interface into your app.
+-
+- The refund SDK methods and the `SCPRefund` class are only available for
+- payment methods that require in-person refunds, such as Interac Debit. For
+- all other refunds, use the Stripe Dashboard or the Stripe API.
++ The SDK returns this object for both in-person refunds and Refunds created
++ without collecting a payment method. Use `processRefund` for payment methods
++ that require in-person collection.
+ 
+  @see https://stripe.com/docs/api#refunds
+  */
+@@ -64,9 +71,9 @@ NS_SWIFT_NAME(Refund)
+ @interface SCPRefund : NSObject
+ 
+ /**
+- The unique identifier for the refund.
++ The unique identifier for the Refund, if one has been assigned by Stripe.
+  */
+-@property (nonatomic, readonly) NSString *stripeId;
++@property (nonatomic, nullable, readonly) NSString *stripeId;
+ 
+ /**
+  The amount that was refunded.
+@@ -107,6 +114,12 @@ NS_SWIFT_NAME(Refund)
+  */
+ @property (nonatomic, readonly) SCPRefundStatus status;
+ 
++/**
++ The action required to continue processing the Refund when its status is
++ `SCPRefundStatusRequiresAction`.
++ */
++@property (nonatomic, nullable, readonly) SCPRefundNextAction *nextAction;
++
+ /**
+  The payment method details associated with the refund.
+  */
+diff --git a/PublicHeaders/SCPRefundNextAction.h b/PublicHeaders/SCPRefundNextAction.h
+new file mode 100644
+index 0000000..e1b9d9e
+--- /dev/null
++++ b/PublicHeaders/SCPRefundNextAction.h
+@@ -0,0 +1,102 @@
++//
++//  SCPRefundNextAction.h
++//  StripeTerminal
++//
++//  Created by Stripe on 9/11/26.
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ Details about an email containing refund instructions.
++ */
++NS_SWIFT_NAME(RefundNextActionDisplayDetailsEmailSent)
++@interface SCPRefundNextActionDisplayDetailsEmailSent : NSObject <NSCopying>
++
++/**
++ The time when the email was sent.
++ */
++@property (nonatomic, nullable, readonly) NSDate *emailSentAt;
++
++/**
++ The email address to which the instructions were sent.
++ */
++@property (nonatomic, nullable, copy, readonly) NSString *emailSentTo;
++
++/**
++ You cannot directly instantiate this class.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ You cannot directly instantiate this class.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ Details to display while a Refund requires additional action.
++ */
++NS_SWIFT_NAME(RefundNextActionDisplayDetails)
++@interface SCPRefundNextActionDisplayDetails : NSObject <NSCopying>
++
++/**
++ Information about the refund-instructions email.
++ */
++@property (nonatomic, nullable, readonly) SCPRefundNextActionDisplayDetailsEmailSent *emailSent;
++
++/**
++ The time when the refund instructions expire.
++ */
++@property (nonatomic, nullable, readonly) NSDate *expiresAt;
++
++/**
++ You cannot directly instantiate this class.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ You cannot directly instantiate this class.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++/**
++ Describes an action required to continue processing a Refund.
++
++ @see https://docs.stripe.com/api/refunds/object#refund_object-next_action
++ */
++NS_SWIFT_NAME(RefundNextAction)
++@interface SCPRefundNextAction : NSObject <NSCopying>
++
++/**
++ The type of action required.
++ */
++@property (nonatomic, nullable, copy, readonly) NSString *type;
++
++/**
++ Details that should be displayed to the customer.
++ */
++@property (nonatomic, nullable, readonly) SCPRefundNextActionDisplayDetails *displayDetails;
++
++/**
++ You cannot directly instantiate this class.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++/**
++ You cannot directly instantiate this class.
++ */
+++ (instancetype)new NS_UNAVAILABLE;
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPRefundReason.h b/PublicHeaders/SCPRefundReason.h
+new file mode 100644
+index 0000000..c87d380
+--- /dev/null
++++ b/PublicHeaders/SCPRefundReason.h
+@@ -0,0 +1,36 @@
++//
++//  SCPRefundReason.h
++//  StripeTerminal
++//
++//  Created by Stripe on 9/11/26.
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ The reason for a refund.
++ */
++typedef NSString *SCPRefundReason NS_TYPED_EXTENSIBLE_ENUM NS_SWIFT_NAME(RefundReason);
++
++/**
++ The Refund was created because the charge was duplicated.
++ */
++FOUNDATION_EXPORT SCPRefundReason const SCPRefundReasonDuplicate;
++
++/**
++ The Refund was created because the charge was fraudulent.
++ */
++FOUNDATION_EXPORT SCPRefundReason const SCPRefundReasonFraudulent;
++
++/**
++ The Refund was requested by the customer.
++ */
++FOUNDATION_EXPORT SCPRefundReason const SCPRefundReasonRequestedByCustomer;
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPSetupIntent.h b/PublicHeaders/SCPSetupIntent.h
+index 5d6d8cc..4749d56 100644
+--- a/PublicHeaders/SCPSetupIntent.h
++++ b/PublicHeaders/SCPSetupIntent.h
+@@ -143,14 +143,14 @@ NS_SWIFT_NAME(SetupIntent)
+ @property (nonatomic, nullable, readonly) SCPNextAction *nextAction;
+ 
+ /**
+- ID of the payment method used with this SetupIntent.
++ The full PaymentMethod object used with this SetupIntent, when expanded.
+  */
+-@property (nonatomic, nullable, readonly) NSString *paymentMethod;
++@property (nonatomic, nullable, readonly) SCPPaymentMethod *paymentMethod;
+ 
+ /**
+- The full PaymentMethod object used with this SetupIntent, when expanded.
++ ID of the payment method used with this SetupIntent.
+  */
+-@property (nonatomic, nullable, readonly) SCPPaymentMethod *paymentMethodExpanded;
++@property (nonatomic, copy, nullable, readonly) NSString *paymentMethodId;
+ 
+ /**
+  Whether this SetupIntent was created in live mode or test mode.
+diff --git a/PublicHeaders/SCPSetupIntentParameters.h b/PublicHeaders/SCPSetupIntentParameters.h
+index a9008c6..7d3e0a0 100644
+--- a/PublicHeaders/SCPSetupIntentParameters.h
++++ b/PublicHeaders/SCPSetupIntentParameters.h
+@@ -74,11 +74,6 @@ NS_SWIFT_NAME(SetupIntentParameters)
+  */
+ + (instancetype)new NS_UNAVAILABLE;
+ 
+-/**
+- Use stripeDescription for the string attached to the object.
+-*/
+-@property (nonatomic, copy, readonly) NSString *description DEPRECATED_MSG_ATTRIBUTE("Did you mean to use stripeDescription?");
+-
+ @end
+ 
+ /**
+diff --git a/PublicHeaders/SCPSimulatorConfiguration.h b/PublicHeaders/SCPSimulatorConfiguration.h
+index 7b3c392..cdf84aa 100644
+--- a/PublicHeaders/SCPSimulatorConfiguration.h
++++ b/PublicHeaders/SCPSimulatorConfiguration.h
+@@ -11,7 +11,6 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
+-#import <StripeTerminal/SCPSimulateReaderUpdate.h>
+ #import <StripeTerminal/SCPSimulatedCard.h>
+ #import <StripeTerminal/SCPSimulatedCollectInputsResult.h>
+ #import <StripeTerminal/SCPSimulatedOfflineModeConfiguration.h>
+@@ -30,15 +29,6 @@ NS_ASSUME_NONNULL_BEGIN
+ NS_SWIFT_NAME(SimulatorConfiguration)
+ @interface SCPSimulatorConfiguration : NSObject
+ 
+-/**
+- Set this to different values of the `SCPSimulateReaderUpdate` enum to
+- test your integration with different reader software update scenarios.
+-
+- @note This is only valid for simulated Bluetooth readers.
+- */
+-@property (nonatomic, assign) SCPSimulateReaderUpdate availableReaderUpdate
+-    __attribute__((deprecated("Use the testReaderUpdate property on BluetoothConnectionConfiguration, UsbConnectionConfiguration, or TapToPayConnectionConfiguration instead.")));
+-
+ /**
+  Create a SCPSimulatedCard and set it on the shared configuration object to
+  test your integration with different card brands and in error scenarios.
+diff --git a/PublicHeaders/SCPSwishDetails.h b/PublicHeaders/SCPSwishDetails.h
+new file mode 100644
+index 0000000..3a2b5fb
+--- /dev/null
++++ b/PublicHeaders/SCPSwishDetails.h
+@@ -0,0 +1,41 @@
++//
++//  SCPSwishDetails.h
++//  StripeTerminal
++//
++//  Created by yanayuan on 9/10/26.
++//  Copyright © 2026 Stripe. All rights reserved.
++//
++//  Use of this SDK is subject to the Stripe Terminal Terms:
++//  https://stripe.com/terminal/legal
++//
++
++#import <Foundation/Foundation.h>
++
++NS_ASSUME_NONNULL_BEGIN
++
++/**
++ Contains details about a user's Swish payment.
++
++ @see https://stripe.com/docs/api/payment_methods/object#payment_method_object-swish
++ */
++NS_SWIFT_NAME(SwishDetails)
++@interface SCPSwishDetails : NSObject
++
++/**
++ ID of the location that this transaction's reader is assigned to.
++ */
++@property (nonatomic, nullable, readonly) NSString *location;
++
++/**
++ ID of the reader this transaction was made on.
++ */
++@property (nonatomic, nullable, readonly) NSString *reader;
++
++/**
++ You cannot directly instantiate this class.
++ */
++- (instancetype)init NS_UNAVAILABLE;
++
++@end
++
++NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPTapToPayConnectionConfiguration.h b/PublicHeaders/SCPTapToPayConnectionConfiguration.h
+index 4270ffe..890ece7 100644
+--- a/PublicHeaders/SCPTapToPayConnectionConfiguration.h
++++ b/PublicHeaders/SCPTapToPayConnectionConfiguration.h
+@@ -13,6 +13,7 @@
+ 
+ #import <StripeTerminal/SCPBuilder.h>
+ #import <StripeTerminal/SCPConnectionConfiguration.h>
++#import <StripeTerminal/SCPReaderPaymentInteractionDelegate.h>
+ #import <StripeTerminal/SCPTapToPayReaderDelegate.h>
+ 
+ NS_ASSUME_NONNULL_BEGIN
+@@ -31,6 +32,11 @@ NS_SWIFT_NAME(TapToPayConnectionConfiguration)
+  */
+ @property (nonatomic, weak, readonly) id<SCPTapToPayReaderDelegate> delegate;
+ 
++/**
++ The ReaderPaymentInteractionDelegate to use for payment interactions during this reader connection.
++ */
++@property (nonatomic, weak, readonly, nullable) id<SCPReaderPaymentInteractionDelegate> readerPaymentInteractionDelegate;
++
+ /**
+  The ID of the [Location](https://stripe.com/docs/api/terminal/locations) which the reader should be
+  registered to during connection.
+@@ -176,6 +182,9 @@ NS_SWIFT_NAME(TapToPayConnectionConfigurationBuilder)
+  */
+ - (SCPTapToPayConnectionConfigurationBuilder *)setAutoReconnectOnUnexpectedDisconnect:(BOOL)autoReconnectOnUnexpectedDisconnect;
+ 
++/// Set the ReaderPaymentInteractionDelegate to use for payment interactions during this reader connection.
++- (SCPTapToPayConnectionConfigurationBuilder *)setReaderPaymentInteractionDelegate:(nullable id<SCPReaderPaymentInteractionDelegate>)readerPaymentInteractionDelegate;
++
+ /**
+  * @param testReaderUpdate The test-mode reader update behavior to apply during connect.
+  * @see `SCPTapToPayConnectionConfiguration.testReaderUpdate`
+diff --git a/PublicHeaders/SCPTapToPayReaderDelegate.h b/PublicHeaders/SCPTapToPayReaderDelegate.h
+index 0295223..64ec96c 100644
+--- a/PublicHeaders/SCPTapToPayReaderDelegate.h
++++ b/PublicHeaders/SCPTapToPayReaderDelegate.h
+@@ -9,17 +9,9 @@
+ //  https://stripe.com/terminal/legal
+ //
+ 
+-#import <StripeTerminal/SCPBlocks.h>
+-#import <StripeTerminal/SCPReaderDelegate.h>
+-#import <StripeTerminal/SCPReaderDisplayMessage.h>
+-#import <StripeTerminal/SCPReaderInputOptions.h>
++#import <StripeTerminal/SCPReaderInteractionDelegate.h>
+ 
+ @class SCPReader;
+-@class SCPReaderSoftwareUpdate;
+-@class SCPCancelable;
+-@class SCPPaymentIntent;
+-@class SCPPaymentOption;
+-@class SCPQrCodeDisplayData;
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+@@ -32,72 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
+  The provided delegate must be retained by your application until the reader disconnects.
+  */
+ NS_SWIFT_NAME(TapToPayReaderDelegate)
+-@protocol SCPTapToPayReaderDelegate <SCPReaderDelegate>
+-
+-/**
+- The reader has started installing a software update.
+-
+- @param reader The originating reader.
+- @param update The `SCPReaderSoftwareUpdate` with an `durationEstimate` that
+-   can be used to communicate how long the update is expected to take.
+- @param cancelable  This cancelable is provided to cancel the
+-   installation if needed. Canceling a required update will result in a failed
+-   connect with error `SCPErrorUnsupportedReaderVersion`. Some updates will
+-   have a nil cancelable because these updates can not be canceled.
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didStartInstallingUpdate:(SCPReaderSoftwareUpdate *)update
+-                  cancelable:(nullable SCPCancelable *)cancelable
+-    NS_SWIFT_NAME(tapToPayReader(_:didStartInstallingUpdate:cancelable:));
+-
+-/**
+- The reader reported progress on a software update.
+-
+- @param reader The originating reader.
+- @param progress An estimate of the progress of the software update
+-   (in the range [0.0, 1.0]).
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didReportReaderSoftwareUpdateProgress:(float)progress
+-    NS_SWIFT_NAME(tapToPayReader(_:didReportReaderSoftwareUpdateProgress:));
+-
+-/**
+- The reader has finished installing an update.
+-
+- @param reader The originating reader.
+- @param update The update that was being installed, if any.
+- @param error If the installed failed, this will describe the error
+-    preventing install. If it succeeded, the error will be `nil`.
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didFinishInstallingUpdate:(nullable SCPReaderSoftwareUpdate *)update
+-                        error:(nullable NSError *)error
+-    NS_SWIFT_NAME(tapToPayReader(_:didFinishInstallingUpdate:error:));
+-
+-/**
+- This method is called when the reader begins waiting for input.
+- Use `- [SCPTerminal stringFromReaderInputOptions:]` to get a  user facing string
+- for the input options.
+-
+- @param reader The originating reader.
+- @param inputOptions The armed input options on the reader.
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didRequestReaderInput:(SCPReaderInputOptions)inputOptions
+-    NS_SWIFT_NAME(tapToPayReader(_:didRequestReaderInput:));
+-
+-/**
+- This method is called to request that a prompt be displayed in your app.
+- Use `- [SCPTerminal stringFromReaderDisplayMessage:]` to get a user
+- facing string for the prompt.
+-
+- @see SCPReaderDisplayMessage
+- @param reader The originating reader.
+- @param displayMessage The message to display to the user.
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didRequestReaderDisplayMessage:(SCPReaderDisplayMessage)displayMessage
+-    NS_SWIFT_NAME(tapToPayReader(_:didRequestReaderDisplayMessage:));
++@protocol SCPTapToPayReaderDelegate <SCPReaderInteractionDelegate>
+ 
+ @optional
+ 
+@@ -110,38 +37,6 @@ NS_SWIFT_NAME(TapToPayReaderDelegate)
+ - (void)tapToPayReaderDidAcceptTermsOfService:(SCPReader *)reader
+     NS_SWIFT_NAME(tapToPayReaderDidAcceptTermsOfService(_:));
+ 
+-/**
+- This method is called when payment method selection is required during payment collection.
+- Payment collection will block until the completion block is invoked with either the selected
+- payment option or a failure.
+-
+- @param reader                      The originating reader.
+- @param paymentIntent               The PaymentIntent being processed.
+- @param availablePaymentOptions     Array of available payment options for the customer to choose from.
+- @param completion                  The completion block to invoke with the selected payment option or failure.
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didRequestPaymentMethodSelection:(SCPPaymentIntent *)paymentIntent
+-             availablePaymentOptions:(NSArray<SCPPaymentOption *> *)availablePaymentOptions
+-                          completion:(SCPPaymentMethodSelectionCompletionBlock)completion
+-    NS_SWIFT_NAME(tapToPayReader(_:didRequestPaymentMethodSelection:availablePaymentOptions:completion:));
+-
+-/**
+- This method is called when a QR code should be displayed to the user during payment processing.
+- Your app should display the QR code to the customer and call the completion block once the QR code
+- is successfully shown. Payment confirmation will block until the completion block is invoked.
+-
+- @param reader              The originating reader.
+- @param paymentIntent       The PaymentIntent being processed.
+- @param qrData              The QrCodeDisplayData containing the QR code image URLs and expiration information.
+- @param completion          The completion block to invoke when the QR code is successfully displayed or fails.
+- */
+-- (void)tapToPayReader:(SCPReader *)reader
+-    didRequestQrCodeDisplay:(SCPPaymentIntent *)paymentIntent
+-                     qrData:(SCPQrCodeDisplayData *)qrData
+-                 completion:(SCPQrCodeDisplayCompletionBlock)completion
+-    NS_SWIFT_NAME(tapToPayReader(_:didRequestQrCodeDisplay:qrData:completion:));
+-
+ @end
+ 
+ NS_ASSUME_NONNULL_END
+diff --git a/PublicHeaders/SCPTerminal.h b/PublicHeaders/SCPTerminal.h
+index 1593555..50b8684 100644
+--- a/PublicHeaders/SCPTerminal.h
++++ b/PublicHeaders/SCPTerminal.h
+@@ -13,7 +13,6 @@
+ 
+ #import <StripeTerminal/SCPAllowRedisplay.h>
+ #import <StripeTerminal/SCPBlocks.h>
+-#import <StripeTerminal/SCPCardBrand.h>
+ #import <StripeTerminal/SCPCart.h>
+ #import <StripeTerminal/SCPCollectDataConfiguration.h>
+ #import <StripeTerminal/SCPCollectInputsParameters.h>
+@@ -38,10 +37,9 @@
+ #import <StripeTerminal/SCPPaymentIntentParameters.h>
+ #import <StripeTerminal/SCPPaymentStatus.h>
+ #import <StripeTerminal/SCPPrintContent.h>
+-#import <StripeTerminal/SCPReadMethod.h>
++#import <StripeTerminal/SCPProcessRefundParameters.h>
+ #import <StripeTerminal/SCPReaderEvent.h>
+ #import <StripeTerminal/SCPReaderSettingsParameters.h>
+-#import <StripeTerminal/SCPRefundParameters.h>
+ #import <StripeTerminal/SCPSimulatorConfiguration.h>
+ #import <StripeTerminal/SCPTapToPayReaderDelegate.h>
+ #import <StripeTerminal/SCPTestReaderUpdate.h>
+@@ -52,11 +50,12 @@ NS_ASSUME_NONNULL_BEGIN
+ /**
+  The current version of this library.
+  */
+-static NSString *const SCPSDKVersion = @"5.8.0";
++static NSString *const SCPSDKVersion = @"6.0.0";
+ 
+ @class SCPCancelable,
+     SCPCreateConfiguration,
+     SCPBluetoothConnectionConfiguration,
++    SCPConfirmRefundParameters,
+     SCPInternetConnectionConfiguration,
+     SCPListLocationsParameters,
+     SCPTapToPayConnectionConfiguration,
+@@ -90,7 +89,7 @@ static NSString *const SCPSDKVersion = @"5.8.0";
+  example application](https://github.com/stripe/stripe-terminal-ios/blob/master/Example/Example/TerminalDelegateAnnouncer.swift).
+  */
+ NS_SWIFT_NAME(Terminal)
+-API_AVAILABLE(ios(15.0))
++API_AVAILABLE(ios(16.0))
+ @interface SCPTerminal : NSObject
+ 
+ #pragma mark Initializing and accessing the SCPTerminal singleton
+@@ -707,63 +706,18 @@ API_AVAILABLE(ios(15.0))
+  normally takes a `mandate_data` hash that lets you specify details about the
+  customer's consent. The Stripe Terminal SDK will fill in the `mandate_data`
+  hash with relevant information, but in order for it to do so, you must specify
+- whether you have gathered consent from the cardholder to collect their payment
+- information in this method's second parameter.
++ whether you have gathered consent from the cardholder using the configuration's
++ `allowRedisplay` property.
+ 
+  The payment method will not be collected without the cardholder's consent.
+ 
+  @param setupIntent     The SetupIntent to which payment method information is attached.
+- @param allowRedisplay    A value that should be set to `always` or `limited` if you
+- have successfully collected consent from the cardholder to save their payment information.
++ @param setupConfig     The configuration for collecting the setup intent payment method.
+  @param completion      The completion block called when collection completes.
+  */
+ - (nullable SCPCancelable *)collectSetupIntentPaymentMethod:(SCPSetupIntent *)setupIntent
+-                                             allowRedisplay:(SCPAllowRedisplay)allowRedisplay
+-                                                 completion:(SCPSetupIntentCompletionBlock)completion NS_SWIFT_NAME(collectSetupIntentPaymentMethod(_:allowRedisplay:completion:));
+-
+-/**
+- Collects a payment method for the given `SCPSetupIntent`.
+-
+- This method does not update the SetupIntent API object. All updates are local
+- to the SDK and only persisted in memory. You must confirm the SetupIntent to
+- create a PaymentMethod API object and (optionally) attach that PaymentMethod
+- to a customer.
+-
+- If collecting a payment method fails, the completion block will be called with
+- an error. After resolving the error, you may call `collectSetupIntentPaymentMethod`
+- again to either try the same card again, or try a different card.
+-
+- If collecting a payment method succeeds, the completion block will be called
+- with a SetupIntent with status `.requiresConfirmation`, indicating that you
+- should call `confirmSetupIntent:completion:` to
+- finish the payment.
+-
+- Note that if `collectSetupIntentPaymentMethod` is canceled, the completion
+- block will be called with a `Canceled` error.
+-
+- Collecting cardholder consent
+- -----------------------------
+-
+- Card networks require that you collect consent from the customer before saving
+- and reusing their card information. The SetupIntent confirmation API method
+- normally takes a `mandate_data` hash that lets you specify details about the
+- customer's consent. The Stripe Terminal SDK will fill in the `mandate_data`
+- hash with relevant information, but in order for it to do so, you must specify
+- whether you have gathered consent from the cardholder to collect their payment
+- information in this method's second parameter.
+-
+- The payment method will not be collected without the cardholder's consent.
+-
+- @param setupIntent     The SetupIntent to which payment method information is attached.
+- @param allowRedisplay    A value that should be set to `always` or `limited` if you
+- have successfully collected consent from the cardholder to save their payment information.
+- @param setupConfig     An optional SCPCollectSetupIntentConfiguration to configure per-setup overrides.
+- @param completion      The completion block called when collection completes.
+- */
+-- (nullable SCPCancelable *)collectSetupIntentPaymentMethod:(SCPSetupIntent *)setupIntent
+-                                             allowRedisplay:(SCPAllowRedisplay)allowRedisplay
+-                                                setupConfig:(nullable SCPCollectSetupIntentConfiguration *)setupConfig
+-                                                 completion:(SCPSetupIntentCompletionBlock)completion NS_SWIFT_NAME(collectSetupIntentPaymentMethod(_:allowRedisplay:setupConfig:completion:));
++                                                setupConfig:(SCPCollectSetupIntentConfiguration *)setupConfig
++                                                 completion:(SCPSetupIntentCompletionBlock)completion NS_SWIFT_NAME(collectSetupIntentPaymentMethod(_:setupConfig:completion:));
+ 
+ /**
+  Confirms a SetupIntent after the payment method has been successfully collected.
+@@ -804,20 +758,41 @@ API_AVAILABLE(ios(15.0))
+  into a single call.
+ 
+  @param setupIntent       The SetupIntent to process.
+- @param allowRedisplay    Controls how this SetupIntent may be shown to the customer in the Stripe Dashboard.
+  @param collectConfig     The configuration for collecting the setup intent payment method.
+  @param completion        The completion block called when the setup intent completes.
+  @return                  A cancelable that can be used to cancel the setup intent process.
+  */
+ - (nullable SCPCancelable *)processSetupIntent:(SCPSetupIntent *)setupIntent
+-                                allowRedisplay:(SCPAllowRedisplay)allowRedisplay
+-                                 collectConfig:(nullable SCPCollectSetupIntentConfiguration *)collectConfig
+-                                    completion:(SCPSetupIntentCompletionBlock)completion;
++                                 collectConfig:(SCPCollectSetupIntentConfiguration *)collectConfig
++                                    completion:(SCPSetupIntentCompletionBlock)completion NS_SWIFT_NAME(processSetupIntent(_:collectConfig:completion:));
+ 
+-#pragma mark Card-present refunds
++#pragma mark Refunds
+ 
+ /**
+- Initiates an in-person refund with a given set of `SCPRefundParameters` by
++ Creates a Refund for a PaymentIntent without collecting a payment method.
++
++ The connected reader is used to authenticate the request, but this method does
++ not display reader UI or ask the cardholder to present a payment method.
++
++ If `amount` is omitted from `SCPConfirmRefundParameters`, the entire remaining
++ refundable amount is refunded.
++
++ Wait for the completion before retrying. If the completion returns an error
++ without a Refund, the request may have an unknown outcome and should be
++ reconciled with your backend before another Refund is created.
++
++ @note This feature is in private preview and is subject to change.
++
++ @see https://docs.stripe.com/api/refunds/create
++
++ @param refundParams      The refund parameters.
++ @param completion        The completion block called when the request completes.
++ */
++- (void)confirmRefund:(SCPConfirmRefundParameters *)refundParams
++           completion:(SCPConfirmRefundCompletionBlock)completion NS_SWIFT_NAME(confirmRefund(_:completion:));
++
++/**
++ Initiates an in-person refund with a given set of `SCPProcessRefundParameters` by
+  collecting the payment method that is to be refunded.
+ 
+  Some payment methods, like Interac Debit payments, require that in-person payments
+@@ -834,10 +809,6 @@ API_AVAILABLE(ios(15.0))
+  an error. After resolving the error, you may call `processRefund`
+  again to either try the same card again, or try a different card.
+ 
+- If collecting a payment method succeeds, the completion block will be called
+- with an `nil` error. At that point, you can call `confirmRefund` to finish
+- refunding the payment method.
+-
+  The completion block will either be called with the successful `SCPRefund` or
+  with an `NSError`. If the error is of type `SCPConfirmRefundError`.
+ 
+@@ -852,7 +823,7 @@ API_AVAILABLE(ios(15.0))
+ 
+  1. If the error is a `SCPConfirmRefundError` and the refund property is `nil`, the request
+  to Stripe's servers timed out and the refund's status is unknown. We recommend that you retry
+- `processRefund` with the original `SCPRefundParameters`.
++ `processRefund` with the original `SCPProcessRefundParameters`.
+  2. If the `SCPConfirmRefundError` has a `failure_reason`, the refund was declined.
+  We recommend that you take action based on the decline code you received.
+ 
+@@ -866,7 +837,7 @@ API_AVAILABLE(ios(15.0))
+  @param completion        The completion block called when the refund completes.
+  @return                  A cancelable that can be used to cancel the refund process.
+  */
+-- (nullable SCPCancelable *)processRefund:(SCPRefundParameters *)refundParams
++- (nullable SCPCancelable *)processRefund:(SCPProcessRefundParameters *)refundParams
+                             collectConfig:(nullable SCPCollectRefundConfiguration *)collectConfig
+                                completion:(SCPConfirmRefundCompletionBlock)completion;
+ 
+@@ -1034,11 +1005,6 @@ API_AVAILABLE(ios(15.0))
+  */
+ + (NSString *)stringFromDiscoveryMethod:(SCPDiscoveryMethod)method NS_SWIFT_NAME(stringFromDiscoveryMethod(_:));
+ 
+-/**
+- Returns an unlocalized string for the given card brand.
+- */
+-+ (NSString *)stringFromCardBrand:(SCPCardBrand)cardBrand NS_SWIFT_NAME(stringFromCardBrand(_:));
+-
+ /**
+  Returns an unlocalized string for the given payment intent status.
+  */
+@@ -1049,11 +1015,6 @@ API_AVAILABLE(ios(15.0))
+  */
+ + (NSString *)stringFromCaptureMethod:(SCPCaptureMethod)captureMethod NS_SWIFT_NAME(stringFromCaptureMethod(_:));
+ 
+-/**
+- Returns an unlocalized string for the given read method.
+- */
+-+ (NSString *)stringFromReadMethod:(SCPReadMethod)method NS_SWIFT_NAME(stringFromReadMethod(_:));
+-
+ /**
+  Returns an unlocalized string for the given network status, e.g. "Online"
+  */
+diff --git a/PublicHeaders/SCPUsbConnectionConfiguration.h b/PublicHeaders/SCPUsbConnectionConfiguration.h
+index aac4373..6ce5cfb 100644
+--- a/PublicHeaders/SCPUsbConnectionConfiguration.h
++++ b/PublicHeaders/SCPUsbConnectionConfiguration.h
+@@ -14,6 +14,7 @@
+ #import <StripeTerminal/SCPBuilder.h>
+ #import <StripeTerminal/SCPConnectionConfiguration.h>
+ #import <StripeTerminal/SCPMobileReaderDelegate.h>
++#import <StripeTerminal/SCPReaderPaymentInteractionDelegate.h>
+ 
+ NS_ASSUME_NONNULL_BEGIN
+ 
+@@ -32,6 +33,11 @@ NS_SWIFT_NAME(UsbConnectionConfiguration)
+  */
+ @property (nonatomic, weak, readonly) id<SCPMobileReaderDelegate> delegate;
+ 
++/**
++ The ReaderPaymentInteractionDelegate to use for payment interactions during this reader connection.
++ */
++@property (nonatomic, weak, readonly, nullable) id<SCPReaderPaymentInteractionDelegate> readerPaymentInteractionDelegate;
++
+ /**
+  The ID of the [Location](https://stripe.com/docs/api/terminal/locations) which the reader should be registered to during connection.
+ 
+@@ -93,6 +99,9 @@ NS_SWIFT_NAME(UsbConnectionConfigurationBuilder)
+ /// Set the autoReconnectOnUnexpectedDisconnect property for the `UsbConnectionConfiguration` object that will be built.
+ - (SCPUsbConnectionConfigurationBuilder *)setAutoReconnectOnUnexpectedDisconnect:(BOOL)autoReconnectOnUnexpectedDisconnect;
+ 
++/// Set the ReaderPaymentInteractionDelegate to use for payment interactions during this reader connection.
++- (SCPUsbConnectionConfigurationBuilder *)setReaderPaymentInteractionDelegate:(nullable id<SCPReaderPaymentInteractionDelegate>)readerPaymentInteractionDelegate;
++
+ /// Set the testReaderUpdate property for the `UsbConnectionConfiguration` object that will be built.
+ - (SCPUsbConnectionConfigurationBuilder *)setTestReaderUpdate:(nullable SCPTestReaderUpdate *)testReaderUpdate;
+ 
+diff --git a/PublicHeaders/StripeTerminal.h b/PublicHeaders/StripeTerminal.h
+index 2825f97..c0e71e6 100644
+--- a/PublicHeaders/StripeTerminal.h
++++ b/PublicHeaders/StripeTerminal.h
+@@ -24,9 +24,7 @@
+ #import <StripeTerminal/SCPBuzzerVolume.h>
+ #import <StripeTerminal/SCPBuzzerVolumeParameters.h>
+ #import <StripeTerminal/SCPCancelable.h>
+-#import <StripeTerminal/SCPCardBrand.h>
+ #import <StripeTerminal/SCPCardDetails.h>
+-#import <StripeTerminal/SCPCardFundingType.h>
+ #import <StripeTerminal/SCPCardPresentDetails.h>
+ #import <StripeTerminal/SCPCardPresentParameters.h>
+ #import <StripeTerminal/SCPCart.h>
+@@ -41,6 +39,7 @@
+ #import <StripeTerminal/SCPConfirmPaymentIntentConfiguration.h>
+ #import <StripeTerminal/SCPConfirmPaymentIntentError.h>
+ #import <StripeTerminal/SCPConfirmRefundError.h>
++#import <StripeTerminal/SCPConfirmRefundParameters.h>
+ #import <StripeTerminal/SCPConfirmSetupIntentError.h>
+ #import <StripeTerminal/SCPConnectionConfiguration.h>
+ #import <StripeTerminal/SCPConnectionStatus.h>
+@@ -62,6 +61,7 @@
+ #import <StripeTerminal/SCPExternalUsbChannel.h>
+ #import <StripeTerminal/SCPGeneratedFrom.h>
+ #import <StripeTerminal/SCPInput.h>
++#import <StripeTerminal/SCPInstallmentsParameters.h>
+ #import <StripeTerminal/SCPInternetConnectionConfiguration.h>
+ #import <StripeTerminal/SCPInternetDiscoveryConfiguration.h>
+ #import <StripeTerminal/SCPInternetEasyConnectConfiguration.h>
+@@ -90,7 +90,9 @@
+ #import <StripeTerminal/SCPOfflineStatusDetails.h>
+ #import <StripeTerminal/SCPPaymentIntent.h>
+ #import <StripeTerminal/SCPPaymentIntentParameters.h>
++#import <StripeTerminal/SCPPaymentInteraction.h>
+ #import <StripeTerminal/SCPPaymentMethod.h>
++#import <StripeTerminal/SCPPaymentMethodCardPresentDetails.h>
+ #import <StripeTerminal/SCPPaymentMethodDetails.h>
+ #import <StripeTerminal/SCPPaymentMethodOptionsParameters.h>
+ #import <StripeTerminal/SCPPaymentMethodType.h>
+@@ -101,8 +103,8 @@
+ #import <StripeTerminal/SCPPhoneInput.h>
+ #import <StripeTerminal/SCPPhoneResult.h>
+ #import <StripeTerminal/SCPPrintContent.h>
++#import <StripeTerminal/SCPProcessRefundParameters.h>
+ #import <StripeTerminal/SCPQrCodeDisplayData.h>
+-#import <StripeTerminal/SCPReadMethod.h>
+ #import <StripeTerminal/SCPReader.h>
+ #import <StripeTerminal/SCPReaderAccessibility.h>
+ #import <StripeTerminal/SCPReaderAccessibilityParameters.h>
+@@ -111,14 +113,17 @@
+ #import <StripeTerminal/SCPReaderDisplayMessage.h>
+ #import <StripeTerminal/SCPReaderEvent.h>
+ #import <StripeTerminal/SCPReaderInputOptions.h>
++#import <StripeTerminal/SCPReaderInteractionDelegate.h>
+ #import <StripeTerminal/SCPReaderNetworkStatus.h>
++#import <StripeTerminal/SCPReaderPaymentInteractionDelegate.h>
+ #import <StripeTerminal/SCPReaderSettings.h>
+ #import <StripeTerminal/SCPReaderSettingsParameters.h>
+ #import <StripeTerminal/SCPReaderSoftwareUpdate.h>
+ #import <StripeTerminal/SCPReceiptDetails.h>
+ #import <StripeTerminal/SCPRedirectToUrl.h>
+ #import <StripeTerminal/SCPRefund.h>
+-#import <StripeTerminal/SCPRefundParameters.h>
++#import <StripeTerminal/SCPRefundNextAction.h>
++#import <StripeTerminal/SCPRefundReason.h>
+ #import <StripeTerminal/SCPSelectionButton.h>
+ #import <StripeTerminal/SCPSelectionInput.h>
+ #import <StripeTerminal/SCPSelectionResult.h>
+@@ -130,7 +135,6 @@
+ #import <StripeTerminal/SCPSetupIntentParameters.h>
+ #import <StripeTerminal/SCPSignatureInput.h>
+ #import <StripeTerminal/SCPSignatureResult.h>
+-#import <StripeTerminal/SCPSimulateReaderUpdate.h>
+ #import <StripeTerminal/SCPSimulatedCard.h>
+ #import <StripeTerminal/SCPSimulatedCardType.h>
+ #import <StripeTerminal/SCPSimulatedCollectInputsResult.h>
+@@ -139,6 +143,7 @@
+ #import <StripeTerminal/SCPSimulatorConfiguration.h>
+ #import <StripeTerminal/SCPSurchargeConfiguration.h>
+ #import <StripeTerminal/SCPSurchargeDetails.h>
++#import <StripeTerminal/SCPSwishDetails.h>
+ #import <StripeTerminal/SCPTapToPayConnectionConfiguration.h>
+ #import <StripeTerminal/SCPTapToPayDiscoveryConfiguration.h>
+ #import <StripeTerminal/SCPTapToPayEasyConnectConfiguration.h>
+diff --git a/README.md b/README.md
+index c55886f..9ff9296 100644
+--- a/README.md
++++ b/README.md
+@@ -9,45 +9,24 @@ Get started with our [integration guides](https://stripe.com/docs/terminal/sdk/i
+ > Upgrading from an older version of the SDK? See our [migration guide](https://stripe.com/docs/terminal/sdk-migration-guide) for guidance.
+ 
+ ## Requirements
+-The Stripe Terminal iOS SDK is compatible with apps supporting iOS 15 and above.
++The Stripe Terminal iOS SDK is compatible with apps supporting iOS 16 and above.
+ 
+ ## Try the example app
+ The iOS SDK includes an open-source example app, which you can use to familiarize yourself with the SDK and reader before starting your own integration.
+ 
+ To build the example app from source, you'll need to:
+ 
+-1. Navigate to the `Example` folder, and open `Example.xcworkspace` (make sure to open the **`.xcworkspace`** and not the `.xcodeproj`).
++1. Navigate to the `Example` folder, and open `Example.xcodeproj`.
+ 2. Navigate to our [example backend](https://github.com/stripe/example-terminal-backend) and click the button to deploy it on Heroku.
+ 3. In `AppDelegate.swift`, set the URL of the Heroku app you just deployed.
+ 3. Build and run the app. The SDK comes with a simple reader simulator, so you can get started without any physical hardware.
+ 
+ ## Installation
+-We support CocoaPods and Swift Package Manager. If you prefer to install the library manually, please use the latest version from our [releases](https://github.com/stripe/stripe-terminal-ios/releases) page.
++We support Swift Package Manager. If you prefer to install the library manually, please use the latest version from our [releases](https://github.com/stripe/stripe-terminal-ios/releases) page.
+ 
+ ### Swift Package Manager
+ 
+-In Xcode, select **File > Swift Packages > Add Package Dependency** and enter https://github.com/stripe/stripe-terminal-ios
+-
+-### CocoaPods
+-
+-1. If you haven't already, install the latest version of [CocoaPods](https://guides.cocoapods.org/using/getting-started.html).
+-
+-2. Add this line to your Podfile:
+-```
+-pod 'StripeTerminal', '~> 5.0'
+-```
+-
+-3. Run the following command:
+-```
+-pod install
+-```
+-
+-From now on, don't forget to use the `*.xcworkspace` file to open your project in Xcode, instead of the `.xcodeproj` file.
+-
+-In the future, to update to the latest compatible version of the SDK, just run:
+-```
+-pod update StripeTerminal
+-```
++In Xcode, select **File > Swift Packages > Add Package Dependency** and enter https://github.com/stripe/stripe-terminal-ios-spm
+ 
+ ### Manual
+ 1. Navigate to our [releases](https://github.com/stripe/stripe-terminal-ios/releases) page, download StripeTerminal.xcframework.zip, and unzip it.

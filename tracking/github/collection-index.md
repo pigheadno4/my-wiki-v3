@@ -66,7 +66,7 @@ Generated: `2026-10-25`
 | stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
 | stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-21 | ingested | 2026-10-28 | `wait` |
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-08-31 | ingested | 2026-09-07 | `collect-baseline` |
-| stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-16 | ingested | 2026-10-23 | `manual-review` |
+| stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
 | stripe | `stripe/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-13 | ingested | 2026-09-13 | `collect-baseline` |
 | stripe | `stripe/link-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | stripe | `stripe/stripe-apps` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-28 | ingested | 2026-09-28 | `collect-baseline` |

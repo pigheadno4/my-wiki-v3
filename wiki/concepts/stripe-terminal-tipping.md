@@ -102,6 +102,10 @@ Tips are collected after authorization via **overcapture** — capturing more th
 
 **SDK support**: All SDKs, server-driven
 
+## iOS SDK 6.0.0 Capture Default
+
+For `StripeTerminal@6.0.0`, explicitly call `.setCaptureMethod(.manual)` when creating a PaymentIntent for **on-receipt tipping**; the SDK builder now defaults to `.automaticAsync`. The retained example explicitly forces manual capture when a post-authorization tip is requested. This change does not itself establish new on-reader tipping eligibility or remove the requirements above. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+
 ## Constraints
 
 - **One method per PaymentIntent**: once on-reader tipping is applied to a `PaymentIntent`, on-receipt tipping cannot be used on the same `PaymentIntent`

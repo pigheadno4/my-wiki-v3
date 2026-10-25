@@ -6,6 +6,17 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-25] ingest | Stripe Terminal iOS `6.0.0`
+
+- Approved serial additive full `github-9124967f62dc0a34c4ec`, SHA `79cfb3225553a7a5cceb8325f1c1f9087f792128`, after the 5.8.1 delta completed. User-approved focused reading of changed headers/examples, affected prior code, release notes, both branch comparisons and cumulative wiki history; unchanged files/history/generated inventories checked mechanically. Ten added, 56 modified, two removed, 177 unchanged; all 713 raw files across three snapshots match size/SHA-256/Git blob IDs.
+- Recorded SPM-only future publication including older-major patches, iOS 16/integrator compiler floors, automatic-async capture default, required consent configuration, Intent/card model and reader delegate migrations, cancellation/error distinctions and preview refund/MSI/Swish boundaries. Reciprocal capture-comment contradiction, example cancellation gap, divergent v5/v6 branches and absent dated v6 support schedule remain explicit.
+- Six existing concepts updated first, then cumulative source/changelog/company/provider index/logs. Prior wiki and raw history and source_count 666 preserved. No SDK build, reader/payment execution, other repository ingestion, commit or push. Details [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]]. Next: scoped validation, then separate commit/push approval.
+
+## [2026-10-25] ingest | Stripe Terminal iOS `5.8.1`
+
+- Approved serial focused-reading delta `github-efe5a0543a98bd570d9c`, SHA `00cd46de3ad9a7847c5d8ccb30abcf311a1e26e0`. Read changed public header/package, note, comparison and cumulative history; generated inventories, unchanged raw/history mechanically verified. Three modified, 232 unchanged; prior/current 470 raw hashes/sizes verified.
+- Recorded upstream offline Tap to Pay destination-charge parameter fix with explicit closed-source binary/runtime limits. Existing Terminal concept updated first, then cumulative source/changelog, company/catalog/logs; old history and source_count preserved. No upstream build, reader/payment execution, commit or push. Next: complete validation before starting approved v6 full ingest.
+
 ## [2026-10-21] ingest | Stripe React Native `0.82.0`
 
 - Approved serial additive full override `github-6deb9a996085048ef1eb`, SHA `6c2020d4b4c9c2f75c01690df5b084a6c046c585`. One-release focused reading: complete changed retained files/affected prior code, notes and cumulative wiki history; unchanged source/history/inventories and duplicated diff mechanically checked. Expanded list 260 paths/2,273,704 bytes. Current/prior capsules 251/244 files, all 495 hashes/sizes/Git blob IDs checked; seven added, 30 modified, 214 unchanged, 81 classified upstream paths, no gaps.

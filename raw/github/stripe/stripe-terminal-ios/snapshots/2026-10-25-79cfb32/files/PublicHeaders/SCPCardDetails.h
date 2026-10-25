@@ -1,0 +1,71 @@
+//
+//  SCPCardDetails.h
+//  StripeTerminal
+//
+//  Created by Daniel Jackson on 4/10/19.
+//  Copyright © 2019 Stripe. All rights reserved.
+//
+//  Use of this SDK is subject to the Stripe Terminal Terms:
+//  https://stripe.com/terminal/legal
+//
+
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@class SCPGeneratedFrom;
+
+/**
+ Contains details about a user's credit card.
+
+ @see https://stripe.com/docs/api/payment_methods/object#payment_method_object-card
+ */
+NS_SWIFT_NAME(CardDetails)
+@interface SCPCardDetails : NSObject
+
+/**
+ The issuer of the card as returned by the Stripe API.
+ */
+@property (nonatomic, copy, readonly) NSString *brand;
+
+/**
+ Two-letter ISO code representing the country of the card.
+ */
+@property (nonatomic, nullable, readonly) NSString *country;
+
+/**
+ Two-digit number representing the card’s expiration month.
+ 0 if the expiration month was missing.
+ */
+@property (nonatomic, readonly) NSInteger expMonth;
+
+/**
+ Four-digit number representing the card’s expiration year.
+ 0 if the expiration year was missing.
+ */
+@property (nonatomic, readonly) NSInteger expYear;
+
+/**
+ Card funding type as returned by the Stripe API. Will be nil if funding type
+ information is not available.
+ */
+@property (nonatomic, nullable, copy, readonly) NSString *funding;
+
+/**
+ The last four digits of the card.
+ */
+@property (nonatomic, nullable, readonly) NSString *last4;
+
+/**
+ Details of the original PaymentMethod that created this object.
+ */
+@property (nonatomic, nullable, readonly) SCPGeneratedFrom *generatedFrom;
+
+/**
+ You cannot directly instantiate this class.
+ */
+- (instancetype)init NS_UNAVAILABLE;
+
+@end
+
+NS_ASSUME_NONNULL_END

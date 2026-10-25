@@ -1,0 +1,149 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-terminal-ios`
+- Package: `StripeTerminal`
+- From: `5.8.0` (`c027d6dc2258c774412cb7933cbb959488c16b63`)
+- To: `6.0.0` (`79cfb3225553a7a5cceb8325f1c1f9087f792128`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `Example/Example/APIClient.swift`
+- `Example/Example/AppDelegate.swift`
+- `Example/Example/CaptureMethod+String.swift`
+- `Example/Example/DataRequest+StripeJSON.swift`
+- `Example/Example/DelegateAnnouncer.swift`
+- `Example/Example/EventDisplayingViewController.swift`
+- `Example/Example/Info.plist`
+- `Example/Example/LogEventViewController.swift`
+- `Example/Example/OfflinePaymentsLogDetailViewController.swift`
+- `Example/Example/OfflinePaymentsLogViewController.swift`
+- `Example/Example/OfflineUIHandler.swift`
+- `Example/Example/PaymentViewController.swift`
+- `Example/Example/ReaderDiscoveryViewController.swift`
+- `Example/Example/ReaderRegistrationViewController.swift`
+- `Example/Example/ReaderViewController.swift`
+- `Example/Example/RefundViewController.swift`
+- `Example/Example/SetupIntentViewController.swift`
+- `Example/Example/StartPaymentViewController.swift`
+- `Example/Example/StartRefundViewController.swift`
+- `Example/Example/StartSetupIntentViewController.swift`
+- `Example/Example/UpdateReaderViewController.swift`
+- `Example/Example/Value1MultilineCell.swift`
+- `Example/Podfile`
+- `Example/Podfile.lock`
+- `Package.swift`
+- `PublicHeaders/SCPBlocks.h`
+- `PublicHeaders/SCPBluetoothConnectionConfiguration.h`
+- `PublicHeaders/SCPCardDetails.h`
+- `PublicHeaders/SCPCardPresentDetails.h`
+- `PublicHeaders/SCPCardPresentParameters.h`
+- `PublicHeaders/SCPCollectSetupIntentConfiguration.h`
+- `PublicHeaders/SCPConfirmRefundError.h`
+- `PublicHeaders/SCPConfirmRefundParameters.h`
+- `PublicHeaders/SCPDeprecations.h`
+- `PublicHeaders/SCPErrors.h`
+- `PublicHeaders/SCPInstallmentsParameters.h`
+- `PublicHeaders/SCPInternetConnectionConfiguration.h`
+- `PublicHeaders/SCPMobileReaderDelegate.h`
+- `PublicHeaders/SCPNetworks.h`
+- `PublicHeaders/SCPOfflineCardPresentDetails.h`
+- `PublicHeaders/SCPPaymentIntent.h`
+- `PublicHeaders/SCPPaymentIntentParameters.h`
+- `PublicHeaders/SCPPaymentInteraction.h`
+- `PublicHeaders/SCPPaymentMethod.h`
+- `PublicHeaders/SCPPaymentMethodCardPresentDetails.h`
+- `PublicHeaders/SCPPaymentMethodDetails.h`
+- `PublicHeaders/SCPPaymentMethodType.h`
+- `PublicHeaders/SCPProcessRefundParameters.h`
+- `PublicHeaders/SCPReader.h`
+- `PublicHeaders/SCPReaderDelegate.h`
+- `PublicHeaders/SCPReaderDisplayMessage.h`
+- `PublicHeaders/SCPReaderInputOptions.h`
+- `PublicHeaders/SCPReaderInteractionDelegate.h`
+- `PublicHeaders/SCPReaderPaymentInteractionDelegate.h`
+- `PublicHeaders/SCPRefund.h`
+- `PublicHeaders/SCPRefundNextAction.h`
+- `PublicHeaders/SCPRefundReason.h`
+- `PublicHeaders/SCPSetupIntent.h`
+- `PublicHeaders/SCPSetupIntentParameters.h`
+- `PublicHeaders/SCPSimulatorConfiguration.h`
+- `PublicHeaders/SCPSwishDetails.h`
+- `PublicHeaders/SCPTapToPayConnectionConfiguration.h`
+- `PublicHeaders/SCPTapToPayReaderDelegate.h`
+- `PublicHeaders/SCPTerminal.h`
+- `PublicHeaders/SCPUsbConnectionConfiguration.h`
+- `PublicHeaders/StripeTerminal.h`
+- `README.md`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `Example/Example/APIClient.swift`
+- `modified`: `Example/Example/AppDelegate.swift`
+- `modified`: `Example/Example/CaptureMethod+String.swift`
+- `modified`: `Example/Example/DataRequest+StripeJSON.swift`
+- `modified`: `Example/Example/DelegateAnnouncer.swift`
+- `modified`: `Example/Example/EventDisplayingViewController.swift`
+- `modified`: `Example/Example/Info.plist`
+- `modified`: `Example/Example/LogEventViewController.swift`
+- `modified`: `Example/Example/OfflinePaymentsLogDetailViewController.swift`
+- `modified`: `Example/Example/OfflinePaymentsLogViewController.swift`
+- `modified`: `Example/Example/OfflineUIHandler.swift`
+- `modified`: `Example/Example/PaymentViewController.swift`
+- `modified`: `Example/Example/ReaderDiscoveryViewController.swift`
+- `modified`: `Example/Example/ReaderRegistrationViewController.swift`
+- `modified`: `Example/Example/ReaderViewController.swift`
+- `modified`: `Example/Example/RefundViewController.swift`
+- `modified`: `Example/Example/SetupIntentViewController.swift`
+- `modified`: `Example/Example/StartPaymentViewController.swift`
+- `modified`: `Example/Example/StartRefundViewController.swift`
+- `modified`: `Example/Example/StartSetupIntentViewController.swift`
+- `modified`: `Example/Example/UpdateReaderViewController.swift`
+- `modified`: `Example/Example/Value1MultilineCell.swift`
+- `deleted`: `Example/Podfile`
+- `deleted`: `Example/Podfile.lock`
+- `modified`: `Package.swift`
+- `modified`: `PublicHeaders/SCPBlocks.h`
+- `modified`: `PublicHeaders/SCPBluetoothConnectionConfiguration.h`
+- `modified`: `PublicHeaders/SCPCardDetails.h`
+- `modified`: `PublicHeaders/SCPCardPresentDetails.h`
+- `modified`: `PublicHeaders/SCPCardPresentParameters.h`
+- `modified`: `PublicHeaders/SCPCollectSetupIntentConfiguration.h`
+- `modified`: `PublicHeaders/SCPConfirmRefundError.h`
+- `added`: `PublicHeaders/SCPConfirmRefundParameters.h`
+- `modified`: `PublicHeaders/SCPDeprecations.h`
+- `modified`: `PublicHeaders/SCPErrors.h`
+- `added`: `PublicHeaders/SCPInstallmentsParameters.h`
+- `modified`: `PublicHeaders/SCPInternetConnectionConfiguration.h`
+- `modified`: `PublicHeaders/SCPMobileReaderDelegate.h`
+- `modified`: `PublicHeaders/SCPNetworks.h`
+- `modified`: `PublicHeaders/SCPOfflineCardPresentDetails.h`
+- `modified`: `PublicHeaders/SCPPaymentIntent.h`
+- `modified`: `PublicHeaders/SCPPaymentIntentParameters.h`
+- `added`: `PublicHeaders/SCPPaymentInteraction.h`
+- `modified`: `PublicHeaders/SCPPaymentMethod.h`
+- `added`: `PublicHeaders/SCPPaymentMethodCardPresentDetails.h`
+- `modified`: `PublicHeaders/SCPPaymentMethodDetails.h`
+- `modified`: `PublicHeaders/SCPPaymentMethodType.h`
+- `added`: `PublicHeaders/SCPProcessRefundParameters.h`
+- `modified`: `PublicHeaders/SCPReader.h`
+- `modified`: `PublicHeaders/SCPReaderDelegate.h`
+- `modified`: `PublicHeaders/SCPReaderDisplayMessage.h`
+- `modified`: `PublicHeaders/SCPReaderInputOptions.h`
+- `added`: `PublicHeaders/SCPReaderInteractionDelegate.h`
+- `added`: `PublicHeaders/SCPReaderPaymentInteractionDelegate.h`
+- `modified`: `PublicHeaders/SCPRefund.h`
+- `added`: `PublicHeaders/SCPRefundNextAction.h`
+- `added`: `PublicHeaders/SCPRefundReason.h`
+- `modified`: `PublicHeaders/SCPSetupIntent.h`
+- `modified`: `PublicHeaders/SCPSetupIntentParameters.h`
+- `modified`: `PublicHeaders/SCPSimulatorConfiguration.h`
+- `added`: `PublicHeaders/SCPSwishDetails.h`
+- `modified`: `PublicHeaders/SCPTapToPayConnectionConfiguration.h`
+- `modified`: `PublicHeaders/SCPTapToPayReaderDelegate.h`
+- `modified`: `PublicHeaders/SCPTerminal.h`
+- `modified`: `PublicHeaders/SCPUsbConnectionConfiguration.h`
+- `modified`: `PublicHeaders/StripeTerminal.h`
+- `modified`: `README.md`

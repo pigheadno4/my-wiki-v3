@@ -53,6 +53,14 @@ const refund = await stripe.refunds.create({
 
 Refunds can also be initiated through the Stripe Dashboard.
 
+## iOS SDK 6.0.0 Boundaries
+
+`StripeTerminal@6.0.0` defaults client-created PaymentIntents to automatic-async capture. A post-authorization/pre-capture cancellation window must not be assumed without an explicit manual-capture configuration and an eligible Intent state.
+
+For in-person refunds, use `processRefund` with renamed `ProcessRefundParameters`/`ProcessRefundParametersBuilder`. The deprecated collect-then-confirm refund overloads are removed; their v5 history is preserved in [[source-github-stripe-terminal-ios]].
+
+A separate **private-preview** `confirmRefund(parameters)` creates a full or partial refund without presenting a card or reader UI, but **still requires a connected reader to authenticate**. It takes the PaymentIntent ID and client secret; omitting amount refunds the entire remaining refundable amount. If it returns an error without a Refund, reconcile with the backend before creating another refund. This preview does not remove Interac's in-person requirement. `Refund.stripeId` is nullable, and `requiresAction`, `canceled` and `nextAction` must be handled rather than equating a returned object with completed reimbursement. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+
 ## Reconciliation
 
 Stripe recommends reconciling payments daily on your backend to catch unintended authorizations and uncollected funds.

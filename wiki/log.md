@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-25] ingest | Stripe Terminal iOS `6.0.0`
+
+- Serial additive full with approved focused reading: SPM/iOS 16, capture/consent/models/delegates and preview boundaries; both divergent branch comparisons reviewed, capture contradiction recorded, all v5 history preserved. Details [[stripe-log]] and [[source-github-stripe-terminal-ios]]. No SDK execution, commit or push.
+
+## [2026-10-25] ingest | Stripe Terminal iOS `5.8.1`
+
+- Serial focused-reading delta: offline Tap to Pay/onBehalfOf maintenance fix, with binary/runtime limits and all prior history preserved. Details [[stripe-log]] and [[source-github-stripe-terminal-ios]]. No upstream execution, commit or push.
+
 ## [2026-10-25] ingest | Adyen website C37
 
 - Fifty independently approved Rakuten Pay, PAYCO, South Korea bank transfer/KCP and Napas Card documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 2 concepts touched (0 new); source_count 1864 = 1850 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-37/`; details [[adyen-log]]. No commit/push.

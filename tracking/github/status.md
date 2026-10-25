@@ -3252,6 +3252,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.4.0/2026-08-30/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/10.3.0--10.4.0/comparison.json)
 
+## `github-9124967f62dc0a34c4ec`
+
+- Repository: `stripe/stripe-terminal-ios`
+- SHA: `79cfb3225553a7a5cceb8325f1c1f9087f792128`
+- Collection date: `2026-10-25`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-79cfb32/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-ios/ingest-packets/github-9124967f62dc0a34c4ec/packet.md)
+- Review priority: `high`
+- Required reading: `65` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `StripeTerminal@6.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/6.0.0/2026-10-25/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-terminal-ios/comparisons/stripeterminal/5.8.1--6.0.0/comparison.json)
+
 ## `github-92242b9e450d596215e2`
 
 - Repository: `braintree/braintree-ios-drop-in`
@@ -5736,6 +5761,31 @@
 - `@stripe/react-stripe-js@6.12.0` (recommended `delta`)
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.12.0/2026-09-27/manifest.json)
   Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.11.0--6.12.0/comparison.json)
+
+## `github-efe5a0543a98bd570d9c`
+
+- Repository: `stripe/stripe-terminal-ios`
+- SHA: `00cd46de3ad9a7847c5d8ccb30abcf311a1e26e0`
+- Collection date: `2026-10-25`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-ios/snapshots/2026-10-25-00cd46d/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-ios/ingest-packets/github-efe5a0543a98bd570d9c/packet.md)
+- Review priority: `high`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `StripeTerminal@5.8.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-ios/releases/stripeterminal/5.8.1/2026-10-25/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-terminal-ios/comparisons/stripeterminal/5.8.0--5.8.1/comparison.json)
 
 ## `github-f4acbaae53defd3b2074`
 

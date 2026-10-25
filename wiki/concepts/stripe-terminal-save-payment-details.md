@@ -72,6 +72,12 @@ Card is charged and saved in one in-person transaction. The initial payment is c
 
 **When `generated_card` is absent**: digital wallets and single-branded Interac/eftpos/girocard don't produce one. Fallback: prompt customer to use the save-directly (SetupIntent) flow, or refund and restart with a different card.
 
+## iOS SDK 6.0.0 Consent and Model Migration
+
+`StripeTerminal@6.0.0` makes `allowRedisplay` a required initializer argument to `CollectSetupIntentConfigurationBuilder`, rather than a separate argument to the collection/processing method. Build with a consent-appropriate `.always` or `.limited`, then pass the configuration as `setupConfig` to `collectSetupIntentPaymentMethod` or `collectConfig` to `processSetupIntent`. The example's default `.always` is not evidence of merchant consent; the header requires consent and documents those two permitted values.
+
+In v6, `SetupIntent.paymentMethod` is the expanded PaymentMethod object (formerly `paymentMethodExpanded`), while `paymentMethodId` supplies the ID formerly returned by `paymentMethod`. For save-after-payment retrieval, `PaymentIntent.latestCharge`/`latestChargeId` replace `charges`. PaymentMethod card-present instrument details are now distinct from transaction details on a Charge; do not assume instrument details contain `generatedCard` or receipt fields. These SDK migrations do not remove the existing generated-card, customer-attachment or CNP reuse boundaries. Earlier v5 guidance remains historical. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+
 ## Charging a Saved PaymentMethod
 
 - Set `off_session: true` when charging outside the checkout flow — causes PaymentIntent to error if customer authentication is required
