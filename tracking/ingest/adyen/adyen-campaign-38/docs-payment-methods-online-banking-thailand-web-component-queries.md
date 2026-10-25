@@ -1,0 +1,9 @@
+# Thailand online-banking Web Component retrieval checks
+
+## Q1 — Purpose, scope, and non-inferences
+
+`source-adyen-docs-payment-methods-online-banking-thailand-web-component` is the 2026-09-15 method-specific Web Components guide for existing Sessions or Advanced integrations (raw lines 15–36, 114–122). It does not supply a standalone checkout, QR-code procedure, shopper-return/result/webhook instructions, current merchant eligibility or proof of payment; it separately requires a live Customer Area request (raw lines 106–112, 158–164). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-online-banking-thailand-web-component]] → [[raw/adyen/docs/payment-methods/online-banking-thailand/web-component/2026-09-15]].
+
+## Q2 — Central capability, prerequisites, warnings
+
+Sessions needs an existing Web Components Sessions flow, Checkout API v68+, redirect handling and Customer Area setup, with no extra `/sessions` parameters; Advanced needs its own existing Components flow, redirect handling and Customer Area setup, with no extra `/payments` parameters (raw lines 29–42, 116–156). Both import/initialize `MolPayEBankingTH`; the Sessions table lists optional issuer, highlighted issuers, image and placeholder settings, with `highlightedIssuers` added in Web v5.1.0 (raw lines 44–104, 124–150). Its example uses a single string for `highlightedIssuers` despite plural prose, so do not infer complete schema; test issuer/status guidance is separate from live-request approval and final outcome (raw lines 62–77, 106–112, 158–164). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-online-banking-thailand-web-component]] → [[raw/adyen/docs/payment-methods/online-banking-thailand/web-component/2026-09-15]].

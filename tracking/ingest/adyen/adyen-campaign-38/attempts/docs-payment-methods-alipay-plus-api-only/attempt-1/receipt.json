@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-alipay-plus-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Alipay+ API-only integration\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipay-plus/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipay-plus/api-only/2026-09-15.md\"\ntags: [adyen, alipay-plus, wallets, api-only, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Alipay+ guide is a method-specific add-on to an existing Adyen Advanced API-only integration. It describes the generic Alipay+ payment-method request, wallet selection after redirect, return/details handling and wallet-specific outcome identifiers. Its country/currency lists and examples are a historical documentation snapshot, not proof that every listed wallet is available to a given merchant or that a payment completed. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The merchant needs an existing API-only integration that handles a `redirect` action and has Alipay+ added in Customer Area. The merchant-built form lists Alipay+ without extra shopper fields. For `/paymentMethods`, the guide lists allowed `countryCode` and `amount.currency` values; its SG/SGD example response shows generic `alipay_plus`. These lists and the sample `/v72` TEST endpoint do not establish current wallet-by-wallet eligibility or a general API version minimum. (raw lines 23\u201352, 54\u201372, 264\u2013275)\n- **Request and channel:** Initial `/payments` requests use `paymentMethod.type: alipay_plus`; a wallet must not be preselected through that field. `channel` is documented as required with Web, iOS or Android context, and `browserInfo` is required for Web. The guide says channel and browser user agent affect wallet entry points; iOS/Android in-app contexts use a hosted redirect page that may deep-link or app-switch if supported, with no native SDK integration. A wrong channel can yield an incompatible redirect experience. (raw lines 277\u2013284, 286\u2013322, 461\u2013492)\n- **Redirect and wallet resolution:** An example `/payments` response is `RedirectShopper` with a GET `redirect` action, an intermediate shopper action. After authentication and return, a `redirectResult` is used in `/payments/details`; the example response is `Authorised` and resolves to `alipay_plus_gcash`. The guide says the wallet-specific `paymentMethod` also appears in the later AUTHORISATION webhook. The wallet table maps names to variants; a generic Alipay+ request does not make their capabilities identical. (raw lines 324\u2013459)\n- **Material source conflicts:** The redirect section says \u201cAdyen then sends\u201d `/payments/details` with `redirectResult`, while implementation notes say the frontend must call that endpoint; the exact caller responsibility is unresolved here and should be checked against the main API-only guide. The details example includes `paymentData` said to come from the original `/payments` response, but the shown redirect response omits it. The `/payments/details` example resolves to GCash, while the following AUTHORISATION webhook sample names Alipay China despite narrative wording about the actual wallet; do not join those samples as one verified transaction. (raw lines 328\u2013347, 351\u2013402, 404\u2013459, 465\u2013467)\n- **Limits and environment conflict:** `storePaymentMethod: true` is stated to fail validation; this guide does not support Alipay+ tokenization. It states no Alipay+ TEST environment and recommends live penny tests, with a separate live Customer Area request before accepting live payments. Its `checkout-test` examples and sample successful TEST-looking result cannot prove a usable Alipay+ TEST path, live availability, capture or settlement. No financial operation was performed. (raw lines 59\u201372, 288\u2013347, 380\u2013437, 468\u2013469, 494\u2013504)\n\n## Detail locators\n\n- Existing Advanced API-only, redirect and Customer Area requirements: raw lines 23\u201343.\n- Discovery country/currency table, request example and generic method type: raw lines 45\u201372, 264\u2013275.\n- `/payments` channel/browserInfo fields and redirect response: raw lines 277\u2013349.\n- Return, details and webhook examples; wallet-specific variants: raw lines 351\u2013459.\n- Implementation cautions, platform contexts and TEST/LIVE boundary: raw lines 461\u2013504.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipay-plus/api-only/2026-09-15|Adyen Alipay+ API-only guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Initial [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) requests always use **alipay\\_plus** (the generic type).",
+      "location": "raw line 459, The paymentMethod value for each wallet"
+    },
+    {
+      "text": "Alipay+ uses the redirect flow. Your frontend must call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) and include the `redirectResult` after the shopper returns.",
+      "location": "raw line 467, Key implementation notes"
+    },
+    {
+      "text": "Tokenization (`storePaymentMethod`: **true**) is not currently supported for Alipay+. Requests with this parameter set to **true** will fail validation.",
+      "location": "raw line 468, Key implementation notes"
+    },
+    {
+      "text": "When `channel` is set to **iOS** or **Android**, Adyen redirects the shopper to a mobile-optimized hosted page that attempts to deep-link or auto-switch into the wallet app, if supported. There is no native SDK integration.",
+      "location": "raw line 483, How to use channel and browserInfo"
+    },
+    {
+      "text": "There is no test environment for Alipay+.",
+      "location": "raw line 496, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "alipay-plus-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipay-plus-api-only]] \u2014 2026-09-15 Alipay+ Advanced API-only aggregator/redirect guide: generic request versus wallet-specific details/webhook, channel-dependent entry, unsupported tokenization and no TEST environment; details-caller and examples conflict in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Keep the source's TEST endpoint/no-TEST contradiction and conflicting details-caller wording qualified; do not infer live payment success or identical capabilities for aggregated wallets."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipay-plus/api-only/2026-09-15.md",
+  "raw_sha256": "fd461d6e25d7705416b5ccaa3065173d7f3259a457cfd4f87f1add9dfad8406e",
+  "status": "candidate_ready"
+}

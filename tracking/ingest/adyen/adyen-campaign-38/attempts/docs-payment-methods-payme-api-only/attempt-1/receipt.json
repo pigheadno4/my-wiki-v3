@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-payme-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayMe for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payme/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/payme/api-only/2026-09-15.md\"\ntags: [adyen, payme, hong-kong, api-only, qr-code, redirect, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, metadata-modified 2019-09-06 and captured 2026-09-15, describes PayMe **API-only** payments with merchant-owned Web payment form: a **desktop/laptop QR** path and a **mobile-browser PayMe app redirect** path. It recommends implementing both for different shopper devices. It is historical method guidance, not evidence of current Hong Kong merchant eligibility or successful authorization, capture, settlement or refund. See [[adyen-online-payments]] and raw lines 15\u201333.\n\n## Key takeaways\n\n- The guide states a **Checkout API v67 minimum**, an existing API-only integration, and adding **PayMe QR in the test Customer Area**. Its payment form need not collect shopper data. For `/paymentMethods` discovery it specifies `countryCode: HK`, `amount.currency: HKD`; the response method type is `payme`. These page-specific discovery settings do not prove account enablement or wider country/currency support. See raw lines 19\u201346.\n- Choose the shopper path by device: desktop/laptop displays QR, mobile shows an app-redirect button, and tablet may use either or both. Screen size is a **recommendation** for deciding device presentation. In the desktop `/payments` request, `paymentMethod.type: payme` and `returnUrl` are marked required; `channel` and line-item fields are listed as optional. `lineItems.sku` is available only with Checkout API **v70+**, a field-specific condition distinct from the v67 base minimum. The TEST cURL sample uses `/v72/payments`, HK/HKD and `channel: Web`. See raw lines 50\u2013108.\n- Desktop `/payments` illustrates `Pending` with a QR action carrying `qrCodeData`, `url`, `expiresAt` and `paymentData`. Render the returned `qrCodeData`; after shopper scan and completion, the page says a webhook informs the merchant of payment result. A mobile-browser shopper cannot scan that on-device code, so the page instead directs use of `action.url`. The timestamp in the sample is illustrative, not a current expiry. QR display or scan is not final authorization. See raw lines 147\u2013175.\n- Mobile `/payments` illustrates `RedirectShopper` and `action.type: redirect`, `method: GET`, `url` and `expiresAt`. Send the shopper to the returned URL; the page recommends the default/system browser over WebView for mobile compatibility. On return, POST `/payments/details` with URL-decoded `redirectResult`, then use `resultCode` to show a shopper status. The illustrated `Authorised` details response is not evidence of an actual payment. The mobile prose spells `returnURL`, whereas its requests use `returnUrl`; the Node mobile example sets `channel: \"Web/iOS/Android\"` while the cURL mobile example uses `channel: \"Web\"`. Do not copy those divergent samples as a single contract. See raw lines 177\u2013310.\n- `Cancelled` and `Refused` call for different shopper follow-up; `Pending`/`Received` remain unresolved until an **AUTHORISATION webhook**. If the shopper does not return, the guide says to wait for AUTHORISATION with `success: false` or `true` to know failure or success. This is an authorization outcome boundary, not capture or settlement proof. The sandbox can simulate `Authorised`, `OfferCancelled` on expiry, and creation `Error` by amount endings; the test table describes a **default ten-minute PayMe expiry** for the cancellation case, but does not turn the old `expiresAt` example into a current deadline. No PayMe app is needed for those sandbox tests. See raw lines 312\u2013342.\n\n## Detail locators\n\n- Method scope, v67 minimum, setup and HK/HKD discovery: raw lines 15\u201348.\n- Desktop/tablet/mobile presentation and desktop request fields; optional `sku` requires v70+: raw lines 50\u201376.\n- Desktop TEST request, QR action and webhook handoff: raw lines 77\u2013175.\n- Mobile TEST requests, sample case/channel differences, redirect, return and details response: raw lines 177\u2013310.\n- Shopper states, no-return authorization webhooks, sandbox amount tests and ten-minute expiry statement: raw lines 312\u2013342.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payme/api-only/2026-09-15|PayMe API-only guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayMe is supported from Checkout API version 67.",
+      "location": "raw line 26, PayMe for API only"
+    },
+    {
+      "text": "`paymentMethod.type`: **payme**",
+      "location": "raw line 46, Build your payment form for PayMe QR"
+    },
+    {
+      "text": "`lineItems.sku`",
+      "location": "raw line 72, Make a payment > Desktop flow request table"
+    },
+    {
+      "text": "To know the final result of the payment, wait for the [AUTHORISATION webhook]",
+      "location": "raw line 322, Show the payment result"
+    },
+    {
+      "text": "The payment request expired after PayMe's default expiry time of ten minutes.",
+      "location": "raw line 341, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payme-api-only-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payme-api-only]] \u2014 2019-modified, 2026-09-15-captured HK/HKD PayMe API-only desktop QR and mobile app-redirect guide (Checkout API v67+), with webhook-final authorization, sandbox expiry and sample request differences qualified.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payme/api-only/2026-09-15.md",
+  "raw_sha256": "88a03a4e2045e2115bf1b57a8f36a21feccfe66e65ae42287aa5a9c166f18b0f",
+  "status": "candidate_ready"
+}

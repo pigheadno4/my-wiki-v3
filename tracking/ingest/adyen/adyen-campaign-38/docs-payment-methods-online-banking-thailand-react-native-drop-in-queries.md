@@ -1,0 +1,9 @@
+# Thailand online-banking React Native Drop-in retrieval checks
+
+## Q1 — Purpose, scope, and non-inferences
+
+`source-adyen-docs-payment-methods-online-banking-thailand-react-native-drop-in` is the 2026-09-15 method-specific add-on for existing React Native Drop-in Sessions or Advanced integrations (raw lines 15–23, 25–35, 58–68). It does not provide a standalone flow, issuer-ID list, return/outcome procedure, current eligibility or proof of final success; its TEST instructions name a Component on this Drop-in page and live acceptance requires a separate Customer Area request (raw lines 50–56, 82–88). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-online-banking-thailand-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/online-banking-thailand/react-native-drop-in/2026-09-15]].
+
+## Q2 — Central capability, prerequisites, warnings
+
+Sessions calls for an existing React Native Drop-in Sessions flow, Checkout API v68+, redirect handling and Customer Area setup, with no extra `/sessions` or method configuration parameters (raw lines 29–48). Its integration-type hyperlink points to Advanced despite the Sessions prose and neighboring Sessions links (raw lines 33–42). Advanced calls for existing Advanced Drop-in, redirect handling and Customer Area setup, with no extra method configuration or `/payments` parameters (raw lines 62–80). Both test sections refer to issuer IDs but do not list them, and separately require a live Customer Area request (raw lines 50–56, 82–88). Forward route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-online-banking-thailand-react-native-drop-in]] → [[raw/adyen/docs/payment-methods/online-banking-thailand/react-native-drop-in/2026-09-15]].

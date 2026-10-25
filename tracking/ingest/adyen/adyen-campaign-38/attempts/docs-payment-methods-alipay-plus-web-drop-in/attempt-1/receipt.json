@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-alipay-plus-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alipay+ Web Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alipay-plus/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md\"\ntags: [adyen, alipay-plus, web, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page describes Alipay+-specific additions to an existing Web Drop-in integration for Sessions or Advanced server-side flow. Both paths require redirect handling and Customer Area method addition. It is an add-on guide; its sample redirect response is an intermediate action, not successful payment or wallet-level eligibility proof. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Sessions requires an existing Web Drop-in Sessions integration, Checkout API v68 or later, handling `action.type: redirect`, and adding Alipay+ in Customer Area. The page says no extra parameters are needed when creating the base payment session. It offers an *optional* individual-method import for tree shaking; the shown import names lowercase `redirect`.\n- Advanced requires an existing Web Drop-in Advanced integration, redirect handling, and Customer Area method addition; no Advanced Checkout API minimum is stated. Its prerequisite link contains an unresolved encoded `getParameter('platform')` template despite Web Drop-in link text. The optional import again uses lowercase `redirect`.\n- For Advanced `/payments`, the page marks `channel` required and says to set it to the applicable **Web**, **iOS**, or **Android** value. It says `browserInfo` is required when `channel` is **Web**. The illustrative request uses `paymentMethod.type: alipay_plus`, SGD/SG values, lowercase `\"channel\": \"web\"`, and `browserInfo`; its example response has `resultCode: RedirectShopper` and a redirect action. The lowercase sample value differs from the table's capitalized **Web** label and should not be normalized into a verified enum.\n- Both testing sections state there is **no Alipay+ test environment**, recommend live penny tests with an Alipay+ wallet app/card and checking the live Customer Area, and say a request for **Alipay** must be submitted there before accepting live **Alipay+** payments. Preserve that Alipay-versus-Alipay+ wording without assuming identical methods or completed approval. The Advanced sample nevertheless targets `https://checkout-test.adyen.com/v72/payments`; it does not establish a usable Alipay+ sandbox. No live test or provider action was performed.\n\n## Detail locators\n\n- Sessions prerequisites, request, and optional import: pinned raw lines 25\u201354; first testing/live statements: lines 56\u201368.\n- Advanced prerequisites and unresolved template link: lines 70\u201380; optional import: lines 82\u201392; Advanced request table: lines 94\u2013103.\n- Illustrative TEST-endpoint request and redirect response: lines 105\u2013166; repeated testing/live statements: lines 168\u2013180.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-alipay-plus]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15|Alipay+ Web Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "you can optionally import individual payment methods to optimize performance by using [tree shaking]",
+      "location": "raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "There is no test environment for Alipay+.",
+      "location": "raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md:60"
+    },
+    {
+      "text": "Before you can accept live Alipay+ payments, you need to submit a request for Alipay in your [live Customer Area]",
+      "location": "raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md:68"
+    },
+    {
+      "text": "Information about the shopper's browser. Required when `channel` is **Web**.",
+      "location": "raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md:103"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-alipay-plus-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alipay-plus-web-drop-in]] \u2014 2026-09-15 Alipay+ Web Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with no stated test environment, live-request wording for \u201cAlipay,\u201d and a conflicting TEST-endpoint example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page says there is no Alipay+ test environment (raw lines 60,172), while its Advanced example calls checkout-test.adyen.com/v72/payments (line 108); do not infer a usable Alipay+ sandbox.",
+          "The live prerequisite says submit a request for Alipay before accepting live Alipay+ (raw lines 68,180); preserve this source wording without equating the methods or claiming approval.",
+          "Advanced table capitalizes Web/iOS/Android and conditionally requires browserInfo for Web (raw lines 102\u2013103), while the sample uses lowercase channel web (line 121).",
+          "The Advanced Web Drop-in prerequisite URL contains unresolved encoded getParameter('platform') template text (raw line 78)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alipay-plus/web-drop-in/2026-09-15.md",
+  "raw_sha256": "3d5bda9779683ef54fa7bb38cabb2d0653ec9d786ce97e1c8483912644300feb",
+  "status": "candidate_ready"
+}

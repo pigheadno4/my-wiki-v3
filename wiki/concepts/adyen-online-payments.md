@@ -21,6 +21,150 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-payme-web]] — 2019-modified, 2026-09-15-captured PayMe Web chooser linking Drop-in and Components child guides plus general Web docs; implementation and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-payme-ios]] — 2019-modified, 2026-09-15-captured PayMe iOS chooser for Drop-in and Components child guides; versions, behavior and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-payme-android]] — 2019-modified, 2026-09-15-captured PayMe Android chooser for Drop-in and Components child guides; versions, behavior and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-web]] — 2026-09-15 Alipay+ Web chooser linking Drop-in and redirect Components child guides plus Sessions/Advanced main Web guides; child requirements and payment outcomes remain separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-android]] — 2026-09-15 Alipay+ Android chooser linking Drop-in, InstantPaymentComponent and Sessions/Advanced main guides; implementation and outcomes remain in child sources.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-ios]] — 2026-09-15 Alipay+ iOS chooser for Drop-in or `InstantPaymentComponent` child guides and the four Sessions/Advanced base routes; implementation and outcomes require linked guides.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-web]] — 2026-09-15 Thailand online-banking Web chooser for Drop-in or MolPayEBankingTH Components and four Sessions/Advanced base routes; implementation and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-android]] — 2026-09-15 Online Banking Thailand Android chooser linking Drop-in and `MolpayComponent` child guides plus four Sessions/Advanced base routes; child requirements and outcomes remain separate authority.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-ios]] — 2026-09-15 Thailand online-banking iOS chooser for Drop-in or InstantPaymentComponent and four Sessions/Advanced base guides; child implementation and outcomes are separate evidence.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-web]] — 2026-09-15 FPX Malaysia Web chooser linking Drop-in/`MolPayEBankingMY` Components child guides and four Web Sessions/Advanced base routes; implementation and outcomes require child/base evidence.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-android]] — 2026-09-15 FPX Online Banking Malaysia Android chooser linking Drop-in and InstantPaymentComponent children plus main Sessions/Advanced routes; child guides carry implementation requirements.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-ios]] — 2026-09-15 FPX Malaysia iOS chooser linking Drop-in and Components child guides plus Sessions/Advanced main guides; child implementation and outcome details require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-react-native-component]] — 2026-09-15 Thailand online-banking React Native Components Advanced redirect add-on; Sessions unsupported, separate live request, and a Components-label/Drop-in-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-react-native-component]] — 2026-09-15 FPX React Native Components Advanced-only redirect add-on; Sessions unsupported, no method-specific fields/configuration stated, and the prerequisite Components label links to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-ios-drop-in]] — 2026-09-15 Thailand online-banking iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with no extra method fields/configuration and a separate live request.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-ios-drop-in]] — 2026-09-15 FPX Malaysia iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with Component-linked issuer TEST guidance and a separate live request gate; no outcome proof.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-android-drop-in]] — 2026-09-15 FPX Malaysia Android Drop-in add-on for existing Sessions (Checkout API v68+) and Advanced redirect flows, with method-specific no-extra-field guidance, test issuer reference, and separate live request.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-react-native-drop-in]] — 2026-09-15 Thailand online-banking React Native Drop-in Sessions/Advanced redirect add-on, with Sessions v68+, no extra method parameters and a misrouted Sessions prerequisite link.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-flutter-drop-in]] — 2026-09-15 Thailand online-banking Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on; Sessions base-link and setup wording differ from Advanced and remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-react-native-drop-in]] — 2026-09-15 FPX Malaysia React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with no extra method fields/configuration, test/live gates and a Sessions-to-Advanced prerequisite-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-flutter-drop-in]] — 2026-09-15 FPX Malaysia Flutter Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with differing setup routes and a separate live request; Sessions link targets Advanced flow.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-android-drop-in]] — 2026-09-15 Alipay+ Android Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with optional submit-button configuration, no test environment, and unresolved Alipay-versus-Alipay+ live-request label.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-web-drop-in]] — 2026-09-15 FPX Malaysia Web Drop-in Sessions/Advanced redirect add-on with optional `MolPayEBankingMY` import, test/live gates and a templated Advanced prerequisite link.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-android-drop-in]] — 2026-09-15 Thailand online-banking Android Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with no method-specific request fields and a separate live request.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-ios-component]] — 2026-09-15 Alipay+ iOS InstantPaymentComponent Sessions (Checkout API v68+) and Advanced redirect add-on; no TEST environment, and Advanced base-link plus Alipay/Alipay+ live-request naming conflicts remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-payme-ios-drop-in]] — 2026-09-15 PayMe iOS Drop-in v4.0.0+ Sessions/Advanced add-on with v5 `/sessions` default, field-specific v70 SKU condition, sandbox outcome fixtures and a JavaScript example mislabeled Swift.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-ios-component]] — 2026-09-15 Thailand online-banking iOS Components Sessions (Checkout API v68+) and Advanced add-on with redirect, `InstantPaymentComponent` and separate live request; Advanced base-link label/target conflict retained in source.
+
+
+- [[source-adyen-docs-payment-methods-payme-android-component]] — 2026-09-15 PayMe Android Redirect Component v4.0.0+ guide for HK/HKD discovery, redirect return and `/payments/details`, with return-URL casing and sample-language conflicts plus sandbox outcome fixtures.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-ios-component]] — 2026-09-15 FPX Malaysia iOS InstantPaymentComponent add-on for Sessions (Checkout API v68+) and Advanced redirect flows, with separate live request gate; Advanced Components label links to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-web-drop-in]] — 2026-09-15 Alipay+ Web Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with no stated test environment, live-request wording for “Alipay,” and a conflicting TEST-endpoint example.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-web-component]] — 2026-09-15 Alipay+ Web redirect Component add-on for existing Sessions (Checkout API v68+) and Advanced flows, with conditional browser info, live request wording, and unreconciled no-test-environment versus test-endpoint example.
+
+
+- [[source-adyen-docs-payment-methods-payme-android-drop-in]] — 2026-09-15 Android Drop-in PayMe app-redirect guide (4.0.0+), with Advanced-flow prerequisites, redirect handoff and sandbox expiry mappings; examples conflict on channel and return-URL casing.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-web-drop-in]] — 2026-09-15 Web Drop-in Sessions/Advanced redirect add-on, with Sessions issuer configuration, optional import, test/live gates and a templated Advanced prerequisite link.
+
+
+- [[source-adyen-docs-payment-methods-payme-ios-component]] — 2026-09-15 PayMe iOS Components v4+ add-on for Sessions/Advanced flows, with version-specific InstantPaymentComponent examples and sandbox outcome simulation.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-web-component]] — 2026-09-15 Thailand online-banking Web Components Sessions/Advanced redirect add-on using `MolPayEBankingTH`, with optional issuer UI configuration, Sessions Checkout API v68+ and separate live request.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-web-component]] — 2026-09-15 FPX Malaysia Web Components add-on for Sessions (Checkout API v68+) and Advanced, with redirect, issuer configuration and separate test/live-request instructions.
+
+
+- [[source-adyen-docs-payment-methods-payme-web-drop-in]] — 2026-09-15 PayMe Web Drop-in 5.56.0+ add-on for desktop QR/mobile app routing, Sessions/Advanced paths and sandbox outcome fixtures, with conflicting mobile example `channel` values.
+
+
+- [[source-adyen-docs-payment-methods-payme-web-component]] — 2019-modified PayMe Web Components guide for desktop QR/mobile app redirect, 5.56.0+ support, versioned construction and sandbox expiry/result mappings; mobile channel examples disagree and live outcome is not shown.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-api-only]] — 2026-09-15 Alipay+ Advanced API-only aggregator/redirect guide: generic request versus wallet-specific details/webhook, channel-dependent entry, unsupported tokenization and no TEST environment; details-caller and examples conflict in source.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-android-component]] — 2026-09-15 FPX Malaysia Android InstantPaymentComponent Sessions (Checkout API v68+) and Advanced redirect add-on, with test issuer IDs and separate live-request gate; outcome details remain base-flow authority.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus-android-component]] — 2026-09-15 Alipay+ Android `InstantPaymentComponent` add-on for Sessions v68+ or Advanced redirect flows, with Compose/non-Compose setup, no test environment and an unresolved Alipay-versus-Alipay+ live-request label.
+
+
+- [[source-adyen-docs-payment-methods-payme-api-only]] — 2019-modified, 2026-09-15-captured HK/HKD PayMe API-only desktop QR and mobile app-redirect guide (Checkout API v67+), with webhook-final authorization, sandbox expiry and sample request differences qualified.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-api-only]] — 2026-09-15 FPX Malaysia Web API-only MY/MYR issuer-list and redirect guide; issuer/no-extra-parameter and PHP type/example conflicts remain qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-api-only]] — 2026-09-15 Thailand online-banking Web API-only Advanced guide for TH/THB issuer selection, redirect/details handling and webhook-qualified pending results, with request prose/example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-payme]] — 2026-09-15 PayMe overview with Hong Kong entity and HK/HKD scope, QR/app handoff, capability matrix and Web/native/API-only guide routes; execution details require the linked guides.
+
+
+- [[source-adyen-docs-payment-methods-alipay-plus]] — 2026-09-15 Alipay+ cross-border 11-wallet redirect-network overview with dated capability marks, wallet-specific onboarding review and a TrueMoney Support-form exception; no merchant or wallet-level enablement proof.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand]] — 2026-09-15 RMS/MOLPay-partnered TH/THB online-banking redirect overview with asynchronous webhook-final result, historical negative capability marks and Web/native/API-only/Pay by Link routes.
+
+
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia]] — FPX Online Banking Malaysia overview (webpage, 2026-10-25): MY/MYR redirect, asynchronous webhook result and historical capability matrix.
+
+
 - [[source-adyen-docs-payment-methods-napas-card-web]] — 2026-09-15 Napas card Web chooser for Drop-in and Components child guides plus general Web docs; version, payment flow, eligibility and outcomes require child evidence.
 
 

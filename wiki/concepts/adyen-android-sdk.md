@@ -64,6 +64,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-alipay-plus-android-component]] — Alipay+ Android redirect Components guide for existing Sessions/Advanced integrations with Compose or view attachment and unspecified SDK dependency versions (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-online-banking-thailand-android-component]] — 2026-09-15 Android `MolpayComponent` Sessions/Advanced guide for Online banking Thailand redirect setup, version-qualified prerequisites, Compose/View integration and TEST/live gates.
+
+
 - [[source-adyen-docs-payment-methods-napas-card-android-component-earlier-versions]] — historical v4.x.x Advanced Android Redirect Component guide for Napas card, with unresolved `momo_atm` method-type wording and webhook result boundaries.
 
 

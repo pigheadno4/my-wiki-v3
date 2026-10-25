@@ -70,6 +70,9 @@ The release updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the de
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-react-native-component]] — FPX Malaysia React Native Components Advanced-only method guide with redirect prerequisite and separate test/live gates (2026-09-15 snapshot); its base-guide label/URL conflict remains in the source.
+
+
 - [[source-adyen-docs-payment-methods-google-pay-react-native-drop-in]] — 2026-09-15 Google Pay React Native Drop-in add-on for existing setup, optional wallet fields, tokenization routes and TEST/LIVE gates; no SDK version or payment outcome is established, and its environment row repeats the TEST constant for live.
 
 

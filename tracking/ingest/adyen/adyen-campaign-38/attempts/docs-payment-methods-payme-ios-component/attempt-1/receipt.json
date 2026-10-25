@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-payme-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayMe iOS Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payme/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/payme/ios-component/2026-09-15.md\"\ntags: [adyen, payme, ios, components, redirect, online-payments]\n---\n\n## Overview\n\nThis [[adyen]] page, captured 2026-09-15, explains how to add PayMe to an existing **iOS Components** integration. The Component renders PayMe in the payment form and redirects the shopper to the PayMe app. It says PayMe is supported from iOS Components **v4.0.0**. This is integration guidance, not evidence of current merchant eligibility or an observed payment outcome. See [[adyen-online-payments]] and raw lines 15\u201323.\n\n## Key takeaways\n\n- Start with an existing iOS Components **Sessions** or **Advanced** server-side flow and add PayMe in the Customer Area. The page calls `/sessions` the default with Components **v5.0.0+**; its `/payments` tab is for an additional use case. These are flow and SDK qualifications, not a Checkout API minimum. See raw lines 25\u201371.\n- Its endpoint tables list `channel` and optional line-item fields. `lineItems.sku` is available with Checkout API **v70+**; this field-specific condition should not be applied to PayMe integration generally. The illustrative `/payments` request uses `paymentMethod.type: payme`, HK/HKD, `channel: iOS`, a `returnUrl` and line items. The code fence is marked `swift` but contains JavaScript `require('@adyen/api-library')`; treat it as an inconsistent example, not executable Swift. See raw lines 47\u2013108.\n- For Components **v5.0.0+**, both Sessions and Advanced examples find `.other(\"payme\")`, construct `InstantPaymentComponent`, set the corresponding delegate (`session` or `self`) and call `initiatePayment()`. The **v4.x.x** example instead constructs `InstantPaymentMethod` and passes `paymentData: nil` plus `apiContext`. Use the matching flow/version example; app redirection is an intermediate shopper action, and the page points to the base integration guide for payment outcome handling. See raw lines 110\u2013159.\n- In the PayMe **sandbox**, the page says no PayMe app is needed. Amount endings `30`/`81`, `77`/`90`, and `40`/`44` simulate `Authorised`, `OfferCancelled` after PayMe's default **ten-minute** expiry, and payment-request creation `Error`, respectively. These are sandbox simulation rules, not proof of live authorization, capture or settlement. See raw lines 161\u2013171.\n\n## Detail locators\n\n- Scope, supported Components version and flow/setup prerequisites: raw lines 15\u201341.\n- `/sessions` and `/payments` optional parameter tables, Checkout API v70+ `sku` qualification, and illustrative request: raw lines 43\u2013108.\n- v5+ Sessions/Advanced and v4.x.x configuration snippets: raw lines 110\u2013159.\n- Sandbox amount-outcome table and default expiry statement: raw lines 161\u2013171.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-payme]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payme/ios-component/2026-09-15|PayMe iOS Component guide \u2014 captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayMe is supported from iOS Components version 4.0.0.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "Before you begin, [add PayMe in your Customer Area]",
+      "location": "raw line 34"
+    },
+    {
+      "text": "Available if you use Checkout API v70 and later.",
+      "location": "raw line 55"
+    },
+    {
+      "text": "component.delegate = session",
+      "location": "raw line 129"
+    },
+    {
+      "text": "You do not need to use the PayMe app to test using the sandbox.",
+      "location": "raw line 163"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payme-ios-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payme-ios-component]] \u2014 2026-09-15 PayMe iOS Components v4+ add-on for Sessions/Advanced flows, with version-specific InstantPaymentComponent examples and sandbox outcome simulation.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payme/ios-component/2026-09-15.md",
+  "raw_sha256": "b3c7865cf7f0ab0f5728f53d054b14bead58752b2ec46915e0dc4c223d433bf2",
+  "status": "candidate_ready"
+}

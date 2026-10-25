@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-online-banking-thailand-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Thailand for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-thailand/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-thailand/api-only/2026-09-15.md\"\ntags: [adyen, online-banking, thailand, api-only, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds Thailand online banking to an existing Adyen Web API-only Advanced-flow integration. It covers bank/issuer selection, TH/THB method discovery, a redirect payment request, return handling through `/payments/details`, and webhook-qualified outcomes. It is a method supplement, not a standalone integration. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The merchant needs an existing API-only integration that handles `action.type: redirect`, and must add Online banking Thailand in Customer Area. The merchant-built form shows available banks, then sends the selected bank's issuer ID to the server. The page lists five issuer IDs and says the `/paymentMethods` response can supply the issuer list. See raw lines 23\u201356.\n- Method discovery requests specify `countryCode: TH` and `amount.currency: THB`; the example `/paymentMethods` result has type `molpay_ebanking_TH` and an `issuers` array. The v72 TEST endpoint and language-library versions are examples, not stated minimums. See raw lines 58\u201385 and 343\u2013378.\n- The `/payments` table names `paymentMethod.type: molpay_ebanking_TH`, `paymentMethod.issuer` for the selected bank, and `returnUrl` required only for issuer redirect, not QR-code flow. The shown request includes all three and returns `RedirectShopper` with a `redirect` action. The page demonstrates issuer redirect; it does not describe a full QR-code flow. See raw lines 380\u2013415 and 715\u2013729.\n- After redirecting to `action.url`, the merchant posts the URL-decoded `redirectResult` to `/payments/details`. Its `resultCode` can be Authorised, Cancelled, Error, Pending/Received or Refused. For Pending/Received, final network confirmation may take minutes or hours and the final result arrives in an AUTHORISATION webhook; if the shopper does not return, wait for webhooks. A redirect or return alone is not final authorization. See raw lines 731\u2013791.\n- The How it works text calls for item information, yet the `/payments` section says no parameters are needed before listing method fields; its examples contain no item fields. The PHP payment sample uses `setType(\"TH\")` where the parameter table and JSON/Node/Go examples use `molpay_ebanking_TH`. Treat these as unresolved prose/example conflicts, not as alternative proven request schemas. See raw lines 31\u201335, 380\u2013390, 402\u2013415, 477\u2013480 and 562\u2013565.\n- Test guidance uses available issuer IDs and Customer Area Payment list; a separate request in live Customer Area is required before live acceptance. The test paragraph calls it an Online banking Thailand Component despite this API-only title, so do not infer Component requirements from that wording. See raw lines 793\u2013799.\n\n## Detail locators\n\n- Prerequisites, five-bank form and TH/THB discovery: raw lines 23\u201365.\n- Method discovery examples and response: raw lines 67\u2013378.\n- `/payments` request/response and sample inconsistency: raw lines 380\u2013729.\n- Return, result-code, asynchronous webhook and live-request instructions: raw lines 731\u2013799.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online-payments concept.\n- [[adyen]] \u2014 provider entry.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-thailand/api-only/2026-09-15|Online banking Thailand for API only (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "After the shopper selects a bank, pass the corresponding **Issuer** value to your server.",
+      "location": "raw line 42, Build your payment form"
+    },
+    {
+      "text": "| [countryCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-countryCode)         | **TH**  |",
+      "location": "raw line 64, paymentMethods parameter table"
+    },
+    {
+      "text": "You do not need to add any parameters when you [make a payment]",
+      "location": "raw line 382, payments section"
+    },
+    {
+      "text": "Required only for Issuer-redirect flow. Not required for QR code flow.",
+      "location": "raw line 389, payments parameter table"
+    },
+    {
+      "text": "You will receive the final result of the payment in an [AUTHORISATION webhook]",
+      "location": "raw line 783, Pending or Received result row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-online-banking-thailand-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-thailand-api-only]] \u2014 2026-09-15 Thailand online-banking Web API-only Advanced guide for TH/THB issuer selection, redirect/details handling and webhook-qualified pending results, with request prose/example conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-thailand/api-only/2026-09-15.md",
+  "raw_sha256": "ffe7638010c43c9bb09499a85218940281970955985397165925370f54f93231",
+  "status": "candidate_ready"
+}

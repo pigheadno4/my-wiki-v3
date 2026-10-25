@@ -1,0 +1,9 @@
+# FPX Malaysia Android Drop-in retrieval questions
+
+## Q1: What is this guide's purpose and scope, and what cannot be inferred?
+
+It is a 2026-09-15 method-specific add-on for an existing Adyen Android Drop-in integration, split by Sessions and Advanced server-side flows (pinned raw lines 15–25, 58–60). Its no-extra-field statements do not replace the base flow's ordinary request requirements (lines 38–46, 74–78), and the guide does not prove merchant enablement or payment success. Canonical source stem: `source-adyen-docs-payment-methods-fpx-online-banking-malaysia-android-drop-in`. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-fpx-online-banking-malaysia-android-drop-in.md` → pinned raw.
+
+## Q2: What are the central capabilities, prerequisites, and warnings?
+
+Sessions needs existing Android Drop-in Sessions integration, Checkout API v68+, and Customer Area method setup (raw lines 29–34), with no extra `/sessions` fields or FPX configuration (lines 38–46). Advanced needs existing Android Drop-in Advanced integration, redirect handling for `action.type: redirect`, and Customer Area setup (lines 60–66), with no extra FPX configuration or `/payments` fields (lines 68–78). Both test sections refer to issuer IDs available for the Online Banking Malaysia Component for the applicable country/region but do not list them, and both require a separate live Customer Area request before accepting live payments (lines 50–56, 80–86). These instructions do not prove a final payment outcome. Canonical source stem: `source-adyen-docs-payment-methods-fpx-online-banking-malaysia-android-drop-in`. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → source → pinned raw.

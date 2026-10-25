@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-online-banking-thailand-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Thailand Android Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-thailand/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md\"\ntags: [adyen, online-banking-thailand, android, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide gives method-specific additions for Online banking Thailand in an existing Android Components integration, separately for Sessions and Advanced flow. It covers the `MolpayComponent`, optional submit-button visibility, redirect prerequisites and TEST/live steps. It is not a complete integration guide or proof of current bank, issuer or merchant eligibility, or a completed payment. See [[adyen]] and [[adyen-android-sdk]].\n\n## Key takeaways\n\n- Sessions requires an existing Android Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Online banking Thailand added in Customer Area. The page adds no method-specific fields to the base `/sessions` request. Advanced requires an existing Android Components Advanced integration, additional-action handling for the same redirect action, and Customer Area setup; it adds no method-specific fields to the base `/payments` request. The v68+ line is stated for Sessions here, not as an Advanced-flow minimum.\n- Import `com.adyen.checkout:molpay:YOUR_VERSION`; the Jetpack Compose examples also import `components-compose`. The Component class is `MolpayComponent` with `PaymentMethodTypes.MOLPAY_THAILAND`. Sessions gets the method from `checkoutSession`; Advanced filters the merchant's `/paymentMethods` response. Compose uses `AdyenComponent` and a distinct key when a new Component must be created for a different screen or payment session; non-Compose attaches the Component to a view.\n- `setSubmitButtonVisible` is an optional configuration: `false` hides the button and the stated default is `true`. The adjacent Kotlin configuration snippets contain an extra nested brace and placeholder `value`; treat them as illustrative, not complete compile-ready configuration.\n- For testing, the page says to use an issuer ID available for the Component in the respective country/region and inspect payment status in the Adyen test Customer Area. Live Online banking Thailand acceptance requires a separate request in the live Customer Area. The page names neither a fixed issuer catalog nor a currency, and it does not define final authorization, capture or settlement behavior. Redirect setup, Component rendering and a shopper return alone are not payment-outcome proof.\n\n## Detail locators\n\n- Sessions prerequisites, no-extra-fields base request, imports and optional configuration: pinned raw lines 25\u201387.\n- Sessions Compose/non-Compose launch and `MOLPAY_THAILAND` selection: pinned raw lines 89\u2013142.\n- Sessions test/live steps: pinned raw lines 144\u2013150.\n- Advanced prerequisites, imports and optional configuration: pinned raw lines 152\u2013205.\n- Advanced Compose/non-Compose launch from `/paymentMethods`, no-extra-fields `/payments` statement and test/live steps: pinned raw lines 207\u2013276. The Advanced `paymentMethod` lookup can return no match in the example; the page supplies no method-specific fallback or result handling here.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 native Component and server-flow boundaries\n- [[adyen-online-payments]] \u2014 Sessions, Advanced and redirect outcome concepts\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15|Online banking Thailand Android Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "| **Checkout API**      | Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md:34"
+    },
+    {
+      "text": "| **Redirect handling** | Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md:35"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md:42"
+    },
+    {
+      "text": "To [create the Component](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#launch-and-show) for Online banking Thailand, use the `MolpayComponent` class.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md:93"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Components#make-a-payment).",
+      "location": "raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md:268"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "online-banking-thailand-android-component-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-thailand-android-component]] \u2014 2026-09-15 Android `MolpayComponent` Sessions/Advanced guide for Online banking Thailand redirect setup, version-qualified prerequisites, Compose/View integration and TEST/live gates.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-thailand/android-component/2026-09-15.md",
+  "raw_sha256": "13e8130d99a986bf65bd4ccbfde4a8ac2f064300db59b6fd29e7d46129156433",
+  "status": "candidate_ready"
+}

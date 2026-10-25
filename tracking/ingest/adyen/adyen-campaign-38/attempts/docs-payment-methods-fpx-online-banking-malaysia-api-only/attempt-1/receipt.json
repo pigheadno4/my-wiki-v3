@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-fpx-online-banking-malaysia-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"FPX Online Banking Malaysia for API only\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/fpx-online-banking-malaysia/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md\"\ntags: [adyen, fpx, malaysia, online-banking, api-only]\n---\n\n## Overview\n\nAdyen's 2026-09-15 FPX Online Banking Malaysia API-only guide adds bank selection and redirect payment to an existing **Web API-only Advanced-flow** integration. It documents MY/MYR method discovery, FPX issuer IDs and a server payment request, with the base integration handling the redirect. The snapshot does not prove current bank availability, merchant eligibility or a completed transfer. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The page requires an existing API-only integration with `action.type: redirect` handling and FPX added in Customer Area. `/paymentMethods` discovery uses `countryCode: MY` and `amount.currency: MYR`; the example response type is `molpay_ebanking_fpx_MY` with `issuers`. Examples use Checkout v72 TEST and `shopperLocale: my-MY`, but example availability is not merchant enablement proof. [Raw lines 23\u201329, 71\u201399, 356\u2013374]\n- **Bank selection:** The merchant-built form must show the bank list; the selected bank's Issuer ID passes to the server for payment. The page says all listed issuers must be included on checkout to comply with PayNet local regulations. Its list names 18 banks and IDs; refer to raw lines 42\u201367 for the exact snapshot list rather than treating it as a current bank roster. [Raw lines 38\u201369]\n- **Request conflict:** Most examples use `paymentMethod.type: molpay_ebanking_fpx_MY` plus `issuer` (for example `fpx_abb`), MYR amount, reference, return URL and merchant account. The page nevertheless says no additional `/payments` parameters are needed, and its \u201chow it works\u201d step mentions purchased-item information that is absent from the examples. The PHP example also sets type `fpx_MY`, unlike discovery and most other examples. Preserve these prose/example/type differences; do not infer an item schema or silently normalize the PHP type. [Raw lines 31\u201336, 376\u2013403, 465\u2013476, 545\u2013557, 617\u2013629]\n- **Redirect and environments:** An example `/payments` response has `RedirectShopper` and `action.type: redirect`; the existing API-only flow handles the action. The testing section suggests using available issuer IDs to exercise different test results and checking Customer Area, but calls this an \u201cOnline banking Malaysia Component\u201d despite this being an API-only page. Live acceptance requires a request in the live Customer Area. A redirect, issuer selection, shopper return, or test request is not final authorization, capture or settlement. [Raw lines 703\u2013725]\n\n## Detail locators\n\n- Complete request examples and SDK-specific variants: discovery raw lines 80\u2013354; payment raw lines 380\u2013701. The example response includes a JavaScript-style comment inside a JSON fence, so it is illustrative rather than strict JSON. [Raw lines 356\u2013374]\n- No FPX-specific final result-code/webhook sequence, expiry, retry, tokenization, cancellation or refund route is defined here; use separately read outcome authority before asserting those behaviors.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15|FPX Online Banking Malaysia API only (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "All issuers in this list must be included on your checkout to be compliant with PayNet local regulations.",
+      "location": "raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md:44"
+    },
+    {
+      "text": "\"type\": \"molpay_ebanking_fpx_MY\"",
+      "location": "raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md:363"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment]",
+      "location": "raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md:378"
+    },
+    {
+      "text": "->setType(\"fpx_MY\")",
+      "location": "raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md:467"
+    },
+    {
+      "text": "Before you can accept live Online banking Malaysia payments, you need to",
+      "location": "raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md:725"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "fpx-malaysia-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-api-only]] \u2014 2026-09-15 FPX Malaysia Web API-only MY/MYR issuer-list and redirect guide; issuer/no-extra-parameter and PHP type/example conflicts remain qualified in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page requires a selected issuer despite saying no additional /payments parameters; PHP type fpx_MY differs from discovery and most examples."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/fpx-online-banking-malaysia/api-only/2026-09-15.md",
+  "raw_sha256": "999ed3f4e0b0440b883ad16996d38c655fa9e62e2800a0ceeecacd3627b968ce",
+  "status": "candidate_ready"
+}

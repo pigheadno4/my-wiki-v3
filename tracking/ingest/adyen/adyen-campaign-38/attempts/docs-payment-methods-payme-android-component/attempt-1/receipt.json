@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-payme-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayMe Android Redirect Component guide\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payme/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/payme/android-component/2026-09-15.md\"\ntags: [adyen, payme, android, component, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes adding PayMe to an existing Android Components integration with the Redirect Component. It says to show PayMe in the payment form, redirect the shopper to the PayMe app, and handle the redirect result when the shopper returns. PayMe is stated as supported from Android Components 4.0.0. The shown `Authorised` response is an example, not evidence of an actual payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Before integration, the page says to add PayMe in the **test** Customer Area. For `/paymentMethods`, it specifies `countryCode: HK` and `amount.currency: HKD`, and says the response contains `paymentMethod.type: payme`.\n- At payment creation, its table marks `paymentMethod.type: payme` and `returnURL` required, and says to get the return URL from `RedirectComponent.getReturnUrl(context)`. The example uses `returnUrl` instead of table `returnURL`; preserve that casing conflict. The table also lists `channel` and `lineItems` subfields with blank Required cells. Its `lineItems.quantity` description says number, while the example passes string `\"1\"`.\n- The `/payments` example is JavaScript/Node-style code inside a `kotlin` fence, so its language label should not be treated as a runnable Kotlin example. A sample response shows `RedirectShopper` with redirect action, PayMe URL, and an illustrative `expiresAt`. The action is passed to the client Redirect Component. After shopper return, the page calls for a server-side POST to `/payments/details` with `actionComponentData.details`; the response's `resultCode` is used to present a result. A sample `Authorised` response does not prove a real authorization, and the final Android Components guide link points to a Sessions-flow URL although this page's procedural example uses `/payments` and `/payments/details`.\n- The PayMe sandbox does not require the PayMe app. Amount endings 30/81 simulate `Authorised`, 77/90 `OfferCancelled` after the stated default ten-minute expiry, and 40/44 request-creation `Error`. These are sandbox fixtures, not live outcome proof.\n\n## Detail locators\n\n- Redirect Component scope, Android Components minimum, and prerequisites: pinned raw lines 15\u201331; method discovery: lines 33\u201342.\n- Required payment fields, casing conflict, and example language/sample: lines 44\u201393; redirect response and client handoff: lines 95\u2013115; return details and response example: lines 117\u2013152.\n- Sandbox result mapping and see-also links: lines 154\u2013170.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-payme]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payme/android-component/2026-09-15|PayMe Android Redirect Component, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayMe is supported from Android Components version 4.0.0.",
+      "location": "raw/adyen/docs/payment-methods/payme/android-component/2026-09-15.md:24"
+    },
+    {
+      "text": "[countryCode](https://docs.adyen.com/api-explorer/PaymentSetupAndVerificationService/latest/paymentMethods): **HK**.",
+      "location": "raw/adyen/docs/payment-methods/payme/android-component/2026-09-15.md:39"
+    },
+    {
+      "text": "`returnURL`",
+      "location": "raw/adyen/docs/payment-methods/payme/android-component/2026-09-15.md:51"
+    },
+    {
+      "text": "After the shopper returns to your app, make a POST [/payments/details]",
+      "location": "raw/adyen/docs/payment-methods/payme/android-component/2026-09-15.md:121"
+    },
+    {
+      "text": "| 77 or 90         | OfferCancelled | The payment request expired after PayMe's default expiry time of ten minutes.",
+      "location": "raw/adyen/docs/payment-methods/payme/android-component/2026-09-15.md:163"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-payme-android-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payme-android-component]] \u2014 2026-09-15 PayMe Android Redirect Component v4.0.0+ guide for HK/HKD discovery, redirect return and `/payments/details`, with return-URL casing and sample-language conflicts plus sandbox outcome fixtures.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The required-field table spells returnURL (raw line 51) while the example uses returnUrl (line 81); do not silently normalize as if the source resolved it.",
+          "The payment example is fenced as kotlin but contains Node/JavaScript require and CheckoutAPI code (raw lines 61\u201393). The final guide link is to Sessions (line 152) although the procedure shows /payments and /payments/details.",
+          "The example RedirectShopper and Authorised responses (raw lines 95\u2013150) and amount-ending mappings (lines 156\u2013164) are examples/sandbox fixtures, not live payment or settlement evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payme/android-component/2026-09-15.md",
+  "raw_sha256": "6504ff9d2cc0026b726a8f1d51c9c9a47316bcf8081408dc617d05de32f64b42",
+  "status": "candidate_ready"
+}

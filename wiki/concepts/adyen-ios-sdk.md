@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-alipay-plus-ios-drop-in]] — 2026-09-15 Alipay+ iOS Drop-in Sessions/Advanced add-on with Advanced redirect, no TEST environment and an unresolved Alipay-versus-Alipay+ live-request label.
+
+
 - [[source-adyen-docs-payment-methods-momo-wallet-ios-drop-in]] — 2026-09-15 MoMo iOS Drop-in Sessions/Advanced guide for base setup, Advanced redirect handling, recurring-token fields and test/live prerequisites.
 
 

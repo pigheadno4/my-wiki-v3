@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-payme-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayMe Web Component\"\ntype: source\ndate_ingested: 2026-10-25\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payme/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/payme/web-component/2026-09-15.md\"\ntags: [adyen, payme, web-components, qr-code, redirect, online-payments]\n---\n\n## Overview\n\nThis 2019-modified, 2026-09-15-captured guide describes adding PayMe QR to an existing Adyen Web Components integration. It differentiates desktop QR scanning from mobile PayMe-app redirect and gives Sessions/Advanced, versioned Component, and sandbox examples. It does not show a real authorized or settled payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Device and integration scope:** on desktop/laptop, the Component shows a QR code to scan with the PayMe app; on mobile browser, it redirects to the app. The guide says to implement both device flows and states PayMe support begins at Web Components **5.56.0**. Sessions and Advanced paths each require an existing Web Components integration and PayMe added in Customer Area. (raw lines 19\u201346)\n- **Versioned Component construction:** for Web Components v6, the page imports `AdyenCheckout` and `PayMe` and later uses `new PayMe(checkout).mount(...)`; for v5.x.x or earlier, it shows `checkout.create('payme').mount(...)`. The \u201cv5.x.x or earlier\u201d snippet must be read with the page's 5.56.0 PayMe-support floor; it does not establish support in versions below that floor. The v6 import link targets an `integration=Drop-in` URL despite this Components guide. (raw lines 28, 48\u201354, 228\u2013258)\n- **API table and examples:** the page lists `channel` and `lineItems` fields for both `/sessions` and `/payments`; the Required column is blank, so it does not mark those table entries required. `lineItems.sku` is stated as available with Checkout API v70+. The sessions tab calls that endpoint the Components v5.0.0+ default, a generic integration statement that does not override PayMe's 5.56.0 support floor. The illustrated `/v72/payments` TEST requests use `payme`, HK/HKD and line items, but are examples rather than a universal API minimum or live eligibility proof. (raw lines 56\u201384, 86\u2013224)\n- **Example conflict and outcome boundary:** the mobile curl example sets `channel: \"Web\"`, while the mobile NodeJS example uses `\"Web/iOS/Android\"`; the guide does not reconcile them. It sends payment-outcome handling to the main Web Components guide. A QR display, app redirect, request or return is not final payment proof. (raw lines 156\u2013226)\n- **Sandbox cases:** the PayMe sandbox does not require the PayMe app, and amount endings are documented to simulate `Authorised` (30/81), `OfferCancelled` after PayMe's default ten-minute expiry (77/90), or request-creation `Error` (40/44). These are simulator mappings, not observed production outcomes or authorization to transact. The page gives no separate live-enablement procedure. (raw lines 260\u2013270)\n\n## Detail locators\n\n- Desktop QR/mobile app paths, Web support floor and integration prerequisites: raw lines 19\u201346.\n- v6 import and v6/v5 Component construction: raw lines 48\u201354, 228\u2013258.\n- API tables, v70+ SKU gate and TEST examples: raw lines 56\u2013224.\n- Conflicting mobile channel snippets and outcome-route link: raw lines 156\u2013226.\n- Sandbox amount-ending outcomes and ten-minute expiry: raw lines 260\u2013270.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payme/web-component/2026-09-15|Adyen PayMe Web Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Shows the shopper a QR code which they can scan to pay using their PayMe app.",
+      "location": "raw line 23"
+    },
+    {
+      "text": "PayMe is supported from Web Components version 5.56.0.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "Available if you use Checkout API v70 and later.",
+      "location": "raw line 68"
+    },
+    {
+      "text": "\"channel\":\"Web/iOS/Android\"",
+      "location": "raw line 213"
+    },
+    {
+      "text": "The payment request expired after PayMe's default expiry time of ten minutes.",
+      "location": "raw line 269"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c38-payme-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payme-web-component]] \u2014 2019-modified PayMe Web Components guide for desktop QR/mobile app redirect, 5.56.0+ support, versioned construction and sandbox expiry/result mappings; mobile channel examples disagree and live outcome is not shown.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Mobile curl and NodeJS examples give different channel values (raw lines 176 and 213).",
+          "The v5.x.x or earlier construction snippet is constrained by the page's 5.56.0 PayMe support floor; v6 import link points to Drop-in (raw lines 28, 50, 252\u2013258)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payme/web-component/2026-09-15.md",
+  "raw_sha256": "def0195f21b2d8a5e47e37231af4622f3fac1bf41fb16edc83e022f48e986e89",
+  "status": "candidate_ready"
+}
