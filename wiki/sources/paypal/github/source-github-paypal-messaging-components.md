@@ -2,9 +2,13 @@
 title: "GitHub: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-10-15
+date_updated: 2026-10-25
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json"
+  - "github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json"
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json"
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json"
@@ -18,7 +22,7 @@ tags: [paypal, pay-later, paypal-credit, messaging, javascript, github-repositor
 
 `paypal/paypal-messaging-components` implements PayPal Credit and Pay Later promotional messaging for merchant websites. This cumulative page begins with package-qualified baseline `@paypal/messaging-components@1.95.1` at exact SHA `2bdaf940cdb0dcd29a8a3bc992eea975798d6d00`.
 
-The latest locally ingested release here is `@paypal/messaging-components@1.99.0`, released October 8, 2026, at `6c5b6649b08abbfd47e9e35029823bc278b4bb74`. It forwards prequalification amount context and changes calculator labels, offer headings and legacy disclaimer deduplication. The `1.95.1` baseline and `1.96.0` through `1.98.0` history below remain preserved. This is not a live upstream-latest or hosted-rollout assertion.
+The latest locally ingested release here is `@paypal/messaging-components@1.101.0`, released October 22, 2026, at `f1092bb9c89377399bed184a786fde81bfa8b901`. It adds TikTok PayLater information sections, with an approved exact-SHA component/style supplement. The `1.95.1` baseline and all intervening release history below remain preserved. This is not a live upstream-latest or hosted-rollout assertion.
 
 Repository: <https://github.com/paypal/paypal-messaging-components>
 
@@ -294,9 +298,54 @@ The package manifest changes only its version; dependencies and scripts are unch
 
 Assembly `@paypal/sdk-release@5.0.582` independently pins this exact component version; this ingest closes its earlier component-reading gap, not proof of deployment. See [[source-github-paypal-sdk-release]] and [[changelog-github-paypal-sdk-release]].
 
+## `1.99.1` Credit Warnings, Tile Markup And Apple-Wallet Copy
+
+Delta ingested 2026-10-25 after `1.99.0`, SHA `a85a51e837f8e4cccaacb5519a30b255285ea4ec`: 15 retained files modified, 711 unchanged, no additions/removals. Package changes only its version; dependencies and scripts are unchanged.
+
+AT/DE Pay Monthly, Pay in 30 and product-list content adds PayPal attribution and credit warnings, simplifies disclosures and revises terms-link labels. Austrian Pay Monthly disclosure values change from strings to link-bearing arrays. Removed local-account/SEPA-required wording and APR detail are copy changes, not evidence that eligibility or financing rules changed. PayIn1 now conditionally renders supplied `creditWarning` and adds the `pay-in-1` disclosure class; navigation and CTA handlers are unchanged.
+
+Tile removes the explicit header/body `aria-label` and removes `aria-hidden="true"` from its text column, exposing the visible header/body for accessible-name computation. The button type, view navigation and click callback are unchanged. This is authored semantic evidence, not a tested screen-reader result.
+
+The two US Apple-wallet PL2GO content records replace broad shopping wording with single-purchase in-store/online wording, explicitly mention adding an approved single-use virtual card to a digital wallet, and use Apple-BNPL-specific disclosure links. Existing inline-disclosure and dark-mode flags remain; no merchant Apple Pay API, provisioning method or new payment execution is established.
+
+Grounding in this snapshot's `files/`: `Tile.jsx` at `src/components/modal/v2/parts/` contains `<div className="tile__col">`; PayIn1 `Content.jsx` contains `creditWarning &&`; `content/modals/DE/long_term_en.json` contains `"creditWarning": "Caution! Borrowing money costs money.",`; Apple short-term content contains `"Use for a single purchase in-store or online.",`.
+
+Evidence: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.1/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.1/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.0--1.99.1/comparison.json), [details](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.0--1.99.1/comparison.md), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.0--1.99.1/diff.patch). The changed shared modal `_content.scss` remains policy-excluded; no visual, browser, screen-reader, build or hosted-rollout proof is claimed. All earlier history remains above.
+
+## `1.100.0` Inline-Handler Analytics, UK Campaign And Disclosures
+
+Delta ingested 2026-10-25 after `1.99.1`, SHA `ab6c48b676bfdc439cb128f0a36ba920a6cc10d2`: 36 retained files modified, 690 unchanged. Package changes only version; no dependency or script migration is established.
+
+`getInlineOptions()` records nonempty `data-pp-onclick`, `data-pp-onapply` and `data-pp-onrender` values in `inlineExpressionOnclickValue`, `inlineExpressionOnapplyValue` and `inlineExpressionOnrenderValue`, with an `inlineExpression` flag. Existing `new Function(nodeValue)` callback construction is not introduced by this release. The controller forwards these values to message props; each new Zoid prop is optional and `queryParam: false`. On readiness, the component copies them into `trackingDetails.INLINE_EXPRESSION*`, normalizing missing strings to empty strings, and includes trackingDetails through the existing logger meta builder. This establishes source-level logger metadata, not an observed network payload, server retention or privacy-compliance conclusion. Do not treat these fields as a required merchant integration API.
+
+UK Pay in 3/Pay in 30 message and modal content adds a first-use GBP15 cashback campaign. PayIn1/ShortTerm render `cashbackOffer` through existing `InlineLinks` only when supplied; existing CTA/prequalification behavior remains. Detailed copy describes a reward after 35 days, one per customer, a literal end date `07/01/27` or 140,000 redemptions, with external terms. These are versioned content, not verified current offers. GB mutation modules adjust wrap/fallback thresholds and logo placement; flex CSS changes headline/disclaimer sizes and responsive breaks. For example, the square banner uses 5vw at widths of at least 140px; 20x1 warnings/headlines use 1.2vw in narrow branches. No visual/readability result is inferred.
+
+> [!warning] Contradiction
+> UK headlines say `Spend £100+ and get £15 cashback`, while detailed modal copy specifies `a purchase of over £100`. Exact GBP100 eligibility is unresolved by this source; do not reconcile it without applicable terms evidence. The US Pay Monthly content adds AZ, MN, NJ and OR to the visible excluded-state list, but its screen-reader expansion omits Minnesota. Preserve both authored versions; do not promote this historical copy to current availability guidance. The same boundaries are recorded in [[paypal-pay-later]].
+
+French Pay Monthly/Pay in 4 disclosures replace URL-shaped link labels with readable localized labels and opening-context labels; French short-term content adds provider attribution. Eight US Pay Monthly content records expand the visible excluded-state list and remove the missed-payment credit-score sentence. Removing a sentence does not prove the underlying eligibility or credit-reporting rule changed. Shared modal `_content.scss` and ShortTerm SCSS changes remain outside the capsule.
+
+Grounding in this snapshot's `files/`: `src/utils/elements.js`, getInlineOptions, contains `expressionStyleHandlerValues[expressionValueKeyByAttribute[attributeName]] = nodeValue;`; `src/library/zoid/message/component.js`, onReady, contains `trackingDetails.INLINE_EXPRESSION = Boolean(inlineExpression);`; ShortTerm `Content.jsx` contains `<InlineLinks text={cashbackOffer} />`; `content/messages/GB/pi30q.json`, headline, contains `Pay in 30 days. New to Pay Later? Spend £100+ and get £15 cashback`.
+
+Evidence: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.100.0/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.100.0/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.1--1.100.0/comparison.json), [details](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.1--1.100.0/comparison.md), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.1--1.100.0/diff.patch). Earlier versions remain preserved; no runtime, payment or hosted-rollout test was run.
+
+## `1.101.0` TikTok Information Sections And Supplemental Rendering Evidence
+
+Delta ingested 2026-10-25 after `1.100.0`, SHA `f1092bb9c89377399bed184a786fde81bfa8b901`: four retained files modified, 722 unchanged. Three approved supplemental files close this release's missing InfoSection/style evidence without modifying the original snapshot or future capsule policy. Package changes only version.
+
+TikTok's US PLHub short-term content adds `spendingPowerSection` and `autopayMethodSection`. Spending-power text describes an estimate based on account data and sometimes bureau data, not a guaranteed credit line, and keeps loan approval separate. Autopay copy describes choosing or updating the repayment method inside the buyer's PayPal account, for one loan or all TikTok PayLater loans. This is explanatory content, not a merchant payment-method editing API. Disclosure text and the New Mexico link are revised; historical content does not establish current eligibility or legal guidance.
+
+ShortTerm renders each information section only if its corresponding content object exists, after offer terms inside the first content column. The supplemented `InfoSection.jsx` renders a wrapper, H2 headline and one paragraph per array element; a non-array `paragraphs` value renders no paragraph list. It inserts paragraph strings with `dangerouslySetInnerHTML` and has no local sanitizer. This establishes a source-level content-trust boundary, not an exploitable vulnerability, accepted arbitrary merchant HTML or runtime security proof. Existing payment/CTA/prequalification handlers are unchanged.
+
+The supplemental stylesheet specifies left alignment, wrapper margin 12px vertically, right padding 24px and left padding 37px under the tablet mixin. Headings are 18px/24px, bold; paragraphs are 14px/20px, with 12px bottom margins except the last. Both use the main text token and white under `.darkMode`. The style entry includes `components/info-section`, and the retained Modal imports that entry and inserts its CSS. Token values, the tablet breakpoint and compiled/hosted appearance remain outside this narrow supplement's proof. The later style entry does not retroactively establish the previously uncollected `1.97.0` aggregation file.
+
+Grounding: supplemented `InfoSection.jsx` contains `<h2 className="info-section__headline">{headline}</h2>` and `dangerouslySetInnerHTML={{ __html: paragraph }}`; supplemented `_info-section.scss` contains `padding-left: 37px;`; supplemented `styles/index.scss` contains `@use 'components/info-section';`; current TikTok content has `"headline": "TikTok Exclusive Spending Power",`.
+
+Evidence: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/comparison.json), [details](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/comparison.md), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/diff.patch), [supplement](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json), [attachment](tracking/github/repos/paypal/paypal-messaging-components/evidence-attachments/github-68fe35a7162ca6bf6502/attachment.json). Earlier version knowledge and raw evidence remain intact; no upstream build/browser/visual/screen-reader/payment test or hosted rollout was verified.
+
 ## Version-Qualified Use
 
-Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0` through `1.99.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
+Use this source and [[changelog-github-paypal-messaging-components]] for the `1.95.1` baseline and exact `1.96.0` through `1.101.0` changes. Earlier behavior remains version-qualified rather than overwritten by the newer release. Use official Pay Later documentation for current eligibility and product availability, [[source-github-paypal-js]] for loader and React contracts, and [[source-github-paypal-sdk-release]] for the version assembled into a particular combined SDK release.
 
 ## Related
 
@@ -307,6 +356,13 @@ Use this source and [[changelog-github-paypal-messaging-components]] for the `1.
 - Combined SDK bill of materials: [[source-github-paypal-sdk-release]]
 
 ## Raw Sources
+
+- `1.101.0`: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json), [ShortTerm](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/files/src/components/modal/v2/parts/views/ShortTerm/Content.jsx), [TikTok content](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/files/content/modals/US/PLHub/tiktok_paypal_pay_later_short_term_us.json).
+- `1.101.0` supplement: [manifest](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json), [InfoSection](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/files/src/components/modal/v2/parts/InfoSection.jsx), [component style](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/files/src/components/modal/v2/styles/components/_info-section.scss), [style entry](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/files/src/components/modal/v2/styles/index.scss), [attachment](tracking/github/repos/paypal/paypal-messaging-components/evidence-attachments/github-68fe35a7162ca6bf6502/attachment.json).
+
+- `1.100.0`: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json), [inline options](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/files/src/utils/elements.js), [message controller](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/files/src/library/controllers/message/interface.js), [message component](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/files/src/library/zoid/message/component.js), [UK offer](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/files/content/modals/GB/short_term.json), [US disclosure](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/files/content/modals/US/v2_long_term.json).
+
+- `1.99.1`: [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/manifest.json), [Tile](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/files/src/components/modal/v2/parts/Tile.jsx), [PayIn1](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/files/src/components/modal/v2/parts/views/PayIn1/Content.jsx), [DE content](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/files/content/modals/DE/long_term_en.json), [Apple short-term content](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/files/content/modals/US/PL2GO/apple_wallet_short_term.json).
 
 - `1.99.0` snapshot: `raw/github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json`
 - Release record and notes: `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/manifest.json`, `raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.0/2026-10-15/release-notes.md`

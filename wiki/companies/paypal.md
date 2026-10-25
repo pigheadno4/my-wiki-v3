@@ -327,8 +327,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-checkout-components]] — package-qualified checkout-components release ledger through `5.0.438`
 - [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` baseline through `5.0.583` component bill of materials and release/deployment workflow
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
-- [[source-github-paypal-messaging-components]] — web messaging through `1.99.0`: prequalification amount context, labels/headings and legacy disclaimer deduplication; earlier releases preserved
-- [[changelog-github-paypal-messaging-components]] — package-qualified Messaging Components ledger from `1.95.1` through `1.99.0`
+- [[source-github-paypal-messaging-components]] — web messaging through `1.101.0`: regional/campaign content, inline-handler tracking and TikTok InfoSection; earlier releases preserved
+- [[changelog-github-paypal-messaging-components]] — package-qualified Messaging Components ledger from `1.95.1` through `1.101.0`
 - [[source-github-react-paypal-js-v8]] — GitHub react-paypal-js v8 source: ScriptProvider internals, reducer state machine, Buttons lifecycle, CardFields architecture
 - [[source-paypal-expanded-checkout-integrate]] — Expanded Checkout integration: CardFields+Buttons, 3DS SCA, billing address submit, authorize routes
 - [[source-paypal-android-card-payments]] — Android SDK: CardClient, WebPayments, deprecated NativePayments, FraudProtection, 3DS SCA

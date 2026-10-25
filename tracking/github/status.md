@@ -75,6 +75,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.430/2026-09-01/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.429--5.0.430/comparison.json)
 
+## `github-07f67ad5af2e72a51938`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `ab6c48b676bfdc439cb128f0a36ba920a6cc10d2`
+- Collection date: `2026-10-25`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-07f67ad5af2e72a51938/packet.md)
+- Review priority: `normal`
+- Required reading: `26` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.100.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.100.0/2026-10-25/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.1--1.100.0/comparison.json)
+
 ## `github-08106ca1ff7a592595f2`
 
 - Repository: `paypal/paypal-sdk-release`
@@ -2236,6 +2261,32 @@
   Release: [manifest](../../raw/github/braintree/popup-bridge-android/releases/popup-bridge/5.3.0/2026-08-27/manifest.json)
   Comparison: Not applicable
 
+## `github-68fe35a7162ca6bf6502`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `f1092bb9c89377399bed184a786fde81bfa8b901`
+- Collection date: `2026-10-25`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-68fe35a7162ca6bf6502/packet.md)
+- Evidence attachment: [manifest](repos/paypal/paypal-messaging-components/evidence-attachments/github-68fe35a7162ca6bf6502/attachment.json)
+- Review priority: `normal`
+- Required reading: `17` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.101.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/comparison.json)
+
 ## `github-6a609899adaa579e3c22`
 
 - Repository: `paypal/paypal-sdk-release`
@@ -2260,6 +2311,31 @@
 - `@paypal/sdk-release@5.0.574` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.574/2026-10-04/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.573--5.0.574/comparison.json)
+
+## `github-6aa08be3dc8170c4205f`
+
+- Repository: `paypal/paypal-messaging-components`
+- SHA: `a85a51e837f8e4cccaacb5519a30b255285ea4ec`
+- Collection date: `2026-10-25`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-messaging-components/ingest-packets/github-6aa08be3dc8170c4205f/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/messaging-components@1.99.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.1/2026-10-25/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.0--1.99.1/comparison.json)
 
 ## `github-6c62ec29ee9438687187`
 

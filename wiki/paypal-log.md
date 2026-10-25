@@ -6,6 +6,22 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-25] ingest | Messaging Components `1.101.0`
+
+- Approved serial focused-reading delta `github-68fe35a7162ca6bf6502`, SHA `f1092bb9c89377399bed184a786fde81bfa8b901`, after completed `1.100.0`. Fully read changed source/content, comparison and prior affected view; all three supplemented source/style files and linked attachment read in full. Five located excerpts ground conditional InfoSection rendering, H2/raw-HTML semantics, tablet padding and style inclusion. Generated manifests/inventories and unchanged changelog suffix verified mechanically under the explicit exception.
+- Four modified retained files, 722 unchanged; 1,452 current/prior hashes/sizes, version-only package and supplement identity verified. Concept first, additive source/changelog/raw history, company/catalog/logs. Source_count 177 unchanged; no new concept/comparison. No build, browser, visual, screen-reader, payment execution, commit or push.
+- Serial close: all three releases completed in order after individual scoped checks. Five typed pages, whitespace, history/raw-reference preservation, local evidence links, catalog uniqueness and attachment checks pass. Global validator retains only 12 unrelated existing errors and zero pending items. Review: `tracking/github/repos/paypal/paypal-messaging-components/ingest-review-2026-10-25.md`. Next: report findings and await scoped publication approval.
+
+## [2026-10-25] ingest | Messaging Components `1.100.0`
+
+- Approved serial focused-reading delta `github-07f67ad5af2e72a51938`, SHA `ab6c48b676bfdc439cb128f0a36ba920a6cc10d2`, after completed `1.99.1`. Changed source/content, affected prior code and comparisons read; generated inventories/unchanged changelog suffix mechanically checked. Four exact excerpts ground inline handler capture, logger metadata and conditional campaign rendering. Concept-first source/history updates preserve all prior knowledge; UK threshold and US screen-reader-state contradictions remain explicit on concept/source.
+- Thirty-six modified retained files, 690 unchanged; 1,452 snapshot hashes/sizes and version-only package verified. Excluded modal SCSS and untested network/visual/hosted behavior remain limits. Source_count 177 unchanged; company/catalog/logs updated. No upstream execution, commit or push. Validate and complete before `1.101.0`.
+
+## [2026-10-25] ingest | Messaging Components `1.99.1`
+
+- Approved serial delta `github-6aa08be3dc8170c4205f`, SHA `a85a51e837f8e4cccaacb5519a30b255285ea4ec`, after `1.99.0`. Focused reading approved for all three pending releases: changed implementation/content and affected prior code read fully; inventories and unchanged changelog suffix checked mechanically. Four exact excerpts grounded the concept-first additive source/changelog edits. AT/DE warnings/disclosures, Tile accessible-name markup and Apple-wallet content recorded with eligibility/runtime/style limits explicit.
+- Fifteen modified retained files, 711 unchanged; all 1,452 prior/current file hashes and sizes verified, package version-only and historical changelog suffix unchanged. Prior wiki history/raw references and source_count 177 preserved. No new concept or comparison. No upstream execution, commit or push. Complete scoped validation before starting `1.100.0`.
+
 ## [2026-10-25] ingest | SDK release assembly `5.0.583`
 
 - Approved serial delta `github-23561d27ca73a6844368`, from `5.0.582`, exact SHA `b544787bd6b5df35e64b98bf91744b24d99cf34d`. Read both packet formats, all ten assigned paths (including complete cumulative source/changelog), and prior package. Four grounding excerpts: current `files/package.json` lines 70, 71, 76 and 78, recording Checkout `5.0.438`, Common `1.0.63`, Messaging `1.99.1`, SDK Client `4.0.205`.

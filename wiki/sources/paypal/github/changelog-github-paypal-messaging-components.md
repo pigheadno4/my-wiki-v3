@@ -2,9 +2,13 @@
 title: "GitHub changelog: paypal/paypal-messaging-components"
 type: source
 date_ingested: 2026-08-29
-date_updated: 2026-10-15
+date_updated: 2026-10-25
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json"
+  - "github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json"
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json"
+  - "github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-15-6c5b664/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-10-04-a639ec7/manifest.json"
   - "github/paypal/paypal-messaging-components/snapshots/2026-09-20-39769bc/manifest.json"
@@ -17,6 +21,30 @@ tags: [paypal, pay-later, paypal-credit, messaging, changelog, github-repository
 ## Overview
 
 Package-qualified release history for `paypal/paypal-messaging-components`. Durable implementation behavior belongs in [[source-github-paypal-messaging-components]]; this page records version transitions and their evidence.
+
+## `@paypal/messaging-components@1.101.0` (2026-10-22)
+
+- **Transition:** `1.100.0` -> `1.101.0`, SHA `f1092bb9c89377399bed184a786fde81bfa8b901`; approved serial focused-reading delta with exact-SHA three-file supplement, ingested 2026-10-25. Four retained files modified, 722 unchanged.
+- **Changes:** TikTok spending-power/autopay information, conditional ShortTerm InfoSection calls and revised disclosure. Supplement proves H2/paragraph rendering, raw HTML insertion, responsive/dark-mode rules and style-entry wiring.
+- **Impact/migration:** informational presentment, not a guaranteed credit line, new merchant editing API or payment integration. Local paragraph sanitization is absent; upstream trust/exploitability not established. Package version-only; no dependency migration. No compiled/hosted, browser, accessibility or payment test result.
+- **Updated:** additive source/history, supplement/raw navigation, concept, company/catalog/logs. Older history and the older disclosure-style boundary preserved.
+- **Evidence:** [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-f1092bb/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.101.0/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/comparison.json), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.100.0--1.101.0/diff.patch), [supplement](raw/github/paypal/paypal-messaging-components/supplements/2026-10-25-f1092bb-8f31dd39/manifest.json), [attachment](tracking/github/repos/paypal/paypal-messaging-components/evidence-attachments/github-68fe35a7162ca6bf6502/attachment.json). See [[source-github-paypal-messaging-components]].
+
+## `@paypal/messaging-components@1.100.0` (2026-10-22)
+
+- **Transition:** `1.99.1` -> `1.100.0`, SHA `ab6c48b676bfdc439cb128f0a36ba920a6cc10d2`; approved serial focused-reading delta, ingested 2026-10-25. Thirty-six retained files modified, 690 unchanged.
+- **Changes:** nonempty inline click/apply/render strings enter optional message props and logger trackingDetails; UK cashback content/conditional rendering and responsive mutation/CSS changes; FR readable disclosure links and US Pay Monthly copy.
+- **Impact/migration:** callback `new Function` behavior predates this delta. Source-level tracking metadata is not tested network/server behavior. No dependency or merchant API migration. UK GBP100+ versus over-GBP100 wording and US visible-MN versus absent Minnesota screen-reader expansion are unresolved source contradictions. Regional/campaign copy does not prove current terms or eligibility; excluded modal SCSS remains a limit.
+- **Updated:** additive source/history/raw references, concept, company/catalog/logs. All older version knowledge retained.
+- **Evidence:** [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-ab6c48b/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.100.0/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.100.0/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.1--1.100.0/comparison.json), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.1--1.100.0/diff.patch). See [[source-github-paypal-messaging-components]].
+
+## `@paypal/messaging-components@1.99.1` (2026-10-15)
+
+- **Transition:** `1.99.0` -> `1.99.1`, SHA `a85a51e837f8e4cccaacb5519a30b255285ea4ec`; serial delta with approved focused reading, ingested 2026-10-25.
+- **Changes:** AT/DE attribution, credit warnings and disclosures; conditional PayIn1 warning; Tile explicit-label/hidden-column removal; US Apple-wallet single-purchase and virtual-card wording/links. Fifteen retained files modified, 711 unchanged.
+- **Impact/migration:** presentation and content, not new eligibility, credit rules or merchant Apple Pay/checkout/React APIs. Package changes only version. Shared modal SCSS remains excluded; runtime/accessibility/hosted outcomes untested.
+- **Updated:** additive source and raw links, Pay Later concept, company, catalogs/logs; older release knowledge retained.
+- **Evidence:** [snapshot](raw/github/paypal/paypal-messaging-components/snapshots/2026-10-25-a85a51e/manifest.json), [release](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.1/2026-10-25/manifest.json), [notes](raw/github/paypal/paypal-messaging-components/releases/messaging-components/1.99.1/2026-10-25/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.0--1.99.1/comparison.json), [patch](tracking/github/repos/paypal/paypal-messaging-components/comparisons/messaging-components/1.99.0--1.99.1/diff.patch). See [[source-github-paypal-messaging-components]].
 
 ## `@paypal/messaging-components@1.99.0` (2026-10-08)
 

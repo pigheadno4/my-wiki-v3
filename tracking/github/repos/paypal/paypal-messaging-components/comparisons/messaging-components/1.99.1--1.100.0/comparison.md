@@ -1,0 +1,85 @@
+# GitHub package comparison
+
+- Repository: `paypal/paypal-messaging-components`
+- Package: `@paypal/messaging-components`
+- From: `1.99.1` (`a85a51e837f8e4cccaacb5519a30b255285ea4ec`)
+- To: `1.100.0` (`ab6c48b676bfdc439cb128f0a36ba920a6cc10d2`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `content/messages/GB/pi30nq.json`
+- `content/messages/GB/pi30q.json`
+- `content/messages/GB/pl.json`
+- `content/messages/GB/plq.json`
+- `content/modals/FR/long_term.json`
+- `content/modals/FR/short_term.json`
+- `content/modals/FR/short_term_en.json`
+- `content/modals/GB/pay_in_1.json`
+- `content/modals/GB/pay_in_1_xo.json`
+- `content/modals/GB/short_term.json`
+- `content/modals/GB/short_term_xo.json`
+- `content/modals/US/PL2GO/apple_wallet_long_term.json`
+- `content/modals/US/PL2GO/pl2go_long_term.json`
+- `content/modals/US/PLHub/plhub_long_term.json`
+- `content/modals/US/long_term_df.json`
+- `content/modals/US/v2_long_term-onboarding.json`
+- `content/modals/US/v2_long_term.json`
+- `content/modals/US/v2_long_term_rb.json`
+- `content/modals/US/v2_long_term_xo.json`
+- `package.json`
+- `src/components/modal/v2/parts/views/PayIn1/Content.jsx`
+- `src/components/modal/v2/parts/views/ShortTerm/Content.jsx`
+- `src/library/controllers/message/interface.js`
+- `src/library/zoid/message/component.js`
+- `src/server/locale/GB/mutations/gpl.js`
+- `src/server/locale/GB/mutations/gplq.js`
+- `src/server/locale/GB/mutations/pi30nq.js`
+- `src/server/locale/GB/mutations/pi30q.js`
+- `src/server/locale/GB/styles/flex/base.css`
+- `src/server/locale/GB/styles/flex/ratio--1x1.css`
+- `src/server/locale/GB/styles/flex/ratio--1x4.css`
+- `src/server/locale/GB/styles/flex/ratio--20x1.css`
+- `src/server/locale/GB/styles/flex/ratio--6x1.css`
+- `src/server/locale/GB/styles/flex/ratio--8x1.css`
+- `src/utils/elements.js`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `content/messages/GB/pi30nq.json`
+- `modified`: `content/messages/GB/pi30q.json`
+- `modified`: `content/messages/GB/pl.json`
+- `modified`: `content/messages/GB/plq.json`
+- `modified`: `content/modals/FR/long_term.json`
+- `modified`: `content/modals/FR/short_term.json`
+- `modified`: `content/modals/FR/short_term_en.json`
+- `modified`: `content/modals/GB/pay_in_1.json`
+- `modified`: `content/modals/GB/pay_in_1_xo.json`
+- `modified`: `content/modals/GB/short_term.json`
+- `modified`: `content/modals/GB/short_term_xo.json`
+- `modified`: `content/modals/US/PL2GO/apple_wallet_long_term.json`
+- `modified`: `content/modals/US/PL2GO/pl2go_long_term.json`
+- `modified`: `content/modals/US/PLHub/plhub_long_term.json`
+- `modified`: `content/modals/US/long_term_df.json`
+- `modified`: `content/modals/US/v2_long_term-onboarding.json`
+- `modified`: `content/modals/US/v2_long_term.json`
+- `modified`: `content/modals/US/v2_long_term_rb.json`
+- `modified`: `content/modals/US/v2_long_term_xo.json`
+- `modified`: `package.json`
+- `modified`: `src/components/modal/v2/parts/views/PayIn1/Content.jsx`
+- `modified`: `src/components/modal/v2/parts/views/ShortTerm/Content.jsx`
+- `modified`: `src/library/controllers/message/interface.js`
+- `modified`: `src/library/zoid/message/component.js`
+- `modified`: `src/server/locale/GB/mutations/gpl.js`
+- `modified`: `src/server/locale/GB/mutations/gplq.js`
+- `modified`: `src/server/locale/GB/mutations/pi30nq.js`
+- `modified`: `src/server/locale/GB/mutations/pi30q.js`
+- `modified`: `src/server/locale/GB/styles/flex/base.css`
+- `modified`: `src/server/locale/GB/styles/flex/ratio--1x1.css`
+- `modified`: `src/server/locale/GB/styles/flex/ratio--1x4.css`
+- `modified`: `src/server/locale/GB/styles/flex/ratio--20x1.css`
+- `modified`: `src/server/locale/GB/styles/flex/ratio--6x1.css`
+- `modified`: `src/server/locale/GB/styles/flex/ratio--8x1.css`
+- `modified`: `src/utils/elements.js`

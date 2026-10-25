@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-10-25] ingest | Messaging Components `1.101.0`
+
+- Serial focused-reading delta with exact-SHA component/style supplement: TikTok information sections, authored HTML and style wiring. Earlier history and runtime/security boundaries preserved; details [[paypal-log]] and [[source-github-paypal-messaging-components]]. No upstream execution, commit or push.
+
+## [2026-10-25] ingest | Messaging Components `1.100.0`
+
+- Serial focused-reading delta: inline-handler tracking metadata, UK cashback presentment, French links and US disclosures. Source contradictions and earlier history preserved; details [[paypal-log]] and [[source-github-paypal-messaging-components]]. No upstream execution, commit or push.
+
+## [2026-10-25] ingest | Messaging Components `1.99.1`
+
+- Serial focused-reading delta: AT/DE warning/disclosure content, Tile accessibility markup and Apple-wallet copy. Prior history preserved; details [[paypal-log]] and [[source-github-paypal-messaging-components]]. No upstream execution, commit or push.
+
 ## [2026-10-25] ingest | Adyen website C36
 
 - Fifty independently approved GrabPay, Touch n Go, Boost and PayNow documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 1 concepts touched (0 new); source_count 1814 = 1800 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-36/`; details [[adyen-log]]. No commit/push.
