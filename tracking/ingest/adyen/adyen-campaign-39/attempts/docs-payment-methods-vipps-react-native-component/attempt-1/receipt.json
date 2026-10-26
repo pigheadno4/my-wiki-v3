@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-vipps-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Vipps React Native Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md\"\ntags: [adyen, vipps, react-native, components, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes Vipps-specific additions to an existing React Native Components integration. It explicitly excludes Sessions flow and covers Advanced-flow redirect setup, request fields, and TEST/LIVE onboarding. It is a dated guide, not evidence of current merchant enablement or successful payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Flow boundary:** The page states React Native Components do not support Sessions flow. Its supported path here is an existing Advanced React Native Components integration with `action.type: redirect` handling and Vipps added in Customer Area. The Advanced Integration type link is mislabeled in its URL as `integration=Drop-in`, while the redirect and payment links use Components. No separate Checkout API minimum is stated in this guide. (raw lines 19\u201341)\n- **Advanced request:** No additional Vipps configuration parameters are stated. The `/payments` table describes `paymentMethod.telephoneNumber` to prefill the Vipps-hosted page, `shopperStatement` as the app description with `reference` fallback when omitted, a relevant `channel`, and minimum `amount.value` 100 minor units/1.00 NOK. Its Required cells are blank; do not infer that every listed field is mandatory. (raw lines 43\u201360)\n- **Redirect versus outcome:** The example response is `resultCode: RedirectShopper` with `action.type: redirect`; that handoff is not final authorization, capture or settlement. For low-amount live tests, the guide says to receive the `AUTHORISATION` webhook on the merchant server and inspect status in the live Customer Area payment list. The page does not spell out return/details or capture/refund processing. (raw lines 87\u2013101, 121\u2013129)\n- **TEST and LIVE:** TEST guidance uses a Vipps developer test app, adds Vipps to the test merchant account, submits a test payment and has the shopper authorize its app notification. Live acceptance requires a separate request in live Customer Area; after Adyen adds Vipps, the page calls for low-amount live payments and status checks. Neither test-app authorization nor the redirect response proves a live payment. (raw lines 103\u2013129)\n- **Example caution:** The Advanced Components prerequisite points to a Drop-in URL. The request example uses `channel: React-native` although the table illustrates Web, iOS and Android; its curl command also lacks a line continuation between `-X POST` and `-d`. Treat these as source-level example issues and verify the versioned base integration before use. (raw lines 39, 59, 64\u201385)\n\n## Detail locators\n\n- Unsupported Sessions and Advanced prerequisites: raw lines 25\u201341.\n- Configuration and `/payments` field table: raw lines 43\u201360.\n- Sample request and redirect response: raw lines 62\u2013101.\n- TEST app and live request/status steps: raw lines 103\u2013129.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-react-native-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15|Adyen Vipps React Native Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md:29 (Sessions flow Component > Not Available)"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Vipps.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md:47 (Advanced flow Component > Add additional configuration for Vipps)"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md:60 (Advanced /payments table, amount.value row)"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md:87 (Advanced flow Component, after example request)"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md:123 (Request for Vipps in the live environment)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-react-native-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-react-native-component]] \u2014 2026-09-15 Vipps React Native Components Advanced-only redirect add-on; Sessions unsupported, with 1.00 NOK minimum, TEST/LIVE gates and a Components-label/Drop-in-link mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced Components prerequisite links to Drop-in; the `channel: React-native` sample differs from the table's channel examples and the curl line continuation is incomplete."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/react-native-component/2026-09-15.md",
+  "raw_sha256": "aee46cc060d3259088528c3bceafde9f1af40fab00c42724374d85f5f78b7c47",
+  "status": "candidate_ready"
+}

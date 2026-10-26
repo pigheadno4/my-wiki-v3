@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-bizum-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bizum Web Drop-in integration guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bizum/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md\"\ntags: [adyen, bizum, web, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes Bizum-specific additions to an existing Web Drop-in integration, separately for Sessions and Advanced flows. It covers activation and Customer Area setup, flow-specific payment requests, redirect handling, optional imports, and sandbox testing. It is a method add-on, so the linked main integration guides own the complete payment flow. This snapshot and its examples do not establish current merchant eligibility or a live payment outcome. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Sessions requires an existing Sessions Web Drop-in integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, Bizum activation to obtain a MID and Terminal ID, and adding Bizum in Customer Area. The Bizum-specific `/sessions` addition is a unique `reference` of 4\u2013125 upper/lowercase alphanumeric characters. The page's printed regex ends with an extra `)` and should not be copied as a validated expression. Its TEST `/v71/sessions` example uses `EUR`, `ES`, and an app-scheme `returnUrl`; these are example values, not a general country/currency or Web return-URL rule.\n- Advanced requires an existing Advanced Web Drop-in integration, redirect handling, the same activation and Customer Area setup, and the same `reference` addition to `/payments`. This section does not state a Checkout API minimum. The TEST `/v72/payments` example sends `paymentMethod.type: bizum`; the response section shows `resultCode: RedirectShopper` and `action.type: redirect` with POST redirect data. This is an intermediate redirect response, not proof of authorization, capture or settlement.\n- In either flow, an individual `Redirect` import from `@adyen/adyen-web` is optional for tree shaking. It is not stated as a Web SDK minimum.\n- For sandbox testing, the page says to use `telephoneNumber` 700 000 000 and gives amount-based outcomes: below 10 authorized, above 15 refused. It does not specify the interval from 10 through 15. Inspect TEST payment status in Customer Area; these fixtures do not establish live behavior.\n\n## Detail locators\n\n- Scope and Sessions prerequisites: pinned raw lines 15\u201337; `/sessions` reference table and TEST example: lines 39\u201369. The table's regex has an unmatched closing parenthesis at line 47.\n- Optional Sessions import and TEST outcomes: pinned raw lines 334\u2013361.\n- Advanced prerequisites and optional import: pinned raw lines 363\u2013386; `/payments` reference table, example and redirect response: lines 388\u2013731. The Advanced prerequisite URL at line 371 contains an unresolved encoded template token; use the explicit Advanced Web Drop-in wording, not the malformed hyperlink, to identify scope.\n- Advanced TEST outcomes and Customer Area route: pinned raw lines 733\u2013748.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main concept and integration architecture\n- [[source-adyen-docs-payment-methods-bizum]] \u2014 method overview; separate authority for method-level eligibility and lifecycle\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15|Bizum Web Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Bizum to your existing integration. The following instructions show only what you must add to your integration specifically for Bizum.",
+      "location": "raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "Your unique reference for the payment. Your reference can include upper and lower case alphanumeric characters and must be between 4 and 125 characters long, matching the following regular expression: `^[a-zA-Z0-9]{4,125}$)`",
+      "location": "raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md:47"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md:712"
+    },
+    {
+      "text": "* Use `telephoneNumber`: **700 000 000**.",
+      "location": "raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md:739"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bizum-web-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bizum-web-drop-in]] \u2014 2026-09-15 Bizum Web Drop-in add-on for existing Sessions or Advanced integrations, with method setup, request and redirect guidance; flow-specific prerequisites and TEST example limits are in the source.",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bizum/web-drop-in/2026-09-15.md",
+  "raw_sha256": "9a28c66a4193ce65b8bcd9f57c124571405af390c9e39bebcff0c4c2e254ec60",
+  "status": "candidate_ready"
+}

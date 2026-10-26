@@ -14,6 +14,15 @@ Adyen's payout documentation covers outbound disbursements to suppliers, partner
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] — 2026-09-15 React Native Components guide's experimental `/payments` payout-token path, recurring lifecycle webhook and `/transfers` handoff; no completed payout is shown.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-flutter-component]] — 2026-09-15 Flutter Components guide's experimental `/payments` payout-token creation, recurring lifecycle webhook and `/transfers` handoff; it does not document a completed payout.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay]] — 2026-09-15 MobilePay overview's experimental Transfers API route for payouts to linked cards, with a payout-only token generated through `/payments`; the legacy Payout API does not support this feature.
+
+
 - [[source-adyen-docs-payouts-payout-service-top-up-balance-accounts]] — 2020-modified, 2026-09-15-captured Payout Service recurring direct-debit funding overview for balance accounts, with fixed/target amounts, account-timezone trigger checks and bank-instrument source; linked setup/status guides govern consent, capability and credited-funds evidence.
 
 

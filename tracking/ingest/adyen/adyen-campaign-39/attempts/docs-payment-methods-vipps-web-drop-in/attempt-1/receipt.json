@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Vipps Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/web-drop-in/2026-09-15.md\"\ntags: [adyen, vipps, web-drop-in, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds Vipps to an existing Adyen Web Drop-in integration, with separate Sessions and Advanced server-side instructions. It documents request additions, optional import, redirect handling and test/live setup. It does not establish current merchant eligibility or a completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** requires an existing Web Drop-in Sessions flow, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Vipps added in Customer Area. Its `/sessions` table describes an optional `shopperStatement` shown in the Vipps app, falling back to the payment `reference` when omitted; Vipps has a stated minimum `amount.value` of 100 minor units (1.00 NOK). The request example uses NOK/NO and a custom-scheme `returnUrl` even though the guide is for Web Drop-in; it is an example, not a universal Web return URL prescription. (raw lines 25\u201368)\n- **Optional browser import:** individual method import for tree shaking may include `Vipps` alongside `AdyenCheckout` and `Dropin`; this is explicitly optional in both flows. (raw lines 70\u201380, 124\u2013134)\n- **Advanced:** requires existing Web Drop-in Advanced flow, redirect handling and Customer Area addition. Its `/payments` table describes optional `paymentMethod.telephoneNumber` to prefill the Vipps-hosted page, `shopperStatement` with the same reference fallback, `channel`, and the 100-minor-unit minimum. The example uses `channel: Web`, NOK and a web return URL. Its `RedirectShopper` response with a GET redirect is an intermediate handoff, not final authorization or settlement. The Advanced integration-type link retains an unresolved encoded `getParameter('platform')` template even though the row names Web Drop-in. (raw lines 112\u2013188)\n- **Test and live boundary:** test instructions require the Vipps test app, merchant-account addition in the test Customer Area, a payment request and shopper authorization from an app notification. Live acceptance requires a separate request in the live Customer Area; after addition, the guide calls for low-amount live tests, an `AUTHORISATION` webhook carrying status on the merchant server, and a payment-list check. App authorization and a redirect response are distinct from server-side payment status. (raw lines 82\u2013110, 190\u2013218)\n\n## Detail locators\n\n- Sessions prerequisites, statement fallback, minimum and request example: raw lines 29\u201368.\n- Optional `Vipps` import: raw lines 70\u201380 and 124\u2013134.\n- Advanced prerequisite-template issue, optional request fields and redirect-response example: raw lines 116\u2013188. The `channel` and `amount.value` links in the `/payments` table point to `/paymentMethods` reference anchors; verify the API reference before using those locators.\n- Test-app credentials and separate live Customer Area request/webhook checks: raw lines 82\u2013110 and 190\u2013218.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-vipps]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/web-drop-in/2026-09-15|Vipps Web Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add Vipps to your existing integration. The following instructions show only what you must add to your integration specifically for Vipps.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw line 47, Sessions amount.value table"
+    },
+    {
+      "text": "To do this, include `Vipps`.",
+      "location": "raw line 74, optional Sessions import"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 174, Advanced response"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 212, Advanced live section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-web-drop-in]] \u2014 2026-09-15 Vipps Web Drop-in Sessions/Advanced redirect add-on with method-specific amount, test-app and live-request boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/web-drop-in/2026-09-15.md",
+  "raw_sha256": "5689d754fb120135bb75b7087cdc2decf4c2d8ffcb5bc2c81cff47b105462edb",
+  "status": "candidate_ready"
+}

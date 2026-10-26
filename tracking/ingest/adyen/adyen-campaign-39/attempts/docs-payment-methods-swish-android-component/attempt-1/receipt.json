@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-swish-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Swish Android Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/swish/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/swish/android-component/2026-09-15.md\"\ntags: [adyen, swish, android, components, qr, wallet]\n---\n\n## Overview\n\nThis [[adyen]] guide gives Swish-specific additions to an existing Android Components checkout, separately for Sessions and Advanced server-side flows. It uses `InstantPaymentComponent` for `swish`; the Advanced prerequisites call for additional-action handling with `action.type: qr`. This dated source is an integration guide, not proof of current merchant eligibility, payment authorization, capture or settlement. See [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-swish|Swish overview]] for method and regional context.\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Android Components Sessions integration, Checkout API v68 or later and Swish added in Customer Area. It says no extra Swish parameters are needed for `/sessions`. The configuration table lists `setSubmitButtonVisible` with a blank Required cell as a visibility option; it does not make that setting mandatory. See raw lines 25\u201341 and 66\u201386.\n- **Advanced:** Requires an existing Android Components Advanced integration, handling an additional `qr` action and adding Swish in Customer Area. It says no extra Swish-specific `/payments` parameters are needed. The same optional-looking submit-button visibility setting appears. The page states no Advanced Checkout API minimum. See raw lines 151\u2013159, 184\u2013204 and 263\u2013267.\n- **Android setup:** Both flow sections import `com.adyen.checkout:instant:YOUR_VERSION`; Compose adds `components-compose:YOUR_VERSION`. They select `swish` from the Session or `/paymentMethods` response, then use `InstantPaymentComponent`. Compose wraps it with `AdyenComponent` and a key that changes for a different screen/session or reset; View examples attach it to a view. `YOUR_VERSION` is a placeholder, not a pinned SDK requirement. See raw lines 43\u201364, 88\u2013140, 161\u2013181 and 206\u2013260.\n- **TEST and live gates:** The page says a Swish TEST payment is authorised within 15 seconds and documents Merchant Swish Simulator refusal scenarios through an error code in `shopperStatement` (example `FF08`). It directs merchants to check the TEST Payment list. Accepting live Swish requires a separate request in the live Customer Area. These documented test expectations and simulator inputs are not proof that an actual payment was authorized or that a live merchant is enabled. See raw lines 143\u2013149 and 269\u2013275.\n\n> [!warning] Action type differs across Swish guides\n> This Android Components page states `action.type: qr` for Advanced action handling (raw line 158). The separately retained [[source-adyen-docs-payment-methods-swish-api-only|Swish API-only guide]] notes an example response with `action.type: qrCode`. The pages do not reconcile the values; use the actual response and version-qualified base-flow guidance rather than silently equating them. The configuration snippets here also contain placeholders and a nested brace structure, so they are illustrative rather than executable code as printed. See raw lines 76\u201386 and 194\u2013204.\n\n## Detail locators\n\n- Sessions requirements, import/configuration and Compose/View creation: raw lines 25\u2013140.\n- Advanced QR-action requirement, import/configuration, Component creation and no-extra-payment-parameters note: raw lines 151\u2013267.\n- TEST authorization claim, refusal simulator and live-request gate: raw lines 143\u2013149 and 269\u2013275. This method page supplies no country/currency matrix or complete QR/webhook lifecycle.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 separately versioned native Components architecture; this page pins no SDK release.\n- [[source-adyen-docs-payment-methods-swish-api-only]] \u2014 separate Web API-only QR/app handoff and webhook outcome guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/swish/android-component/2026-09-15|Swish Android Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Requirements / Sessions flow Component"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#create-a-payment-session).",
+      "location": "raw line 41, Add additional parameters to your /sessions request / Sessions flow Component"
+    },
+    {
+      "text": "To [create the Component](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#launch-and-show) for Swish, use the `InstantPaymentComponent` class.",
+      "location": "raw line 92, Launch and show the Component for Swish / Sessions flow Component"
+    },
+    {
+      "text": "`action.type`: **qr**.",
+      "location": "raw line 158, Requirements / Advanced flow Component"
+    },
+    {
+      "text": "When you make a Swish payment in the test environment, the payment is authorised within 15 seconds. You can simulate different refusal scenarios, as outlined in the [Merchant Swish Simulator](https://developer.swish.nu/api/mss/v1), by adding the error code to the `shopperStatement` property. For example, `\"shopperStatement\": \"FF08\"`.",
+      "location": "raw lines 145 and 271, Test and go live / both flows"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "swish-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-swish-android-component]] \u2014 2026-09-15 Swish Android InstantPaymentComponent add-on for Sessions (Checkout API v68+) and Advanced `qr` action flows, with optional submit visibility, TEST simulator guidance and a separate live request.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced requirement here names `action.type: qr`; the separate Swish API-only page records a `qrCode` example response. Preserve source- and flow-specific wording.",
+          "TEST authorization timing is documentation guidance, not observed payment or live-merchant proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/swish/android-component/2026-09-15.md",
+  "raw_sha256": "02dc906b41aaba0d78851be20f3526c27d91c61c1bd3c9a44ba5af6a89882654",
+  "status": "candidate_ready"
+}

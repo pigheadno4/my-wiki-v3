@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Vipps Android Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/android-component/2026-09-15.md\"\ntags: [adyen, vipps, android, components, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds Vipps to an existing Adyen Android Components integration. It separates Sessions and Advanced server-side flows, using `InstantPaymentComponent` with redirect handling, and gives test-app and live-request steps. The retained page describes integration instructions, not present merchant eligibility or observed authorization, capture, or settlement. [[adyen]] [[adyen-online-payments]] [[adyen-android-sdk]]\n\n## Key takeaways\n\n- **Sessions prerequisites and request:** an existing Android Components Sessions flow, Checkout API v68 or later, `action.type: redirect` handling, and Vipps added in Customer Area. The `/sessions` table describes optional `shopperStatement`; when absent, the payment `reference` populates the statement shown in the Vipps app. It states a Vipps minimum `amount.value` of 100 minor units, or 1.00 NOK. The NOK/NO request is an example, not a claim of broader currency or country support. (raw lines 25\u201368)\n- **Sessions Component:** import `com.adyen.checkout:instant`; add `components-compose` for Jetpack Compose. The page says no Vipps-specific configuration is needed. Its examples select method `vipps` from the checkout session and launch `InstantPaymentComponent` for Compose or an Android view. The Compose example calls for a new unique key on a different screen/session or reset. (raw lines 70\u2013152)\n- **Advanced flow:** requires an existing Android Components Advanced flow, additional redirect-action handling, and Customer Area addition. The examples select `vipps` from `/paymentMethods`, then use `InstantPaymentComponent`; they state no extra Component configuration. The `/payments` table lists optional `paymentMethod.telephoneNumber` to prefill the Vipps-hosted page, `shopperStatement` with the same reference fallback, `channel`, and the 100-minor-unit minimum. The sample uses `channel: Android`, NOK and a web return URL as example values. The response example is `RedirectShopper` with a redirect action, an intermediate handoff rather than a final payment result. (raw lines 182\u2013330)\n- **Environment and outcome boundary:** test instructions first require the Vipps test app setup, then adding Vipps in the test Customer Area, creating a request and authorizing via the app notification. Live acceptance requires a separate request in the live Customer Area. Once Adyen adds Vipps there, the guide describes a low-amount live test, server receipt of an `AUTHORISATION` webhook carrying payment status, and checking the live payment list. Shopper approval in the app and a redirect response alone do not establish final server-side authorization. (raw lines 154\u2013180, 332\u2013358)\n\n## Detail locators\n\n- Sessions prerequisites, optional statement and minimum: raw lines 29\u201347.\n- Sessions imports, Compose/view examples and key lifecycle: raw lines 70\u2013152.\n- Advanced imports, method selection, request parameters and redirect response: raw lines 184\u2013330. The `channel` and `amount.value` parameter links in the `/payments` section point to `/paymentMethods` API-reference anchors; follow the linked API reference before relying on those locators.\n- Test-app credentials and steps: raw lines 154\u2013170 and 332\u2013348. Live request and status checks: raw lines 172\u2013180 and 350\u2013358.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n- [[source-adyen-docs-payment-methods-vipps]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/android-component/2026-09-15|Vipps Android Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add Vipps to your existing integration. The following instructions show only what you must add to your integration specifically for Vipps.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw line 47, Sessions amount.value table"
+    },
+    {
+      "text": "use the `InstantPaymentComponent` class.",
+      "location": "raw line 103, Sessions Launch and show"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 316, Advanced response"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 352, Advanced live section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-android-component]] \u2014 2026-09-15 Vipps Android Components Sessions/Advanced redirect add-on with method-specific amount, test-app and live-request boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/android-component/2026-09-15.md",
+  "raw_sha256": "1f3f8d02c29c1c969bd4e64f725f45465c2e50c6f5b542cc1783447437c0e250",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-vipps-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Vipps iOS Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/ios-component/2026-09-15.md\"\ntags: [adyen, vipps, ios, components, redirect, norway]\n---\n\n## Overview\n\nThis [[adyen]] guide adds Vipps to an existing iOS Components integration, separately for Sessions and Advanced server-side flows. Both require redirect handling and Customer Area setup. It uses `InstantPaymentComponent` with the `vipps` method. The page is method-specific and does not establish present merchant eligibility, a successful payment, capture or settlement. See [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-vipps|Vipps overview]] for its wallet and regional context.\n\n## Key takeaways\n\n- **Sessions prerequisites and fields:** Requires an existing iOS Components Sessions integration, Checkout API v68 or later, `action.type: redirect` handling and Vipps added in Customer Area. The method-specific `/sessions` table describes `shopperStatement` for the Vipps-app description; if omitted, Adyen says it uses `reference`. It also says Vipps' minimum `amount.value` is **100 minor units, or 1.00 NOK**. The table's Required column is blank, so it does not itself establish that `shopperStatement` is mandatory. Its illustrative request uses Checkout API v71, NOK and `countryCode: NO`; those example values are not a general eligibility proof. See raw lines 25\u201368.\n- **Advanced prerequisites and fields:** Requires an existing iOS Components Advanced integration, redirect handling and Vipps added in Customer Area. The `/payments` table describes optional-looking `paymentMethod.telephoneNumber` to prefill the hosted page, `shopperStatement` with the same `reference` fallback, a relevant `channel`, and the **100 minor unit / 1.00 NOK** minimum. Its Required cells are blank; do not turn the table into a blanket required-fields contract. The illustrative v72 request uses `vipps`, iOS and NOK; its sample response has `resultCode: RedirectShopper` and `action.type: redirect`, an intermediate redirect action rather than final authorization. See raw lines 126\u2013217.\n- **Component:** Both flows use `InstantPaymentComponent` after checking for `.other(\"vipps\")`. Sessions sets the session as delegate; Advanced sets the merchant object as delegate, then each calls `initiatePayment()`. Neither section adds Vipps-specific Component configuration or pins an iOS SDK version. See raw lines 70\u201396 and 138\u2013163.\n- **Testing and live gate:** The page sends the merchant to Vipps' developer test app, asks for Vipps on the test merchant account, and describes approving a test-app notification. Separately, live acceptance requires a Vipps request in the live Customer Area; after addition, low-amount live tests are checked by the server's `AUTHORISATION` webhook and live Payment list. Test-app authorization is a shopper action, not proof of payment authorization or live enablement. See raw lines 98\u2013124 and 219\u2013245.\n\n> [!warning] Advanced base-guide link mismatch\n> The Advanced prerequisite row says **iOS Components** but links to an Advanced **Drop-in** URL, whereas the redirect and make-payment links specify Components. Use the stated Components scope and verify the intended main-guide route. The Advanced field table also links `channel` and `amount.value` to `/paymentMethods` anchors while introducing `/payments`; use the raw/API reference for field details rather than treating those links as a resolved `/payments` schema. See raw lines 134\u2013135 and 167\u2013176.\n\n## Detail locators\n\n- Sessions request table and illustrative v71 request: raw lines 40\u201368; Advanced table, illustrative v72 request and redirect response: raw lines 165\u2013217.\n- Session and Advanced Component setup: raw lines 70\u201396 and 138\u2013163.\n- Test-app setup includes published fixture credentials in raw lines 100\u2013110 and 221\u2013231; live-request and status-check guidance: raw lines 116\u2013124 and 237\u2013245.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 separately versioned native Components architecture; this page specifies no SDK release.\n- [[source-adyen-docs-payment-methods-vipps]] \u2014 method overview and channel navigation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/ios-component/2026-09-15|Vipps iOS Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Requirements / Sessions flow Component"
+    },
+    {
+      "text": "The description of this payment shown in the Vipps app. If you do not specify a `shopperStatement`, we'll use the value that you provided as the `reference` to populate this field.",
+      "location": "raw line 46, Add additional parameters to your /sessions request / Sessions flow Component"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw lines 47 and 176, Sessions and Advanced request tables"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Vipps, use the `InstantPaymentComponent` class.",
+      "location": "raw lines 80 and 148, Initialize the Component for Vipps"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw lines 118 and 239, Request for Vipps in the live environment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-ios-component]] \u2014 2026-09-15 Vipps iOS Components Sessions (Checkout API v68+) and Advanced redirect guide with 100-minor-unit NOK minimum, test-app/live gates and an Advanced Components-label/Drop-in-link mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced prerequisite text says Components but links to a Drop-in guide; `channel` and `amount.value` table links point to `/paymentMethods` anchors in a `/payments` section.",
+          "The request tables leave Required cells blank; do not infer every listed field is mandatory.",
+          "Illustrative RedirectShopper action and test-app authorization are not final payment outcome evidence."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/ios-component/2026-09-15.md",
+  "raw_sha256": "9c83d50634e2a95c09916429de71a3edf26082e2f564254c546330f6faebdbee",
+  "status": "candidate_ready"
+}

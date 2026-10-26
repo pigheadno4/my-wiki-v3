@@ -76,6 +76,9 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-swish-ios]] — 2026-09-15 Swish iOS chooser linking Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced main guides.
+
+
 - [[source-adyen-docs-payment-methods-alipay-plus-ios-drop-in]] — 2026-09-15 Alipay+ iOS Drop-in Sessions/Advanced add-on with Advanced redirect, no TEST environment and an unresolved Alipay-versus-Alipay+ live-request label.
 
 

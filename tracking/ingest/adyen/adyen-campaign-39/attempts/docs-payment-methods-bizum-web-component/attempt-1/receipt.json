@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-bizum-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bizum Web Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bizum/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/bizum/web-component/2026-09-15.md\"\ntags: [adyen, bizum, web-components, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Bizum guide adds the method to an existing Adyen Web Components integration, with separate Sessions and Advanced server-side instructions. It covers redirect setup, request additions, Component import/initialization, and test fixtures; it does not demonstrate a completed live payment or current merchant eligibility. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and flow:** both branches require an existing Web Components integration for their respective server-side flow, redirect handling with `action.type: redirect`, Bizum activation to obtain MID and Terminal ID, and adding Bizum in Customer Area. The Sessions branch alone explicitly states Checkout API v68 or later. (raw lines 23\u201338, 379\u2013388)\n- **Sessions:** add a unique alphanumeric `reference` of 4\u2013125 characters to `/sessions`; import `Redirect` from `@adyen/adyen-web` and initialize the Bizum redirect Component. The page says no Bizum-specific configuration parameters are needed. Its test-environment `/sessions` examples use EUR, countryCode ES, and a custom-scheme return URL; example values do not establish general eligibility or a required return URL form. (raw lines 39\u201369, 334\u2013362)\n- **Advanced:** import and initialize the same `Redirect` Component; add the described unique `reference` to `/payments`. The test `/payments` examples set `paymentMethod.type` to `bizum` and show a web return URL. The documented response has a redirect action; its `RedirectShopper` JSON is an example of an intermediate handoff, not final authorization or settlement. (raw lines 390\u2013445, 738\u2013757)\n- **Example and test limits:** both JavaScript initialization snippets render `type:bizum` as an unquoted identifier, so they should not be treated as copy-ready code without checking the SDK syntax. Test guidance names telephone number `700 000 000` and describes authorization for amounts less than 10 and refusal for amounts more than 15, without stating a unit or behavior for the interval. Check test payment status in the test Customer Area; the guide does not document a final webhook sequence. (raw lines 360\u2013361, 367\u2013377, 410\u2013411, 759\u2013772)\n\n## Detail locators\n\n- Sessions prerequisites, `reference` table and request example: raw lines 29\u201369. The table's rendered regular expression contains a trailing `)`; consult the linked Checkout API reference before relying on that expression.\n- Sessions `Redirect` import, no added configuration, initialization: raw lines 334\u2013362.\n- Advanced prerequisites, `Redirect` import/initialization and `/payments` reference: raw lines 379\u2013445.\n- Advanced redirect response example: raw lines 738\u2013757; test fixtures: raw lines 759\u2013772.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bizum/web-component/2026-09-15|Bizum Web Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add Bizum to your existing integration. The following instructions show only what you must add to your integration specifically for Bizum.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements table"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Bizum.",
+      "location": "raw line 350, Sessions configuration section"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw line 738, Advanced flow"
+    },
+    {
+      "text": "* Use `telephoneNumber`: **700 000 000**.",
+      "location": "raw line 763, Advanced Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bizum-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bizum-web-component]] \u2014 2026-09-15 Bizum Web Components add-on for existing Sessions and Advanced redirect flows, with setup, request and test-example boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bizum/web-component/2026-09-15.md",
+  "raw_sha256": "28ff5b8bf7a34b00eb682ab8fd7f4e3d4ee4ce0f69b1d3aa5c4f6714c1888975",
+  "status": "candidate_ready"
+}

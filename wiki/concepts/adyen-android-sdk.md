@@ -64,6 +64,9 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-mobilepay-android]] — 2026-09-15 MobilePay Android chooser linking Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced main guides.
+
+
 - [[source-adyen-docs-payment-methods-alipay-plus-android-component]] — Alipay+ Android redirect Components guide for existing Sessions/Advanced integrations with Compose or view attachment and unspecified SDK dependency versions (2026-09-15 snapshot).
 
 

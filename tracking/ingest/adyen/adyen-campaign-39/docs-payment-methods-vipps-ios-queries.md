@@ -1,0 +1,5 @@
+# Vipps for iOS retrieval checks
+
+**Q1 — Purpose/scope and inference limit.** The `vipps/ios` page is a 2026-09-15 chooser for adding Vipps to an iOS app, linking Drop-in and Components child guides and four base iOS flow guides (raw lines 15–36). The chooser itself supplies no method-specific API/SDK requirement, setup or outcome evidence; current eligibility or successful payment cannot be inferred from its links (raw lines 19–36). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-vipps-ios]].
+
+**Q2 — Central capability, prerequisites and warnings.** The Drop-in route is described as an all-in-one iOS UI, while the Components route names `InstantPaymentComponent`; the page says to build the main integration first and links Sessions and Advanced base guides for each surface (raw `vipps/ios` lines 19–36). This navigation does not itself document activation, redirect, test or live conditions; consult the linked child guides before making those claims. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-vipps-ios]].

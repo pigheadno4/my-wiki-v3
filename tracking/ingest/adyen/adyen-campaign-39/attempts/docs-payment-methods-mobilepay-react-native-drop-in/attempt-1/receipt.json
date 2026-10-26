@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MobilePay React Native Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, mobilepay, react-native, drop-in, redirect, payout]\n---\n\n## Overview\n\nThis [[adyen]] page describes MobilePay-specific additions to an existing React Native Drop-in integration, separately for Sessions and Advanced server-side flows. Both call for redirect handling. It also describes an experimental payout-token path using `/payments`; the page's ordinary Sessions setup does not make that path a Sessions-only feature. See [[adyen-online-payments]]. This dated snapshot does not establish current merchant, country, currency or wallet eligibility, or a successful transaction.\n\n## Key takeaways\n\n- **Sessions:** Requires an existing React Native Drop-in Sessions integration, Checkout API v68 or later, `action.type: redirect` handling, and MobilePay added in Customer Area. It says no MobilePay-specific `/sessions` parameters or Drop-in configuration are needed. The Sessions prerequisite label points to an **Advanced-flow** URL, although the redirect and create-session links point to Sessions. Follow the stated flow and verify the intended base guide. See raw lines 25\u201348.\n- **Advanced:** Requires an existing React Native Drop-in Advanced integration, redirect handling, and MobilePay added in Customer Area. It says no extra MobilePay configuration or ordinary `/payments` parameters are needed, except when a payment creates a future-payout token. The page gives no Advanced-flow Checkout API minimum or React Native package version. See raw lines 85\u2013107.\n- **Payment testing and status:** The page says ordinary MobilePay payments cannot be tested in the test environment. It directs a live Customer Area request and low-amount live payments, with payment status checked through the server's `AUTHORISATION` webhook and live Payment list. Redirect completion alone is not proof of authorization. See raw lines 50\u201360 and 327\u2013337.\n- **Experimental payout-token route:** The payout feature is labeled experimental and `/payments`-only. For a payment that creates a future MobilePay-wallet payout token, the page calls for a recurring lifecycle webhook and `telephoneNumber`, `shopperReference` and `enablePayout: true` in the payment request. The token arrives as `storedPaymentMethodId` in that webhook, associated with `shopperReference`; a later `/transfers` request places it in `counterparty.card.cardIdentification`. The separate payout-testing instructions use a Vipps MobilePay test app and do not negate the ordinary-payment live-only warning. See raw lines 62\u201383 and 293\u2013360.\n\n> [!warning] Payout examples and environment conflict\n> The prose says `enablePayout`; the annotated curl example says `enablePayOut`. The Java, PHP, C#, Node, Python and Ruby snippets omit `shopperReference` and the enablement field, while sample currency, method type and return URL are blank. The curl example uses a TEST endpoint despite the page's statement that MobilePay payments cannot be tested in TEST. Read these as incomplete or conflicting examples, not a confirmed normal-payment TEST path or complete working token request. See raw lines 107\u2013290 and 293\u2013303.\n\n## Detail locators\n\n- Sessions requirements, mismatched base-guide URL and method-specific absence of fields/configuration: raw lines 25\u201348; Advanced equivalents: raw lines 85\u2013107.\n- Sample payout-token request snippets: raw lines 109\u2013290; token creation, illustrative webhook and subsequent transfer field: raw lines 293\u2013325.\n- Separate ordinary-payment and experimental-payout test instructions: raw lines 50\u201383 and 327\u2013360. This guide supplies no React Native initialization code, country/currency matrix, or full base-flow result contract.\n\n## Related\n\n- [[adyen-react-native-sdk]] \u2014 wrapper architecture and versioned repository evidence; this page pins no wrapper version.\n- [[adyen-payouts]] \u2014 broader payout and transfer context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/react-native-drop-in/2026-09-15|MobilePay React Native Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Requirements / Sessions flow Drop-in"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw line 52, Test and go live / Sessions flow Drop-in"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw line 64, Test payouts to MobilePay wallets / Sessions flow Drop-in"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=React%2BNative\\&integration=Drop-in#make-a-payment), unless you make a payment to generate a token for future payouts to MobilePay wallets.",
+      "location": "raw line 107, Add additional parameters to your /payments request / Advanced flow Drop-in"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw line 305, Payment with payout token creation / Advanced flow Drop-in"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-react-native-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-react-native-drop-in]] \u2014 2026-09-15 MobilePay React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with experimental `/payments` payout-token guidance, ordinary live-only payment testing and a Sessions prerequisite link that points to Advanced.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions prerequisite text names Sessions while its URL targets the Advanced base guide.",
+          "Payout-token prose uses `enablePayout`; curl annotation uses `enablePayOut`, and other samples omit token fields.",
+          "TEST curl and payout test-app instructions do not establish ordinary MobilePay payment support in TEST."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "81084a29f24a63ef603fe4a264cafc952f914ae8078decbc5849c0dfa773ffbc",
+  "status": "candidate_ready"
+}

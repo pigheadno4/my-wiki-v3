@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Vipps iOS Drop-in integration guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md\"\ntags: [adyen, vipps, ios, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds Vipps to an existing iOS Drop-in integration, separately for Sessions and Advanced server-side flows. It covers method-specific request fields, test-app and live setup, and the Advanced redirect response. The main iOS Drop-in guides own the rest of the integration. This snapshot and its examples do not establish current merchant enablement, a completed payment, capture or settlement. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-vipps]].\n\n## Key takeaways\n\n- Sessions requires an existing iOS Drop-in Sessions integration using Checkout API v68 or later and Vipps added in Customer Area. Its `/sessions` table describes `shopperStatement` as the description shown in the Vipps app, falling back to `reference` if omitted, and specifies a minimum `amount.value` of 100 minor units (1.00 NOK). The table's Required cells are blank, so it does not establish `shopperStatement` as mandatory. The TEST `/v71/sessions` example uses NOK, `countryCode: NO`, and an app-scheme return URL; those example values are not merchant-eligibility proof. No Vipps-specific Drop-in configuration is needed.\n- Advanced requires an existing iOS Drop-in Advanced integration, `action.type: redirect` handling and Vipps added in Customer Area. Its `/payments` table describes `paymentMethod.telephoneNumber` for hosted-page prefill, `shopperStatement` with the same `reference` fallback, a relevant `channel`, and the same 100-minor-unit/1.00-NOK minimum. Required cells are blank; do not infer every listed parameter is mandatory. The TEST `/v72/payments` example uses `paymentMethod.type: vipps`, `channel: iOS` and an HTTPS `returnUrl`. Its `RedirectShopper`/`action.type: redirect` response is an intermediate redirect, not payment authorization. No Vipps-specific Drop-in configuration is needed.\n- The Advanced table's `channel` and `amount.value` links point to `/paymentMethods` anchors despite appearing under `/payments`. Verify endpoint-specific field details in the linked API reference; those links do not resolve an Advanced request schema. The Sessions and Advanced sample return URLs also differ, so the snippets should not be copied as a universal iOS return-URL rule.\n- For TEST, the page points to a Vipps developer test app, then asks the merchant to add Vipps to the test merchant account, create a payment request and authorize the notification in the app. Before LIVE acceptance, submit a separate Vipps request in the live Customer Area; after addition, make low-amount live test payments and check the server's `AUTHORISATION` webhook and live Payment list. Approving a test-app notification is a shopper step; payment status must be checked separately, and neither step proves capture or settlement.\n\n## Detail locators\n\n- Scope and Sessions prerequisites, `/sessions` fields and TEST example: pinned raw lines 15\u201366. No-extra-configuration statement: lines 68\u201372.\n- Sessions test-app steps and live-request gate: pinned raw lines 74\u2013102; published test credentials remain in the raw at lines 84\u201386.\n- Advanced prerequisites, configuration and `/payments` field table: pinned raw lines 104\u2013133; note the `/paymentMethods` links at lines 132\u2013133.\n- Advanced TEST request, redirect response, test-app and live-request steps: pinned raw lines 135\u2013204; test credentials remain in the raw at lines 186\u2013188.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main concept for server-side flow and payment-state context\n- [[source-adyen-docs-payment-methods-vipps]] \u2014 method overview and separate regional context\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15|Vipps iOS Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Vipps to your existing integration. The following instructions show only what you must add to your integration specifically for Vipps.",
+      "location": "raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "The description of this payment shown in the Vipps app. If you do not specify a `shopperStatement`, we'll use the value that you provided as the `reference` to populate this field.",
+      "location": "raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md:44"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md:45"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md:96"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-ios-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-ios-drop-in]] \u2014 2026-09-15 Vipps iOS Drop-in add-on for existing Sessions (Checkout API v68+) and Advanced flows, with method-specific fields, intermediate redirect and separate TEST-app/LIVE gates; see source for example and link qualifications.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "9363b8d617c90637e6038c87f2a6b1e8859067dcf77dfe03de04e2b9bab1fae5",
+  "status": "candidate_ready"
+}

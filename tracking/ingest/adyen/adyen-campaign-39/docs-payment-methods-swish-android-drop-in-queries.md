@@ -1,0 +1,11 @@
+# Swish Android Drop-in retrieval checks
+
+Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-swish-android-drop-in]]`.
+
+## Q1. What is its purpose and scope, and what cannot be inferred?
+
+The canonical stem `source-adyen-docs-payment-methods-swish-android-drop-in` is a 2026-09-15 Swish-specific add-on to an existing Android Drop-in integration in Sessions or Advanced server-side flow (`raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:15-25,74-82`). It does not establish current merchant eligibility, a completed live payment, capture or settlement: the test instructions concern a simulator and TEST Customer Area, and LIVE requires a separate Customer Area request (`:64-72,112-118`).
+
+## Q2. What are the central capability, prerequisites, and warnings?
+
+Sessions needs an existing Android Drop-in Sessions integration, Checkout API v68+ and Swish added in Customer Area, with no additional `/sessions` parameters (`raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:29-40`). Advanced needs an existing Android Drop-in Advanced integration, `action.type: qr` handling and Customer Area setup, with no additional `/payments` parameters (`:76-82,106-110`). Both sections offer `setSubmitButtonVisible` with blank Required cells; the Kotlin blocks include placeholders and unbound `value`, so the snippets are not validated runnable configuration (`:42-62,84-104`). The Advanced action link targets `handle-the-redirect` despite the explicit `qr` type (`:81`). The separate Web API-only guide [[source-adyen-docs-payment-methods-swish-api-only]] names `qr` in its requirement but shows `qrCode` in its response example (its pinned raw lines 28 and 152); neither the example nor the Android redirect-named anchor establishes interchangeable values across these scopes. In TEST, the page claims authorization within 15 seconds and says refusal codes may be placed in `shopperStatement` (example `FF08`); inspect the TEST payment list, and request separate live Customer Area addition before LIVE acceptance (`:66-72,112-118`). The 15-second claim is scoped to TEST and does not establish successful live payments or capture/settlement.

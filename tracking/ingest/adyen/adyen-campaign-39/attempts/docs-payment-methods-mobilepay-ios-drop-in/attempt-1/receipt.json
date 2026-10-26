@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MobilePay iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, mobilepay, ios, drop-in, online-payments]\n---\n\n## Overview\n\nAdyen's 2026-09-15 webpage snapshot gives MobilePay-specific additions to an existing iOS Drop-in integration, separated by Sessions and Advanced server-side flows. It points back to the main integration guides for general steps; it is not a complete standalone integration guide. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- For Sessions, the page specifies an existing iOS Drop-in Sessions integration using Checkout API v68 or later and MobilePay added in Customer Area. It says no additional `/sessions` parameters or MobilePay configuration are needed.\n- For Advanced, it specifies an existing iOS Drop-in Advanced integration, handling `action.type: redirect`, and MobilePay added in Customer Area. It says no additional MobilePay configuration and ordinarily no extra `/payments` parameters are needed. The exception is a payment intended to generate a token for later MobilePay-wallet payouts.\n- For ordinary MobilePay payments, this page says the Adyen test environment cannot be used; its testing path is low-amount payments in live after a live Customer Area request. It directs the merchant to the server's `AUTHORISATION` webhook and Customer Area payment list for status. The snapshot establishes neither present account eligibility nor a completed payment.\n- The wallet payout feature is marked experimental and supported only with `/payments`. A token-generating payment requires recurring lifecycle webhook setup and the `telephoneNumber`, `shopperReference`, and `enablePayout`-true parameters. The page directs the merchant to save `storedPaymentMethodId` from the recurring lifecycle webhook for the shopper, then place the token in a later Transfers API `/transfers` request's `counterparty.card.cardIdentification`. Its separate payout test instructions use a Vipps MobilePay test app, the recurring lifecycle webhook, and Transfers API; they do not establish ordinary MobilePay payments as test-environment supported.\n- The payout-token prose spells `enablePayout`, but the curl hint spells `enablePayOut`. The curl and language-specific request samples also contain blank currency, payment-method type, or return URL values, and most omit the prose's payout-token fields. Treat them as illustrative snapshot snippets, not verified runnable requests or a resolution of the spelling discrepancy.\n\n## Detail locators\n\n- Sessions requirements and no-additional-parameter/configuration statements: raw lines 25-46.\n- Sessions live payment and experimental payout testing instructions: raw lines 48-83.\n- Advanced requirements, redirect, configuration, and `/payments` exception: raw lines 85-107.\n- Advanced language-specific request snippets, including the curl payout hints: raw lines 109-291.\n- Payout-token prerequisites, webhook token, and later transfer: raw lines 293-325.\n- Repeated Advanced live payment and payout testing instructions: raw lines 327-362.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 native Drop-in and integration architecture.\n- [[adyen-tokenization]] \u2014 broader tokenization context; this page's experimental payout-token path has separate conditions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15|MobilePay iOS Drop-in (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "You can add MobilePay to your existing integration. The following instructions show only what you must add to your integration specifically for MobilePay.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md:19 (opening scope)"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md:40 (Sessions /sessions request)"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md:52 (Sessions Test and go live; repeated line 331)"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md:64 (Sessions Test payouts; repeated line 343)"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md:305 (Advanced payout token creation, step 3)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-ios-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-ios-drop-in]] \u2014 2026-09-15 MobilePay iOS Drop-in Sessions/Advanced add-on, with live payment testing and an experimental payout-token path.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "c421ede8b20c7c2d9f265403a46cd7382b6897574a3adc1f3c1f65f51546432c",
+  "status": "candidate_ready"
+}

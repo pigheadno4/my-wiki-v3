@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Vipps Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/android-drop-in/2026-09-15.md\"\ntags: [adyen, vipps, android, drop-in, online-payments, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes adding Vipps to an existing Android Drop-in integration. It gives distinct Sessions and Advanced server-side additions, along with TEST-app and LIVE-request instructions. It does not establish a current merchant's Vipps eligibility or an executed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** Use an existing Android Sessions Drop-in integration and Checkout API v68 or later; add Vipps in Customer Area (raw lines 25\u201334). The `/sessions` table describes `shopperStatement` as the in-app description, falling back to `reference` when omitted, and says Vipps has a minimum `amount.value` of 100 minor units, described as 1.00 NOK (lines 38\u201345). The page says no extra Vipps configuration parameters are needed (lines 68\u201372).\n- **Advanced:** Use an existing Android Advanced Drop-in integration with redirect handling for `action.type: redirect` and add Vipps in Customer Area (lines 104\u2013112). The `/payments` table describes optional phone prefill on the Vipps-hosted page, shopper-statement fallback, relevant `channel` and the same 100-minor-unit minimum (lines 122\u2013131). The example returns a `redirect` action; its `RedirectShopper` response is an intermediate handoff, not payment completion (lines 133\u2013172). No additional Vipps configuration parameters are stated (lines 114\u2013118).\n- **Testing and live setup:** The TEST path directs installing the Vipps test app, adding Vipps to the test merchant account, then authorizing a test payment through the app notification (lines 78\u201392, 176\u2013190). Live acceptance requires a separate request in the LIVE Customer Area; after addition, the page directs a low-amount payment, checking the AUTHORISATION webhook on the merchant server and status in Payment list (lines 94\u2013102, 192\u2013200). Shopper app authorization and redirect response alone do not establish the final payment outcome.\n- The examples show `NOK`, `countryCode: NO` in Sessions, `channel: Android` in Advanced, and Checkout API v71/v72 requests (lines 47\u201366, 133\u2013156). These are examples; the guide's explicit minimum API version is v68+ for Sessions, and it does not state a corresponding Android SDK version or broader country/currency eligibility matrix.\n\n## Detail locators\n\n- Sessions requirement, `/sessions` field table and example: raw lines 25\u201366.\n- Advanced requirement, `/payments` field table and example redirect action: raw lines 104\u2013172. The Advanced `channel` row points to the `/paymentMethods` API reference even though this section is for `/payments`; resolve request schema against the relevant API reference before implementation.\n- TEST app setup fixtures and LIVE request/status checks: raw lines 74\u2013102 and 174\u2013200.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/android-drop-in/2026-09-15|Vipps Android Drop-in, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions flow Drop-in / Requirements"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw line 45, Sessions /sessions parameter table; repeated at line 131 for Advanced"
+    },
+    {
+      "text": "Used to prefill the shopper's phone number on the Vipps-hosted page.",
+      "location": "raw line 128, Advanced /payments parameter table"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 158, Advanced flow Drop-in"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 194, Advanced Test and go live; repeated at line 96 for Sessions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c39-vipps-android-drop-in-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-android-drop-in]] \u2014 2026-09-15 Vipps Android Drop-in add-on for Sessions (Checkout API v68+) and Advanced redirect, with method-specific amount and separate TEST-app/LIVE-request checks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/android-drop-in/2026-09-15.md",
+  "raw_sha256": "25d92d4aec84d8c8e6341c7571c1a49484d7ba0298993a66c1378bb3dee917b6",
+  "status": "candidate_ready"
+}

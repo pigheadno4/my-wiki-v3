@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MobilePay API-only integration guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md\"\ntags: [adyen, mobilepay, api-only, redirect, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds MobilePay to an existing Web API-only Advanced integration. It covers method discovery, redirect handling, a payout-token extension, and qualified testing; the main integration guide owns the full checkout and result flow. This snapshot's discovery example and request snippets do not prove current availability, merchant enablement, a completed payment, or a payout. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Prerequisites are an existing Web API-only integration with handling for `action.type: redirect`, plus adding MobilePay in Customer Area. The custom payment form should include MobilePay in the method list; the form section says no shopper information needs to be collected there. For `/paymentMethods` discovery, the page lists `countryCode` DK or FI and `amount.currency` DKK or EUR, with FI/EUR in a TEST example and a MobilePay response example. The table does not establish every country/currency pairing or actual merchant availability.\n- For an ordinary `/payments` call, the page says no MobilePay-specific parameters need to be added. Its \"How it works\" section nevertheless says the shopper enters details in the merchant-built form and the payment request includes additional item information, while the form section says no shopper data collection and the `/payments` section says no extra parameters. These statements should not be collapsed into a mandatory item-field or shopper-input rule. The \"How it works\" order-fulfillment step is an outline, not authorization or settlement evidence.\n- For future payouts to MobilePay wallets, the page describes a separate `/payments` token-creation path: configure the recurring lifecycle webhook; send `telephoneNumber`, `shopperReference`, and `enablePayout: true`; on its webhook, save `storedPaymentMethodId` against `shopperReference`. A later POST `/transfers` puts that token in `counterparty.card.cardIdentification`. The payout feature is experimental and `/payments`-only. The example webhook uses `type: recurring.token.created` and `data.type: visa_mobilepay`; the example does not prove token creation or transfer success in an account.\n- The page says ordinary MobilePay cannot be tested in the test environment and directs low-amount LIVE payments after a live Customer Area request, checking the `AUTHORISATION` webhook and live payment list. Separately, its experimental payout section gives a Vipps MobilePay test-app procedure to simulate a token-generating payment, process the recurring lifecycle webhook and send a Transfers API request. The page does not reconcile the payout test environment with its broad ordinary-payment test restriction; preserve both scopes. Authorization status is distinct from capture, settlement and payout completion.\n- The `/payments` examples use empty currency and return URL placeholders. The curl example includes documentation hint markup as JSON property names and spells `enablePayOut`, while the token-creation prose says `enablePayout`; most language examples omit the shopper reference and payout flag. These snippets are not validated copy-ready requests. The TEST examples do not override the stated ordinary LIVE testing instruction.\n\n## Detail locators\n\n- Scope, prerequisites, form and conflicting how-it-works statements: pinned raw lines 15\u201342.\n- `/paymentMethods` discovery table and FI/EUR TEST example: pinned raw lines 44\u201383.\n- Ordinary `/payments` no-extra-parameter statement and incomplete request snippets: pinned raw lines 85\u2013271.\n- Token fields, recurring webhook example and later transfer: pinned raw lines 273\u2013305.\n- LIVE ordinary-payment testing and experimental payout test-app procedure: pinned raw lines 307\u2013340.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main concept and Web API-only integration architecture\n- [[source-adyen-docs-payment-methods-mobilepay]] \u2014 method overview; separate authority for method-level eligibility and payout scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15|MobilePay API-only guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add MobilePay to your existing integration. The following instructions show only what you must add to your integration specifically for MobilePay.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md:19"
+    },
+    {
+      "text": "Include MobilePay in the list of available payment methods. You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md:40"
+    },
+    {
+      "text": "You do not need to add any parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment), unless you make a payment to generate a token for future payouts to MobilePay wallets.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md:87"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md:309"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md:321"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-api-only]] \u2014 2026-09-15 MobilePay Web API-only Advanced add-on for conditional DK/FI discovery, redirects, ordinary LIVE testing and an experimental `/payments` payout-token route; prose/example conflicts remain in the source.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/api-only/2026-09-15.md",
+  "raw_sha256": "fc9625e2d67b23326ee0d099758c7764955804b6168f297a6d969255101d1a5a",
+  "status": "candidate_ready"
+}

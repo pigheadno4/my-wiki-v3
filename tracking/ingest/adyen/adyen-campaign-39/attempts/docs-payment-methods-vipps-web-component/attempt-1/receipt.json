@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Vipps Web Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/web-component/2026-09-15.md\"\ntags: [adyen, vipps, web, components, online-payments]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Vipps Web Component page describes additions to an existing Web Components integration for Sessions and Advanced server-side flows. It delegates general integration steps to the main flow guides. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- For Sessions, the page calls for an existing Web Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Vipps added in Customer Area. It lists `shopperStatement` (falling back to `reference` for the Vipps app description) and `amount.value` in minor units; it states a Vipps minimum of 100 minor units, or 1.00 NOK. The table's Required cells are blank, so this page alone does not establish those fields as additional mandatory properties. It says no Vipps-specific Component configuration is needed.\n- For Advanced, the page calls for an existing Web Components Advanced integration, redirect handling, and Vipps added in Customer Area. Its `/payments` table lists entries with blank Required cells for `paymentMethod.telephoneNumber` to prefill the Vipps-hosted page, `shopperStatement` with the same fallback, `channel` (for example Web, iOS, Android), and `amount.value` with the same 100 minor-unit minimum. The example uses NOK, `type: vipps`, and `channel: Web`; the response example is `RedirectShopper` with `action.type: redirect`, an intermediate action rather than authorization or settlement evidence.\n- Both flows import `Vipps` from `@adyen/adyen-web` and initialize its Component with a checkout instance. The page's Sessions example uses Checkout API v71 and its Advanced example v72; these examples do not replace the explicit Sessions v68-or-later minimum. The Sessions example's app-scheme `returnUrl` and `countryCode: NO` are example values, not stated universal Web requirements or a full country-eligibility rule.\n- For TEST-environment Vipps testing, the page sends the merchant to the Vipps test app, then instructs them to add Vipps to a test merchant account, create a Vipps payment request, and have the shopper check the app notification and authorize. For live payments it requires a separate request in live Customer Area, then describes low-amount payments and checking the server's `AUTHORISATION` webhook and payment list for status. The app authorization step and redirect response do not by themselves prove an Adyen authorization outcome.\n\n## Detail locators\n\n- Sessions requirements, `/sessions` parameter table and v71 example: raw lines 25-68.\n- Sessions import, Component initialization and configuration: raw lines 70-102.\n- Sessions test-app setup, test flow, live request and status checks: raw lines 104-130.\n- Advanced requirements, import and initialization: raw lines 132-168.\n- Advanced `/payments` parameter table, v72 example and redirect response: raw lines 170-222.\n- Repeated Advanced TEST/live setup and status checks: raw lines 224-250.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 status-event context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15|Vipps Web Component (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "You can add Vipps to your existing integration. The following instructions show only what you must add to your integration specifically for Vipps.",
+      "location": "raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15.md:19 (opening scope)"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15.md:34 (Sessions Requirements table, Checkout API row)"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15.md:47 (Sessions amount.value description; repeated at line 181 in Advanced)"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15.md:208 (Advanced response description)"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15.md:124 (Sessions live request; repeated at line 244 in Advanced)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-web-component]] \u2014 2026-09-15 Vipps Web Components Sessions/Advanced add-on for redirect, request-field, TEST-app and live-request guidance.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/web-component/2026-09-15.md",
+  "raw_sha256": "deb1c83dbe765944246e71fb8a0e5d17028c91277fe29581f36b801fe3fb7541",
+  "status": "candidate_ready"
+}

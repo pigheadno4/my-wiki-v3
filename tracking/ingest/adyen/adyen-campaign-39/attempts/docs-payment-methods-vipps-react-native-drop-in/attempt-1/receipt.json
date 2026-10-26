@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-vipps-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Vipps React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, vipps, react-native, drop-in, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes Vipps-specific additions to an existing React Native Drop-in integration, separately for Sessions and Advanced server-side flows. It covers redirect readiness, method-specific request information, and test/live setup. It is a dated guide, not current merchant eligibility or evidence that a payment was executed. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** The page requires an existing Sessions React Native Drop-in integration, Checkout API v68 or later, `action.type: redirect` handling, and Vipps in Customer Area. It lists `shopperStatement` as the description shown in the Vipps app, defaulting to `reference` when omitted, and states a minimum `amount.value` of 100 minor units, or 1.00 NOK. The table's Required cells are blank, so the table does not establish that `shopperStatement` is mandatory. No Vipps-specific configuration parameters are stated. The Sessions Integration type label links to an Advanced-flow URL, while later Sessions links point to Sessions flow. (raw lines 25\u201374)\n- **Advanced:** The page requires an existing Advanced React Native Drop-in integration, `action.type: redirect` handling, and Vipps in Customer Area. It lists `paymentMethod.telephoneNumber` to prefill the Vipps-hosted page, `shopperStatement` with the same reference fallback, a relevant `channel`, and the same 100-minor-unit/1.00-NOK minimum. These table rows have blank Required cells; do not promote the listed examples to unconditional field requirements. No Vipps-specific configuration parameters are stated. The Advanced section does not separately state the Sessions v68+ API minimum. (raw lines 104\u2013160)\n- **Redirect and outcome:** The Advanced sample returns `resultCode: RedirectShopper` with `action.type: redirect`; this is a handoff state, not payment authorization or settlement. For live low-amount tests, the guide tells the merchant to receive an `AUTHORISATION` webhook on its server and inspect the live payment list for status. The page does not provide a complete return/details or capture/refund procedure. (raw lines 160\u2013174, 194\u2013202)\n- **TEST and LIVE:** The test path uses a Vipps developer test app, adds Vipps to the test merchant account, makes a test request and has the shopper authorize the test-app notification. Live acceptance requires a separate request in the live Customer Area; after Adyen adds Vipps there, the guide calls for low-amount live payments and status checks. Test-app authorization and redirect response are not themselves proof of a live payment. (raw lines 76\u2013102, 176\u2013202)\n- **Example caution:** The Sessions prerequisite's Advanced-flow link conflicts with its Sessions label. Both curl samples put `-X POST` on a line without a continuation marker before `-d`. The Advanced table suggests relevant channel values such as Web, iOS or Android, while its sample says `React-native`; treat the sample as illustrative and check the base integration's versioned field contract. (raw lines 33, 49\u201368, 126\u2013158)\n\n## Detail locators\n\n- Sessions requirements, request rows, example and no-extra-configuration statement: raw lines 25\u201374.\n- Sessions TEST app and live request/status process: raw lines 76\u2013102.\n- Advanced requirements, request rows and sample redirect action: raw lines 104\u2013174.\n- Advanced repeated TEST and LIVE process: raw lines 176\u2013202.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-react-native-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15|Adyen Vipps React Native Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md:34 (Sessions flow Drop-in > Requirements, Checkout API row)"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md:47 (Sessions request amount.value row; repeated at line 133)"
+    },
+    {
+      "text": "Used to prefill the shopper's phone number on the Vipps-hosted page.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md:130 (Advanced request paymentMethod.telephoneNumber row)"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md:160 (Advanced flow Drop-in, after example payment request)"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md:96 (Sessions Request for Vipps in the live environment; repeated at line 196)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-react-native-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-react-native-drop-in]] \u2014 2026-09-15 Vipps React Native Drop-in Sessions/Advanced redirect add-on, with a Sessions prerequisite-link mismatch, 1.00 NOK minimum and separate TEST/LIVE setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions Integration type URL points to Advanced flow; Advanced channel example `React-native` differs from the table's Web/iOS/Android examples, and curl continuation is incomplete."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "1ca332fa4310cc1c610191d6b6665bd126c359d9ee8a7c4c4e4c8f70b0e2cad0",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MobilePay Android Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/android-drop-in/2026-09-15.md\"\ntags: [adyen, mobilepay, android, drop-in, redirect, payout]\n---\n\n## Overview\n\nThis [[adyen]] guide gives MobilePay-specific additions to an existing Android Drop-in checkout, separately for Sessions and Advanced server-side flows. The Advanced section explicitly requires handling a redirect action. The page also describes an experimental `/payments` route for a token that can be used in later MobilePay-wallet payouts. It does not establish current merchant eligibility, supported countries or currencies, successful payment authorization, or payout availability. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Android Drop-in Sessions integration using Checkout API v68 or later and MobilePay added in Customer Area. It specifies no extra MobilePay `/sessions` parameters or Drop-in configuration. This section does not separately state a redirect-handling requirement; use the linked base Sessions guide for that flow's mechanics. See raw lines 25\u201346.\n- **Advanced:** Requires an existing Android Drop-in Advanced integration, handling `action.type: redirect`, and MobilePay added in Customer Area. It specifies no extra MobilePay configuration or ordinary `/payments` fields, except for the future-payout-token case. No Advanced Checkout API minimum is stated here. See raw lines 85\u2013105.\n- **Normal-payment testing:** The guide says MobilePay cannot be tested in the test environment. It directs a live Customer Area request followed by low-amount live payments, then checking the server's `AUTHORISATION` webhook and the live Payment list for status. An intermediate redirect or client completion is not payment-status proof. See raw lines 48\u201360 and 325\u2013335.\n- **Experimental payout token:** The feature is labeled experimental and supported only with `/payments`. The described token-creation request includes `telephoneNumber`, `shopperReference` and `enablePayout: true`, after setting up the recurring lifecycle webhook. The merchant saves `storedPaymentMethodId` from that webhook against `shopperReference`, then uses the token in `counterparty.card.cardIdentification` for a later `/transfers` request. Separate payout-test instructions call for a Vipps MobilePay test app and webhook/transfer checks. See raw lines 62\u201383 and 291\u2013358.\n\n> [!warning] Payout request examples conflict with prose\n> Token-creation prose spells the flag `enablePayout`, while the annotated curl field spells it `enablePayOut`. The Java, PHP, C#, Node, Python and Ruby snippets include `telephoneNumber` but omit `shopperReference` and the flag; the examples also leave method type, currency and return URL blank. The curl example uses a TEST endpoint despite the normal-payment live-only warning. These snippets are not complete working token requests or proof that ordinary MobilePay payments work in TEST. See raw lines 105\u2013288 and 291\u2013301.\n\n## Detail locators\n\n- Sessions prerequisites, no-extra-field and configuration guidance: raw lines 25\u201346; Advanced prerequisites and request distinction: raw lines 85\u2013105.\n- Server-language request examples and placeholders: raw lines 107\u2013288; token webhook example and later transfer field: raw lines 291\u2013323.\n- Normal payment and separate experimental payout test guidance: raw lines 48\u201383 and 325\u2013358. This method-specific page gives no Drop-in initialization code, country/currency matrix, or full base-flow result contract.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 native Drop-in architecture and separately versioned SDK evidence; this page pins no Android SDK version.\n- [[adyen-payouts]] \u2014 broader payout and transfer context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/android-drop-in/2026-09-15|MobilePay Android Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=Android). Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Requirements / Sessions flow Drop-in"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw line 52, Test and go live / Sessions flow Drop-in"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw line 64, Test payouts to MobilePay wallets / Sessions flow Drop-in"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in#make-a-payment), unless you make a payment to generate a token for future payouts to MobilePay wallets.",
+      "location": "raw line 105, Add additional parameters to your /payments request / Advanced flow Drop-in"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw line 303, Payment with payout token creation / Advanced flow Drop-in"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-android-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-android-drop-in]] \u2014 2026-09-15 MobilePay Android Drop-in add-on for existing Sessions (Checkout API v68+) and Advanced redirect flows, with live-only normal-payment testing and a separate experimental `/payments` payout-token route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Only the Advanced section explicitly states redirect action handling; the Sessions section routes to its base guide.",
+          "The payout token flag is `enablePayout` in prose and `enablePayOut` in the curl annotation; sample requests omit required token fields.",
+          "TEST endpoint and payout-test app instructions do not establish ordinary MobilePay TEST payment support."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "49368e61ca4619af413109045739d0fcb5c52c8af2b9abbbf362cc1c7578b2e5",
+  "status": "candidate_ready"
+}

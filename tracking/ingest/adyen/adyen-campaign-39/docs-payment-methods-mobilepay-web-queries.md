@@ -1,0 +1,5 @@
+# MobilePay for Web retrieval checks
+
+**Q1 — Purpose/scope and inference limit.** The `mobilepay/web` page is a 2026-09-15 chooser for a website integration, linking Drop-in and Components children plus four base Web flow guides (raw lines 15–36). It gives no child-specific API/SDK version, merchant enablement, test/live gate, token flow or observed result; these cannot be inferred merely from the chooser links (raw lines 19–36). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-mobilepay-web]].
+
+**Q2 — Central capability, prerequisites and warnings.** The chooser describes Drop-in as an all-in-one website UI and the Components child as using Redirect, then says to create the main integration first and lists Sessions and Advanced guides for both Web surfaces (raw `mobilepay/web` lines 19–36). These are navigation routes, not complete redirect, payout, test or live procedures; consult the child guides for those conditions. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-mobilepay-web]].

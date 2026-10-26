@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen MobilePay iOS Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md\"\ntags: [adyen, mobilepay, ios, components, online-payments]\n---\n\n## Overview\n\nAdyen's 2026-09-15 webpage snapshot describes the MobilePay-specific additions to an existing iOS Components integration using either the Sessions or Advanced server-side flow. It uses `InstantPaymentComponent` for the MobilePay payment method; it is an add-on guide, not a complete integration guide. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- For Sessions, the page requires an existing iOS Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and MobilePay added in Customer Area. It says no extra `/sessions` parameters or MobilePay configuration are needed. The Sessions example selects `.other(\"mobilepay\")`, assigns the session as delegate, and initiates payment.\n- For Advanced, the page requires an existing iOS Components Advanced integration, redirect handling, and MobilePay added in Customer Area. It says no MobilePay configuration is needed and ordinarily no extra `/payments` parameters; the Component example assigns the merchant delegate and initiates payment.\n- The page says ordinary MobilePay payments cannot be tested in Adyen's test environment: low-amount live payments after a live Customer Area request are its test path. It directs the merchant to receive the `AUTHORISATION` webhook and inspect the payment list for status. This snapshot does not establish current account eligibility or any completed payment.\n- Future payouts to MobilePay wallets are a separate experimental feature that the page says is supported only with `/payments`. For a token-generating payment it calls for the recurring lifecycle webhook and `telephoneNumber`, `shopperReference`, and `enablePayout` set true; save the webhook's `storedPaymentMethodId` against the shopper reference, then use that token in a later Transfers API `/transfers` request's `counterparty.card.cardIdentification`. The page separately describes testing this payout path with a Vipps MobilePay test app, a recurring lifecycle webhook, and Transfers API; this does not erase its live-only statement for ordinary MobilePay payment testing.\n- There are source inconsistencies to preserve: the token-creation prose spells `enablePayout`, while the curl sample spells `enablePayOut`; the Advanced iOS Components requirement links to a main guide URL whose query says `integration=Drop-in`. Several language samples omit the prose's token fields or leave currency, payment-method type, or return URL blank. Treat the prose and examples as snapshot evidence, not a validated runnable request or resolution of those discrepancies.\n\n## Detail locators\n\n- Sessions requirements, request/configuration and Swift initialization: raw lines 25-70.\n- Sessions live test and experimental payout-test instructions: raw lines 72-105.\n- Advanced requirements, no extra configuration, initialization and ordinary `/payments` exception: raw lines 107-150.\n- Advanced language-specific illustrative requests: raw lines 152-334; token-field hints occur in the curl block at lines 169-171.\n- Payout-token prerequisites, webhook token, later transfer request: raw lines 336-368.\n- Repeated Advanced live-test and payout-test instructions: raw lines 370-403.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 native Component and integration architecture.\n- [[adyen-tokenization]] \u2014 broader tokenization context; this page's experimental payout-token route has its own conditions.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15|MobilePay iOS Component (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md:34 (Sessions Requirements table, Checkout API row)"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) MobilePay, use the `InstantPaymentComponent` class.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md:54 (Sessions Initialize; repeated at line 129 in Advanced)"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md:74 (Sessions Test and go live; repeated at line 372 in Advanced)"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md:86 (Sessions Test payouts; repeated at line 384 in Advanced)"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md:348 (Advanced Payment with payout token creation, step 3)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-ios-component]] \u2014 2026-09-15 MobilePay iOS Components Sessions/Advanced add-on, including redirect setup, live payment testing, and an experimental payout-token path.",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/ios-component/2026-09-15.md",
+  "raw_sha256": "ab6cd6512edb378bf0b3df78b92239f72dedebb4e910e799bfc3e91c080d1d76",
+  "status": "candidate_ready"
+}

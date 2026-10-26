@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MobilePay Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, mobilepay, flutter, drop-in, redirect, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 MobilePay page gives method-specific additions to an existing Flutter Drop-in integration, separated by Sessions and Advanced server-side flows. It also describes an experimental, separate `/payments` path that creates a token for future payouts to MobilePay wallets. The snapshot is integration guidance, not current enablement or an observed payment or payout. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** the requirement text names an existing Sessions Flutter Drop-in flow, Checkout API v68 or later, `action.type: redirect` handling, and MobilePay added in Customer Area. It says no MobilePay-specific `/sessions` fields or configuration. The Sessions integration-type row links to an **Advanced-flow** Flutter Drop-in page, while the session creation and redirect links point to Sessions; retain the label/link mismatch. (raw lines 25\u201348)\n- **Advanced normal payment:** requires an existing Advanced Flutter Drop-in flow, redirect handling, and MobilePay added in Customer Area. It says no method-specific configuration or ordinary `/payments` parameters. The page does not state the Sessions v68+ minimum for this Advanced section. (raw lines 85\u2013107)\n- **Normal payment test and live gate:** the guide says ordinary MobilePay payments cannot be tested in the test environment. It directs a live Customer Area request, then low-amount live payments with an `AUTHORISATION` webhook received by the merchant server and status checked in the live payment list. These steps are instructions, not proof of an executed payment. (raw lines 50\u201360, 327\u2013337)\n- **Experimental payout-token path:** only `/payments` supports the described MobilePay wallet payout feature. To create a token for future payouts, the prose requires a recurring lifecycle webhook and `telephoneNumber`, `shopperReference`, and `enablePayout: true` on a payment. On `recurring.token.created`, save `storedPaymentMethodId` against `shopperReference`; a later `/transfers` request places the token in `counterparty.card.cardIdentification`. The test-app instructions for this payout path are separate from the live-only normal-payment testing statement and do not establish that a test payout succeeded. (raw lines 62\u201383, 293\u2013325, 339\u2013360)\n- **Sample limits:** the payout-oriented curl sample has empty currency, payment-method type and return URL values, literal hint markup in JSON property names, and `enablePayOut` spelling, while the procedural text says `enablePayout`. Other language samples also leave core values blank and omit some token parameters. Use the prose and linked API references as navigation; the snippets are not complete or internally consistent executable requests. (raw lines 109\u2013290, 299\u2013305)\n\n## Detail locators\n\n- Sessions requirement/link conflict, no extra fields or configuration: raw lines 29\u201348.\n- Advanced prerequisites and ordinary payment boundary: raw lines 89\u2013107.\n- Payout sample defects and prose/token webhook/transfer flow: raw lines 109\u2013325.\n- Normal live-payment instructions versus test-app payout instructions: raw lines 50\u201383 and 327\u2013360.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/flutter-drop-in/2026-09-15|MobilePay Flutter Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements table"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw line 52, Sessions Test and go live"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw line 64, Sessions payout-test section"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Flutter\\&integration=Drop-in#make-a-payment), unless you make a payment to generate a token for future payouts to MobilePay wallets.",
+      "location": "raw line 107, Advanced request section"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw line 305, payout-token procedure"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-flutter-drop-in]] \u2014 2026-09-15 MobilePay Flutter Drop-in Sessions/Advanced redirect add-on with live-only normal-payment testing and separate experimental payout-token instructions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "a9845fbdb71799feb30467a994499c156b0091d1b45e8317f5c789a3f76c82f8",
+  "status": "candidate_ready"
+}

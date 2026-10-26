@@ -70,6 +70,9 @@ The release updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the de
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] — 2026-09-15 method-specific React Native Components guide: MobilePay Sessions unsupported; Advanced redirect flow and payout-token exceptions are in the source. This does not change the wrapper's general Sessions capability.
+
+
 - [[source-adyen-docs-payment-methods-fpx-online-banking-malaysia-react-native-component]] — FPX Malaysia React Native Components Advanced-only method guide with redirect prerequisite and separate test/live gates (2026-09-15 snapshot); its base-guide label/URL conflict remains in the source.
 
 

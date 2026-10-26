@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-bizum-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bizum for API only\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bizum/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/bizum/api-only/2026-09-15.md\"\ntags: [adyen, bizum, api-only, online-payments, redirect]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Bizum guide adds the method to an existing Web API-only Advanced-flow integration. It covers method discovery, a Bizum `/payments` request, a POST redirect, `/payments/details` after return, and shopper-facing result handling. It is a documentation snapshot, not evidence of current merchant eligibility or a completed live transaction. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The existing integration must handle `action.type: redirect`. The guide directs activation to obtain a MID and Terminal ID and adding Bizum in Customer Area before starting (raw lines 23\u201330).\n- For `/paymentMethods`, specify `countryCode: ES` and `amount.currency: EUR` to include Bizum in the response (lines 45\u201352). The response showing `type: bizum` is an example (lines 330\u2013341), not a promise for every account.\n- The form section states no additional fields are required (lines 39\u201343). The Bizum `/payments` section marks a unique alphanumeric `reference` of 4\u2013125 characters required (lines 343\u2013350); its example uses `paymentMethod.type: bizum` and a `returnUrl` (lines 351\u2013373).\n- The `/payments` response includes a redirect action (lines 661\u2013684). The guide says to POST to `action.url` with action `data` key-value pairs using `x-www-form-urlencoded`, then send the URL-decoded `redirectResult` to `/payments/details` after the shopper returns (lines 686\u2013711).\n- Use the `/payments/details` `resultCode` for the shopper display, while the AUTHORISATION webhook conveys the asynchronous outcome; when the shopper does not return, wait for webhooks (lines 942\u2013974). `Pending` or `Received` means the final result is unknown, and `Authorised` is described as sent to the bank for processing; manual capture still requires capture (lines 960\u2013966).\n\n## Detail locators\n\n- Integration requirements and flow: raw lines 19\u201343.\n- Discovery request, ES/EUR conditions, sample Checkout v72 and library versions: raw lines 45\u2013341.\n- `/payments` parameter table and examples: raw lines 343\u2013657. The table prints a reference regex ending `$)`; use the prose length/character condition and verify the expression before implementing it.\n- Redirect action, POST and details request: raw lines 659\u2013940. The `/payments/details` examples use older library versions than the earlier `/payments` examples (for example Java v27.0.0 versus v40.0.1); they do not establish one combined library recipe.\n- Results, webhook actions and test fixtures: raw lines 942\u2013989. Test guidance names `telephoneNumber: 700 000 000`, although the form section says no additional fields and the displayed `/payments` request omits it. The test amounts have stated outcomes only for less than 10 and more than 15; the page gives no outcome for the interval between them.\n- Source wording conflict: \u201cHow it works\u201d says the payment request includes additional information about intended purchase items (raw line 36), but the method-specific `/payments` parameter table lists only `reference` (lines 343\u2013350). Do not infer an item schema from this page.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main Adyen online-payments concept and route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bizum/api-only/2026-09-15|Bizum for API only, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing [API-only integration](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only).",
+      "location": "raw lines 23\u201327, Requirements table"
+    },
+    {
+      "text": "There are no additional fields that you have to include in your form.",
+      "location": "raw line 41, Build your payment form"
+    },
+    {
+      "text": "Bizum requires the `x-www-form-urlencoded` content type.",
+      "location": "raw line 693, Handle the redirect"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw line 966, Show the payment result"
+    },
+    {
+      "text": "If the shopper failed to return to your website or app, wait for notification webhooks to know the outcome of the payment.",
+      "location": "raw line 969, Show the payment result"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bizum-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bizum-api-only]] \u2014 2026-09-15 Bizum Web API-only Advanced-flow guide for method discovery, redirect/details handling and webhook-qualified outcomes; prerequisite and example conflicts are recorded in the source.",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bizum/api-only/2026-09-15.md",
+  "raw_sha256": "2f991d0ef2b713debfc8230d00062f8c83eafb2dfe27ac8c7e9cc54c9d358e2a",
+  "status": "candidate_ready"
+}

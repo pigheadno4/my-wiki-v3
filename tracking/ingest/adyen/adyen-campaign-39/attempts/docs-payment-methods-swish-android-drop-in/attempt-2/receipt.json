@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-swish-android-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Swish Android Drop-in integration guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/swish/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md\"\ntags: [adyen, swish, android, drop-in, qr]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds Swish to an existing Android Drop-in integration in either Sessions or Advanced server-side flow. It covers Customer Area setup, an optional submit-button setting, Advanced `qr` action handling and TEST simulator instructions. This method add-on relies on the main Android Drop-in guides for the full payment flow. The snapshot does not establish current merchant eligibility, a completed live payment, capture or settlement. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-swish]].\n\n## Key takeaways\n\n- Sessions requires an existing Android Drop-in Sessions integration using Checkout API v68 or later, with Swish added in Customer Area. The page says no Swish-specific `/sessions` parameters are needed. It describes `setSubmitButtonVisible` to control whether the submit button appears; its Required cell is blank, so the setting is optional-looking rather than a prerequisite. The Kotlin configuration block contains `...`, nested braces and an unbound `value`, so it is illustrative rather than a validated copy-ready snippet.\n- Advanced requires an existing Android Drop-in Advanced integration, handling the additional `action.type: qr` action, and Swish added in Customer Area. Its action-handling hyperlink points to a `handle-the-redirect` anchor although the row explicitly says `qr`; preserve the stated `qr` type rather than treating the link label as a redirect response. It says no extra Swish `/payments` parameters are needed and offers the same optional submit-button setting with the same illustrative Kotlin block. This section states no Checkout API minimum.\n- **Cross-guide action naming:** This Android Drop-in Advanced guide states `action.type: qr` (raw line 81). The separate Web API-only guide [[source-adyen-docs-payment-methods-swish-api-only]] also states `qr` in its requirement but shows `qrCode` in its response example (that source's pinned raw lines 28 and 152). These are distinct integration scopes; the example does not establish that the action values are interchangeable or that this guide's redirect-named link anchor changes its stated `qr` action.\n- In TEST, the page says a Swish payment is authorised within 15 seconds and says refusal scenarios can be simulated by placing a Merchant Swish Simulator error code in `shopperStatement` (for example `FF08`). It directs merchants to inspect test-payment status in the test Customer Area. The 15-second statement is TEST guidance, not a guarantee for a live or refused payment, and a request or simulated result is not capture or settlement proof. For LIVE acceptance, the page requires a separate Swish request in the live Customer Area.\n\n## Detail locators\n\n- Scope and Sessions prerequisites, no-extra-parameter statement: pinned raw lines 15\u201340. Optional configuration table and illustrative Kotlin snippet: lines 42\u201362.\n- Sessions TEST simulator, Customer Area status and separate LIVE request: pinned raw lines 64\u201372.\n- Advanced prerequisites and `qr` action versus redirect-anchor link: pinned raw lines 74\u201382. Optional configuration, no-extra-parameter statement and TEST/LIVE steps: lines 84\u2013118.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main concept and integration-state context\n- [[source-adyen-docs-payment-methods-swish]] \u2014 method overview and separate region/feature scope\n- [[source-adyen-docs-payment-methods-swish-api-only]] \u2014 separate Web API-only action requirement and response-example conflict\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15|Swish Android Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Swish to your existing integration. The following instructions show only what you must add to your integration specifically for Swish.",
+      "location": "raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:40"
+    },
+    {
+      "text": "`action.type`: **qr**.",
+      "location": "raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:81"
+    },
+    {
+      "text": "When you make a Swish payment in the test environment, the payment is authorised within 15 seconds.",
+      "location": "raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md:68"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "swish-android-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-swish-android-drop-in]] \u2014 2026-09-15 Swish Android Drop-in add-on for Sessions (Checkout API v68+) and Advanced `qr` action flows, optional submit visibility, TEST simulator and separate LIVE request; see source for snippet/link qualifications.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Android Drop-in Advanced names `action.type: qr` (primary raw line 81); separate Swish Web API-only names `qr` in its requirement but shows `qrCode` in its response example (approved source, pinned raw lines 28 and 152). Preserve distinct scopes; do not infer interchangeable values or let the redirect-named anchor override `qr`."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/swish/android-drop-in/2026-09-15.md",
+  "raw_sha256": "3588677e5aba752d1b566972f66ba6708e4cbefca55b8a054cd50ce90b3c4b8a",
+  "status": "candidate_ready"
+}

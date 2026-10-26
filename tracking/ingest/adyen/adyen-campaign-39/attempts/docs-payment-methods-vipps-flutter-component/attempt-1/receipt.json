@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Vipps Flutter Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/flutter-component/2026-09-15.md\"\ntags: [adyen, vipps, flutter, components, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide gives Vipps-specific request and redirect additions for an existing Adyen Flutter Components integration, separated by Sessions and Advanced server-side flows. It contains no standalone Component initialization recipe or observed payment result. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** the requirement text calls for existing Flutter Components Sessions flow, Checkout API v68 or later, `action.type: redirect` handling and Vipps added in Customer Area. The `/sessions` table describes optional `shopperStatement` shown in the Vipps app, with the payment `reference` used when it is omitted, and a Vipps minimum `amount.value` of 100 minor units (1.00 NOK). No additional Vipps Component configuration is stated. The request sample uses NOK/NO and a custom-scheme return URL as example values. The **Sessions Flutter Components** prerequisite label incorrectly links to an **Advanced Flutter Drop-in** guide; its other Sessions links point to Components. (raw lines 25\u201372)\n- **Advanced:** the requirement text calls for existing Flutter Components Advanced flow, redirect handling and Customer Area addition, but its Components prerequisite label again links to an **Advanced Flutter Drop-in** guide. The `/payments` table lists optional `paymentMethod.telephoneNumber` for Vipps-hosted page prefill, `shopperStatement` with the same reference fallback, `channel`, and the 100-minor-unit minimum. It says no additional Vipps Component configuration. The sample uses `channel: Flutter` although the table lists Web, iOS and Android as examples; it also uses a web return URL. These sample values do not determine general channel or return handling. The `RedirectShopper` response is an intermediate GET redirect action, not final authorization or settlement. (raw lines 102\u2013172)\n- **Test and live boundary:** test instructions require setting up the Vipps test app, adding Vipps in the test Customer Area, creating a payment request and authorizing from an app notification. Live acceptance requires a separate request in the live Customer Area; after addition, the guide calls for low-amount live tests, a server-side `AUTHORISATION` webhook carrying status, and a payment-list check. App authorization and redirect presentation do not by themselves establish final server-side status. (raw lines 74\u2013100, 174\u2013200)\n\n## Detail locators\n\n- Sessions prerequisite misroute, statement fallback, amount minimum and example: raw lines 27\u201366.\n- Advanced prerequisite misroute, optional fields, `channel` example mismatch and redirect response: raw lines 106\u2013172. The `channel` and `amount.value` links in the `/payments` table target `/paymentMethods` reference anchors.\n- Test-app setup and distinct live Customer Area request/webhook checks: raw lines 74\u2013100 and 174\u2013200.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-vipps]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/flutter-component/2026-09-15|Vipps Flutter Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add Vipps to your existing integration. The following instructions show only what you must add to your integration specifically for Vipps.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions Requirements table"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw line 45, Sessions amount.value table"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 158, Advanced response"
+    },
+    {
+      "text": "Before you can accept live Vipps payments, you must submit a request for Vipps in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 194, Advanced live section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-flutter-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-flutter-component]] \u2014 2026-09-15 Vipps Flutter Components Sessions/Advanced redirect add-on, with misrouted Drop-in prerequisite links and separate test/live status checks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/flutter-component/2026-09-15.md",
+  "raw_sha256": "ffdbf976e9d37fc5fcc74a50fabd7f69b8dd10aae45930b15de17c32f734918c",
+  "status": "candidate_ready"
+}

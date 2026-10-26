@@ -1,0 +1,11 @@
+# MobilePay Web Drop-in retrieval checks
+
+Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-mobilepay-web-drop-in]]`.
+
+## Q1. What is its purpose and scope, and what cannot be inferred?
+
+The canonical source stem `source-adyen-docs-payment-methods-mobilepay-web-drop-in` describes method-specific additions to an existing MobilePay Web Drop-in integration, separately for Sessions and Advanced flows (`raw/adyen/docs/payment-methods/mobilepay/web-drop-in/2026-09-15.md:15-25,93-103`). It is a 2026-09-15 snapshot. Its setup and examples do not establish current merchant eligibility, a completed live payment, capture, settlement, or a successful payout (`:33-36,60-68,121-143,307-339`).
+
+## Q2. What are the central capability, prerequisites, and warnings?
+
+Sessions requires existing Sessions Web Drop-in, Checkout API v68+, redirect handling, and Customer Area addition; it says `/sessions` needs no MobilePay-specific parameters (`raw/adyen/docs/payment-methods/mobilepay/web-drop-in/2026-09-15.md:29-42`). Advanced requires existing Advanced Web Drop-in, redirect handling, and Customer Area addition; ordinary `/payments` needs no added MobilePay parameter, but future wallet payout-token creation is an exception (`:97-121`). Optional `Redirect` import is shown in both flows (`:44-54,105-115`). Ordinary MobilePay test payments must be low-amount LIVE payments after a live Customer Area request, with `AUTHORISATION` webhook and Customer Area status checks (`:56-68,341-353`). The payout feature is experimental and `/payments`-only (`:70-91,355-376`); token creation requires a recurring lifecycle webhook plus `telephoneNumber`, `shopperReference`, and `enablePayout: true`, followed by token storage against the shopper and a separate Transfers API request (`:307-339`). The payout test-app procedure appears beside the broader statement that MobilePay cannot be tested in the test environment, so their environment scopes must not be flattened (`:60,72-91,345,357-376`). The Advanced sample leaves currency, method type and return URL blank, includes curl hint markup as keys, and spells `enablePayOut` differently from the prose `enablePayout`; other samples omit the payout fields (`:123-305,307-319`). The Advanced prerequisite link has an unresolved template token (`:101`).

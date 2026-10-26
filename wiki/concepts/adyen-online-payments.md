@@ -21,6 +21,150 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-vipps-web]] — 2026-09-15 Vipps Web chooser for Drop-in/Components child guides and Sessions/Advanced main guides.
+
+
+- [[source-adyen-docs-payment-methods-vipps-android]] — 2026-09-15 Vipps Android chooser for Drop-in or InstantPaymentComponent child guides and four main Android Sessions/Advanced routes; child guides own implementation and outcomes.
+
+
+- [[source-adyen-docs-payment-methods-swish-web]] — 2026-09-15 Swish Web chooser for Drop-in and Components child guides plus four Sessions/Advanced base routes; implementation and outcomes need child evidence.
+
+
+- [[source-adyen-docs-payment-methods-swish-android]] — 2026-09-15 Android Swish chooser linking Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced base integrations; child pages own action and outcome details.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-web]] — 2026-09-15 MobilePay Web chooser for Drop-in and Redirect Components children plus Sessions/Advanced base guides; requirements and outcomes need child evidence.
+
+
+- [[source-adyen-docs-payment-methods-bizum-web]] — 2026-09-15 Bizum Web chooser for Drop-in or Redirect/Components child guides and four main Web Sessions/Advanced routes; child guides own implementation and outcomes.
+
+
+- [[source-adyen-docs-payment-methods-vipps-ios]] — 2026-09-15 Vipps iOS chooser for Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced base routes; implementation and outcomes require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-swish-flutter-drop-in]] — 2026-09-15 Swish Flutter Drop-in Sessions/Advanced add-on with Advanced QR action, simulator/live-request boundaries and qualified guide links.
+
+
+- [[source-adyen-docs-payment-methods-swish-android-drop-in]] — 2026-09-15 Swish Android Drop-in add-on for Sessions (Checkout API v68+) and Advanced `qr` action flows, optional submit visibility, TEST simulator and separate LIVE request; see source for snippet/link qualifications.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-ios]] — 2026-09-15 MobilePay iOS chooser for Drop-in or InstantPaymentComponent child guides and four main iOS Sessions/Advanced routes; child guides own implementation and outcomes.
+
+
+- [[source-adyen-docs-payment-methods-swish-react-native-component]] — 2026-09-15 Swish React Native Components Advanced-only QR add-on; Sessions unsupported here, with simulator/live-request and guide-link qualifications.
+
+
+- [[source-adyen-docs-payment-methods-swish-ios-component]] — 2026-09-15 Swish iOS Components Sessions/Advanced add-on with `InstantPaymentComponent`, Advanced QR action and simulator/live-request boundaries.
+
+
+- [[source-adyen-docs-payment-methods-swish-ios-drop-in]] — 2026-09-15 Swish iOS Drop-in add-on for Sessions (Checkout API v68+) and Advanced `qr` action flows, with no method-specific request/configuration additions, TEST simulator guidance and a separate LIVE request.
+
+
+- [[source-adyen-docs-payment-methods-swish-flutter-component]] — 2026-09-15 Swish Flutter Components add-on for Sessions (Checkout API v68+) and Advanced QR action handling, with TEST simulator and separate LIVE request guidance; prerequisite links are qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-swish-react-native-drop-in]] — 2026-09-15 Swish React Native Drop-in add-on for Sessions (Checkout API v68+) and Advanced `qr` action, with TEST simulator guidance, live request gate and mismatched base-guide links.
+
+
+- [[source-adyen-docs-payment-methods-swish-web-drop-in]] — 2026-09-15 Swish Web Drop-in Sessions/Advanced add-on covering QR action, optional individual import, test simulator and live-request guidance.
+
+
+- [[source-adyen-docs-payment-methods-vipps-react-native-component]] — 2026-09-15 Vipps React Native Components Advanced-only redirect add-on; Sessions unsupported, with 1.00 NOK minimum, TEST/LIVE gates and a Components-label/Drop-in-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-swish-web-component]] — 2026-09-15 Swish Web Components Sessions/Advanced add-on for QR action handling, test simulator and live-request guidance.
+
+
+- [[source-adyen-docs-payment-methods-vipps-flutter-drop-in]] — 2026-09-15 Vipps Flutter Drop-in Sessions/Advanced add-on for request fields, redirect and TEST/live setup, with guide-link and example inconsistencies.
+
+
+- [[source-adyen-docs-payment-methods-vipps-api-only]] — 2026-09-15 Vipps Web Advanced API-only guide for NO/NOK discovery, 100-minor-unit minimum, redirect and TEST/live setup; high-level shopper/item steps conflict with its dedicated form/request sections.
+
+
+- [[source-adyen-docs-payment-methods-vipps-ios-drop-in]] — 2026-09-15 Vipps iOS Drop-in add-on for existing Sessions (Checkout API v68+) and Advanced flows, with method-specific fields, intermediate redirect and separate TEST-app/LIVE gates; see source for example and link qualifications.
+
+
+- [[source-adyen-docs-payment-methods-vipps-android-drop-in]] — 2026-09-15 Vipps Android Drop-in add-on for Sessions (Checkout API v68+) and Advanced redirect, with method-specific amount and separate TEST-app/LIVE-request checks.
+
+
+- [[source-adyen-docs-payment-methods-vipps-flutter-component]] — 2026-09-15 Vipps Flutter Components Sessions/Advanced redirect add-on, with misrouted Drop-in prerequisite links and separate test/live status checks.
+
+
+- [[source-adyen-docs-payment-methods-vipps-react-native-drop-in]] — 2026-09-15 Vipps React Native Drop-in Sessions/Advanced redirect add-on, with a Sessions prerequisite-link mismatch, 1.00 NOK minimum and separate TEST/LIVE setup.
+
+
+- [[source-adyen-docs-payment-methods-swish-android-component]] — 2026-09-15 Swish Android InstantPaymentComponent add-on for Sessions (Checkout API v68+) and Advanced `qr` action flows, with optional submit visibility, TEST simulator guidance and a separate live request.
+
+
+- [[source-adyen-docs-payment-methods-vipps-web-drop-in]] — 2026-09-15 Vipps Web Drop-in Sessions/Advanced redirect add-on with method-specific amount, test-app and live-request boundaries.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] — 2026-09-15 MobilePay React Native Components Advanced-only redirect guide, with Sessions unavailable, live-payment testing, and a distinct experimental payout-token section.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-flutter-component]] — 2026-09-15 Flutter Components add-on for MobilePay Sessions (Checkout API v68+) and Advanced redirects, with qualified live-payment testing and a separate experimental payout-token path.
+
+
+- [[source-adyen-docs-payment-methods-vipps-web-component]] — 2026-09-15 Vipps Web Components Sessions/Advanced add-on for redirect, request-field, TEST-app and live-request guidance.
+
+
+- [[source-adyen-docs-payment-methods-vipps-ios-component]] — 2026-09-15 Vipps iOS Components Sessions (Checkout API v68+) and Advanced redirect guide with 100-minor-unit NOK minimum, test-app/live gates and an Advanced Components-label/Drop-in-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-api-only]] — 2026-09-15 MobilePay Web API-only Advanced add-on for conditional DK/FI discovery, redirects, ordinary LIVE testing and an experimental `/payments` payout-token route; prose/example conflicts remain in the source.
+
+
+- [[source-adyen-docs-payment-methods-swish-api-only]] — 2026-09-15 Swish Web Advanced API-only guide for SE/SEK discovery, QR/app handoff and webhook-qualified result; item-field and action-type examples conflict within the page.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-ios-drop-in]] — 2026-09-15 MobilePay iOS Drop-in Sessions/Advanced add-on, with live payment testing and an experimental payout-token path.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-android-drop-in]] — 2026-09-15 MobilePay Android Drop-in add-on for existing Sessions (Checkout API v68+) and Advanced redirect flows, with live-only normal-payment testing and a separate experimental `/payments` payout-token route.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-flutter-drop-in]] — 2026-09-15 MobilePay Flutter Drop-in Sessions/Advanced redirect add-on with live-only normal-payment testing and separate experimental payout-token instructions.
+
+
+- [[source-adyen-docs-payment-methods-vipps-android-component]] — 2026-09-15 Vipps Android Components Sessions/Advanced redirect add-on with method-specific amount, test-app and live-request boundaries.
+
+
+- [[source-adyen-docs-payment-methods-bizum-web-drop-in]] — 2026-09-15 Bizum Web Drop-in add-on for existing Sessions or Advanced integrations, with method setup, request and redirect guidance; flow-specific prerequisites and TEST example limits are in the source.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-react-native-drop-in]] — 2026-09-15 MobilePay React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with experimental `/payments` payout-token guidance, ordinary live-only payment testing and a Sessions prerequisite link that points to Advanced.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-web-drop-in]] — 2026-09-15 MobilePay Web Drop-in add-on for existing Sessions or Advanced flows, ordinary LIVE test guidance and an experimental `/payments` payout-token route; consult the source for scope and example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay]] — 2026-09-15 MobilePay overview for DK/FI online wallet acceptance, shopper app handoff and an experimental, payout-only token route; channel-specific instructions remain in child guides.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-web-component]] — 2026-09-15 MobilePay Web Components guide for existing Sessions or Advanced redirects, with experimental `/payments` payout-token creation and distinct live-payment/test-app testing sections.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-ios-component]] — 2026-09-15 MobilePay iOS Components Sessions/Advanced add-on, including redirect setup, live payment testing, and an experimental payout-token path.
+
+
+- [[source-adyen-docs-payment-methods-mobilepay-android-component]] — 2026-09-15 MobilePay Android Components guide for existing Sessions (Checkout API v68+) or Advanced redirect flows, with a separate experimental `/payments` payout-token path and live-only normal-payment testing.
+
+
+- [[source-adyen-docs-payment-methods-bizum-web-component]] — 2026-09-15 Bizum Web Components add-on for existing Sessions and Advanced redirect flows, with setup, request and test-example boundaries.
+
+
+- [[source-adyen-docs-payment-methods-bizum-api-only]] — 2026-09-15 Bizum Web API-only Advanced-flow guide for method discovery, redirect/details handling and webhook-qualified outcomes; prerequisite and example conflicts are recorded in the source.
+
+
+- [[source-adyen-docs-payment-methods-bizum]] — 2026-09-15 Bizum ES/EUR online-banking redirect overview, activation prerequisites, dated capability table and Web/API-only guide routes.
+
+
+- [[source-adyen-docs-payment-methods-swish]] — 2026-09-15 Adyen Swish wallet overview for SE/SEK QR/mobile-app journeys, capability marks and channel-specific guide routes; the overview does not establish merchant enablement or a completed payment.
+
+
+- [[source-adyen-docs-payment-methods-vipps]] — 2026-09-15 Vipps NO/NOK redirect-wallet overview for app/website shopper authentication, qualified capability marks and Web/native/API-only/Pay by Link guide routes; child setup and outcomes require separate evidence.
+
+
 - [[source-adyen-docs-payment-methods-payme-web]] — 2019-modified, 2026-09-15-captured PayMe Web chooser linking Drop-in and Components child guides plus general Web docs; implementation and outcomes require child evidence.
 
 

@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-flutter-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"MobilePay Flutter Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/flutter-component/2026-09-15.md\"\ntags: [adyen, mobilepay, flutter, components, online-payments, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes MobilePay additions to an existing Flutter Components integration, separately for Sessions and Advanced server-side flows. Both require redirect handling and MobilePay addition in Customer Area. A separate Advanced-flow section describes creating a token through a payment for future MobilePay-wallet payouts. It is a captured guide, not evidence of current enablement, a valid runnable example, or a completed payment or transfer. See [[adyen]], [[adyen-online-payments]], and [[adyen-payouts]].\n\n## Key takeaways\n\n- **Sessions:** The guide calls for an existing Flutter Components Sessions flow using Checkout API v68 or later, redirect handling for `action.type: redirect`, and MobilePay addition in Customer Area (raw lines 25\u201334). It says no MobilePay-specific `/sessions` parameters or Component configuration are needed (lines 36\u201346).\n- **Advanced:** The existing Flutter Components Advanced flow likewise requires redirect handling and Customer Area setup (lines 83\u201399). No extra MobilePay configuration or `/payments` parameters are stated for a normal payment; payout-token creation is the explicit exception (lines 97\u2013105).\n- **Payout-token path:** After recurring lifecycle webhook setup, the guide instructs an Advanced `/payments` request with `telephoneNumber`, `shopperReference`, and a true payout flag; retain the webhook's `storedPaymentMethodId` against `shopperReference`, then send it as `counterparty.card.cardIdentification` in POST `/transfers` (lines 291\u2013323). This is a token for future payouts, not proof that a payout completed. The guide calls this payout feature experimental and says token creation is supported only through `/payments` (lines 337\u2013339).\n- **Testing distinction:** For ordinary MobilePay payments, the page says they cannot be tested in Adyen's test environment and directs low-amount LIVE payments after a live Customer Area request, checking AUTHORISATION webhook and Payment list status (lines 48\u201358, 325\u2013335). A separate experimental payout section gives a Vipps MobilePay test-app simulation and checks the token webhook plus Transfers API request (lines 60\u201381, 337\u2013358). The two testing descriptions have different subjects and should not be conflated.\n- **Source inconsistencies:** The prose spells the payout flag `enablePayout` (line 301), while the annotated curl example spells it `enablePayOut` (line 126); the parent MobilePay overview also uses `enablePayOut`. The guide's Flutter Components integration prerequisites link to URLs with `integration=Drop-in` in both flow tables (lines 31, 91). Its Advanced sample contains blank currency, payment-method type and return URL placeholders and a TEST endpoint (lines 109\u2013128), despite the ordinary-payment live-only testing instruction; do not treat the snippet as a validated executable request or as proof of Adyen TEST support.\n\n## Detail locators\n\n- Sessions prerequisite, redirect, setup and no-extra-configuration sections: raw lines 25\u201346.\n- Advanced prerequisites, normal-payment exception and language-specific example blocks: raw lines 83\u2013289. The examples are not a single SDK/version compatibility statement.\n- Payout webhook, request-field and transfer routes: raw lines 291\u2013323. The example webhook carries a `recurring.token.created` event and `storedPaymentMethodId` (lines 303\u2013320); it is a fixture, not an observed event.\n- Payment versus payout test instructions: raw lines 48\u201381 and 325\u2013358. Test app phone/NIN fixtures remain in the raw.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-payouts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/flutter-component/2026-09-15|MobilePay Flutter Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions flow Component / Requirements"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw line 50, Sessions flow Component / Test and go live; repeated at line 327 for Advanced"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Flutter\\&integration=Components#make-a-payment), unless you make a payment to generate a token for future payouts to MobilePay wallets.",
+      "location": "raw line 105, Advanced flow Component / Add additional parameters"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw line 303, Payment with payout token creation"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw line 339, Advanced flow Component / Test payouts to MobilePay wallets; repeated at line 62 for Sessions"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c39-mobilepay-flutter-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-flutter-component]] \u2014 2026-09-15 Flutter Components add-on for MobilePay Sessions (Checkout API v68+) and Advanced redirects, with qualified live-payment testing and a separate experimental payout-token path.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c39-mobilepay-flutter-component-payouts",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-flutter-component]] \u2014 2026-09-15 Flutter Components guide's experimental `/payments` payout-token creation, recurring lifecycle webhook and `/transfers` handoff; it does not document a completed payout.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/flutter-component/2026-09-15.md",
+  "raw_sha256": "308ac3b0348530b535da531a9efaeda14dff47e0e8426cd7e836aa0b9357e200",
+  "status": "candidate_ready"
+}

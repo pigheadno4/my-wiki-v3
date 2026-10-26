@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-mobilepay",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Docs: MobilePay\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/2026-09-15.md\"\ntags: [adyen, mobilepay, wallets, online-payments, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs overview describes MobilePay acceptance in online payments and links to channel-specific integration guides. It describes a DK/FI wallet redirect flow in DKK/EUR, with a separate, experimental route for payouts to linked cards. It is a captured guide, not evidence of present merchant enablement or payment execution. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Shoppers need the MobilePay app and at least one linked Visa, Mastercard, or Dankort card. An in-app payment switches to MobilePay for shopper authentication; a website payment first redirects to a MobilePay-hosted phone-number page, then sends a device notification to open the app for authentication. This describes shopper authentication, not a final authorization or settlement result. See raw lines 23\u201327.\n- The overview's dated capability matrix labels MobilePay a redirect wallet for DK/FI and DKK/EUR. It marks recurring with an X, while marking refunds, partial and multiple partial refunds, separate and partial captures, multiple partial captures, and chargebacks with checkmarks. These are overview capability marks, not merchant-specific eligibility or successful lifecycle outcomes. See raw lines 29\u201331.\n- The distinct payout route requires Adyen approval and a balance platform with Transfers API; the deprecated Payout API does not work for this feature. A MobilePay `/payments` request with `enablePayOut: true` creates a payout-only token delivered in a recurring lifecycle webhook. That token cannot be used for recurring or card-on-file payments. See raw lines 33\u201356.\n- Adyen calls MobilePay payouts experimental. The snapshot limits them to Visa/Mastercard cards, requires separate merchant accounts when using both Visa/Mastercard payouts and MobilePay payouts to collect their associated pay-ins, and supports token creation only through `/payments`. After payout completion, MobilePay receives only the balance transfer ID as transaction reference. See raw lines 58\u201366. The payout-token lifecycle wording does not override the checkout matrix's recurring X.\n\n## Detail locators\n\n- Payout approval, platform, lifecycle webhook names, `enablePayOut`, token use, and `/transfers` counterparty parameter: raw lines 33\u201356.\n- Web, iOS, Android, React Native, Flutter, API-only and Pay by Link navigation: raw lines 68\u2013110. The child guides carry channel-specific implementation details.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-payouts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/2026-09-15|MobilePay overview, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before shoppers can use MobilePay, they have to install the MobilePay app on their mobile device, and link at least one card (Visa, Mastercard, or Dankort) to their MobilePay account.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/2026-09-15.md:25"
+    },
+    {
+      "text": "When paying with MobilePay in-app, the shopper is switched to the MobilePay app to authenticate the payment.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/2026-09-15.md:27"
+    },
+    {
+      "text": "The MobilePay payouts feature does not work with the deprecated Payout API.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/2026-09-15.md:41"
+    },
+    {
+      "text": "This token can be used for payouts only, not for recurring or card-on-file payments.",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/2026-09-15.md:54"
+    },
+    {
+      "text": "MobilePay payouts is an experimental product and has the following limitations:",
+      "location": "raw/adyen/docs/payment-methods/mobilepay/2026-09-15.md:60"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c39-mobilepay-overview-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay]] \u2014 2026-09-15 MobilePay overview for DK/FI online wallet acceptance, shopper app handoff and an experimental, payout-only token route; channel-specific instructions remain in child guides.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c39-mobilepay-overview-payouts",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay]] \u2014 2026-09-15 MobilePay overview's experimental Transfers API route for payouts to linked cards, with a payout-only token generated through `/payments`; the legacy Payout API does not support this feature.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/2026-09-15.md",
+  "raw_sha256": "14b2fdc404ceaef8633dfd0c55e308aae05933397b406cc74499fd507e83fe67",
+  "status": "candidate_ready"
+}

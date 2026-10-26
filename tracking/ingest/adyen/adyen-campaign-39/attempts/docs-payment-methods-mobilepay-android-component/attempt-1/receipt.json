@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MobilePay Android Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/android-component/2026-09-15.md\"\ntags: [adyen, mobilepay, android, components, wallet, payout]\n---\n\n## Overview\n\nThis [[adyen]] guide adds MobilePay to an existing Android Components checkout integration using either Sessions or Advanced server-side flow. Both paths use `InstantPaymentComponent` for the `mobilepay` payment method and require redirect-action handling. It also describes an experimental, Advanced `/payments`-based route to create a token for later payouts to MobilePay wallets. The dated page does not establish current merchant eligibility, supported countries or currencies, successful authorization, or payout availability. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Android Components Sessions integration, Checkout API v68 or later, `action.type: redirect` handling, and MobilePay added in Customer Area. The guide says no MobilePay-specific `/sessions` parameters or Component configuration are needed. See raw lines 25\u201342 and 67\u201377.\n- **Advanced:** Requires an existing Android Components Advanced integration, additional-action handling for `action.type: redirect`, and MobilePay added in Customer Area. Ordinary `/payments` requests need no MobilePay-specific parameters unless creating a future-payout token. See raw lines 163\u2013171 and 259\u2013263.\n- **Component setup:** The examples import `com.adyen.checkout:instant:YOUR_VERSION`, plus `components-compose:YOUR_VERSION` for Compose, select `mobilepay` from the Session or `/paymentMethods` response, and create an `InstantPaymentComponent`. Compose wraps it in `AdyenComponent` with a unique reset key; View examples attach it to a view. `YOUR_VERSION` is a placeholder, not a pinned SDK minimum. See raw lines 44\u2013125 and 173\u2013256.\n- **Payment testing and outcome:** The page says normal MobilePay payments cannot be tested in the test environment and directs low-amount live payments after a live Customer Area request. It directs the merchant to check the server's `AUTHORISATION` webhook and the live Payment list for status. Redirect handoff alone is not payment authorization. See raw lines 128\u2013138 and 483\u2013493.\n- **Experimental payout token:** The page limits the payout feature to `/payments`. For a MobilePay payment that creates a token for later wallet payouts, it calls for a recurring lifecycle webhook and `telephoneNumber`, `shopperReference`, and `enablePayout: true` in the payment request. The merchant then receives `storedPaymentMethodId` in the recurring lifecycle webhook, associates it with `shopperReference`, and uses that token in `counterparty.card.cardIdentification` on a later `/transfers` request. The separate payout-test instructions use a Vipps MobilePay test app; they do not overturn the page's normal-payment live-test warning. See raw lines 140\u2013161 and 449\u2013516.\n\n> [!warning] Payout example inconsistencies\n> The prose spells the flag `enablePayout`, while the annotated curl example spells it `enablePayOut`. The Java/PHP/C#/Node/Python/Ruby examples show `telephoneNumber` but omit the other token-creation fields, and several fields contain empty placeholder values. The curl example targets a TEST endpoint even though the page says MobilePay payments cannot be tested in the test environment. Treat the examples as incomplete or inconsistent, not proof of a working payout-token request or normal-payment test path. See raw lines 263\u2013446 and 449\u2013459.\n\n## Detail locators\n\n- Sessions and Advanced Compose/View snippets: raw lines 44\u2013125 and 173\u2013256.\n- Payout-token creation, webhook payload and subsequent transfer field: raw lines 449\u2013481. The token-webhook payload is illustrative, not a promise of token issuance for every payment.\n- Live-payment testing and separate experimental payout testing: raw lines 128\u2013161 and 483\u2013516. The page supplies no MobilePay country/currency eligibility matrix or full base-flow result contract.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 native Components context; this page leaves the SDK dependency version unspecified.\n- [[adyen-payouts]] \u2014 separate payout and transfer context; the experimental token route here has its own scope.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/android-component/2026-09-15|MobilePay Android Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw lines 34, Requirements / Sessions flow Component"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw line 130, Test and go live / Sessions flow Component"
+    },
+    {
+      "text": "The MobilePay payout feature is experimental, and supported only with the `/payments` endpoint.",
+      "location": "raw line 142, Test payouts to MobilePay wallets / Sessions flow Component"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Components#make-a-payment), unless you make a payment to generate a token for future payouts to MobilePay wallets.",
+      "location": "raw line 263, Add additional parameters to your /payments request / Advanced flow Component"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw line 461, Payment with payout token creation / Advanced flow Component"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "mobilepay-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-android-component]] \u2014 2026-09-15 MobilePay Android Components guide for existing Sessions (Checkout API v68+) or Advanced redirect flows, with a separate experimental `/payments` payout-token path and live-only normal-payment testing.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw payout-token flag differs between prose `enablePayout` and curl annotation `enablePayOut`; example request fields are incomplete.",
+          "The page's TEST-endpoint curl example and separate payout test-app instructions do not establish normal-payment TEST support."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/android-component/2026-09-15.md",
+  "raw_sha256": "84026d0b26bc60f21f418690b460436c31d6bcdb1b92b1dff65b3d2aaa91e6c0",
+  "status": "candidate_ready"
+}

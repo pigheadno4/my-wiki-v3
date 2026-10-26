@@ -1,0 +1,5 @@
+# Swish for Web retrieval checks
+
+**Q1 — Purpose/scope and inference limit.** The `swish/web` page is a 2026-09-15 chooser linking Web Drop-in and Components child guides plus the four Web Sessions/Advanced base guides (raw lines 15–36). It does not establish method-specific API/SDK versions, QR action behavior, merchant enablement, live conditions or an executed payment; those require the linked guides (raw lines 19–36). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-swish-web]].
+
+**Q2 — Central capability, prerequisites and warnings.** Drop-in is described as an all-in-one website UI; the Components link says “Use the Swish to make Swish payments” without naming a class or giving implementation details. The page says to build the main integration first and links the Sessions and Advanced routes for both Web surfaces (raw `swish/web` lines 19–36). The link label must not be expanded into a QR, redirect or payment-result claim without child evidence. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-swish-web]].

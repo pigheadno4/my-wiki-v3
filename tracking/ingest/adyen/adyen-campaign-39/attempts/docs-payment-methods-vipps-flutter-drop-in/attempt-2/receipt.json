@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-vipps-flutter-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Vipps Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/vipps/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, vipps, flutter, drop-in, online-payments]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Vipps Flutter Drop-in page describes Vipps-specific additions to an existing Flutter Drop-in integration, separately for Sessions and Advanced server-side flows. It refers general steps to the main integration guides. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- For Sessions, the page requires an existing Flutter Drop-in Sessions integration, Checkout API v68 or later, and redirect handling for `action.type: redirect`. Its setup row says to contact Adyen Support to add Vipps in Customer Area. The `/sessions` table lists `shopperStatement` (falling back to `reference` for the Vipps app description) and `amount.value` in minor units, with a Vipps minimum of 100 minor units, or 1.00 NOK. The table leaves its Required cells blank, so it does not establish these as additional mandatory properties. No Vipps-specific Drop-in configuration is stated.\n- For Advanced, the page requires an existing Flutter Drop-in Advanced integration and redirect handling, but its setup row instead says to add Vipps in Customer Area. Its `/payments` table lists `paymentMethod.telephoneNumber` for prefill on the Vipps-hosted page, `shopperStatement` with the same fallback, `channel`, and `amount.value` with the same minimum; Required cells are blank. The example uses NOK, `type: vipps`, and `channel: Flutter`. The example response is `RedirectShopper` with `action.type: redirect`, an intermediate action rather than payment authorization or settlement.\n- TEST guidance directs the merchant to configure a Vipps test app, add Vipps to the test merchant account, make a payment request, and have the shopper authorize the notification in the app. Live acceptance requires a separate request in live Customer Area; the page then recommends a low-amount payment and checking the server's `AUTHORISATION` webhook and payment list for status. Shopper app authorization is not itself the later payment-status event.\n- Preserve source discrepancies: the Sessions integration-type row links to an Advanced-flow URL despite its Sessions heading; Sessions says contact Support for Customer Area setup while Advanced gives a direct add-method link. The Advanced channel table gives Web/iOS/Android as examples, while its request uses `Flutter`; the Advanced sample return URL is an HTTPS web checkout URL despite the Flutter title and the Sessions sample's app-scheme return URL. These examples do not establish universal channel/return-URL rules. The v71 `/sessions` and v72 `/payments` examples do not replace the explicit Sessions v68-or-later minimum.\n\n## Detail locators\n\n- Sessions requirements, including URL/setup discrepancy: raw lines 25-36.\n- Sessions parameter table, 100-unit minimum and v71 example: raw lines 38-68.\n- Sessions configuration and TEST/live guidance: raw lines 70-102.\n- Advanced requirements and configuration: raw lines 104-120.\n- Advanced `/payments` table, v72 example and redirect response: raw lines 122-174.\n- API-reference mismatch: in that Advanced `/payments` table, `channel` and `amount.value` link to `/paymentMethods` field anchors (raw lines 132-133). Those links do not establish the `/payments` field schema; verify against the `/payments` reference before implementation.\n- Repeated Advanced TEST/live guidance and status checks: raw lines 176-202.\n\n## Related\n\n- [[adyen-webhooks]] \u2014 payment-status event context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15|Vipps Flutter Drop-in (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "You can add Vipps to your existing integration. The following instructions show only what you must add to your integration specifically for Vipps.",
+      "location": "raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md:19 (opening scope)"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md:34 (Sessions Requirements table, Checkout API row)"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Vipps in your Customer Area.",
+      "location": "raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md:36 (Sessions setup row)"
+    },
+    {
+      "text": "For Vipps, the minimum amount allowed is **100**, which is 1.00 NOK.",
+      "location": "raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md:47 (Sessions amount.value description; repeated at line 133)"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md:160 (Advanced response description)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "vipps-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-vipps-flutter-drop-in]] \u2014 2026-09-15 Vipps Flutter Drop-in Sessions/Advanced add-on for request fields, redirect and TEST/live setup, with guide-link and example inconsistencies.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/vipps/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "135b7f038a8486da27e091525bad455d4793546b5585cf2bbaa2f29cfcb1f333",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Vipps React Native Drop-in retrieval check
+
+## Q1 — Purpose, scope, and limits
+
+The 2026-09-15 page adds Vipps-specific steps to an existing React Native Drop-in integration, separately for Sessions and Advanced server-side flows; it points to the main integration guide for the base flow (raw lines 15–25, 104–114). It does not establish current account enablement or successful payment: Vipps must be requested in live Customer Area before live acceptance, and the guide uses later `AUTHORISATION` webhook and payment-list status checks for low-amount live tests (raw lines 94–102, 194–202). Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-vipps-react-native-drop-in]]`.
+
+## Q2 — Central capability, prerequisites, and warnings
+
+Sessions requires existing React Native Drop-in, Checkout API v68+, redirect handling and Customer Area setup; its request rows describe a `shopperStatement` fallback to `reference` and the minimum amount 100 minor units/1.00 NOK, with no additional Vipps configuration (raw lines 29–74). Advanced requires existing Advanced React Native Drop-in, redirect handling and Customer Area setup; it adds optional-looking table rows for phone prefill, statement, channel and the same minimum, and its sample returns a redirect action rather than a final outcome (raw lines 108–174). TEST uses a Vipps test app and test merchant setup, while LIVE requires a separate request and low-amount status checks (raw lines 76–102, 176–202). The Sessions prerequisite label links to Advanced flow, both curl samples lack continuation after `-X POST`, and the Advanced `channel: React-native` sample differs from the table's Web/iOS/Android examples (raw lines 33, 49–68, 126–158). Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-vipps-react-native-drop-in]]`.

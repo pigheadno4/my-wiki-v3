@@ -1,0 +1,74 @@
+{
+  "job_id": "docs-payment-methods-mobilepay-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"MobilePay React Native Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/mobilepay/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/mobilepay/react-native-component/2026-09-15.md\"\ntags: [adyen, mobilepay, react-native, components, online-payments, payouts]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen method guide, headed \u201cMobilePay React Component\u201d at a React Native Components URL, describes adding MobilePay to an existing React Native Components integration. It expressly excludes Sessions flow for this method and documents only an Advanced redirect flow. A separate section covers an experimental token-generation path for future MobilePay-wallet payouts. It is a historical documentation snapshot, not proof of current enablement or executed payments or transfers. See [[adyen]], [[adyen-online-payments]], [[adyen-react-native-sdk]], and [[adyen-payouts]].\n\n## Key takeaways\n\n- The Sessions section says React Native Components do not support Sessions flow for MobilePay (raw lines 25\u201329). The Advanced section requires an existing React Native Components Advanced integration, redirect handling for `action.type: redirect`, and MobilePay addition in Customer Area (lines 31\u201341). This method-specific exclusion should not be generalized to all React Native Components or interpreted as a universal SDK limitation.\n- The guide says no extra MobilePay Component configuration and no extra `/payments` parameters for an ordinary payment. The latter has an exception for a payment that creates a future payout token (lines 43\u201353).\n- For that payout path, the guide says to set up a recurring lifecycle webhook, include `telephoneNumber`, `shopperReference` and a true payout flag in `/payments`, save webhook `storedPaymentMethodId` for the shopper, and pass that token as `counterparty.card.cardIdentification` in POST `/transfers` (lines 239\u2013271). The page labels the payout feature experimental and limits token creation to `/payments` (lines 285\u2013287). A token or submitted transfer request is not evidence of payout completion.\n- For ordinary MobilePay payments, the page says Adyen TEST cannot be used; it directs low-amount LIVE payments after a live Customer Area request, checking the AUTHORISATION webhook and Payment list status (lines 273\u2013283). Its separate payout-test section describes a Vipps MobilePay test app, simulated payment, token webhook and Transfers API request (lines 285\u2013306). Do not merge those distinct test scopes.\n- Source conflicts and example limits: the payout-flag prose spells `enablePayout` (line 249), while the annotated curl example spells `enablePayOut` (line 74). The prerequisite labels a React Native Components integration but links to `integration=Drop-in` (line 39). The example uses a TEST endpoint plus blank currency, payment-method type and return URL (lines 55\u201376) although ordinary-payment testing is directed to LIVE; it is not a ready-to-run request. The guide's page title says \u201cReact Component\u201d while its canonical path and prerequisites say React Native (lines 6\u201310, 15, 39).\n\n## Detail locators\n\n- Sessions exclusion and Advanced prerequisites: raw lines 25\u201341.\n- Standard Advanced configuration and `/payments` exception: raw lines 43\u201353.\n- Language-specific `/payments` examples and placeholders: raw lines 55\u2013237. Their Node and other library version comments do not establish a React Native SDK version or combined compatibility.\n- Payout-token request, webhook example and Transfers API handoff: raw lines 239\u2013271. The webhook payload is illustrative, not an observed event.\n- Ordinary LIVE payment testing and separate experimental payout-app test: raw lines 273\u2013306. Phone and NIN fixtures remain in the raw.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-react-native-sdk]]\n- [[adyen-payouts]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/mobilepay/react-native-component/2026-09-15|MobilePay React Native Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw line 29, Sessions flow Component / Not Available"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect]",
+      "location": "raw line 40, Advanced flow Component / Requirements"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for MobilePay.",
+      "location": "raw line 47, Advanced flow Component / Add additional configuration"
+    },
+    {
+      "text": "When you receive the recurring lifecycle webhook for the payment, save the `storedPaymentMethodId` (the token) for your customer, identified by the `shopperReference`.",
+      "location": "raw line 251, Payment with payout token creation"
+    },
+    {
+      "text": "MobilePay cannot be tested in the test environment. You must make penny test (low-amount) payments in the live environment.",
+      "location": "raw line 275, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c39-mobilepay-react-native-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] \u2014 2026-09-15 MobilePay React Native Components Advanced-only redirect guide, with Sessions unavailable, live-payment testing, and a distinct experimental payout-token section.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c39-mobilepay-react-native-component-sdk",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] \u2014 2026-09-15 method-specific React Native Components guide: MobilePay Sessions unsupported; Advanced redirect flow and payout-token exceptions are in the source. This does not change the wrapper's general Sessions capability.",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c39-mobilepay-react-native-component-payouts",
+        "target_path": "wiki/concepts/adyen-payouts.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] \u2014 2026-09-15 React Native Components guide's experimental `/payments` payout-token path, recurring lifecycle webhook and `/transfers` handoff; no completed payout is shown.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/mobilepay/react-native-component/2026-09-15.md",
+  "raw_sha256": "1b7b25a06847aee72f9f5f4265dfcabae3404977d729b61d8665fff2f6a5347d",
+  "status": "candidate_ready"
+}

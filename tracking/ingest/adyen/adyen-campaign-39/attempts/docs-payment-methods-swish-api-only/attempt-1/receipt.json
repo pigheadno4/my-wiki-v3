@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-swish-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Swish API-only integration\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/swish/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/swish/api-only/2026-09-15.md\"\ntags: [adyen, swish, api-only, qr, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds Swish to an existing Adyen Web Advanced API-only integration. It covers SE/SEK payment-method discovery, a merchant-rendered QR for desktop or app-redirect button for mobile, return handling, and webhook-based payment outcome. It is a dated integration guide, not current merchant enablement or transaction proof. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The page requires an existing API-only integration, handling of an additional QR action, and Swish added in Customer Area. To obtain Swish from `/paymentMethods`, specify `countryCode: SE` and `amount.currency: SEK`. The example response has `paymentMethod.type: swish`; this discovery example alone does not establish merchant eligibility. (raw lines 23\u201329, 55\u201394)\n- **Payment and shopper handoff:** The payment form need not collect extra shopper information for Swish. The specific `/payments` section says no additional method parameters, while the payment step supplies `paymentMethod.type: swish` and a `returnUrl`. The response describes `action.qrCodeData` for a merchant-rendered QR and `action.url` for a mobile app redirect. The shopper has three minutes after payment initiation to complete it; showing a timer is recommended. Desktop/laptop uses QR, mobile uses the redirect button, and tablet can use either or both. Screen-size detection is recommended rather than required. (raw lines 31\u201362, 96\u2013157)\n- **Result boundary:** QR completion is reported by webhook. After a mobile shopper returns, submit URL-decoded `redirectResult` in `/payments/details` and use the response to show a shopper-facing result. The guide says to wait for an `AUTHORISATION` webhook for the payment outcome: `success: false` means failure and `success: true` means successful completion. `Pending` or `Received` means the order was received, with a later final `AUTHORISATION` webhook. Neither the sample `/payments` `Pending` nor the sample details `Authorised` alone proves a real transaction in this snapshot. (raw lines 139\u2013165, 167\u2013225)\n- **Testing and live:** The page says a TEST Swish payment is authorised within 15 seconds and provides Merchant Swish Simulator refusal scenarios using `shopperStatement` error codes. Accepting live Swish requires a separate request in the live Customer Area. These are documentation instructions; no test or live payment was performed for this ingestion. (raw lines 227\u2013233)\n- **Source conflicts and examples:** The 'How it works' list says the payment request includes additional item information, but the dedicated `/payments` section says no additional parameters. The requirements table names `action.type: qr`, whereas the sample response shows `action.type: qrCode`. The `/paymentMethods` curl example has `-X POST` without a following continuation marker. The listed order-fulfillment step appears before the later webhook-outcome instruction; follow the result section's explicit `AUTHORISATION` success/failure decision for fulfillment. Verify exact API behavior against the base flow before implementing these inconsistent examples. (raw lines 27\u201345, 67\u201381, 96\u201398, 139\u2013157, 208\u2013225)\n\n## Detail locators\n\n- Requirements, shopper flow and payment form: raw lines 23\u201353.\n- SE/SEK discovery and its curl example: raw lines 55\u201394.\n- Request and QR/mobile action, including three-minute completion window: raw lines 96\u2013165.\n- Mobile return `/payments/details`, webhook and result codes: raw lines 167\u2013225.\n- TEST simulator and live Customer Area request: raw lines 227\u2013233.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/swish/api-only/2026-09-15|Adyen Swish API-only guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your existing integration is set up to [handle the additional action](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#additional-action). `action.type`: **qr**.",
+      "location": "raw/adyen/docs/payment-methods/swish/api-only/2026-09-15.md:28 (Requirements, Action handling row)"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#make-a-payment).",
+      "location": "raw/adyen/docs/payment-methods/swish/api-only/2026-09-15.md:98 (Add additional parameters to your /payments request)"
+    },
+    {
+      "text": "After initiating the payment, the shopper has three minutes to complete it. We recommend that you show this timer to the shopper.",
+      "location": "raw/adyen/docs/payment-methods/swish/api-only/2026-09-15.md:157 (Desktop flow, after sample response)"
+    },
+    {
+      "text": "Wait for a webhook to know the outcome of the payment. The webhooks you can receive for Swish are:",
+      "location": "raw/adyen/docs/payment-methods/swish/api-only/2026-09-15.md:210 (Present the payment result)"
+    },
+    {
+      "text": "To accept live Swish payments, you must [submit a request for Swish](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/swish/api-only/2026-09-15.md:233 (Test and go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "swish-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-swish-api-only]] \u2014 2026-09-15 Swish Web Advanced API-only guide for SE/SEK discovery, QR/app handoff and webhook-qualified result; item-field and action-type examples conflict within the page.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw says to include item information in 'How it works' but later says no additional /payments parameters; its required `action.type: qr` differs from sample `qrCode`."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/swish/api-only/2026-09-15.md",
+  "raw_sha256": "9e08c6e0916f35cddf33b819892bb8cb45cdd30c9d261f3cd8673f5ed3ef0c58",
+  "status": "candidate_ready"
+}

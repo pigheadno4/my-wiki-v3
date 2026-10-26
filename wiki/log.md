@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-26] ingest | Adyen website C39
+
+- Fifty independently approved MobilePay, Vipps, Swish and Bizum documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 5 concepts touched (0 new); source_count 1964 = 1950 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-39/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-25] ingest | Adyen website C38
 
 - Fifty independently approved FPX Malaysia, online banking Thailand, Alipay+ and PayMe documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 4 concepts touched (0 new); source_count 1914 = 1900 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-38/`; details [[adyen-log]]. No commit/push.
