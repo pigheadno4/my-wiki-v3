@@ -1,0 +1,695 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-terminal-android`
+- Package: `stripeterminal`
+- From: `5.8.1` (`846d401d1f7bc686a2c12d6def4342471c25a625`)
+- To: `5.8.2` (`abb16f502cbe0fcc82f673c246c86c883a5c2fdc`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `Example/javaapp/build.gradle.kts`
+- `Example/kotlinapp/build.gradle.kts`
+- `README.md`
+- `docs/core/com.stripe.stripeterminal/-terminal/-companion/get-instance.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/-companion/index.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/-companion/init.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/-companion/is-initialized.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/cancel-payment-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/cancel-setup-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/clear-cached-credentials.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/clear-reader-display.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/collect-data.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/collect-inputs.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/collect-payment-method.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/collect-refund-payment-method.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/collect-setup-intent-payment-method.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/confirm-payment-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/confirm-refund.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/confirm-setup-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/connect-external-channel.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/connect-reader.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/connected-reader.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/connection-status.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/create-payment-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/create-setup-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/disconnect-reader.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/discover-readers.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/discover-scanners.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/easy-connect.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/get-reader-settings.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/index.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/install-available-update.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/list-locations.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/offline-status.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/payment-status.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/print.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/process-payment-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/process-refund.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/process-setup-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/reboot-reader.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/retrieve-payment-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/retrieve-setup-intent.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/scan-barcode.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/set-offline-listener.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/set-reader-display.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/set-reader-settings.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/set-tap-to-pay-ux-configuration.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/set-terminal-listener.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/simulated-offline-mode-configuration.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/simulator-configuration.html`
+- `docs/core/com.stripe.stripeterminal/-terminal/supports-readers-of-type.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-a-p-i_-c-o-n-n-e-c-t-i-o-n_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-a-p-i_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-a-u-t-h-e-n-t-i-c-a-t-i-o-n_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-c-a-r-d_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-i-d-e-m-p-o-t-e-n-c-y_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-i-n-v-a-l-i-d_-r-e-q-u-e-s-t_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-r-a-t-e_-l-i-m-i-t_-e-r-r-o-r/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/entries.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/value-of.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/values.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/-api-error.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/-localization-result.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/requested-locale.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/resolved-locale.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/advice-code.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/charge.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/code.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/decline-code.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/doc-url.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/index.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/localization-result.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/message.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/network-advice-code.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/network-decline-code.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/param.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/payment-intent.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/refund.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/request-log-url.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/setup-intent.html`
+- `docs/external/com.stripe.stripeterminal.external.api/-api-error/type.html`
+- `docs/external/com.stripe.stripeterminal.external.api/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-apps-on-devices-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-cancelable/cancel.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-cancelable/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-cancelable/is-completed.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-collect-inputs-result-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-collect-inputs-result-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-collected-data-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-collected-data-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-callback/on-failure.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-provider/fetch-connection-token.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-provider/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-discover-scanners-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-discover-scanners-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-discovery-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-discovery-listener/on-update-discovered-readers.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-encryption-provider/decrypt.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-encryption-provider/encrypt.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-encryption-provider/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-error-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-error-callback/on-failure.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-internet-reader-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-location-list-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-location-list-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-battery-level-update.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-finish-installing-update.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-payment-method-selection-required.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-qr-code-display-required.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-report-available-update.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-report-low-battery-warning.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-report-reader-software-update-progress.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-request-reader-display-message.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-request-reader-input.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-start-installing-update.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-forwarding-failure.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-offline-status-change.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-payment-intent-forwarded.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-setup-intent-forwarded.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-intent-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-intent-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-selection-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-selection-callback/on-failure.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-selection-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-qr-code-display-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-qr-code-display-callback/on-failure.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-qr-code-display-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-disconnect-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-disconnect-listener/on-disconnect.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-listenable/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-listenable/on-report-reader-event.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/on-reader-reconnect-failed.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/on-reader-reconnect-started.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/on-reader-reconnect-succeeded.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-settings-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-settings-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-software-update-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-reader-software-update-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-refund-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-refund-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-scan-barcode-result-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-scan-barcode-result-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-setup-intent-callback/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-setup-intent-callback/on-success.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-tap-to-pay-reader-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-terminal-listener/index.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-terminal-listener/on-connection-status-change.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/-terminal-listener/on-payment-status-change.html`
+- `docs/external/com.stripe.stripeterminal.external.callable/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/-apps-on-devices-connection-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/app-transition-animation.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/apps-on-devices-listener.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/-bluetooth-connection-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/auto-reconnect-on-unexpected-disconnect.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/bluetooth-reader-listener.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/test-reader-update.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/-external-usb-channel-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/reader-listener.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/test-reader-update.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/-internet-connection-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/internet-reader-listener.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/-tap-to-pay-connection-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/auto-reconnect-on-unexpected-disconnect.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/merchant-display-name.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/tap-to-pay-reader-listener.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/use-case.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/-usb-connection-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/auto-reconnect-on-unexpected-disconnect.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/test-reader-update.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/usb-reader-listener.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/fail-if-in-use.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/location-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/location-registration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/-apps-on-devices-discovery-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/equals.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/hash-code.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/-bluetooth-discovery-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/is-simulated.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/timeout.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/-internet-discovery-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/discovery-filter.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/is-simulated.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/location.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/timeout.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-tap-to-pay-discovery-configuration/-tap-to-pay-discovery-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-tap-to-pay-discovery-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-tap-to-pay-discovery-configuration/is-simulated.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/-usb-discovery-configuration.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/is-simulated.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/timeout.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-offline-status/-offline-status.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-offline-status/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-offline-status/reader.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-offline-status/sdk.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-capturable.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-details.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-received.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-requested.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-tip.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/application-fee-amount.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/application.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/canceled-at.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/cancellation-reason.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/capture-method.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/client-secret.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/confirmation-method.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/created.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/currency.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/customer.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/description.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/get-charges.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/invoice.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/last-payment-error.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/livemode.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/metadata.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/next-action.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/offline-details.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/on-behalf-of.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method-options.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method-types.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-record-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-record.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/receipt-email.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/review.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/setup-future-usage.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/statement-descriptor-suffix.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/statement-descriptor.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/status.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/transfer-group.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-companion/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/-o-f-f-l-i-n-e/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/-o-n-l-i-n-e/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/-u-n-k-n-o-w-n/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/entries.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/status.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/value-of.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/values.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/-reader.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/aade-terminal-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/activate.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/available-update.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/base-url.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/battery-level.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/bluetooth-device.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/bootloader-version.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/coin-cell-battery-voltage.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/config-version.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/connection.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/device-type.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/emv-key-profile-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/emv-keyset-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/firmware-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/firmware-version.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/hardware-version.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/ip-address.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/is-charging.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/is-simulated.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/is-usb-connected.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/label.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/livemode.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/location-status.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/location.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/mac-key-profile-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/mac-keyset-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/network-status.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/pin-key-profile-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/pin-keyset-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/raw-reader-data.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/serial-number.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/settings-version.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/software-version.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/to-device-info.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/to-string.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/track-key-profile-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/track-keyset-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/update.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-reader/usb-device.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/application-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/cancellation-reason.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/client-secret.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/created.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/customer-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/description.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/index.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/is-live-mode.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/last-setup-error.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/latest-attempt-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/latest-attempt.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/mandate-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/metadata.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/next-action.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/offline-details.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/on-behalf-of-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method-options.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method-types.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/single-use-mandate-id.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/status.html`
+- `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/usage.html`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `Example/javaapp/build.gradle.kts`
+- `modified`: `Example/kotlinapp/build.gradle.kts`
+- `modified`: `README.md`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/-companion/get-instance.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/-companion/index.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/-companion/init.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/-companion/is-initialized.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/cancel-payment-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/cancel-setup-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/clear-cached-credentials.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/clear-reader-display.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/collect-data.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/collect-inputs.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/collect-payment-method.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/collect-refund-payment-method.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/collect-setup-intent-payment-method.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/confirm-payment-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/confirm-refund.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/confirm-setup-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/connect-external-channel.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/connect-reader.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/connected-reader.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/connection-status.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/create-payment-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/create-setup-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/disconnect-reader.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/discover-readers.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/discover-scanners.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/easy-connect.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/get-reader-settings.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/index.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/install-available-update.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/list-locations.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/offline-status.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/payment-status.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/print.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/process-payment-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/process-refund.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/process-setup-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/reboot-reader.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/retrieve-payment-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/retrieve-setup-intent.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/scan-barcode.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/set-offline-listener.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/set-reader-display.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/set-reader-settings.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/set-tap-to-pay-ux-configuration.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/set-terminal-listener.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/simulated-offline-mode-configuration.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/simulator-configuration.html`
+- `modified`: `docs/core/com.stripe.stripeterminal/-terminal/supports-readers-of-type.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-a-p-i_-c-o-n-n-e-c-t-i-o-n_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-a-p-i_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-a-u-t-h-e-n-t-i-c-a-t-i-o-n_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-c-a-r-d_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-i-d-e-m-p-o-t-e-n-c-y_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-i-n-v-a-l-i-d_-r-e-q-u-e-s-t_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/-r-a-t-e_-l-i-m-i-t_-e-r-r-o-r/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/entries.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/value-of.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error-type/values.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/-api-error.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/-localization-result.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/requested-locale.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/-localization-result/resolved-locale.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/advice-code.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/charge.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/code.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/decline-code.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/doc-url.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/localization-result.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/message.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/network-advice-code.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/network-decline-code.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/param.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/payment-intent.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/refund.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/request-log-url.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/setup-intent.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/-api-error/type.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.api/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-apps-on-devices-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-cancelable/cancel.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-cancelable/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-cancelable/is-completed.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-collect-inputs-result-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-collect-inputs-result-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-collected-data-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-collected-data-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-callback/on-failure.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-provider/fetch-connection-token.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-connection-token-provider/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-discover-scanners-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-discover-scanners-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-discovery-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-discovery-listener/on-update-discovered-readers.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-encryption-provider/decrypt.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-encryption-provider/encrypt.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-encryption-provider/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-error-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-error-callback/on-failure.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-internet-reader-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-location-list-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-location-list-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-battery-level-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-finish-installing-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-payment-method-selection-required.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-qr-code-display-required.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-report-available-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-report-low-battery-warning.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-report-reader-software-update-progress.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-request-reader-display-message.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-request-reader-input.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-mobile-reader-listener/on-start-installing-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-forwarding-failure.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-offline-status-change.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-payment-intent-forwarded.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-offline-listener/on-setup-intent-forwarded.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-intent-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-intent-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-selection-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-selection-callback/on-failure.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-payment-method-selection-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-qr-code-display-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-qr-code-display-callback/on-failure.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-qr-code-display-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-disconnect-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-disconnect-listener/on-disconnect.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-listenable/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-listenable/on-report-reader-event.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/on-reader-reconnect-failed.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/on-reader-reconnect-started.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-reconnection-listener/on-reader-reconnect-succeeded.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-settings-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-settings-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-software-update-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-reader-software-update-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-refund-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-refund-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-scan-barcode-result-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-scan-barcode-result-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-setup-intent-callback/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-setup-intent-callback/on-success.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-tap-to-pay-reader-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-terminal-listener/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-terminal-listener/on-connection-status-change.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/-terminal-listener/on-payment-status-change.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.callable/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/-apps-on-devices-connection-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/app-transition-animation.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/apps-on-devices-listener.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-apps-on-devices-connection-configuration/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/-bluetooth-connection-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/auto-reconnect-on-unexpected-disconnect.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/bluetooth-reader-listener.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/test-reader-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-bluetooth-connection-configuration/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/-external-usb-channel-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/reader-listener.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/test-reader-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-external-usb-channel-configuration/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/-internet-connection-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/internet-reader-listener.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-internet-connection-configuration/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/-tap-to-pay-connection-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/auto-reconnect-on-unexpected-disconnect.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/merchant-display-name.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/tap-to-pay-reader-listener.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-tap-to-pay-connection-configuration/use-case.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/-usb-connection-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/auto-reconnect-on-unexpected-disconnect.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/test-reader-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/-usb-connection-configuration/usb-reader-listener.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/fail-if-in-use.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/location-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-connection-configuration/location-registration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/-apps-on-devices-discovery-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/equals.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/hash-code.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/-bluetooth-discovery-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/is-simulated.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-bluetooth-discovery-configuration/timeout.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/-internet-discovery-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/discovery-filter.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/is-simulated.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/location.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-internet-discovery-configuration/timeout.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-tap-to-pay-discovery-configuration/-tap-to-pay-discovery-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-tap-to-pay-discovery-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-tap-to-pay-discovery-configuration/is-simulated.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/-usb-discovery-configuration.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/is-simulated.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-usb-discovery-configuration/timeout.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-discovery-configuration/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-offline-status/-offline-status.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-offline-status/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-offline-status/reader.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-offline-status/sdk.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-capturable.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-details.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-received.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-requested.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount-tip.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/amount.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/application-fee-amount.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/application.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/canceled-at.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/cancellation-reason.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/capture-method.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/client-secret.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/confirmation-method.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/created.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/currency.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/customer.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/description.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/get-charges.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/invoice.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/last-payment-error.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/livemode.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/metadata.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/next-action.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/offline-details.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/on-behalf-of.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method-options.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method-types.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-method.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-record-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/payment-record.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/receipt-email.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/review.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/setup-future-usage.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/statement-descriptor-suffix.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/statement-descriptor.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/status.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-payment-intent/transfer-group.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-companion/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/-o-f-f-l-i-n-e/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/-o-n-l-i-n-e/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/-u-n-k-n-o-w-n/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/entries.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/status.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/value-of.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-network-status/values.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/-reader.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/aade-terminal-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/activate.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/available-update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/base-url.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/battery-level.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/bluetooth-device.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/bootloader-version.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/coin-cell-battery-voltage.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/config-version.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/connection.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/device-type.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/emv-key-profile-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/emv-keyset-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/firmware-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/firmware-version.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/hardware-version.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/ip-address.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/is-charging.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/is-simulated.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/is-usb-connected.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/label.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/livemode.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/location-status.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/location.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/mac-key-profile-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/mac-keyset-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/network-status.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/pin-key-profile-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/pin-keyset-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/raw-reader-data.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/serial-number.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/settings-version.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/software-version.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/to-device-info.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/to-string.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/track-key-profile-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/track-keyset-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/update.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-reader/usb-device.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/application-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/cancellation-reason.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/client-secret.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/created.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/customer-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/description.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/index.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/is-live-mode.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/last-setup-error.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/latest-attempt-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/latest-attempt.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/mandate-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/metadata.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/next-action.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/offline-details.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/on-behalf-of-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method-options.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method-types.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/payment-method.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/single-use-mandate-id.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/status.html`
+- `modified`: `docs/external/com.stripe.stripeterminal.external.models/-setup-intent/usage.html`

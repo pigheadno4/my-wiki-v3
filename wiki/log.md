@@ -1,5 +1,17 @@
 # Wiki Log
 
+## [2026-10-26] ingest | Stripe Terminal Android `6.0.0`
+
+- Serial additive full with approved focused reading: capture/consent/model/listener/build migrations, advisory Tap to Pay update notices, preview refund reconciliation and capture contradiction. All v5 history retained; details [[stripe-log]] and [[source-github-stripe-terminal-android]]. No SDK execution, commit or push.
+
+## [2026-10-26] ingest | Stripe Terminal Android `5.8.2`
+
+- Serial focused-reading delta: UnionPay/Tap to Pay payment-failure fix; original support announcement and all earlier history preserved. Details [[stripe-log]] and [[source-github-stripe-terminal-android]]. No SDK execution, commit or push.
+
+## [2026-10-26] ingest | Stripe Terminal Android `5.8.1`
+
+- Serial focused-reading delta: Hong Kong UnionPay/Tap to Pay announcement; version-only API regeneration, proprietary-runtime limits and earlier history preserved. Details [[stripe-log]] and [[source-github-stripe-terminal-android]]. No SDK execution, commit or push.
+
 ## [2026-10-26] ingest | Adyen website C39
 
 - Fifty independently approved MobilePay, Vipps, Swish and Bizum documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 5 concepts touched (0 new); source_count 1964 = 1950 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-39/`; details [[adyen-log]]. No commit/push.

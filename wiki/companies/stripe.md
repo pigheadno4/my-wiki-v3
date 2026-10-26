@@ -214,8 +214,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.13.0; processing contracts, migration/evidence limits and retrospective attribution changes
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@6.0.0` additive major: SPM, iOS 16, capture/consent/model/delegate migration; v5.8.0/5.8.1 retained
 - [[changelog-github-stripe-terminal-ios]] — package-qualified v5/v6 Terminal iOS history, previews and divergent-branch/runtime evidence limits
-- [[source-github-stripe-terminal-android]] — `stripeterminal@5.8.0` card-present Android SDK baseline: permissions, lifecycle, readers, Tap to Pay, payments, SetupIntents, offline processing, refunds, and updates
-- [[changelog-github-stripe-terminal-android]] — package-qualified Stripe Terminal Android v5 history and exact `5.8.0` permission, buzzer, printer, Keystore, update, and Tap to Pay PIN changes
+- [[source-github-stripe-terminal-android]] — `stripeterminal@6.0.0` additive major: capture/consent/models/listeners/build migration; 5.8.0/5.8.1/5.8.2 retained
+- [[changelog-github-stripe-terminal-android]] — package-qualified v5/v6 Android Terminal history, UnionPay deltas, migration and runtime/evidence limits
 - [[source-github-stripe-react-native]] — cumulative SDK through v0.82.0, private-preview currency selector, compatibility/mutation changes and Onramp contacts; older knowledge preserved
 - [[changelog-github-stripe-react-native]] — package-qualified release history through v0.82.0, including platform migrations, retrospective-note attribution and implementation boundaries
 - [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks

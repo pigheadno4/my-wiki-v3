@@ -2667,6 +2667,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.7.0/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.6.0--26.7.0/comparison.json)
 
+## `github-78ec024faa51ef3d956e`
+
+- Repository: `stripe/stripe-terminal-android`
+- SHA: `0829be9e77842bc12a6ba56d64fd152b53506025`
+- Collection date: `2026-10-26`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-0829be9/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-android/ingest-packets/github-78ec024faa51ef3d956e/packet.md)
+- Review priority: `normal`
+- Required reading: `62` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripeterminal@6.0.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-android/releases/stripeterminal/6.0.0/2026-10-26/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.2--6.0.0/comparison.json)
+
 ## `github-79a6db1277f60762c57f`
 
 - Repository: `stripe/stripe-react-native`
@@ -3023,6 +3048,31 @@
 - `@paypal/sdk-release@5.0.570` (recommended `delta`)
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.570/2026-10-04/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.569--5.0.570/comparison.json)
+
+## `github-86ab3cb682c630c93e87`
+
+- Repository: `stripe/stripe-terminal-android`
+- SHA: `846d401d1f7bc686a2c12d6def4342471c25a625`
+- Collection date: `2026-10-26`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-846d401/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-android/ingest-packets/github-86ab3cb682c630c93e87/packet.md)
+- Review priority: `normal`
+- Required reading: `61` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripeterminal@5.8.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.1/2026-10-26/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.0--5.8.1/comparison.json)
 
 ## `github-87a18c639834d62a679f`
 
@@ -5130,6 +5180,31 @@
   From SHA: `baseline`
   To SHA: `3a89f427466a0a978dbfcfd953913f4e76c3264a`
   Comparison: Not applicable
+
+## `github-d40ef200e4b88ce722d2`
+
+- Repository: `stripe/stripe-terminal-android`
+- SHA: `abb16f502cbe0fcc82f673c246c86c883a5c2fdc`
+- Collection date: `2026-10-26`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-abb16f5/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-terminal-android/ingest-packets/github-d40ef200e4b88ce722d2/packet.md)
+- Review priority: `normal`
+- Required reading: `61` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripeterminal@5.8.2` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.2/2026-10-26/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.1--5.8.2/comparison.json)
 
 ## `github-d595e0d1b2664c8307ad`
 

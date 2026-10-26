@@ -50,7 +50,7 @@ Five distinct ways to integrate Terminal, ranging from full custom builds to no-
 | --- | --- | --- | --- |
 | JavaScript SDK v1 | Web / browser-based POS | v1 | Load from `js.stripe.com` only; Chrome 142+ needs local network permission; same-network + local DNS required |
 | iOS SDK | Native iOS | 6.0.0 full ingest; 5.8.0/5.8.1 history retained | v6 iOS 16+; SPM updates; explicit `Terminal.initWithTokenProvider`; location mandatory |
-| Android SDK | Native Android | 5.8.0 retained baseline | API 26+; Java 8/Kotlin; lifecycle delegate; separate matched Tap to Pay artifacts |
+| Android SDK | Native Android | 6.0.0 additive full; v5 history retained | API 26+; compile SDK 35+ per v6 note; lifecycle delegate; matched Tap to Pay artifacts |
 | React Native SDK | Cross-platform mobile | latest (public preview) | `requestNeededAndroidPermissions` helper; Android 12+ needs `exported=true` |
 
 A server-driven API is also available for any backend regardless of platform.
@@ -70,6 +70,29 @@ The approved `stripeterminal@5.8.0` repository capsule confirms `ACCESS_COARSE_L
 Standard integrations use `com.stripe:stripeterminal`; Tap to Pay uses matching `stripeterminal-taptopay` and `stripeterminal-core` versions. Version 5 provides both split collect/confirm APIs and combined `processPaymentIntent`, `processSetupIntent`, and `processRefund` APIs. Manual capture, ConnectionToken creation, and authoritative reconciliation remain backend responsibilities.
 
 The SDK implementation is proprietary. Generated API docs and open Java/Kotlin examples establish the public contract and integration patterns, not internal runtime behavior or merchant/device eligibility.
+
+### Android 5.8.1 Tap to Pay update
+
+`stripeterminal@5.8.1` announces China UnionPay support in Hong Kong for Tap to Pay on Android. This is a proprietary SDK release claim, not a new general reader/API capability or proof of merchant/device eligibility. The retained example implementation is unchanged; all 337 changed API documentation files differ only by version strings. Earlier Android 5.8.0 guidance remains preserved. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
+### Android 5.8.2 UnionPay fix
+
+`stripeterminal@5.8.2` reports a fix for China UnionPay payment failures in Tap to Pay. It follows, rather than replaces, the 5.8.1 Hong Kong support announcement. Retained implementation is unchanged and generated API differences are version-only; runtime behavior remains an upstream proprietary-binary claim. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
+### Android 6.0.0 migration boundary
+
+`stripeterminal@6.0.0` is an additive major ingest, preserving 5.8.0, 5.8.1 and 5.8.2. The release requires compile SDK 35+ and Kotlin 2.3.21 dependencies; the retained README/example still specify minimum Android API 26. Compile SDK 35 is not an Android 15 device minimum. Keep Terminal/core/Tap to Pay artifacts matched and supply `LocaleConfig` to `Terminal.init`.
+
+- SDK-side PaymentIntent creation defaults to `CaptureMethod.AutomaticAsync`. Explicitly choose `Manual` for receipt tipping and incremental/extended authorization; inspect server/Intent state before capture or fulfillment. The Java event example calls capture for any successful Intent with an ID, without checking `REQUIRES_CAPTURE`; this is a static integration caution, not a reproduced SDK defect.
+- `CollectSetupIntentConfiguration.Builder(allowRedisplay)` replaces the separate consent argument; demo `ALWAYS` is not proof of customer consent. `latestCharge`/`latestChargeId` replace `getCharges`; instrument and transaction card-present models separate, and refund parameters/SetupAttempt model names change.
+- Mobile payment selection/QR UI uses `ReaderPaymentInteractionListener`, separate from `MobileReaderListener`, on Bluetooth/USB/external-USB connection configuration. A required interaction without that listener fails the transaction; invoke the concrete interaction callback to continue. Reader cancellation is `CANCELED_BY_READER`, distinct from SDK `CANCELED`.
+- Tap to Pay adds `MODIFY_AUDIO_SETTINGS`, advisory upcoming-update notifications, non-Parcelable UX models, `Theme`/`colorScheme` naming and `SYSTEM` theme default. The update callback does not itself install updates, disconnect readers or block payments. The source does not establish the merged dependency manifest or automatic permission declaration.
+- New no-collection `confirmRefund(parameters, callback)` is private preview; the removed old split-confirm overload is a different API. Successful callbacks can still require customer action, and unknown outcomes require backend reconciliation before another refund. In-person Interac rules remain.
+
+> [!warning] Contradiction
+> The Android v6 release says the client builder defaults to automatic-async capture, but retained `confirmPaymentIntent` docs still unconditionally describe authorization followed by mandatory backend capture, and the PaymentIntent capture-property text lists only automatic/manual. Treat the old description as manual-flow guidance, not the complete v6 default contract. Select capture explicitly and reconcile status; [[source-github-stripe-terminal-android]] records the reciprocal warning and exact evidence.
+
+The v6 raw changelog retrospectively identifies 5.4.0–5.6.0 as affected by missing `generated_card`, fixed in 5.7.0; this is historical clarification, not a new v6 fix. No iOS-only MSI/Swish or SPM policy is inferred for Android. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
 
 ### iOS 5.8.1 offline maintenance update
 

@@ -2,9 +2,12 @@
 title: "GitHub changelog: stripe/stripe-terminal-android"
 type: source
 date_ingested: 2026-08-31
-date_updated: 2026-08-31
+date_updated: 2026-10-26
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-terminal-android/snapshots/2026-10-26-0829be9/manifest.json"
+  - "github/stripe/stripe-terminal-android/snapshots/2026-10-26-abb16f5/manifest.json"
+  - "github/stripe/stripe-terminal-android/snapshots/2026-10-26-846d401/manifest.json"
   - "github/stripe/stripe-terminal-android/snapshots/2026-08-31-b3de15b/manifest.json"
 tags: [stripe, terminal, android, kotlin, java, sdk, changelog, github-repository]
 ---
@@ -12,6 +15,40 @@ tags: [stripe, terminal, android, kotlin, java, sdk, changelog, github-repositor
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-terminal-android`. Durable architecture and integration knowledge belongs in [[source-github-stripe-terminal-android]]; this page records package-qualified changes and migration impact.
+
+## `stripeterminal@6.0.0` - Change Set `0829be9` (2026-10-07)
+
+Approved additive full ingest from 5.8.2, completed 2026-10-26 after both deltas. Exact SHA `0829be9e77842bc12a6ba56d64fd152b53506025`. Preserves every v5 release section, quote and raw reference. Counts: 341 modified, eight added, five removed and 101 unchanged retained files; effective full assignment 94 paths / 6,520,286 bytes. User-approved focused reading covers authored changes, semantic API changes, affected prior code and wiki history; unchanged/version-only/generated evidence checked mechanically. All 1,791 files across four snapshots pass size/SHA-256/Git identities.
+
+### Upgrade Findings
+
+- **Platform:** compile SDK 35+, SDK Kotlin 2.3.21 dependencies; retained README/example minimum API remains 26. These are build/dependency requirements, not Android 15 on every customer device. Match all Terminal artifacts. Initialization now requires LocaleConfig; old Tap to Pay constructor becomes TapUseCase.Pay.
+- **Capture:** SDK builder defaults to AutomaticAsync. Explicit Manual for receipt tipping/incremental/extended auth; changed Java/Kotlin event examples enforce Manual for authorization extensions. Java still captures on any successful Intent ID without a status guard: static integration risk, not a proven duplicate charge. Reciprocal capture-documentation contradiction recorded in source and Terminal concept.
+- **Consent/models:** consent moves into required CollectSetupIntentConfiguration; demo ALWAYS is not proof of consent. latestCharge/latestChargeId replace getCharges; invoice retrieval moves server-side. Separate PaymentMethod.CardPresent/Charge.CardPresent and SetupAttempt detail renames; nullable instrument expiry and Refund ID; ProcessRefundParameters rename. Changelog is the authority for model/config types outside the capsule.
+- **Reader UI:** separate ReaderPaymentInteractionListener on mobile Bluetooth/USB/external-USB connections; missing listener causes failure if the transaction needs an interaction. Invoke the concrete interaction callback. This is not the iOS delegate contract. Reader cancellation CANCELED_BY_READER differs from SDK CANCELED; low-battery error generalized.
+- **Tap to Pay:** MODIFY_AUDIO_SETTINGS requirement; upcoming-update callback is advisory and does not itself block payment acceptance/install updates/change connection state. UX types lose Parcelable, names become Theme/colorScheme and default becomes SYSTEM; expired attestation session uses SESSION_EXPIRED. No merged-manifest or device execution proof.
+- **Refund preview:** new non-collecting confirmRefund(parameters, callback) is distinct from removed old split confirmation. Successful callback may require action; unknown outcome without attached Refund requires reconciliation before creating another refund. In-person Interac rules and preview access gates remain.
+- **Other:** MOTO authorization code needs smart-reader firmware 2.45+; SDK Proguard changes and Tap to Pay cancellation fixes are upstream release statements. Old simulator-update APIs removed. No Android MSI/Swish or iOS distribution-policy inference.
+
+### Historical Clarification and Limits
+
+The raw changelog retrospectively identifies 5.4.0–5.6.0 as affected by missing generated_card, fixed in 5.7.0, and adds corresponding known-issue sections. These are not newly fixed v6 issues. Older wiki attribution and the distinct offline database-loss history remain intact. Regenerated property-initializer text is not proof of changed runtime defaults. Unchanged SUPPORT.md has no dated v6 schedule row; no date is inferred.
+
+Six concepts updated first, then cumulative source/history/company/index/logs. Source count 666 preserved. No additional collection/supplement, SDK build, device/payment execution, commit or push. See [[source-github-stripe-terminal-android]] for located quotes, contradictions, exact example/API evidence and remaining scope limits.
+
+Evidence: [snapshot](raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-0829be9/manifest.json), [release](raw/github/stripe/stripe-terminal-android/releases/stripeterminal/6.0.0/2026-10-26/manifest.json), [notes](raw/github/stripe/stripe-terminal-android/releases/stripeterminal/6.0.0/2026-10-26/release-notes.md), [exact changelog](raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-0829be9/files/CHANGELOG.md), [comparison](tracking/github/repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.2--6.0.0/comparison.json).
+
+## `stripeterminal@5.8.2` - Change Set `abb16f5` (2026-10-02)
+
+Approved serial focused-reading delta from 5.8.1, ingested 2026-10-26, SHA `abb16f502cbe0fcc82f673c246c86c883a5c2fdc`. Reports a Tap to Pay China UnionPay payment-failure fix. No retained implementation or semantic API change: 337 version-only documentation changes plus README, two Gradle files and changelog; 106 unchanged files. The old 5.8.1 note's "Union Pay" spelling becomes "UnionPay"; original wiki attribution/quote preserved. Raw/packet hashes and unchanged/version-only evidence verified mechanically; changed authored content, affected prior code and cumulative history read fully. Concept first, then source/history/company/catalog/logs; no SDK/payment test or deletion of older history.
+
+Evidence: [snapshot](raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-abb16f5/manifest.json), [release](raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.2/2026-10-26/manifest.json), [notes](raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.2/2026-10-26/release-notes.md), [exact changelog](raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-abb16f5/files/CHANGELOG.md), [comparison](tracking/github/repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.1--5.8.2/comparison.json). Details [[source-github-stripe-terminal-android]].
+
+## `stripeterminal@5.8.1` - Change Set `846d401` (2026-09-14)
+
+Approved focused-reading delta from 5.8.0, ingested 2026-10-26, SHA `846d401d1f7bc686a2c12d6def4342471c25a625`. Adds China UnionPay support in Hong Kong for Tap to Pay on Android per exact-SHA changelog. No retained example implementation change; 337 API pages change only version strings, with four other modified files (changelog, README, two Gradle files) and 106 unchanged files. Both 447-file snapshots hash/size checked; historical changelog retained. Use matched 5.8.1 artifacts; no new minimum-device-API or public API contract follows. Proprietary runtime/eligibility/payment behavior not independently tested. Updated Terminal concept first, then source/history/company/index/logs; all prior history preserved.
+
+Evidence: [snapshot](raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-846d401/manifest.json), [release](raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.1/2026-10-26/manifest.json), [notes](raw/github/stripe/stripe-terminal-android/releases/stripeterminal/5.8.1/2026-10-26/release-notes.md), [exact changelog](raw/github/stripe/stripe-terminal-android/snapshots/2026-10-26-846d401/files/CHANGELOG.md), [comparison](tracking/github/repos/stripe/stripe-terminal-android/comparisons/stripeterminal/5.8.0--5.8.1/comparison.json). Details [[source-github-stripe-terminal-android]].
 
 ## `stripeterminal@5.8.0` - Change Set `b3de15b` (2026-08-17)
 

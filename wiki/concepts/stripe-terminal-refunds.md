@@ -61,6 +61,12 @@ For in-person refunds, use `processRefund` with renamed `ProcessRefundParameters
 
 A separate **private-preview** `confirmRefund(parameters)` creates a full or partial refund without presenting a card or reader UI, but **still requires a connected reader to authenticate**. It takes the PaymentIntent ID and client secret; omitting amount refunds the entire remaining refundable amount. If it returns an error without a Refund, reconcile with the backend before creating another refund. This preview does not remove Interac's in-person requirement. `Refund.stripeId` is nullable, and `requiresAction`, `canceled` and `nextAction` must be handled rather than equating a returned object with completed reimbursement. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
 
+## Android SDK 6.0.0 Boundaries
+
+For `stripeterminal@6.0.0`, use `ProcessRefundParameters` (including `ByChargeId`/`ByPaymentIntentId`) with `processRefund` for in-person collection. The deprecated split collect/confirm API is removed. The separate new private-preview `confirmRefund(parameters, callback)` does not collect a payment method; a successful callback may still return `requires_action`, so inspect `nextAction`. An error without an attached Refund can mean an unknown outcome: reconcile with the backend before creating another refund. Refund IDs are nullable, and Interac's in-person rule remains. Android's retained evidence here does not establish every preview parameter or the iOS-specific authentication contract.
+
+Reader-originated `CANCELED_BY_READER` differs from SDK `CANCELED`; neither an operation-cancel callback nor the v6 automatic-async default proves a PaymentIntent is still cancelable before capture. Inspect its state. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
 ## Reconciliation
 
 Stripe recommends reconciling payments daily on your backend to catch unintended authorizations and uncollected funds.

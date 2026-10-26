@@ -29,6 +29,8 @@ Available on Visa, Mastercard, Amex, and Discover. **Not available** on single-m
 
 For iOS `StripeTerminal@6.0.0`, SDK-side `PaymentIntentParametersBuilder` now defaults to `.automaticAsync`. Explicitly choose `.setCaptureMethod(.manual)` for extended authorization; the retained example enforces manual capture when this option is selected. Eligibility and `capture_before` checks remain necessary. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
 
+For Android `stripeterminal@6.0.0`, explicitly choose `CaptureMethod.Manual` for extended authorization because SDK-side creation defaults to `AutomaticAsync`. The changed Java/Kotlin examples select Manual for this option; the server-side example and capture-window checks below remain necessary. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
 Set at PaymentIntent creation:
 
 ```javascript

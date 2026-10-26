@@ -642,8 +642,8 @@ Operations history: [[stripe-log]]
 - [[stripe-ios-sdk]] — Stripe iOS SDK: requirements, payment UI, Apple Pay and specialized modules through v26.15.0; older additive baselines and fulfillment/preview boundaries retained
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@6.0.0` additive full major: SPM/iOS 16, capture/consent/models/delegates; 5.8.0/5.8.1 preserved (github-repo, updated 2026-10-25)
 - [[changelog-github-stripe-terminal-ios]] — package-qualified v5/v6 history, previews, capture contradiction and divergent-branch/runtime limits (github-repo, updated 2026-10-25)
-- [[source-github-stripe-terminal-android]] — `stripeterminal@5.8.0` native card-present SDK: Android permissions and lifecycle, readers, Tap to Pay, payments, SetupIntents, refunds, offline forwarding, updates, and support lifecycle (github-repo, 2026-08-31)
-- [[changelog-github-stripe-terminal-android]] — package-qualified Terminal Android v5 ledger; exact 5.8.0 permission, buzzer, printer, Keystore, update, and Tap to Pay PIN changes (github-repo, 2026-08-31)
+- [[source-github-stripe-terminal-android]] — `stripeterminal@6.0.0` additive full: capture/consent/models/listeners and Android build migration; all v5 history retained (github-repo, updated 2026-10-26)
+- [[changelog-github-stripe-terminal-android]] — package-qualified v5/v6 Android Terminal history, UnionPay deltas and qualified migration findings (github-repo, updated 2026-10-26)
 - [[source-github-stripe-react-native]] — cumulative `@stripe/stripe-react-native` through v0.82.0: private-preview currency selector, compatibility/mutation changes and Onramp contacts; older history retained (github-repo, updated 2026-10-21)
 - [[changelog-github-stripe-react-native]] — package-qualified release ledger through v0.82.0; migration, retrospective-note attribution and implementation findings (github-repo, updated 2026-10-21)
 - [[stripe-react-native-sdk]] — Stripe React Native SDK through v0.82.0: migration, private-preview Checkout and version-qualified lifecycle boundaries

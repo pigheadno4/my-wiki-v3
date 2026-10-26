@@ -6,6 +6,19 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-26] ingest | Stripe Terminal Android `6.0.0`
+
+- Serial approved additive full `github-78ec024faa51ef3d956e`, SHA `0829be9e77842bc12a6ba56d64fd152b53506025`, after both deltas. Approved focused reading: changed authored files (including outside routine selectors), semantic API changes/affected prior code, notes and cumulative history read; generated/version-only/unchanged evidence checked mechanically. Effective full assignment 94 paths/6,520,286 bytes; 450 current files, all 1,791 raw hashes/sizes/Git IDs checked across four snapshots.
+- Recorded automatic-async capture, explicit manual flows, consent/model/listener migrations, compile SDK versus device floor, advisory update callback and preview refund reconciliation. Capture docs contradict new defaults; Java's unconditional capture and unproven merged audio permission remain qualified. Retrospective generated_card history identified, not mislabeled as a v6 fix. Six concepts first; source/changelog/company/index/logs updated, all v5 history/source count preserved. No extra collection, SDK/device/payment execution, commit or push. Details [[source-github-stripe-terminal-android]].
+
+## [2026-10-26] ingest | Stripe Terminal Android `5.8.2`
+
+- Serial approved delta `github-d40ef200e4b88ce722d2` after 5.8.1 completed, focused reading: UnionPay/Tap to Pay payment-failure fix and historical spelling-only edit. All 337 modified docs version-only; retained implementation unchanged. Raw/packet hashes verified, earlier history/source count preserved; concept first, source/changelog/company/index/logs updated. No SDK execution, commit or push. Details [[source-github-stripe-terminal-android]].
+
+## [2026-10-26] ingest | Stripe Terminal Android `5.8.1`
+
+- Serial approved delta `github-86ab3cb682c630c93e87`, focused reading: Hong Kong UnionPay/Tap to Pay announcement. All 337 modified docs are version-only; no retained implementation change. Both 447-file snapshots verified; old history/source count preserved. Concept first, then cumulative source/changelog/company/catalog/logs. No SDK execution, commit or push. Details [[source-github-stripe-terminal-android]].
+
 ## [2026-10-25] ingest | Stripe Terminal iOS `6.0.0`
 
 - Approved serial additive full `github-9124967f62dc0a34c4ec`, SHA `79cfb3225553a7a5cceb8325f1c1f9087f792128`, after the 5.8.1 delta completed. User-approved focused reading of changed headers/examples, affected prior code, release notes, both branch comparisons and cumulative wiki history; unchanged files/history/generated inventories checked mechanically. Ten added, 56 modified, two removed, 177 unchanged; all 713 raw files across three snapshots match size/SHA-256/Git blob IDs.

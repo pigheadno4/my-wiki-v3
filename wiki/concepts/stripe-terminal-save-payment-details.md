@@ -78,6 +78,12 @@ Card is charged and saved in one in-person transaction. The initial payment is c
 
 In v6, `SetupIntent.paymentMethod` is the expanded PaymentMethod object (formerly `paymentMethodExpanded`), while `paymentMethodId` supplies the ID formerly returned by `paymentMethod`. For save-after-payment retrieval, `PaymentIntent.latestCharge`/`latestChargeId` replace `charges`. PaymentMethod card-present instrument details are now distinct from transaction details on a Charge; do not assume instrument details contain `generatedCard` or receipt fields. These SDK migrations do not remove the existing generated-card, customer-attachment or CNP reuse boundaries. Earlier v5 guidance remains historical. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
 
+## Android SDK 6.0.0 Consent and Models
+
+`stripeterminal@6.0.0` moves `allowRedisplay` into the required `CollectSetupIntentConfiguration`: construct the builder with a consent-appropriate value, then pass `config` to collection or `collectConfig` to processing. The Java/Kotlin demos use `AllowRedisplay.ALWAYS`; they do not collect or prove customer consent. `PaymentIntent.latestCharge`/`latestChargeId` replace `getCharges()`. The release separates `PaymentMethod.CardPresent` instrument data from `Charge.CardPresent` transaction data, makes instrument expiry nullable, and renames SetupAttempt detail types. Do not substitute iOS property names for Android model contracts.
+
+The v6 cumulative changelog also clarifies an older Tap to Pay `generated_card` bug affecting 5.4.0–5.6.0, fixed in 5.7.0. These retrospective notes are not a new v6 fix and do not change the existing CNP/customer-attachment boundaries. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
 ## Charging a Saved PaymentMethod
 
 - Set `off_session: true` when charging outside the checkout flow — causes PaymentIntent to error if customer authentication is required

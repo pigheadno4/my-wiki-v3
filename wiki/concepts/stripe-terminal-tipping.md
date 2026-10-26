@@ -106,6 +106,10 @@ Tips are collected after authorization via **overcapture** — capturing more th
 
 For `StripeTerminal@6.0.0`, explicitly call `.setCaptureMethod(.manual)` when creating a PaymentIntent for **on-receipt tipping**; the SDK builder now defaults to `.automaticAsync`. The retained example explicitly forces manual capture when a post-authorization tip is requested. This change does not itself establish new on-reader tipping eligibility or remove the requirements above. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
 
+## Android SDK 6.0.0 Capture Default
+
+For `stripeterminal@6.0.0`, explicitly set `CaptureMethod.Manual` for on-receipt tipping: the client creation builder now defaults to `AutomaticAsync`. Do not copy the Java event example's unconditional capture call into an automatic-capture flow. Retain existing eligibility/overcapture checks and inspect payment state before backend capture. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
 ## Constraints
 
 - **One method per PaymentIntent**: once on-reader tipping is applied to a `PaymentIntent`, on-receipt tipping cannot be used on the same `PaymentIntent`

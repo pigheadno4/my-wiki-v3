@@ -29,6 +29,8 @@ Cardholder experience: depending on issuing bank, may see one authorization that
 
 For iOS `StripeTerminal@6.0.0`, SDK-side `PaymentIntentParametersBuilder` now defaults to `.automaticAsync`. Explicitly choose `.setCaptureMethod(.manual)` for incremental authorization; the retained example enforces this when that feature is selected. The server-side manual-capture example below remains applicable. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
 
+For Android `stripeterminal@6.0.0`, the SDK builder defaults to `CaptureMethod.AutomaticAsync`; explicitly choose `CaptureMethod.Manual` for incremental authorization. The changed Java/Kotlin examples enforce this when incremental authorization is selected; eligibility and authoritative backend state still govern later capture. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+
 ### 1. Create PaymentIntent with incremental auth support
 
 ```javascript
