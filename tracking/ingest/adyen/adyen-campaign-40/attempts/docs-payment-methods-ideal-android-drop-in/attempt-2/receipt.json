@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ideal-android-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen iDEAL | Wero Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md\"\ntags: [adyen, ideal, wero, android, drop-in, sepa-direct-debit]\n---\n\n## Overview\n\nAdyen's 2026-09-15 iDEAL | Wero Android Drop-in page describes method-specific additions to an existing Android Drop-in integration, separately for Sessions and Advanced server-side flows. It also covers SEPA Direct Debit-based recurring payments and qualified TEST/live guidance. See [[adyen]], [[adyen-android-sdk]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Sessions requires existing Android Drop-in Sessions with Checkout API v68 or later and iDEAL | Wero added in Customer Area. For the ordinary Sessions payment, the page says no additional `/sessions` parameters or method configuration are needed.\n- Advanced requires existing Android Drop-in Advanced, redirect handling for `action.type: redirect`, and iDEAL | Wero added in Customer Area. For the ordinary Advanced payment, the page says no additional `/payments` parameters or method configuration are needed. These no-extra-parameter statements address the base payment flows; the separate recurring route still uses tokenization parameters and later token-payment requests.\n- Recurring payments here use **SEPA Direct Debit** tokens rather than an `ideal` token. The page says to use standard SEPA tokenization parameters with no extra SEPA-specific fields; `recurring.token.created` then carries `storedPaymentMethodId`. It restricts tokenized payments to shopper-not-present `Subscription` and `UnscheduledCardOnFile` scenarios. Most later-payment examples include `paymentMethod.type: sepadirectdebit`, stored ID, shopper reference and `ContAuth`, but the Java token-payment snippets in both flows omit `shopperReference` (raw lines 108-128 and 404-424). Do not treat those Java snippets as complete token-payment templates. A `Received` response indicates the request was received, while webhooks are needed to track whether the payment succeeded.\n- The iDEAL | Wero TEST environment is described as unreliable; the page recommends live penny tests. When TEST is operating, the `TESTNL2A` issuer offers simulations for success, cancellation, expiration and failure, with expiration yielding `Pending` or `Received`. Those intermediate codes are not payment-success proof. The live penny-test steps require a live issuer bank account and shopper authorization, then checking Customer Area status; the page's live-request heading has no further instruction beneath it, so this source does not specify an additional live onboarding step beyond its Customer Area setup prerequisite.\n- The recurring examples are test-endpoint snippets with varying language library versions and amounts; some use an HTTPS web return URL in this Android guide. They are examples, not a complete Android app-return specification or proof of account enablement. This page does not state the separate API-only guide's dated co-branding window.\n\n## Detail locators\n\n- Sessions requirements, base no-extra-parameter/configuration statements: raw lines 25-46.\n- Sessions SEPA recurring route, token webhook, shopper-not-present condition and examples: raw lines 48-280.\n- Sessions TEST/live guidance, conditional simulations: raw lines 282-320.\n- Advanced requirements, redirect, base no-extra-configuration/parameter statements: raw lines 322-342.\n- Repeated Advanced recurring route and examples: raw lines 344-576.\n- Repeated Advanced TEST/live guidance: raw lines 578-614.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15|iDEAL | Wero Android Drop-in (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md:33 (Sessions integration requirement)"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md:52 (Sessions Recurring payments; repeated line 348)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md:67 (Sessions Make a payment with a token; repeated line 363)"
+    },
+    {
+      "text": "You can track whether the payment was successful using [webhooks](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md:280 (Sessions token-payment result; repeated line 576)"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes. We recommend doing live penny tests to verify your integration.",
+      "location": "raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md:286 (Sessions Test and go live; repeated line 580)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-android-drop-in-android-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-android-drop-in]] \u2014 2026-09-15 iDEAL | Wero Android Drop-in Sessions/Advanced add-on with SEPA recurring-token and qualified TEST/live routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/android-drop-in/2026-09-15.md",
+  "raw_sha256": "662fe2974fc1b3760072c24b246bc6e21981c2ccb0a7d7349f26ef28a9da279c",
+  "status": "candidate_ready"
+}

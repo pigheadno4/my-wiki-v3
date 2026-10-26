@@ -76,6 +76,15 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-duitnow-ios]] — 2019-modified, 2026-09-15-captured DuitNow iOS chooser for Drop-in and Components child guides plus iOS Sessions main integration routes.
+
+
+- [[source-adyen-docs-payment-methods-gopay-ios]] — 2026-09-15 GoPay iOS chooser for Drop-in or InstantPaymentComponent child guides and four Sessions/Advanced base routes; child pages own method behavior.
+
+
+- [[source-adyen-docs-payment-methods-gopay-ios-drop-in]] — 2026-09-15 GoPay iOS Drop-in Sessions/Advanced add-on for request fields, redirect and settlement-gated recurring, with qualified cross-platform examples.
+
+
 - [[source-adyen-docs-payment-methods-swish-ios]] — 2026-09-15 Swish iOS chooser linking Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced main guides.
 
 

@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-payment-methods-gopay-android-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen GoPay Android Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/android-component/2026-09-15.md\"\ntags: [adyen, gopay, android, components, redirect, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds GoPay to an existing Android Components integration. It covers separate Sessions and Advanced server-side flows, `InstantPaymentComponent` in Views or Jetpack Compose, and conditional recurring-token paths for Subscription and CardOnFile payments. It is a dated provider guide, not current merchant enablement or proof of an executed payment. [[adyen]] [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions setup:** Requires an existing Sessions Android Components integration, Checkout API v68 or later, `action.type: redirect` handling, and GoPay added in Customer Area. The page marks `shopperInteractionDevice` and `channel` as required additions to `/sessions`. Import `com.adyen.checkout:instant` and, for Compose, `components-compose`; create an `InstantPaymentComponent` using the `gopay_wallet` payment method. It says no additional GoPay configuration parameters are needed. (raw lines 25\u2013108, 110\u2013157)\n- **Advanced setup:** Requires an existing Advanced Android Components integration, redirect action handling and Customer Area setup. Import the same method module, use `InstantPaymentComponent` with a `gopay_wallet` method from `/paymentMethods`, and supply the table-marked `/payments` fields `paymentMethod.type: gopay_wallet`, `browserInfo` and `channel`. The sample returns `RedirectShopper` with `action.type: redirect`, an intermediate shopper handoff rather than a final outcome. The Advanced requirements section does not separately state the Sessions v68+ minimum. (raw lines 442\u2013597)\n- **Token creation after first payment:** For recurring use, the page tells the merchant to include `storePaymentMethod: true`, a shopper-unique `shopperReference` of at least three characters, and `recurringProcessingModel` in `/payments`. Only after the initial payment has settled does it say a `recurring.token.created` webhook supplies `storedPaymentMethodId`; the merchant server must receive recurring-token lifecycle events. This `/payments` token route is described even under the Sessions section, and is distinct from the base `/sessions` additions. (raw lines 159\u2013180, 599\u2013620)\n- **Later token payments:** A Subscription `/payments` request uses the stored method ID, matching shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription`. A CardOnFile request uses the same token/reference/ContAuth pattern with `recurringProcessingModel: CardOnFile`, but requires redirecting the shopper to GoPay for a PIN challenge, then calling `/payments/details` with `redirectResult` after return. The page identifies the later `AUTHORISATION` webhook as final payment status; `RedirectShopper` or a displayed `resultCode` is not a settlement claim. (raw lines 182\u2013194, 399\u2013432, 622\u2013634, 839\u2013872)\n- **Testing and example limits:** GoPay testing requires contacting Adyen Support; live acceptance requires a separate GoPay request in live Customer Area. The Sessions and Advanced curl examples omit a line continuation after `-X POST`; their device/browser information is shown as a quoted nested object, and the Advanced Android example uses `channel: web`. Recurring examples across languages leave currency, method type and return URL blank, so they are illustrative rather than complete executable requests. The sample SDK library versions are language-specific snapshots, not an Android SDK version guarantee. (raw lines 49\u201373, 196\u2013397, 434\u2013440, 550\u2013581, 636\u2013837, 874\u2013880)\n\n## Detail locators\n\n- Sessions prerequisites, required fields and Compose/View Component setup: raw lines 25\u2013157.\n- Sessions recurring token creation, Subscription and CardOnFile: raw lines 159\u2013432.\n- Advanced prerequisites, Component setup, request fields and redirect response: raw lines 442\u2013597.\n- Advanced recurring routes: raw lines 599\u2013872.\n- Repeated testing and live request gate: raw lines 434\u2013440 and 874\u2013880.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-android-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15|Adyen GoPay Android Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15.md:34 (Sessions flow Component > Requirements, Checkout API row)"
+    },
+    {
+      "text": "GoPay supports recurring payments. The first time your shopper makes a payment, you need to [create a token](#create-a-token), which you can use later to make `Subscription` or `CardOnFile` payments. Note that the flows for `Subscription` and `CardOnFile` payments are different.",
+      "location": "raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15.md:163 (Sessions flow Component > Recurring payments; repeated at line 603)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15.md:173 (Sessions Create a token; repeated at line 613)"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15.md:409 (Sessions Make a recurring CardOnFile payment; repeated at line 849)"
+    },
+    {
+      "text": "Before you can accept live GoPay payments, you need to submit a request for GoPay in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15.md:440 (Sessions Test and go live; repeated at line 880)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-android-component]] \u2014 2026-09-15 GoPay Android InstantPaymentComponent guide for Sessions (Checkout API v68+) and Advanced redirects, with settlement-gated token creation and distinct Subscription/CardOnFile routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Examples include incomplete curl/device/browser and recurring-request values; the Advanced Android request sample sets channel to web."
+        ]
+      },
+      {
+        "update_id": "gopay-android-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-android-component]] \u2014 GoPay Android Components token path: initial-payment settlement precedes `recurring.token.created`; later Subscription token payments differ from CardOnFile PIN-challenge redirects.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/android-component/2026-09-15.md",
+  "raw_sha256": "464c0896b1c6fbcf17cac2d1067c8ba848cdde31c31971b4eabce0d518841bfb",
+  "status": "candidate_ready"
+}

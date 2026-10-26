@@ -15,6 +15,45 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-gopay-api-only]] — GoPay API-only post-settlement recurring token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details paths (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-ideal-ios-drop-in]] — iDEAL | Wero iOS Drop-in guide routes recurring payments through SEPA Direct Debit `recurring.token.created` and shopper-absent Subscription or UnscheduledCardOnFile reuse; `Received` requires webhook outcome tracking.
+
+
+- [[source-adyen-docs-payment-methods-ideal-flutter-component]] — Flutter iDEAL | Wero guide's separate SEPA Direct Debit token route for shopper-absent Subscription or UnscheduledCardOnFile payments, with webhook-qualified result (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-ideal-react-native-drop-in]] — 2026-09-15 React Native Drop-in guide's SEPA Direct Debit token route for shopper-absent Subscription or UnscheduledCardOnFile payments; `Received` and request-example limits remain in the source.
+
+
+- [[source-adyen-docs-payment-methods-ideal-web-drop-in]] — 2026-09-15 iDEAL | Wero Web Drop-in recurring route through SEPA Direct Debit token creation and shopper-absent stored-method payments; sample-field caveat in source.
+
+
+- [[source-adyen-docs-payment-methods-gopay-android-drop-in]] — GoPay Android Drop-in token route: initial `/payments` fields, token webhook after settlement, then separate Subscription and shopper-PIN CardOnFile flows (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-gopay-flutter-component]] — 2026-09-15 GoPay Flutter Components guide for post-settlement token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details route; sample limitations remain in source.
+
+
+- [[source-adyen-docs-payment-methods-gopay-react-native-drop-in]] — 2026-09-15 GoPay React Native Drop-in guide for post-settlement token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details route; request examples need source-qualified reading.
+
+
+- [[source-adyen-docs-payment-methods-ideal-web-component]] — 2026-09-15 Web Components iDEAL | Wero recurring route through SEPA Direct Debit token creation and shopper-absent stored-method payments.
+
+
+- [[source-adyen-docs-payment-methods-gopay-android-component]] — GoPay Android Components token path: initial-payment settlement precedes `recurring.token.created`; later Subscription token payments differ from CardOnFile PIN-challenge redirects.
+
+
+- [[source-adyen-docs-payment-methods-gopay-web-component]] — GoPay Web Components token route: initial `/payments` fields, token webhook after settlement, and separate later Subscription and PIN-redirect CardOnFile flows (2026-09-15 snapshot).
+
+
+- [[source-adyen-docs-payment-methods-ideal-ios-component]] — 2026-09-15 iDEAL | Wero iOS guide's separate SEPA Direct Debit token route for shopper-absent Subscription or UnscheduledCardOnFile payments; token/result and sample boundaries remain in the source.
+
+
+- [[source-adyen-docs-payment-methods-ideal-android-component]] — 2026-09-15 Android Components guide for iDEAL | Wero recurring through SEPA Direct Debit token creation and shopper-absent Subscription/UnscheduledCardOnFile payments; `Received` still needs webhook outcome.
+
+
 - [[source-adyen-docs-payment-methods-gcash-api-only]] — GCash API-only recurring route: shopper reference (minimum three characters), token-creation fields and post-settlement recurring.token.created webhook precede later stored-method ContAuth payments.
 
 

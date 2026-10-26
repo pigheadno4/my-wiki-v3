@@ -1,0 +1,7 @@
+Q1. What purpose/scope and what cannot be inferred?
+
+A1. This is the 2026-09-15 iDEAL | Wero Android chooser: it introduces adding the method to an Android app (raw lines 15-17), links the Drop-in and Components child guides (lines 19-27), and routes to the four Android Sessions/Advanced main guides (lines 29-36). The chooser itself supplies no request schema, API/SDK minimum, eligibility, completed redirect procedure, or payment-outcome guarantee; its child links are navigation, not evidence for those details (lines 19-36). Canonical source stem: `source-adyen-docs-payment-methods-ideal-android`. Retrieval route: `[[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-ideal-android]]`.
+
+Q2. What central capability, prerequisites and warnings?
+
+A2. The page offers an all-in-one Android Drop-in route (raw lines 21-23) and an `IdealComponent` route described as handling the iDEAL | Wero redirect (lines 25-27). It says to create the main integration before adding the method, linking Drop-in and Components for both Sessions and Advanced flow (lines 29-36). Specific method prerequisites and redirect/payment handling need the relevant child and main guides; this chooser makes no result-success claim (lines 19-36). Canonical source stem: `source-adyen-docs-payment-methods-ideal-android`. Retrieval route: `[[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-ideal-android]]`.

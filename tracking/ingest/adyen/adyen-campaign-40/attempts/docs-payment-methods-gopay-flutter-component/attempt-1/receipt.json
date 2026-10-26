@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-gopay-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GoPay Flutter Components integration guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md\"\ntags: [adyen, gopay, flutter, components, redirect, tokenization, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds GoPay to an existing Flutter Components integration in Sessions or Advanced server-side flow. It covers redirect prerequisites, request additions and distinct tokenized Subscription and CardOnFile routes. This method-specific guide relies on the main Flutter Components guides for the full integration and does not prove current merchant enablement or an executed payment. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Sessions requires an existing Flutter Components Sessions flow, Checkout API v68 or later, `action.type: redirect` handling and GoPay added in Customer Area. Its `/sessions` table marks `shopperInteractionDevice` and `channel` as required additions. The prerequisite text says Sessions Components but links to an Advanced Drop-in URL; the payment-session and redirect links target Sessions Components. The table's `shopperInteractionDevice` link points to an `applicationInfo` child anchor while the example puts that field at top level. Its TEST `/v71/sessions` sample also renders the device data as malformed quoted object text and uses `channel: Flutter`, while the table lists Web/Android/iOS examples. Check endpoint-specific field placement and channel values; the snippet is not a validated request. No GoPay-specific Component configuration is stated.\n- Advanced requires an existing Flutter Components Advanced flow, redirect handling and Customer Area setup. Its prerequisite text again says Components but links to Drop-in; the other Advanced links target Components. Its `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo` and applicable `channel` as required additions. The TEST `/v72/payments` sample represents `browserInfo` as malformed quoted object text and uses lowercase `channel: web` rather than the table's Web/Android/iOS examples. The sample `RedirectShopper`/`action.type: redirect` is an intermediate handoff, not authorization. No GoPay-specific Component configuration is stated.\n- For token creation, the guide says an initial `/payments` request includes `storePaymentMethod: true`, shopper-unique `shopperReference` of at least three characters and `recurringProcessingModel`. After that payment has **settled**, a `recurring.token.created` webhook carries `storedPaymentMethodId`, shopper reference and the original PSP reference. The merchant server must receive recurring-token lifecycle events. This separate `/payments` token step is not established by the normal Sessions `/sessions` add-on, and a submitted request alone does not prove token creation.\n- Later `Subscription` payments use the stored method ID, shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription`. The guide gives `resultCode` for shopper display and a later `AUTHORISATION` webhook for final payment status. Subscription samples have blank currency, method type and return URL values, so they are not copy-ready or outcome evidence.\n- `CardOnFile` reuse has a different challenge: redirect the shopper to GoPay to enter a PIN. Send stored method ID, shopper reference, `ContAuth` and `CardOnFile`; the `RedirectShopper` URL is intermediate. After return, call `/payments/details` with `redirectResult`, then use the `AUTHORISATION` webhook for final status. PIN entry, details response and webhook authorization remain distinct from capture or settlement.\n- For TEST, the page directs merchants to Adyen Support. Before LIVE acceptance, submit a separate GoPay request in the live Customer Area. TEST snippets and Support links do not establish test-account readiness or live enablement.\n\n## Detail locators\n\n- Sessions prerequisites, table, example and no-extra-configuration: pinned raw lines 25\u201377.\n- Initial token request and settlement-gated recurring webhook: pinned raw lines 79\u2013100 and 441\u2013462.\n- Subscription fields, incomplete examples and webhook boundary: pinned raw lines 102\u2013325 and 464\u2013687.\n- CardOnFile PIN challenge, redirect/details/webhook sequence: pinned raw lines 327\u2013352 and 689\u2013714.\n- Advanced prerequisite link mismatch, request table, example and redirect response: pinned raw lines 362\u2013439.\n- TEST Support and LIVE Customer Area gates: pinned raw lines 354\u2013360 and 716\u2013722.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider concept and payment-state context\n- [[adyen-tokenization]] \u2014 provider token and recurring lifecycle\n- [[source-adyen-docs-payment-methods-gopay]] \u2014 method overview and separate eligibility/feature scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15|GoPay Flutter Components guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add GoPay to your existing integration. The following instructions show only what you must add to your integration specifically for GoPay.",
+      "location": "raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md:32"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md:93"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md:329"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md:347"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-flutter-component-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-flutter-component]] \u2014 2026-09-15 GoPay Flutter Components Sessions (Checkout API v68+) and Advanced redirect add-on with required request additions, settlement-gated token creation and distinct Subscription/CardOnFile routes; source records link/example conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "gopay-flutter-component-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-flutter-component]] \u2014 2026-09-15 GoPay Flutter Components guide for post-settlement token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details route; sample limitations remain in source.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/flutter-component/2026-09-15.md",
+  "raw_sha256": "4875a693c4b1b9cbf1080576fb94c45ab679d979e6937e543892788e51fbb345",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,71 @@
+{
+  "job_id": "docs-payment-methods-ideal-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"iDEAL | Wero Flutter Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/flutter-component/2026-09-15.md\"\ntags: [adyen, ideal, wero, flutter, components, redirect, sepa, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide gives iDEAL | Wero-specific additions to an existing Flutter Components checkout, with separate Sessions and Advanced server-side flows. Both state redirect handling and Customer Area method setup. It also describes **SEPA Direct Debit** tokenization for later shopper-absent payments; the stored method in the examples is `sepadirectdebit`, not an iDEAL redirect payment. See [[adyen-online-payments]] and [[adyen-tokenization]]. The dated guide does not prove current merchant eligibility or any completed payment.\n\n## Key takeaways\n\n- **Sessions and Advanced setup:** Sessions requires an existing Flutter Components Sessions integration, Checkout API v68 or later, `action.type: redirect` handling, and iDEAL | Wero in Customer Area. It says no additional method-specific `/sessions` fields or Component configuration are needed. Advanced requires an existing Flutter Components Advanced integration, redirect handling and Customer Area setup, and says no extra method-specific `/payments` fields or configuration are needed for an ordinary payment. Neither section pins a Flutter SDK version or supplies Component initialization code. See raw lines 25\u201346 and 320\u2013342.\n- **Separate recurring path:** The page says recurring payments for iDEAL | Wero go through SEPA Direct Debit. It routes token creation to standard tokenization parameters in a payment request, without extra SEPA-specific fields; a `recurring.token.created` webhook then supplies `storedPaymentMethodId`. It limits tokenized payments here to shopper-absent `Subscription` or `UnscheduledCardOnFile` scenarios. The examples show a later `sepadirectdebit` stored-method `Subscription` request with `shopperInteraction: ContAuth`; they do not turn ordinary iDEAL redirect payments into reusable iDEAL tokens. See raw lines 48\u201375, 77\u2013272 and 344\u2013371, 373\u2013568.\n- **Result boundary:** For the illustrated stored-method request, a successfully received payment can return `resultCode: Received` and `pspReference`. The page says to use webhooks to track whether the payment was successful. Treat `Received` and the example TEST endpoints as intermediate/sample evidence, not authorization or settlement. See raw lines 275\u2013280 and 571\u2013576.\n- **TEST and live guidance:** The page calls the iDEAL | Wero TEST environment unreliable and recommends low-amount live testing. Its live checklist uses a live issuer bank account, redirect to the iDEAL | Wero payment page, QR scan or bank selection, shopper authorization and status check in the live Customer Area. If TEST is operating, the page describes TESTNL2A simulations for success, cancellation, expiration and refusal; expiration can yield `Pending` or `Received`, which still requires an outcome check. The \u201cRequest iDEAL | Wero for the live environment\u201d heading has no actual request procedure under it; do not infer a completed or specified account-approval step here. See raw lines 282\u2013318 and 578\u2013614.\n\n> [!warning] Prerequisite links and examples\n> Both prerequisite rows say **Flutter Components** but link to an **Advanced Flutter Drop-in** base guide; the Sessions row also points to Advanced rather than Sessions. The dedicated redirect links point to the corresponding Components guides. Follow the stated flow and verify the base route before implementing. The Java stored-method example omits `shopperReference` while the surrounding examples include it, and uses 15000 minor units where most other examples use 1000; example requests are not a universal parameter contract or payment proof. See raw lines 31\u201333, 77\u2013129, 328\u2013329 and 373\u2013424.\n\n## Detail locators\n\n- Sessions/Advanced requirements and no-extra-parameter statements: raw lines 25\u201346 and 320\u2013342.\n- SEPA token creation and shopper-absent reuse: raw lines 48\u201375 and 344\u2013371; stored-method request examples: raw lines 77\u2013272 and 373\u2013568.\n- `Received` versus webhook outcome: raw lines 275\u2013280 and 571\u2013576; qualified TEST/LIVE instructions and simulation table: raw lines 282\u2013318 and 578\u2013614.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-ideal]] \u2014 method overview and channel context.\n- [[adyen-tokenization]] \u2014 general stored-method lifecycle, consent and merchant-server boundary.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/flutter-component/2026-09-15|iDEAL | Wero Flutter Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Requirements / Sessions flow Component"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw lines 52 and 348, Recurring payments / both flows"
+    },
+    {
+      "text": "When a token is created, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) webhook.",
+      "location": "raw lines 63 and 359, Store SEPA details / both flows"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw lines 67 and 363, Make a payment with a token / both flows"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes. We recommend doing live penny tests to verify your integration.",
+      "location": "raw lines 284 and 580, Test and go live / both flows"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-flutter-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-flutter-component]] \u2014 2026-09-15 iDEAL | Wero Flutter Components Sessions (Checkout API v68+) and Advanced redirect guide with separate SEPA token route, unreliable TEST guidance and misrouted Drop-in prerequisite links.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both Components prerequisite links target Advanced Drop-in; Sessions also misses its stated server flow.",
+          "`Received` for stored SEPA payment is intermediate; check webhook outcome."
+        ]
+      },
+      {
+        "update_id": "ideal-flutter-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-flutter-component]] \u2014 Flutter iDEAL | Wero guide's separate SEPA Direct Debit token route for shopper-absent Subscription or UnscheduledCardOnFile payments, with webhook-qualified result (2026-09-15 snapshot).",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The stored method type is SEPA Direct Debit, not a reusable iDEAL redirect payment.",
+          "One Java example omits shopperReference; do not infer field optionality from that snippet."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/flutter-component/2026-09-15.md",
+  "raw_sha256": "ebe03dbcb0e7ced27e7a98750ca4c30fee6f000d47fd52adb1b350bc558ed4af",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-gopay-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GoPay Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, gopay, flutter, drop-in, redirect, recurring, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 page adds GoPay to an existing Adyen Flutter Drop-in integration with separate Sessions and Advanced server-side instructions. It also describes token creation and distinct `Subscription` and `CardOnFile` recurring paths. The snapshot does not establish current merchant eligibility, an executed payment or token issuance. [[adyen]] [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions:** requires an existing Flutter Drop-in Sessions flow, Checkout API v68 or later, `action.type: redirect` handling and contacting Adyen Support to add GoPay in Customer Area. The `/sessions` table marks `shopperInteractionDevice` and `channel` required. Its sample uses ID/IDR, `channel: Flutter` and a custom-scheme return URL, but renders `shopperInteractionDevice` as a top-level string containing JSON-like device data while the table's reference link nests it under `applicationInfo`; the sample is not a resolved schema recipe. No extra GoPay Drop-in configuration is stated. The **Sessions** prerequisite label links to an **Advanced** Flutter Drop-in URL; its session and redirect links use Sessions. (raw lines 25\u201379)\n- **Advanced:** separately requires an existing Advanced Flutter Drop-in integration, redirect handling and GoPay added in Customer Area. Its `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo` and `channel` required. The example uses IDR but `channel: web`, Windows Chrome browser data and a web return URL on this Flutter page; these example values are not general Flutter defaults. The `RedirectShopper` response is an intermediate redirect action, not a final authorization. No extra GoPay Drop-in configuration is stated. (raw lines 364\u2013441)\n- **Token creation and Subscription:** in both sections, token creation is a separate `/payments` instruction with `storePaymentMethod: true`, a shopper reference of at least three characters and `recurringProcessingModel`. The merchant server needs recurring-token lifecycle webhook handling. After the initial payment settles, `recurring.token.created` carries `storedPaymentMethodId` for the shopper. Later `Subscription` requests use that ID, shopper reference, `ContAuth` and model `Subscription`; the page routes final payment status to an `AUTHORISATION` webhook. Its language examples leave currency, payment-method type and return URL blank, so they are incomplete templates. (raw lines 81\u2013327, 443\u2013689)\n- **CardOnFile challenge:** later `CardOnFile` requests use the token, shopper reference, `ContAuth` and model `CardOnFile`, and explicitly redirect the shopper to GoPay for PIN entry. After return, the merchant calls `/payments/details` with `redirectResult`; the `AUTHORISATION` webhook supplies final status after processing. PIN entry, `RedirectShopper` and details return are intermediate steps. (raw lines 329\u2013354, 691\u2013716)\n- **Environment gates:** the guide directs merchants to contact Adyen Support for GoPay testing, while live acceptance requires a separate request in the live Customer Area. The Sessions setup route says contact Support to add GoPay; the Advanced setup row instead links adding GoPay in Customer Area. These are section-specific instructions. (raw lines 33\u201336, 356\u2013362, 372\u2013374, 718\u2013724)\n\n## Detail locators\n\n- Sessions prerequisites/link mismatch, device/channel table and sample-shape conflict: raw lines 29\u201373.\n- Advanced prerequisites, fields, web-channel example and redirect response: raw lines 368\u2013441.\n- Post-settlement token creation, Subscription and incomplete code examples: raw lines 81\u2013327 and 443\u2013689.\n- CardOnFile PIN redirect, `/payments/details` and webhook status: raw lines 329\u2013354 and 691\u2013716.\n- Support/test and live Customer Area routes: raw lines 356\u2013362 and 718\u2013724.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-gopay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/flutter-drop-in/2026-09-15|GoPay Flutter Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add GoPay in your Customer Area.",
+      "location": "raw line 36, Sessions Setup steps"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 95, Sessions token creation"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw line 331, Sessions CardOnFile"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw line 349, Sessions CardOnFile"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-flutter-drop-in]] \u2014 2026-09-15 GoPay Flutter Drop-in Sessions/Advanced redirect guide with post-settlement token creation and distinct Subscription/CardOnFile continuation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "7ca210f58fcdc11efaf953b5fdf142a0801afbf8e232241de5ad51837c2ae793",
+  "status": "candidate_ready"
+}

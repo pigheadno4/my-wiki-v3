@@ -1,0 +1,11 @@
+# iDEAL | Wero iOS Component retrieval checks
+
+Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-ideal-ios-component]]`. Token route: `[[index]]` → `[[adyen-index]]` → `[[adyen-tokenization]]` → the same source.
+
+## Q1. What is its purpose and scope, and what cannot be inferred?
+
+The canonical stem `source-adyen-docs-payment-methods-ideal-ios-component` is a 2026-09-15 iOS Components add-on for iDEAL | Wero in existing Sessions and Advanced server-side flows (`raw/adyen/docs/payment-methods/ideal/ios-component/2026-09-15.md:15-35,344-354`). The malformed `WeroiOS` heading and code lookup `.other("ideal")` do not prove a distinct Wero type (`:6,15,54-69,366-380`). Its TEST examples and result codes do not establish current enablement, a completed live payment, capture or settlement (`:299-342,616-659`).
+
+## Q2. What are the central capability, prerequisites, and warnings?
+
+Sessions requires iOS Components Sessions, Checkout API v68+, redirect handling and Customer Area addition; normal `/sessions` and Component setup need no method-specific additions (`raw/adyen/docs/payment-methods/ideal/ios-component/2026-09-15.md:29-69`). Advanced requires iOS Components Advanced, redirect handling and Customer Area addition, likewise no method-specific configuration or normal `/payments` additions; its prerequisite URL says Drop-in despite Components text and subsequent links (`:348-387`). Both use `InstantPaymentComponent` with `.other("ideal")`, with session delegate in Sessions and `self` in Advanced (`:54-69,366-380`). Later recurring payments use a distinct SEPA Direct Debit token route, with `recurring.token.created` carrying `storedPaymentMethodId`; token payments are scoped to shopper-absent Subscription/UnscheduledCardOnFile (`:74-99,391-416`). Java sample amount and shopperReference differ from adjacent examples (`:103-152,163-179`); samples are not one validated contract. `Received` plus PSP reference means the request was received; webhooks track success (`:299-304,616-621`). TEST is described as unreliable; live penny tests are recommended, while available TEST offers `TESTNL2A` simulations including expiration as Pending or Received (`:306-342,623-659`).

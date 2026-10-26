@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-promptpay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PromptPay iOS Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/promptpay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/promptpay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, promptpay, ios, drop-in, qr, thailand]\n---\n\n## Overview\n\nThis [[adyen]] guide describes adding PromptPay to an existing **iOS Drop-in** integration. It offers Sessions and Advanced prerequisite tabs, TH/THB method discovery, a client-to-merchant-server payment handoff, and Drop-in QR presentation. The shopper pays with an app from a participating bank. The guide points to `/payments/details` for a frontend result and an asynchronous webhook for the payment outcome. See [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-promptpay|PromptPay overview]]. This dated page does not establish current account eligibility or a completed transaction.\n\n## Key takeaways\n\n- **Setup and discovery:** The page calls for an existing iOS Drop-in integration using either Sessions or Advanced server-side flow and asks the merchant to contact Adyen Support for Customer Area setup. For `/paymentMethods`, it specifies `countryCode: TH`, `amount.currency: THB` and an `amount.value`; Drop-in uses country and currency to decide what to show. The page gives no Checkout API or iOS SDK minimum. The Sessions and Advanced requirement links contain unresolved encoded template expressions, so follow the prose and verify the intended base guide. See raw lines 21\u201347.\n- **Client and server roles:** After shopper selection, Drop-in calls `didSubmit` with `data.paymentMethod`. The app passes that data to the merchant server, which sends `/payments`. The v72 TEST curl example uses `paymentMethod.type: promptpay`, THB amount, reference and merchant account; other language snippets carry their own API-library versions and are not iOS SDK pins. Drop-in then generates the QR code for the shopper. See raw lines 49\u2013279.\n- **Result boundary:** The guide says to use a `/payments/details` `resultCode` for the frontend and to receive the payment outcome asynchronously by webhook. Its table is labeled \u201cresultCode values\u201d but actually has `eventCode` and `success` columns for `AUTHORISATION`: `false` means failure and `true` means the shopper completed the payment. A generated QR or shopper scan alone does not prove authorization. The page gives no full `/payments/details` request procedure. See raw lines 279\u2013292.\n- **TEST and live:** The guide says to test with real payment details and small amounts, inspect the test Payment list, and contact Support to add PromptPay in the live Customer Area before accepting live payments. These are instructions, not proof of a test result, zero financial movement, or live approval. See raw lines 294\u2013300.\n\n> [!warning] Templated links and outcome label\n> The Sessions and Advanced integration-type URLs contain percent-encoded `{{getParameter(...)}}` placeholders rather than resolved platform/integration values. Both setup rows say \u201cadd in your Customer Area\u201d without naming the method in that sentence, although the page is titled PromptPay. The result section's \u201cresultCode values\u201d heading should not be treated as a `/payments/details` enum: the table beneath it is a webhook `AUTHORISATION`/`success` table. See raw lines 25\u201337 and 281\u2013292.\n\n## Detail locators\n\n- iOS Drop-in identity, flow tabs and templated prerequisites: raw lines 15\u201337; TH/THB discovery: raw lines 39\u201347.\n- `didSubmit` handoff, server request and sample API-library versions: raw lines 49\u2013277; Drop-in QR statement: raw line 279.\n- Frontend result/webhook distinction and Support TEST/live guidance: raw lines 281\u2013300.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 separately versioned native Drop-in context; this page specifies no SDK release.\n- [[source-adyen-docs-payment-methods-promptpay]] \u2014 QR-only method overview and channel routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/promptpay/ios-drop-in/2026-09-15|PromptPay iOS Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Add PromptPay to your existing iOS Drop-in integration.",
+      "location": "raw line 17, PromptPay Drop-in integration introduction"
+    },
+    {
+      "text": "Our [iOS Drop-in](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in) renders PromptPay in your payment form, and generates a QR code that the shopper uses to pay with their choice of app from PromptPay participating banks.",
+      "location": "raw line 19, PromptPay Drop-in integration introduction"
+    },
+    {
+      "text": "Drop-in uses the `countryCode` and the `amount.currency` from your [/paymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods) request to show the available payment methods to your shopper.",
+      "location": "raw line 41, Show PromptPay in your payment form"
+    },
+    {
+      "text": "Drop-in generates the QR code that the shopper uses to pay.",
+      "location": "raw line 279, Make a payment"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw line 285, Show the payment result"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "promptpay-ios-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-promptpay-ios-drop-in]] \u2014 2026-09-15 PromptPay iOS Drop-in Sessions/Advanced guide for TH/THB discovery, merchant-server payment handoff, Drop-in QR display and webhook outcome; prerequisite URLs retain templates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions and Advanced prerequisite URLs contain unresolved encoded template placeholders.",
+          "The result section calls its table `resultCode` values, but the rows are AUTHORISATION eventCode/success webhook outcomes.",
+          "Real-details/small-amount TEST wording does not establish no financial movement or successful testing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/promptpay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "e7484e00147fc83fb76724bdf24cd81accfcf6c85228c454bf3ed075067e1851",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-gopay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GoPay iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, gopay, ios, drop-in, redirect, recurring-payments]\n---\n\n## Overview\n\nAdyen's 2026-09-15 GoPay iOS Drop-in page describes GoPay-specific additions to an existing iOS Drop-in integration, separately for Sessions and Advanced server-side flows. It also describes token creation and distinct later `Subscription` and `CardOnFile` payments. See [[adyen]], [[adyen-ios-sdk]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Sessions requires an existing iOS Drop-in Sessions integration using Checkout API v68 or later and GoPay added in Customer Area. Its `/sessions` table marks `shopperInteractionDevice` and `channel` required, with the channel set to the applicable platform. The sample uses ID/IDR and `channel: iOS`, but the device example is a quoted multi-line Chrome object and does not establish a validated runnable request or a universal country/currency eligibility rule.\n- Advanced requires an existing iOS Drop-in Advanced integration, redirect handling for `action.type: redirect`, and GoPay added in Customer Area. Its `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo` and `channel` required. It says no GoPay-specific Drop-in configuration is needed, as does Sessions. The Advanced example returns `RedirectShopper` with a redirect action, an intermediate step rather than final authorization.\n- The Advanced example uses `channel: web`, a Windows/Chrome `browserInfo`, and an HTTPS web checkout return URL despite the iOS guide. Treat these as source example inconsistencies, not iOS channel or return-URL requirements. The Sessions example's iOS channel and app-scheme return URL are examples, not a complete app-return integration specification.\n- To create a GoPay token, the page calls for `storePaymentMethod: true`, a shopper-unique `shopperReference` of at least three characters, and `recurringProcessingModel` in `/payments`. Only after initial payment settlement does `recurring.token.created` supply `storedPaymentMethodId`; the server must receive recurring-token lifecycle events. Later `Subscription` uses the stored ID, shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription`.\n- Later `CardOnFile` differs: the shopper must enter a PIN at GoPay in a challenge flow after redirect. A `RedirectShopper` response supplies the action URL; after return the integration calls `/payments/details` with `redirectResult`. The page gives final processed-payment status through an `AUTHORISATION` webhook; its `success: true` lines are examples, not a promised outcome. Many subscription snippets leave currency, method type or return URL blank, so they are not runnable values.\n- For testing, the page says to contact Adyen Support and refers to GoPay's knowledge base. Live acceptance requires a separate GoPay request in live Customer Area. The snapshot proves neither current enablement nor an executed payment.\n\n## Detail locators\n\n- Sessions prerequisites, required `/sessions` fields, example and no-extra-configuration statement: raw lines 25-77.\n- Sessions token creation, settlement webhook and Subscription fields: raw lines 79-114; language samples and status text: lines 116-325.\n- Sessions `CardOnFile` challenge/details and test/live gates: raw lines 327-362.\n- Advanced prerequisites, required `/payments` fields, inconsistent iOS example and redirect response: raw lines 364-441.\n- Repeated Advanced token and Subscription sections: raw lines 443-689.\n- Repeated Advanced `CardOnFile` and test/live guidance: raw lines 691-726.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15|GoPay iOS Drop-in (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "You can add GoPay to your existing integration. The following instructions show only what you must add to your integration specifically for GoPay.",
+      "location": "raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md:19 (opening scope)"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md:33 (Sessions integration requirement)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md:93 (Sessions Create a token; repeated line 457)"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md:329 (Sessions CardOnFile; repeated line 693)"
+    },
+    {
+      "text": "When you want to test GoPay, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).",
+      "location": "raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md:358 (Sessions Test and go live; repeated line 722)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-ios-drop-in-ios-sdk-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-ios-drop-in]] \u2014 2026-09-15 GoPay iOS Drop-in Sessions/Advanced add-on for request fields, redirect and settlement-gated recurring, with qualified cross-platform examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "d474a41b550aa2ae1833f841248c28446a22066bc0f75c9283371853ae538194",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-gopay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GoPay for API only\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/api-only/2026-09-15.md\"\ntags: [adyen, gopay, indonesia, wallet, api-only, online-payments, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 GoPay guide is a method-specific add-on to an existing **API-only Advanced-flow** integration, not a full base integration. The integration must handle a `redirect` action, and the merchant must add GoPay in Customer Area. The page covers discovery, a merchant-built payment form, a `/payments` redirect, and separate tokenized Subscription and CardOnFile continuations. [[adyen-online-payments]]\n\n## Key takeaways\n\n- To discover GoPay via `/paymentMethods`, the table specifies `countryCode: ID`, `amount.currency: IDR`, minor-unit `amount.value`, and a relevant `channel` such as Web, iOS or Android. A sample response has `type: gopay_wallet`. The method needs no additional shopper form field beyond the merchant's payment-method selection. The sample discovery request omits `channel` despite the table listing it. See raw lines 38\u201387.\n- The `/payments` parameter table marks `paymentMethod.type: gopay_wallet`, `browserInfo`, and an applicable `channel` as required. The example `/payments` response has `RedirectShopper` and `action.type: redirect`; handle it through the base API-only redirect flow. The prose's \u201cHow it works\u201d step says to include additional information about intended purchase items, but the dedicated request table and sample do not identify item fields. The sample also renders `browserInfo` as a quoted string containing a JSON-looking object and `channel: web` in lowercase, while the table's channel examples are title case. Treat these as documentation/sample inconsistencies, not as field-shape or casing guarantees. See raw lines 31\u201336 and 89\u2013146.\n- For token creation, the initial `/payments` request includes `storePaymentMethod: true`, a shopper-unique `shopperReference` of at least three characters, and `recurringProcessingModel`. **After the initial payment is settled**, the `recurring.token.created` webhook supplies the `storedPaymentMethodId`; the server needs the Recurring tokens life cycle events webhook. [[adyen-tokenization]] See raw lines 148\u2013167.\n- A later **Subscription** token payment uses the stored ID, shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription`. The response's `resultCode` can be shown to the shopper; the page identifies the processed payment's final status via an `AUTHORISATION` webhook. The examples show `gopay_wallet` and IDR amounts but do not define universal limits. See raw lines 169\u2013392.\n- A later **CardOnFile** token payment is different: the shopper must be redirected to GoPay for a PIN challenge. The request uses the stored ID, shopper reference, `ContAuth`, and `CardOnFile`; a `RedirectShopper` action supplies the URL. After return, call `/payments/details` with `redirectResult`, and use the later `AUTHORISATION` webhook for final status. Do not equate the redirect or the shopper's PIN entry with successful authorization. See raw lines 394\u2013419.\n- For TEST, the guide says to contact Adyen Support and refers to GoPay's knowledge base. Before accepting live GoPay payments, it says to submit a request in the live Customer Area. This source snapshot does not establish current enablement or an executed payment. See raw lines 421\u2013427.\n\n## Detail locators\n\n- Existing API-only integration, redirect handling and Customer Area setup: raw lines 23\u201329.\n- Discovery country/currency/channel table and illustrative `/paymentMethods` request/response: raw lines 38\u201387.\n- Required `/payments` additions, sample request and redirect response: raw lines 89\u2013146.\n- Post-settlement token creation and webhook fields: raw lines 148\u2013167.\n- Subscription request examples and final-status webhook: raw lines 169\u2013392.\n- CardOnFile PIN challenge, return/details call and webhook: raw lines 394\u2013419.\n- TEST support and live request gate: raw lines 421\u2013427.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 API-only online integration context.\n- [[adyen-tokenization]] \u2014 recurring token lifecycle context.\n- [[source-adyen-docs-payment-methods-gopay]] \u2014 GoPay method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15|GoPay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "When you make the payment request, you [include additional information about the items that the shopper intends to purchase](#additional-parameters-payments).",
+      "location": "raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15.md:35 (How it works)"
+    },
+    {
+      "text": "Note that the flows for `Subscription` and `CardOnFile` payments are different.",
+      "location": "raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15.md:150 (Recurring payments)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15.md:160 (Create a token)"
+    },
+    {
+      "text": "You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15.md:396 (CardOnFile)"
+    },
+    {
+      "text": "Before you can accept live GoPay payments, you need to submit a request for GoPay in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15.md:427 (Test and go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-api-only]] \u2014 2026-09-15 GoPay ID/IDR API-only Advanced redirect guide with required request fields, post-settlement token creation and distinct Subscription/CardOnFile continuations; source qualifies sample conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "gopay-api-only-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-api-only]] \u2014 GoPay API-only post-settlement recurring token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details paths (2026-09-15 snapshot).\n",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/api-only/2026-09-15.md",
+  "raw_sha256": "088c9d5242f47b3d5fab7a34ccb9176f5bb26806fea03610cbd3bb46e2f68f83",
+  "status": "candidate_ready"
+}

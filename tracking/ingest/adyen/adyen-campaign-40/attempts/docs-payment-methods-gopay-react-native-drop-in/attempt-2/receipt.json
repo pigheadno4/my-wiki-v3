@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-gopay-react-native-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen GoPay React Native Drop-in integration guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, gopay, react-native, drop-in, redirect, tokenization, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds GoPay to an existing React Native Drop-in integration, with separate Sessions and Advanced server-side flows. It covers redirect prerequisites, flow-specific request fields, and tokenized Subscription versus CardOnFile payments. It is a method add-on, not a complete base integration. The captured guide does not prove current merchant eligibility, a settled payment, token creation or a completed recurring charge. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Sessions requires an existing React Native Drop-in Sessions flow, Checkout API v68 or later, redirect handling for `action.type: redirect`, and GoPay added in Customer Area. Its `/sessions` table marks `shopperInteractionDevice` and `channel` as required additions. The prerequisite text says Sessions but links to an Advanced-flow URL; the session-creation and redirect links do target Sessions. The `shopperInteractionDevice` table link points to an `applicationInfo` child anchor, while the malformed `/sessions` example places `shopperInteractionDevice` at top level (raw lines 46 and 66\u201370). This page does not resolve the correct request path. No GoPay-specific Drop-in configuration is stated. The TEST `/v71/sessions` snippet has `shopperInteractionDevice` as malformed quoted object text and `channel: React-native`, while the table gives Web/Android/iOS examples; do not treat the sample as a validated schema or proof of channel support.\n- Advanced requires an existing React Native Drop-in Advanced flow, redirect handling and Customer Area setup. Its `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo` and applicable `channel` as required additions. The TEST `/v72/payments` response shows `RedirectShopper` with `action.type: redirect`, an intermediate shopper handoff. The example represents `browserInfo` as malformed quoted object text and uses lowercase `channel: web` despite the table's Web/Android/iOS examples; it is not a validated React Native request. No extra GoPay-specific Drop-in configuration is stated.\n- The guide says GoPay can create a token on an initial `/payments` request with `storePaymentMethod: true`, a shopper-unique `shopperReference` of at least three characters, and `recurringProcessingModel`. After the payment has **settled**, a `recurring.token.created` webhook carries `storedPaymentMethodId`, shopper reference and initial-payment PSP reference; the merchant server must receive recurring-token lifecycle webhooks. This `/payments` token step is distinct from the normal Sessions `/sessions` add-on and token creation is not established merely by sending the request.\n- Subsequent `Subscription` `/payments` calls use the stored method ID, shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription`; the response's `resultCode` is for display and the page identifies a later `AUTHORISATION` webhook as final payment status. The Subscription examples leave currency, payment-method type and return URL blank and include old TEST API/library snippets; they are not copy-ready requests or evidence of successful charges.\n- Subsequent `CardOnFile` use is a different challenge flow: GoPay requires redirecting the shopper to enter a PIN. Send stored method ID, shopper reference, `ContAuth` and `CardOnFile`; `RedirectShopper` and a URL are intermediate, followed by `/payments/details` with `redirectResult` after the shopper returns, then the `AUTHORISATION` webhook for final status. Shopper PIN entry and returned details do not alone prove authorization, capture or settlement.\n- For testing, contact Adyen Support; before LIVE acceptance, submit a GoPay request in the live Customer Area. The page's TEST examples and Support link do not establish test-account readiness or live enablement.\n\n## Detail locators\n\n- Sessions prerequisites, required-added field table, malformed example and no-extra-configuration statement: pinned raw lines 25\u201379.\n- Initial token conditions and settlement-gated recurring webhook: pinned raw lines 81\u2013102 and 443\u2013464.\n- Subscription request fields, incomplete examples and webhook-outcome boundary: pinned raw lines 104\u2013327 and 466\u2013689.\n- CardOnFile PIN challenge, redirect/details/webhook sequence: pinned raw lines 329\u2013354 and 691\u2013716.\n- Advanced prerequisites, required-added field table, malformed TEST request and redirect response: pinned raw lines 364\u2013441.\n- TEST Support and LIVE Customer Area gates: pinned raw lines 356\u2013362 and 718\u2013724.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider concept and redirect/payment-state context\n- [[adyen-tokenization]] \u2014 provider token and recurring lifecycle\n- [[source-adyen-docs-payment-methods-gopay]] \u2014 method overview and separate eligibility/feature scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15|GoPay React Native Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add GoPay to your existing integration. The following instructions show only what you must add to your integration specifically for GoPay.",
+      "location": "raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md:95"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md:331"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md:349"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-react-native-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-react-native-drop-in]] \u2014 2026-09-15 GoPay React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with required request additions, settlement-gated token creation and distinct Subscription/CardOnFile flows; source records sample conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "gopay-react-native-drop-in-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-react-native-drop-in]] \u2014 2026-09-15 GoPay React Native Drop-in guide for post-settlement token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details route; request examples need source-qualified reading.",
+        "quote_indexes": [
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "ea80daaa4db3bff8568e87888d705d821a3432ae8f995ed1cd3ecf63965091c9",
+  "status": "candidate_ready"
+}

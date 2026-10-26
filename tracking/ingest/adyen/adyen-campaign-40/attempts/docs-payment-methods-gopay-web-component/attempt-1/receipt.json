@@ -1,0 +1,72 @@
+{
+  "job_id": "docs-payment-methods-gopay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GoPay Web Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/web-component/2026-09-15.md\"\ntags: [adyen, gopay, web, components, redirect, tokenization, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide adds GoPay to an existing Web Components integration through either Sessions or Advanced server-side flow. Both paths use the Web `Redirect` Component for `gopay_wallet` and require redirect handling. The page also describes token creation and distinct later Subscription and CardOnFile requests; the token is reported only after the initial payment settles. See [[adyen-online-payments]] and [[adyen-tokenization]]. This dated page does not establish current merchant eligibility, a completed payment, or a token actually issued.\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Web Components Sessions integration, Checkout API v68 or later, `action.type: redirect` handling, and GoPay added in Customer Area. Its `/sessions` table marks `shopperInteractionDevice` and a relevant `channel` as required; the example uses `IDR` and `countryCode: ID`, which are example context rather than this page's eligibility matrix. It imports `Redirect`, says no extra GoPay Component configuration is needed, and constructs the Component for `gopay_wallet`. See raw lines 25\u2013103.\n- **Advanced:** Requires an existing Web Components Advanced integration, redirect handling, and Customer Area setup. It imports the same `Redirect` class. The `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo`, and a relevant `channel` as required. Its illustrative response has `RedirectShopper` and `action.type: redirect`, an intermediate handoff rather than final payment authorization. No Advanced Checkout API minimum or Web SDK version is stated here. See raw lines 388\u2013481.\n- **Create token after an initial payment:** The recurring section says GoPay supports token payments and calls for `storePaymentMethod: true`, a unique `shopperReference` of at least three characters, and `recurringProcessingModel` in a `/payments` request, plus a server able to receive recurring-token lifecycle webhooks. After the initial payment **settles**, a `recurring.token.created` webhook supplies `storedPaymentMethodId` for that shopper. The method page does not describe token issuance at redirect, initial authorization, or every attempted payment. See raw lines 105\u2013126 and 483\u2013504.\n- **Later payment models differ:** For `Subscription`, the page lists the stored method ID, shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription` on `/payments`, then describes a shopper-facing `resultCode` and later `AUTHORISATION` webhook as final status. For `CardOnFile`, it also lists `ContAuth` in the request but explicitly requires a GoPay redirect so the shopper enters a PIN, followed by `/payments/details` with `redirectResult` and a later final-status `AUTHORISATION` webhook. Preserve that shopper challenge even though the sample request says `ContAuth`. See raw lines 128\u2013140, 345\u2013378 and 506\u2013756.\n- **Test and live:** The guide directs merchants to Adyen Support and GoPay's knowledge base for testing. It says a separate GoPay request in the live Customer Area is needed before live acceptance. These are setup instructions, not test or live outcome evidence. See raw lines 380\u2013386 and 758\u2013764.\n\n> [!warning] Incomplete or malformed snippets\n> The Sessions curl block lacks a continuation after `-X POST` and renders `shopperInteractionDevice` as a quoted, nested JSON-like string; the Advanced curl block likewise lacks a continuation and renders `browserInfo` as a quoted nested object. Both `Redirect` snippets show `type:gopay_wallet` as an unquoted identifier. Subscription request examples leave currency, payment method type and return URL blank. These snippets are not copy-ready working requests or evidence that the sample payment/token succeeded. See raw lines 49\u201373, 99\u2013103, 142\u2013343, 416\u2013465 and 520\u2013721.\n\n## Detail locators\n\n- Sessions prerequisites, required fields, import and Component initialization: raw lines 25\u2013103; Advanced equivalents: raw lines 388\u2013481.\n- Token request fields and post-settlement webhook: raw lines 105\u2013126 and 483\u2013504.\n- Subscription fields/examples and webhook boundary: raw lines 128\u2013351 and 506\u2013729; CardOnFile PIN redirect, details request and webhook: raw lines 353\u2013378 and 731\u2013756.\n- Testing and live request: raw lines 380\u2013386 and 758\u2013764. This page contains no complete country/currency eligibility matrix.\n\n## Related\n\n- [[adyen-tokenization]] \u2014 stored-payment-method lifecycle and merchant-server boundaries.\n- [[adyen-webhooks]] \u2014 final outcome and recurring-token event context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/web-component/2026-09-15|GoPay Web Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Requirements / Sessions flow Component"
+    },
+    {
+      "text": "GoPay supports recurring payments. The first time your shopper makes a payment, you need to [create a token](#create-a-token), which you can use later to make `Subscription` or `CardOnFile` payments. Note that the flows for `Subscription` and `CardOnFile` payments are different.",
+      "location": "raw lines 109 and 487, Recurring payments / both flows"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw lines 119 and 497, Create a token / both flows"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw lines 355 and 733, Make a recurring CardOnFile payment with a token"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw lines 373 and 751, Make a recurring CardOnFile payment with a token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-web-component]] \u2014 2026-09-15 GoPay Web Redirect Component guide for existing Sessions (Checkout API v68+) or Advanced flows, plus settlement-gated token creation and distinct Subscription/CardOnFile follow-up.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Example request and Component snippets are incomplete or malformed; no Web SDK minimum or country/currency eligibility matrix is established.",
+          "CardOnFile lists ContAuth but also explicitly requires shopper PIN redirect and details submission."
+        ]
+      },
+      {
+        "update_id": "gopay-web-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-web-component]] \u2014 GoPay Web Components token route: initial `/payments` fields, token webhook after settlement, and separate later Subscription and PIN-redirect CardOnFile flows (2026-09-15 snapshot).",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The method page does not state token issuance before settlement or guarantee issuance for a failed payment.",
+          "Do not collapse CardOnFile PIN redirect into the Subscription flow."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/web-component/2026-09-15.md",
+  "raw_sha256": "1e87c3e037080cab7753509aa2e913efa614a570bcb3ffbbf9d287db575170eb",
+  "status": "candidate_ready"
+}

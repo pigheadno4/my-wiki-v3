@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-gopay-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen GoPay React Native Component guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/react-native-component/2026-09-15.md\"\ntags: [adyen, gopay, react-native, components, redirect, recurring, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds GoPay to an existing React Native Components integration. It explicitly says React Native Components do **not** support Sessions flow, then gives Advanced-flow redirect, tokenization and recurring-payment instructions. The snapshot does not establish current merchant eligibility, an issued token or a completed payment. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Flow and initial payment:** Sessions flow Components are marked unavailable. Advanced requires an existing React Native Components integration, `action.type: redirect` handling and GoPay added in Customer Area, with no extra Component configuration. The initial `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo` and `channel` required; channel is the applicable Web, Android or iOS value. The example is IDR, `channel: web`, Windows/Chrome browser data and a web return URL on this React Native page, so its values are not React Native defaults. It also has `-X POST` without a trailing line continuation and wraps nested `browserInfo` as a quoted JSON-like string with unescaped inner quotes; do not copy it as a validated request. Its `RedirectShopper` response with redirect action is intermediate. The Advanced integration-type row points to a Drop-in URL while the text and redirect/make-payment links say Components. The page does not pin a React Native SDK version or Checkout API minimum. (raw lines 25\u2013108)\n- **Token creation:** for the first shopper payment, the guide requires `storePaymentMethod: true`, a unique `shopperReference` of at least three characters and a `recurringProcessingModel`. After that payment **settles**, a `recurring.token.created` webhook carries the initial payment's `pspReference` as `eventId` and the `storedPaymentMethodId`; the merchant server must receive recurring-token lifecycle events. A request or redirect response alone does not establish a usable token. (raw lines 110\u2013131)\n- **Subscription:** later `Subscription` requests use the stored method ID, shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription`. The sample code has blank currency, payment-method type and return URL fields, so it is an incomplete template rather than an executable GoPay request. The `/payments` resultCode can be shown to the shopper, but the final processed payment status arrives in an `AUTHORISATION` webhook. (raw lines 133\u2013357)\n- **CardOnFile challenge:** unlike Subscription, `CardOnFile` requires redirecting the shopper to GoPay for PIN entry. A `RedirectShopper` response carries a redirect URL; after shopper return, call `/payments/details` with `redirectResult`. The guide places final processed status in an `AUTHORISATION` webhook. PIN entry, the redirect and details call do not themselves establish final authorization. (raw lines 358\u2013383)\n- **Environment:** the page directs GoPay testing questions to Adyen Support and separately requires a request in the live Customer Area before accepting live GoPay payments. Neither instruction proves a particular account is enabled or that a test or live payment succeeded. (raw lines 385\u2013391)\n\n## Detail locators\n\n- Sessions unavailability and Advanced requirements/link mismatch: pinned raw lines 25\u201347.\n- Advanced required fields, malformed IDR/web sample and redirect response: pinned raw lines 49\u2013108.\n- Settlement-gated token creation and webhook responsibility: pinned raw lines 110\u2013131.\n- Subscription fields, incomplete examples and final webhook boundary: pinned raw lines 133\u2013357.\n- CardOnFile shopper PIN redirect, details call and final webhook: pinned raw lines 358\u2013383; TEST/LIVE setup: lines 385\u2013391.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment and redirect context\n- [[adyen-tokenization]] \u2014 token lifecycle and recurring paths\n- [[source-adyen-docs-payment-methods-gopay]] \u2014 GoPay method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/react-native-component/2026-09-15|GoPay React Native Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw line 29, Sessions flow Component"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw line 94, Advanced response"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 124, token creation"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw line 360, CardOnFile"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw line 378, CardOnFile return"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-react-native-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-react-native-component]] \u2014 2026-09-15 GoPay React Native Components Advanced-only redirect guide with settlement-gated token creation and distinct Subscription/CardOnFile continuation; request example is malformed.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/react-native-component/2026-09-15.md",
+  "raw_sha256": "0920c3e20257ee0184d57dfa1497f0451ce93dcf9c20b9f2aa672eebd15bf4e7",
+  "status": "candidate_ready"
+}

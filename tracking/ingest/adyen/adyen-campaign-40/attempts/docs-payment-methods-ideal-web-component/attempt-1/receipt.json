@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-ideal-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"iDEAL | Wero Web Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/web-component/2026-09-15.md\"\ntags: [adyen, ideal, wero, web, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds iDEAL | Wero to an existing **Web Components** integration, with separate Sessions and Advanced instructions. It is a method-specific add-on, not a complete base integration. The Web component is `Redirect` with `type: 'ideal'`; the existing integration must handle a `redirect` action and the merchant must add the method in Customer Area. [[adyen-online-payments]]\n\n## Key takeaways\n\n- In the **Sessions** branch, the existing Web Components integration uses Checkout API v68 or later. The ordinary `/sessions` request needs no iDEAL-specific parameters, and the component needs no extra configuration. Import `Redirect` from Adyen Web and initialize it for `ideal`. See raw lines 25\u201372.\n- In the **Advanced** branch, the existing Web Components integration handles the redirect and adds the method in Customer Area; its ordinary `/payments` request needs no iDEAL-specific parameters. It imports and initializes the same Web `Redirect` component. The Advanced requirements table does not state a Checkout API minimum. See raw lines 346\u2013384.\n- For **recurring** payments, the guide routes iDEAL | Wero through SEPA Direct Debit. Token creation uses the standard SEPA tokenization parameters; the `recurring.token.created` webhook supplies a `storedPaymentMethodId` for later payments. The guide limits tokenized reuse to shopper-absent `UnscheduledCardOnFile` or `Subscription` scenarios. The no-extra-parameters statements above describe the ordinary method flow, not the recurring tokenization requests. [[adyen-tokenization]] See raw lines 74\u2013101 and 386\u2013413.\n- The recurring examples submit a SEPA Direct Debit stored-method `/payments` request. A `Received` response means the request was successfully received; the guide directs merchants to webhooks to track whether payment succeeded. Do not treat `Received` as final authorization or settlement. See raw lines 103\u2013306 and 415\u2013618.\n- Adyen describes the iDEAL | Wero TEST environment as unreliable and **recommends** live penny tests. When TEST is running, its page offers `TESTNL2A` simulations, including expiration that can produce `Pending` or `Received`. The live-penny steps use an issuer bank account and live Customer Area status check; this snapshot does not itself establish current access, method enablement or an executed payment. See raw lines 308\u2013344 and 620\u2013656.\n\n## Detail locators\n\n- Sessions prerequisites, request, import, component configuration and initialization: raw lines 25\u201372.\n- Sessions recurring token creation, webhook, shopper-absent reuse and sample requests: raw lines 74\u2013306.\n- Advanced prerequisites, component initialization and ordinary request: raw lines 346\u2013384.\n- Advanced recurring route and sample requests: raw lines 386\u2013618.\n- TEST caveat, conditional simulations and recommended live-penny procedure: raw lines 308\u2013344 and 620\u2013656.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web Components integration route.\n- [[adyen-tokenization]] \u2014 token lifecycle and shopper-consented storage context.\n- [[source-adyen-docs-payment-methods-ideal]] \u2014 iDEAL | Wero method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15|iDEAL | Wero Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15.md:34 (Sessions requirements table)"
+    },
+    {
+      "text": "iDEAL | Wero, use the `Redirect` class.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15.md:66 (Sessions initialize)"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15.md:78 (Sessions recurring)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15.md:93 (Sessions recurring)"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15.md:310 (Sessions test and go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-web-component]] \u2014 2026-09-15 iDEAL | Wero Web Components Sessions/Advanced redirect add-on, with recurring SEPA Direct Debit token route and qualified TEST/live guidance.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "ideal-web-component-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-web-component]] \u2014 2026-09-15 Web Components iDEAL | Wero recurring route through SEPA Direct Debit token creation and shopper-absent stored-method payments.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/web-component/2026-09-15.md",
+  "raw_sha256": "c4d7e56117a30305a3a2f5bc54f77f45fbef4c6e6b14c0744a926c62f7c90d0a",
+  "status": "candidate_ready"
+}

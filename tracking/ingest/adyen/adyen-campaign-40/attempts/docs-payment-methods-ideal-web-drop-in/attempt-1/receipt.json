@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-ideal-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"iDEAL | Wero Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md\"\ntags: [adyen, ideal, wero, web, drop-in, online-payments, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds iDEAL | Wero to an existing **Web Drop-in** integration. It provides method-specific additions for Sessions and Advanced flows, rather than a complete base integration. Both flows require redirect handling (`action.type: redirect`) and adding the method in Customer Area. [[adyen-online-payments]]\n\n## Key takeaways\n\n- The **Sessions** branch requires an existing Web Drop-in Sessions integration and Checkout API v68 or later. It adds no method-specific `/sessions` parameters. Importing the individual Web `Redirect` payment method is **optional** for tree shaking/performance, not a prerequisite to Drop-in itself. See raw lines 25\u201354.\n- The **Advanced** branch requires an existing Web Drop-in Advanced integration and redirect handling. Its ordinary `/payments` request adds no method-specific parameters; its individual `Redirect` import is also optional. The Advanced requirements table does not state a Checkout API minimum. Its base-integration hyperlink contains a URL-encoded `{{getParameter('platform')}}` template where a resolved platform would be expected; consult the actual Web Drop-in base guide rather than treating that link as verified. See raw lines 330\u2013358.\n- For **recurring** payments, the guide routes iDEAL | Wero through SEPA Direct Debit. Standard SEPA tokenization parameters create the shopper token; `recurring.token.created` carries a `storedPaymentMethodId` for subsequent stored-method requests. The guide restricts these tokenized payments to shopper-absent `UnscheduledCardOnFile` and `Subscription` scenarios. The ordinary-flow no-extra-parameters statements do not remove the tokenization parameters. [[adyen-tokenization]] See raw lines 56\u201383 and 360\u2013387.\n- The recurring `/payments` examples use `paymentMethod.type: sepadirectdebit`, a stored ID and a `Subscription` processing model. They are samples, not a complete guarantee for other recurring modes. The Java samples omit `shopperReference` while the curl and most other language samples include it; follow the linked standard tokenization guidance when building a request rather than copying that example as a full field contract. See raw lines 85\u2013280 and 389\u2013584.\n- A `Received` response means the recurring payment request was successfully received, while webhooks track whether payment succeeded. It is not final success or settlement evidence. See raw lines 283\u2013288 and 587\u2013592.\n- Adyen calls the iDEAL | Wero TEST environment unreliable and **recommends** live penny tests. When TEST is functioning, its page offers `TESTNL2A` result simulations, with expiration producing `Pending` or `Received`. The live-penny procedure requires a live issuer bank account and checking live Customer Area status; this snapshot does not prove current eligibility or an executed live payment. See raw lines 290\u2013328 and 594\u2013632.\n\n## Detail locators\n\n- Sessions requirements, ordinary request and optional import: raw lines 25\u201354.\n- Sessions SEPA recurring route, stored-method samples and intermediate response: raw lines 56\u2013288.\n- Advanced requirements, optional import and ordinary request: raw lines 330\u2013358.\n- Advanced SEPA recurring route, stored-method samples and intermediate response: raw lines 360\u2013592.\n- TEST reliability caveat, conditional simulations and recommended live-penny procedure: raw lines 290\u2013328 and 594\u2013632.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web Drop-in integration route.\n- [[adyen-tokenization]] \u2014 shopper token and stored-method context.\n- [[source-adyen-docs-payment-methods-ideal]] \u2014 iDEAL | Wero method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15|iDEAL Wero Web Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md:34 (Sessions requirements table)"
+    },
+    {
+      "text": "To do this, include `Redirect`.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md:48 (Sessions optional import)"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md:60 (Sessions recurring)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md:75 (Sessions recurring)"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes.",
+      "location": "raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md:294 (Sessions test and go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-web-drop-in]] \u2014 2026-09-15 iDEAL | Wero Web Drop-in Sessions/Advanced redirect add-on, with optional individual import, SEPA token route and TEST qualification; see source for link/example caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "ideal-web-drop-in-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-web-drop-in]] \u2014 2026-09-15 iDEAL | Wero Web Drop-in recurring route through SEPA Direct Debit token creation and shopper-absent stored-method payments; sample-field caveat in source.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/web-drop-in/2026-09-15.md",
+  "raw_sha256": "30760c900e868b1b09763019f30694a402f3665068f9e1273a1af3a0ca0755f6",
+  "status": "candidate_ready"
+}

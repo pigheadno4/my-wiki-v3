@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ideal-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen iDEAL | Wero React Native Component guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/react-native-component/2026-09-15.md\"\ntags: [adyen, ideal, wero, react-native, components, redirect, sepa, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds iDEAL | Wero to an existing React Native Components integration. It explicitly says Sessions Components are unavailable and provides an Advanced redirect path, followed by a separate SEPA Direct Debit token route for later shopper-absent payments. Its title/heading say \u201cReact Component,\u201d but the canonical URL, prerequisites and linked platform say React Native; the shorter label does not establish a distinct product. This snapshot does not prove current merchant enablement, token issuance or successful payment. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Advanced only:** React Native Components do not support Sessions flow. Advanced requires an existing React Native Components Advanced integration, `action.type: redirect` handling and iDEAL | Wero added in Customer Area. The page says no method-specific Component configuration or normal `/payments` parameters are needed. Its integration-type row links to a React Native **Drop-in** URL while the text and redirect/make-payment links say **Components**; use the named Components flow and verify the main integration route. No React Native SDK version or Checkout API minimum is stated here. (raw lines 25\u201353)\n- **Recurring:** later iDEAL | Wero payments are described through **SEPA Direct Debit**, not another iDEAL redirect. Create a shopper token with standard tokenization parameters; `recurring.token.created` carries `storedPaymentMethodId`. The guide limits tokenised payments here to shopper-absent `UnscheduledCardOnFile` and `Subscription` scenarios. Its subscription examples use `paymentMethod.type: sepadirectdebit`, a stored method ID, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription`. The Java sample uses EUR 15000 while the other examples use EUR 1000 and omits `shopperReference` shown by the others; the examples are illustrative rather than a single consistent request contract. (raw lines 55\u2013280)\n- **Outcome:** for the illustrated token payment, successful receipt returns `resultCode: Received` and `pspReference`; the guide directs actual payment-success tracking to webhooks. `Received` is not proof of authorization, capture or settlement. (raw lines 282\u2013287)\n- **Testing:** the source warns that its iDEAL | Wero TEST environment is unreliable and recommends live penny testing. Its LIVE procedure uses an issuer bank account, payment-page QR or issuer selection, shopper authorization and Customer Area status check. If TEST is available, `TESTNL2A` offers simulations for Authorised, Canceled, Pending/Received on expiration and Refused. These are conditional test paths, not evidence of current eligibility or a live payment. (raw lines 289\u2013325)\n\n## Detail locators\n\n- Source identity/title mismatch, Sessions exclusion and Advanced prerequisite/link conflict: pinned raw lines 5\u201353.\n- SEPA token creation, shopper-absent scope and multi-language examples: pinned raw lines 55\u2013280.\n- `Received` and webhook outcome boundary: pinned raw lines 282\u2013287.\n- TEST reliability, LIVE penny procedure and conditional simulations: pinned raw lines 289\u2013325.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main redirect and outcome context\n- [[adyen-tokenization]] \u2014 provider token lifecycle\n- [[source-adyen-docs-payment-methods-ideal]] \u2014 iDEAL | Wero overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/react-native-component/2026-09-15|iDEAL | Wero React Native Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw line 29, Sessions flow Component"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request when you [make a payment](/online-payments/build-your-integration/advanced-flow/?platform=React%2BNative\\&integration=Components#make-a-payment).",
+      "location": "raw line 53, Advanced payments request"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit). To make recurring payments, you need to:",
+      "location": "raw line 59, recurring payments"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw line 74, token payment"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes. We recommend doing live penny tests to verify your integration.",
+      "location": "raw line 291, test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-react-native-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-react-native-component]] \u2014 2026-09-15 iDEAL | Wero React Native Components Advanced-only redirect guide with separate SEPA token route and qualified TEST/LIVE checks; source records label/link mismatches.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/react-native-component/2026-09-15.md",
+  "raw_sha256": "fe8e1b8da815fd4f47332c01327d6bba1499dfd26ddb710f8fbf7e6810307b40",
+  "status": "candidate_ready"
+}

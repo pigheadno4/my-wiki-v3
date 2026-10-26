@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-ideal-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"iDEAL | Wero Android Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/android-component/2026-09-15.md\"\ntags: [adyen, ideal, wero, android, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds iDEAL | Wero to an existing Android Components integration, with distinct Sessions and Advanced server-side flows. It also documents a separate recurring path through SEPA Direct Debit tokens and conditional TEST/LIVE verification guidance. It is a documentation snapshot, not evidence of current merchant enablement, a working app or a completed payment. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Sessions:** The guide requires an existing Android Components Sessions integration using Checkout API v68 or later, redirect handling for `action.type: redirect`, and iDEAL | Wero addition in Customer Area (raw lines 25\u201336). It says there are no additional method-specific `/sessions` parameters or Component configuration (lines 38\u201342, 67\u201371).\n- **Advanced:** The guide requires an existing Android Components Advanced integration, an additional redirect-action handler and Customer Area addition (lines 400\u2013408). It says there is no additional method-specific Component configuration or ordinary `/payments` parameters (lines 433\u2013437, 496\u2013500). The v68-or-later Checkout API statement appears in the Sessions requirements; this page does not repeat it for Advanced.\n- The native UI route imports `com.adyen.checkout:ideal`, adding `components-compose` for Jetpack Compose, then creates `IdealComponent` from a supported iDEAL payment method and attaches or displays it (Sessions lines 44\u2013126; Advanced lines 410\u2013494). `YOUR_VERSION` and other placeholders do not state an Android SDK version or prove the snippets run unchanged.\n- **Recurring is a distinct SEPA Direct Debit route:** The page says iDEAL | Wero recurring payments use SEPA Direct Debit. It directs creating a shopper token with standard tokenization parameters, receiving `storedPaymentMethodId` in a `recurring.token.created` webhook, then using the token for shopper-not-present `UnscheduledCardOnFile` or `Subscription` payments (Sessions lines 128\u2013155; repeated Advanced lines 502\u2013529). The later `/payments` examples use `paymentMethod.type: sepadirectdebit`, `storedPaymentMethodId`, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription` (lines 157\u2013353, 531\u2013727). The recurring path is not an ordinary iDEAL redirect payment, and the subscription example does not demonstrate every processing model.\n- The recurring request's `Received` response means it was received, with a `pspReference`; the page directs webhooks to track whether payment succeeded (lines 355\u2013360, 729\u2013734). It is not final authorization, capture or settlement. The Java recurring examples omit `shopperReference` while curl/PHP/Node/Python/Ruby include it (lines 157\u2013353, 531\u2013727); do not treat one sample as a complete cross-language schema.\n- **Testing:** The page calls the iDEAL | Wero TEST environment unreliable and recommends live penny tests (lines 362\u2013364, 736\u2013738). A live test path requires a live issuer bank account, initiating an iDEAL payment, bank/QR selection and authorization, then checking live Customer Area status (lines 368\u2013374, 742\u2013748). If TEST is available, its payment page uses issuer `TESTNL2A` and simulated outcome codes, including expiration as `Pending` or `Received` (lines 376\u2013398, 750\u2013772). Those are test fixtures, not observed successful transactions. The \u201cRequest iDEAL | Wero for the live environment\u201d headings have no substantive instructions in this pinned page (lines 366\u2013368, 740\u2013742); do not infer a specific approval step from the heading alone.\n\n## Detail locators\n\n- Sessions prerequisites, import and Component launch (Compose/non-Compose): raw lines 25\u2013126.\n- Sessions SEPA token creation, subsequent shopper-absent payment samples and webhook/result boundary: raw lines 128\u2013360.\n- Advanced prerequisites, import, launch and ordinary request boundary: raw lines 400\u2013500.\n- Advanced SEPA token route, samples and `Received`/webhook boundary: raw lines 502\u2013734.\n- TEST limitations, live penny-test procedure, conditional TEST simulation table: raw lines 362\u2013398 and 736\u2013772.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/android-component/2026-09-15|iDEAL | Wero Android Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component / Requirements"
+    },
+    {
+      "text": "To [create the Component](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#launch-and-show) for iDEAL | Wero, use the `IdealComponent` class.",
+      "location": "raw line 77, Sessions launch and show"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw line 132, Sessions recurring payments; repeated at line 506 for Advanced"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw line 147, Sessions token payment; repeated at line 521 for Advanced"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes.",
+      "location": "raw line 364, Sessions Test and go live; repeated at line 738 for Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c40-ideal-android-component-online-payments",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-android-component]] \u2014 2026-09-15 iDEAL | Wero Android Components Sessions (Checkout API v68+) and Advanced redirect guide, with a separate SEPA token route and qualified TEST/LIVE checks.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "c40-ideal-android-component-tokenization",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-android-component]] \u2014 2026-09-15 Android Components guide for iDEAL | Wero recurring through SEPA Direct Debit token creation and shopper-absent Subscription/UnscheduledCardOnFile payments; `Received` still needs webhook outcome.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/android-component/2026-09-15.md",
+  "raw_sha256": "58e23f437cdb06fbe938b8ed422fdf5a54b5a0b5e47a23189793a631a1c1e80c",
+  "status": "candidate_ready"
+}

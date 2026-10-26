@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ideal-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen iDEAL | Wero API-only integration\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/api-only/2026-09-15.md\"\ntags: [adyen, ideal, wero, api-only, online-payments, sepa-direct-debit]\n---\n\n## Overview\n\nAdyen's 2026-09-15 iDEAL | Wero page describes method-specific additions to an existing API-only Advanced-flow integration. It covers co-branding, availability lookup, redirect completion, SEPA Direct Debit-based recurring payments, a stored preferred-bank route, and TEST/live guidance. See [[adyen]], [[adyen-online-payments]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- The page says iDEAL is evolving into Wero and sets a **January 29\u2013March 31, 2026** window for API-only merchants to change the displayed name to **iDEAL | Wero** and the logo to the co-branded logo. This is a dated instruction in the snapshot, not proof of current branding or completion. Its later sample `/paymentMethods` response still names the method `iDEAL` with type `ideal`; preserve that example/prose mismatch instead of assuming the response label has been updated.\n- The page requires an existing API-only integration, redirect handling for `action.type: redirect`, and iDEAL | Wero added in Customer Area. To request its availability, it specifies `/paymentMethods` with `countryCode: NL`, `amount.currency: EUR`, and an amount value. These are the page's request conditions, not a complete account-eligibility guarantee.\n- Its additional `/payments` parameters are `paymentMethod.type: ideal` and a `returnUrl` of at most 1024 characters. Redirect the shopper to `action.url`; after return, send URL-decoded `redirectResult` in `/payments/details` and use `resultCode` for shopper presentation. The `Authorised` details response is an example, not a guaranteed outcome. The page recommends SFSafariViewController or Chrome Custom Tabs over WebView for an in-app GET redirect and strongly recommends the device default browser for mobile integrations; those are recommendations with their stated scope.\n- Recurring payments described here use **SEPA Direct Debit** tokens, not an iDEAL `ideal` token. The page says standard SEPA tokenization parameters need no extra SEPA-specific fields, then identifies `storedPaymentMethodId` in a `recurring.token.created` webhook. It restricts tokenised payments to shopper-not-present `Subscription` or `UnscheduledCardOnFile` scenarios. Subsequent requests use `sepadirectdebit`, the stored ID, shopper reference and `ContAuth`; a `Received` response only confirms receipt, with webhooks used to track payment success. The language samples vary in fields, amount/country, processing model and library version; follow the prose and relevant versioned API guide rather than treating all samples as one validated request.\n- For a preferred bank, the page says to enable bank-account details on the webhook, store the BIC from an **Authorised** iDEAL | Wero webhook, display that bank, and send it as `paymentMethod.issuer` in a later `ideal` payment. Omit `issuer` if the shopper chooses another bank. Its BIC partner list may change, so the captured list is not current bank eligibility.\n- The page calls the iDEAL | Wero TEST environment unreliable and recommends live penny tests. Live acceptance requires adding the method in live Customer Area; the live test path uses a live issuer account, shopper QR/bank selection and authorization, then Customer Area status checking. When TEST is available, `TESTNL2A` offers documented success, cancellation, expiration and failure simulations; expiration may yield `Pending` or `Received`, so it is not final success. The page's high-level four-step outline says to fulfill after the payment request, but the later redirect/details and webhook sections make that outline insufficient as payment-success evidence.\n\n## Detail locators\n\n- Dated co-branding, API-only prerequisites, four-step outline, and `/paymentMethods` NL/EUR request and response-name discrepancy: raw lines 15-91.\n- `/payments` fields, redirect, mobile recommendations, `/payments/details`, and example result: raw lines 93-142.\n- SEPA recurring overview, token-creation prose and examples, and token-created webhook: raw lines 143-504.\n- Shopper-not-present restriction and subscription/unscheduled token-payment examples: raw lines 506-1399.\n- Preferred-bank BIC webhook route, `issuer`, and changeable bank list: raw lines 1401-1460.\n- Unreliable TEST environment, live gating, penny tests, and conditional `TESTNL2A` simulations: raw lines 1462-1500.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15|iDEAL | Wero API-only (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "If you use iDEAL on API-Only, you have between **January 29, 2026** and **March 31, 2026** to complete the following:",
+      "location": "raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15.md:25 (co-branding deadline)"
+    },
+    {
+      "text": "To complete the payment, redirect the shopper to the `action.url` returned in the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response, taking into account the following recommendations:",
+      "location": "raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15.md:104 (Handle the redirect, step 1)"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15.md:145 (Recurring payments)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15.md:508 (Make a payment with a token)"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes. We recommend doing live penny tests to verify your integration.",
+      "location": "raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15.md:1464 (Test and go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-api-only]] \u2014 2026-09-15 iDEAL | Wero API-only guide for dated co-branding, redirect completion, SEPA-based recurring and qualified TEST/live paths.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/api-only/2026-09-15.md",
+  "raw_sha256": "b6c353f3238599c3a19f076c87cab436b0abda2703d993803dcc82027c9406b6",
+  "status": "candidate_ready"
+}

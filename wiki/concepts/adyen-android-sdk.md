@@ -64,6 +64,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-ideal-android]] — 2026-09-15 iDEAL | Wero Android chooser for Drop-in and IdealComponent child guides plus Sessions/Advanced main integration routes.
+
+
+- [[source-adyen-docs-payment-methods-ideal-android-drop-in]] — 2026-09-15 iDEAL | Wero Android Drop-in Sessions/Advanced add-on with SEPA recurring-token and qualified TEST/live routes.
+
+
 - [[source-adyen-docs-payment-methods-mobilepay-android]] — 2026-09-15 MobilePay Android chooser linking Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced main guides.
 
 
@@ -101,6 +107,15 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 - [[adyen]] - company and knowledge-status page
 
 ## Sources
+
+- [[source-adyen-docs-payment-methods-promptpay-android]] — 2019-modified, 2026-09-15-captured PromptPay Android chooser for Drop-in/Components child guides and two Sessions base guides; child pages own method behavior.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-android-drop-in]] — 2026-09-15 DuitNow Android Drop-in Sessions/Advanced add-on with no extra method fields/configuration and separate test/live setup; no outcome flow documented.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-android-component]] — 2019-modified, 2026-09-15-captured DuitNow Android Components Sessions (5.0.0+) and Advanced add-on with Support setup, instant component and qualified MYR request examples.
+
 
 - `raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/manifest.json` - exact-SHA source capsule
 - `raw/github/adyen/adyen-android/snapshots/2026-08-01-5314fad/files/README.md` - purpose, lifecycle, installation, and analytics defaults

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-promptpay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PromptPay iOS Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/promptpay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/promptpay/ios-component/2026-09-15.md\"\ntags: [adyen, promptpay, ios, components, qr, thailand]\n---\n\n## Overview\n\nThis [[adyen]] page describes adding PromptPay to an existing iOS Components integration. It gives Sessions and Advanced prerequisite tabs, method discovery for TH/THB/iOS, a `PromptPayComponent` setup example, and a merchant-server `/payments` request that returns a QR action. A `Pending` response and the shopper's QR scan are not final authorization; the page points to a later webhook for the payment outcome. See [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-promptpay|PromptPay overview]]. The dated guide does not establish current merchant eligibility or completed payment execution.\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The page calls for an existing iOS Components integration in either Sessions or Advanced flow and says to contact Adyen Support to add PromptPay in Customer Area. For `/paymentMethods`, it specifies `countryCode: TH`, `amount.currency: THB`, and `channel: iOS`; it then decodes the response and selects method type `promptpay`. This is discovery guidance, not proof a specific account will receive that method. The page does not state a Checkout API or iOS SDK minimum. See raw lines 21\u201355.\n- **Client and server roles:** The iOS sample creates an `APIContext` with a client key and TEST environment, then initializes `PromptPayComponent` and sets its delegate and payment amount. When `didSubmit` supplies `data.paymentMethod`, the app passes it to the merchant server, which sends `/payments` with the method type. API key and merchant account appear in server-side examples, not as app configuration. The many API-library snippets are examples with their own stated versions; none pins the iOS SDK to that version. See raw lines 57\u201392 and 94\u2013310.\n- **QR and outcome:** The sample `/payments` response has `resultCode: Pending` and `action.type: qrCode`, with a QR image `url` and `qrCodeData`. The guide tells the integrator to render the QR using the action; the shopper scans it or uploads a screenshot to a bank app. For display after follow-up, it mentions a `/payments/details` `resultCode`; the asynchronous `AUTHORISATION` webhook is the stated outcome signal, with `success: false` for failure and `true` for successful completion. The guide does not supply a full `/payments/details` request procedure. See raw lines 312\u2013353.\n- **TEST and live setup:** It instructs testing with real payment details and small amounts, checking test payment status in Customer Area, and contacting Support to add PromptPay in the live Customer Area before live acceptance. These instructions do not prove a test succeeded, that no real funds could move, or that live access was granted. See raw lines 355\u2013361.\n\n> [!warning] UI and sample discrepancies\n> The introduction says the Component collects the shopper's selected bank, but the later discovery, Component, `/payments` and QR sections show no bank-selection field or issuer value; do not invent one from the introductory sentence. The Swift sample embeds `<strong>THB</strong>` inside the `currencyCode` string and sets 1000 minor units while the server examples use 10000; it is not copy-ready. The prose says to pass `data.paymentMethod` to `paymentMethod.type`, while the sample server request simply uses `type: promptpay`; preserve the client/server boundary and verify the actual payload. See raw lines 19, 43\u201355, 74\u201392 and 96\u2013110. The guide's QR-rendering step does not by itself prove how the native Component displays that action.\n\n## Detail locators\n\n- Sessions/Advanced requirements and Support setup: raw lines 21\u201337; TH/THB/iOS discovery and client-key/environment setup: raw lines 39\u201382.\n- Server request and language-specific sample versions: raw lines 84\u2013310; QR response/render and webhook outcome: raw lines 312\u2013353.\n- TEST and live gates: raw lines 355\u2013361. The URL to iOS 5.0.0 environment docs in raw line 62 is a reference link, not an explicit SDK minimum.\n\n## Related\n\n- [[adyen-ios-sdk]] \u2014 independently versioned native iOS integration context.\n- [[source-adyen-docs-payment-methods-promptpay]] \u2014 QR-only method overview and channel routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/promptpay/ios-component/2026-09-15|PromptPay iOS Component, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Our PromptPay Component renders PromptPay in your payment form and collects your shopper's selected bank.",
+      "location": "raw line 19, PromptPay iOS Component introduction"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add PromptPay in your Customer Area.",
+      "location": "raw lines 30 and 37, Requirements / Sessions and Advanced tabs"
+    },
+    {
+      "text": "`resultCode`: **Pending**",
+      "location": "raw line 314, Make a payment / response data"
+    },
+    {
+      "text": "Use the information in the `action` object of the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response to render the QR code.",
+      "location": "raw line 335, Show the QR code"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw line 346, Show the payment result"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "promptpay-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-promptpay-ios-component]] \u2014 2026-09-15 PromptPay iOS Components Sessions/Advanced guide for TH/THB discovery, merchant-server QR action and webhook outcome, with Support gates and Component/example discrepancies qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introduction says Component collects bank selection, but later request and QR steps provide no bank/issuer field.",
+          "Swift sample has HTML inside currencyCode and amount differs from server examples; Pending QR action is not final authorization.",
+          "Testing instruction says real details/small amounts; do not infer no financial movement from TEST Customer Area link."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/promptpay/ios-component/2026-09-15.md",
+  "raw_sha256": "71e1905f95bace4de46819ca9265c4ad73a0f34a9332110a2ca727c26ed8dfb1",
+  "status": "candidate_ready"
+}

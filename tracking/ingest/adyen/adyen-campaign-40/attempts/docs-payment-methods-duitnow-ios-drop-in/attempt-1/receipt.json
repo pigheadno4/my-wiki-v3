@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-duitnow-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen DuitNow iOS Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/duitnow/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md\"\ntags: [adyen, duitnow, ios, drop-in, qr, malaysia]\n---\n\n## Overview\n\nThis 2026-09-15 captured Adyen guide adds DuitNow to an existing iOS Drop-in integration using a Sessions or Advanced server-side flow. Drop-in renders the method and generates a QR code for the shopper to pay with a participating-bank app. The guide also describes server `/payments`, a proposed `/payments/details` result path and asynchronous webhook outcomes. It does not prove present merchant enablement or a completed payment. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-duitnow]] for the QR-only method overview.\n\n## Key takeaways\n\n- Both requirement tabs ask for an existing Sessions or Advanced integration and Support involvement in Customer Area, although their setup cells say only \"add in your Customer Area\" without naming DuitNow. `/paymentMethods` should specify `countryCode: MY`, `amount.currency: MYR` and `amount.value`. On `didSubmit`, pass `data.paymentMethod` from the client to the server for `/payments`; the sample request uses `paymentMethod.type: duitnow` and MYR. The sample v72 endpoint is an example, not a stated minimum Checkout API version; the page does not pin an iOS SDK version.\n- The page says Drop-in generates the QR code. It does not show the `/payments` response, QR action fields, expiry, or an iOS QR presentation callback here; use the pinned raw and authoritative iOS Drop-in integration guidance for those details rather than importing a sibling guide's behavior.\n- Its payment-result section says to use `state.data` from `onAdditionalDetails` for success or `onError` for unsuccessful/timed-out payments, then send `state.data.details` and `state.data.paymentData` to server `/payments/details`. These are Web-style callback/data names embedded in an iOS Drop-in page; the guide does not establish that they are the native iOS event API. Its example `details.redirectResult` also sits awkwardly beside this QR method. Treat the precise native result handoff as unresolved against the iOS Drop-in authority.\n- The illustrated `/payments/details` response labels `Authorised` or `Refused` as payment results and uses `authorisedAmountCurrency: THB`, conflicting with the guide's MYR method-discovery and payment examples. Do not infer THB eligibility for DuitNow from this example. The page also says outcomes arrive asynchronously by webhook. Its following table is introduced as `resultCode` values but actually lists `AUTHORISATION` webhook `eventCode`/`success` pairs; those are not `/payments/details` result codes. A later sentence frames a details call as an additional-use-case option, in tension with the earlier step-by-step details call. This source does not settle the exact required iOS completion sequence.\n- The test section calls for real payment details and small amounts, Customer Area payment-list checks, and Support involvement to add DuitNow in the live Customer Area. These instructions are not proof of current eligibility or an executed test/live payment.\n\n## Detail locators\n\n- iOS Drop-in purpose, QR app description, and Sessions/Advanced prerequisites: pinned raw lines 15\u201337.\n- MY/MYR `/paymentMethods`, `didSubmit` and `/payments` handoff: pinned raw lines 39\u201378; other server-language examples: lines 80\u2013277.\n- Drop-in QR statement and Web-style `state.data` result-handler instructions: pinned raw lines 279\u2013302.\n- `/payments/details` response and THB/MYR example conflict: pinned raw lines 304\u2013322 versus 45\u201347 and 68\u201375.\n- Asynchronous webhook, mislabeled result table and additional-use-case details link: pinned raw lines 324\u2013337; test/live steps: lines 339\u2013345.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online-payment and result-state concept\n- [[source-adyen-docs-payment-methods-duitnow]] \u2014 DuitNow method overview and QR-only scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15|DuitNow iOS Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [iOS Drop-in](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in) renders DuitNow in your payment form, and generates a QR code that the shopper uses to pay with their choice of app from DuitNow participating banks.",
+      "location": "raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "* [amount.currency](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-amount): **MYR**",
+      "location": "raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md:46"
+    },
+    {
+      "text": "To check the payment result, use the `state.data` object from the corresponding event handler:",
+      "location": "raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md:283"
+    },
+    {
+      "text": "* `resultCode`: **Authorised** for successful payments or **Refused** for unsuccessful or timed-out payments. Use this to present the payment result to your shopper.",
+      "location": "raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md:308"
+    },
+    {
+      "text": "    \"authorisedAmountCurrency\": \"THB\",",
+      "location": "raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md:316"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "duitnow-ios-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-duitnow-ios-drop-in]] \u2014 2026-09-15 DuitNow iOS Drop-in Sessions/Advanced QR guide for MY/MYR with server `/payments`; source flags Web-style result callbacks, THB example and details/webhook label tensions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/duitnow/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "35de7985b8d7e21fb02cb3cecd9664b0e3ba881e7bd08b9480fb8b5ee1ea0085",
+  "status": "candidate_ready"
+}

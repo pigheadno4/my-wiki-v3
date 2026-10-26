@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-gopay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GoPay iOS Component\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/ios-component/2026-09-15.md\"\ntags: [adyen, gopay, ios, components, redirect, recurring, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds GoPay to an existing Adyen iOS Components integration in Sessions or Advanced flow. It uses `InstantPaymentComponent` with method `gopay_wallet`, then describes distinct token creation, `Subscription` and challenged `CardOnFile` recurring paths. These instructions do not prove current merchant eligibility, a completed payment or token issuance. [[adyen]] [[adyen-online-payments]] [[adyen-ios-sdk]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions setup:** requires an existing iOS Components Sessions integration, Checkout API v68 or later, `action.type: redirect` handling and GoPay added in Customer Area. Its `/sessions` table marks `shopperInteractionDevice` and `channel` required; the example uses `channel: iOS`, ID/IDR and a custom-scheme return URL. The `shopperInteractionDevice` table link nests it under `applicationInfo`, while the sample renders a top-level string containing JSON-like device data (including Chrome values), so the sample is not a resolved schema recipe. No extra GoPay Component configuration is stated. The snippet selects `.other(\"gopay_wallet\")`, uses `InstantPaymentComponent`, sets the Session delegate and initiates payment. (raw lines 25\u2013101)\n- **Advanced setup:** requires an existing iOS Components Advanced integration, redirect handling and Customer Area addition; its Components prerequisite label links to an Advanced **Drop-in** page. The `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo` and `channel` required. Its example uses IDR but has browser information for a Windows Chrome browser and `channel: web` on this iOS page; these are sample values, not iOS defaults. It selects the same method in `InstantPaymentComponent` with the merchant object as delegate. The `RedirectShopper` response is an intermediate redirect action. (raw lines 386\u2013484)\n- **Token creation and Subscription:** in both flow sections, the page separately tells the merchant to create a token through `/payments` with `storePaymentMethod: true`, a shopper reference of at least three characters and `recurringProcessingModel`; the merchant server must receive recurring-token lifecycle webhooks. After the initial payment has settled, `recurring.token.created` carries `storedPaymentMethodId` and shopper reference. A later `Subscription` payment uses that stored ID, shopper reference, `ContAuth` and model `Subscription`. The page points to `resultCode` for shopper display and an `AUTHORISATION` webhook for final status. Its language samples leave currency, method type and return URL blank; they are incomplete examples, not executable templates. (raw lines 103\u2013349, 486\u2013732)\n- **CardOnFile challenge:** the `CardOnFile` variant also uses the stored ID, shopper reference, `ContAuth` and model `CardOnFile`, but specifically requires redirecting the shopper to GoPay for PIN entry. After return, the merchant calls `/payments/details` with `redirectResult`; final status comes through an `AUTHORISATION` webhook. A `RedirectShopper` response, PIN entry or details response alone is not settlement proof. (raw lines 351\u2013376, 734\u2013759)\n- **Environment gate:** the page directs merchants to Adyen Support to test GoPay and requires a separate GoPay request in the live Customer Area before accepting live payments. The instructions report no observed test/live payment in this retained snapshot. (raw lines 378\u2013384, 761\u2013767)\n\n## Detail locators\n\n- Sessions prerequisites, device/channel table and inconsistent example shape: raw lines 29\u201373; Session Component initialization: raw lines 75\u2013101.\n- Advanced prerequisite misroute, required-looking method/browser/channel table, example values and redirect response: raw lines 390\u2013484.\n- Recurring token-after-settlement lifecycle, Subscription and incomplete samples: raw lines 103\u2013349 and 486\u2013732.\n- CardOnFile PIN redirect, `/payments/details` and final webhook: raw lines 351\u2013376 and 734\u2013759.\n- Support test route and live Customer Area request: raw lines 378\u2013384 and 761\u2013767.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-ios-sdk]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-gopay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/ios-component/2026-09-15|GoPay iOS Component guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "You can add GoPay to your existing integration. The following instructions show only what you must add to your integration specifically for GoPay.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements table"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 117, Sessions token creation"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw line 353, Sessions CardOnFile section"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw line 371, Sessions CardOnFile section"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-ios-component]] \u2014 2026-09-15 GoPay iOS Components Sessions/Advanced redirect guide with settled-payment token creation and distinct Subscription/CardOnFile continuation.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/ios-component/2026-09-15.md",
+  "raw_sha256": "6b4b199bf51bb98e903f22436d1fbbb3f6c8fc72f4f4f35b9eeaae07497b75e2",
+  "status": "candidate_ready"
+}

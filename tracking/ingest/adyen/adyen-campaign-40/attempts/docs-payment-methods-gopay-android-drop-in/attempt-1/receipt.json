@@ -1,0 +1,71 @@
+{
+  "job_id": "docs-payment-methods-gopay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"GoPay Android Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gopay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gopay/android-drop-in/2026-09-15.md\"\ntags: [adyen, gopay, android, drop-in, redirect, tokenization, recurring]\n---\n\n## Overview\n\nThis [[adyen]] guide adds GoPay to an existing Android Drop-in checkout using either Sessions or Advanced server-side flow. It also documents token creation and distinct later `Subscription` and `CardOnFile` requests. The token is delivered only after the initial payment settles and the recurring lifecycle webhook arrives. See [[adyen-online-payments]] and [[adyen-tokenization]]. This dated guide does not prove current merchant eligibility, a completed payment, or token issuance.\n\n## Key takeaways\n\n- **Sessions:** Requires an existing Android Drop-in Sessions integration with Checkout API v68 or later and GoPay added in Customer Area. The `/sessions` table marks `shopperInteractionDevice` and a relevant `channel` as required. It says no GoPay-specific Drop-in configuration is needed. Its example uses ID/IDR and `channel: Android`, but does not establish a general country/currency eligibility matrix. This Sessions section does not itself state a redirect prerequisite; use the linked base guide for action mechanics. See raw lines 25\u201377.\n- **Advanced:** Requires an existing Android Drop-in Advanced integration, handling `action.type: redirect`, and Customer Area setup. It says no GoPay-specific configuration is needed. Its `/payments` table marks `paymentMethod.type: gopay_wallet`, `browserInfo`, and a relevant `channel` as required. The example response gives `RedirectShopper` and a redirect action, an intermediate handoff rather than final authorization. No Advanced Checkout API minimum or Android SDK release is specified here. See raw lines 364\u2013439.\n- **Create a token:** For a GoPay payment intended to create a recurring token, the page lists `storePaymentMethod: true`, a shopper-unique `shopperReference` of at least three characters, and `recurringProcessingModel` on `/payments`, with a server receiving recurring-token lifecycle webhooks. Only after the initial payment **settles** does the described `recurring.token.created` event carry `storedPaymentMethodId`. See raw lines 79\u2013100 and 441\u2013462.\n- **Later payment models differ:** `Subscription` uses the stored method ID, shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription`, with final status reported by an `AUTHORISATION` webhook. `CardOnFile` also lists `ContAuth`, but explicitly requires a GoPay redirect for the shopper to enter a PIN, then `/payments/details` with `redirectResult` and a later final-status webhook. Do not treat the CardOnFile request label as proof that no shopper challenge occurs. See raw lines 102\u2013114, 319\u2013352, 464\u2013476 and 681\u2013714.\n- **Test and live:** The guide tells merchants to contact Adyen Support for testing and consult GoPay's knowledge base. Live acceptance requires a separate GoPay request in the live Customer Area. No test or live outcome is shown here. See raw lines 354\u2013362 and 716\u2013722.\n\n> [!warning] Android example has Web values and incomplete syntax\n> The Advanced Android `/payments` example uses a website `returnUrl`, a Windows/Chrome `browserInfo` profile, and `channel: web` (raw lines 394\u2013422), whereas the Sessions example uses an app-style return URL and `channel: Android` (raw lines 49\u201370). Both curl examples place `-d` after `-X POST` without a shell continuation and render structured device/browser data as quoted JSON-like strings. Later Subscription examples leave currency, method type and return URL blank. These cannot be copied as a proven Android request or used to override the stated channel requirement. The CardOnFile return instruction also says \u201cback to your page\u201d in this Android guide; treat it as generic return wording, not an Android return-URL contract. See raw lines 47\u201370, 116\u2013317, 394\u2013422, 478\u2013679 and 709.\n\n## Detail locators\n\n- Sessions requirements/request and Advanced requirements/request/redirect response: raw lines 25\u201377 and 364\u2013439.\n- Token creation and settlement-gated webhook: raw lines 79\u2013100 and 441\u2013462.\n- Subscription examples and final-status webhook: raw lines 102\u2013325 and 464\u2013687; CardOnFile shopper PIN, return/details and final webhook: raw lines 327\u2013352 and 689\u2013714.\n- TEST Support and live Customer Area gates: raw lines 354\u2013362 and 716\u2013722.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 separately versioned native Drop-in architecture; this page pins no SDK version.\n- [[adyen-tokenization]] \u2014 broader recurring-token lifecycle.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gopay/android-drop-in/2026-09-15|GoPay Android Drop-in, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=Android). Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Requirements / Sessions flow Drop-in"
+    },
+    {
+      "text": "GoPay supports recurring payments. The first time your shopper makes a payment, you need to [create a token](#create-a-token), which you can use later to make `Subscription` or `CardOnFile` payments. Note that the flows for `Subscription` and `CardOnFile` payments are different.",
+      "location": "raw lines 83 and 445, Recurring payments / both flows"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw lines 93 and 455, Create a token / both flows"
+    },
+    {
+      "text": "Recurring `CardOnFile` payments with GoPay go through a challenge flow to reduce the likelihood of fraudulent transactions. You must redirect the shopper to GoPay so they can enter their PIN.",
+      "location": "raw lines 329 and 691, Make a recurring CardOnFile payment with a token"
+    },
+    {
+      "text": "When the shopper is redirected back to your page, call [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) with the `redirectResult` to complete the flow and get the status of the payment.",
+      "location": "raw lines 347 and 709, Make a recurring CardOnFile payment with a token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gopay-android-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-android-drop-in]] \u2014 2026-09-15 GoPay Android Drop-in Sessions (Checkout API v68+) and Advanced redirect guide, with settlement-gated token creation, distinct Subscription/CardOnFile paths and Web-valued Advanced example caveat.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced Android request example uses Web channel, Web return URL and Windows browserInfo; examples do not resolve Android configuration.",
+          "CardOnFile lists ContAuth but explicitly requires shopper PIN redirect and `/payments/details` completion."
+        ]
+      },
+      {
+        "update_id": "gopay-android-drop-in-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gopay-android-drop-in]] \u2014 GoPay Android Drop-in token route: initial `/payments` fields, token webhook after settlement, then separate Subscription and shopper-PIN CardOnFile flows (2026-09-15 snapshot).",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not infer token issuance before settlement or collapse CardOnFile shopper challenge into Subscription."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gopay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "b74591ca7c623cd15c03b23b2ebbf01de4d43091e8faeee02b28f807553a7f51",
+  "status": "candidate_ready"
+}

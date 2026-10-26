@@ -1,0 +1,7 @@
+# PromptPay retrieval checks
+
+**Q1. What is this source's purpose and scope, and what cannot be inferred?**
+The source is a PromptPay method overview last modified 2022-10-26 and captured 2026-09-15 (raw lines 1–12; canonical source stem `source-adyen-docs-payment-methods-promptpay`). It describes Thailand online banking and Adyen's QR-only path, with Web/iOS/Android child routes (raw lines 21–25, 31–49). It does not establish current merchant eligibility, payment execution, API/SDK prerequisites, return processing or final authorization. Retrieval: `[[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-promptpay]]`.
+
+**Q2. What central capability, prerequisites, and warnings matter?**
+The shopper uses a participating-bank app to scan or upload the displayed QR; Adyen says its PromptPay integration is QR-only (raw lines 21–25). The matrix labels TH/THB and Additional action and marks recurring, refunds, several capture types and chargebacks with x icons (raw lines 27–29). Its Web, iOS and Android links are navigation, not implementation proof (raw lines 31–49). Proxy identifiers listed for interbank transfers are background rather than stated merchant form requirements (raw line 23), and the dated capability marks cannot prove present account eligibility. Canonical source stem: `source-adyen-docs-payment-methods-promptpay`. Retrieval: `[[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-promptpay]]`.

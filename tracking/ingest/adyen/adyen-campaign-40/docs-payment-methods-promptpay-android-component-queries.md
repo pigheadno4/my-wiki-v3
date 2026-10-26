@@ -1,0 +1,9 @@
+# PromptPay Android Component retrieval check
+
+## Q1 — Purpose, scope, and limits
+
+The canonical stem `source-adyen-docs-payment-methods-promptpay-android-component` is a 2026-09-15 capture of a 2019-modified PromptPay add-on for an existing Android Components integration, with Sessions and Advanced sections (raw lines 6–23, 135–142). It provides Component setup and an Advanced payment request example, but not QR action handling, shopper return, final webhook outcome, current eligibility or proof of execution (raw lines 75–133, 173–200, 401–413). Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-promptpay-android-component]]`.
+
+## Q2 — Central capability, prerequisites, and warnings
+
+Sessions requires an existing Android Components integration with a stated 5.0.0 minimum and Support-assisted Customer Area addition; the page says no PromptPay-specific extra payment-session fields or configuration (raw lines 25–36, 65–69). The 5.0.0 statement belongs to the integration row and is not identified as a Checkout API minimum (raw line 29). The page imports the instant module, plus `components-compose` for Compose, and uses `InstantPaymentComponent` with `PaymentMethodTypes.PROMPTPAY` in Sessions; snippets need SDK review (raw lines 42–133). Advanced requires an existing Advanced Android Components integration and Support setup, points to base launch guidance, and shows a THB `/payments` example with `paymentMethod.type: promptpay` (raw lines 135–200). Its server-library snippets often omit construction of their request objects (raw lines 202–399). Testing calls for real details and small amounts, while LIVE requires Support to add PromptPay in live Customer Area; neither status-check instruction proves payment outcome (raw lines 401–407). Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-promptpay-android-component]]`.

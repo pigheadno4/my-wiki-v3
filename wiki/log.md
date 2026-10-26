@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-27] ingest | Adyen website C40
+
+- Fifty independently approved iDEAL, GoPay, DuitNow and PromptPay documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 4 concepts touched (0 new); source_count 2014 = 2000 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-40/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-26] ingest | Stripe Terminal Android `6.0.0`
 
 - Serial additive full with approved focused reading: capture/consent/model/listener/build migrations, advisory Tap to Pay update notices, preview refund reconciliation and capture contradiction. All v5 history retained; details [[stripe-log]] and [[source-github-stripe-terminal-android]]. No SDK execution, commit or push.

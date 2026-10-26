@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-payment-methods-ideal-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen iDEAL | Wero iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-26\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ideal/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md\"\ntags: [adyen, ideal, wero, ios, drop-in, sepa-direct-debit, recurring-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds iDEAL | Wero to an existing iOS Drop-in integration, separately for Sessions and Advanced server-side flows. It also routes recurring payments through SEPA Direct Debit tokenization, rather than documenting reuse of an iDEAL redirect itself. The snapshot does not establish current merchant eligibility or an executed payment. [[adyen]] [[adyen-online-payments]] [[adyen-tokenization]]\n\n## Key takeaways\n\n- **Sessions:** Requires an existing iOS Sessions Drop-in integration using Checkout API v68 or later and iDEAL | Wero added in Customer Area. The page says no iDEAL | Wero-specific additional `/sessions` parameters or configuration are needed. These statements do not waive the base integration's own request requirements. (raw lines 25\u201346)\n- **Advanced:** Requires an existing iOS Advanced Drop-in integration, `action.type: redirect` handling and Customer Area setup. It says no method-specific additional configuration or ordinary `/payments` parameters. The Advanced requirements table does not separately state the Sessions Checkout API v68+ minimum. (raw lines 322\u2013344)\n- **Recurring boundary:** The page says recurring iDEAL | Wero payments use SEPA Direct Debit. Use the standard SEPA tokenization parameters for token creation; a `recurring.token.created` webhook provides `storedPaymentMethodId`. Reuse is limited here to shopper-absent `UnscheduledCardOnFile` or `Subscription` payments, again using standard tokenization parameters with no additional SEPA-specific fields. Its examples use `paymentMethod.type: sepadirectdebit`, a stored method ID and `ContAuth`; they are examples of the SEPA path, not a claim that an iDEAL redirect token is charged. The ordinary no-extra-parameters statements do not erase this separate token route. (raw lines 48\u201398, 346\u2013396)\n- **Outcome:** A successfully received recurring `/payments` request can return `resultCode: Received` with a `pspReference`; the page says to track payment success through webhooks. Receipt is therefore an intermediate state, not authorization, capture or settlement. The guide's bank-payment test steps likewise direct later status checks rather than demonstrating completed execution in this snapshot. (raw lines 275\u2013280, 290\u2013320, 573\u2013578)\n- **TEST and live:** The guide calls the iDEAL | Wero TEST environment unreliable, recommends live penny tests, and says TEST simulations may be possible when the environment is running. It lists a live bank-account/payment-page/QR-or-issuer/authorization/status-check sequence and a TEST `TESTNL2A` issuer with simulated success, cancellation, expiration and refusal results. The live test is a recommendation involving actual funds; no test or live payment was performed for this ingestion. The section heading says 'Request iDEAL | Wero for the live environment' but provides no accompanying request procedure or explicit approval condition; do not infer one from the heading alone. (raw lines 282\u2013320, 580\u2013618)\n- **Example limits:** The SEPA examples are versioned TEST samples across server libraries, not proof of exact current SDK behavior. The Java sample omits `shopperReference` while other language samples include it; verify the applicable standard tokenization request before implementation. (raw lines 77\u2013273, 375\u2013571)\n\n## Detail locators\n\n- Sessions prerequisites and no-extra statements: raw lines 25\u201346.\n- Sessions SEPA token route, recurring examples and `Received` outcome: raw lines 48\u2013280.\n- Sessions TEST/live testing qualifications: raw lines 282\u2013320.\n- Advanced prerequisites and no-extra statements: raw lines 322\u2013344.\n- Advanced repeated SEPA token route and examples: raw lines 346\u2013578.\n- Advanced repeated TEST/live qualifications: raw lines 580\u2013618.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-ios-sdk]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15|Adyen iDEAL | Wero iOS Drop-in guide, 2026-09-15 snapshot]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md:33 (Sessions flow Drop-in > Requirements, Integration type row)"
+    },
+    {
+      "text": "Adyen supports recurring payments for iDEAL | Wero through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md:52 (Sessions Recurring payments; repeated at line 350)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md:67 (Sessions Make a payment with a token; repeated at line 365)"
+    },
+    {
+      "text": "You can track whether the payment was successful using [webhooks](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md:280 (Sessions recurring example outcome; repeated at line 578)"
+    },
+    {
+      "text": "The iDEAL | Wero test environment is unreliable and may not always work to test your changes. We recommend doing live penny tests to verify your integration.",
+      "location": "raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md:286 (Sessions Test and go live; repeated at line 584)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ideal-ios-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-ios-drop-in]] \u2014 2026-09-15 iDEAL | Wero iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with separate SEPA Direct Debit recurring-token route and unreliable TEST/live-penny-test qualification.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The 'Request iDEAL | Wero for the live environment' heading supplies no request procedure or explicit approval condition in this page."
+        ]
+      },
+      {
+        "update_id": "ideal-ios-drop-in-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ideal-ios-drop-in]] \u2014 iDEAL | Wero iOS Drop-in guide routes recurring payments through SEPA Direct Debit `recurring.token.created` and shopper-absent Subscription or UnscheduledCardOnFile reuse; `Received` requires webhook outcome tracking.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ideal/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "0adfd4c82c1b8263d95d2e1ed23164c0e12771602d4db8b7af6b47eafcbb8b58",
+  "status": "candidate_ready"
+}

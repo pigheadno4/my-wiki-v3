@@ -21,6 +21,144 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-promptpay-web]] — 2019-modified, 2026-09-15-captured PromptPay Web chooser for Drop-in and Components method guides plus general Web integration documentation; implementation and outcomes belong to linked guides.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-web]] — 2019-modified, 2026-09-15-captured DuitNow Web chooser linking Drop-in and Components child guides; method setup and outcome require child authority.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-ios]] — 2019-modified, 2026-09-15-captured PromptPay iOS chooser for Drop-in/Components child guides and two Sessions base routes; implementation and outcomes remain in child guides.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-android]] — PromptPay Android chooser linking Drop-in and Components children plus Sessions base guides; no request or outcome flow on this page (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-duitnow-android]] — 2019-modified, 2026-09-15-captured DuitNow Android chooser for Drop-in and Components child guides plus general Android Sessions-flow routes; implementation details belong to the linked guides.
+
+
+- [[source-adyen-docs-payment-methods-gopay-web]] — 2026-09-15 GoPay Web chooser for Drop-in and Components child guides plus Web Sessions/Advanced base routes; child guides own redirect and outcome detail.
+
+
+- [[source-adyen-docs-payment-methods-gopay-android]] — 2026-09-15 GoPay Android chooser for Drop-in/InstantPaymentComponent child guides and four Sessions/Advanced base routes; implementation and outcomes remain in child guides.
+
+
+- [[source-adyen-docs-payment-methods-gopay-ios]] — 2026-09-15 GoPay iOS chooser linking Drop-in/Components child guides and Sessions/Advanced base integrations; request and outcome details require child evidence.
+
+
+- [[source-adyen-docs-payment-methods-ideal-web]] — 2026-09-15 iDEAL | Wero Web chooser linking Drop-in or Redirect Components children and four Sessions/Advanced base guides; requirements and outcomes remain in the linked guides.
+
+
+- [[source-adyen-docs-payment-methods-ideal-ios]] — 2026-09-15 iDEAL | Wero iOS chooser for Drop-in and Components child guides plus four Sessions/Advanced base routes; source notes an unresolved `None` placeholder in the Components label.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-android-drop-in]] — 2026-09-15 PromptPay Android Drop-in Sessions/Advanced add-on with no method-specific request fields or configuration and a live Support gate; outcome flow is outside this page.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-android-drop-in]] — 2026-09-15 DuitNow Android Drop-in Sessions/Advanced method-addition guide, with no extra method fields/configuration and a live Support gate.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-web-drop-in]] — 2026-09-15 PromptPay Web Drop-in Sessions/Advanced add-on with conditional v6 import, no extra method fields/configuration, and Support-mediated TEST/live setup guidance.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-web-drop-in]] — 2026-09-15 DuitNow Web Drop-in Sessions/Advanced add-on with Support setup, v6 import and no method-specific fields or Drop-in configuration; flow/outcome detail remains in linked authorities.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-web-component]] — 2019-modified, 2026-09-15-captured PromptPay Web Components Sessions/Advanced setup and v5/v6 mounting guide, with TEST/LIVE Support gates and no outcome flow specified.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-web-component]] — 2019-modified, 2026-09-15-captured DuitNow Web Components Sessions/Advanced add-on with v6 versus earlier constructors, Support setup and a misrouted v6 import link; no QR/outcome procedure.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-ios-drop-in]] — 2026-09-15 PromptPay iOS Drop-in Sessions/Advanced guide for TH/THB discovery, merchant-server payment handoff, Drop-in QR display and webhook outcome; prerequisite URLs retain templates.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-ios-drop-in]] — 2026-09-15 DuitNow iOS Drop-in Sessions/Advanced QR guide for MY/MYR with server `/payments`; source flags Web-style result callbacks, THB example and details/webhook label tensions.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-ios-component]] — 2026-09-15 DuitNow iOS Components Sessions/Advanced add-on for MY/MYR, `Pending` QR action and asynchronous outcome; source records bank-selection and result-label mismatches.
+
+
+- [[source-adyen-docs-payment-methods-ideal-react-native-component]] — 2026-09-15 iDEAL | Wero React Native Components Advanced-only redirect guide with separate SEPA token route and qualified TEST/LIVE checks; source records label/link mismatches.
+
+
+- [[source-adyen-docs-payment-methods-duitnow-android-component]] — DuitNow Android Components Sessions/Advanced add-on with Support setup, instant component and Advanced MYR request sample; no outcome flow is documented (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-promptpay-android-component]] — 2019-modified, 2026-09-15-captured PromptPay Android Components Sessions/Advanced add-on, with Sessions Android Components 5.0.0 minimum, Support setup and example/QR-outcome limits.
+
+
+- [[source-adyen-docs-payment-methods-promptpay-ios-component]] — 2026-09-15 PromptPay iOS Components Sessions/Advanced guide for TH/THB discovery, merchant-server QR action and webhook outcome, with Support gates and Component/example discrepancies qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-gopay-react-native-component]] — 2026-09-15 GoPay React Native Components Advanced-only redirect guide with settlement-gated token creation and distinct Subscription/CardOnFile continuation; request example is malformed.
+
+
+- [[source-adyen-docs-payment-methods-gopay-api-only]] — 2026-09-15 GoPay ID/IDR API-only Advanced redirect guide with required request fields, post-settlement token creation and distinct Subscription/CardOnFile continuations; source qualifies sample conflicts.
+
+
+- [[source-adyen-docs-payment-methods-ideal-ios-drop-in]] — 2026-09-15 iDEAL | Wero iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on, with separate SEPA Direct Debit recurring-token route and unreliable TEST/live-penny-test qualification.
+
+
+- [[source-adyen-docs-payment-methods-ideal-flutter-component]] — 2026-09-15 iDEAL | Wero Flutter Components Sessions (Checkout API v68+) and Advanced redirect guide with separate SEPA token route, unreliable TEST guidance and misrouted Drop-in prerequisite links.
+
+
+- [[source-adyen-docs-payment-methods-ideal-flutter-drop-in]] — 2026-09-15 iDEAL | Wero Flutter Drop-in Sessions/Advanced redirect guide with separate SEPA token route and qualified TEST/LIVE checks.
+
+
+- [[source-adyen-docs-payment-methods-ideal-react-native-drop-in]] — 2026-09-15 iDEAL | Wero React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with separate SEPA token route, unreliable TEST qualification and a Sessions prerequisite-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-ideal-web-drop-in]] — 2026-09-15 iDEAL | Wero Web Drop-in Sessions/Advanced redirect add-on, with optional individual import, SEPA token route and TEST qualification; see source for link/example caveats.
+
+
+- [[source-adyen-docs-payment-methods-gopay-android-drop-in]] — 2026-09-15 GoPay Android Drop-in Sessions (Checkout API v68+) and Advanced redirect guide, with settlement-gated token creation, distinct Subscription/CardOnFile paths and Web-valued Advanced example caveat.
+
+
+- [[source-adyen-docs-payment-methods-gopay-flutter-component]] — 2026-09-15 GoPay Flutter Components Sessions (Checkout API v68+) and Advanced redirect add-on with required request additions, settlement-gated token creation and distinct Subscription/CardOnFile routes; source records link/example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-gopay-react-native-drop-in]] — 2026-09-15 GoPay React Native Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on with required request additions, settlement-gated token creation and distinct Subscription/CardOnFile flows; source records sample conflicts.
+
+
+- [[source-adyen-docs-payment-methods-ideal-web-component]] — 2026-09-15 iDEAL | Wero Web Components Sessions/Advanced redirect add-on, with recurring SEPA Direct Debit token route and qualified TEST/live guidance.
+
+
+- [[source-adyen-docs-payment-methods-gopay-ios-component]] — 2026-09-15 GoPay iOS Components Sessions/Advanced redirect guide with settled-payment token creation and distinct Subscription/CardOnFile continuation.
+
+
+- [[source-adyen-docs-payment-methods-gopay-android-component]] — 2026-09-15 GoPay Android InstantPaymentComponent guide for Sessions (Checkout API v68+) and Advanced redirects, with settlement-gated token creation and distinct Subscription/CardOnFile routes.
+
+
+- [[source-adyen-docs-payment-methods-gopay-flutter-drop-in]] — 2026-09-15 GoPay Flutter Drop-in Sessions/Advanced redirect guide with post-settlement token creation and distinct Subscription/CardOnFile continuation.
+
+
+- [[source-adyen-docs-payment-methods-gopay-web-drop-in]] — 2026-09-15 GoPay Web Drop-in Sessions/Advanced add-on for redirect and settlement-gated token paths, including distinct Subscription/CardOnFile behavior.
+
+
+- [[source-adyen-docs-payment-methods-gopay-web-component]] — 2026-09-15 GoPay Web Redirect Component guide for existing Sessions (Checkout API v68+) or Advanced flows, plus settlement-gated token creation and distinct Subscription/CardOnFile follow-up.
+
+
+- [[source-adyen-docs-payment-methods-ideal-ios-component]] — 2026-09-15 iDEAL | Wero iOS Components Sessions (Checkout API v68+) and Advanced redirect guide with InstantPaymentComponent, SEPA token route and unreliable TEST qualification; source records link/example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-ideal-android-component]] — 2026-09-15 iDEAL | Wero Android Components Sessions (Checkout API v68+) and Advanced redirect guide, with a separate SEPA token route and qualified TEST/LIVE checks.
+
+
+- [[source-adyen-docs-payment-methods-ideal-api-only]] — 2026-09-15 iDEAL | Wero API-only guide for dated co-branding, redirect completion, SEPA-based recurring and qualified TEST/live paths.
+
+
+- [[source-adyen-docs-payment-methods-promptpay]] — 2022-modified, 2026-09-15-captured PromptPay TH/THB QR-only Adyen method overview with historical capability marks and Web/iOS/Android child-guide routes.
+
+
+- [[source-adyen-docs-payment-methods-gopay]] — 2026-09-15 GoPay ID/IDR redirect-wallet overview for website/app and recurring shopper paths, capability marks and channel-specific guide routes.
+
+
+- [[source-adyen-docs-payment-methods-ideal]] — 2026-09-15 iDEAL | Wero overview for NL/EUR issuing-bank redirect, platform routes and a dated API-only co-branding window; table notes and implementation details remain qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-duitnow]] — 2025-modified, 2026-09-15-captured Adyen DuitNow MY/MYR QR-payment overview with additional-action and feature marks plus Web/iOS/Android child routes; marks do not prove current enablement or outcomes.
+
+
 - [[source-adyen-docs-payment-methods-vipps-web]] — 2026-09-15 Vipps Web chooser for Drop-in/Components child guides and Sessions/Advanced main guides.
 
 
