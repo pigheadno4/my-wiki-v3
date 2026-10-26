@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-trustly",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Trustly\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/trustly\"\nraw_files:\n  - \"adyen/docs/payment-methods/trustly/2026-09-15.md\"\ntags: [adyen, trustly, online-banking, redirect, chargebacks, online-payments]\n---\n\n## Overview\n\nThis Trustly overview (last modified 2025-07-31, captured 2026-09-15) describes online payments directly from bank accounts in Europe, especially popular in Nordic countries/regions. The shopper is redirected to a Trustly-hosted bank-selection page, authenticates with their bank, chooses an account, confirms with a one-time code, and returns to the merchant website or app. The page's most consequential qualification is that a successful `AUTHORISATION` webhook means checks passed and a bank transfer was initiated, **not that Adyen has received the funds**. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The capability table labels Trustly **Online Banking** with **Redirect** flow, countries as **International**, and currencies DKK, EUR, NOK and SEK. Its snapshot marks recurring and separate/partial/multiple partial captures unavailable; refunds, partial and multiple partial refunds, and chargebacks are marked available. These marks do not establish current country, bank, merchant or currency eligibility. See raw lines 23\u201336.\n- After selection, the shopper sees available banks in their country/region on Trustly's hosted page, logs into the bank, selects an account, confirms with a one-time code, and returns to the merchant. This is the described shopper path, not evidence of cleared funds. See raw lines 25\u201332.\n- A successful `AUTHORISATION` webhook signals issuer/Trustly account verification and successful **initiation** of the transfer. The shopper may still cancel where a bank permits same-day cancellation, or a bank may process later without blocking funds; the transfer can fail. In these cases Adyen says it is not informed of failure and does not know if the bank might still process it. See raw lines 38\u201345.\n- The Adyen-side status stays **SentForSettle** until funds arrive. If funds have not arrived after **8 calendar days**, the page says the status becomes **Settled**, then **Chargeback**, and a `CHARGEBACK` webhook is sent. Trustly chargebacks cannot be defended. If money arrives after that point, a `CHARGEBACK_REVERSED` webhook follows. The intermediate Settled label in this exceptional sequence is not proof that funds were received. See raw lines 47\u201353.\n- The overview routes to Web, iOS, Android and API-only integration pages, and points to Pay by Link. Those links are navigation; this page does not define platform-specific API/SDK versions, request fields, customer setup, refund execution or current availability. See raw lines 55\u201385.\n\n## Detail locators\n\n- Purpose, geography, redirect and shopper bank flow: raw lines 15\u201332.\n- Historical capability table, currencies and feature marks: raw lines 34\u201336.\n- Authorized-but-unfunded risk, failure examples, chargeback and reversal sequence: raw lines 38\u201353.\n- Platform and Pay by Link routes: raw lines 55\u201385.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment-method context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/trustly/2026-09-15|Trustly overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Trustly provides payments directly from bank accounts in Europe, and is a popular way to pay in the Nordic countries/regions.",
+      "location": "raw/adyen/docs/payment-methods/trustly/2026-09-15.md:23 (overview)"
+    },
+    {
+      "text": "It is possible that you do not receive the funds even after receiving a successful AUTHORISATION webhook.",
+      "location": "raw/adyen/docs/payment-methods/trustly/2026-09-15.md:40 (Chargebacks)"
+    },
+    {
+      "text": "In these cases, Adyen is not informed that the transaction failed.",
+      "location": "raw/adyen/docs/payment-methods/trustly/2026-09-15.md:45 (Chargebacks)"
+    },
+    {
+      "text": "If we have not received the funds after 8 calendar days, the status of the payment becomes **Settled**, then **Chargeback**, and you receive a CHARGEBACK webhook.",
+      "location": "raw/adyen/docs/payment-methods/trustly/2026-09-15.md:49 (Chargebacks)"
+    },
+    {
+      "text": "You cannot defend Trustly chargebacks.",
+      "location": "raw/adyen/docs/payment-methods/trustly/2026-09-15.md:51 (Chargebacks)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "trustly-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-trustly]] \u2014 2025-modified, 2026-09-15-captured Trustly bank-redirect overview with historical DKK/EUR/NOK/SEK marks and authorized-but-unfunded chargeback risk; platform routes in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/trustly/2026-09-15.md",
+  "raw_sha256": "8e0f6db66c97661fbb0a40f8da9353590b6613db3a6fb98ef6d4b55df9e923c6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-trustly-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Trustly Android Redirect Component v4.x.x guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/trustly/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, trustly, android, components, redirect, earlier-versions]\n---\n\n## Overview\n\nThis Trustly Android Redirect Component guide is explicitly for v4.x.x earlier versions. It was captured on 2026-09-15 but carries 2019-09-06 last-modified metadata. It requires an existing Advanced-flow Android Components integration and Trustly added in Customer Area, then describes server `/payments`, app redirect and server `/payments/details` after return. This historical guide does not establish current SDK/API compatibility, merchant eligibility or a completed payment. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-trustly]].\n\n## Key takeaways\n\n- The guide says the merchant need not collect shopper information in the payment form. `/paymentMethods` uses a supported country, supported currency and minor-unit amount; SE/SEK are examples, not an exhaustive eligibility rule. Find `paymentMethod.type: trustly`. The server `/payments` request uses `paymentMethod.type: trustly` and a `returnUrl` obtained from `RedirectComponent.getReturnUrl(context)`. The example `/payments` URL is v68; that example does not define a universal minimum or validate today's v4.x.x SDK use.\n- The illustrated `/payments` response is `RedirectShopper` with a GET redirect action. Pass that action to the Android client and use Redirect Component for a Trustly-hosted payment page. After the shopper returns to the app, send `actionComponentData.details` to server `/payments/details`; the shown details call uses v72, a different example Checkout API version from `/payments`. The guide's redirect and See also links point to Sessions Components guidance even though its prerequisite is Advanced. Preserve that mismatch rather than assuming the Sessions route is the required server flow.\n- `/payments/details` supplies a `resultCode` and `pspReference` for shopper messaging. The table lists Authorised, Cancelled, Error, Pending/Received and Refused; Pending/Received still lack a final result and require an `AUTHORISATION` webhook. If the shopper fails to return to app or website, the guide says to use webhooks; its table includes `AUTHORISATION` true/false and `OFFER_CLOSED` true for a timed-out offer. `RedirectShopper` and the sample `Authorised` response are examples, not evidence of actual settlement.\n- The earlier guide's Authorised row says funds arrive in three days. The Trustly overview instead says even a successful `AUTHORISATION` webhook means a bank transfer was initiated, not that funds were received, and describes possible later failure and chargeback. Do not present the three-day row as a guaranteed funding or settlement term.\n- The test section points to Trustly's test environment and gives a `YYMMDD-XXXX` Login ID/Personal number format with example digits. It says to check test-payment status in Customer Area and request Trustly in live Customer Area before acceptance. These are snapshot instructions, not proof of account enablement, test outcome or live funds.\n\n## Detail locators\n\n- v4.x.x title, redirect purpose, Advanced prerequisite and Customer Area setup: pinned raw lines 15\u201328.\n- `/paymentMethods` country/currency examples and method type: pinned raw lines 30\u201342.\n- Server `/payments`, `returnUrl`, v68 request examples and redirect response: pinned raw lines 44\u2013370.\n- Redirect Component, app return, `/payments/details` v72 example and response: pinned raw lines 372\u2013403; Sessions-link mismatch: lines 374 and 437.\n- Result codes, webhook fallback and OFFER_CLOSED: pinned raw lines 405\u2013425; test/live steps: lines 427\u2013433.\n- Cross-page funding qualification: Trustly overview pinned raw `raw/adyen/docs/payment-methods/trustly/2026-09-15.md` lines 38\u201353 versus this guide lines 411\u2013416.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider online-payment concept\n- [[source-adyen-docs-payment-methods-trustly]] \u2014 Trustly overview and authorized-but-unfunded risk\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15|Trustly Android Redirect Component v4.x.x guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "# Trustly Redirect Component v4.x.x integration",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md:15"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md:27"
+    },
+    {
+      "text": "Get this URL from the Component in the `RedirectComponent.getReturnUrl(context)`.",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md:51"
+    },
+    {
+      "text": "After the shopper returns to your app, make a POST [/payments/details]",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md:375"
+    },
+    {
+      "text": "To know the final result of the payment, wait for the [AUTHORISATION webhook](/development-resources/webhooks/webhook-types).",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md:416"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "trustly-android-component-v4-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-trustly-android-component-earlier-versions]] \u2014 2019-modified, 2026-09-15-captured Trustly Android Redirect Component v4.x.x Advanced guide for redirect/details/webhook flow; source flags Sessions-link and funding-timing conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/trustly/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "ce5fa31a751e29fd29e2c630cc869e04e4c2358a173fee86c18cd9bfd277ae30",
+  "status": "candidate_ready"
+}

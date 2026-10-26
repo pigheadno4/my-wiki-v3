@@ -1,0 +1,77 @@
+{
+  "job_id": "docs-payment-methods-twint-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"TWINT Android Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/android-component/2026-09-15.md\"\ntags: [adyen, twint, android, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds **TWINT** to an existing Android Components integration, with separate Sessions and Advanced server-side branches. It describes the `TwintComponent`, optional method configuration, and recurring-token paths. The Advanced branch requires handling `redirect` or `sdk` additional actions; the page does not itself demonstrate a successful payment or settlement. [[adyen]] [[adyen-android-sdk]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions** requires an existing Android Components Sessions integration, **Checkout API v68 or later**, and TWINT added in Customer Area. Its ordinary `/sessions` creation adds no TWINT-specific parameters. The page imports the `twint` module (plus `components-compose` for Compose) and creates `TwintComponent` from the Session payment method for Compose or Views. See raw lines 25\u201364 and 92\u2013145.\n- **Advanced** requires an existing Android Components Advanced integration, TWINT in Customer Area, and additional-action handling for `action.type: redirect` **or** `sdk`. Its ordinary `/payments` request adds no TWINT-specific parameters. The Advanced requirements table does not state the Sessions v68 minimum. Its Component examples obtain TWINT from the `/paymentMethods` response. See raw lines 194\u2013225 and 253\u2013314.\n- Both branches show optional Component settings for submit-button visibility, action-handling method, and a storage-choice field. The table gives `setShowStorePaymentField` a **true** default; the later Advanced recurring section says setting it to **false** removes that UI option. Displaying a storage field is not itself shopper consent or token creation. See raw lines 66\u201390, 227\u2013251 and 414\u2013423.\n- The repeated recurring guidance says to create a token with `storePaymentMethod: true` and a shopper-unique `shopperReference` of at least three characters in `/payments`. Once details have been stored, `recurring.token.created` carries the initial payment's reference and `storedPaymentMethodId`; the merchant server must receive the token lifecycle webhook. Later token `/payments` requests use stored ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. These fields belong to tokenization requests, so they do not contradict the ordinary no-extra-parameters statements. [[adyen-tokenization]] See raw lines 147\u2013186, 316\u2013355 and 363\u2013384.\n- A further stored-method display subsection says **Sessions** can request stored methods using `storedPaymentMethodMode` and `shopperReference` in `/sessions`, then pass a supported TWINT `StoredPaymentMethod` to `TwintComponent`. It spells the field exactly `storedPaymentMethodMode`; verify this against the `/sessions` API schema before implementation rather than silently correcting or assuming validity. **Advanced** says to carry the shopper's `data.storePaymentMethod` choice to `/payments`, include shopper reference in `/paymentMethods`, and pass the returned supported stored method to the Component. The page also mentions Drop-in in these subsections, though this source's main scope is Android Components. See raw lines 386\u2013437.\n- TEST guidance is a Customer Area status check. Before live TWINT acceptance, the page says to submit a TWINT request in the **live** Customer Area. No explicit TWINT test-case values, authorization result sequence, capture or settlement proof are given here. See raw lines 188\u2013192 and 357\u2013361.\n\n## Detail locators\n\n- Sessions prerequisites, ordinary request, modules, configuration and Component launch: raw lines 25\u2013145.\n- Advanced prerequisites, actions, modules, configuration, launch and ordinary request: raw lines 194\u2013314.\n- Initial token creation, lifecycle webhook and ContAuth token request (repeated): raw lines 147\u2013186 and 316\u2013355.\n- Later Sessions/Advanced stored-method display instructions: raw lines 363\u2013437.\n- Test status and live request gate: raw lines 188\u2013192 and 357\u2013361.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 Android Components integration architecture.\n- [[adyen-online-payments]] \u2014 online payment-method context.\n- [[adyen-tokenization]] \u2014 token creation and reuse context.\n- [[source-adyen-docs-payment-methods-twint]] \u2014 TWINT method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/android-component/2026-09-15|TWINT Android Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/twint/android-component/2026-09-15.md:34 (Sessions requirements)"
+    },
+    {
+      "text": "Default is **true**.",
+      "location": "raw/adyen/docs/payment-methods/twint/android-component/2026-09-15.md:76 (storage field setting)"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/twint/android-component/2026-09-15.md:163 (Sessions recurring token)"
+    },
+    {
+      "text": "`action.type`: **redirect or sdk**.",
+      "location": "raw/adyen/docs/payment-methods/twint/android-component/2026-09-15.md:201 (Advanced action handling)"
+    },
+    {
+      "text": "Include the `storedPaymentMethodMode` and `shopperReference` parameter in your [/sessions]",
+      "location": "raw/adyen/docs/payment-methods/twint/android-component/2026-09-15.md:394 (Sessions stored-method display)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-android-component-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-android-component]] \u2014 2026-09-15 TWINT Android Components Sessions (Checkout API v68+) and Advanced add-on with redirect/sdk actions, configurable storage UI and recurring token route; field-spelling caveat in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-android-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-android-component]] \u2014 TWINT Android Components Sessions/Advanced guide for ordinary request/additional-action boundaries and live request gate; recurring details and caveats in source (2026-09-15).\n",
+        "quote_indexes": [
+          0,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-android-component-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-android-component]] \u2014 TWINT Android Components token creation, recurring.token.created lifecycle and Subscription/UnscheduledCardOnFile ContAuth reuse with separate stored-method display paths; source flags a Sessions field spelling (2026-09-15).\n",
+        "quote_indexes": [
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/android-component/2026-09-15.md",
+  "raw_sha256": "0c4c873a2fa4397d0a1909914c761340360019b9fa3da7bb9a11cc25f345bddc",
+  "status": "candidate_ready"
+}

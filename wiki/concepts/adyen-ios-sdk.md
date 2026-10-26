@@ -76,6 +76,15 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-trustly-ios]] — 2026-09-15 Trustly iOS chooser for Drop-in and Redirect Component child guides plus Sessions base routes; overview-linked funds warning remains in source.
+
+
+- [[source-adyen-docs-payment-methods-trustly-ios-component]] — 2026-09-15 Trustly iOS Redirect Component guide for v5 Sessions/Advanced and historical v4 setup, with TEST/live Customer Area gates and overview-linked funds warning.
+
+
+- [[source-adyen-docs-payment-methods-twint-ios-drop-in]] — TWINT iOS Drop-in method guide for existing Sessions/Advanced flows, Advanced redirect handling and separate recurring-token requests (2026-09-15 capture).
+
+
 - [[source-adyen-docs-payment-methods-duitnow-ios]] — 2019-modified, 2026-09-15-captured DuitNow iOS chooser for Drop-in and Components child guides plus iOS Sessions main integration routes.
 
 

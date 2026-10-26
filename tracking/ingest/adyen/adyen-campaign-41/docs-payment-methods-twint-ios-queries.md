@@ -1,0 +1,5 @@
+# TWINT iOS retrieval checks
+
+Q1. **Purpose and scope; what cannot be inferred?** `source-adyen-docs-payment-methods-twint-ios` is a 2026-09-15 chooser for TWINT iOS Drop-in or `TwintComponent` child guides plus four base iOS integration links (raw `raw/adyen/docs/payment-methods/twint/ios/2026-09-15.md:15-36`). It is navigation, not evidence for merchant eligibility, SDK/API version, action/return handling, tokenization, capture or payment outcome. Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-twint-ios]]`.
+
+Q2. **Central capability, prerequisites, and warnings?** Choose the linked all-in-one iOS Drop-in guide or the `TwintComponent` Components guide (raw lines 19-27). The page says to create the main integration first and links Sessions and Advanced base guides for each UI route (raw lines 29-36). Read those child/base pages for actual setup, redirect, result and stored-method behavior; this chooser gives none of those contracts. Source stem: `source-adyen-docs-payment-methods-twint-ios`. Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → source.

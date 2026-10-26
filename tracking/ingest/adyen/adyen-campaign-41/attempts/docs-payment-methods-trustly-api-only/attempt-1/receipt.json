@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-trustly-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Trustly API-only guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/trustly/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/trustly/api-only/2026-09-15.md\"\ntags: [adyen, trustly, api-only, online-banking, redirect, webhooks, chargebacks]\n---\n\n## Overview\n\nThis Adyen Trustly API-only guide was last modified 2023-05-26 and captured 2026-09-15. It describes a merchant-built payment form, Trustly discovery, server-side `/payments`, shopper redirect, `/payments/details`, result display, webhooks, and TEST/LIVE setup. Its `RedirectShopper` example is an intermediate action, not final authorization or received funds. The captured guide does not establish current merchant/bank eligibility or a successful payment. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-trustly]].\n\n## Key takeaways\n\n- **Prerequisites and discovery:** the page requires an existing API-only integration and Trustly added in the **test** Customer Area. If using `/paymentMethods` for discovery, it instructs a supported country/region and currency, minor-unit amount and channel `Web`, `iOS` or `Android`; **SE/SEK are examples**, not an exhaustive eligibility list. Discovery returns `paymentMethod.type: trustly`. (raw lines 21\u201341)\n- **Payment and redirect:** the merchant server sends `/payments` with `paymentMethod.type: trustly`. The guide includes shopper `countryCode` to preselect the country on Trustly's hosted page; it says to include this for a better shopper experience and notes ISO alpha-2 with **QZ** as its Kosovo exception. Its sample uses SE/SEK, a return URL and TEST environment. The `/payments` example returns `RedirectShopper` and `action.type: redirect`; redirect the shopper to `action.url`. For mobile, the page strongly recommends the device default browser and, for HTTP GET shown in-app, SFSafariViewController or Chrome Custom Tabs rather than WebView objects. These are recommendations, not mandatory API fields. (raw lines 43\u201370, 361\u2013385)\n- **Return and result:** after shopper return to the website, the merchant POSTs `/payments/details` with `details.redirectResult` URL-decoded from the return. The response's `resultCode` is for shopper display and `pspReference` identifies the transaction. The table covers Authorised, Cancelled, Error, Pending/Received and Refused. For Pending/Received, final result is not yet known and the guide says wait for an `AUTHORISATION` webhook; if the shopper fails to return, it says wait for webhooks, including `AUTHORISATION` true/false or `OFFER_CLOSED` true for timeout. The Authorised sample and shopper display do not alone prove funds were received. (raw lines 387\u2013438)\n- **Material settlement conflict:** this page's Authorised row says the payment was successful and \u201cYou will receive the funds in 3 days\u201d (raw line 426). The related Trustly overview says a successful `AUTHORISATION` only confirms issuer/Trustly verification and bank-transfer initiation; funds may never arrive, with an 8-calendar-day chargeback path and undefendable Trustly chargebacks (related overview raw lines 38\u201353). Treat the API-only row as an optimistic presentation statement, **not a funding guarantee**. Preserve the overview's authorized-but-unfunded risk when deciding fulfillment or settlement.\n- **TEST/LIVE:** the guide points to a Trustly test environment, permits any digits matching `YYMMDD-XXXX` for its Login ID/Personal number test value, and directs TEST payment checks to Customer Area. LIVE acceptance requires a Trustly request in the **live** Customer Area. Test examples and a live request instruction are not evidence of account activation or executed payments. (raw lines 440\u2013446)\n\n## Detail locators\n\n- Historical timestamp, API-only prerequisite and discovery scope: pinned raw lines 5\u201341.\n- Server-side Trustly request and SE/SEK TEST examples: pinned raw lines 43\u2013359.\n- `RedirectShopper` action and browser recommendations: pinned raw lines 361\u2013385.\n- URL-decoded return, `/payments/details`, result codes and webhooks: pinned raw lines 387\u2013438.\n- TEST/LIVE guidance: pinned raw lines 440\u2013446.\n- Related overview's authorization-versus-funds and chargeback warning: [[source-adyen-docs-payment-methods-trustly]], raw lines 38\u201353; this guide's three-day statement: pinned raw line 426.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment and webhook context\n- [[source-adyen-docs-payment-methods-trustly]] \u2014 bank-transfer and chargeback qualification\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/trustly/api-only/2026-09-15|Trustly API-only guide, 2023-modified and 2026-09-15-captured]]\n",
+  "quotes": [
+    {
+      "text": "Before you begin, [add Trustly in your test Customer Area](/payment-methods/add-payment-methods).",
+      "location": "raw line 26, Requirements setup"
+    },
+    {
+      "text": "Exception: **QZ** (Kosovo). Include this in the request for a better shopper experience.",
+      "location": "raw line 49, countryCode qualification"
+    },
+    {
+      "text": "In the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response, check the `action` object for the information that you must use to redirect the shopper.",
+      "location": "raw line 361, redirect response"
+    },
+    {
+      "text": "You will receive the funds in 3 days.",
+      "location": "raw line 426, Authorised result row"
+    },
+    {
+      "text": "To know the final result of the payment, wait for the [AUTHORISATION webhook](/development-resources/webhooks/webhook-types).",
+      "location": "raw line 429, Pending or Received result row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "trustly-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-trustly-api-only]] \u2014 2023-modified, 2026-09-15-captured Trustly API-only discovery, redirect, details and webhook guide; source qualifies Authorised/three-day wording against the overview's unfunded-transfer risk.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/trustly/api-only/2026-09-15.md",
+  "raw_sha256": "724e483005acdd982ce9b8d8a4bec8e6a21dd7f079c3ab54c0c15c2b37257591",
+  "status": "candidate_ready"
+}

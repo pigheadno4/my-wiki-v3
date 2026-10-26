@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-twint-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT Flutter Component guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md\"\ntags: [adyen, twint, flutter, components, redirect, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds TWINT to an existing Flutter Components integration using Sessions or Advanced server-side flow. Sessions specifies Checkout API v68 or later; both flows require redirect handling and Customer Area setup. The page gives conditional shopper-token creation and `ContAuth` reuse fields, but no Flutter Component initialization code, complete initial-payment response or result procedure. It does not prove present enablement or a successful payment. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-twint]].\n\n## Key takeaways\n\n- The Sessions requirement names Flutter Components and Checkout API v68+, with `action.type: redirect` handling and TWINT added in Customer Area. It says no ordinary TWINT-specific `/sessions` parameters or configuration parameters. However, its prerequisite link points to an **Advanced Flutter Drop-in** integration, while its redirect/session links point to Sessions Components. The text and linked routes conflict; the wrong link does not change the stated Sessions Components scope. No Flutter SDK version is pinned.\n- Advanced likewise names Flutter Components, requires redirect handling and Customer Area setup, and says no ordinary TWINT-specific configuration or `/payments` additions. Its prerequisite link also points to Advanced Flutter Drop-in, while its action/payment-step links point to Advanced Components. The page states no Advanced-specific Checkout API minimum.\n- For token creation in either flow, the guide instructs `/payments` with `storePaymentMethod: true` and a unique `shopperReference` of at least three characters. After details are stored, `recurring.token.created` carries `shopperReference`, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId`; the server must receive the Recurring tokens life cycle webhook. This page does not describe collection of shopper consent or prove a token has been created.\n- Later `/payments` using the token needs `paymentMethod.storedPaymentMethodId`, the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`; `/listRecurringDetails` is named as another way to get the stored ID. The token fields are conditional and do not contradict the no-extra-fields statements for ordinary payments. The page repeats this same route in both flow sections, without a separate Flutter-specific reuse sequence or outcome evidence.\n- The test sections direct payment-status checks to Customer Area and say a live Customer Area request is needed before accepting TWINT. Market/currency, shopper handoff, final authorization, capture and settlement are not established by this method add-on.\n\n## Detail locators\n\n- Sessions Components/Advanced Drop-in link mismatch, v68+, redirect and setup: pinned raw lines 25\u201334.\n- Sessions no-extra-fields/configuration and token create/reuse: pinned raw lines 36\u201387; test/live: lines 89\u201393.\n- Advanced Components/Drop-in link mismatch, redirect, no-extra-fields/configuration: pinned raw lines 95\u2013117.\n- Advanced repeated token route and test/live: pinned raw lines 119\u2013164.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider online-payment concept\n- [[adyen-tokenization]] \u2014 provider token lifecycle and recurring scopes\n- [[source-adyen-docs-payment-methods-twint]] \u2014 method overview and market/capture context\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15|TWINT Flutter Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Flutter Components integration]",
+      "location": "raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md:31"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md:32"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md:64"
+    },
+    {
+      "text": "* `recurringProcessingModel`: **Subscription** or **UnscheduledCardOnFile**.",
+      "location": "raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md:85"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [Flutter Components integration]",
+      "location": "raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md:103"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-flutter-component-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-flutter-component]] \u2014 2026-09-15 TWINT Flutter Components Sessions (Checkout API v68+) and Advanced redirect/token add-on; source records both prerequisite links targeting Advanced Drop-in.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-flutter-component-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-flutter-component]] \u2014 TWINT Flutter Components `/payments` token-creation fields, `recurring.token.created` webhook and Subscription/UnscheduledCardOnFile `ContAuth` reuse; consent/outcome proof remains outside this guide.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/flutter-component/2026-09-15.md",
+  "raw_sha256": "318f2dd791a5e3fcb0a324bd9e4cb8069bafb9793d960c5ffddb3f5e0db36ee5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+Q1. What purpose/scope and what cannot be inferred?
+
+A1. This 2026-09-15 Trustly iOS chooser introduces the method for an iOS app (child raw lines 15-17), links Drop-in and Components children (lines 19-31), and gives two general iOS Sessions routes (line 33). It does not specify an Advanced route, method prerequisites, redirect procedure, payment outcome or current eligibility (lines 15-33). The separate approved Trustly overview warns that even successful `AUTHORISATION` is not proof Adyen received funds (overview raw lines 38-53). Canonical source stem: `source-adyen-docs-payment-methods-trustly-ios`. Retrieval route: `[[index]] → [[adyen-index]] → [[adyen-ios-sdk]] → [[source-adyen-docs-payment-methods-trustly-ios]]`.
+
+Q2. What central capability, prerequisites and warnings?
+
+A2. The chooser offers an all-in-one iOS Drop-in path (child raw lines 21-25) and a child path described as using a Redirect Component (lines 27-31). Its additional-information links are the main iOS Drop-in and Components Sessions guides (line 33); method-specific setup and finality belong to those implementation guides. For financial finality, the separate approved overview says a successful `AUTHORISATION` webhook indicates initiation of a bank transfer after checks, while receipt of funds remains uncertain and Trustly chargebacks cannot be defended (overview raw lines 38-53). Canonical source stem: `source-adyen-docs-payment-methods-trustly-ios`. Retrieval route: `[[index]] → [[adyen-index]] → [[adyen-ios-sdk]] → [[source-adyen-docs-payment-methods-trustly-ios]]`.

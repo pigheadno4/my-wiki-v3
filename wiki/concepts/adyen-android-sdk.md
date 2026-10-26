@@ -64,6 +64,21 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-blik-android]] — 2026-09-15 BLIK Android chooser for Drop-in and Redirect Component child guides plus two Sessions base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-twint-android]] — 2026-09-15 TWINT Android chooser for Drop-in and Redirect Component child guides plus Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-blik-android-drop-in]] — 2026-09-15 BLIK Android Drop-in v5.0.0 Sessions/Advanced method-addition guide with no extra BLIK fields/configuration and separate TEST/live gates.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-android-drop-in]] — 2026-09-15 Pay by Bank (US) Android Drop-in Sessions/Advanced add-on with stated 5.70.0 prerequisite, ACH capture risk and Plaid live gate; see source for countryCode wording.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-android-component]] — 2026-09-15 Pay by Bank (US) Android Components Sessions/Advanced add-on with version-qualified module setup, ACH capture risk and Plaid live gate; see source for version and countryCode tensions.
+
+
 - [[source-adyen-docs-payment-methods-ideal-android]] — 2026-09-15 iDEAL | Wero Android chooser for Drop-in and IdealComponent child guides plus Sessions/Advanced main integration routes.
 
 
@@ -107,6 +122,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 - [[adyen]] - company and knowledge-status page
 
 ## Sources
+
+- [[source-adyen-docs-payment-methods-blik-android-drop-in-earlier-versions]] — 2026-09-15 captured historical BLIK Android Drop-in v4 guide, v3.8.0+ requirement and redirect/details/webhook flow; source flags mismatched prerequisite and request examples.
+
+
+- [[source-adyen-docs-payment-methods-twint-android-component]] — 2026-09-15 TWINT Android Components Sessions (Checkout API v68+) and Advanced add-on with redirect/sdk actions, configurable storage UI and recurring token route; field-spelling caveat in source.
+
 
 - [[source-adyen-docs-payment-methods-promptpay-android]] — 2019-modified, 2026-09-15-captured PromptPay Android chooser for Drop-in/Components child guides and two Sessions base guides; child pages own method behavior.
 

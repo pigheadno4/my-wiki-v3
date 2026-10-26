@@ -1,0 +1,11 @@
+# Q1 — Purpose, scope and limits
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-blik-web-component.md` → pinned raw.
+
+This 2020-modified, 2026-09-15-captured guide adds BLIK to an existing Web Components integration, with v3.9.0+ stated as the BLIK Web minimum, a v6 named import/constructor and an earlier-version `checkout.create('blik')` path (raw `adyen/docs/payment-methods/blik/web-component/2026-09-15.md:15-66`). It covers code and One Click sections, but the snapshot does not establish current merchant enablement, a valid live integration or a completed payment. The v6 constructor is syntactically incomplete and its import link points to Drop-in despite a Components label (raw lines 28-55); do not treat examples as turnkey code. Source stem: `source-adyen-docs-payment-methods-blik-web-component`.
+
+# Q2 — Central capability, prerequisites and warnings
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-blik-web-component.md`. One Click retrieval also routes via `wiki/concepts/adyen-tokenization.md`.
+
+BLIK with code uses PL/PLN discovery, a shopper-entered six-digit `blikCode`, and `paymentMethod.type: blik` in `/payments`; the `/sessions` tab separately says no extra BLIK fields (raw `adyen/docs/payment-methods/blik/web-component/2026-09-15.md:68-116`). `Pending` plus an await-style action is a waiting state for the shopper's BLIK-app confirmation; the sample `action.type` includes embedded hint markup, while an `AUTHORISATION` webhook determines outcome (raw lines 425-467). One Click asks for shopper consent using `shopperReference`, `storePaymentMethod: true` and `CardOnFile`, then a `recurring.token.created` webhook returns the stored ID (raw lines 483-580). That code-free section still lists `blikCode`, its curl is malformed/string-types `storePaymentMethod`, and the issuer-label field capitalization differs between prose and example (raw lines 497-527,582-594); no complete later token-charge request is given. TEST uses code `999000`; One Click live additionally calls for BLIK certification/enablement as well as live Customer Area addition (raw lines 469-479,597-610).

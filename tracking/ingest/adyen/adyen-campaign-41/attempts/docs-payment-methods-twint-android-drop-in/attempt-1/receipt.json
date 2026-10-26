@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-twint-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT Android Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md\"\ntags: [adyen, twint, android, drop-in, sessions, advanced, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds TWINT to an existing Android Drop-in integration in Sessions or Advanced server-side flow. Sessions specifies Checkout API v68 or later; Advanced requires handling an additional `redirect` or `sdk` action. It gives method configuration, token creation/reuse and stored-method display guidance. It does not show a complete initial payment response, shopper handoff or final outcome; this snapshot does not prove current merchant enablement or a completed payment. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-twint]].\n\n## Key takeaways\n\n- Both flows require an existing Android Drop-in integration and TWINT added in Customer Area. The Sessions requirement explicitly says Checkout API v68+, while the Advanced requirement states action handling for `redirect` or `sdk` without a version minimum here. For an ordinary TWINT session, no extra `/sessions` parameters are prescribed; for an ordinary Advanced `/payments`, the page says no extra parameters. These statements do not negate the later conditional fields for token creation or reuse.\n- The TWINT configuration object offers `setSubmitButtonVisible`, `setActionHandlingMethod` and `setShowStorePaymentField`; the store-field option defaults to `true` according to the table. The page does not mark these parameters required. Showing a store option is not itself shopper consent, token creation or entitlement to charge later.\n- For token creation, the page instructs `/payments` with `storePaymentMethod: true` and a unique `shopperReference` of at least three characters. Once details are stored, the `recurring.token.created` webhook carries `shopperReference`, initial-payment `pspReference` as `eventId`, and `storedPaymentMethodId`; the server must be able to receive the Recurring tokens life cycle webhook. For direct future `/payments`, it lists stored method ID, same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. It also cites `/listRecurringDetails` as a way to obtain the stored ID. This is a token path, not proof a token or future payment succeeded.\n- A later repeated recurring section discusses showing stored TWINT methods in Sessions or Advanced UI. Sessions text literally says `storedPaymentMethodMode` and `shopperReference` in `/sessions`, then passes the response to Drop-in; the field spelling should be verified against the API authority before implementation. Advanced text uses `PaymentComponentState.data.storePaymentMethod`, `/payments` `storePaymentMethod`/`shopperReference`, and `/paymentMethods` `shopperReference` for the stored list. It says to set `setShowStorePaymentField: false` to remove the storage option. Both tabs also include `TwintComponent` construction examples even though this is a Drop-in guide; those snippets are Components alternatives, not additional Drop-in requirements. Do not conflate UI stored-method selection with shopper-absent `ContAuth` token payments.\n- The page says to check test-payment status in Customer Area and submit a request for TWINT in the live Customer Area before accepting live payments. Market/currency and capture details belong to the TWINT overview and other authority, not this Android add-on; no actual test/live outcome is shown.\n\n## Detail locators\n\n- Sessions prerequisite, v68+, Customer Area setup and normal `/sessions` additions: pinned raw lines 25\u201340.\n- Optional TWINT configuration fields and default store-field visibility: pinned raw lines 42\u201366.\n- First token create/reuse path and test/live steps: pinned raw lines 68\u2013115.\n- Advanced prerequisite, redirect/sdk action, configuration and ordinary `/payments` additions: pinned raw lines 117\u2013157.\n- Repeated token path: pinned raw lines 159\u2013204; later stored-method UI tabs, literal Sessions field and Components snippets: lines 206\u2013280.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider online-payment concept\n- [[adyen-tokenization]] \u2014 provider token lifecycle and stored-method scope\n- [[source-adyen-docs-payment-methods-twint]] \u2014 method overview and CH/CHF/capture context\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15|TWINT Android Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md:40"
+    },
+    {
+      "text": "`action.type`: **redirect or sdk**.",
+      "location": "raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md:124"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md:84"
+    },
+    {
+      "text": "Include the `storedPaymentMethodMode` and `shopperReference` parameter in your [/sessions]",
+      "location": "raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md:237"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-android-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-android-drop-in]] \u2014 2026-09-15 TWINT Android Drop-in Sessions (Checkout API v68+) and Advanced action/configuration add-on, with separate token and stored-method UI routes; source flags a literal field spelling and Components snippets.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-android-drop-in-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-android-drop-in]] \u2014 TWINT Android Drop-in token-creation webhook and Subscription/UnscheduledCardOnFile `ContAuth` reuse, plus distinct Sessions/Advanced stored-method UI steps; source preserves `storedPaymentMethodMode` spelling caveat.",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/android-drop-in/2026-09-15.md",
+  "raw_sha256": "d24bcfa3d903b7ab64a849c35b6a2714ade2011bc6cc1d3f9b4ed81f3fb282eb",
+  "status": "candidate_ready"
+}

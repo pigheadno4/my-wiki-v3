@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-blik-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BLIK iOS Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/blik/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md\"\ntags: [adyen, blik, ios, drop-in, oneclick, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 captured Adyen guide adds BLIK to an existing iOS Drop-in integration. It requires at least Drop-in v3.8.0, routes to a Sessions-flow base guide, gives separate `/sessions` and `/payments` material, and describes code payments plus BLIK OneClick consent and token notification. Its `Pending` response and waiting screen are intermediate; the `AUTHORISATION` webhook is the stated outcome signal. This guide does not prove current account eligibility, native callback behavior or a completed payment. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- The prerequisites are an existing iOS Drop-in integration at v3.8.0 or later and BLIK added in test Customer Area. The only linked base integration is iOS Drop-in Sessions. The `/sessions` tab says BLIK needs no extra fields or method-specific Drop-in configuration and calls `/sessions` the default for Drop-in v5.0.0 or later. The page does not document an Advanced base path or a Checkout API minimum; its v68 `/payments` URLs are examples. Code-payment live setup requires adding BLIK to live Customer Area.\n- In the `/payments` material, code discovery uses `/paymentMethods` with PL, PLN and minor-unit amount; the text says a shopper previously signed up for OneClick may also receive `storedPaymentMethods.type: blik`. The code request names `paymentMethod.type: blik` and the six-digit `paymentMethod.blikCode`. It illustrates `resultCode: Pending` and an `await` action, then instructs a waiting screen while the shopper confirms in the BLIK app. `Pending` is not final authorization. The page lists `Refused` for an incorrect code and says the `AUTHORISATION` webhook's `success` field gives the completed/failed outcome.\n- Despite the iOS Drop-in title and statement that no BLIK-specific Drop-in configuration is needed, the `/payments` section tells the merchant to show BLIK and a code-entry field, and after a webhook says to redirect the shopper to a website. These are generic website-oriented instructions embedded in the native guide; they do not establish an iOS Drop-in callback or mandate a separate merchant-built code field for the Drop-in path. Its result heading also says to use the initial `/payments` `resultCode`, while the same section says to wait for webhooks to know the outcome.\n- The OneClick section asks for `shopperReference` in discovery and says to include the stored method's `label` so the shopper recognizes the issuer. Its `/payments` text repeats a `blikCode` and adds `shopperReference`, `storePaymentMethod: true` and `recurringProcessingModel: CardOnFile` to request consent for later no-code payments. If consent is given, it says a `recurring.token.created` webhook carries `storedPaymentMethodId`, `eventId` and `shopperReference`; the Recurring tokens life cycle webhook must be enabled. This documents a consent/token-creation path, not a complete later no-code `/payments` request or permission for arbitrary recurring charges. The BLIK overview table marks recurring unsupported; that mark and this narrower OneClick token flow should remain distinguished, not flattened into general recurring support.\n- The OneClick curl body is malformed: it quotes `storePaymentMethod` as a string and omits a comma after `recurringProcessingModel`. The label prose names `additionalData.BLIK.APP_LABEL`, while the sample uses `Blik.APP_LABEL` and an example expiration dated before this captured page. Resolve exact field casing and request types against the relevant API authority. The guide's code-payment test uses code `999000`; its OneClick live section additionally says to seek BLIK certification/enablement and add BLIK in live Customer Area. These examples and instructions do not prove an executed test, certification or live enablement.\n\n## Detail locators\n\n- iOS Drop-in v3.8.0, test setup, no configuration, `/sessions` and v5.0.0 default: pinned raw lines 15\u201352.\n- Code discovery and `/payments` fields/examples: pinned raw lines 54\u2013387; `Pending`/`await` response and waiting/webhook/result sections: lines 389\u2013443.\n- OneClick discovery, label, consent fields and malformed curl example: pinned raw lines 447\u2013492.\n- OneClick response and webhook outcome: pinned raw lines 494\u2013536; token webhook and app-label prose/example mismatch: lines 538\u2013559.\n- OneClick test and certification/live steps: pinned raw lines 561\u2013574.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider online-payment concept\n- [[adyen-tokenization]] \u2014 provider token lifecycle concept; OneClick scope remains source-qualified\n- [[source-adyen-docs-payment-methods-blik]] \u2014 BLIK overview and historical capability marks\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15|BLIK iOS Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "BLIK for iOS requires at least v3.8.0 of Drop-in.",
+      "location": "raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md:25"
+    },
+    {
+      "text": "There are no configuration steps specific to BLIK required for Drop-in.",
+      "location": "raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md:30"
+    },
+    {
+      "text": "* `resultCode`: **Pending** (The shopper must complete the payment in their BLIK app.)",
+      "location": "raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md:391"
+    },
+    {
+      "text": "Include the following parameters to request the shopper to give consent for future BLIK payments to proceed without the 6-digit code:",
+      "location": "raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md:466"
+    },
+    {
+      "text": "If the shopper gave consent to make future payments without a BLIK code, you will also receive a [Recurring tokens life cycle](/online-payments/tokenization/create-tokens#enable-the-webhook) webhook with type `recurring.token.created`.",
+      "location": "raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md:538"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "blik-ios-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-ios-drop-in]] \u2014 2026-09-15 BLIK iOS Drop-in v3.8.0+ guide for code-payment `Pending`/webhook flow and OneClick consent/token path; source qualifies native/Web wording and malformed examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "blik-ios-drop-in-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-ios-drop-in]] \u2014 BLIK iOS guide's OneClick consent fields and `recurring.token.created` notification for later no-code use; the source does not provide a complete reuse request and the BLIK overview marks recurring unsupported.",
+        "quote_indexes": [
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/blik/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "3dbf900d585c557084a85514c25d8329e487d6060b8c95db700c474a7663bd41",
+  "status": "candidate_ready"
+}

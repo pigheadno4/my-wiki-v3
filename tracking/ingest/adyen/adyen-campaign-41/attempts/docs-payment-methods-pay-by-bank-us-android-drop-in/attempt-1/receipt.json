@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-pay-by-bank-us-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pay by Bank (US) Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pay-by-bank-us/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md\"\ntags: [adyen, pay-by-bank-us, android, drop-in, ach, redirect]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Pay by Bank (US) Android Drop-in guide adds the method to an existing Android Drop-in integration with either Sessions or Advanced server-side flow. It covers method-specific setup, a US `countryCode` API-reference note, base Drop-in redirect/outcome ownership, ACH capture risk, tokenization navigation, TEST scenarios and Plaid live registration. See [[adyen]], [[adyen-android-sdk]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Both Sessions and Advanced requirement tabs call for an existing Android Drop-in integration at minimum version **5.70.0** and contacting Adyen Support to add Pay by Bank (US) in the Customer Area (raw lines 21-37). This is the page's stated method prerequisite, not a version independently verified against SDK code.\n- The API-reference section separately says `/sessions` is the default with Drop-in v5.0.0 or later; that describes the base Sessions route and does not waive the page's 5.70.0 method prerequisite. Its Sessions link contains `platform=Androidb`, a malformed platform value in this snapshot. The `/sessions` table marks `countryCode` required yet says US is the default if omitted; the `/payments` table marks it optional and also says US defaults if omitted. Both descriptions limit support to US in this snapshot and say the field selects banks shown by the partner. Leave the Sessions required/default tension unresolved (raw lines 39-57).\n- No Pay by Bank (US)-specific Drop-in configuration is required. The existing Drop-in integration handles the redirect and obtains the payment outcome, so the page adds no separate method-specific redirect or result procedure. This does not itself define a final authorization, capture or settlement signal (raw lines 59-69).\n- Adyen strongly recommends immediate capture: Plaid checks account balance and risk at authorization, but the issuing bank does not hold the funds. Capture is asynchronous on ACH Direct Debit and can still encounter insufficient funds even when initiated immediately (raw lines 71-77).\n- The method supports tokenization for recurring transactions. The page strongly recommends explicit shopper permission and routes token creation, subsequent use and management to the general tokenization guide; it supplies no method-specific token request schema (raw lines 79-89).\n- TEST can simulate selected approvals, refusals, balances and ACH chargebacks, but not all refusal reasons. A chargeback simulation first produces `Authorised`, then starts after capture and settlement and is reported by `CHARGEBACK` webhook. Live acceptance requires adding the method in the live Customer Area and completed Plaid registration with participating banks; the page says registration can take up to one business week after Plaid starts and sends `paymentMethod.created` when acceptance can begin (raw lines 91-146).\n\n## Detail locators\n\n- Flow prerequisites and Support setup: raw lines 21-37.\n- API-reference field wording and malformed Sessions link: raw lines 39-57.\n- Method configuration, redirect/outcome boundary, capture and recurring: raw lines 59-89.\n- TEST payment/chargeback cases and live registration: raw lines 91-146.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15|Pay by Bank (US) Android Drop-in guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.70.0.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md:29 (Sessions requirement; repeated at 36 for Advanced)"
+    },
+    {
+      "text": "This is the default with [Drop-in v5.0.0]",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md:45 (/sessions API-reference intro)"
+    },
+    {
+      "text": "Currently, only **US** is supported. This is also the default if you do not include this parameter.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md:49 (/sessions countryCode description; repeated at 57 for /payments)"
+    },
+    {
+      "text": "However, even with immediate capture there is still a risk of insufficient funds at the time of capture, because capturing is an asynchronous process on the ACH Direct Debit network.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md:77 (Capture)"
+    },
+    {
+      "text": "For this reason, you cannot accept live Pay by Bank (US) payments until the registration process is completed.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md:144 (Go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pay-by-bank-us-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-android-drop-in]] \u2014 2026-09-15 Pay by Bank (US) Android Drop-in Sessions/Advanced add-on with stated 5.70.0 prerequisite, ACH capture risk and Plaid live gate; see source for countryCode wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The /sessions countryCode table marks the field required but its description says US defaults if omitted; its base Drop-in v5.0.0 Sessions statement does not override the method's 5.70.0 prerequisite."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-drop-in/2026-09-15.md",
+  "raw_sha256": "816f78d62ca748383dea5eb89451b8a3b5559b14394f6624dde9f683e5e2b563",
+  "status": "candidate_ready"
+}

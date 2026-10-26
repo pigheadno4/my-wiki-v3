@@ -1,0 +1,73 @@
+{
+  "job_id": "docs-payment-methods-pay-by-bank-us-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Pay by Bank (US) iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pay-by-bank-us/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md\"\ntags: [adyen, pay-by-bank-us, ios, drop-in, ach, capture, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Pay by Bank (US) iOS guide adds the method to an **existing** Drop-in integration for either Sessions or Advanced flow. It covers method setup and country-code guidance, delegates redirect and outcome handling to Drop-in, and flags asynchronous ACH capture risk, recurring-consent advice, TEST scenarios, and a live Plaid registration gate. It is a documentation snapshot, not evidence of merchant enablement or payment success. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Both Sessions and Advanced flows require an existing **iOS Drop-in v5.70.0 or later** integration. Before beginning, contact Adyen Support to add Pay by Bank (US) in Customer Area. See raw lines 21\u201337.\n- The `/sessions` `countryCode` table displays a required mark, yet the same row says **US is the default if omitted** and currently the only supported country. For `/payments`, in an additional-use-case path, `countryCode` is optional but recommended for potential future non-US bank support. It determines which banks Plaid shows. Preserve the table-versus-description tension; future support is not current support. See raw lines 39\u201357.\n- No method-specific Drop-in configuration is required. The existing Drop-in handles the redirect and gets the payment outcome; this page does not specify an extra method-specific redirect or outcome procedure. See raw lines 59\u201369.\n- Adyen **strongly recommends immediate capture**. Plaid performs balance and risk checks at authorization, but the issuing bank does not hold authorized funds. Balance may be insufficient at capture; even immediate capture retains that risk because ACH Direct Debit capture is asynchronous. Authorization is not assured funds or settlement. [[adyen-payment-capture]] See raw lines 71\u201377.\n- Pay by Bank (US) supports tokenization of shopper details for recurring transactions. The page **strongly recommends** explicit shopper permission and transparency about schedule and amount to reduce chargeback risk; it delegates creation, reuse and management details to the general Tokenization guide. [[adyen-tokenization]] See raw lines 79\u201389.\n- TEST redirect mimics live but cannot simulate every refusal. Amount fixtures include USD 3.53 approval and USD 27.53 risk refusal; `custom_balances` lets the tester choose bank-account balances. For simulated ACH chargebacks, `custom_chargeback_rXX` maps to a reason code; the request first reports `Authorised`, then the chargeback flow begins **after capture and settlement**, with a `CHARGEBACK` webhook. These are TEST fixtures, not live outcome guarantees. See raw lines 91\u2013140.\n- Live use requires adding the method in live Customer Area **and** waiting for Plaid to register the merchant account with participating banks. The page says this takes up to one business week **from Plaid starting the process**; shoppers cannot connect their bank account during registration and live payments cannot be accepted until completion. A `paymentMethod.created` webhook announces readiness. See raw lines 142\u2013146.\n\n## Detail locators\n\n- Sessions/Advanced iOS version and Support prerequisites: raw lines 21\u201337.\n- `/sessions` versus `/payments` country-code guidance: raw lines 39\u201357.\n- Drop-in configuration, redirect and outcome delegation: raw lines 59\u201369.\n- ACH capture risk and recurring permission: raw lines 71\u201389.\n- TEST payment and chargeback simulation: raw lines 91\u2013140.\n- Live Plaid registration and readiness webhook: raw lines 142\u2013146.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main iOS Drop-in integration route.\n- [[adyen-payment-capture]] \u2014 authorization versus capture outcome boundary.\n- [[adyen-tokenization]] \u2014 general recurring-token workflow.\n- [[source-adyen-docs-payment-methods-pay-by-bank-us]] \u2014 method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15|Pay by Bank (US) iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.70.0.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md:29 (Sessions requirement; also Advanced line 36)"
+    },
+    {
+      "text": "Currently, only **US** is supported. This is also the default if you do not include this parameter.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md:49 (/sessions countryCode row)"
+    },
+    {
+      "text": "capturing is an asynchronous process on the ACH Direct Debit network.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md:77 (Capture)"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md:83 (Recurring payments)"
+    },
+    {
+      "text": "you cannot accept live Pay by Bank (US) payments until the registration process is completed.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md:144 (Go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pay-by-bank-us-ios-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-drop-in]] \u2014 2026-09-15 Pay by Bank (US) iOS Drop-in v5.70+ Sessions/Advanced add-on; source qualifies country-code table/default, ACH capture-funds risk, TEST outcomes and Plaid live-registration gate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "pay-by-bank-us-ios-drop-in-capture-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-drop-in]] \u2014 iOS Drop-in method guide warns that Plaid authorization checks do not hold funds and even immediate ACH capture can fail for insufficient funds (2026-09-15 capture).\n",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "pay-by-bank-us-ios-drop-in-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-drop-in]] \u2014 iOS Drop-in guide notes recurring tokenization and strongly recommends explicit shopper permission; creation and reuse steps are delegated to the general guide (2026-09-15 capture).\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pay-by-bank-us/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "91644eed32a3e341f830643f0804a3e9526056ac20e43faca52589ae79954aab",
+  "status": "candidate_ready"
+}

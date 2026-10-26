@@ -1,0 +1,76 @@
+{
+  "job_id": "docs-payment-methods-twint-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"TWINT iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md\"\ntags: [adyen, twint, ios, drop-in, online-payments, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 TWINT iOS Drop-in guide describes **method-specific additions** to an existing Sessions or Advanced integration. It distinguishes ordinary method addition, Advanced redirect handling, and a separate server-side recurring-token path. The page does not establish current account enablement or a successful payment outcome. [[adyen]] [[adyen-online-payments]] [[adyen-ios-sdk]]\n\n## Key takeaways\n\n- **Sessions:** use an existing iOS Drop-in Sessions flow with Checkout API **v68 or later**, and add TWINT in Customer Area before beginning. The page says no TWINT-specific parameters are needed when creating the ordinary `/sessions` payment session and no TWINT-specific Drop-in configuration is needed. See raw lines 25\u201346.\n- **Advanced:** use an existing iOS Drop-in Advanced flow configured to handle `action.type: redirect`, and add TWINT in Customer Area. For the ordinary `/payments` route the page says no TWINT-specific extra request parameters or Drop-in configuration are needed. That general statement does **not** cover the separately specified recurring-token requests. See raw lines 97\u2013119 and 121\u2013160.\n- **Recurring token creation:** for either flow's recurring path, the guide directs a `/payments` request with `storePaymentMethod: true` and a unique `shopperReference` of at least three characters. After details are stored, a `recurring.token.created` webhook carries `storedPaymentMethodId`; the merchant server must be able to receive the recurring-token lifecycle webhook. The page does not state that a mere initial request immediately yields a usable token. See raw lines 48\u201371 and 121\u2013144. [[adyen-tokenization]]\n- **Token reuse:** a later `/payments` request uses `paymentMethod.storedPaymentMethodId`, the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. The page also points to `/listRecurringDetails` as another way to retrieve the stored-method ID. These are recurring-specific fields, not additions to the ordinary first-payment path. See raw lines 73\u201387 and 146\u2013160.\n- **TEST and LIVE:** test payment status is checked in the test Customer Area; to accept live TWINT payments the merchant must submit a TWINT request in live Customer Area. A request prerequisite is not proof that approval or activation has occurred. See raw lines 89\u201395 and 162\u2013168.\n- The raw repeats the same recurring-token instructions after the Advanced section (raw lines 170\u2013207). Treat the repetition as the page's duplicated instructions, not a separate token lifecycle or an additional flow requirement.\n\n## Detail locators\n\n- Sessions prerequisite and ordinary request/configuration: raw lines 25\u201346.\n- Sessions recurring creation and reuse: raw lines 48\u201387.\n- Advanced redirect prerequisite and ordinary request/configuration: raw lines 97\u2013119.\n- Advanced recurring creation and reuse: raw lines 121\u2013160; repeated block at 170\u2013207.\n- TEST status and LIVE request gate: raw lines 89\u201395 and 162\u2013168.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main method-addition route.\n- [[adyen-ios-sdk]] \u2014 native Drop-in context; the exact SDK baseline is separately versioned.\n- [[adyen-tokenization]] \u2014 recurring-token concepts.\n- [[source-adyen-docs-payment-methods-twint]] \u2014 TWINT method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15|TWINT iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md:33 (Sessions requirements)"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md:64 (Sessions token creation; repeated Advanced line 137)"
+    },
+    {
+      "text": "* `recurringProcessingModel`: **Subscription** or **UnscheduledCardOnFile**.",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md:85 (Sessions token reuse; repeated Advanced line 158)"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md:106 (Advanced redirect requirement)"
+    },
+    {
+      "text": "Before you can accept live TWINT payments, you need to [submit a request for TWINT](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md:95 (Sessions Test and go live; repeated Advanced line 168)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-ios-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-ios-drop-in]] \u2014 2026-09-15 TWINT iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on; ordinary requests differ from recurring-token fields, with a live Customer Area request gate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-ios-drop-in-ios-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-ios-drop-in]] \u2014 TWINT iOS Drop-in method guide for existing Sessions/Advanced flows, Advanced redirect handling and separate recurring-token requests (2026-09-15 capture).\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-ios-drop-in-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-ios-drop-in]] \u2014 TWINT iOS Drop-in `/payments` token creation and `recurring.token.created` receipt, then `ContAuth` Subscription or UnscheduledCardOnFile stored-method reuse; duplicated guide block adds no second lifecycle (2026-09-15 capture).\n",
+        "quote_indexes": [
+          1,
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "f1b567524da8349294beba3052a72908390ae268c3777e9f99093342eff2311e",
+  "status": "candidate_ready"
+}

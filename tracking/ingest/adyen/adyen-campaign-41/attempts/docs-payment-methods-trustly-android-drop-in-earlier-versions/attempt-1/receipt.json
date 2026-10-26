@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-trustly-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Trustly Android Drop-in v4.x.x integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/trustly/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, trustly, android, drop-in, advanced-flow, earlier-versions]\n---\n\n## Overview\n\nThis Adyen earlier-versions guide is scoped by its title to Trustly Android Drop-in v4.x.x. It adds Trustly to an existing Advanced-flow Android Drop-in integration: the merchant enables Trustly in Customer Area, discovers it with a supported country/currency and amount, sends Drop-in's selected payment method to its server, and redirects the shopper to Trustly's app or website for completion. The page's introductory Android Drop-in link and See also link point to Sessions-flow guides, while its explicit requirement and payment-action link specify Advanced flow; use the Advanced requirement for this described procedure rather than treating those navigation links as proof of Sessions support (raw lines 15\u201338, 364, 431\u2013435).\n\n## Key takeaways\n\n- `/paymentMethods` uses `countryCode` and `amount.currency` to show available methods. The guide says any *supported* country and currency, with SE/SEK only as examples; the merchant also supplies amount in minor units (raw lines 28\u201338).\n- For the Advanced flow, the client passes `paymentComponentData.paymentMethod` to the server. The server POSTs `/payments` with that method and a `returnUrl` from `RedirectComponent.getReturnUrl(context)`; the response `action` directs the client redirect. Example values such as `adyencheckout://your.package.name`, checkout-test API v68 and the language-library versions are illustrative, not universal requirements (raw lines 38\u201345, 47\u2013346, 348\u2013364).\n- On return to the app, Drop-in supplies `actionComponentData.details` for a server POST to `/payments/details`. The response `resultCode` is for shopper presentation and `pspReference` identifies the transaction; the shown `Authorised` response is an example, not a verified payment (raw lines 366\u2013403).\n- The result table distinguishes `Authorised`, `Cancelled`, `Error`, `Pending`/`Received`, and `Refused`. For `Pending` or `Received`, the final result is unknown and the guide says to wait for an `AUTHORISATION` webhook. If the shopper does not return, webhooks determine the outcome: `AUTHORISATION` success false/true indicates failure/success, and `OFFER_CLOSED` success true means the shopper did not complete the payment. The table's statement about funds arriving in three days is a source claim for `Authorised`, not proof of settlement for a specific transaction (raw lines 401\u2013421).\n- The source points to a Trustly test environment and test login-number format, and says a request for Trustly in live Customer Area precedes live acceptance (raw lines 423\u2013429).\n\n## Detail locators\n\n- v4.x.x title, Advanced-flow setup and Sessions-link tension: raw lines 15\u201326, 364, 431\u2013435.\n- Discovery and server payment/return URL handoff: raw lines 28\u201345.\n- Versioned payment examples and redirect action: raw lines 47\u2013364.\n- Return, `/payments/details`, intermediate statuses and webhook outcomes: raw lines 366\u2013421.\n- Test guidance and live Customer Area request: raw lines 423\u2013429.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15|Trustly Android Drop-in v4.x.x, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [Android Drop-in](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in) renders Trustly in your payment form, and redirects the shopper to the Trustly app or website where they can complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md:25"
+    },
+    {
+      "text": "Get this URL from the Component in the `RedirectComponent.getReturnUrl(context)`.",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md:45"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md:412"
+    },
+    {
+      "text": "The shopper did not complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md:421"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c41-trustly-android-dropin-v4-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-trustly-android-drop-in-earlier-versions]] \u2014 2026-09-15 snapshot of Trustly Android Drop-in v4.x.x Advanced redirect/details guide with webhook-qualified outcomes; source flags Sessions-link versus Advanced-requirement tension.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/trustly/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "9aa9dbbfe8722f293ac853c8793b6f6e39fb22bb19ea733bdd13c37851895cca",
+  "status": "candidate_ready"
+}

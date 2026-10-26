@@ -1,0 +1,11 @@
+# Q1 — Purpose, scope and limits
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-pay-by-bank-us-web-component.md` → pinned raw.
+
+This 2019-modified, 2026-09-15-captured page adds Pay by Bank (US) to existing Web Components Sessions or Advanced integrations, each with v5.70.0+ and Support setup prerequisites (raw `adyen/docs/payment-methods/pay-by-bank-us/web-component/2026-09-15.md:15-45`). It is not proof of present merchant registration, current non-US support, a held bank balance or successful capture/settlement. Its v6 import link points to a Drop-in parameter despite a Components label (raw line 41). The `/sessions` `countryCode` table marks the field required yet says US defaults if omitted, while `/payments` marks it optional (raw lines 51-65). Source stem: `source-adyen-docs-payment-methods-pay-by-bank-us-web-component`.
+
+# Q2 — Central capability, prerequisites and warnings
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-pay-by-bank-us-web-component.md`. Recurring retrieval also routes via `wiki/concepts/adyen-tokenization.md`.
+
+The Component uses `PayByBankUS` for v6 or `checkout.create('paybybank_AIS_DD')` for earlier v5; existing Components handles redirect and outcome (raw `adyen/docs/payment-methods/pay-by-bank-us/web-component/2026-09-15.md:39-105`). Plaid's authorization-time balance/risk checks do not hold funds, so Adyen strongly recommends prompt capture but says even immediate ACH capture can encounter insufficient funds (raw lines 107-113). Recurring tokenization is supported, with explicit shopper permission strongly recommended rather than stated as a required field, and detailed token operations left to the general guide (raw lines 115-125). TEST payment scenarios use specified amounts or `custom_balances`; a `custom_chargeback_rXX` scenario initially returns `Authorised` and only reaches Chargeback after capture/settlement (raw lines 127-176). Live acceptance needs completed Plaid registration after live Customer Area addition; `paymentMethod.created` announces readiness, and the page measures up to one business week from Plaid starting registration (raw lines 178-182).

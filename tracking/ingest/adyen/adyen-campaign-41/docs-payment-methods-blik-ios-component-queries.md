@@ -1,0 +1,9 @@
+# BLIK iOS Component retrieval checks
+
+Q1. What is this source for, and what cannot be inferred from it?
+
+The canonical source stem `source-adyen-docs-payment-methods-blik-ios-component` is a captured 2026-09-15 BLIK iOS Components add-on guide. It requires an existing Components integration and at least v3.8.0, provides versioned Component examples, and later includes BLIK-code and One Click server-payment passages (raw lines 15–32, 69–95, 109–135, 500–525). It does not establish current merchant enablement or a completed live payment; `Pending` still awaits shopper action and an `AUTHORISATION` webhook for outcome (raw lines 444–486). Retrieve via `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-blik-ios-component.md` → pinned raw.
+
+Q2. What are the central capability, prerequisites and warnings?
+
+For v5.0.0+ iOS Components, the guide selects `BLIKPaymentMethod` and uses `BLIKComponent`, with `session` as Sessions delegate and `self` for Advanced; earlier-version code differs. It states no BLIK-specific Component configuration or extra `/sessions` fields (raw lines 21–95). The later code-payment route uses PL/PLN discovery and a six-digit `blikCode`; `Pending` and its waiting action are intermediate, with `AUTHORISATION` webhook success/failure supplying the outcome (raw lines 117–135, 444–486). One Click consent parameters and token webhook are separately described, with live certification/enablement stated for One Click (raw lines 500–525, 593–629). Its consent curl is malformed JSON and differs in value type, and the issuer-label key differs between prose and example (raw lines 527–547, 601–614). Retrieve through `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-blik-ios-component.md` → pinned raw.

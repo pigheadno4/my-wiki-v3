@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-payment-methods-blik-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"BLIK Android Drop-in earlier versions\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/blik/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, blik, android, drop-in, earlier-versions, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot is headed **BLIK Drop-in v4.x.x integration** and describes adding BLIK with code to an existing **Android Drop-in** flow. It hands the shopper to a redirect, receives return details, and calls `/payments/details` before displaying the result; an asynchronous webhook also reports the outcome. The historical v4 title and examples do not establish current SDK behavior or account eligibility. [[adyen]] [[adyen-android-sdk]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The requirements table says BLIK for Android needs Drop-in **v3.8.0 or later** and BLIK added in the **test** Customer Area. Its linked \u201cDrop-in integration\u201d URL nevertheless points to `platform=iOS` and `integration=Components` with an encoded target fragment. Use the named Android Drop-in scope and verify the appropriate base guide rather than treating that prerequisite URL as a resolved Android route. The page heading says v4.x.x, so the v3.8.0 minimum does not itself validate later-version behavior. See raw lines 15\u201326.\n- To show BLIK, `/paymentMethods` uses `countryCode: PL`, `amount.currency: PLN` and a minor-unit amount. Android Drop-in returns `paymentComponentData.paymentMethod`, which the app passes to its server. The server's `/payments` prose asks for that payment method and a `returnURL` no longer than 1024 characters, obtained from `RedirectComponent.getReturnUrl(context)`. The code samples use `blik`/`blikCode` but omit the prose-listed `returnURL`; do not treat them as complete request templates. See raw lines 28\u201373 and 75\u2013359.\n- The illustrated `/payments` response is `RedirectShopper` with a `redirect` action for the client. The example action URL contains `redirectPayPal` despite `paymentMethodType: blik`, so it is not a reliable BLIK destination template. Redirecting or receiving this action does not prove payment success. See raw lines 361\u2013387.\n- After the shopper returns to the app, Drop-in supplies `actionComponentData`. The server posts `actionComponentData.details` to `/payments/details`; the response's `resultCode` and `pspReference` can inform the frontend. The page also says the outcome arrives asynchronously by webhook. Its result table treats `Pending` or `Received` as nonfinal, potentially lasting minutes or hours, with final outcome in an `AUTHORISATION` webhook. An `Authorised` row describes successful payment and claims funds in 2\u20133 days, but this snapshot is not evidence of settlement in any particular transaction. See raw lines 389\u2013444.\n- For TEST BLIK-with-code, the guide names code `999000`, BLIK guideline checks and end-to-end testing. Before accepting live BLIK, it says to add the method in the live Customer Area. It does not document a One Click tokenization flow on this page. See raw lines 446\u2013456.\n\n## Detail locators\n\n- Historical v4 scope, requirements and mismatched prerequisite link: raw lines 15\u201326.\n- PL/PLN discovery, Drop-in data handoff and server `/payments` request: raw lines 28\u201353.\n- Payment-request language examples and missing `returnURL`: raw lines 54\u2013359.\n- Redirect action response and sample URL discrepancy: raw lines 361\u2013387.\n- Return/details call, result values, webhook and nonfinal outcomes: raw lines 389\u2013444.\n- TEST code and live Customer Area gate: raw lines 446\u2013456.\n\n## Related\n\n- [[adyen-android-sdk]] \u2014 Android Drop-in architecture.\n- [[adyen-online-payments]] \u2014 online payment and result-state context.\n- [[source-adyen-docs-payment-methods-blik]] \u2014 BLIK method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15|BLIK Android Drop-in earlier versions, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "BLIK for Android requires at least v3.8.0 of Drop-in.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md:25 (requirements)"
+    },
+    {
+      "text": "This URL can have a maximum of 1024 characters.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md:52 (/payments returnURL)"
+    },
+    {
+      "text": "Drop-in redirects the shopper to complete the payment. When the shopper returns back to your app, Drop-in provides the `actionComponentData` object.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md:391 (check payment result)"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md:428 (present result)"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md:436 (Pending or Received row)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "blik-android-drop-in-earlier-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-android-drop-in-earlier-versions]] \u2014 2026-09-15 captured historical BLIK Android Drop-in v4 guide, v3.8.0+ requirement and redirect/details/webhook flow; source flags mismatched prerequisite and request examples.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "blik-android-drop-in-earlier-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-android-drop-in-earlier-versions]] \u2014 historical Android Drop-in BLIK-with-code PL/PLN redirect guide with return /payments/details and webhook-qualified result; see source for link/example conflicts (2026-09-15 capture).\n",
+        "quote_indexes": [
+          0,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/blik/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "ad4ef4bfcee511682c52fb2951c26db5ed2299045967fe4bb6e2effbd0efe904",
+  "status": "candidate_ready"
+}

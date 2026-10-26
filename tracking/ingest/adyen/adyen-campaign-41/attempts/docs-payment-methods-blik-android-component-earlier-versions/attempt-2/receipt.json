@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-blik-android-component-earlier-versions",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"BLIK Android Component v4.x.x integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/blik/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, blik, android, components, earlier-versions, await-action]\n---\n\n## Overview\n\nThis Adyen earlier-versions page is headed BLIK Android Component v4.x.x and describes adding it to an existing Android Components integration. Its requirements say Components v3.8.0 or later and BLIK added in the test Customer Area. The procedure configures a BLIK Component, obtains the `blik` payment method from `/paymentMethods`, collects client state for a server `/payments` call, handles an `await` action and sends its details to the server for `/payments/details`. The page does not define the server payment request, result-code meanings, final webhook outcome or a One Click token flow (raw lines 15\u201326, 28\u2013168).\n\n## Key takeaways\n\n- The setup snippets use `com.adyen.checkout:blik:<latest-version>`, `BlikConfiguration` with a client key and TEST environment, and `BlikView`. The title's v4.x.x scope and the separate v3.8.0 minimum should not be treated as proof of current/latest SDK behavior (raw lines 15\u201355).\n- The guide says the client-side Component collects a **phone number** and receives updates as the shopper enters it. Its step prose says to pass `paymentComponentState.data.paymentMethod` to the server, but the adjacent snippet serializes `state.data` and comments that the serialized `state.data` should be sent for `/payments`; the exact server payload is unresolved here (raw lines 57\u201390). The phone-number wording also conflicts with its own BLIK-with-code TEST instruction to use `999000` and with the linked [[source-adyen-docs-payment-methods-blik]] overview's six-digit-code shopper path (this raw lines 158\u2013164; overview raw lines 23\u201336).\n- For an `await` action from `/payments`, the client deserializes the action, adds `com.adyen.checkout:await:<latest-version>`, builds an `AwaitConfiguration`, initializes `AwaitComponent`, and calls `handleAction`. The observer's `actionComponentData` is then passed to the merchant server for `/payments/details` (raw lines 94\u2013147). The observer snippet spells the instance `awaitcomponent` after earlier initializing `awaitComponent`; treat the snippet as illustrative rather than copy-ready (raw lines 130\u2013155).\n- Navigation and example labels are inconsistent: the Components prerequisite link points to `/online-payments//`; the `/payments/details` link uses an Android **Drop-in** base guide, and See also points to a **Sessions** Components guide, while the collection/`/payments` links point to **Advanced** Components. These links do not establish a coherent Sessions implementation for this v4.x.x procedure (raw lines 25, 61, 98, 147, 170\u2013174).\n- TEST guidance says to use BLIK code `999000`, satisfy BLIK guidelines and test end to end. Live acceptance requires BLIK in the live Customer Area; neither step proves activation or payment success (raw lines 158\u2013168).\n\n## Detail locators\n\n- v4.x.x scope, v3.8.0 minimum and test Customer Area gate: raw lines 15\u201326.\n- BLIK Component dependency, configuration and view: raw lines 28\u201355.\n- Phone-number wording, `blik` discovery and valid component-state handoff: raw lines 57\u201392.\n- Await dependency, action handling, details handoff and example typo: raw lines 94\u2013155.\n- TEST code and live gate: raw lines 158\u2013168.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-android-sdk]]\n- [[source-adyen-docs-payment-methods-blik]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15|BLIK Android Component v4.x.x, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "BLIK for Android requires at least v3.8.0 of Components.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md:25"
+    },
+    {
+      "text": "Use the client-side Component to collect the phone number from your shopper.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md:59"
+    },
+    {
+      "text": "From the result, get the object containing `paymentMethods.type`: **blik**.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md:66"
+    },
+    {
+      "text": "Pass this to your server to make a [`/payments/details` request]",
+      "location": "raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md:147"
+    },
+    {
+      "text": "Use BLIK code 999000.",
+      "location": "raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md:162"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c41-blik-android-component-v4-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-android-component-earlier-versions]] \u2014 2026-09-15 snapshot of BLIK Android Component v4.x.x setup and await/details handoff; source flags phone-number versus code wording and mismatched integration links.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/blik/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "869e0ab8bd299a9392a3831dab83e206c003ff66edeb7891b1233fa920309b53",
+  "status": "candidate_ready"
+}

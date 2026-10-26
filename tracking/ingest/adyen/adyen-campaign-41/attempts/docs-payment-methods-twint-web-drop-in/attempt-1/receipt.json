@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-twint-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"TWINT Web Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md\"\ntags: [adyen, twint, web, drop-in, tokenization, capture]\n---\n\n## Overview\n\nThis Adyen TWINT Web Drop-in add-on documents separate Sessions and Advanced server-side flows for an existing integration. In both, the merchant adds TWINT in Customer Area and handles a `redirect` action. The Sessions requirement explicitly says Checkout API v68 or later; the Advanced requirements list does not state that minimum. The page's ordinary-payment sections say no extra TWINT parameters for `/sessions` or `/payments`, while later sections give separate token-payment and capture instructions (raw lines 17\u201342, 105\u2013133, 184\u2013250).\n\n## Key takeaways\n\n- Each flow allows an *optional* individual `Twint` import with `AdyenCheckout` and `Dropin` for tree shaking; this is a performance choice, not a TWINT-specific ordinary-payment field or mandatory import (raw lines 44\u201354, 117\u2013127).\n- Both recurring sections say to create a shopper token with `storePaymentMethod: true` and a `shopperReference` of at least three characters in `/payments`. When details are stored, a `recurring.token.created` lifecycle webhook supplies `storedPaymentMethodId`, `eventId` (initial payment PSP reference) and `shopperReference`; the server must receive that webhook. For later token payments, the guide lists the stored ID, same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. The guide does not spell out a shopper-consent procedure (raw lines 56\u201395, 135\u2013174, 213\u2013250).\n- Both flow sections say a live Customer Area request for TWINT is needed before live acceptance; test status can be checked in the test Customer Area (raw lines 97\u2013103, 176\u2013182).\n- The later capture section says TWINT is captured automatically by default when Capture Delay is `Immediate` or `1\u20137 days`; with `Manual` delay, the merchant must capture before the seven-day authorization expiry. It permits a single partial capture but not multiple partial captures, and says any unclaimed remainder is automatically cancelled (raw lines 184\u2013211).\n- The partial-capture prose calls the request field `modificationAmount` for `/payments/{paymentPspReference}/captures`, yet the adjacent JSON example uses `amount` and is labeled `/capture request`. Treat that as an unresolved field/endpoint example mismatch; do not copy the sample as an authoritative schema. The example's CHF and amount are illustrative and do not establish broader eligibility (raw lines 190\u2013209).\n\n## Detail locators\n\n- Sessions prerequisites, v68 minimum, redirect and ordinary `/sessions` scope: raw lines 25\u201342.\n- Optional imports, recurring token lifecycle and live request under Sessions: raw lines 44\u2013103.\n- Advanced prerequisites, ordinary `/payments` scope, token lifecycle and live request: raw lines 105\u2013182.\n- Capture delay, seven-day expiry, partial-capture limit, sample mismatch and cancellation: raw lines 184\u2013211.\n- Repeated Advanced recurring instructions: raw lines 213\u2013250.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-payment-capture]]\n- [[source-adyen-docs-payment-methods-twint]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15|TWINT Web Drop-in, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md:42"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md:72"
+    },
+    {
+      "text": "The authorization for TWINT payments expires after 7 days, so make sure you capture the payment before then.",
+      "location": "raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md:188"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md:211"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c41-twint-web-dropin-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-web-drop-in]] \u2014 2026-09-15 TWINT Web Drop-in Sessions/Advanced add-on for redirect setup, token lifecycle and capture limits; source flags the partial-capture field/example mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/web-drop-in/2026-09-15.md",
+  "raw_sha256": "f306686e4ab5e0eef89f89bbe35fd04990ba78af3aff567fab4de17e6f4e58b9",
+  "status": "candidate_ready"
+}

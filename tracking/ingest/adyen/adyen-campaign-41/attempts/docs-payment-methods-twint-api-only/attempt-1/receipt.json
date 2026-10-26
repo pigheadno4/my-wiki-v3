@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-twint-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT API-only guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/api-only/2026-09-15.md\"\ntags: [adyen, twint, api-only, switzerland, chf, redirect, capture, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds TWINT to an existing API-only integration. It covers CH/CHF discovery, additional-action handling, capture and partial-capture limits, recurring token creation and reuse, and TEST/LIVE setup. It gives only a high-level shopper redirect/app confirmation path; it does not supply a concrete `/payments` action response, return/`/payments/details` procedure or final authorization webhook here. This snapshot does not prove current merchant eligibility, created token, capture, funds transfer or payment success. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Base flow and form conflict:** the guide requires an existing API-only integration, handling `action.type: redirect` or `sdk`, and TWINT added in Customer Area. Its high-level sequence has shopper selection, a merchant-built form, TWINT-hosted page and shopper authorization in the app. Step 2 says the shopper enters details in the form, while the dedicated form section says **no shopper information needs collecting**; do not infer a required data-entry field from the sequence. Discovery via `/paymentMethods` specifies `countryCode: CH` and `amount.currency: CHF`, returning `type: twint`. The example's `-X POST` lacks a shell continuation before `-d`, so it is not a reliable copy-paste command. The guide says no extra TWINT-specific `/payments` parameters beyond the base flow. (raw lines 23\u201387)\n- **Capture limits:** the page says TWINT is captured automatically by default with Customer Area Capture Delay set to **Immediate** or **1\u20137 days**. If set to **Manual**, capture must occur before TWINT authorization expires after **7 days**. It allows a partial capture, **not multiple partial captures**; any amount unclaimed after partial capture is automatically cancelled. Its prose names `modificationAmount` for the capture request, whereas the JSON example uses `amount` and a `reference`; treat the example as illustrative and verify the endpoint contract before implementation. (raw lines 89\u2013116)\n- **Recurring:** token creation adds `storePaymentMethod: true` and a shopper-unique `shopperReference` of at least three characters to `/payments`. After details are stored, a `recurring.token.created` webhook carries `storedPaymentMethodId`, the initial payment `pspReference` as `eventId`, and the shopper reference; the merchant server must receive token lifecycle events. Later token payments use that ID, the same shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. The CHF examples illustrate Subscription; several language snippets leave `paymentRequest` undefined or have incomplete setup, so they are not all runnable recipes. The token webhook is not proof a particular stored method or later payment succeeded. (raw lines 118\u2013389)\n- **Environment:** TEST status is checked in Customer Area; accepting LIVE TWINT requires submitting a separate request in the **live** Customer Area. The page does not say that submission by itself activates the method. (raw lines 391\u2013399)\n\n## Detail locators\n\n- Requirements, shopper sequence, form contradiction and CH/CHF discovery: pinned raw lines 23\u201383.\n- No extra `/payments` fields; capture settings, seven-day expiry and partial-capture example mismatch: pinned raw lines 85\u2013116.\n- Token creation/webhook and subsequent shopper-absent model fields: pinned raw lines 118\u2013155; examples: lines 157\u2013389.\n- TEST status and LIVE request gate: pinned raw lines 391\u2013399.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment/action context\n- [[adyen-tokenization]] \u2014 provider token lifecycle\n- [[source-adyen-docs-payment-methods-twint]] \u2014 TWINT method overview and shopper handoff\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/api-only/2026-09-15|TWINT API-only guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **redirect** or **sdk**.",
+      "location": "raw line 28, Requirements action handling"
+    },
+    {
+      "text": "The shopper enters their details in the [payment form that you build](#build-your-payment-form).",
+      "location": "raw line 34, How it works step 2"
+    },
+    {
+      "text": "You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 40, Build your payment form"
+    },
+    {
+      "text": "The authorization for TWINT payments expires after 7 days, so make sure you capture the payment before then.",
+      "location": "raw line 93, Capture"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 132, Create a token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-api-only]] \u2014 2026-09-15 TWINT API-only CH/CHF discovery, redirect/sdk action, seven-day capture and token route; source records form and partial-capture example conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/api-only/2026-09-15.md",
+  "raw_sha256": "52e41fb5a20b1be737199735f74836267dae25761c995e0e2a741dcb0e31fc8b",
+  "status": "candidate_ready"
+}

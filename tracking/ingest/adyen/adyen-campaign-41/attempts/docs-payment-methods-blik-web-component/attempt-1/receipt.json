@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-blik-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"BLIK Web Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/blik/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/blik/web-component/2026-09-15.md\"\ntags: [adyen, blik, poland, web, components, online-payments, tokenization]\n---\n\n## Overview\n\nThis BLIK guide (metadata last modified 2020-10-06, captured 2026-09-15) adds BLIK to an existing **Web Components** integration. It covers BLIK with a six-digit code and a distinct BLIK One Click consent/token path. The main payment response can be `Pending` with an await-style action while the shopper completes the payment in a BLIK app; an `AUTHORISATION` webhook supplies the outcome. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The prerequisite table says Web Components **v3.9.0 or later** and BLIK added in the **test** Customer Area. For Web Components v6 it shows a named `Blik` import and constructor; v5.x.x or earlier uses `checkout.create('blik')`. The v6 constructor sample is malformed (`const  = new Blik(...)`), and its import-guide URL is labeled Components but contains `integration=Drop-in`. The prerequisite URL also contains an encoded `/?target=_blank` fragment. Do not copy these snippets or links as verified setup instructions. See raw lines 21\u201366.\n- The `/sessions` tab says no BLIK-specific extra fields; it calls Sessions the default with Components v5.0.0 or later. The separate `/payments` material does require BLIK fields for its API route. The page does not clearly map every version and server-side flow combination beyond those statements. See raw lines 68\u201392.\n- For **BLIK with code**, `/paymentMethods` discovery uses `countryCode: PL`, `amount.currency: PLN` and minor-unit value. The form collects a six-digit `blikCode`; `/payments` sends `paymentMethod.type: blik` plus that code. A stored BLIK method is shown as conditional on the shopper having previously signed up for One Click. See raw lines 96\u2013116 and 118\u2013423.\n- The shown `/payments` response has `resultCode: Pending` and an action intended for a waiting screen while the shopper completes payment in the BLIK app. The example embeds a documentation hint in `action.type` around `await`; treat the sample as annotated text, not a literal API enum. `Pending` and an app interaction are not final authorization. The guide says to use the `AUTHORISATION` webhook (`success: false` or `true`) for the outcome; `Refused` can be reported, including for an incorrect code. See raw lines 425\u2013467.\n- **BLIK One Click** describes a consent request for future payments without the six-digit code, with `shopperReference`, `storePaymentMethod: true`, and `recurringProcessingModel: CardOnFile`. The token lifecycle webhook `recurring.token.created` carries `storedPaymentMethodId`, `eventId`, and `shopperReference`; the merchant must enable that webhook. Discovery includes `shopperReference` and a linked issuer label. Yet this \u201cwithout code\u201d section repeats `paymentMethod.blikCode` as a `/payments` field, and its curl example has a missing comma after `CardOnFile` and quotes `storePaymentMethod` as a string. The prose names `additionalData.BLIK.APP_LABEL` but the example spells `Blik.APP_LABEL`. Preserve those inconsistencies; this page does not give a complete later code-free token-charge request. [[adyen-tokenization]] See raw lines 483\u2013595.\n- Testing both paths names BLIK code `999000`, guideline compliance and end-to-end testing. The with-code live step says to add BLIK in live Customer Area; the One Click live section additionally says to contact BLIK for certification and enablement before live acceptance. These are distinct statements, not proof of present account approval or a successful payment. See raw lines 78\u201388, 469\u2013479 and 597\u2013610.\n\n## Detail locators\n\n- Web Components version/setup and v6/v5 Component examples: raw lines 21\u201366.\n- Sessions versus `/payments` branch: raw lines 68\u201392.\n- BLIK-with-code PL/PLN discovery, six-digit code and request examples: raw lines 96\u2013423.\n- Pending/await waiting screen and AUTHORISATION webhook: raw lines 425\u2013467.\n- One Click discovery, consent request, token/issuer label and sample conflicts: raw lines 483\u2013595.\n- TEST codes and distinct live gates: raw lines 78\u201388, 469\u2013479 and 597\u2013610.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web payment flow context.\n- [[adyen-tokenization]] \u2014 shopper consent and stored-method lifecycle.\n- [[source-adyen-docs-payment-methods-blik]] \u2014 BLIK method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/blik/web-component/2026-09-15|BLIK Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "BLIK for Web requires at least v3.9.0 of Components.",
+      "location": "raw/adyen/docs/payment-methods/blik/web-component/2026-09-15.md:25 (Requirements)"
+    },
+    {
+      "text": "You do not need to send additional fields for BLIK.",
+      "location": "raw/adyen/docs/payment-methods/blik/web-component/2026-09-15.md:74 (/sessions tab)"
+    },
+    {
+      "text": "The 6-digit `blikCode` that the shopper entered at checkout.",
+      "location": "raw/adyen/docs/payment-methods/blik/web-component/2026-09-15.md:116 (BLIK with code /payments)"
+    },
+    {
+      "text": "`resultCode`: **Pending** (The shopper must complete the payment in their BLIK app.)",
+      "location": "raw/adyen/docs/payment-methods/blik/web-component/2026-09-15.md:427 (with-code /payments response)"
+    },
+    {
+      "text": "If the shopper gave consent to make future payments without a BLIK code, you will also receive a [Recurring tokens life cycle](/online-payments/tokenization/create-tokens#enable-the-webhook) webhook with type `recurring.token.created`.",
+      "location": "raw/adyen/docs/payment-methods/blik/web-component/2026-09-15.md:574 (One Click token lifecycle)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "blik-web-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-web-component]] \u2014 2020-modified, 2026-09-15-captured BLIK Web Components code and One Click guide for PL/PLN, Pending/await webhook outcome and versioned setup; source records sample conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "blik-web-component-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-web-component]] \u2014 BLIK One Click shopper-consent and recurring.token.created stored-method route (2026-09-15 capture); conflicting code-free prose and request/example fields remain source-qualified.\n",
+        "quote_indexes": [
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/blik/web-component/2026-09-15.md",
+  "raw_sha256": "491098a107d4d3b11820c21f938d8b422da17a72b95447fdaed3fbd492e43ccd",
+  "status": "candidate_ready"
+}

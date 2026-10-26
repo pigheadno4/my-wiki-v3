@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-twint-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT Flutter Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, twint, flutter, drop-in, sessions, advanced, redirect, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds TWINT to an existing Flutter Drop-in integration, with separate Sessions and Advanced server-side sections. Both cover redirect prerequisites and a recurring-token route. It does not describe the concrete redirect response, return/details step, capture limits or final payment outcome on this page; use the main flow and relevant method authority for those details. The snapshot does not prove current merchant enablement, created token, capture or successful payment. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Sessions:** requires existing Flutter Drop-in Sessions, **Checkout API v68 or later**, `action.type: redirect` handling and contacting Adyen Support to add TWINT in Customer Area. It says no TWINT-specific `/sessions` parameters or Drop-in configuration. The integration-type row's link points to an **Advanced** Flutter Drop-in URL, despite the Sessions label and Sessions redirect/session links; verify the correct main guide before implementation. (raw lines 25\u201348)\n- **Advanced:** separately requires existing Flutter Drop-in Advanced, redirect handling and adding TWINT in Customer Area. It says no TWINT-specific Drop-in configuration or normal `/payments` parameters. This section does not repeat the Sessions v68 minimum or Support-contact setup wording; preserve the section-specific prerequisites. (raw lines 97\u2013119)\n- **Recurring in both sections:** token creation adds `storePaymentMethod: true` and a shopper-unique `shopperReference` of at least three characters to `/payments`. After details are stored, a `recurring.token.created` webhook carries `storedPaymentMethodId`, initial-payment `pspReference` as `eventId`, and shopper reference; the merchant server must receive recurring-token lifecycle events. Future `/payments` requests use the stored ID, matching shopper reference, `shopperInteraction: ContAuth` and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. A token request or the described webhook does not prove a particular token was created or a later payment succeeded. (raw lines 50\u201389, 121\u2013160)\n- **Environment:** both sections direct TEST status checks to Customer Area and require a separate request in the **live** Customer Area before accepting live TWINT. The page provides no test simulation or live-activation evidence. (raw lines 91\u201395, 162\u2013166)\n\n## Detail locators\n\n- Sessions prerequisites, misrouted integration-type link and no-extra-fields/configuration: pinned raw lines 25\u201348.\n- Advanced prerequisites and no-extra-fields/configuration: pinned raw lines 97\u2013119.\n- Repeated recurring token creation/webhook and reuse fields: pinned raw lines 50\u201389 and 121\u2013160.\n- TEST status and LIVE request: pinned raw lines 91\u201395 and 162\u2013166.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider redirect/outcome context\n- [[adyen-tokenization]] \u2014 provider token lifecycle\n- [[source-adyen-docs-payment-methods-twint]] \u2014 TWINT overview and shopper handoff\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/flutter-drop-in/2026-09-15|TWINT Flutter Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Twint in your Customer Area.",
+      "location": "raw line 36, Sessions setup"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Flutter\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 42, Sessions request"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 66, Sessions token creation; repeated raw line 137, Advanced"
+    },
+    {
+      "text": "Before you can accept live TWINT payments, you need to [submit a request for TWINT](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 95, Sessions Test and go live; repeated raw line 166, Advanced"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-flutter-drop-in]] \u2014 2026-09-15 TWINT Flutter Drop-in Sessions/Advanced redirect add-on with section-specific setup and recurring token route; Sessions prerequisite link points to Advanced.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "e04fd4a9f0fdbb17ee97050c429e26ce792b1d0992a1b1018ed51b682bde23ec",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,62 @@
+{
+  "job_id": "docs-payment-methods-pay-by-bank-us-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pay by Bank (US) Web Drop-in guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pay-by-bank-us/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md\"\ntags: [adyen, pay-by-bank-us, web, drop-in, plaid, ach, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds Pay by Bank (US) to an existing Web Drop-in integration, in either Sessions or Advanced server-side flow. It specifies Drop-in 5.70.0 or later, Support-mediated Customer Area setup, country selection, ACH capture risk, tokenization guidance, test scenarios and a Plaid live-registration gate. It does not prove current account eligibility, an executed payment, capture or settlement. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-pay-by-bank-us]].\n\n## Key takeaways\n\n- Both Sessions and Advanced tabs require an existing Web Drop-in integration at minimum version 5.70.0 and Support contact to add Pay by Bank (US) in Customer Area. The v6 import example shows only `AdyenCheckout` with a trailing comma, despite saying to import resources for this method; it does not identify a separate method class. `/sessions` is described as the default since Drop-in v5.0.0. No method-specific Drop-in configuration, redirect-handling step or outcome-handling step is added here because the guide assigns those to the existing Drop-in integration.\n- The `/sessions` countryCode row displays a required checkmark but its prose says only US is currently supported and US is the default if countryCode is omitted. The `/payments` row is explicitly optional and recommends including countryCode for possible future non-US-bank expansion. Preserve the `/sessions` marker/prose tension rather than stating unequivocally that omission either succeeds or fails. This snapshot does not prove present geographic or bank eligibility.\n- The guide strongly recommends immediate capture to reduce insufficient-funds risk. Plaid account, balance and risk checks occur at authorization, but the issuing bank does not hold authorized funds. It explicitly says insufficient funds remain possible even with immediate capture because ACH Direct Debit capture is asynchronous. Do not equate authorization, an immediate capture request, captured funds and settlement.\n- Pay by Bank (US) tokenization for recurring transactions is described as supported; the page strongly recommends asking explicit shopper permission and transparency about schedule and amount to reduce chargeback risk. It links the general Tokenization guide for token creation, use and management rather than specifying request fields here. This recommendation is not itself a field-level consent contract or evidence of a created token.\n- The test redirect resembles live but not every refusal reason is simulatable. The guide gives amount/username-based approval and refusal scenarios plus a `custom_balances` option. Its simulated chargeback flow moves directly to Chargeback, while the documented test request first returns `Authorised`; the chargeback starts only after capture and settlement, followed by a `CHARGEBACK` webhook. These test states are not live funds or risk proof.\n- For live use, add the method in live Customer Area and wait for Plaid to register the merchant account with participating banks. The guide says registration takes up to one business week after Plaid starts it, shoppers cannot connect during registration, and a `paymentMethod.created` webhook marks when live acceptance can start. Support setup, Customer Area addition and that webhook are distinct from an already completed live payment.\n\n## Detail locators\n\n- Sessions/Advanced Drop-in v5.70.0 prerequisites and Support setup: pinned raw lines 21\u201337.\n- v6 import, `/sessions` default, countryCode required-marker/default tension and optional `/payments` countryCode: pinned raw lines 39\u201365.\n- Drop-in configuration/redirect/outcome delegation: pinned raw lines 67\u201377.\n- Authorization-versus-ACH-capture risk and tokenization recommendation: pinned raw lines 79\u201397.\n- Payment-flow test scenarios and limits: pinned raw lines 99\u2013127; test chargeback sequence: lines 129\u2013148.\n- Plaid live-registration gate and `paymentMethod.created` webhook: pinned raw lines 150\u2013154.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider online-payment concept\n- [[adyen-tokenization]] \u2014 recurring token lifecycle; fields belong to linked guide\n- [[source-adyen-docs-payment-methods-pay-by-bank-us]] \u2014 method overview and ACH return/chargeback context\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15|Pay by Bank (US) Web Drop-in guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.70.0.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md:29"
+    },
+    {
+      "text": "Currently, only **US** is supported. This is also the default if you do not include this parameter.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md:57"
+    },
+    {
+      "text": "However, even with immediate capture there is still a risk of insufficient funds at the time of capture, because capturing is an asynchronous process on the ACH Direct Debit network.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md:85"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md:91"
+    },
+    {
+      "text": "We send you a [paymentMethod.created](https://docs.adyen.com/api-explorer/ManagementNotification/latest/post/paymentMethod.created) webhook when you can start accepting live Pay by Bank (US) payments.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md:154"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pay-by-bank-us-web-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-web-drop-in]] \u2014 2026-09-15 Pay by Bank (US) Web Drop-in 5.70.0+ Sessions/Advanced add-on with ACH capture risk and Plaid live-registration gate; source records countryCode marker/default tension.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "pay-by-bank-us-web-drop-in-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-web-drop-in]] \u2014 2026-09-15 Web Drop-in guide says Pay by Bank (US) supports recurring tokenization and recommends explicit shopper permission; token request details remain in its linked general guide.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pay-by-bank-us/web-drop-in/2026-09-15.md",
+  "raw_sha256": "d480acdd0e1e3d2216f3b2540add2397cb2da2c70b2237d6a9ee598bc61c7338",
+  "status": "candidate_ready"
+}

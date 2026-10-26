@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-twint-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT iOS Component guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/ios-component/2026-09-15.md\"\ntags: [adyen, twint, ios, components, redirect, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds TWINT to an existing iOS Components integration in Sessions or Advanced server-side flow. Sessions states Checkout API v68 or later; both flows require redirect handling. It initializes `TwintComponent` and gives conditional token creation and later-payment fields. The page does not provide a complete initial payment response, return/result sequence or proof of current enablement or successful payment. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-twint]].\n\n## Key takeaways\n\n- Sessions requires an existing iOS Components Sessions integration, Checkout API v68+, `action.type: redirect` handling and TWINT added in Customer Area. It says no TWINT-specific `/sessions` parameters or configuration parameters. The Swift example finds `TwintPaymentMethod`, creates `TwintComponent`, assigns the session as delegate and presents it. The example passes a `twintConfiguration` object despite saying no additional TWINT parameters; this need not mean method-specific settings are required.\n- Advanced requires an existing iOS Components Advanced integration, redirect handling and Customer Area setup. It says no TWINT-specific configuration or ordinary `/payments` additions. Its Swift example assigns `self` as Component delegate. The Advanced prerequisite text names Components, but its linked integration URL has `integration=Drop-in`; the redirect and payment-step links use Components. The page states no Advanced-specific Checkout API minimum.\n- For a shopper token, the guide instructs `/payments` with `storePaymentMethod: true` and a unique `shopperReference` of at least three characters. Once details are stored, `recurring.token.created` carries `shopperReference`, initial payment `pspReference` as `eventId`, and `storedPaymentMethodId`; receiving the Recurring tokens life cycle webhook is needed. This source does not itself describe how shopper consent is collected or prove a token was created.\n- Later server `/payments` with the token uses `paymentMethod.storedPaymentMethodId`, the same `shopperReference`, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`; `/listRecurringDetails` is listed as another token-ID source. These token fields are conditional and do not contradict the ordinary no-extra-parameter statements. The recurring material is repeated after both flow sections and again at the end, with no separate alternative outcome model; do not infer three distinct mechanisms.\n- The page directs test-payment status checks to Customer Area and says to request TWINT in the live Customer Area before live acceptance. It does not establish market/currency availability, an executed redirect, authorization, capture or settlement; consult the TWINT overview and main integration guidance for those topics.\n\n## Detail locators\n\n- Sessions prerequisites, v68+, redirect, no extra fields/configuration and Swift Component: pinned raw lines 25\u201373.\n- First token creation/reuse and test/live route: pinned raw lines 75\u2013120.\n- Advanced Components-label/Drop-in-link mismatch, redirect, ordinary no-extra-fields and Swift delegate: pinned raw lines 122\u2013168.\n- Advanced repeated token path and test/live: pinned raw lines 170\u2013215; final duplicate token path: lines 217\u2013254.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider online-payment concept\n- [[adyen-tokenization]] \u2014 provider token lifecycle and later-payment context\n- [[source-adyen-docs-payment-methods-twint]] \u2014 TWINT overview and market/capture context\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15|TWINT iOS Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15.md:35"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Twint.",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15.md:48"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15.md:91"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [iOS Components integration]",
+      "location": "raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15.md:130"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-ios-component-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-ios-component]] \u2014 2026-09-15 TWINT iOS Components Sessions (Checkout API v68+) and Advanced redirect add-on with conditional token route; source records Advanced Components-label/Drop-in-link mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "twint-ios-component-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-ios-component]] \u2014 TWINT iOS Components `/payments` storage fields, `recurring.token.created` webhook and later Subscription/UnscheduledCardOnFile `ContAuth` reuse; token/consent outcomes remain source-qualified.",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/ios-component/2026-09-15.md",
+  "raw_sha256": "cb761c5d7422b21d847661fa1b53ce131959a89f29b8d523bc4f8c7c16acaa53",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,5 @@
+# BLIK Web retrieval checks
+
+Q1. **Purpose and scope; what cannot be inferred?** `source-adyen-docs-payment-methods-blik-web` is a 2026-09-15 Web chooser for BLIK Drop-in and Components child guides plus general Web documentation (raw `raw/adyen/docs/payment-methods/blik/web/2026-09-15.md:15-33`). It gives no merchant eligibility, version, Sessions/Advanced, code/One Click, token or result contract; do not infer payment success from its tiles. Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-blik-web]]`.
+
+Q2. **Central capability, prerequisites, and warnings?** Choose the linked all-in-one Web Drop-in route or the prebuilt Components route; the page also points to general Web Drop-in and Components guidance (raw lines 19-33). This chooser states no setup prerequisite or operational result. Read the selected child and BLIK overview for code-entry and One Click conditions. Source stem: `source-adyen-docs-payment-methods-blik-web`. Route: `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → source.

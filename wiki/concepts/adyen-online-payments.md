@@ -21,6 +21,135 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-trustly-web]] — 2026-09-15 Trustly Web chooser for Drop-in or pre-built Component method guides, plus generic Web integration routes; request, outcome and funds qualifications belong to linked sources.
+
+
+- [[source-adyen-docs-payment-methods-trustly-android]] — 2026-09-15 Trustly Android chooser for Drop-in and Redirect Component child guides plus general Android Sessions routes; child guides own flow and outcome requirements.
+
+
+- [[source-adyen-docs-payment-methods-blik-web]] — 2026-09-15 BLIK Web chooser linking Drop-in and Components child guides plus general Web integration routes; code, One Click and outcomes belong to child authority.
+
+
+- [[source-adyen-docs-payment-methods-blik-ios]] — 2026-09-15 BLIK iOS chooser for Drop-in/Redirect Component child guides and two Sessions base routes; implementation and outcomes remain in child guides.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios]] — 2026-09-15 Pay by Bank (US) iOS chooser for Drop-in/Redirect Component child guides and two Sessions base routes; implementation and outcomes remain in child guides.
+
+
+- [[source-adyen-docs-payment-methods-trustly-web-drop-in]] — 2026-09-15 Trustly Web Drop-in setup guide for existing integrations, conditional v6 import, no extra ordinary request fields and live Customer Area gate; source preserves the overview's authorized-but-unfunded warning.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-web]] — 2026-09-15 Pay by Bank (US) Web chooser for Drop-in and Components child guides and general Web integration routes; implementation and outcomes require linked authority.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-android]] — 2026-09-15 Pay by Bank (US) Android chooser for Drop-in and Redirect Component children, with general Sessions base-guide links; implementation and ACH outcome detail belong elsewhere.
+
+
+- [[source-adyen-docs-payment-methods-twint-web]] — 2026-09-15 TWINT Web chooser linking Drop-in/Components method guides and four Sessions/Advanced base Web integrations; implementation and outcomes belong to the child guides.
+
+
+- [[source-adyen-docs-payment-methods-twint-ios]] — 2026-09-15 TWINT iOS chooser for Drop-in and TwintComponent child guides plus four Sessions/Advanced base routes; implementation and outcomes belong to the linked guides.
+
+
+- [[source-adyen-docs-payment-methods-trustly-ios-drop-in]] — 2026-09-15 Trustly iOS Drop-in endpoint/configuration add-on with v5 Sessions default and v4 tab; related overview retains authorized-but-unfunded risk.
+
+
+- [[source-adyen-docs-payment-methods-blik-android-component-earlier-versions]] — 2026-09-15 snapshot of BLIK Android Component v4.x.x setup and await/details handoff; source flags phone-number versus code wording and mismatched integration links.
+
+
+- [[source-adyen-docs-payment-methods-blik-android-component]] — 2026-09-15 BLIK Android Components v5.0.0 Sessions/Advanced method add-on with no extra method fields or configuration; outcome and One Click flows are outside this page.
+
+
+- [[source-adyen-docs-payment-methods-trustly-android-drop-in]] — 2026-09-15 Trustly Android Drop-in v5.0.0 Sessions/Advanced add-on with no extra method fields/configuration; funding outcome remains qualified by the Trustly overview.
+
+
+- [[source-adyen-docs-payment-methods-trustly-web-component]] — 2019-modified, 2026-09-15-captured Trustly Web Components Sessions/Advanced setup and v5/v6 mount guide; source flags a Drop-in import-link mismatch and the overview's authorized-but-unfunded warning.
+
+
+- [[source-adyen-docs-payment-methods-trustly-android-component]] — 2026-09-15 Trustly Android Components v5.0.0-minimum Sessions/Advanced add-on with no method-specific fields/config and separate earlier-version route; overview retains authorization-versus-funds risk.
+
+
+- [[source-adyen-docs-payment-methods-twint-flutter-component]] — 2026-09-15 TWINT Flutter Components Sessions (Checkout API v68+) and Advanced redirect/token add-on; source records both prerequisite links targeting Advanced Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-twint-flutter-drop-in]] — 2026-09-15 TWINT Flutter Drop-in Sessions/Advanced redirect add-on with section-specific setup and recurring token route; Sessions prerequisite link points to Advanced.
+
+
+- [[source-adyen-docs-payment-methods-twint-ios-drop-in]] — 2026-09-15 TWINT iOS Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on; ordinary requests differ from recurring-token fields, with a live Customer Area request gate.
+
+
+- [[source-adyen-docs-payment-methods-twint-web-drop-in]] — 2026-09-15 TWINT Web Drop-in Sessions/Advanced add-on for redirect setup, token lifecycle and capture limits; source flags the partial-capture field/example mismatch.
+
+
+- [[source-adyen-docs-payment-methods-twint-ios-component]] — 2026-09-15 TWINT iOS Components Sessions (Checkout API v68+) and Advanced redirect add-on with conditional token route; source records Advanced Components-label/Drop-in-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-twint-web-component]] — 2026-09-15 TWINT Web Components Sessions/Advanced redirect and token guide with later seven-day/partial-capture rules; source scopes v68+ to Sessions and records capture-example mismatch.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-drop-in]] — 2026-09-15 Pay by Bank (US) iOS Drop-in v5.70+ Sessions/Advanced add-on; source qualifies country-code table/default, ACH capture-funds risk, TEST outcomes and Plaid live-registration gate.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-web-drop-in]] — 2026-09-15 Pay by Bank (US) Web Drop-in 5.70.0+ Sessions/Advanced add-on with ACH capture risk and Plaid live-registration gate; source records countryCode marker/default tension.
+
+
+- [[source-adyen-docs-payment-methods-twint-api-only]] — 2026-09-15 TWINT API-only CH/CHF discovery, redirect/sdk action, seven-day capture and token route; source records form and partial-capture example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-web-component]] — 2026-09-15 capture of Pay by Bank (US) Web Components v5.70+ Sessions/Advanced guide with US country-code tension, ACH capture-funds risk, TEST simulations and Plaid live-registration gate.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-component]] — 2026-09-15 Pay by Bank (US) iOS Components Sessions/Advanced guide with 5.70.0 minimum, ACH capture risk, stored Component path and Plaid live-registration gate; countryCode table/prose tension in source.
+
+
+- [[source-adyen-docs-payment-methods-trustly-android-drop-in-earlier-versions]] — 2026-09-15 snapshot of Trustly Android Drop-in v4.x.x Advanced redirect/details guide; source flags Sessions-link tension and the Authorised/three-day funding claim against the Trustly overview's authorized-but-unfunded risk.
+
+
+- [[source-adyen-docs-payment-methods-twint-android-drop-in]] — 2026-09-15 TWINT Android Drop-in Sessions (Checkout API v68+) and Advanced action/configuration add-on, with separate token and stored-method UI routes; source flags a literal field spelling and Components snippets.
+
+
+- [[source-adyen-docs-payment-methods-blik-web-drop-in]] — 2020-modified, 2026-09-15-captured BLIK Web Drop-in Sessions/no-extra-fields and /payments code/One Click guide; Pending/await, webhook outcome and malformed consent example are qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-blik-android-drop-in-earlier-versions]] — historical Android Drop-in BLIK-with-code PL/PLN redirect guide with return /payments/details and webhook-qualified result; see source for link/example conflicts (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-twint-android-component]] — TWINT Android Components Sessions/Advanced guide for ordinary request/additional-action boundaries and live request gate; recurring details and caveats in source (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-trustly-android-component-earlier-versions]] — 2019-modified, 2026-09-15-captured Trustly Android Redirect Component v4.x.x Advanced guide for redirect/details/webhook flow; source flags Sessions-link and funding-timing conflicts.
+
+
+- [[source-adyen-docs-payment-methods-trustly-api-only]] — 2023-modified, 2026-09-15-captured Trustly API-only discovery, redirect, details and webhook guide; source qualifies Authorised/three-day wording against the overview's unfunded-transfer risk.
+
+
+- [[source-adyen-docs-payment-methods-blik-api-only]] — 2020-modified, 2026-09-15-captured BLIK API-only code and One Click consent/token guide for PL/PLN, with Pending-to-AUTHORISATION outcome and mismatched One Click examples qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-blik-ios-drop-in]] — 2026-09-15 BLIK iOS Drop-in v3.8.0+ guide for code-payment `Pending`/webhook flow and OneClick consent/token path; source qualifies native/Web wording and malformed examples.
+
+
+- [[source-adyen-docs-payment-methods-blik-web-component]] — 2020-modified, 2026-09-15-captured BLIK Web Components code and One Click guide for PL/PLN, Pending/await webhook outcome and versioned setup; source records sample conflicts.
+
+
+- [[source-adyen-docs-payment-methods-blik-ios-component]] — 2026-09-15 BLIK iOS Components add-on guide for v3.8.0+ setup, v5 Sessions/Advanced delegates, and separately presented BLIK-code/One Click server and webhook routes; source notes example and field-name inconsistencies.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-api-only]] — 2019-modified, 2026-09-15-captured Pay by Bank (US) API-only redirect and ACH lifecycle guide covering shopper debit authorization, webhook-qualified result, capture risk, recurring tokens and Plaid live registration.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us]] — 2026-09-15 Pay by Bank (US) overview for the Plaid/bank permission redirect, ACH Direct Debit routing, tokenization recommendation, capability table and nondefensible return/chargeback limits; implementation routes are separate.
+
+
+- [[source-adyen-docs-payment-methods-blik]] — 2025-modified, 2026-09-15-captured BLIK PL/PLN overview for code/bank-app confirmation, OneClick trusted-shop wording and capability marks; source retains the conflicting OneClick steps.
+
+
+- [[source-adyen-docs-payment-methods-twint]] — 2026-09-15 TWINT CH/CHF overview for mobile/desktop app, QR or short-code handoff, capture-qualified transfer statement and platform routes; feature marks require source-qualified reading.
+
+
+- [[source-adyen-docs-payment-methods-trustly]] — 2025-modified, 2026-09-15-captured Trustly bank-redirect overview with historical DKK/EUR/NOK/SEK marks and authorized-but-unfunded chargeback risk; platform routes in source.
+
+
 - [[source-adyen-docs-payment-methods-promptpay-web]] — 2019-modified, 2026-09-15-captured PromptPay Web chooser for Drop-in and Components method guides plus general Web integration documentation; implementation and outcomes belong to linked guides.
 
 

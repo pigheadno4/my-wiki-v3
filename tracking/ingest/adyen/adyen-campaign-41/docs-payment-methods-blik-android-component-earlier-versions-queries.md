@@ -1,0 +1,11 @@
+# docs-payment-methods-blik-android-component-earlier-versions — Q1/Q2
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-blik-android-component-earlier-versions]].
+
+## Q1 — What is this page for, and what cannot be inferred?
+
+[[source-adyen-docs-payment-methods-blik-android-component-earlier-versions]] is the earlier-version BLIK Android Component v4.x.x add-on. It covers a Components dependency/view, client `blik` discovery and valid-state handoff, `await` action handling, and a server `/payments/details` handoff (raw lines 15–147). It does not specify the full server `/payments` payload, result-code/webhook outcome, or a One Click token-payment flow (full raw, lines 1–174). The v3.8.0 minimum is a page-stated requirement inside a v4.x.x guide, not proof of later SDK behavior (raw lines 15–26).
+
+## Q2 — What central capability, prerequisites, and warnings are stated?
+
+[[source-adyen-docs-payment-methods-blik-android-component-earlier-versions]] requires existing Android Components v3.8.0+, BLIK in test Customer Area, a BLIK module, client-key configuration and a `BlikView` (raw lines 21–80). For the `/payments` handoff, the prose names `paymentComponentState.data.paymentMethod`, while the adjacent example serializes `state.data` and says to send that serialized object; the exact server payload is unresolved (raw lines 83–90). For the returned `await` action, it sets up `AwaitComponent`, calls `handleAction`, and passes observer `actionComponentData` to the server for `/payments/details` (raw lines 94–155). The page says the Component collects a phone number but also prescribes BLIK TEST code `999000`; the [[source-adyen-docs-payment-methods-blik]] overview describes six-digit code entry, so that input discrepancy remains unresolved (this raw lines 57–81, 158–164; overview raw lines 23–36). The base-integration link is malformed, the details link points to Drop-in, the See also link points to Sessions while operational links point to Advanced, and the observer example has `awaitcomponent` versus `awaitComponent` casing (raw lines 25, 61, 98, 130–155, 170–174). Live BLIK must be added in live Customer Area (raw lines 166–168).

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-pay-by-bank-us-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pay by Bank (US) Android Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pay-by-bank-us/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md\"\ntags: [adyen, pay-by-bank-us, android, components, ach, redirect]\n---\n\n## Overview\n\nAdyen's 2026-09-15 Pay by Bank (US) Android Component guide adds the method to an existing Android Components integration in either Sessions or Advanced flow. It covers method setup, version-dependent Component choices, redirect/outcome ownership, ACH capture risk, recurring-token navigation, TEST scenarios and live Plaid registration. See [[adyen]], [[adyen-android-sdk]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- Both flow-specific requirements call for an existing Android Components integration with minimum version **5.70.0** and Support-mediated Pay by Bank (US) setup in the Customer Area (raw lines 21-37). This is the page's stated minimum, not an SDK version independently verified here.\n- The API-reference tabs distinguish `/sessions` from `/payments`. The `/sessions` table marks `countryCode` required, yet its own description says US is the default if omitted; the `/payments` table marks it optional and likewise says US is the default. Both descriptions limit support to US in this snapshot and say the field determines banks shown by the partner (raw lines 39-57). Treat the Sessions required/default wording as unresolved rather than silently declaring the field optional.\n- The page says no additional Pay by Bank (US) Component configuration is needed. It assigns module `paybybank-us` and `PayByBankUSComponent` to v5.8.0 or later, versus module `instant` and `InstantPaymentComponent` for v5.7.1 or earlier. That earlier-version path conflicts with the same page's 5.70.0 minimum, so it is historical/conditional guidance, not evidence that an earlier version meets the current prerequisite. Sessions and Advanced examples show regular and stored-method Component creation; they are SDK snippets, not successful-payment proof (raw lines 59-139).\n- Existing Components redirect handling and payment-outcome handling are said to need no extra method-specific work. The page does not define which response or webhook proves final authorization or settlement; do not read this as a bypass of the base integration's result handling (raw lines 141-147).\n- Adyen strongly recommends immediate capture because authorization-time Plaid balance/risk checks do not hold bank funds, and asynchronous ACH capture can still encounter insufficient funds even when performed immediately (raw lines 149-155).\n- Pay by Bank (US) supports recurring tokenization; the page strongly recommends explicit shopper permission for future payments and routes token creation, subsequent use and management to the general tokenization guide. It gives no method-specific request schema here (raw lines 157-167).\n- TEST simulations cover selected approvals, refusals, balances and ACH chargebacks, but not all refusal reasons. The chargeback simulation first returns `Authorised`, then begins after capture and settlement and is reported by `CHARGEBACK` webhook. Live acceptance requires adding the method in the live Customer Area and completed Plaid bank registration; the page says this can take up to one business week after Plaid starts and sends `paymentMethod.created` when acceptance can begin (raw lines 169-224).\n\n## Detail locators\n\n- Sessions and Advanced prerequisites: raw lines 21-37.\n- API-reference field wording and Component version branches: raw lines 39-139.\n- Redirect/outcome boundaries, capture and recurring: raw lines 141-167.\n- TEST payment/chargeback simulations and live gate: raw lines 169-224.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15|Pay by Bank (US) Android Component guide (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.70.0.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md:29 (Sessions requirement; repeated at 36 for Advanced)"
+    },
+    {
+      "text": "Currently, only **US** is supported. This is also the default if you do not include this parameter.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md:49 (/sessions countryCode description; repeated at 57 for /payments)"
+    },
+    {
+      "text": "For **v5.7.1 or earlier** use **instant**.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md:68 (Import the module)"
+    },
+    {
+      "text": "However, even with immediate capture there is still a risk of insufficient funds at the time of capture, because capturing is an asynchronous process on the ACH Direct Debit network.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md:155 (Capture)"
+    },
+    {
+      "text": "For this reason, you cannot accept live Pay by Bank (US) payments until the registration process is completed.",
+      "location": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md:222 (Go live)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pay-by-bank-us-android-component-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pay-by-bank-us-android-component]] \u2014 2026-09-15 Pay by Bank (US) Android Components Sessions/Advanced add-on with version-qualified module setup, ACH capture risk and Plaid live gate; see source for version and countryCode tensions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source says Components minimum 5.70.0 in both flow requirements but also gives a v5.7.1-or-earlier module/Component path; the /sessions countryCode table marks required while its description says US defaults if omitted."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pay-by-bank-us/android-component/2026-09-15.md",
+  "raw_sha256": "31a07e1e79f2b7f908d5095125f921c828854bf8ffaad91e07afb63c030c6c00",
+  "status": "candidate_ready"
+}

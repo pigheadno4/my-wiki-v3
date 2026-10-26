@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-blik-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"BLIK for API only | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/blik/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/blik/api-only/2026-09-15.md\"\ntags: [adyen, blik, api-only, one-click, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 snapshot of an Adyen BLIK API-only add-on covers a merchant-built payment form, BLIK with a shopper-entered six-digit code, and a BLIK One Click consent/token route. It assumes an existing API-only integration, says BLIK works with all Checkout API versions, and requires BLIK to be added in the test Customer Area before testing. Its `/paymentMethods` discovery and `/payments` instructions use PL and PLN (raw lines 17\u201326, 28\u201350, 418\u2013441).\n\n## Key takeaways\n\n- For BLIK with code, the form offers BLIK and collects `blikCode`. The merchant requests `/paymentMethods` with `countryCode: PL` and a PLN amount, then sends `paymentMethod.type: blik` and the entered six-digit `paymentMethod.blikCode` in `/payments` (raw lines 28\u201350). The v68 curl payload and versioned language-library blocks are examples, not a minimum API-version requirement (raw lines 25, 52\u2013360).\n- The documented `/payments` response is `Pending` with an `action` for a waiting screen while the shopper completes the payment in the BLIK app. The `AUTHORISATION` webhook's success field supplies the later success or failure outcome; `Pending` is not authorization success. A `Refused` response can occur, for example, with an incorrect code (raw lines 362\u2013404).\n- The One Click tab asks `/paymentMethods` for a shopper reference and describes a recognizable issuer label. To request consent for later code-free payments, it lists `shopperReference`, `storePaymentMethod: true`, and `recurringProcessingModel: CardOnFile` on a code-bearing initial `/payments` request. After shopper consent, it says a separately enabled Recurring tokens life cycle webhook of type `recurring.token.created` carries `storedPaymentMethodId`, `eventId`, and `shopperReference` (raw lines 418\u2013441, 509\u2013517). This section does not give a distinct subsequent code-free `/payments` payload.\n- The One Click tab has internal tensions: the earlier BLIK-with-code discovery text makes stored BLIK conditional on prior signup, but the One Click text states `storedPaymentMethods.type: blik` unconditionally; the prose names `additionalData.BLIK.APP_LABEL` while the example shows `Blik.APP_LABEL`. Its curl sample omits a comma after `recurringProcessingModel` and quotes `storePaymentMethod` as a string despite the prose's `true`; do not copy that sample as validated JSON (raw lines 43, 426, 450\u2013453, 517\u2013529).\n- The code route says to use test code `999000`, meet BLIK guidelines, and test end to end; BLIK must be added in live Customer Area before live acceptance. The One Click live instructions additionally say to seek BLIK certification and enablement (raw lines 406\u2013416, 532\u2013545).\n\n## Detail locators\n\n- API-only prerequisite and test Customer Area setup: raw lines 21\u201326.\n- BLIK-with-code form, discovery, request and versioned examples: raw lines 28\u201350, 52\u2013360.\n- Pending/action response, waiting screen and asynchronous authorization outcome: raw lines 362\u2013404.\n- BLIK One Click discovery, consent request, example limitations and token webhook: raw lines 418\u2013529.\n- Route-specific test and live gates: raw lines 406\u2013416, 532\u2013545.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/blik/api-only/2026-09-15|BLIK for API only, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "An API-only integration of BLIK works with all versions of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview).",
+      "location": "raw/adyen/docs/payment-methods/blik/api-only/2026-09-15.md:25"
+    },
+    {
+      "text": "Include a field where the shopper can enter the `blikCode` for their corresponding payment.",
+      "location": "raw/adyen/docs/payment-methods/blik/api-only/2026-09-15.md:35"
+    },
+    {
+      "text": "`resultCode`: **Pending** (The shopper must complete the payment in their BLIK app.)",
+      "location": "raw/adyen/docs/payment-methods/blik/api-only/2026-09-15.md:364"
+    },
+    {
+      "text": "Include the following parameters to request the shopper to give consent for future BLIK payments to proceed without the 6-digit code:",
+      "location": "raw/adyen/docs/payment-methods/blik/api-only/2026-09-15.md:437"
+    },
+    {
+      "text": "If the shopper gave consent to make future payments without a BLIK code, you will also receive a [Recurring tokens life cycle](/online-payments/tokenization/create-tokens#enable-the-webhook) webhook with type `recurring.token.created`.",
+      "location": "raw/adyen/docs/payment-methods/blik/api-only/2026-09-15.md:509"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c41-blik-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-blik-api-only]] \u2014 2020-modified, 2026-09-15-captured BLIK API-only code and One Click consent/token guide for PL/PLN, with Pending-to-AUTHORISATION outcome and mismatched One Click examples qualified in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/blik/api-only/2026-09-15.md",
+  "raw_sha256": "87464fabae85acfb22185242da2267773209233a72fb2cac843fbf8827b62e41",
+  "status": "candidate_ready"
+}

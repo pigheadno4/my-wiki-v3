@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-twint-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen TWINT Web Component guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/twint/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/twint/web-component/2026-09-15.md\"\ntags: [adyen, twint, web, components, sessions, advanced, capture, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds TWINT to an existing Web Components integration, with separate Sessions and Advanced server-side instructions. It covers redirect prerequisites, `Twint` import/initialization, recurring-token use, and a later capture section. It does not give a concrete TWINT `/payments` response, redirect return or final payment webhook sequence; follow the main flow authority for those steps. This snapshot does not prove merchant enablement, token creation, capture or payment success. See [[adyen]], [[adyen-online-payments]] and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Sessions:** requires an existing Web Components Sessions integration, **Checkout API v68 or later**, `action.type: redirect` handling and TWINT added in Customer Area. It states no TWINT-specific `/sessions` parameters or Component configuration. The page imports `Twint` from `@adyen/adyen-web` and constructs `new Twint(checkout, {...}).mount('#twint-container')`; the snippet's configuration-object comment should not override the explicit no-additional-configuration statement. (raw lines 25\u201376)\n- **Advanced:** separately requires existing Web Components Advanced, redirect handling and Customer Area addition. It also imports/initializes `Twint` and says no TWINT-specific `/payments` parameters. This section does **not** state a Checkout API minimum or a separate no-extra-configuration rule; do not carry the Sessions-only v68/configuration wording across unqualified. (raw lines 125\u2013167)\n- **Recurring:** both flow sections require token creation and reuse. Initial `/payments` adds `storePaymentMethod: true` and a shopper-unique `shopperReference` of at least three characters. Once details are stored, `recurring.token.created` supplies `storedPaymentMethodId`, initial payment `pspReference` as `eventId`, and shopper reference; the merchant server must receive lifecycle webhooks. Future `/payments` requests use the stored ID, same shopper reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile`. The page repeats this token route after its capture section; it does not show a successful token issuance or later payment. (raw lines 78\u2013117, 169\u2013208, 245\u2013282)\n- **Capture:** the later section says TWINT is captured automatically by default with Capture Delay **Immediate** or **1\u20137 days**. If the setting is **Manual**, authorization expires after **7 days**, so capture must occur before then. TWINT allows a partial capture but not multiple partial captures; any unclaimed remainder is automatically cancelled. Capture prose names `modificationAmount` while the JSON example uses `amount` and `reference`; verify the endpoint contract instead of treating the example as a consistent field list. The page does not tie this section to one flow explicitly. (raw lines 216\u2013243)\n- **Environment:** both flow sections direct TEST status checks to Customer Area and require a separate TWINT request in the **live** Customer Area before live acceptance. These instructions are not evidence of test success or live activation. (raw lines 119\u2013123, 210\u2013214)\n\n## Detail locators\n\n- Sessions requirements, no-extra-fields/config, Web import and Component: pinned raw lines 25\u201376.\n- Advanced prerequisites, Web import/Component and `/payments` field statement: pinned raw lines 125\u2013167.\n- Repeated token lifecycle and ContAuth models: pinned raw lines 78\u2013117, 169\u2013208 and 245\u2013282.\n- Capture setting, seven-day expiry, partial-capture remainder and prose/example mismatch: pinned raw lines 216\u2013243.\n- TEST checks and LIVE request gates: pinned raw lines 119\u2013123 and 210\u2013214.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment/action context\n- [[adyen-tokenization]] \u2014 provider stored-method lifecycle\n- [[source-adyen-docs-payment-methods-twint]] \u2014 TWINT method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/twint/web-component/2026-09-15|TWINT Web Component guide, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#create-a-payment-session).",
+      "location": "raw line 42, Sessions request"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for TWINT.",
+      "location": "raw line 60, Sessions configuration"
+    },
+    {
+      "text": "When the payment details have been stored, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 94, Sessions token creation; repeated raw lines 185 and 259"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "raw line 243, Capture partial capture"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "twint-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-twint-web-component]] \u2014 2026-09-15 TWINT Web Components Sessions/Advanced redirect and token guide with later seven-day/partial-capture rules; source scopes v68+ to Sessions and records capture-example mismatch.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/twint/web-component/2026-09-15.md",
+  "raw_sha256": "c8bbe7f33cd088f969547325c8bef38473d61cde6c693c9e5716df5ae3f177ea",
+  "status": "candidate_ready"
+}

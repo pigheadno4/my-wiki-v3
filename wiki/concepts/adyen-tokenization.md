@@ -15,6 +15,36 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-twint-flutter-component]] — TWINT Flutter Components `/payments` token-creation fields, `recurring.token.created` webhook and Subscription/UnscheduledCardOnFile `ContAuth` reuse; consent/outcome proof remains outside this guide.
+
+
+- [[source-adyen-docs-payment-methods-twint-ios-drop-in]] — TWINT iOS Drop-in `/payments` token creation and `recurring.token.created` receipt, then `ContAuth` Subscription or UnscheduledCardOnFile stored-method reuse; duplicated guide block adds no second lifecycle (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-twint-ios-component]] — TWINT iOS Components `/payments` storage fields, `recurring.token.created` webhook and later Subscription/UnscheduledCardOnFile `ContAuth` reuse; token/consent outcomes remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-drop-in]] — iOS Drop-in guide notes recurring tokenization and strongly recommends explicit shopper permission; creation and reuse steps are delegated to the general guide (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-web-drop-in]] — 2026-09-15 Web Drop-in guide says Pay by Bank (US) supports recurring tokenization and recommends explicit shopper permission; token request details remain in its linked general guide.
+
+
+- [[source-adyen-docs-payment-methods-pay-by-bank-us-web-component]] — Pay by Bank (US) Web Components guide notes recurring tokenization and strongly recommends explicit shopper permission; method-specific token requests are delegated to the general guide (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-twint-android-drop-in]] — TWINT Android Drop-in token-creation webhook and Subscription/UnscheduledCardOnFile `ContAuth` reuse, plus distinct Sessions/Advanced stored-method UI steps; source preserves `storedPaymentMethodMode` spelling caveat.
+
+
+- [[source-adyen-docs-payment-methods-twint-android-component]] — TWINT Android Components token creation, recurring.token.created lifecycle and Subscription/UnscheduledCardOnFile ContAuth reuse with separate stored-method display paths; source flags a Sessions field spelling (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-blik-ios-drop-in]] — BLIK iOS guide's OneClick consent fields and `recurring.token.created` notification for later no-code use; the source does not provide a complete reuse request and the BLIK overview marks recurring unsupported.
+
+
+- [[source-adyen-docs-payment-methods-blik-web-component]] — BLIK One Click shopper-consent and recurring.token.created stored-method route (2026-09-15 capture); conflicting code-free prose and request/example fields remain source-qualified.
+
+
 - [[source-adyen-docs-payment-methods-gopay-api-only]] — GoPay API-only post-settlement recurring token webhook, later Subscription ContAuth and shopper-PIN CardOnFile redirect/details paths (2026-09-15 snapshot).
 
 
