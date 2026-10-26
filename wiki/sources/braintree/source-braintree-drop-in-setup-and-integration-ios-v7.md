@@ -25,6 +25,9 @@ This captured Braintree setup-and-integration page is stored at an iOS v7 Drop-i
 
 ## Detail locators
 
+> [!warning] Contradiction
+> This 2026-09-16 website snapshot gives October 1, 2026/2027 lifecycle milestones. The separately ingested repository README at `default-branch@ae66bc6` (commit 2026-04-23, ingested 2026-10-27) gives September 1, 2026/2027 and retains stale Inactive/active-development wording. Keep both schedules attributed to their evidence; neither snapshot alone establishes current support or an automatic processing cutoff. See [[source-github-braintree-ios-drop-in]] for the reciprocal warning and preserved `9.14.0` baseline. This warning does not change the website raw or its original ingest date.
+
 - Dated deprecation, update cutoff, processing-support window, unsupported milestone, assistance cutoff, and possible suspension: `**IMPORTANT**`, lines 17-20.
 - Required migration to the Braintree iOS SDK: `**IMPORTANT**`, line 22.
 - iOS v7 unsupported-through-Drop-in notice and v5 guide route: `**NOTE**`, lines 27-28.

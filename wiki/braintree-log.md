@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-27] ingest | iOS Drop-in `default-branch@ae66bc6`
+
+- Approved serial delta `github-fce4c89c9e41ed166c99`: `d951d104ac960188824bda191be2f57c57351a31` -> `ae66bc646250711940d72834caab3c377d485879` (commit 2026-04-23). User approved focused reading: complete old/new README, comparisons and cumulative source/changelog; mechanically verified manifests/unchanged evidence and relevant shared company/index/log sections read.
+- Only README changed among 203 retained files; all 406 prior/current size/SHA-256/Git blob identities pass. September 2026 deprecation/no-update and September 2027 unsupported notices, suspension qualification and modular migration direction ingested; original 9.14.0 implementation/dependencies/history preserved. v8 April 2023 unsupported date is retrospective.
+- Recorded stale Inactive/active-development wording and the retained website guide's October dates with reciprocal source warnings. Neither source proves present policy or automatic payment suspension. Existing iOS concept updated first, then source/changelog, company/catalog/logs; source_count 797 unchanged. No cross-provider comparison, new collection, SDK/payment execution, commit or push.
+
 ## [2026-10-23] ingest | GraphQL `default-branch@9f76e60`
 
 - Approved additive full override for `github-95315bcbe1395348621a`: `3a89f427466a0a978dbfcfd953913f4e76c3264a` -> `9f76e60580da00f6740a20692d0b5ea2f313d93e`. Explicit focused reading of changed definitions/affected prior definitions, notes and cumulative history; unchanged schema/history/generated evidence mechanically verified, shared wiki sections read. Source/changelog retain all earlier body lines.

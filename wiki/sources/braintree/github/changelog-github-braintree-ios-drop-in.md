@@ -2,8 +2,10 @@
 title: "GitHub changelog: braintree/braintree-ios-drop-in"
 type: source
 date_ingested: 2026-08-13
+date_updated: 2026-10-27
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/manifest.json"
   - "github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json"
 tags: [braintree, ios, mobile-sdk, drop-in, changelog, github-repository]
 ---
@@ -11,6 +13,19 @@ tags: [braintree, ios, mobile-sdk, drop-in, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree-ios-drop-in`. Cumulative implementation knowledge belongs in [[source-github-braintree-ios-drop-in]] and the linked immutable snapshots.
+
+## `default-branch@ae66bc6` Documentation Delta (ingested 2026-10-27)
+
+Approved serial delta `github-fce4c89c9e41ed166c99`: `d951d104ac960188824bda191be2f57c57351a31` -> `ae66bc646250711940d72834caab3c377d485879`. Upstream commit date 2026-04-23. This is an unreleased documentation ref, not a new package release; all `BraintreeDropIn@9.14.0` history below remains preserved.
+
+- Adds September 1, 2026 deprecation/no-update and September 1, 2027 unsupported milestones, one-year processing-support wording and possible suspension after unsupported status. Directs migration to the modular SDK; no new payment API, dependency or compatibility claim.
+- Updates v9 lifecycle table and retrospectively supplies v8's April 2023 unsupported date. Preserves original baseline Active/TBA evidence.
+- Flags stale Inactive/active-development prose and September-versus-October dates in the retained iOS website guide. Reciprocal warnings in both sources and the iOS concept; neither snapshot proves current policy or an automatic payment cutoff.
+- README is the sole changed retained file; 202 unchanged. All 406 prior/current file sizes/hashes/Git identities verified. Focused reading approved for manifests/shared context; full old/new README, comparisons and cumulative source/changelog reads. No build, payment test, registry change or raw modification.
+
+Updated: existing iOS concept first, cumulative source/changelog, reciprocal website warning, company/catalog and logs. No new source count or cross-provider comparison. Details and located quotes: [[source-github-braintree-ios-drop-in]].
+
+Evidence: [snapshot](raw/github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/manifest.json), [README](raw/github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/files/README.md), [comparison](tracking/github/repos/braintree/braintree-ios-drop-in/comparisons/default-branch/d951d10--ae66bc6/comparison.json), [patch](tracking/github/repos/braintree/braintree-ios-drop-in/comparisons/default-branch/d951d10--ae66bc6/diff.patch).
 
 ## `BraintreeDropIn@9.14.0` (2025-03-06)
 

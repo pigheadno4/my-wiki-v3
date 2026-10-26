@@ -67,6 +67,11 @@ Locale, card-brand regex and CVV-delay implementations adopt iOS 15-compatible A
 
 ## Prebuilt iOS Drop-in
 
+The additive `default-branch@ae66bc6` documentation delta (ingested 2026-10-27) preserves the `9.14.0` implementation baseline. Its README schedules deprecation/no updates from September 1, 2026 and unsupported status from September 1, 2027, after which processing can be suspended; it directs migration to the independently versioned modular Braintree iOS SDK. No retained payment source or dependency changed. [[source-github-braintree-ios-drop-in]] [[changelog-github-braintree-ios-drop-in]]
+
+> [!warning] Contradiction
+> The repository notice gives September 2026/2027 milestones, but the retained website setup guide gives October 2026/2027. The README also retains Inactive and active-development wording despite its dated notice. These are source-specific historical statements, not proof of current support or an automatic processing cutoff. Preserve both and verify current provider guidance before a migration decision. [[source-braintree-drop-in-setup-and-integration-ios-v7]] [[source-github-braintree-ios-drop-in]]
+
 
 `BraintreeDropIn@9.14.0` is an independently versioned UIKit payment-selection package, not part of the `braintree-ios@7.9.0` release. It supports iOS 12+, Xcode 15+, and Swift 5.9 and requires the older `braintree_ios` 5.27 dependency line. Do not apply modular v7 behavior to this Drop-in baseline without a compatible release.
 

@@ -1008,6 +1008,8 @@ PayPal supports separate checkout and vault requests, including billing-agreemen
 
 ## iOS Drop-in Surface
 
+The later documentation ref `default-branch@ae66bc6` (commit 2026-04-23; ingested 2026-10-27) schedules September 1, 2026 deprecation/no updates and September 1, 2027 unsupported status, after which processing may be suspended, and directs migration to the modular Braintree iOS SDK. Only the retained README changed. Stale Inactive/active-development wording and the website guide's October milestones remain unresolved source-specific conflicts, not proof of current support or a payment cutoff. The `9.14.0` implementation/dependency baseline below remains intact. [[source-github-braintree-ios-drop-in]] [[changelog-github-braintree-ios-drop-in]] [[source-braintree-drop-in-setup-and-integration-ios-v7]]
+
 `BraintreeDropIn@9.14.0` provides a prebuilt UIKit payment-selection experience for cards, PayPal, Venmo, Apple Pay, saved methods, vault management, and card 3D Secure. It supports iOS 12+ and requires `braintree_ios` 5.27.0, so behavior from the independently retained `braintree-ios@7.9.0` modular SDK cannot be attributed to it.
 
 Most selections return a nonce for server processing. Apple Pay selection returns only a method type and requires the merchant to present and tokenize the Apple Pay sheet separately. Venmo visibility additionally requires remote enablement and an installed Venmo app at this baseline.
@@ -1063,6 +1065,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest ingested Android Drop-in documentation/build ref: `default-branch@72c0586` at `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` (2026-10-20); not a new package release
 - Latest ingested iOS release: `braintree-ios@7.13.0` at `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`
 - Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
+- Latest ingested iOS Drop-in documentation ref: `default-branch@ae66bc6` at `ae66bc646250711940d72834caab3c377d485879` (2026-10-27); not a new package release
 - Latest retained iOS PopupBridge release: `PopupBridge@3.1.0` at `00256b4b8c58367287fe35a442a33cd7c010a94f`
 - Latest retained Android PopupBridge release: `popup-bridge@5.3.0` at `f30654168b997ea1dd95ebc61901582ae00bebb0`
 - Latest retained mobile SDK tooling ref: `default-branch@a3b0ffe` at `a3b0ffe7931cde179f8b0dfdd5162979adf81683`
@@ -1096,8 +1099,8 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - [[changelog-github-braintree-android-drop-in]] - package-qualified Android Drop-in release ledger
 - [[source-github-braintree-ios]] - cumulative native iOS implementation baseline
 - [[changelog-github-braintree-ios]] - package-qualified iOS release ledger
-- [[source-github-braintree-ios-drop-in]] - cumulative prebuilt iOS Drop-in implementation baseline
-- [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release ledger
+- [[source-github-braintree-ios-drop-in]] - preserved 9.14.0 implementation plus ae66bc6 lifecycle/migration notice and source-specific date contradictions
+- [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release and documentation-ref ledger
 - [[source-github-popup-bridge-ios]] - cumulative iOS WebView popup transport baseline
 - [[changelog-github-popup-bridge-ios]] - package-qualified iOS PopupBridge release ledger
 - [[source-github-popup-bridge-android]] - cumulative Android WebView popup transport baseline

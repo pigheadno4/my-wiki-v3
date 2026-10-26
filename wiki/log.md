@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-27] ingest | Braintree iOS Drop-in documentation ref
+
+- Approved focused-reading delta for `default-branch@ae66bc6`: lifecycle/migration notices and date/status contradictions, preserving all `9.14.0` history. Details [[braintree-log]], [[source-github-braintree-ios-drop-in]] and [[changelog-github-braintree-ios-drop-in]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-27] ingest | Adyen website C40
 
 - Fifty independently approved iDEAL, GoPay, DuitNow and PromptPay documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 4 concepts touched (0 new); source_count 2014 = 2000 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-40/`; details [[adyen-log]]. No commit/push.

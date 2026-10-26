@@ -2,8 +2,10 @@
 title: "GitHub: braintree/braintree-ios-drop-in"
 type: source
 date_ingested: 2026-08-13
+date_updated: 2026-10-27
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/manifest.json"
   - "github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json"
 tags: [braintree, ios, mobile-sdk, drop-in, paypal, venmo, apple-pay, 3d-secure, github-repository]
 ---
@@ -15,6 +17,8 @@ tags: [braintree, ios, mobile-sdk, drop-in, paypal, venmo, apple-pay, 3d-secure,
 Repository: <https://github.com/braintree/braintree-ios-drop-in>
 
 ## Version and Dependency Boundary
+
+The additive documentation ref `default-branch@ae66bc6` was ingested 2026-10-27. It does not replace or advance the package release `BraintreeDropIn@9.14.0`; the original implementation and dependency findings below remain that release's historical baseline.
 
 The retained tag resolves to SHA `d951d104ac960188824bda191be2f57c57351a31` and was released on 2025-03-06. It supports iOS 12+, Xcode 15+, and Swift 5.9. Exact `9.14.0` only raises the underlying `braintree_ios` requirement to 5.27.0; CocoaPods constrains its Braintree modules to the 5.27 line.
 
@@ -65,6 +69,34 @@ The capsule retains public and implementation source, demo and SwiftUI wrapper e
 
 No prior exact-SHA Drop-in snapshot exists in the wiki. Version-to-version claims before `9.14.0` rely on the repository changelog rather than retained source comparisons.
 
+## Documentation Delta: `default-branch@ae66bc6`
+
+Approved delta `github-fce4c89c9e41ed166c99`, from `d951d104ac960188824bda191be2f57c57351a31` to `ae66bc646250711940d72834caab3c377d485879`; collected and ingested 2026-10-27. The ending commit is dated 2026-04-23, not a newly published October release. `BraintreeDropIn@9.14.0` remains the retained package release.
+
+### Lifecycle and Migration Notice
+
+- The exact-SHA README schedules deprecated status and no further SDK updates from September 1, 2026. It states processing remains supported for one year after that date.
+- Unsupported status is scheduled for September 1, 2027, with Braintree developer/support assistance ending and processing subject to suspension at any time. This is not proof that processing automatically stops on that date, or that any merchant transaction currently succeeds.
+- The stated migration target is the modular Braintree iOS SDK, not a new Drop-in release. This delta supplies no migration implementation and does not prove Drop-in compatibility with the separately versioned modular SDK.
+- The versions table changes v9 from Active/TBA/TBA to Inactive/September 2026/September 2027, and fills v8's unsupported date as April 2023. The latter is retrospective documentation, not a newly unsupported v8 event in October 2026.
+
+> [!warning] Contradiction
+> The original `9.14.0` README lists v9 as Active with TBA dates; the later ref adds dated September 2026/2027 notices but still labels it Inactive and retains active-development prose. As of ingest, the September 2026 milestone has passed; stale labels do not extend the stated dates. Separately, [[source-braintree-drop-in-setup-and-integration-ios-v7]] preserves a 2026-09-16 website snapshot specifying October 1, 2026/2027 instead. The repository commit predates that website capture, but neither chronology nor this delta establishes which policy is currently authoritative. Preserve both source-specific schedules and reverify current provider guidance rather than silently selecting a date.
+
+### Evidence and Reading Limits
+
+Both capsules contain 203 files. Only README changes; the other 202 retained files, including payment implementation, package metadata and changelog, are identical. All 406 file sizes, SHA-256 hashes and Git blob identities were verified. The policy-bounded comparison does not inventory the whole upstream tree: repository workflow/security changes observed during online recheck are outside this capsule and are not ingested security-policy evidence.
+
+User approved focused reading: old/new README, comparison and cumulative source/changelog read fully; manifests verified mechanically and relevant shared company/index/log sections read. All `9.14.0` history remains. No SDK build, dependency resolution, device test, payment execution, automatic upgrade, commit or push.
+
+### Located Grounding
+
+Under `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/files/README.md`:
+
+- Line 9: "September 1, 2026" - deprecation milestone.
+- Line 11: "September 1, 2027" - unsupported milestone.
+- Line 11: "Processing for unsupported SDKs can be suspended at any time."
+
 ## Related
 
 - [[changelog-github-braintree-ios-drop-in]] - package-qualified iOS Drop-in release ledger
@@ -74,6 +106,10 @@ No prior exact-SHA Drop-in snapshot exists in the wiki. Version-to-version claim
 - [[braintree]] - company and knowledge-status page
 
 ## Raw Sources
+
+- Documentation-ref snapshot: [manifest](raw/github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/manifest.json)
+- Documentation-ref README: [exact raw](raw/github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/files/README.md)
+- Exact ref comparison: [manifest](tracking/github/repos/braintree/braintree-ios-drop-in/comparisons/default-branch/d951d10--ae66bc6/comparison.json), [review](tracking/github/repos/braintree/braintree-ios-drop-in/comparisons/default-branch/d951d10--ae66bc6/comparison.md), [patch](tracking/github/repos/braintree/braintree-ios-drop-in/comparisons/default-branch/d951d10--ae66bc6/diff.patch)
 
 - Snapshot manifest: `raw/github/braintree/braintree-ios-drop-in/snapshots/2026-08-13-d951d10/manifest.json`
 - Release manifest: `raw/github/braintree/braintree-ios-drop-in/releases/braintreedropin/9.14.0/2026-08-13/manifest.json`

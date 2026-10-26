@@ -6113,6 +6113,33 @@
   Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.3/2026-10-06/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.2--1.50.3/comparison.json)
 
+## `github-fce4c89c9e41ed166c99`
+
+- Repository: `braintree/braintree-ios-drop-in`
+- SHA: `ae66bc646250711940d72834caab3c377d485879`
+- Collection date: `2026-10-27`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-ios-drop-in/snapshots/2026-10-27-ae66bc6/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-ios-drop-in/ingest-packets/github-fce4c89c9e41ed166c99/packet.md)
+- Review priority: `normal`
+- Required reading: `12` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@ae66bc6` (recommended `delta`)
+  Ref: `main`
+  From SHA: `d951d104ac960188824bda191be2f57c57351a31`
+  To SHA: `ae66bc646250711940d72834caab3c377d485879`
+  Comparison: [manifest](repos/braintree/braintree-ios-drop-in/comparisons/default-branch/d951d10--ae66bc6/comparison.json)
+
 ## `github-fce7ee241c398cc73695`
 
 - Repository: `paypal/paypal-android`
