@@ -1,0 +1,11 @@
+# Fixed retrieval checks — BACS Web Component
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-bacs-web-component.md`.
+
+## Q1. What is this source's purpose and scope, and what cannot be inferred?
+
+This is the 2026-09-15 **method-specific** BACS Direct Debit guide for existing Web Components Sessions and Advanced integrations (primary raw `raw/adyen/docs/payment-methods/bacs/web-component/2026-09-15.md:15-25,442-450`; canonical source stem `source-adyen-docs-payment-methods-bacs-web-component`). It is not a complete Components integration, evidence of Customer Area approval, a completed Direct Debit Instruction or proof of cleared funds. The live Customer Area request remains a prerequisite (`:430-440,923-933`). A recurring response of `Received` and `pspReference` only indicates receipt, with payment success to be tracked through webhooks (`:428,921`); the related approved BACS overview `source-adyen-docs-payment-methods-bacs` supplies separate DDI, clearing and chargeback context.
+
+## Q2. What are the central capability, prerequisites and warnings?
+
+Sessions requires existing Web Components Sessions, Checkout API **v68+**, BACS added in Customer Area and required `shopperEmail` in `/sessions`; the guide imports/initializes `BacsDirectDebit` without additional BACS config (`:25-45,343-369`). Advanced requires existing Web Components Advanced, Customer Area addition and `/payments` fields `shopperEmail`, `type=directdebit_GB`, holder name, bank account and routing number (`:442-494`). It does **not** state an Advanced API minimum; the v71/v72 TEST examples are endpoint examples, not replacements for a flow requirement (`:49-69,497-520`). For recurring debits, tokenize through an initial `/payments`, save the webhook `storedPaymentMethodId`, and reuse it with matching `shopperReference` and `ContAuth`; explicit permission is strongly recommended, while notice when date or amount changes is stated as required under the Direct Debit Guarantee (`:374-428,868-921`). Advanced prose says `action.type: Direct` and links to a redirect anchor, but the response example shows `voucher` and `Received`; flag the mismatch and avoid deriving final payment success from it (`:449,853-865,921`).

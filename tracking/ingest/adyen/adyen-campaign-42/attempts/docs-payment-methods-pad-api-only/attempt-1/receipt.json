@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-payment-methods-pad-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pre-Authorized Debit Canada API-only guide\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pad/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/pad/api-only/2026-09-15.md\"\ntags: [adyen, pad, canada, direct-debit, api-only, mandate, tokenization]\n---\n\n## Overview\n\nThis captured Adyen guide adds Pre-Authorized Debit Canada (PAD) to an existing API-only online-payments integration. It covers a merchant-built bank-detail form, mandate collection, CA/CAD payment-method discovery, `/payments`, tokenized recurring charges, asynchronous result interpretation, test returns and go-live setup. It is not proof of current merchant/bank eligibility or a completed bank debit. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-pad]] for the method-level mandate and chargeback boundaries.\n\n## Key takeaways\n\n- The guide requires an existing API-only integration, Checkout API v69 or later, Direct Debit Notice of Change Notification webhook subscription, Support-assisted Customer Area setup and a way to obtain shopper PAD consent. The merchant builds a form for Canadian account number, five-digit branch `bankLocationId`, three-digit `bankCode` and owner name; `/paymentMethods` uses `countryCode: CA` and `amount.currency: CAD` to request the method. The method overview additionally says the accepting merchant needs a Canadian account at a Canadian financial institution.\n- `/payments` lists `eft_directdebit_CA`, bank account number, branch ID, bank code and owner name as required; billing address is listed without a required mark. A PAD agreement must be obtained for a single debit or recurring series, and the overview says the merchant must save that agreement. One-off PAD is supported but not recommended because of chargeback risk.\n- The example initial `/payments` request includes optional recurring-token fields `recurringProcessingModel`, `shopperInteraction`, `shopperReference` and `storePaymentMethod`; its `amount.value` and `storePaymentMethod` are JSON strings (`\"1000\"`, `\"true\"`), while the prose describes the latter as a true tokenization flag and its response uses numeric amount. Treat the example as illustrative, not type-validation proof. Both primary `/paymentMethods` and `/payments` curl examples omit a shell continuation after `-X POST`, detaching their `-d` lines as printed.\n- The response's `additionalData` can carry generated PAD mandate ID, date of signature, token and shopper reference. Tokenization response fields appear only when creation parameters were supplied **and** Recurring details is enabled in Customer Area. For later recurring payments, the guide routes to general tokenization instructions, requires a shopper mandate, Recurring tokens lifecycle webhook and token reuse; it says the mandate ID need not be included again in a recurring request. Do not infer that the response's generated mandate ID replaces collecting and retaining shopper consent.\n- The immediate `Authorised` result means Adyen received the payment; the page says bank authorization may remain unknown for up to five business days. A successful debit appears in the Settlement Detail Report; failure produces `NOTIFICATION_OF_CHARGEBACK`. Its result table nevertheless tells merchants to inform the shopper that payment succeeded, creating a tension with the stated bank delay. Preserve the delay when presenting status. `Refused` is a separate immediate result. The overview says PAD lacks real-time authorization and chargebacks are not defendable.\n- The test section gives bank details and a `chargeback:<reason>` owner-name trigger; in test, a return goes directly to Chargeback. Its return-code table permits **one** retry within 30 days only for 01 NSF and 08 Funds Not Cleared, while other listed codes are marked no-retry; stopped/revoked/no-agreement cases call for resolving or suspending recurrence and sometimes a new PAD agreement. These are reason-specific instructions, not a general retry permission. Live setup requires Support to add PAD in the live Customer Area.\n\n## Detail locators\n\n- API v69+, Notice of Change webhook, Support and mandate prerequisites; shopper steps: pinned raw lines 23\u201351. CA/CAD `/paymentMethods` and broken curl sample: lines 53\u201392.\n- `/payments` required bank fields, optional billing address, mandate condition, tokenization fields and sample type/continuation cautions: pinned raw lines 94\u2013146.\n- Conditional `additionalData`, generated mandate ID/date/token and immediate result examples: pinned raw lines 148\u2013192. Recurring mandate and lifecycle route: lines 194\u2013205.\n- Test bank/return setup, reason-specific retry and no-retry table, live Support gate: pinned raw lines 207\u2013257. Merchant bank account, mandate preservation and non-real-time/nondefendable chargeback boundary: [[source-adyen-docs-payment-methods-pad]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main integration concept\n- [[adyen-tokenization]] \u2014 recurring-token concept\n- [[source-adyen-docs-payment-methods-pad]] \u2014 method-level mandate, merchant eligibility and chargeback authority\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pad/api-only/2026-09-15|PAD Canada API-only, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v69 or later.",
+      "location": "raw/adyen/docs/payment-methods/pad/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "Note that you need to [get a mandate](/payment-methods/pad/#mandate) (consent) from the shopper for the payment or series of recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/pad/api-only/2026-09-15.md:108"
+    },
+    {
+      "text": "The `tokenization` response parameters are only included if the payment request contained the parameters to create a token",
+      "location": "raw/adyen/docs/payment-methods/pad/api-only/2026-09-15.md:157"
+    },
+    {
+      "text": "It may take up to five business days to know whether the payment was authorized by the bank.",
+      "location": "raw/adyen/docs/payment-methods/pad/api-only/2026-09-15.md:191"
+    },
+    {
+      "text": "You can retry the transaction once within 30 days of the original authorization date.",
+      "location": "raw/adyen/docs/payment-methods/pad/api-only/2026-09-15.md:234"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pad-api-only-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pad-api-only]] \u2014 2026-09-15 PAD Canada API-only guide for CA/CAD bank-detail requests, merchant mandate, delayed bank authorization, conditional token data and reason-specific returns/retries; source qualifies example fields.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The guide calls an immediate Adyen receipt Authorised while stating bank authorization may take up to five business days; do not treat the initial result as cleared funds."
+        ]
+      },
+      {
+        "update_id": "pad-api-only-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pad-api-only]] \u2014 2026-09-15 PAD initial-payment token fields, conditional token response, mandatory shopper agreement and later recurring-token route; initial `Authorised` remains bank-pending.",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pad/api-only/2026-09-15.md",
+  "raw_sha256": "107999ec8e10029b753bc249c7be3714d03aa7e08bee4ccd02e579a89e750e73",
+  "status": "candidate_ready"
+}

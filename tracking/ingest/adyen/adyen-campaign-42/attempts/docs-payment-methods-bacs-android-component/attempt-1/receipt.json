@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bacs-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"BACS Direct Debit Android Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/android-component/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, android, components, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds BACS Direct Debit to an existing Android Components integration. It separates Sessions and Advanced server-side flows, with Component launch, request fields and tokenized recurring instructions. It is an add-on, not the base Android integration or the full BACS scheme/mandate authority. See the related [[source-adyen-docs-payment-methods-bacs|BACS overview]] for the Direct Debit Instruction (DDI), clearing delay and chargeback context (this raw lines 15\u201325, 508\u2013516; overview raw lines 23\u201327, 60\u201374).\n\n## Key takeaways\n\n- Sessions requires an existing Android Components Sessions integration, Checkout API v68 or later, and BACS addition in Customer Area. It marks `shopperEmail` required on `/sessions`; its examples use GB/GBP and an Android app-scheme return URL. Compose includes `bacs` and `components-compose` modules, while non-Compose includes `bacs`; both create `BacsDirectDebitComponent`. An optional `setSubmitButtonVisible` setting defaults to true (raw lines 25\u201345, 47\u201368, 341\u2013439). The curl example omits a continuation before `-d`, so it is not a copy-ready shell command (raw lines 51\u201368).\n- Advanced requires an existing Android Components Advanced integration with additional-action handling and BACS enabled in Customer Area. It uses the same Compose/non-Compose modules, Component and optional submit-button setting, but gets its payment method from `/paymentMethods` rather than a Checkout Session. Its `/payments` table marks `shopperEmail`, `paymentMethod.type: directdebit_GB`, holder name, bank account number and bank routing/sort code `bankLocationId` required (raw lines 508\u2013632). The Advanced curl also lacks a continuation before `-d` (raw lines 638\u2013661).\n- For recurring use, the guide recommends tokenization and **strongly recommends** explicit shopper permission and transparent schedule/amount; it does not label that recommendation as the entire DDI rule. It separately says the Direct Debit Guarantee requires advance notice if the collection date or amount changes, and strongly recommends notice before each payment. Initial token creation adds `shopperReference` and `storePaymentMethod: true` to `/payments`; save `storedPaymentMethodId` from `recurring.token.created`. Later recurring `/payments` use the token/reference plus `shopperReference` and `shopperInteraction: ContAuth` (raw lines 441\u2013494, 1008\u20131061). The related overview states shoppers confirm ownership/agreement and Adyen submits their DDI; clearing and settlement can take four to six days, and BACS chargebacks cannot be defended (overview raw lines 23\u201327, 60\u201374).\n- Advanced prose says `action.type: Direct`, but its purported successful response example contains `resultCode: Received` and `action.type: voucher` with `PDF_MANDATE_URL`. Treat this as an unresolved prose/example conflict; do not silently replace either value with the other or interpret `Received` as cleared/settled funds. The recurring section explicitly says webhooks track whether a received payment succeeds (raw lines 514\u2013515, 993\u20131006, 1061; overview raw lines 23\u201327).\n- The page provides TEST account details and asks merchants to check test payment status in Customer Area. It says a separate request in the **live** Customer Area is needed before live BACS acceptance. The historical examples and labels do not prove current availability, live enablement, successful debit or valid DDI (raw lines 496\u2013506, 1063\u20131073).\n\n## Detail locators\n\n- Sessions prerequisites, `shopperEmail` and example request: raw lines 25\u201368.\n- Sessions Compose/non-Compose imports, configuration and launch: raw lines 341\u2013439.\n- First recurring/token route, notice language and test/live gate: raw lines 441\u2013506.\n- Advanced prerequisites, imports, Component and required `/payments` fields: raw lines 508\u2013632.\n- Advanced request examples, conflicting response and recurring/token route: raw lines 634\u20131061.\n- Advanced TEST details and live gate: raw lines 1063\u20131073.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-bacs|BACS overview (DDI, clearing and chargeback context)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15|BACS Direct Debit Android Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15.md:34"
+    },
+    {
+      "text": "We strongly recommend that you request explicit permission from the shopper if you intend to make recurring BACS Direct Debit payments.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15.md:449"
+    },
+    {
+      "text": "Under the [Direct Debit Guarantee](https://www.directdebit.co.uk/direct-debit-explained/direct-debit-guarantee), if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15.md:451"
+    },
+    {
+      "text": "The response includes the `action.type`: **Direct**.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15.md:993"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15.md:1061"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-bacs-android-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-android-component]] \u2014 2026-09-15 BACS Android Components Sessions/Advanced add-on for request fields and recurring tokens; source flags Direct/voucher response conflict, notice qualifications and asynchronous outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/android-component/2026-09-15.md",
+  "raw_sha256": "35fdb874ed0ae03008ae2498abacfcf5334000f1f4a2f84def80c2b070489883",
+  "status": "candidate_ready"
+}

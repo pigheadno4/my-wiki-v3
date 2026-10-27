@@ -76,6 +76,12 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-bacs-ios]] — 2026-09-15 BACS iOS chooser for Drop-in and BACSDirectDebitComponent child guides plus Sessions/Advanced base routes; method behavior remains in linked sources.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-component]] — SEPA Direct Debit iOS `SEPADirectDebitComponent` guide for existing Sessions/Advanced integrations; Advanced prerequisite/action links need source-qualified reading (2026-09-15 capture).
+
+
 - [[source-adyen-docs-payment-methods-trustly-ios]] — 2026-09-15 Trustly iOS chooser for Drop-in and Redirect Component child guides plus Sessions base routes; overview-linked funds warning remains in source.
 
 

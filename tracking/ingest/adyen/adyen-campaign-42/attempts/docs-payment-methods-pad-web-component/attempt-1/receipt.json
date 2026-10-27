@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-pad-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Pre-Authorized Debit Canada Web Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pad/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/pad/web-component/2026-09-15.md\"\ntags: [adyen, pad, canada, web, components, mandates, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page adds Pre-Authorized Debit Canada (PADs Canada) to an existing Web Components integration. It gives separate Sessions and Advanced flow instructions, not a complete base integration or a substitute for the PAD mandate requirements in the related [[source-adyen-docs-payment-methods-pad|PAD overview]] (raw lines 15\u201325, 29\u201337, 194\u2013204).\n\n## Key takeaways\n\n- Both flows require Checkout API v69 or later, a method setup request to Support, a way to obtain shopper mandate consent, and subscription to `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` for outdated banking details (raw lines 29\u201337, 196\u2013204). The requirement to get a mandate applies to the payment or recurring series; token creation and a returned mandate ID do not themselves establish that the merchant obtained and retained the shopper's agreement (raw lines 83, 272, 312\u2013321; PAD overview raw lines 29\u201360).\n- Both flows import and initialize `PreAuthorizedDebitCanada`. Sessions says no extra Component configuration and adds optional billing address plus the standard four tokenization parameters to `/sessions`. Advanced shows optional `enableStoreDetails: true` to display a save-details checkbox from Web v5.24.0, and requires `eft_directdebit_CA`, bank account number, five-digit branch code, three-digit bank code, and owner name in `/payments`; its billing address and tokenization fields are listed separately (raw lines 43\u201383, 206\u2013272).\n- The guide recommends tokenizing an initial payment for subsequent recurring PADs and discourages one-off PADs due to chargeback risk. It requires a shopper mandate for future recurring payments, directs merchants to enable the recurring token lifecycle webhook, and says the mandate ID need not be included in a later token payment request. `storedPaymentMethodId` arrives through `recurring.token.created` and must be saved with the shopper reference (raw lines 81\u201383, 123, 129\u2013140, 270\u2013272, 353, 359\u2013370). Advanced `/payments` also describes conditional tokenization fields in `additionalData`: they require both token-creation request parameters and Customer Area **Developers > Additional data > Recurring details** (raw lines 312\u2013321).\n- An Advanced sample response has `resultCode: Authorised`, yet both outcome sections say it can take up to five business days to learn whether the bank authorized the debit. Successful payments appear in Settlement details; failed ones may produce `CHARGEBACK`. Do not equate the synchronous sample status, token webhook or request submission with final bank authorization or settled funds (raw lines 119\u2013125, 323\u2013355).\n- TEST accepts real Canadian bank details without debiting that account or the listed test credentials. Setting `ownerName` to `chargeback:<reason>` tests a return; in TEST the return goes directly to Chargeback. The return table allows codes 01 and 08 at most one retry within 30 days of original authorization, forbids retry for the listed other codes, and tells merchants to suspend recurring debits and resolve mandate or notification disputes for codes 15\u201321. Code 03 requires a new PAD agreement for a new transaction (raw lines 142\u2013188, 376\u2013418). Contact Support before adding PADs Canada in the live Customer Area; this source snapshot does not prove live activation or a real debit (raw lines 190\u2013192, 420\u2013422).\n\n## Source cautions\n\n- The two curl examples place `-d` on a new line after `-X POST` without a continuation, and show `storePaymentMethod` as the string `\"true\"`; verify syntax and field types against the linked Checkout API before copying them (raw lines 87\u2013115, 276\u2013310). Their sample Canadian billing address includes `city: Amsterdam`, so it is illustrative rather than validated Canadian address data (raw lines 102\u2013108, 297\u2013303).\n- Advanced calls `eft_directdebit_CA.mandateId` an Adyen-generated ID for the agreement and treats the initial request date as `dateOfSignature`; neither statement documents the customer's actual consent record. Follow the linked PAD mandate authority for what must be obtained and retained (raw lines 312\u2013321; PAD overview raw lines 29\u201360).\n\n## Detail locators\n\n- Sessions prerequisites, Component import, no additional configuration and `/sessions` fields: raw lines 25\u201383.\n- Sessions token outcome, delayed bank result, recurring and TEST/return behavior: raw lines 117\u2013192.\n- Advanced prerequisites, optional save-details checkbox and required `/payments` bank fields: raw lines 194\u2013272.\n- Advanced sample request/response, conditional additional data and delayed result: raw lines 274\u2013355.\n- Advanced recurring, TEST/return codes and live gate: raw lines 359\u2013422.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-pad|PAD overview (mandate and chargeback context)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pad/web-component/2026-09-15|PAD Web Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to add any configuration parameters for PADs Canada.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-component/2026-09-15.md:55"
+    },
+    {
+      "text": "Note that you need to [get a mandate](/payment-methods/pad/#mandate) (consent) from the shopper for the payment or series of recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-component/2026-09-15.md:83"
+    },
+    {
+      "text": "It can take up to five business days to know whether the payment was authorized by the bank.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-component/2026-09-15.md:125"
+    },
+    {
+      "text": "The `tokenization` response parameters are only included if the payment request contained the parameters to create a token, and in your Customer Area under **Developers** > **Additional data** you enabled **Recurring details**.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-component/2026-09-15.md:321"
+    },
+    {
+      "text": "You can retry the transaction once within 30 days of the original authorization date.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-component/2026-09-15.md:399"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-pad-web-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pad-web-component]] \u2014 2026-09-15 PAD Web Component Sessions/Advanced add-on for mandate-gated bank details, optional tokenization, delayed authorization and returns; sample requests require API cross-checking.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pad/web-component/2026-09-15.md",
+  "raw_sha256": "fb16b1cd419dd444ec200256403c38fa6528eaf95599f57f0e89a06171ff758b",
+  "status": "candidate_ready"
+}

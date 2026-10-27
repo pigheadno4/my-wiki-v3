@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"ACH Direct Debit Flutter Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, ach, direct-debit, flutter, drop-in, sessions, advanced]\n---\n\n## Overview\n\nThis 2026-09-15 page is a **short ACH-specific add-on** for existing Flutter Drop-in Sessions and Advanced integrations. It supplies flow prerequisites, no-extra-method-parameter/configuration statements and TEST bank/return fixtures. It does not describe the full Flutter integration, ACH bank validation, shopper mandate, final authorization or settlement. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions** requires an existing Flutter Drop-in Sessions flow, Checkout API **v68 or later**, and asking Adyen Support to add ACH Direct Debit in Customer Area. Its Sessions prerequisite link is actually an **Advanced-flow** Flutter URL; the later session-creation link targets Sessions. This mismatch should not redirect implementation to Advanced. See raw lines 25\u201341.\n- For the **Sessions** ACH add-on, no additional `/sessions` parameters or Drop-in configuration are specified. That means no **ACH-specific** additions here, not an empty base session request or waiver of ACH consumer bank verification and mandate obligations in the related [[source-adyen-docs-payment-methods-ach-direct-debit]] and [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]]. See raw lines 39\u201347.\n- **Advanced** requires an existing Flutter Drop-in Advanced flow and ACH addition in Customer Area. It states no ACH-specific Drop-in configuration or additional `/payments` parameters; the Advanced section gives no Checkout API minimum of its own. Base Advanced fields and ACH rules remain separate. See raw lines 67\u201388.\n- Both flow sections give TEST details: any correctly formatted bank account and ACH routing number with any owner name, plus `ownerName=chargeback:<ACH return reason>` (for example `chargeback:R01`) to simulate a chargeback. The page delegates reason codes and chargeback instructions to a separate guide. TEST fixtures are not live-bank validation or payment success. See raw lines 49\u201365 and 90\u2013106.\n- This page does **not** state a bank-authorization time or webhook outcome. Use the reviewed ACH overview and channel-specific outcome guides for asynchronous debit/return lifecycle; do not infer immediate success from this minimal add-on. See the page's complete implementation/outcome scope at raw lines 15\u2013106.\n\n## Detail locators\n\n- Sessions prerequisite/version/support and mismatched link: raw lines 25\u201335.\n- Sessions no-extra-fields/configuration: raw lines 37\u201347.\n- Sessions TEST payment and chargeback simulation: raw lines 49\u201365.\n- Advanced prerequisites and no-extra-config/request fields: raw lines 67\u201388.\n- Advanced repeated TEST fixtures: raw lines 90\u2013106.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Flutter online-payment route.\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH entity, SEC, mandate and return context.\n- [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]] \u2014 consumer bank-account validation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15|ACH Direct Debit Flutter Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md:34 (Sessions requirement)"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md:41 (Sessions method-specific additions)"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for ACH Direct Debit.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md:47 (Sessions; repeated Advanced line 82)"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md:88 (Advanced method-specific additions)"
+    },
+    {
+      "text": "For example, **chargeback:R01**.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md:63 (Sessions TEST; repeated Advanced line 104)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-flutter-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-flutter-drop-in]] \u2014 2026-09-15 ACH Flutter Drop-in Sessions (Checkout API v68+) and Advanced short add-on with no method-specific extra request/config fields and TEST return simulation; Sessions prerequisite URL misroutes to Advanced.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "No extra ACH-specific parameters does not waive base-flow fields, consumer account validation or shopper mandate. The page has no final-outcome instructions; do not treat its TEST fixtures as live proof. The Sessions prerequisite link targets Advanced."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "2f4ffb642981f3e03de1d939502b49f4f71de56ac500cc346f442c0f3e3cfbb7",
+  "status": "candidate_ready"
+}

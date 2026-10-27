@@ -70,6 +70,12 @@ The release updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the de
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-bacs-react-native-component]] — 2026-09-16 BACS React Native Component Advanced-only add-on for request fields, mandate-action response and recurring tokens; source qualifies Drop-in link, Direct/voucher conflict and delayed outcome.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-react-native-component]] — 2026-09-15 SEPA React Native Component guide: method-specific Advanced-only route, account fields, capture and shopper-absent recurring tokens; its Sessions limit is scoped to this page.
+
+
 - [[source-adyen-docs-payment-methods-mobilepay-react-native-component]] — 2026-09-15 method-specific React Native Components guide: MobilePay Sessions unsupported; Advanced redirect flow and payout-token exceptions are in the source. This does not change the wrapper's general Sessions capability.
 
 

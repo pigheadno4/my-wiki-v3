@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-bacs-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BACS Direct Debit API-only integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/api-only/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, api-only, advanced-flow, ui-certification, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds BACS Direct Debit to an **existing Web API-only Advanced-flow** integration. It covers method discovery, merchant-built UI, payment request, recurring tokens and test/live setup. The [[source-adyen-docs-payment-methods-bacs]] overview supplies DDI/mandate, clearing, advance-notice and chargeback context. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **API-only UI access risk:** Adyen strongly recommends Drop-in or Component because it says BACS Direct Debit **must certify the shopper-facing UI**. Without those solutions, the payment method **may be disabled** and shoppers may file chargebacks. This is a source-stated risk, not proof that any merchant has passed certification or that API-only is categorically forbidden. The API-only guide assumes an existing integration with handling labeled `action.type: Direct` and BACS added in Customer Area. (raw lines 15\u201331)\n- **Method discovery and form:** The merchant builds its own payment form and includes BACS among available methods. To obtain BACS in `/paymentMethods`, the page specifies `countryCode: GB` and `amount.currency: GBP`; the illustrated request is test Checkout API **v72**, not a stated minimum API version or present eligibility guarantee. A high-level step speaks of additional purchased-item information, but the dedicated payment-field table instead lists shopper email and bank details; do not infer a BACS-specific item payload from that prose. (raw lines 33\u201373, 330\u2013353)\n- **Payment request:** The `/payments` table marks `shopperEmail`, `paymentMethod.type: directdebit_GB`, `holderName`, `bankAccountNumber` and `bankLocationId` required; it describes the last as the bank routing number. The test v72 sample uses GB/GBP. Both displayed curl examples omit a line continuation after `-X POST`, so they are field illustrations rather than copy-ready commands. (raw lines 343\u2013381)\n- **Response/outcome conflict:** The prose says the response includes `action.type: Direct`; the immediately following \u201csuccessful payment\u201d JSON instead shows `resultCode: Received`, `action.type: voucher` and a `PDF_MANDATE_URL`. The page does not reconcile these shapes. It later says a successfully **received** payment has `Received` and a `pspReference`, with payment success tracked through webhooks. Thus this example does not establish the action contract, a completed DDI, a cleared debit or settled funds. (raw lines 714\u2013727, 780)\n- **Recurring and notice:** The guide recommends tokenizing for a recurring/subscription model. The initial `/payments` token step adds a unique `shopperReference` and `storePaymentMethod: true`; **when** `recurring.token.created` arrives, save `storedPaymentMethodId`. Later `/payments` use that stored ID or `recurringDetailReference` (the text qualifies it \u201cfor API v49 and above\u201d), same shopper reference and `shopperInteraction: ContAuth`. It strongly recommends explicit shopper permission and notice before each debit, and separately says a changed collection date or amount **must** be notified in advance under the Direct Debit Guarantee. The method overview has additional advance-notice timing and nondefendable chargeback risk. (raw lines 729\u2013780; [[source-adyen-docs-payment-methods-bacs]])\n- **Test/live gate:** The guide gives a test account name, account number and sort code and points to test Customer Area status. Before live BACS acceptance it requires a request in the **live** Customer Area. Neither historical sample nor test data establishes live approval. (raw lines 782\u2013792)\n\n## Detail locators\n\n- API-only UI certification risk, prerequisites and merchant-built form: pinned raw lines 15\u201343.\n- GB/GBP `/paymentMethods` filters, v72 example and `directdebit_GB` response: pinned raw lines 45\u201373 and 330\u2013341.\n- Required `/payments` fields, bank routing ID and v72 sample: pinned raw lines 343\u2013381.\n- `Direct` prose versus `voucher`/mandate-URL sample, and `Received`/webhook boundary: pinned raw lines 714\u2013727 and 780.\n- Token creation/reuse and notice language: pinned raw lines 729\u2013780.\n- Test account and live request: pinned raw lines 782\u2013792. DDI, four-to-six-day clearing and chargeback risks: [[source-adyen-docs-payment-methods-bacs]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment context\n- [[adyen-tokenization]] \u2014 recurring token context\n- [[source-adyen-docs-payment-methods-bacs]] \u2014 method-level DDI, clearing, notice and chargeback authority\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/api-only/2026-09-15|BACS Direct Debit API-only, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "We strongly recommend that you use our Drop-in or Component solution. This is because BACS Direct Debit must certify the UI that you show to shoppers.",
+      "location": "raw line 19, API-only UI warning"
+    },
+    {
+      "text": "If you do not use our Drop-in or Component, the BACS payment method may be disabled, and shoppers may file for chargebacks.",
+      "location": "raw line 19, conditional access risk"
+    },
+    {
+      "text": "The response includes the `action.type`: ****Direct****.",
+      "location": "raw line 714, response prose; adjacent voucher example at line 722"
+    },
+    {
+      "text": "\"type\": \"voucher\",",
+      "location": "raw line 722, contradictory response example"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw line 780, received-versus-success boundary"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-api-only-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-api-only]] \u2014 2026-09-15 BACS Web API-only Advanced guide for GB/GBP discovery, bank fields and tokens; source preserves UI-certification risk, `Direct`/`voucher` conflict and `Received` webhook boundary.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "bacs-api-only-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-api-only]] \u2014 2026-09-15 BACS API-only `/payments` shopper-reference/storage-flag token step, conditional `recurring.token.created` receipt and later `ContAuth` reuse; notice and funds outcomes remain source-qualified.\n",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/api-only/2026-09-15.md",
+  "raw_sha256": "caffa1b67bb01679be8b1183ecc80fdc650fe797c267c1f7d9e898739fd4ada6",
+  "status": "candidate_ready"
+}

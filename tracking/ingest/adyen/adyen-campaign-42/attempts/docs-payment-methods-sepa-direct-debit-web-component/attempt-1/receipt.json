@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SEPA Direct Debit Web Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, web-components, sessions, advanced-flow, tokenization]\n---\n\n## Overview\n\nThis captured Adyen guide adds SEPA Direct Debit to an existing Web Components integration, separately for Sessions and Advanced server-side flows. It is a method-specific add-on, not a complete integration, proof of current merchant eligibility, mandate validity or successful collection. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and the method overview [[source-adyen-docs-payment-methods-sepa-direct-debit]] for mandate, pre-debit notification, chargeback and refund conditions.\n\n## Key takeaways\n\n- Sessions requires an existing Web Components Sessions integration, Checkout API v68 or later, and the payment method added in Customer Area. The ordinary `/sessions` payment needs no additional SEPA-specific request or Component configuration parameters. Import `SepaDirectDebit` from `@adyen/adyen-web` and mount that Component. The no-additional-fields statement applies to the ordinary Sessions payment, not to optional token creation.\n- Advanced requires an existing Web Components Advanced integration, setup in Customer Area, and handling for the guide's additional `action.type: direct` action. Its `/payments` request lists `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber` as required; the guide says not to encrypt the IBAN value. Billing-address fields are required when the IBAN belongs to the listed non-EEA SEPA countries or territories. The example uses Checkout API v72 and shows `resultCode: Received`; that example is not evidence of final authorization, capture, settlement or cleared funds.\n- If automatic capture is not used, the guide calls for delayed automatic or manual capture; it says SEPA authorizations do not expire and multiple partial captures need Support enablement. These are capture instructions after authorization, not a substitute for a SEPA mandate or debit notification.\n- Both flows describe tokenization for Subscription and UnscheduledCardOnFile. Adyen strongly recommends asking explicit shopper permission for future recurring payments; this is advice in this guide, distinct from the mandate acceptance required by the method overview. A created token is delivered through `recurring.token.created` with `storedPaymentMethodId`. Later shopper-absent payments use `/payments` with the stored method, shopper reference, `shopperInteraction: ContAuth` and the matching recurring model; the Sessions flow also uses `/payments` for these later payments. Do not infer token creation or payment success merely from sending the sample request.\n- The guide provides test names and IBANs and points to the test Customer Area payment list. For live acceptance it directs merchants to submit a request for SEPA Direct Debit in the live Customer Area. The snapshot and examples do not establish account approval or live readiness.\n\n## Detail locators\n\n- Sessions prerequisites, ordinary no-extra-parameter/configuration statements and Component import/mount: pinned raw lines 25\u201375.\n- Sessions tokenization scope, permission advice, `/sessions` v71 sample and later webhook `/payments` route: pinned raw lines 77\u2013111 and 286\u2013319; UnscheduledCardOnFile sample: lines 599\u2013627.\n- Advanced prerequisites, direct action, payment fields, conditional billing address, unencrypted IBAN instruction and v72 sample `Received` response: pinned raw lines 920\u20131004.\n- Advanced capture choices, no-expiry statement and multiple-partial-capture enablement: pinned raw lines 1006\u20131015. Advanced token lifecycle and shopper-absent reuse: lines 1017\u20131027 and 1376\u20131407; unscheduled sample: lines 1687\u20131715.\n- Test data and live request: pinned raw lines 906\u2013918 and 1994\u20132006. Method-overview mandate, active acceptance and pre-debit-notice conditions: [[source-adyen-docs-payment-methods-sepa-direct-debit]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider integration concept\n- [[adyen-tokenization]] \u2014 recurring-token concept\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 method-level mandate, notification and funds-risk authority\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15|SEPA Direct Debit Web Component, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md:41"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md:290"
+    },
+    {
+      "text": "Make sure that you do not encrypt this value.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md:969"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md:1013"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-direct-debit-web-component-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-component]] \u2014 2026-09-15 SEPA Direct Debit Web Components Sessions/Advanced add-on, conditional bank-detail/address fields, capture and recurring-token routes; mandate and `Received` boundaries remain in source.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-direct-debit-web-component-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-component]] \u2014 2026-09-15 Web Components guide for SEPA token creation webhook and shopper-absent Subscription/UnscheduledCardOnFile `/payments` reuse; source qualifies consent advice and mandate requirements.",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-component/2026-09-15.md",
+  "raw_sha256": "997f5278bc6e372e67bc84c44d9eb4730e441bb628e803bc64c3020b76316734",
+  "status": "candidate_ready"
+}

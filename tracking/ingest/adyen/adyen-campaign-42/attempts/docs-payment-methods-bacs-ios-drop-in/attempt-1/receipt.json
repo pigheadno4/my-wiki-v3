@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-payment-methods-bacs-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BACS Direct Debit iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, ios, drop-in, tokenization]\n---\n\n## Overview\n\nThis captured Adyen guide adds BACS Direct Debit to an existing iOS Drop-in integration through a Sessions or Advanced server-side flow. It gives method-specific additions, not a complete integration or proof that a debit has settled. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-bacs]] for the GB/GBP method overview, Direct Debit Instruction (DDI), clearing cycle and chargeback risks.\n\n## Key takeaways\n\n- Sessions requires an existing iOS Drop-in Sessions integration, Checkout API v68 or later, and BACS Direct Debit added in Customer Area. It adds required `shopperEmail` to `/sessions` and no BACS-specific Drop-in configuration. The v71 test curl omits a line continuation after `-X POST`, so its `-d` line is not part of the same shell command as printed.\n- Advanced requires an existing iOS Drop-in Advanced integration, Customer Area setup and handling of the documented additional `action.type: Direct` action. It adds required `shopperEmail`, `paymentMethod.type: directdebit_GB`, holder name, bank account number and `bankLocationId` to `/payments`; no extra Drop-in configuration is listed. The v72 curl sample also omits a continuation after `-X POST`.\n- The Advanced prose says the response has `action.type: Direct`, but the adjacent `Received` example shows `action.type: voucher` with `PDF_MANDATE_URL`. The page does not resolve the mismatch, so the example cannot establish a single action shape. Its recurring section says to use webhooks to track whether a payment succeeds. `Received` does not demonstrate cleared funds; the method overview says DDI/payment submission can take four to six days to clear and settle.\n- For recurring BACS, tokenization and explicit shopper permission are strongly recommended. Under the Direct Debit Guarantee, a changed collection date or amount requires advance notice; the page separately recommends notice before every payment. Initial `/payments` token creation adds shopper reference and `storePaymentMethod: true`; when `recurring.token.created` arrives, store its `storedPaymentMethodId`. Later `/payments` use that stored method (or `recurringDetailReference` per the API v49+ wording), the same shopper reference and `shopperInteraction: ContAuth`. Sessions integrations use `/payments` for later recurring payments too. A token or `Received` sample does not prove that a debit cleared.\n- The guide provides BACS test bank details and a test Customer Area status route. Live acceptance needs a request in the live Customer Area; this snapshot does not establish merchant approval, DDI validity or successful collection.\n\n## Detail locators\n\n- Sessions prerequisites, v68+, required email, v71 example and missing curl continuation: pinned raw lines 25\u201367. No additional Drop-in configuration: lines 340\u2013344.\n- Advanced prerequisites, `Direct` handling, no configuration, required bank/email fields and v72 curl issue: pinned raw lines 415\u2013475.\n- Advanced response conflict between `Direct` prose and `voucher`/mandate-PDF example: pinned raw lines 806\u2013819.\n- Sessions recurring permission and changed-amount/date notice, token creation/webhook and recurring request: pinned raw lines 346\u2013399; repeated Advanced route: lines 821\u2013874.\n- Test and live gates: pinned raw lines 401\u2013413 and 876\u2013888. DDI and delayed-clearing context: [[source-adyen-docs-payment-methods-bacs]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main integration concept\n- [[adyen-tokenization]] \u2014 recurring-token concept\n- [[source-adyen-docs-payment-methods-bacs]] \u2014 BACS method, DDI, notice and chargeback authority\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15|BACS Direct Debit iOS Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "The email of the shopper.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md:44"
+    },
+    {
+      "text": "if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md:356"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md:399"
+    },
+    {
+      "text": "\"type\": \"voucher\"",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md:814"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-ios-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-ios-drop-in]] \u2014 2026-09-15 BACS iOS Drop-in Sessions/Advanced add-on with shopper-email and bank-detail requirements, recurring-token route and `Direct`/`voucher` response conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced prose says Direct while its example action is voucher; the source does not resolve the action shape."
+        ]
+      },
+      {
+        "update_id": "bacs-ios-drop-in-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-ios-drop-in]] \u2014 2026-09-15 BACS iOS Drop-in initial `/payments` token fields, `recurring.token.created` ID and later stored-method `ContAuth` reuse; notice and `Received` limitations stay in source.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "8eea65fd048dd024b7a6f8dfd6ae3a63ec51e1dcbde1ef1a6069932709565071",
+  "status": "candidate_ready"
+}

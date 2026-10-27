@@ -1,0 +1,67 @@
+{
+  "job_id": "docs-payment-methods-pad-web-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Pre-Authorized Debit Canada Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pad/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md\"\ntags: [adyen, pad, canada, web, drop-in, direct-debit, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page gives PAD Canada additions to an existing **Web Drop-in** integration, separately for Sessions and Advanced server-side flows. It covers setup, consent, recurring tokens, delayed bank outcome, test returns and retry codes. It is an integration snapshot, not proof of enabled acceptance or a final bank debit. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Both flows** require an existing matching Web Drop-in integration, Checkout API **v69 or later**, the `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` webhook for outdated bank details, Support enablement in Customer Area, and a way to obtain the shopper's PAD mandate. Before live use, contact Support to add PAD Canada in the **live** Customer Area. See raw lines 25\u201337, 181\u2013193 and 397\u2013399. The overview [[source-adyen-docs-payment-methods-pad]] gives the separate merchant-held agreement requirements; this page's setup reference alone is not a complete mandate procedure.\n- **Sessions:** `PreAuthorizedDebitCanada` is an optional individual import for tree shaking; no PAD-specific Drop-in configuration is needed. The `/sessions` table lists optional `billingAddress` and tokenization fields `recurringProcessingModel`, `shopperInteraction`, `shopperReference`, `storePaymentMethod`; the example uses CA/CAD. Shopper mandate consent is needed for the payment or recurring series. See raw lines 39\u201368 and 70\u201399.\n- **Advanced:** the same optional import applies. `paymentMethodsConfiguration.eft_directdebit_CA.enableStoreDetails` is available from Web **v5.24.0**, defaults false and controls the save-details checkbox; it is not shown as required. The `/payments` table marks `paymentMethod.type=eft_directdebit_CA`, `bankAccountNumber`, five-digit `bankLocationId`, three-digit `bankCode`, and `ownerName` required; `billingAddress` and tokenization fields are listed separately. The example uses a **v72 test endpoint**, which does not replace the stated v69+ minimum. Both curl examples omit a continuation after `-X POST`, leaving `-d` detached as printed. Both render `storePaymentMethod` as the JSON string `\"true\"`; the Advanced request also renders `amount.value` as `\"1000\"` while its response uses a numeric value. Treat these as illustrative and consult the linked Checkout API for request types before implementing. See raw lines 70\u201399, 195\u2013247 and 249\u2013320.\n- **Tokens and mandate:** the guide recommends against one-off PAD because of chargeback risk, supports recurring tokenization, and requires a mandate for future recurring debits. Create the token on the initial payment; Sessions receives `storedPaymentMethodId` via `recurring.token.created`, while Advanced may receive it in the API response and/or webhook. Advanced `additionalData` can include generated mandate ID and initial-request signature date; tokenization response fields require creation parameters plus Customer Area **Recurring details**. Store token with `shopperReference`; later recurring requests do not need mandate ID. The generated ID/date fields do **not** themselves prove shopper consent. See raw lines 65\u201368, 108, 114\u2013125, 287\u2013296 and 328\u2013345. [[adyen-tokenization]]\n- **Outcome is asynchronous:** both flow sections say bank authorization can take up to **five business days**. Success appears in the Settlement details report; a failed debit may produce `CHARGEBACK`. The Advanced example's `resultCode: Authorised` must not be treated as final bank authorization or settlement. See raw lines 104\u2013110 and 298\u2013330.\n- **Testing and returns:** test payments can use a real Canadian bank account without debiting it or the listed test credentials. In TEST, `ownerName=chargeback:<reason>` triggers a return straight to Chargeback. The source's reason table permits **one** retry within **30 days** of original authorization for codes **01** and **08**; listed account, stop, mandate, revoked-agreement, notification and other return codes are marked no retry. Use the reason-specific table, not a blanket retry policy. See raw lines 127\u2013175 and 349\u2013395.\n\n## Detail locators\n\n- Sessions setup, optional import/configuration and `/sessions` fields: raw lines 25\u201399.\n- Sessions token, delayed outcome and recurring instructions: raw lines 102\u2013125.\n- Advanced setup, Web version, required `/payments` bank fields and example: raw lines 181\u2013284.\n- Advanced additionalData, response example, delayed outcome and recurrence: raw lines 287\u2013345.\n- TEST credentials, return codes, retry limits and live Support step: raw lines 127\u2013179 and 349\u2013399.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web Drop-in Sessions and Advanced routing.\n- [[adyen-tokenization]] \u2014 recurring token creation and use.\n- [[source-adyen-docs-payment-methods-pad]] \u2014 PAD overview and merchant agreement, return and dispute context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15|PAD Canada Web Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v69 or later.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md:34 (Sessions; repeated Advanced line 190)"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for PADs Canada.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md:55 (Sessions configuration)"
+    },
+    {
+      "text": "Set to **true** to show the checkbox for saving the payment details. The default is **false**.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md:215 (Advanced Web v5.24.0+)"
+    },
+    {
+      "text": "It can take up to five business days to know whether the payment was authorized by the bank.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md:110 (Sessions; repeated Advanced line 330)"
+    },
+    {
+      "text": "You are required to obtain a [mandate](/payment-methods/pad/#mandate) from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md:118 (Sessions; repeated Advanced line 338)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pad-web-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pad-web-drop-in]] \u2014 2026-09-15 PAD Canada Web Drop-in Sessions and Advanced guide (Checkout API v69+) with mandate/setup, token, bank-field, five-business-day outcome and return-code retry boundaries.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced `Authorised` example is not proof of final bank authorization or settlement; this guide says the bank outcome can take up to five business days."
+        ]
+      },
+      {
+        "update_id": "pad-web-drop-in-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pad-web-drop-in]] \u2014 PAD Canada Web Drop-in initial-payment token creation and recurring reuse in Sessions/Advanced; future recurring debits require shopper mandate and later requests omit mandate ID (2026-09-15).\n",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": [
+          "Generated mandate ID and signature-date response fields do not establish that the merchant obtained and retained shopper consent; consult the PAD overview mandate requirements."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pad/web-drop-in/2026-09-15.md",
+  "raw_sha256": "de89e5534e3dbe9f88cc009925e1a49fd540bc313c9d9cbe29cc9735309100c4",
+  "status": "candidate_ready"
+}

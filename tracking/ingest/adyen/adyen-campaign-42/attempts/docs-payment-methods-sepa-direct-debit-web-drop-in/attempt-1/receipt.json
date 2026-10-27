@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SEPA Direct Debit Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/web-drop-in/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, web, drop-in, sessions, advanced-flow, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds **SEPA Direct Debit to an existing Web Drop-in integration**, with separate Sessions and Advanced-flow instructions. It is a method-specific add-on, not a complete base integration or a statement of current merchant eligibility. See [[adyen]], [[adyen-online-payments]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Sessions flow:** Requires an existing Sessions Web Drop-in integration, Checkout API **v68 or later**, and SEPA Direct Debit added in Customer Area. The ordinary payment-session step needs no additional SEPA-specific parameters; individual `SepaDirectDebit` import is optional for tree shaking. The guide's token-creation example uses `/sessions` **v71** with standard tokenization fields. (raw lines 23\u201353, 63\u201388)\n- **Advanced flow:** Requires an existing Advanced Web Drop-in integration, action handling for `action.type: direct`, and the payment method added in Customer Area. Its `/payments` request specifies `paymentMethod.sepa.ownerName` and an **unencrypted** `paymentMethod.sepa.ibanNumber`. The billing address is required for the listed non-EEA SEPA IBAN countries or territories; this condition should not be generalized to all SEPA IBANs. The illustrated initial request uses Checkout API **v72**. (raw lines 900\u2013959)\n- **Intermediate result and capture:** The Advanced example labels a response successful while showing `resultCode: Received`; that example alone does not establish final authorization, capture or settlement. If automatic capture is not used, the guide specifies delayed automatic or manual capture. It says SEPA Direct Debit authorizations do not expire, so capture can occur after authorization, and directs merchants to Support to enable multiple partial captures. The method overview separately supplies mandate, pre-debit notice, settlement and chargeback qualifications; this implementation guide does not replace them. (raw lines 962\u2013981; [[source-adyen-docs-payment-methods-sepa-direct-debit]])\n- **Recurring:** The guide covers **Subscription** and **UnscheduledCardOnFile** tokenization and strongly *recommends* explicit shopper permission and transparent schedule/amount to reduce chargeback risk. It says to use standard tokenization fields, without extra SEPA-specific token fields. A `recurring.token.created` webhook carries `storedPaymentMethodId`; later shopper-absent payments use `/payments` with the stored ID, `shopperInteraction: ContAuth`, and the corresponding recurring model. This is a documented route, not proof that a token was created or a later debit succeeded. (raw lines 55\u201365, 264\u2013297, 577\u2013604, 983\u2013993, 1342\u20131373, 1653\u20131679)\n- **Testing and live gate:** The page provides NL/AT/FR test name\u2013IBAN pairs and says to check test payment status in Customer Area. Before live SEPA acceptance, it requires a request for SEPA Direct Debit in the **live** Customer Area. Test details and a historical guide cannot establish live enablement or a funded debit. (raw lines 884\u2013898, 1960\u20131974)\n\n## Detail locators\n\n- Sessions prerequisites, no extra ordinary `/sessions` fields, and optional Web import: pinned raw lines 25\u201353.\n- Sessions token creation and stored-token subsequent payment examples: pinned raw lines 55\u201388 and 264\u2013881; the individual language examples should be checked against the active API/library version before reuse.\n- Advanced prerequisites, conditional billing address, request fields, and `Received` response: pinned raw lines 900\u2013970. The shown curl request has a line-break/command formatting issue around `-X POST`; treat it as a field illustration, not a copy-ready command.\n- Capture and multiple-partial-capture enablement: pinned raw lines 972\u2013981.\n- Advanced token creation and reuse, including webhook and shopper-absent limitation: pinned raw lines 983\u20131958.\n- Test data and live Customer Area request: pinned raw lines 884\u2013898 and 1960\u20131974.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web checkout and payment-method context\n- [[adyen-tokenization]] \u2014 token creation and subsequent-payment context\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 method-level mandate, notice, settlement and chargeback context\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/web-drop-in/2026-09-15|SEPA Direct Debit Web Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements table"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw line 41, Sessions request"
+    },
+    {
+      "text": "Make sure that you do not encrypt this value.",
+      "location": "raw line 935, Advanced IBAN parameter"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw line 979, capture"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 61, Sessions recurring; repeated at raw line 989"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-web-dropin-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-drop-in]] \u2014 2026-09-15 Web Drop-in SEPA Direct Debit Sessions/Advanced add-on for request, capture, tokenized recurring and live setup; method-level mandate and funds risks remain in the SEPA overview.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-web-dropin-tokenization-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-drop-in]] \u2014 Web Drop-in SEPA token creation and shopper-absent Subscription/UnscheduledCardOnFile stored-method reuse, with explicit-permission recommendation (2026-09-15 capture).\n",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/web-drop-in/2026-09-15.md",
+  "raw_sha256": "8ad178f4eaf7aeacb9fc9828b463d2f0a8d242ea5f3e1ad045e2df4307186761",
+  "status": "candidate_ready"
+}

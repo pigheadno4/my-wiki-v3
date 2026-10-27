@@ -15,6 +15,54 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-pad-web-drop-in]] — PAD Canada Web Drop-in initial-payment token creation and recurring reuse in Sessions/Advanced; future recurring debits require shopper mandate and later requests omit mandate ID (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-pad-api-only]] — 2026-09-15 PAD initial-payment token fields, conditional token response, mandatory shopper agreement and later recurring-token route; initial `Authorised` remains bank-pending.
+
+
+- [[source-adyen-docs-payment-methods-bacs-api-only]] — 2026-09-15 BACS API-only `/payments` shopper-reference/storage-flag token step, conditional `recurring.token.created` receipt and later `ContAuth` reuse; notice and funds outcomes remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]] — ACH giact zero-value account check with optional stored method for a later real-amount payment; source scopes zero option to API-only and shows `/sessions`/`/payments` tabs (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-bacs-ios-drop-in]] — 2026-09-15 BACS iOS Drop-in initial `/payments` token fields, `recurring.token.created` ID and later stored-method `ContAuth` reuse; notice and `Received` limitations stay in source.
+
+
+- [[source-adyen-docs-payment-methods-bacs-react-native-drop-in]] — 2026-09-15 BACS React Native Drop-in `/payments` token creation with shopper reference/storage flag, `recurring.token.created` ID and later `ContAuth` reuse; notice and webhook outcome remain source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-bacs-flutter-drop-in]] — BACS Flutter Drop-in initial `/payments` tokenization and recurring reuse; explicit permission is strongly recommended and changed date/amount requires advance notice per captured guide (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-bacs-web-component]] — BACS Web Component recurring-token creation/reuse through `/payments`; explicit permission is strongly recommended and changed collection date/amount requires advance notice per captured guide (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-drop-in]] — 2026-09-15 iOS Drop-in guide for SEPA token-creation webhook and shopper-absent Subscription/UnscheduledCardOnFile `/payments` reuse; consent and mandate are separately qualified.
+
+
+- [[source-adyen-docs-payment-methods-bacs-ios-component]] — 2026-09-15 BACS iOS Components initial `/payments` token fields, `recurring.token.created` ID and later stored-method `ContAuth` reuse; notice and Received limitations remain in source.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-api-only]] — 2026-09-15 API-only SEPA token-creation webhook and shopper-absent Subscription/UnscheduledCardOnFile stored-method `/payments` reuse; permission recommendation and mandate duties are source-qualified.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-component]] — 2026-09-15 Web Components guide for SEPA token creation webhook and shopper-absent Subscription/UnscheduledCardOnFile `/payments` reuse; source qualifies consent advice and mandate requirements.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-react-native-drop-in]] — 2026-09-15 React Native Drop-in SEPA token-creation webhook and shopper-absent Subscription/UnscheduledCardOnFile `/payments` reuse; explicit permission is recommended here, while mandate requirements are in the method overview.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] — Flutter Drop-in SEPA token creation through standard fields, lifecycle webhook and shopper-absent Subscription/UnscheduledCardOnFile reuse; explicit permission is strongly recommended, with sample limits in source (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-drop-in]] — Web Drop-in SEPA token creation and shopper-absent Subscription/UnscheduledCardOnFile stored-method reuse, with explicit-permission recommendation (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-component]] — iOS Components SEPA token creation via standard `/sessions` or `/payments` fields, lifecycle webhook, and shopper-absent Subscription/UnscheduledCardOnFile reuse; explicit permission is strongly recommended, not an asserted mandate rule here.
+
+
 - [[source-adyen-docs-payment-methods-twint-flutter-component]] — TWINT Flutter Components `/payments` token-creation fields, `recurring.token.created` webhook and Subscription/UnscheduledCardOnFile `ContAuth` reuse; consent/outcome proof remains outside this guide.
 
 

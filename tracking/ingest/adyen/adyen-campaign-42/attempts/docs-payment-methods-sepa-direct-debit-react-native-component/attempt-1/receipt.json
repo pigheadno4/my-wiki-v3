@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SEPA Direct Debit React Native Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, react-native, components, recurring]\n---\n\n## Overview\n\nAdyen's 2026-09-15 SEPA Direct Debit React Native Component guide adds method-specific steps to an existing integration. This page explicitly says React Native Components do not support Sessions flow and documents only Advanced flow for this method. That page-specific statement does not erase the wrapper concept's general Sessions capability. See [[adyen]] and [[adyen-react-native-sdk]].\n\n## Key takeaways\n\n- The Advanced route requires an existing React Native Components integration, `action.type: direct` handling, and SEPA Direct Debit added in Customer Area. No SEPA-specific Component configuration is needed. The integration-type row says Components but its base-guide URL contains `integration=Drop-in`; the action and payment links point to Components, so the Drop-in URL should not be treated as evidence of a Drop-in prerequisite (raw lines 25-53).\n- For `/payments`, the page marks `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber` required and instructs merchants not to encrypt the IBAN. It requires billing street, house number/name, postal code, city and country for IBANs from its listed non-EEA SEPA countries or territories. The curl example uses Checkout TEST v72. Several initial-token language snippets omit the account fields despite the prose requirement, so they are incomplete field templates rather than evidence that those fields are optional; the Ruby example also uses dotted symbol keys (raw lines 53-85, 122-465).\n- The response example is labeled successful and shows `resultCode: Received`; that example alone does not prove final debit or settlement (raw lines 87-95). If automatic capture is not used, the page requires delayed automatic capture or a manual `/payments/{paymentPspReference}/captures` request. It says authorizations do not expire and multiple partial captures require Support enablement (raw lines 97-106).\n- The page documents tokenization for `Subscription` and `UnscheduledCardOnFile`. Adyen strongly recommends asking explicit shopper permission for future recurring charges, with transparency about schedule and amount to reduce chargeback risk. Initial token creation uses standard tokenization parameters in a payment request, and `recurring.token.created` supplies `storedPaymentMethodId`. Subsequent `/payments` examples pair the ID with `shopperReference`, `ContAuth`, and the applicable recurring model. Tokenized payments are scoped to shopper-absent scenarios (raw lines 108-118, 122-145, 467-498, 778-805).\n- The guide supplies test account/IBAN fixtures and points to test Customer Area for test status. Live SEPA acceptance requires a separate request in live Customer Area; the examples and fixtures do not establish live enablement (raw lines 1085-1097).\n\n## Detail locators\n\n- Component flow availability, Advanced prerequisites and no extra configuration: raw lines 25-53.\n- Account and billing fields, request/response example, capture: raw lines 53-106.\n- Initial token creation and language examples, including incomplete ones: raw lines 108-465.\n- Token webhook, absent-shopper restriction and subscription examples: raw lines 467-776.\n- Unscheduled card-on-file examples: raw lines 778-1083.\n- Test fixtures and live request: raw lines 1085-1097.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15|SEPA Direct Debit React Native Component (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md:29 (Sessions flow)"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for SEPA Direct Debit.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md:47 (Advanced configuration)"
+    },
+    {
+      "text": "The IBAN of the bank account. Make sure that you do not encrypt this value.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md:60 (payment field)"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md:114 (recurring consent recommendation)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md:469 (tokenized payment scope)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-direct-debit-react-native-component-sdk-route",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-react-native-component]] \u2014 2026-09-15 SEPA React Native Component guide: method-specific Advanced-only route, account fields, capture and shopper-absent recurring tokens; its Sessions limit is scoped to this page.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-component/2026-09-15.md",
+  "raw_sha256": "a208454f89968159564de7a8174ed8a1479af4cf1828524ee3a0dea415df8d0e",
+  "status": "candidate_ready"
+}

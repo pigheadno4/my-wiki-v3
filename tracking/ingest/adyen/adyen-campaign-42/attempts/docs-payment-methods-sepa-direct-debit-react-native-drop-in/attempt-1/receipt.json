@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SEPA Direct Debit React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, react-native, drop-in, sessions, advanced-flow, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds SEPA Direct Debit to an **existing React Native Drop-in** integration. It gives distinct Sessions and Advanced server-side routes, recurring token examples, and test/live setup. It does not replace the main React Native Drop-in integration or the SEPA Direct Debit mandate and settlement guidance. See [[adyen]], [[adyen-online-payments]], and [[adyen-tokenization]].\n\n## Key takeaways\n\n- **Sessions:** The page requires an existing Sessions React Native Drop-in integration, Checkout API **v68 or later**, and SEPA Direct Debit added in Customer Area. It says the ordinary `/sessions` request needs no additional method parameters and no extra SEPA configuration. The Sessions requirement's link, however, points to an **Advanced-flow** URL despite its Sessions label; follow the separate Sessions link at the payment-session step and verify the intended base guide. The token-creation example uses test Checkout API **v71**; this guide gives no React Native SDK version. (raw lines 23\u201347, 65\u201383)\n- **Advanced:** Requires an existing Advanced React Native Drop-in integration, handling `action.type: direct`, and Customer Area method setup. It likewise says no extra SEPA configuration. For `/payments`, the guide lists `paymentMethod.sepa.ownerName` and an **unencrypted** `paymentMethod.sepa.ibanNumber`; billing address becomes required for the enumerated non-EEA SEPA IBAN countries and territories. The test request illustration uses Checkout API **v72**. Its curl line breaks around `-X POST` are not copy-ready. (raw lines 892\u2013945)\n- **Payment result and capture:** The Advanced illustration calls the response successful but shows `resultCode: Received`; that intermediate example is no proof of final authorization, capture, settlement or funded debit. When automatic capture is not used, the guide specifies delayed automatic or manual capture. It states SEPA Direct Debit authorizations do not expire and directs merchants to Support to enable multiple partial captures. (raw lines 948\u2013967)\n- **Recurring:** The guide documents tokenization for **Subscription** and **UnscheduledCardOnFile**, with standard tokenization fields and no extra SEPA-specific fields. It *strongly recommends* explicit shopper permission and transparent schedule/amount to reduce chargeback risk; this wording is advice, not a complete statement of the method-level mandate requirement. The `recurring.token.created` webhook carries `storedPaymentMethodId`; later shopper-absent token payments use `/payments`, stored ID, `ContAuth` and the applicable recurring model. Token examples do not prove token creation or a successful subsequent debit. (raw lines 49\u201359, 258\u2013290, 571\u2013597, 969\u2013979, 1328\u20131358, 1639\u20131665)\n- **Test/live boundary:** The page provides NL/AT/FR test IBAN/name pairs and a test Customer Area status path. It says a live Customer Area request for SEPA Direct Debit is needed before live acceptance. Historical examples and test status cannot prove present merchant enablement or settled funds. The related method overview retains mandate, pre-debit notice, chargeback and refund qualifications. (raw lines 878\u2013890, 1946\u20131958; [[source-adyen-docs-payment-methods-sepa-direct-debit]])\n\n## Detail locators\n\n- Sessions prerequisites, mislabeled Advanced prerequisite URL, no extra ordinary request/configuration and v71 token example: pinned raw lines 25\u201383.\n- Sessions token webhook and Subscription/UnscheduledCardOnFile `/payments` examples: pinned raw lines 258\u2013875.\n- Advanced prerequisites, direct action, no extra configuration, conditional billing address, request fields and v72 example: pinned raw lines 892\u2013945.\n- `Received` example, capture routes and multiple-partial-capture setup: pinned raw lines 948\u2013967.\n- Advanced token creation, webhook and reuse examples: pinned raw lines 969\u20131943. Several language snippets omit or assume request variables/fields; verify against the actual API/library version before reuse.\n- Test data and live setup: pinned raw lines 878\u2013890 and 1946\u20131958.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment context\n- [[adyen-tokenization]] \u2014 stored-method context\n- [[adyen-react-native-sdk]] \u2014 broader React Native SDK context, separate from this API-versioned guide\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 method-level mandate and lifecycle risks\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-drop-in/2026-09-15|SEPA Direct Debit React Native Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for SEPA Direct Debit.",
+      "location": "raw line 47, Sessions configuration; repeated at raw line 908 Advanced"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 55, Sessions recurring; repeated at raw line 975 Advanced"
+    },
+    {
+      "text": "The webhook contains the `storedPaymentMethodId` that you can use to make subsequent payments using the stored payment details.",
+      "location": "raw line 258, Sessions token webhook; repeated at raw line 1328 Advanced"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw line 965, capture"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-react-native-dropin-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-react-native-drop-in]] \u2014 2026-09-15 React Native Drop-in SEPA Sessions/Advanced add-on for request, capture, token reuse and live setup; source qualifies a misrouted Sessions link and intermediate `Received` example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-react-native-dropin-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-react-native-drop-in]] \u2014 2026-09-15 React Native Drop-in SEPA token-creation webhook and shopper-absent Subscription/UnscheduledCardOnFile `/payments` reuse; explicit permission is recommended here, while mandate requirements are in the method overview.\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "4e83e97f8f1c541f2228bae8857dedeec06a642f1aeb612e22ffddd85fa83af0",
+  "status": "candidate_ready"
+}

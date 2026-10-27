@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-verification-with-giact",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"ACH Direct Debit account validation with giact gVERIFY\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/verification-with-giact\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md\"\ntags: [adyen, ach, direct-debit, bank-verification, giact, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide describes **giact gVERIFY** bank-account validation for ACH Direct Debit, including account setup, three mutually exclusive trigger options, API-only/Drop-in/Components paths, zero-value checks, result codes and TEST fixtures. It concerns account validity/status before attempting a debit; it does **not** prove bank authorization, available funds, a valid shopper mandate or settled ACH payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The page says Nacha requires validation of **consumer WEB** bank details on the shopper's **first transaction**. giact checks a proprietary database and static rules, **not real-time bank access**, so a pass only reduces some incorrect-routing/closed-account returns. Required setup is an Adyen contract addendum, Support enablement with one selected option, ACH Direct Debit in test Customer Area, and Standard webhook **Include Bank Verification results**. It recommends validation only on initial transaction and account changes for cost reasons. See raw lines 19\u201332. The broader ACH overview [[source-adyen-docs-payment-methods-ach-direct-debit]] keeps mandate/SEC/return responsibilities separate.\n- Exactly **one account-configured validation option** can be selected: consumer ecommerce (first ecommerce + SEC **WEB**), all ecommerce (first ecommerce with any SEC), or zero-amount payments (`amount.value=0`, independent of interaction/SEC). The guide recommends consumer ecommerce for Drop-in/Components; its table labels zero amount **API-only**. See raw lines 34\u201347.\n- In ordinary consumer/all-ecommerce flow, Drop-in/Components collect bank number, ACH routing number and owner name; leave `hasHolderName` and `holderNameRequired` true or collect owner name yourself. Adyen submits qualifying first-payment details to giact: passed validation proceeds to a **payment attempt**, failed validation refuses. API-only collects those fields itself and receives a refusal response. A passed account check is not payment success. See raw lines 49\u201399.\n- **Zero amount option:** API-only form collects bank number, routing number, owner name and checking/savings type; the page warns against supplying a wire routing number and says giact does **not** verify account type. Zero-value request can store details for a later real-amount debit; outcome is in the zero-value authorization response and/or `AUTHORISATION` webhook. The guide's zero-option table says API-only, but the how-to section also has a `/sessions` tab plus a `/payments` tab; do not infer Drop-in/Components support merely from the `/sessions` example. See raw lines 101\u2013142 and 217\u2013286.\n- The `/sessions` zero-value example uses USD 0, `storePaymentMethod: true`, `storePaymentMethodMode: enabled` or `askForConsent`, and `shopperReference`; webhook fields are described as `bankVerificationResultRaw`, `bankVerificationResult` and `storedPaymentMethodId`. Its JSON example nests the token as `tokenization.storedPaymentMethodId`, so preserve the field-name mismatch. If validation passes, the page shows a later token-based `/sessions` request for the real amount; if it fails, request corrected details or another method. See raw lines 134\u2013215. [[adyen-tokenization]]\n- The `/payments` zero-value route specifies `paymentMethod.type=ach`, bank number, checking/savings type, ACH routing number, owner name, optional billing address and USD 0. It reads Passed/Failed from response or webhook; passed details are reused for a real-amount request. Its curl example has a literal `{hint:...}paymentMethod{/hint}` key rather than clean `paymentMethod` JSON, so it should not be copied as executable code. See raw lines 217\u2013286.\n- `bankVerificationResultRaw` codes include positive, negative, format and no-data/risk categories; **do not map raw codes to Passed/Failed by name alone**. TEST fixture table shows `ND00`, `RT00`, `RT03` and even `GN01` as **Passed**, while `GS02`, `RT01`, `RT02`, `RT04` are **Failed**. The `GN01` raw description says negative information found, creating a material classification tension. TEST routing number `122105278` and mock accounts only simulate outcomes. See raw lines 288\u2013335.\n\n## Detail locators\n\n- Purpose, non-real-time limit, prerequisites and webhook setting: raw lines 15\u201332.\n- Exclusive trigger options and channel guidance: raw lines 34\u201347.\n- Consumer/all-ecommerce collection, automatic attempt/refusal: raw lines 49\u201399.\n- Zero-value details, account-type caveat and option scope: raw lines 101\u2013130.\n- `/sessions` zero check, webhook token and later request: raw lines 134\u2013215.\n- `/payments` zero check, malformed example key and later request: raw lines 217\u2013286.\n- Raw result descriptions and TEST Passed/Failed fixtures: raw lines 288\u2013335.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 ACH online-payment method route.\n- [[adyen-tokenization]] \u2014 zero-value token and later payment route.\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH eligibility, SEC, mandate, return and refund context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15|ACH account validation with giact, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Giact checks account information against an extensive proprietary database and static rules, not through real-time access to the bank.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md:21 (verification limit)"
+    },
+    {
+      "text": "The configuration is managed on your Adyen account, and you can only select one option.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md:36 (validation options)"
+    },
+    {
+      "text": "Only available for API-only integrations.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md:44 (zero amount option table)"
+    },
+    {
+      "text": "The account type is not verified by giact.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md:115 (zero-value account type)"
+    },
+    {
+      "text": "| GN01 | 0000000001          | Passed                   |",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md:331 (TEST fixture; raw code description line 301)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-giact-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]] \u2014 2026-09-15 ACH consumer WEB initial-account giact validation, exclusive account trigger options, channel setup, zero-value checks and Passed/Failed TEST mapping; pass is not live bank or payment authorization.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Zero-amount option is labeled API-only despite a later `/sessions` tab; TEST GN01 is labeled Passed despite negative-information raw description. Preserve both as source tensions, and do not infer payment success from account validation."
+        ]
+      },
+      {
+        "update_id": "ach-giact-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]] \u2014 ACH giact zero-value account check with optional stored method for a later real-amount payment; source scopes zero option to API-only and shows `/sessions`/`/payments` tabs (2026-09-15).\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "`/sessions` narrative names `additionalData.storedPaymentMethodId`, while its JSON sample uses `tokenization.storedPaymentMethodId`; verify actual response contract before implementation. The `/payments` curl sample retains a templating hint in the paymentMethod key."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/verification-with-giact/2026-09-15.md",
+  "raw_sha256": "9f9af704b0164718ba36c8f626b557505fe8bbf23d339ef872b9f242c8993b18",
+  "status": "candidate_ready"
+}

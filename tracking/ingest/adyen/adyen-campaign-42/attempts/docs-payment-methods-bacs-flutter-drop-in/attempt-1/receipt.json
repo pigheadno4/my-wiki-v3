@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-payment-methods-bacs-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"BACS Direct Debit Flutter Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, flutter, drop-in, recurring, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen page gives BACS Direct Debit additions to an **existing Flutter Drop-in** integration, separately for Sessions and Advanced server-side flows. It covers shopper email and bank fields, recurring tokens, asynchronous outcome tracking, TEST details and the live Customer Area gate. It is not evidence of a valid Direct Debit Instruction, live enablement, or cleared funds. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions:** the requirements say existing Flutter Drop-in Sessions, **Checkout API v68 or later**, and Support addition of BACS in Customer Area; the prerequisite link itself points to an **Advanced** Flutter guide, while the create-session link points to Sessions. Add required `shopperEmail` to `/sessions`; no BACS-specific Drop-in configuration is required. The GB/GBP examples use a v71 TEST endpoint, not a new minimum. See raw lines 25\u201345, 49\u201369 and 341\u2013345.\n- **Advanced:** requires existing Flutter Drop-in Advanced and BACS addition in Customer Area; the `/payments` table marks `shopperEmail`, `paymentMethod.type=directdebit_GB`, `holderName`, `bankAccountNumber` and `bankLocationId` required. No BACS-specific Drop-in configuration is needed. The GB/GBP example uses a v72 TEST endpoint; the Advanced subsection does not give its own API version minimum. See raw lines 414\u2013445 and 449\u2013472.\n- **Action/response conflict:** Advanced requirements and prose say `action.type: Direct`, while the displayed 'successful payment' example says `resultCode: Received` and gives `action.type: voucher` with a PDF mandate URL. The action link is a `handle-the-redirect` anchor. Preserve this inconsistency; it is not a reliable universal action-handling recipe. `Received` plus `pspReference` means receipt, with actual success tracked by webhooks. See raw lines 423, 805\u2013817 and 873.\n- **Recurring:** this guide recommends tokenization for subscriptions: on the initial `/payments` request add `shopperReference` and `storePaymentMethod: true`, retain `storedPaymentMethodId` from `recurring.token.created`, then use `/payments` with token (or `recurringDetailReference`), same shopper reference and `ContAuth`. It strongly recommends explicit permission and clarity on schedule/amount; it says advance notice **must** be given if collection date or amount changes under the Direct Debit Guarantee, and recommends advance notice before each payment. Do not turn recommendation into a separate stated mandate rule; [[source-adyen-docs-payment-methods-bacs]] covers DDI context. See raw lines 347\u2013400 and 820\u2013873. [[adyen-tokenization]]\n- **TEST/live:** use the shown test bank details and Customer Area payment list for TEST. A live BACS request in **live** Customer Area is required before accepting live payments. A test payment and `Received` response do not establish clearing; the BACS overview separately describes DDI, four-to-six-day clearing and chargeback exposure. See raw lines 402\u2013412 and 875\u2013885.\n- **Examples:** language SDK snippets have separate historical versions for Sessions and Advanced (for example Java v40.0.0/v41.0.0, PHP v28.3.0/v29.0.0 and Node v30.0.0/v30.1.0). They are not a current cross-language support matrix. See raw lines 71\u2013338 and 473\u2013802.\n\n## Detail locators\n\n- Sessions requirements, mismatched prerequisite link, email and request examples: raw lines 25\u2013338.\n- Sessions no-extra-config, token/notice lifecycle and receipt result: raw lines 341\u2013400.\n- Advanced setup, no-extra-config, required bank fields and language examples: raw lines 414\u2013802.\n- Advanced action/response discrepancy and recurring duplicate: raw lines 805\u2013873.\n- TEST and live request gates: raw lines 402\u2013412 and 875\u2013885.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Flutter Drop-in integration route.\n- [[adyen-tokenization]] \u2014 BACS recurring-token flow.\n- [[source-adyen-docs-payment-methods-bacs]] \u2014 overview, Direct Debit Instruction, clearing and chargeback context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15|BACS Direct Debit Flutter Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md:34 (Sessions requirement)"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for BACS Direct Debit.",
+      "location": "raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md:345 (Sessions; repeated Advanced line 430)"
+    },
+    {
+      "text": "if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md:357 (Sessions recurring; repeated Advanced line 830)"
+    },
+    {
+      "text": "`action.type`: **Direct**.",
+      "location": "raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md:423 (Advanced action requirement)"
+    },
+    {
+      "text": "\"type\": \"voucher\",",
+      "location": "raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md:813 (Advanced example conflicts with Direct prose)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-flutter-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-flutter-drop-in]] \u2014 2026-09-15 BACS Flutter Drop-in Sessions (Checkout API v68+) and Advanced guide for required shopper email/bank fields, recurring tokens and live gate; flags misrouted Sessions prerequisite and Direct/voucher example conflict.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions prerequisite URL points to the Advanced Flutter guide; Advanced action prose says Direct but response sample has voucher/Received. Verify action handling in the matching integration guide, and track final payment outcome through webhooks."
+        ]
+      },
+      {
+        "update_id": "bacs-flutter-drop-in-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-flutter-drop-in]] \u2014 BACS Flutter Drop-in initial `/payments` tokenization and recurring reuse; explicit permission is strongly recommended and changed date/amount requires advance notice per captured guide (2026-09-15).\n",
+        "quote_indexes": [
+          2
+        ],
+        "warnings": [
+          "The guide's strong recommendation for explicit permission/notice before each debit is distinct from its stated requirement to give notice on changed date or amount; consult BACS overview for DDI details."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "c4ad65d40a7c00258df679abe5d6432ea84830428eb0acf1faff1a78e4d75678",
+  "status": "candidate_ready"
+}

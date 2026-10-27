@@ -1,0 +1,7 @@
+# C42 fixed retrieval queries — docs-payment-methods-sepa-direct-debit-android
+
+**Q1. What purpose/scope does this page serve, and what cannot be inferred?**
+The 2026-09-15 `docs/payment-methods/sepa-direct-debit/android` snapshot is a chooser for Android Drop-in and `SepaComponent` child guides plus four Sessions/Advanced base integrations (chooser raw lines 15-36). It gives no request, shopper mandate, capture, tokenization or settlement procedure; links do not prove current account eligibility or cleared funds. Route: [[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-sepa-direct-debit-android]].
+
+**Q2. What are the central capability, prerequisites and warnings?**
+Choose the Drop-in child for the all-in-one UI or the `SepaComponent` child for a merchant-owned Component flow, after establishing the relevant Android Sessions or Advanced base integration (chooser raw lines 19-36). The chooser says the Component handles a redirect, but the Android Component child requires `action.type: direct` for its Advanced route; do not treat the chooser wording as an action schema (chooser raw line 27; Component child raw lines 1093-1101). The child and method overview are the routes for bank fields, mandate, notice, capture and outcome terms. Route: [[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-sepa-direct-debit-android]].

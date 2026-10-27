@@ -1,0 +1,11 @@
+# docs-payment-methods-revolutpay-api-only — Q1/Q2
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-revolutpay-api-only]].
+
+## Q1 — What is this page for, and what cannot be inferred?
+
+[[source-adyen-docs-payment-methods-revolutpay-api-only]] adds Revolut Pay to an existing API-only integration through `/paymentMethods`, `/payments`, redirect and `/payments/details` (raw lines 15–39, 43–49, 322–332, 584–650). It is not a complete base integration. The related [[source-adyen-docs-payment-methods-revolutpay|Revolut Pay overview]] labels this a pilot/closed beta with eligibility-based access (overview raw lines 23, 36–38). The `RedirectShopper` example and TEST steps do not prove authorization, capture, settlement, present availability or live enablement; Pending/Received need a later `AUTHORISATION` webhook, and the live Customer Area request is distinct (this raw lines 584–598, 652–704).
+
+## Q2 — What central capability, prerequisites, and warnings are stated?
+
+The existing API-only integration must handle a redirect; the merchant-built form need not collect shopper details, though `/payments` lists optional personal fields and requires `paymentMethod.type: revolutpay` (raw lines 23–39, 322–332). The `/paymentMethods` request lists ten currencies, subject to actual eligibility (raw lines 43–49). Redirect to the GET `action.url`; the guide recommends default mobile browser handling and, for embedded GET views, SFSafariViewController or Chrome Custom Tabs rather than WebView. On return, send URL-decoded `redirectResult` to `/payments/details`; if the shopper fails to return or the result is Pending/Received, use `AUTHORISATION` webhooks (raw lines 584–667). Ship only after capture. Manual/delayed-auto capture must occur within seven days, partial capture releases the rest permanently, and captured payments have a twelve-month refund window (raw lines 656, 669–683). The statement descriptor's merchant-name base is fixed when Revolut Pay is added; the optional suffix is limited to 19 characters (raw line 332). TEST simulates some interactions because no retail-app test version exists; live use requires a request and remains subject to the overview's pilot gate (this raw lines 685–704; overview raw lines 23, 36–38).

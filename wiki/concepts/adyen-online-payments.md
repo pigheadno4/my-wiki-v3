@@ -21,6 +21,141 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-web]] — 2026-09-15 SEPA Web chooser for Drop-in versus `SepaDirectDebit` Components and four base Sessions/Advanced guides; implementation and mandate/outcome details reside in child/overview sources.
+
+
+- [[source-adyen-docs-payment-methods-pad-web-drop-in]] — 2026-09-15 PAD Canada Web Drop-in Sessions and Advanced guide (Checkout API v69+) with mandate/setup, token, bank-field, five-business-day outcome and return-code retry boundaries.
+
+
+- [[source-adyen-docs-payment-methods-bacs-android]] — 2026-09-15 BACS Android chooser linking Drop-in/Component children and four base Sessions/Advanced guides; Component redirect blurb needs child action-context qualification.
+
+
+- [[source-adyen-docs-payment-methods-bacs-web]] — 2026-09-15 BACS Web chooser for Drop-in or `BacsDirectDebit` Components and four Sessions/Advanced base routes; child/overview sources own fields, DDI and outcomes.
+
+
+- [[source-adyen-docs-payment-methods-pad-web]] — 2026-09-15 PAD Canada Web chooser for Drop-in or `PreAuthorizedDebitCanada` Components and four Sessions/Advanced base routes; child and overview sources own mandates, fields and outcomes.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-ios-component]] — 2026-09-15 ACH iOS Components Sessions/Advanced add-on for `ACHDirectDebitComponent`, change-notice webhook and no extra method request fields; source qualifies refund role, Drop-in link and incomplete Swift samples.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-web]] — 2026-09-15 ACH Web chooser for Drop-in/Components children and Sessions/Advanced base guides; source qualifies its incomplete Components label and navigation-only scope.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-android]] — 2026-09-15 ACH Android chooser linking Drop-in/Component children and four base Sessions/Advanced guides; Components blurb says Redirect despite linked ACH Component setup.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios]] — 2026-09-15 iOS SEPA route selector linking Drop-in/Components child guides and four Sessions/Advanced base integrations; child and method sources own request and funds details.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-ios-drop-in]] — 2026-09-15 ACH iOS Drop-in Sessions/Advanced add-on with no extra ordinary method fields, Notice of Change setup and up-to-five-business-day bank outcome; overview retains validation and mandate rules.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-ios]] — 2026-09-15 ACH iOS chooser for Drop-in or `ACHDirectDebitComponent` child guides and four Sessions/Advanced base routes; child and overview sources own requirements and outcomes.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-flutter-drop-in]] — 2026-09-15 ACH Flutter Drop-in Sessions (Checkout API v68+) and Advanced short add-on with no method-specific extra request/config fields and TEST return simulation; Sessions prerequisite URL misroutes to Advanced.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-android-drop-in]] — 2026-09-15 ACH Android Drop-in Sessions (Checkout API v68+) and Advanced add-on: scoped refund roles, no method-specific request additions, optional UI and five-business-day bank outcome.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer-api-only]] — 2026-09-15 API-only shopper-initiated EUR virtual-account transfer guide; source separates `Received` from funds webhook and routes tokenized recurring EUR payments to SEPA Direct Debit.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-web-drop-in]] — 2026-09-15 ACH Web Drop-in Sessions/Advanced add-on with optional v5.24.0 save-details UI, Notice of Change setup and up-to-five-business-day bank outcome; overview holds validation/mandate/refund rules.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-web-component]] — 2026-09-15 ACH Web Components Sessions/Advanced add-on for `Ach` import, optional UI config and no extra method request fields; source preserves refund-role, delayed bank outcome and test qualifications.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-android-component]] — 2026-09-15 ACH Android Components Sessions (Checkout API v68+) and Advanced add-on: ACH module, method sourcing, refund-role scope and five-business-day bank outcome; mandate/validation remain separate.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-api-only]] — 2026-09-15 ACH API-only form and payment fields, SEC/account-type handling and TEST returns; source flags CDD/CCD and fallback tensions against the ACH overview.
+
+
+- [[source-adyen-docs-payment-methods-pad-api-only]] — 2026-09-15 PAD Canada API-only guide for CA/CAD bank-detail requests, merchant mandate, delayed bank authorization, conditional token data and reason-specific returns/retries; source qualifies example fields.
+
+
+- [[source-adyen-docs-payment-methods-bacs-api-only]] — 2026-09-15 BACS Web API-only Advanced guide for GB/GBP discovery, bank fields and tokens; source preserves UI-certification risk, `Direct`/`voucher` conflict and `Received` webhook boundary.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]] — 2026-09-15 ACH consumer WEB initial-account giact validation, exclusive account trigger options, channel setup, zero-value checks and Passed/Failed TEST mapping; pass is not live bank or payment authorization.
+
+
+- [[source-adyen-docs-payment-methods-bacs-web-drop-in]] — 2026-09-15 BACS Web Drop-in Sessions/Advanced guide for email/account fields, recurring tokens and TEST/live setup; source flags Direct-versus-voucher action examples and webhook outcome boundary.
+
+
+- [[source-adyen-docs-payment-methods-revolutpay-api-only]] — 2026-09-15 Revolut Pay API-only redirect/details guide with pilot access qualification, pending webhook outcome, seven-day conditional capture expiry and single partial capture.
+
+
+- [[source-adyen-docs-payment-methods-bacs-ios-drop-in]] — 2026-09-15 BACS iOS Drop-in Sessions/Advanced add-on with shopper-email and bank-detail requirements, recurring-token route and `Direct`/`voucher` response conflict.
+
+
+- [[source-adyen-docs-payment-methods-bacs-react-native-drop-in]] — 2026-09-15 BACS React Native Drop-in Sessions/Advanced guide for shopper-email/bank fields and recurring tokens; source qualifies `Direct` versus `voucher`, `Received` and DDI/notice risks.
+
+
+- [[source-adyen-docs-payment-methods-bacs-flutter-drop-in]] — 2026-09-15 BACS Flutter Drop-in Sessions (Checkout API v68+) and Advanced guide for required shopper email/bank fields, recurring tokens and live gate; flags misrouted Sessions prerequisite and Direct/voucher example conflict.
+
+
+- [[source-adyen-docs-payment-methods-bacs-android-drop-in]] — 2026-09-15 BACS Android Drop-in Sessions/Advanced add-on for email/account fields and recurring tokens; source flags Direct/voucher action conflict, notice qualifications and intermediate `Received` outcome.
+
+
+- [[source-adyen-docs-payment-methods-bacs-web-component]] — 2026-09-15 BACS Web Component Sessions (Checkout API v68+) and Advanced guide for shopper email, `directdebit_GB` bank fields, recurring tokens and live request gate; Advanced Direct/voucher action example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-drop-in]] — 2026-09-15 SEPA Direct Debit iOS Drop-in Sessions/Advanced add-on with conditional bank details, capture and recurring-token routes; source preserves mandate and `Received` boundaries.
+
+
+- [[source-adyen-docs-payment-methods-bacs-ios-component]] — 2026-09-15 BACS iOS Components Sessions/Advanced add-on with shopper-email and bank-detail fields, token/notice route, and qualified `Direct`/`voucher` example conflict.
+
+
+- [[source-adyen-docs-payment-methods-bacs-android-component]] — 2026-09-15 BACS Android Components Sessions/Advanced add-on for request fields and recurring tokens; source flags Direct/voucher response conflict, notice qualifications and asynchronous outcome.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-api-only]] — 2026-09-15 SEPA Web API-only Advanced add-on for EUR method discovery, bank-detail request, capture and token reuse; source qualifies issuer/item prose and `Received` example.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-component]] — 2026-09-15 SEPA Direct Debit Web Components Sessions/Advanced add-on, conditional bank-detail/address fields, capture and recurring-token routes; mandate and `Received` boundaries remain in source.
+
+
+- [[source-adyen-docs-payment-methods-pad-web-component]] — 2026-09-15 PAD Web Component Sessions/Advanced add-on for mandate-gated bank details, optional tokenization, delayed authorization and returns; sample requests require API cross-checking.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-react-native-drop-in]] — 2026-09-15 React Native Drop-in SEPA Sessions/Advanced add-on for request, capture, token reuse and live setup; source qualifies a misrouted Sessions link and intermediate `Received` example.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] — 2026-09-15 Flutter Drop-in SEPA Sessions (Checkout API v68+) and Advanced guide for conditional bank/billing fields, capture and shopper-absent tokens; source flags prerequisite/action link and example limits.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-web-drop-in]] — 2026-09-15 Web Drop-in SEPA Direct Debit Sessions/Advanced add-on for request, capture, tokenized recurring and live setup; method-level mandate and funds risks remain in the SEPA overview.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-android-drop-in]] — 2026-09-15 SEPA Android Drop-in Sessions/Advanced add-on for account fields, conditional billing, capture and shopper-absent token reuse; source qualifies mandate versus recommendation and incomplete examples.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-component]] — 2026-09-15 SEPA Direct Debit iOS Components Sessions (Checkout API v68+) and Advanced guide for bank details, conditional billing address, capture and shopper-absent token reuse; source flags Advanced link/action and sample limits.
+
+
+- [[source-adyen-docs-payment-methods-revolutpay]] — 2026-09-15 Revolut Pay pilot/closed-beta wallet overview for app/browser sign-in paths, historical feature marks and API-only route; current eligibility is unproven.
+
+
+- [[source-adyen-docs-payment-methods-bank-transfer]] — 2026-09-15 shopper-initiated virtual-account bank-transfer overview with Open-until-funds webhook boundary, API-only route and qualified capability marks.
+
+
+- [[source-adyen-docs-payment-methods-pad]] — 2026-09-15 Canadian PAD/ACSS overview covering merchant-held mandate prerequisites, CA/CAD feature marks and non-real-time, nondefensible return/chargeback exposure; Web/API-only routes are separate.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit]] — 2026-09-15 SEPA Direct Debit Core overview with mandate/pre-debit notice, nondefendable chargeback and post-settlement refund constraints; source preserves limit and consent-wording qualifications.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit]] — 2026-09-15 ACH Direct Debit method overview for US-entity eligibility, consumer validation, B2B allowlisting, SEC/mandate responsibilities, reversals, refund delay and bank-account blocklist; channel guides are separate.
+
+
+- [[source-adyen-docs-payment-methods-bacs]] — 2026-09-15 BACS GB/GBP direct-debit overview for DDI, delayed clearing, advance-notice and undefendable chargeback risks; source qualifies feature and webhook examples.
+
+
 - [[source-adyen-docs-payment-methods-trustly-web]] — 2026-09-15 Trustly Web chooser for Drop-in or pre-built Component method guides, plus generic Web integration routes; request, outcome and funds qualifications belong to linked sources.
 
 

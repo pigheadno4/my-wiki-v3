@@ -1,0 +1,11 @@
+# docs-payment-methods-pad-web-component — Q1/Q2
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-pad-web-component]].
+
+## Q1 — What is this page for, and what cannot be inferred?
+
+[[source-adyen-docs-payment-methods-pad-web-component]] is the PAD Canada Web Components add-on for existing Sessions and Advanced integrations, not the full base integration or the complete mandate procedure (raw lines 15–25, 29–37, 194–204). Its Advanced example says `resultCode: Authorised`, but both outcome sections say bank authorization may take up to five business days and a failed debit may later surface as `CHARGEBACK`; neither the example, a token event nor this 2026-09-15 snapshot proves final bank authorization, settlement, current merchant enablement or a live debit (raw lines 2, 11, 119–125, 323–355, 420–422). The related [[source-adyen-docs-payment-methods-pad|PAD overview]] supplies the merchant mandate-retention and return-risk context (overview raw lines 29–60).
+
+## Q2 — What central capability, prerequisites, and warnings are stated?
+
+Both routes require Checkout API v69+, Support method setup, a way to obtain shopper mandate consent, and the direct-debit notice-of-change webhook (raw lines 29–37, 196–204). Sessions imports `PreAuthorizedDebitCanada` with no added Component config and lists optional billing address plus tokenization parameters for `/sessions` (raw lines 43–83). Advanced permits a save-details checkbox via `enableStoreDetails` from Web v5.24.0 and requires the Canadian account, branch, bank and owner fields in `/payments`; its tokenization response `additionalData` is conditional on both request parameters and the Recurring details Customer Area setting (raw lines 210–272, 312–321). A mandate is needed for the payment or series, and recurring token use does not require the mandate ID in later requests (raw lines 83, 129–140, 272, 359–370). TEST return simulation uses `ownerName: chargeback:<reason>` and skips directly to Chargeback; codes 01/08 permit one retry within 30 days, while agreement disputes require suspension and resolution (raw lines 157–188, 387–418). The sample curl blocks lack a line continuation before `-d`, so verify request syntax and field types with Checkout API before reuse (raw lines 87–115, 276–310).

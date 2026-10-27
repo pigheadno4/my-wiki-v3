@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"ACH Direct Debit Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md\"\ntags: [adyen, ach, direct-debit, android, drop-in, sessions, advanced]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide covers ACH Direct Debit additions to **existing Android Drop-in** Sessions and Advanced integrations. It scopes prerequisites, optional ACH UI settings, method-specific request additions, delayed bank outcome and TEST return simulation. It does not establish a complete Android implementation, validated bank account, mandate, live acceptance or settled funds. [[adyen]] [[adyen-online-payments]] [[adyen-android-sdk]]\n\n## Key takeaways\n\n- **Sessions** requires an existing Android Drop-in Sessions flow with **Checkout API v68 or later**, ACH added in Customer Area and `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` subscription for outdated bank details. The table's **Merchant allow bank-refund** API-credential and Customer Area roles are specifically for issuing refunds by those channels, not a blanket ACH-payment prerequisite. No ACH-specific additional `/sessions` parameters are needed. See raw lines 25\u201343.\n- **Advanced** requires an existing Android Drop-in Advanced flow, ACH addition and the notice-of-change webhook. Its section does **not** state a Checkout API minimum. It similarly says no ACH-specific additional `/payments` parameters; this does not erase base Advanced-flow fields, consumer account validation or shopper mandate obligations. See raw lines 102\u2013112 and 143\u2013147. [[source-adyen-docs-payment-methods-ach-direct-debit]] [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]]\n- Both flows offer optional ACH configuration: `setSubmitButtonVisible(false)` hides the submit button (default visible), `setAddressConfiguration` controls the shopper address form (default `FullAddress`), and `setShowStorePaymentField(false)` hides the future-payment checkbox (default visible). The sample uses `supportedCountryCodes = listOf(\"US\", \"PR\")` inside address configuration; this UI example is not proof of live merchant/bank eligibility. This page gives no Android SDK version minimum. See raw lines 45\u201372 and 114\u2013141.\n- After Adyen receives a request, **bank authorization may take up to five business days**. If the bank authorizes, the payment appears in the Settlement details report; if it fails, Adyen says a `CHARGEBACK` webhook follows. Drop-in completion or request receipt does not prove bank authorization or funds availability. See raw lines 74\u201380 and 149\u2013155.\n- TEST examples accept correctly formatted bank account and routing numbers with any owner name; `ownerName=chargeback:<reason>` (for example `chargeback:R01`) simulates an ACH return. These are only test fixtures; reason-specific ACH retry and dispute rules belong in the separate ACH chargebacks guide. See raw lines 82\u2013100 and 157\u2013173.\n\n## Detail locators\n\n- Sessions requirements, refund-role scope and request boundary: raw lines 25\u201343.\n- Sessions ACH UI configuration, outcome and TEST fixtures: raw lines 45\u2013100.\n- Advanced requirements, optional configuration and `/payments` boundary: raw lines 102\u2013147.\n- Advanced delayed outcome, TEST simulation and related links: raw lines 149\u2013179.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Android online-payment route.\n- [[adyen-android-sdk]] \u2014 Drop-in/ACH configuration context.\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH overview, SEC and mandate.\n- [[source-adyen-docs-payment-methods-ach-direct-debit-verification-with-giact]] \u2014 consumer account-validation route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15|ACH Direct Debit Android Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md:33 (Sessions minimum)"
+    },
+    {
+      "text": "To issue a refund using an API request, make sure you have the **Merchant allow bank-refund** role.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md:34 (Sessions refund role; repeated Advanced line 109)"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md:43 (method-specific Sessions additions)"
+    },
+    {
+      "text": "The default is **true**.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md:55 (save-details checkbox default)"
+    },
+    {
+      "text": "it may take up to five business days to know whether the payment was authorised by the bank.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md:80 (Sessions outcome; repeated Advanced line 155)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-android-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-android-drop-in]] \u2014 2026-09-15 ACH Android Drop-in Sessions (Checkout API v68+) and Advanced add-on: scoped refund roles, no method-specific request additions, optional UI and five-business-day bank outcome.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The guide's no-extra-parameter language is method-specific and does not waive base flow, bank validation or mandate obligations. Bank authorization can follow request receipt by up to five business days."
+        ]
+      },
+      {
+        "update_id": "ach-android-drop-in-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-android-drop-in]] \u2014 Android Drop-in ACH optional submit, address and save-details UI defaults for Sessions/Advanced (2026-09-15); US/PR address-code example is scoped to UI configuration.\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "The page gives no Android SDK version minimum; the US/PR address-list example does not prove live merchant or bank eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/android-drop-in/2026-09-15.md",
+  "raw_sha256": "0e86dd7917577f57eadb87335f5efbf3eb9e5582c4fbf961713ac572c3ec6606",
+  "status": "candidate_ready"
+}

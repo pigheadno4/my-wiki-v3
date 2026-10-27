@@ -1,0 +1,75 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"SEPA Direct Debit iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, ios, components, bank-debit, tokenization, capture]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds SEPA Direct Debit to an **existing iOS Components** integration, with separate Sessions and Advanced paths, `SEPADirectDebitComponent` initialization, recurring-token examples, TEST IBAN fixtures and a live Customer Area request gate. It is method-specific integration guidance, not evidence that a debit settled, a merchant is enabled, or a mandate has been satisfied. [[adyen]] [[adyen-online-payments]] [[adyen-ios-sdk]]\n\n## Key takeaways\n\n- **Sessions:** the base iOS Components Sessions flow must already exist, Checkout API **v68 or later** is required, and SEPA Direct Debit must be added in Customer Area. The page says no SEPA-specific parameters for the ordinary `/sessions` creation and no SEPA-specific Component configuration. Initialize `SEPADirectDebitComponent` only after finding `SEPADirectDebitPaymentMethod` in session payment methods; the snippet delegates to the session. See raw lines 25\u201372.\n- **Advanced:** the page calls for an existing iOS Components Advanced flow and Customer Area setup, then initializes the same Component with the merchant-side delegate. The integration-type label's URL is for **Drop-in**, and the action row says handle an additional action through a `handle-the-redirect` anchor while naming `action.type: direct`; preserve that conflict rather than treating it as a clear redirect recipe. See raw lines 917\u2013957.\n- **Advanced ordinary `/payments`:** the table marks `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber` required and says **do not encrypt the IBAN value**. Billing address fields are conditionally required for the listed **11 non-EEA SEPA countries and four territories**; the table's Required column is blank, but the prose and row description explicitly impose this condition. The example uses a DE IBAN and no billing address, so it does not test the non-EEA rule. See raw lines 959\u2013995.\n- The Advanced example labels a response `successful payment` but shows `resultCode: Received`. Treat `Received` as the example response, **not settled-funds evidence**; this guide does not document a later final-result webhook sequence. See raw lines 997\u20131005.\n- If automatic capture is not used, the Advanced section offers delayed automatic or manual capture. It says SEPA Direct Debit authorizations do not expire and can be captured any time after authorization; multiple partial captures require Support enablement. These are source claims scoped to this SEPA guide, not a guarantee of bank settlement. See raw lines 1007\u20131016.\n- **Recurring:** the guide supports Subscription and UnscheduledCardOnFile tokenization and **strongly recommends** explicit shopper permission plus transparency about schedule/amount; this recommendation is separate from any legal mandate requirement outside this page. Standard tokenization parameters go in `/sessions` or `/payments` for token creation without SEPA-specific extras; `recurring.token.created` later supplies `storedPaymentMethodId`. Subsequent shopper-absent Subscription or UnscheduledCardOnFile payments use `/payments` and standard tokenization fields (examples use `sepadirectdebit`, stored ID, `shopperReference`, `ContAuth` and the selected model). Do not apply the ordinary no-extra-fields statement to token creation or reuse. See raw lines 74\u201384, 91\u2013107, 283\u2013314, 596\u2013615, 1020\u20131028, 1377\u20131408 and 1688\u20131715. [[adyen-tokenization]]\n- Advanced token-creation examples are **not uniformly complete**: the prose/table requires owner name and IBAN for an ordinary Advanced `/payments` request, while several language examples under the token-creation subsection omit these fields; the NodeJS JavaScript and Python examples include them. Follow the stated field requirement and selected integration mode rather than treating every sample as a complete request. See raw lines 963\u2013971, 1032\u20131070, 1188\u20131225 and 1269\u20131302.\n- TEST provides NL/AT/FR account-name and IBAN fixtures and test Customer Area status lookup. Live acceptance requires a SEPA Direct Debit request in **live Customer Area**; the snapshot does not establish activation or successful bank debit. See raw lines 903\u2013915 and 1995\u20132007.\n\n## Detail locators\n\n- Sessions requirements, no-extra-fields/config and Component initialization: raw lines 25\u201372.\n- Sessions token creation/reuse prose and examples: raw lines 74\u2013900.\n- Advanced prerequisite/link/action inconsistencies and Component initialization: raw lines 917\u2013957.\n- Advanced ordinary request table, conditional non-EEA billing address and `Received` example: raw lines 959\u20131005.\n- Delayed/manual capture and multiple-partial enablement: raw lines 1007\u20131016.\n- Advanced recurring token creation/reuse prose and examples: raw lines 1020\u20131993.\n- TEST fixtures and live request gate: raw lines 903\u2013915 and 1995\u20132007.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main iOS Components route.\n- [[adyen-ios-sdk]] \u2014 native Component context.\n- [[adyen-tokenization]] \u2014 recurring-token lifecycle.\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 method overview and mandate/dispute context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15|SEPA Direct Debit iOS Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md:34 (Sessions requirements)"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md:80 (Sessions recurring; repeated Advanced line 1024)"
+    },
+    {
+      "text": "`action.type`: **direct**",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md:926 (Advanced action row; link anchor says handle-the-redirect)"
+    },
+    {
+      "text": "Make sure that you do not encrypt this value.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md:970 (Advanced IBAN row)"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md:1014 (Advanced capture)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-dd-ios-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-component]] \u2014 2026-09-15 SEPA Direct Debit iOS Components Sessions (Checkout API v68+) and Advanced guide for bank details, conditional billing address, capture and shopper-absent token reuse; source flags Advanced link/action and sample limits.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-dd-ios-component-ios-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-component]] \u2014 SEPA Direct Debit iOS `SEPADirectDebitComponent` guide for existing Sessions/Advanced integrations; Advanced prerequisite/action links need source-qualified reading (2026-09-15 capture).\n",
+        "quote_indexes": [
+          0,
+          2
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-dd-ios-component-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-ios-component]] \u2014 iOS Components SEPA token creation via standard `/sessions` or `/payments` fields, lifecycle webhook, and shopper-absent Subscription/UnscheduledCardOnFile reuse; explicit permission is strongly recommended, not an asserted mandate rule here.\n",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/ios-component/2026-09-15.md",
+  "raw_sha256": "a0daf627ae93ea1862a5580559759307ba6fe965a719cac323272cc401ef8f2b",
+  "status": "candidate_ready"
+}

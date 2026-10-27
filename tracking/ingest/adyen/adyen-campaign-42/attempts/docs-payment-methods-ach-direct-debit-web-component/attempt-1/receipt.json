@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ACH Direct Debit Web Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/web-component/2026-09-15.md\"\ntags: [adyen, ach-direct-debit, web, components, sessions, advanced-flow, bank-debit]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds ACH Direct Debit to an **existing Web Components** integration using Sessions or Advanced server-side flow. It covers component setup, method-specific request additions, delayed bank outcome and test data. It is not the complete integration or method-level mandate and bank-return guide. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-ach-direct-debit]].\n\n## Key takeaways\n\n- **Prerequisites are flow-specific:** Sessions requires an existing Web Components Sessions integration, **Checkout API v68 or later**, subscription to `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` for outdated bank details, and ACH added in Customer Area. Advanced lists an existing Web Components Advanced integration, the same change-notice webhook and Customer Area setup; it does **not** state the Sessions v68 minimum for Advanced. Both tables mention the `Merchant allow bank-refund` role **for issuing refunds** by API or Customer Area. That is a refund-operation permission, not a stated prerequisite to take an ACH payment. (raw lines 25\u201338, 121\u2013131)\n- **Component and requests:** Both flows say to import `Ach` from Adyen Web. Sessions says no additional ACH-specific `/sessions` parameters, while Advanced says none for `/payments`. Both list optional UI configuration: `enableStoreDetails` from **Web v5.24.0 or later** shows a save-details checkbox when true (default false); `hasHolderName` false hides the field if merchant passes the data (default true); `holderNameRequired` false makes the name field optional (default true). A checkbox is not proof of token creation, valid authorization or mandate. The `Ach.Configuration()` snippet is marked `bash` and the initialization example shows `newAch` with incomplete object/comment placement; use the verified base integration/API for executable code rather than copying these fragments literally. (raw lines 40\u201393, 133\u2013186)\n- **Delayed outcome:** After Adyen successfully receives the request, the guide says it may take **up to five business days** to learn whether the bank authorized the payment. It says bank-authorized payments appear in the Settlement details report; if the bank fails to authorize, a `CHARGEBACK` webhook follows. Request receipt, component outcome and bank authorization are separate from irrevocable funds: the ACH overview records reversals, nondefendable chargebacks and settlement-dependent refunds. The guide's `#chargebacks` anchor has no chargeback section in this captured page; use the linked ACH overview or dedicated chargebacks source for that lifecycle. (raw lines 95\u2013101, 188\u2013194; [[source-adyen-docs-payment-methods-ach-direct-debit]])\n- **Testing:** The page allows test payments with any name and correctly formatted account/routing numbers, and says to trigger a test chargeback by prefixing `ownerName` with `chargeback:` plus an ACH return reason code, such as `chargeback:R01`. These are test-environment scenarios, not proof of live bank validation, merchant eligibility or a completed debit. This guide does not describe a separate live activation request. (raw lines 103\u2013119, 196\u2013212)\n- **Method-level duties:** The related ACH overview says accepting merchants need a US registered entity, consumer bank-account validation, B2B bank allowlisting in applicable cases, correct SEC code, and a signed customer mandate; Components/Drop-in handle the SEC code automatically. Those eligibility and authorization duties should not be inferred as satisfied by this page's \u201cno additional parameters\u201d statements. (raw lines 44, 186; [[source-adyen-docs-payment-methods-ach-direct-debit]])\n\n## Detail locators\n\n- Sessions prerequisites, conditional refund roles, change-notice webhook and v68+ minimum: pinned raw lines 25\u201338.\n- Sessions no-extra-request fields and component import/config/init examples: pinned raw lines 40\u201393.\n- Sessions delayed outcome and test payment/return scenarios: pinned raw lines 95\u2013119.\n- Advanced prerequisites, import/config/init and no-extra-`/payments` statement: pinned raw lines 121\u2013186.\n- Advanced outcome and repeated test instructions: pinned raw lines 188\u2013212; related resource links: lines 214\u2013218.\n- ACH method-level eligibility, SEC/mandate, refunds and bank-return consequences: [[source-adyen-docs-payment-methods-ach-direct-debit]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online bank-debit integration context\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH mandate, bank verification, settlement, returns and refund context\n- [[adyen-tokenization]] \u2014 broader stored-method context; this page only lists a save-details checkbox and generic tokenization pointer\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/web-component/2026-09-15|ACH Direct Debit Web Component, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 36, Sessions requirements"
+    },
+    {
+      "text": "To issue a refund using an API request, make sure you have the **Merchant allow bank-refund** role.",
+      "location": "raw line 34, Sessions refund-role condition; repeated at raw line 128 Advanced"
+    },
+    {
+      "text": "Set to **true** to show the checkbox for saving the payment details. The default is **false**.",
+      "location": "raw line 66, enableStoreDetails Web v5.24.0+; repeated at raw line 153"
+    },
+    {
+      "text": "Note that after we successfully received your request, it may take up to five business days to know whether the payment was authorised by the bank.",
+      "location": "raw line 101, delayed bank outcome; repeated at raw line 194"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request",
+      "location": "raw line 186, Advanced method-specific request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-web-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-web-component]] \u2014 2026-09-15 ACH Web Components Sessions/Advanced add-on for `Ach` import, optional UI config and no extra method request fields; source preserves refund-role, delayed bank outcome and test qualifications.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/web-component/2026-09-15.md",
+  "raw_sha256": "8af87d3a139a22c7b46414259ef73b32e1dd194b62531e892ca15b0a5a5f057b",
+  "status": "candidate_ready"
+}

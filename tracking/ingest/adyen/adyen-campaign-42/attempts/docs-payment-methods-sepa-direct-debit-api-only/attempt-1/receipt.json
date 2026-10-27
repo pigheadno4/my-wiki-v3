@@ -1,0 +1,63 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SEPA Direct Debit API-only integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/api-only/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, api-only, advanced-flow, iban, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds SEPA Direct Debit to an **existing Web API-only Advanced-flow** integration. It covers method discovery, a merchant-built form, the `/payments` request, capture, recurring tokens, and test/live setup. It is a method-specific add-on; [[source-adyen-docs-payment-methods-sepa-direct-debit]] holds broader mandate, pre-debit notice, settlement, return and chargeback rules. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Base integration and form:** The page requires an existing API-only integration with handling for an additional `direct` action and SEPA Direct Debit added in Customer Area. The merchant builds the payment form. A form instruction says to collect \u201cissuer selection,\u201d but the immediately following table actually lists **bank-account owner name and IBAN**; the `/payments` field table also requires those details. Do not treat the stray phrase as a SEPA issuer-list requirement. A high-level step says to include purchased-item information, while the dedicated request table and sample focus on SEPA account fields; consult the base API-only guide for any general request fields. (raw lines 23\u201349, 92\u2013125)\n- **Method discovery:** To include SEPA Direct Debit in the `/paymentMethods` response, the page lists specific `countryCode` values (AT, BE, CY, EE, FI, FR, DE, GR, IE, IT, LV, LT, LU, MT, NL, PT, SK, SI, ES) and `amount.currency: EUR`. The sample is a **test v72** `/paymentMethods` request and `sepadirectdebit` response; the list is a request-configuration statement, not proof of current bank or merchant eligibility or a stated API minimum version. (raw lines 51\u201390)\n- **Payment request and intermediate result:** The dedicated `/payments` table requires `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber`, with the instruction **not to encrypt the IBAN**. Billing address is conditionally required for the enumerated non-EEA SEPA IBAN countries/territories, not every SEPA IBAN. The test v72 payment example is illustrative; its curl line breaks around `-X POST` are not copy-ready. Its \u201csuccessful payment\u201d response shows `resultCode: Received`, which alone does not prove final authorization, capture or settled funds. (raw lines 92\u2013136)\n- **Capture:** If automatic capture is not used, the guide says to use delayed automatic or manual capture. It says SEPA Direct Debit authorizations do not expire and refers multiple partial capture enablement to Support. That capture statement is conditioned on an authorized payment; the `Received` example does not establish authorization. (raw lines 138\u2013147)\n- **Recurring:** The guide documents Subscription and UnscheduledCardOnFile tokenization using standard request fields with no extra SEPA-specific token fields. It **strongly recommends** explicit shopper permission and transparent schedule/amount to reduce chargeback risk; this advice is not the entire mandate rule. A `recurring.token.created` webhook contains `storedPaymentMethodId`; subsequent shopper-absent `/payments` use the stored ID, `shopperInteraction: ContAuth`, and the respective recurring model. Examples do not prove token creation or successful future debit. (raw lines 149\u2013183, 506\u2013536, 853\u2013879)\n- **Testing/live gate:** NL/AT/FR test names and IBANs plus test Customer Area status navigation are provided. Before accepting live SEPA Direct Debit, the guide says to submit a request in the **live** Customer Area. A historical sample and test result do not establish current enablement. (raw lines 1196\u20131208)\n\n## Detail locators\n\n- API-only prerequisites, high-level steps, form mismatch and bank detail table: pinned raw lines 23\u201349.\n- `/paymentMethods` country/currency filter and v72 test response: pinned raw lines 51\u201390.\n- Conditional billing address, unencrypted IBAN and `Received` test payment example: pinned raw lines 92\u2013136.\n- Capture modes and Support gate: pinned raw lines 138\u2013147.\n- Token creation and recurring model examples: pinned raw lines 149\u2013505; token webhook and shopper-absent reuse: lines 506\u20131193. Some generated library samples omit SEPA owner/IBAN fields shown in the curl/JavaScript/Python examples; verify against the actual API/library version before implementation.\n- Test data, live request and base-guide pointer: pinned raw lines 1196\u20131212.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment-method context\n- [[adyen-tokenization]] \u2014 stored-method context\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 method-level mandate, notice, settlement and chargeback qualifications\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/api-only/2026-09-15|SEPA Direct Debit API-only, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "After the shopper selects SEPA, render the input fields for SEPA to collect their issuer selection.",
+      "location": "raw line 42, form prose; table at lines 44\u201347 lists owner name and IBAN"
+    },
+    {
+      "text": "**EUR**",
+      "location": "raw line 58, paymentMethods currency filter"
+    },
+    {
+      "text": "Make sure that you do not encrypt this value.",
+      "location": "raw line 101, IBAN request parameter"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw line 145, capture"
+    },
+    {
+      "text": "The webhook contains the `storedPaymentMethodId` that you can use to make subsequent payments using the stored payment details.",
+      "location": "raw line 506, token webhook"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-api-only-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-api-only]] \u2014 2026-09-15 SEPA Web API-only Advanced add-on for EUR method discovery, bank-detail request, capture and token reuse; source qualifies issuer/item prose and `Received` example.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-api-only-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-api-only]] \u2014 2026-09-15 API-only SEPA token-creation webhook and shopper-absent Subscription/UnscheduledCardOnFile stored-method `/payments` reuse; permission recommendation and mandate duties are source-qualified.\n",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/api-only/2026-09-15.md",
+  "raw_sha256": "db84138892f9307602cab58f967c9a0d3c505784ffd3c9ce20fe16ab2e7f4d1e",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,74 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"SEPA Direct Debit Flutter Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, flutter, drop-in, bank-debit, tokenization, capture]\n---\n\n## Overview\n\nThis 2026-09-15 guide describes SEPA Direct Debit additions to an **existing Flutter Drop-in** Sessions or Advanced integration. It covers ordinary payment request differences, recurring-token creation/reuse, Advanced capture, TEST account fixtures and a live Customer Area gate. It is not evidence of an enabled merchant, completed mandate or settled debit. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions** requires an existing Flutter Drop-in Sessions flow, Checkout API **v68 or later**, and contacting Adyen Support to add SEPA Direct Debit in Customer Area. The displayed Sessions prerequisite URL actually points to an **Advanced** Flutter Drop-in guide, while the later create-session link targets Sessions. Ordinary `/sessions` creation needs no SEPA-specific additional parameters, and Drop-in needs no SEPA-specific configuration. See raw lines 25\u201347.\n- **Advanced** requires an existing Flutter Drop-in Advanced flow and adding SEPA Direct Debit in Customer Area. Its action row says handle an additional action with `action.type: direct`, but links to a `handle-the-redirect` anchor; read this as a source navigation/action mismatch, not a proven redirect recipe. No SEPA-specific Drop-in configuration is required. See raw lines 892\u2013908.\n- For an **Advanced ordinary `/payments`** request, the table marks `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber` required and says **do not encrypt the IBAN value**. Billing address fields are required when the IBAN belongs to the listed 11 non-EEA SEPA countries or four territories, even though the table's Required cell is blank; the prose and row description state the condition. The DE-IBAN example without billing address does not test that rule. See raw lines 910\u2013946.\n- The Advanced example is labeled a `successful payment` response but shows `resultCode: Received`; that example is **not evidence of settlement**. If automatic capture is off, use delayed automatic or manual capture. The guide states SEPA Direct Debit authorizations do not expire and can be captured any time after authorization; **multiple partial captures need Support enablement**. See raw lines 948\u2013967. [[adyen-payment-capture]]\n- **Recurring** supports tokenization for Subscription and UnscheduledCardOnFile. The guide **strongly recommends** explicit shopper permission and transparency about schedule/amount to reduce chargebacks; it does not itself set out a mandate rule. Standard tokenization fields are used in `/sessions` or `/payments` for creation without method-specific additions. After `recurring.token.created` supplies `storedPaymentMethodId`, subsequent shopper-absent token payments use `/payments` with standard fields; examples specify `sepadirectdebit`, stored ID, `shopperReference`, `ContAuth` and the chosen model. Ordinary no-extra-field text does not remove tokenization parameters. See raw lines 49\u201359, 63\u201382, 258\u2013287, 571\u2013590, 969\u2013979, 1328\u20131359 and 1639\u20131666. [[adyen-tokenization]]\n- Advanced token-creation examples are not uniformly complete: the ordinary Advanced table requires owner name and IBAN, yet several language samples beneath token creation omit them while the curl, NodeJS JavaScript and Python samples include them. Treat examples as illustrative rather than as a universal complete request schema. See raw lines 914\u2013922, 983\u20131007, 1008\u20131138, 1139\u20131176 and 1220\u20131253.\n- TEST offers NL/AT/FR account-name and IBAN fixtures and test Customer Area status lookup. Before live acceptance, submit a SEPA Direct Debit request in **live Customer Area**. These instructions do not prove activation or payment success. See raw lines 878\u2013890 and 1946\u20131958.\n\n## Detail locators\n\n- Sessions version/setup, misrouted prerequisite, no-extra-fields/configuration: raw lines 25\u201347.\n- Sessions token creation and later `/payments` reuse: raw lines 49\u2013876.\n- Advanced setup/action mismatch and no configuration: raw lines 892\u2013908.\n- Advanced request fields, conditional billing address, `Received` example and capture: raw lines 910\u2013967.\n- Advanced token creation/reuse and sample variability: raw lines 969\u20131944.\n- TEST fixtures and live request gate: raw lines 878\u2013890 and 1946\u20131958.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main Flutter Drop-in method route.\n- [[adyen-payment-capture]] \u2014 capture mode and asynchronous outcome context.\n- [[adyen-tokenization]] \u2014 recurring-token lifecycle.\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 method overview and mandate/dispute context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15|SEPA Direct Debit Flutter Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md:34 (Sessions requirement)"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md:55 (Sessions recurring; repeated Advanced line 975)"
+    },
+    {
+      "text": "`action.type`: **direct**",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md:901 (Advanced action row; link uses handle-the-redirect)"
+    },
+    {
+      "text": "Make sure that you do not encrypt this value.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md:921 (Advanced IBAN row)"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md:965 (Advanced capture)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-dd-flutter-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] \u2014 2026-09-15 Flutter Drop-in SEPA Sessions (Checkout API v68+) and Advanced guide for conditional bank/billing fields, capture and shopper-absent tokens; source flags prerequisite/action link and example limits.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-dd-flutter-drop-in-capture-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] \u2014 Advanced Flutter Drop-in SEPA guide for delayed/manual capture when auto-capture is off, stated nonexpiring authorization and Support-enabled multiple partial captures (2026-09-15 capture).\n",
+        "quote_indexes": [
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "sepa-dd-flutter-drop-in-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] \u2014 Flutter Drop-in SEPA token creation through standard fields, lifecycle webhook and shopper-absent Subscription/UnscheduledCardOnFile reuse; explicit permission is strongly recommended, with sample limits in source (2026-09-15).\n",
+        "quote_indexes": [
+          1
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "634dbfad16b688010569ae3738f8774a27224992cdf0138c5f2a1296b75d86b8",
+  "status": "candidate_ready"
+}

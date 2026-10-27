@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"ACH Direct Debit API-only integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md\"\ntags: [adyen, ach-direct-debit, api-only, sec-code, mandate, bank-account]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds ACH Direct Debit to an existing API-only integration with a merchant-built form and method-specific `/paymentMethods` and `/payments` fields. It is not a complete base integration, a standalone bank-account verification service or proof of debit completion. The related [[source-adyen-docs-payment-methods-ach-direct-debit|ACH overview]] supplies US-entity eligibility, consumer validation, B2B bank allowlisting, signed mandate, asynchronous reversal, refund and blocklist context (this raw lines 15\u201346; overview raw lines 23\u201329, 35\u201386).\n\n## Key takeaways\n\n- The page requires an existing API-only integration, ACH added in Customer Area and subscription to `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` for outdated banking details. The **Merchant allow bank-refund** role applies specifically when issuing a refund by API or Customer Area; it is not phrased as a prerequisite for taking an ACH payment. `/paymentMethods` specifies `countryCode` US or PR and USD. The overview separately requires a registered US business entity, so PR availability does not waive that merchant condition (this raw lines 23\u201340; overview raw lines 23\u201325).\n- The merchant-built form collects account number, nine-digit ACH routing number (preserve leading zeros; do not use a wire routing number), checking/savings type, holder name and personal/business holder type; address is optional. Use the details to obtain the customer mandate. If `bankAccountType` is omitted, it defaults to `checking`; a savings-account mismatch can cause a chargeback, so Adyen recommends collecting the type explicitly. Routing-number genuineness validation mentioned here is narrower than consumer bank-account validation: the overview says Nacha requires the latter and points to giact (this raw lines 42\u201361; overview raw lines 35\u201337, 61\u201363).\n- Nacha requires a correct SEC code. The guide offers `additionalData.ach.secCode`, `paymentMethod.accountHolderType` (business maps to **CCD**, personal to **WEB**), or a Support-configured default. Its prose says Adyen otherwise tries to infer from the holder name and falls back to **WEB** if uncertain; do not treat that fallback as assuring the correct authorization type. The `/payments` table calls the explicit SEC field optional and lists **CDD** for B2B, whereas the same page's prose says **CCD** and the overview consistently says CCD. The overview says API-only integrations need to specify the SEC code. Preserve this CDD/CCD and optional/fallback tension; verify the authoritative field/code path before implementation. A signed customer mandate remains required before one-off or recurring initiation, independent of SEC selection (this raw lines 63\u201392; overview raw lines 47\u201363).\n- For `/payments`, the table marks `paymentMethod.type: ach`, holder name, and either clear or encrypted account number plus either clear or encrypted routing number required; bank account type and SEC/account-holder type are listed optional. The examples show opaque `adyenjs_...` values but do not explain how to generate or secure them. The curl example lacks a continuation before `-d` and has a trailing comma in its JSON; a Node example has `country: US` with `city: Amsterdam` in its billing address. Do not copy these as validated live requests or treat sample ciphertext as a reusable credential (raw lines 80\u2013119, 255\u2013293).\n- The page offers TEST account/routing formats and an `ownerName` value `chargeback:R01` to simulate a return; it does not provide a full payment-outcome or retry procedure. The overview says ACH has no real-time bank authorization, reversals can follow and ACH chargebacks cannot be defended; reason-code-specific retry belongs to the linked chargeback authority. For refunds, the overview requires settlement and the bank-refund role and describes a three-day post-settlement delay. B2B ACH Company ID allowlisting and Adyen-wide terminal-return blocks are also overview conditions, not established by this page's test request (this raw lines 441\u2013463; overview raw lines 29, 39\u201345, 65\u2013128).\n\n## Detail locators\n\n- API-only/setup/refund-role distinction and `/paymentMethods` US/PR/USD: raw lines 23\u201340.\n- Form account/routing/type/mandate and checking default: raw lines 42\u201361.\n- SEC methods, fallback and CDD/CCD table inconsistency: raw lines 63\u201392.\n- `/payments` clear/encrypted fields and sample limitations: raw lines 80\u2013119, 255\u2013293.\n- TEST payment and `chargeback:R01` return simulation: raw lines 441\u2013457.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-ach-direct-debit|ACH overview (entity, validation, mandate and reversal authority)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15|ACH Direct Debit API only, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To issue a refund using an API request, make sure you have the **Merchant allow bank-refund** role.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "If you do not provide the `bankAccountType` in your payment request, this defaults to **checking** account.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md:59"
+    },
+    {
+      "text": "Nacha requires a [Standard Entry Class (SEC) code](/payment-methods/ach-direct-debit#sec-code) for ACH payments.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md:65"
+    },
+    {
+      "text": "If we cannot make a confident guess, we default to **WEB**.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md:78"
+    },
+    {
+      "text": "Possible values: **CDD** (for B2B transactions), **PPD** (for personal transactions with written authorization), or **WEB** (for personal transactions with digital authorization).",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md:91"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-ach-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-api-only]] \u2014 2026-09-15 ACH API-only form and payment fields, SEC/account-type handling and TEST returns; source flags CDD/CCD and fallback tensions against the ACH overview.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/api-only/2026-09-15.md",
+  "raw_sha256": "4f996645f1fc1fa5916fe4d2eab6603b7b8517684c9109a4905694399d559016",
+  "status": "candidate_ready"
+}

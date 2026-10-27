@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-ios-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen ACH Direct Debit iOS Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/ios-component/2026-09-15.md\"\ntags: [adyen, ach-direct-debit, ios, components, sessions, advanced-flow, bank-debit]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds ACH Direct Debit to an **existing iOS Components** integration, with separate Sessions and Advanced server-side instructions. It gives method-specific prerequisites, `ACHDirectDebitComponent` initialization and test values, and states that no additional ACH-specific `/sessions` or `/payments` parameters are needed (raw lines 44, 137). It does not specify an iOS SDK version, a complete payment-result lifecycle or current merchant eligibility. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-ach-direct-debit]].\n\n## Key takeaways\n\n- **Sessions:** Requires an existing iOS Components Sessions integration, **Checkout API v68 or later**, ACH added in Customer Area, and subscription to `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` to learn of outdated shopper bank details. It says no ACH-specific `/sessions` parameters or extra component configuration are needed. The `Merchant allow bank-refund` role listed alongside these requirements is explicitly conditional on **issuing a refund** through API or Customer Area, not a stated prerequisite for taking an ACH payment. (raw lines 25\u201350)\n- **Advanced:** Requires an existing Advanced iOS Components integration, the same change-notice webhook and ACH Customer Area setup. It also says no extra ACH configuration or `/payments` parameters are needed. The **Advanced Components** prerequisite label links to an `integration=Drop-in` URL, while the later payment link points to Components; verify the correct base guide. This section does not state the Sessions-only v68 minimum for Advanced. (raw lines 92\u2013137)\n- **Native component:** Both flows name `ACHDirectDebitComponent`. The Sessions sample checks for `ACHDirectDebitPaymentMethod`, constructs the component, sets its delegate to the session and presents the view controller; Advanced similarly sets the delegate to `self`. Both Swift snippets leave `configuration:` without a value and are not copy-ready. This incomplete placeholder does not override the page's statement that no **additional ACH-specific** configuration is needed. (raw lines 52\u201372, 112\u2013131)\n- **Outcome and method duties:** This page does not state an ACH authorization, capture, settlement or refund outcome procedure. Its change-notice webhook serves **outdated banking details**, not payment success. The related ACH overview records non-real-time bank authorization, US-entity eligibility, consumer account validation, B2B allowlisting, signed mandate/SEC obligations, returns and settled-only refund conditions. Thus no-extra-method-fields and a presented component do not establish a valid authorization, verified account, approved merchant or settled funds. (raw lines 37, 44, 103, 137; [[source-adyen-docs-payment-methods-ach-direct-debit]])\n- **Testing:** For test payments, the page allows any owner name and correctly formatted account/routing numbers. For a test return, it says to prefix `ownerName` with `chargeback:` and an ACH reason code, for example `chargeback:R01`. These are test cases, not proof of live payment or bank-account validation. A separate live activation procedure is not described here. (raw lines 74\u201390, 139\u2013155)\n\n## Detail locators\n\n- Sessions prerequisites, conditional refund permissions, change-notice webhook and v68+ minimum: pinned raw lines 25\u201338.\n- Sessions no-extra-fields/configuration and incomplete Swift initialization sample: pinned raw lines 40\u201372.\n- Sessions test account/routing and chargeback trigger: pinned raw lines 74\u201390.\n- Advanced prerequisite link mismatch, roles, webhook and setup: pinned raw lines 92\u2013104.\n- Advanced no-extra-config/request fields and incomplete Swift initialization sample: pinned raw lines 106\u2013137.\n- Repeated Advanced test values and related links: pinned raw lines 139\u2013161.\n- ACH method-level eligibility, mandates/SEC, bank authorization, returns and refunds: [[source-adyen-docs-payment-methods-ach-direct-debit]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online bank-debit integration context\n- [[adyen-ios-sdk]] \u2014 wider iOS SDK context, separate from this method guide\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH bank-account, authorization, mandate, return and refund context\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/ios-component/2026-09-15|ACH Direct Debit iOS Component, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 36, Sessions Checkout API prerequisite"
+    },
+    {
+      "text": "To issue a refund using an API request, make sure you have the **Merchant allow bank-refund** role.",
+      "location": "raw line 34, Sessions refund permission; repeated at raw line 101 Advanced"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for ACH Direct Debit.",
+      "location": "raw line 50, Sessions config; repeated at raw line 110 Advanced"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) ACH Direct Debit, use the `ACHDirectDebitComponent` class.",
+      "location": "raw line 56, Sessions native class; repeated at raw line 116 Advanced"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request",
+      "location": "raw line 137, Advanced method-specific request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-ios-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-ios-component]] \u2014 2026-09-15 ACH iOS Components Sessions/Advanced add-on for `ACHDirectDebitComponent`, change-notice webhook and no extra method request fields; source qualifies refund role, Drop-in link and incomplete Swift samples.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-component/2026-09-15.md",
+  "raw_sha256": "4cf3fca1ec8471b5c3145f25dfe3b2aeff97e7d6d3c86099d890bfa16863c67c",
+  "status": "candidate_ready"
+}

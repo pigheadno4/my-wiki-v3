@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ACH Direct Debit iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md\"\ntags: [adyen, ach, direct-debit, ios, drop-in, sessions, advanced-flow]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds ACH Direct Debit to an existing iOS Drop-in integration through Sessions or Advanced server-side flow. It is a method-specific add-on, not a complete native integration or evidence of current eligibility, bank-account validation, authorization or cleared funds. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-ach-direct-debit]] for ACH eligibility, SEC-code, signed mandate, account-validation, refund and chargeback conditions.\n\n## Key takeaways\n\n- Sessions requires an existing iOS Drop-in Sessions integration, Checkout API v68 or later, ACH Direct Debit added in Customer Area and subscription to `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` for outdated banking details. Its ordinary `/sessions` request and Drop-in configuration need no additional ACH-specific parameters.\n- Advanced requires an existing iOS Drop-in Advanced integration, ACH Customer Area setup and the same Notice of Change subscription. Its ordinary `/payments` request and Drop-in configuration need no additional ACH-specific parameters. These narrow integration statements do not remove the method overview's Nacha consumer-account validation, SEC-code or electronically signed mandate requirements; the overview says Drop-in handles the SEC code automatically, but the customer authorization remains necessary.\n- The refund role in both prerequisite tables is conditional: issuing an ACH refund by API or Customer Area requires the **Merchant allow bank-refund** role for the relevant actor. The method overview says the payment must first settle and describes a three-day post-settlement delay; this child guide supplies no refund execution procedure.\n- After Adyen receives the request, bank authorization may take up to five business days. The guide points to the Settlement details report if authorized and a `CHARGEBACK` webhook if not; an immediate response is not settled-funds proof. The ACH overview also warns of no real-time authorization and nondefendable chargebacks.\n- The test section allows any correctly formatted account and routing number, and `ownerName` beginning `chargeback:` plus an ACH return code such as `R01` for test chargebacks. The guide merely links to giact validation, tokenization and ACH chargeback instructions; it does not itself show those flows or grant a general retry permission. Its `CHARGEBACK` links target a `#chargebacks` fragment not present in this child page; the method overview supplies the chargeback route.\n\n## Detail locators\n\n- Sessions iOS Drop-in/v68+, conditional refund role, Notice of Change webhook and Customer Area setup: pinned raw lines 25\u201337. No added `/sessions` or Drop-in fields: lines 39\u201349.\n- Advanced integration, conditional refund role, Notice of Change webhook and setup: pinned raw lines 79\u201391. No added Drop-in or `/payments` fields: lines 93\u2013103.\n- Five-business-day bank outcome, Settlement details report and chargeback webhook: pinned raw lines 51\u201357 and 105\u2013111. Test accounts/chargeback simulation: lines 59\u201377 and 113\u2013131. Related links: lines 133\u2013137.\n- Method-level US-entity eligibility, consumer validation, SEC-code handling, signed mandate, settled-only delayed refund and nondefendable disputes: [[source-adyen-docs-payment-methods-ach-direct-debit]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider integration concept\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 method-level eligibility, mandate, account validation, refund and chargeback authority\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15|ACH Direct Debit iOS Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md:43"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for ACH Direct Debit.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md:49"
+    },
+    {
+      "text": "it may take up to five business days to know whether the payment was authorised by the bank.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md:57"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md:103"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-direct-debit-ios-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-ios-drop-in]] \u2014 2026-09-15 ACH iOS Drop-in Sessions/Advanced add-on with no extra ordinary method fields, Notice of Change setup and up-to-five-business-day bank outcome; overview retains validation and mandate rules.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "3010fb719a58fb08dcad89fb46c847078a1b7590a1ac51b5b0aa497067f762d2",
+  "status": "candidate_ready"
+}

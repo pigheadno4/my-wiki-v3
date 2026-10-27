@@ -19,6 +19,9 @@ A successful `CAPTURE` webhook means the request was valid and submitted onward,
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] — Advanced Flutter Drop-in SEPA guide for delayed/manual capture when auto-capture is off, stated nonexpiring authorization and Support-enabled multiple partial captures (2026-09-15 capture).
+
+
 - [[source-adyen-docs-payment-methods-pay-by-bank-us-ios-drop-in]] — iOS Drop-in method guide warns that Plaid authorization checks do not hold funds and even immediate ACH capture can fail for insufficient funds (2026-09-15 capture).
 
 

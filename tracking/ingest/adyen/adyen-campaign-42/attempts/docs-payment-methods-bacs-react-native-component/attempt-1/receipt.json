@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bacs-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BACS Direct Debit React Native Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md\"\ntags: [adyen, bacs, direct-debit, react-native, components, recurring]\n---\n\n## Overview\n\nAdyen's 2026-09-16 BACS Direct Debit React Native Component guide supplies method-specific additions to an existing Components integration. It explicitly marks Sessions flow unavailable for React Native Components and documents Advanced flow only for this method. This page-specific restriction does not negate the wrapper's general Sessions capability. See [[adyen]] and [[adyen-react-native-sdk]].\n\n## Key takeaways\n\n- Advanced requires an existing React Native Components integration, `Direct` action handling and BACS added in Customer Area. No BACS-specific Component configuration is required. The prerequisite row is labeled Components but its base-guide link says `integration=Drop-in`; the nearby action and payment links say Components, so the Drop-in URL is not proof of a Drop-in requirement (raw lines 25-53).\n- The Advanced `/payments` table marks `shopperEmail`, `paymentMethod.type: directdebit_GB`, holder name, account number and `bankLocationId` required. The TEST v72/GBP/GB curl illustrates those fields, but lacks a shell continuation after `-X POST`, leaving `-d` outside the command as printed; it is not copy-ready shell (raw lines 53-90). The response prose calls `action.type` `Direct`, while its `Received` example contains `action.type: voucher` and a PDF mandate URL. The page does not reconcile these shapes; do not assume one response shape is guaranteed (raw lines 422-435).\n- The related [[source-adyen-docs-payment-methods-bacs]] overview says the shopper confirms account ownership and agreement, can download the Direct Debit Instruction after receipt, and that clearing/settlement can take four to six days. This Component page's `Received` example is therefore not cleared funds. The overview also says chargebacks cannot be defended and scheme notice rules can expose a merchant to chargebacks (BACS overview raw lines 23-27, 35-39, 60-74).\n- For recurring, Adyen recommends tokenization and strongly recommends explicit shopper permission and a transparent schedule/amount. Under the Direct Debit Guarantee, the Component page says changes in collection date or amount require advance notice; it strongly recommends notice before each payment. For initial token creation it instructs a `/payments` request with `shopperReference` and `storePaymentMethod: true`, then storing `storedPaymentMethodId` if a `recurring.token.created` webhook arrives. Later `/payments` examples use the stored ID, matching shopper reference and `shopperInteraction: ContAuth` (component raw lines 437-490).\n- The page says a `Received` response can include `pspReference` and points to webhooks to track success. TEST bank details and test Customer Area status are provided. Live BACS acceptance requires a separate request in live Customer Area (raw lines 490-502).\n\n## Detail locators\n\n- Method-specific Sessions restriction and Advanced prerequisites: raw lines 25-47.\n- Advanced required fields, TEST request examples and curl continuation gap: raw lines 49-420.\n- Direct-versus-voucher response discrepancy: raw lines 422-435.\n- Recurring permission, notice, token creation/reuse and webhook status: raw lines 437-490.\n- Test fixtures and live request: raw lines 492-502.\n- Related method-level DDI, delayed clearing, notice and chargeback conditions: BACS overview raw lines 23-27, 35-39, 60-74.\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/bacs/2026-09-15|BACS method overview (relevant lifecycle passages read)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16|BACS Direct Debit React Native Component (2026-09-16 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md:29 (Sessions restriction)"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for BACS Direct Debit.",
+      "location": "raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md:47 (Advanced configuration)"
+    },
+    {
+      "text": "The response includes the `action.type`: **Direct**.",
+      "location": "raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md:422 (action prose)"
+    },
+    {
+      "text": "Under the [Direct Debit Guarantee](https://www.directdebit.co.uk/direct-debit-explained/direct-debit-guarantee), if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md:447 (recurring notice)"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md:490 (outcome tracking)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-react-native-component-sdk-route",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-react-native-component]] \u2014 2026-09-16 BACS React Native Component Advanced-only add-on for request fields, mandate-action response and recurring tokens; source qualifies Drop-in link, Direct/voucher conflict and delayed outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/react-native-component/2026-09-16.md",
+  "raw_sha256": "bf98605207974775ca1e9ca1662a37c6e8702b5519e7199d2093b4885c04678d",
+  "status": "candidate_ready"
+}

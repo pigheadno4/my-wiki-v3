@@ -1,0 +1,11 @@
+# docs-payment-methods-bacs-android-drop-in — Q1/Q2
+
+Retrieval route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bacs-android-drop-in]].
+
+## Q1 — What is this page for, and what cannot be inferred?
+
+[[source-adyen-docs-payment-methods-bacs-android-drop-in]] is a BACS Android Drop-in add-on for existing Sessions and Advanced integrations, with request fields, optional configuration and recurring token use (raw lines 15–25, 340–415, 431–475, 851–904). It is not the full base integration or a complete DDI/mandate procedure. Advanced prose labels `action.type: Direct`, but the example shows `action.type: voucher` and `resultCode: Received`; the guide says webhooks track subsequent success (raw lines 836–849, 904). The related [[source-adyen-docs-payment-methods-bacs|BACS overview]] describes shopper agreement, DDI submission, four-to-six-day clearing/settlement and undefendable chargebacks (overview raw lines 23–27, 60–74). This 2026-09-15 snapshot and its test examples do not prove live enablement, a valid DDI or settled funds (this raw lines 2, 11, 417–429, 906–916).
+
+## Q2 — What central capability, prerequisites, and warnings are stated?
+
+Sessions needs existing Android Drop-in with Checkout API v68+, BACS added in Customer Area and `shopperEmail` on `/sessions`; Advanced needs existing Android Advanced Drop-in with additional-action handling and email, `directdebit_GB`, holder, account and bank routing/sort-code fields on `/payments` (raw lines 25–44, 431–475). Both show optional `setSubmitButtonVisible`, default true (raw lines 340–360, 441–461). Recurring tokenization and explicit permission are recommended; the page separately states that changed collection date or amount requires advance notice under the Direct Debit Guarantee. Initial `/payments` token creation uses `shopperReference` and `storePaymentMethod: true`, then `recurring.token.created` supplies `storedPaymentMethodId` for later `ContAuth` payments (raw lines 362–415, 851–904). The Advanced `#handle-the-redirect` link and `Direct` label conflict with its voucher response example; `Received` needs webhook follow-up (raw lines 437–439, 836–849, 904). TEST account details and a live Customer Area request are stated, without proving a real debit or active merchant account (raw lines 417–429, 906–916).

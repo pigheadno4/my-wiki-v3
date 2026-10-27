@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bacs-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BACS Direct Debit Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, web, drop-in, recurring]\n---\n\n## Overview\n\nAdyen's 2026-09-15 BACS Direct Debit Web Drop-in guide adds method-specific request and tokenization instructions to an existing Web Drop-in integration. It covers both Sessions and Advanced server-side flows. The page is integration guidance; a `Received` response is not final clearing or proof of funds. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Sessions requires an existing Web Drop-in Sessions integration, Checkout API v68 or later, and BACS added in Customer Area. The method-specific `/sessions` field is required `shopperEmail`. `BacsDirectDebit` is an optional individual import for tree shaking. The TEST/GBP/GB session examples use an app-style `adyencheckout://` return URL despite this Web page; treat it as a sample value, not a general Web return-URL rule (raw lines 25-68, 341-351).\n- Advanced requires an existing Web Drop-in Advanced integration, BACS added in Customer Area and additional-action handling. Its `/payments` table requires `shopperEmail`, `paymentMethod.type: directdebit_GB`, account holder name, bank account number and `bankLocationId` (the bank routing/sort-code value in the sample); the optional `BacsDirectDebit` import applies here too (raw lines 422-487). The prerequisite calls the action `Direct`, but the response section says `Direct` while the shown `Received` response contains `action.type: voucher` and `PDF_MANDATE_URL`. This source does not reconcile that discrepancy; handle the actual returned action under the base integration guidance rather than assuming the example is a guaranteed shape (raw lines 428-431, 819-832).\n- For recurring, Adyen recommends tokenizing details and strongly recommends explicit shopper permission and transparent schedule/amount to reduce chargeback risk. This guide additionally states that a changed collection date or amount requires advance notice under the Direct Debit Guarantee, and strongly recommends notice before each payment. The initial token instructions specifically say to make a `/payments` request with `shopperReference` and `storePaymentMethod: true`; `recurring.token.created` supplies the `storedPaymentMethodId`. Later `/payments` examples use that ID, the same shopper reference and `shopperInteraction: ContAuth` (raw lines 353-406, 834-887).\n- For recurring requests, the page says `paymentMethod.recurringDetailReference` or `paymentMethod.storedPaymentMethodId` for API v49 and above; this historical wording should not erase the explicit `storedPaymentMethodId` returned by its token webhook and used in its JSON example (raw lines 374-403, 855-884).\n- The page says `Received` plus `pspReference` means a payment request was received and points to webhooks to track whether it succeeded. TEST bank details and test Customer Area status are provided; live BACS acceptance requires a separate request in live Customer Area (raw lines 406-420, 887-901). The method's DDI, clearing and chargeback lifecycle belongs to [[source-adyen-docs-payment-methods-bacs]]; this page does not by itself prove funds have cleared.\n\n## Detail locators\n\n- Sessions requirements, required email, examples and optional import: raw lines 25-351.\n- Sessions recurring token, notice, received/webhook and test/live instructions: raw lines 353-420.\n- Advanced requirements, optional import, required fields and TEST request examples: raw lines 422-817.\n- Advanced response action discrepancy: raw lines 819-832.\n- Advanced recurring and test/live instructions: raw lines 834-901.\n\n## Related raw API references\n\n- [[raw/adyen/docs/payment-methods/bacs/2026-09-15|BACS overview (unread navigation)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15|BACS Direct Debit Web Drop-in (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md:34 (Sessions requirement)"
+    },
+    {
+      "text": "Under the [Direct Debit Guarantee](https://www.directdebit.co.uk/direct-debit-explained/direct-debit-guarantee), if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md:363 (recurring notice)"
+    },
+    {
+      "text": "When you receive the [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created), store the `storedPaymentMethodId`.",
+      "location": "raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md:374 (token webhook)"
+    },
+    {
+      "text": "The response includes the `action.type`: **Direct**.",
+      "location": "raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md:819 (Advanced action prose)"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md:887 (outcome tracking)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-web-drop-in]] \u2014 2026-09-15 BACS Web Drop-in Sessions/Advanced guide for email/account fields, recurring tokens and TEST/live setup; source flags Direct-versus-voucher action examples and webhook outcome boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/web-drop-in/2026-09-15.md",
+  "raw_sha256": "b7376bc46d360a1d08828060080f3e7c0ec5a706b274d04952ae4fa99b8c5994",
+  "status": "candidate_ready"
+}

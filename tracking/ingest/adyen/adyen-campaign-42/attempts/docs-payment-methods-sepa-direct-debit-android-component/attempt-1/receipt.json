@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen SEPA Direct Debit Android Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, android, components, recurring]\n---\n\n## Overview\n\nAdyen's 2026-09-15 guide adds SEPA Direct Debit to an existing Android Components integration. It separates Sessions and Advanced server-side flows; its instructions and code examples are integration guidance, not proof that a debit has settled. See [[adyen]] and [[adyen-android-sdk]].\n\n## Key takeaways\n\n- Sessions flow requires an existing Android Components Sessions integration, Checkout API v68 or later, and SEPA Direct Debit added in Customer Area. A base `/sessions` request needs no SEPA-specific parameters. Import the `sepa` module (and `components-compose` for Compose), then create `SepaComponent`; the submit-button visibility setting is optional and defaults to visible. The Compose example requires a new unique key for each screen or payment session (raw lines 25-41, 43-141).\n- Advanced flow requires an existing Android Components Advanced integration and handling of `action.type: direct` (raw lines 1093-1101). For `/payments`, the page marks `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber` required and says not to encrypt the IBAN. It requires street, house number/name, postal code, city and country for an IBAN from its listed non-EEA SEPA countries or territories. Some language-specific initial-token examples omit the prose-required account fields, so those snippets do not establish that the fields are optional (raw lines 1205-1217, 1280-1616).\n- The Advanced example labels a `resultCode: Received` response a successful payment; the example alone does not establish final debit or settlement (raw lines 1221-1250). Where automatic capture is not used, the merchant must configure delayed automatic capture or call `/payments/{paymentPspReference}/captures`. This page says SEPA authorizations do not expire and says to contact Support to enable multiple partial captures (raw lines 1253-1262).\n- SEPA tokenization is documented for `Subscription` and `UnscheduledCardOnFile`. Adyen strongly recommends explicit shopper permission for future recurring charges and transparency about schedule and amount to reduce chargeback risk. Standard tokenization fields apply for initial `/sessions` or `/payments`; `recurring.token.created` supplies `storedPaymentMethodId`. Later token payments use `/payments` with that ID, `shopperReference`, `shopperInteraction: ContAuth`, and the applicable recurring model, only when the shopper is absent (raw lines 143-153, 157-177, 387-420, 1264-1280, 1623-1649, 1976-1996).\n- The page provides three test account-name/IBAN fixtures and says test status is visible in test Customer Area. Accepting live SEPA Direct Debit requires a separate request in live Customer Area; TEST snippets or fixtures do not establish live enablement (raw lines 2313-2325).\n\n## Detail locators\n\n- Sessions setup, module/configuration, and Component examples: raw lines 25-141.\n- Sessions recurring token and later subscription/UCOF examples: raw lines 143-1091.\n- Advanced setup, account fields, conditional billing address, response and capture: raw lines 1093-1262.\n- Advanced recurring token examples, webhook and later token payments: raw lines 1264-2311.\n- Test fixtures and live request: raw lines 2313-2325.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15|SEPA Direct Debit Android Component (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md:34 (Sessions requirement)"
+    },
+    {
+      "text": "The IBAN of the bank account. Make sure that you do not encrypt this value.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md:1216 (Advanced payment field)"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md:149 (recurring consent recommendation)"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md:391 (stored-token scope)"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md:1260 (capture timing)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "sepa-direct-debit-android-component-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-android-component]] \u2014 2026-09-15 Android Components SEPA guide for Sessions and Advanced flows, account fields, capture and shopper-absent recurring tokens.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-component/2026-09-15.md",
+  "raw_sha256": "d58a382064595520c18437902cb95f1150cbb28622f32da224171ce3202a66fb",
+  "status": "candidate_ready"
+}

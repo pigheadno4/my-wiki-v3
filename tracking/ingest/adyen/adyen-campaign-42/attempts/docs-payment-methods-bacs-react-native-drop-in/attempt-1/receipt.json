@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-bacs-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BACS Direct Debit React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, react-native, drop-in, sessions, advanced-flow, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds BACS Direct Debit to an **existing React Native Drop-in** integration, with separate Sessions and Advanced server-side instructions and recurring token steps. It is a channel-specific add-on; the [[source-adyen-docs-payment-methods-bacs]] overview supplies the Direct Debit Instruction (DDI), four-to-six-day clearing, notice and nondefendable chargeback context. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** Requires an existing Sessions React Native Drop-in integration, Checkout API **v68 or later**, and BACS Direct Debit added in Customer Area. The method-specific `/sessions` addition is required `shopperEmail`; no extra BACS Drop-in configuration is stated. The example uses test Checkout API **v71**, GB/GBP and a native-style return URL; it does not set an SDK version or prove current eligibility. The Sessions prerequisite label links to an **Advanced-flow URL**, while the next session-step link points to Sessions; verify the intended base guide. The displayed curl has no continuation after `-X POST`, so it is not copy-ready. (raw lines 25\u201368, 341\u2013345)\n- **Advanced flow:** Requires an existing Advanced React Native Drop-in integration, BACS Customer Area setup and action handling labeled `Direct`; no extra BACS configuration is stated. Its `/payments` table requires shopper email and `paymentMethod.type: directdebit_GB`, holder name, account number and `bankLocationId` (described there as the bank routing number). The test request example uses **v72** and GB/GBP. Its curl likewise lacks continuation after `-X POST`. (raw lines 414\u2013473)\n- **Action/response conflict:** Advanced prose says the response includes `action.type: Direct`, yet the adjacent \u201csuccessful payment\u201d JSON shows `resultCode: Received` with `action.type: voucher`, `paymentMethodType: directdebit_GB` and a `PDF_MANDATE_URL`. The page does not reconcile these shapes. Do not assume the example establishes the action contract or a successful, cleared debit; check actual integration authority and webhooks. The Sessions recurring text likewise says `Received` and `pspReference` mean a payment was **received**, with success tracked by webhooks. (raw lines 400, 805\u2013818, 873)\n- **Recurring and notice:** For a recurring/subscription business model, the guide **recommends** tokenizing. Its initial `/payments` token step adds `shopperReference` and `storePaymentMethod: true`; when `recurring.token.created` arrives, store `storedPaymentMethodId`. Later recurring `/payments` add that stored ID or `recurringDetailReference` (worded \u201cfor API v49 and above\u201d), same shopper reference and `shopperInteraction: ContAuth`. This route applies even when the initial integration uses Sessions. The guide strongly recommends explicit shopper permission and advance notice before each payment; it separately states that under the Direct Debit Guarantee, **a change in collection date or amount requires advance notice**. The BACS overview carries additional scheme-notice timing and DDI duties. A token or `Received` result is no proof of funds. (raw lines 347\u2013400, 820\u2013873; [[source-adyen-docs-payment-methods-bacs]])\n- **Test/live gate:** The page gives a test account name, account number and sort code, test Customer Area status navigation, and a required request for BACS Direct Debit in the **live** Customer Area before live acceptance. Neither test detail nor the historical snapshot proves account approval or settled funds. (raw lines 402\u2013412, 875\u2013885)\n\n## Detail locators\n\n- Sessions prerequisites, required shopper email, v71 GB/GBP sample, URL mismatch and curl formatting: pinned raw lines 25\u201368.\n- Sessions optional configuration, token creation/reuse, guarantee notice and `Received` webhook boundary: pinned raw lines 341\u2013400.\n- Advanced prerequisites, required shopper/bank fields and v72 example: pinned raw lines 414\u2013473.\n- Advanced `Direct` prose versus `voucher` sample and `Received`: pinned raw lines 805\u2013818.\n- Advanced recurring block repeating token and notice steps: pinned raw lines 820\u2013873.\n- Test data and live request: pinned raw lines 402\u2013412 and 875\u2013885. Method-level DDI, settlement and chargeback risks: [[source-adyen-docs-payment-methods-bacs]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment context\n- [[adyen-tokenization]] \u2014 provider recurring-token context\n- [[adyen-react-native-sdk]] \u2014 broader native wrapper context, separate from this API-versioned guide\n- [[source-adyen-docs-payment-methods-bacs]] \u2014 method-level DDI, clearing, notice and chargeback authority\n- [[adyen]] \u2014 provider\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/react-native-drop-in/2026-09-15|BACS Direct Debit React Native Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions requirements"
+    },
+    {
+      "text": "Under the [Direct Debit Guarantee](https://www.directdebit.co.uk/direct-debit-explained/direct-debit-guarantee), if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw line 357, Sessions recurring; repeated at raw line 830 Advanced"
+    },
+    {
+      "text": "When you receive the [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created), store the `storedPaymentMethodId`.",
+      "location": "raw line 368, token creation; repeated at raw line 841"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw line 400, Sessions recurring; repeated at raw line 873"
+    },
+    {
+      "text": "The response includes the `action.type`: **Direct**.",
+      "location": "raw line 805, Advanced response prose; adjacent sample has voucher at line 813"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-react-native-dropin-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-react-native-drop-in]] \u2014 2026-09-15 BACS React Native Drop-in Sessions/Advanced guide for shopper-email/bank fields and recurring tokens; source qualifies `Direct` versus `voucher`, `Received` and DDI/notice risks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "bacs-react-native-dropin-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-react-native-drop-in]] \u2014 2026-09-15 BACS React Native Drop-in `/payments` token creation with shopper reference/storage flag, `recurring.token.created` ID and later `ContAuth` reuse; notice and webhook outcome remain source-qualified.\n",
+        "quote_indexes": [
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "9c20af932997981ef5416574ca46628a8c7cabd53fd189665f97e7fa068fb9be",
+  "status": "candidate_ready"
+}

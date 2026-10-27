@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-27] ingest | Adyen website C42
+
+- Fifty independently approved ACH Direct Debit, BACS, SEPA Direct Debit, PAD, bank transfer and Revolut Pay documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 7 concepts touched (0 new); source_count 2114 = 2100 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-42/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-27] ingest | Adyen website C41
 
 - Fifty independently approved Trustly, TWINT, BLIK and Pay by Bank US documentation sources; first full-review approvals 46/50 and 4 targeted correction reviews. 5 concepts touched (0 new); source_count 2064 = 2050 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-41/`; details [[adyen-log]]. No commit/push.

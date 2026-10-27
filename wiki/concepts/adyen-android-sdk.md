@@ -64,6 +64,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-android]] — 2026-09-15 SEPA Android chooser for Drop-in and SepaComponent children plus Sessions/Advanced base guides; source qualifies chooser redirect wording against the Component child's direct action.
+
+
+- [[source-adyen-docs-payment-methods-sepa-direct-debit-android-component]] — 2026-09-15 Android Components SEPA guide for Sessions and Advanced flows, account fields, capture and shopper-absent recurring tokens.
+
+
 - [[source-adyen-docs-payment-methods-blik-android]] — 2026-09-15 BLIK Android chooser for Drop-in and Redirect Component child guides plus two Sessions base integration routes.
 
 
@@ -122,6 +128,18 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 - [[adyen]] - company and knowledge-status page
 
 ## Sources
+
+- [[source-adyen-docs-payment-methods-bacs-android]] — BACS Android Drop-in-versus-Components chooser and base Sessions/Advanced route links (2026-09-15); method children supply setup details.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-android]] — ACH Android Drop-in-versus-Components chooser and base Sessions/Advanced guide links (2026-09-15); child guide determines actual method setup.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-android-drop-in]] — Android Drop-in ACH optional submit, address and save-details UI defaults for Sessions/Advanced (2026-09-15); US/PR address-code example is scoped to UI configuration.
+
+
+- [[source-adyen-docs-payment-methods-ach-direct-debit-android-component]] — ACH Android Component module, optional Compose dependency, UI defaults, Sessions-versus-Advanced payment-method source and per-screen Compose key (2026-09-15).
+
 
 - [[source-adyen-docs-payment-methods-blik-android-drop-in-earlier-versions]] — 2026-09-15 captured historical BLIK Android Drop-in v4 guide, v3.8.0+ requirement and redirect/details/webhook flow; source flags mismatched prerequisite and request examples.
 

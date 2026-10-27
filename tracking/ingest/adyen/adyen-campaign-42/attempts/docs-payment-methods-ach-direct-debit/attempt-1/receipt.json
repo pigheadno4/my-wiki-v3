@@ -1,0 +1,65 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"ACH Direct Debit overview\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md\"\ntags: [adyen, ach-direct-debit, bank-debit, mandates, chargebacks, refunds, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen ACH Direct Debit overview describes US-network bank debits for online payments, including entity eligibility, consumer validation, B2B bank allowlisting, SEC codes, signed mandates, chargebacks, refund timing, and blocked-account recovery. It is an overview with links to Web, native, API-only and Pay by Link routes; it does not itself prove account activation or a successful debit. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The page describes ACH Direct Debit as used in the **US and Puerto Rico**, processed via the ACH network, while requiring the accepting merchant to have a **registered business entity in the United States**. Its capability table is a 2026-09-15 snapshot: PR/US, USD, Direct flow; it marks recurring, refunds, partial/multiple partial refunds, separate captures and chargebacks supported, but partial/multiple partial captures unsupported. These marks are not current account or bank coverage proof. See raw lines 23\u201333.\n- Both one-off and recurring payments are supported, but Adyen **does not recommend one-off ACH Direct Debit** because of chargeback risk. ACH cannot give real-time authorization; insufficient funds may reverse a transaction, and the page says consumers can dispute up to **two years after settlement** on unauthorized or revoked-authorization grounds. Do not treat an initial authorization state as irrevocable funds. See raw lines 27\u201329 and 65\u201374.\n- For **consumer** accounts, the page says Nacha requires bank-account validation and points to Adyen's giact flow. For **B2B** accounts, merchants should have business customers allowlist Adyen's ACH Company ID `8263863381`; otherwise an unknown-entity transaction can return as **R29**. These are distinct consumer-validation and business-bank-permission conditions. See raw lines 35\u201345.\n- Every ACH payment needs a correct **SEC code** identifying its authorization type: CCD for B2B, PPD for consumer authorization obtained in writing, and WEB for consumer online/mobile authorization. A mismatch can lead to chargeback. Components and Drop-in handle the SEC code automatically; API-only integrations must specify it. This is separate from Nacha's **customer mandate** requirement before one-off or recurring initiation: the signed authorization describes the account, transaction type/frequency/amount and revocation information. See raw lines 47\u201363.\n- Reversals produce a settlement-report credit/debit pair and a `CHARGEBACK` webhook with `chargebackReasonCode`. ACH Direct Debit chargebacks **cannot be defended**; a retry may be allowed depending on reason code. This page delegates detailed reason-code, process and testing guidance to the ACH chargebacks child page. [[adyen-risk-management]] See raw lines 65\u201374.\n- Refunds require a **settled payment** and the `Merchant allow bank-refund` role, via Customer Area or API. Adyen delays the refund for **three days after settlement**; if a chargeback begins within that period, the refund request is automatically canceled and a `CHARGEBACK` webhook follows. See raw lines 76\u201380.\n- Adyen says terminal bank-account returns/rejections can create an **Adyen-wide block** for that bank account across merchants/platforms. A subsequent attempt fails immediately with Customer Area code `1063_101` or `CAPTURE_FAILED`; listed triggers are R02, R03, R04, R12, R13, R14, R15, R20 and R34. If details have changed, a new payment can use updated details; otherwise unblock requires a permanently resolved issue, official bank documentation and Support review. Do not infer that a merchant can self-unblock or that all failed ACH attempts trigger the list. See raw lines 82\u2013128.\n\n## Detail locators\n\n- ACH geography, US business entity, one-off warning and capability table: raw lines 23\u201333.\n- Consumer validation, B2B Company ID and R29: raw lines 35\u201345.\n- SEC code types, integration responsibility and signed mandate: raw lines 47\u201363.\n- Reversal/chargeback signals and nondefensibility: raw lines 65\u201374.\n- Settled-only refunds, role and three-day cancellation overlap: raw lines 76\u201380.\n- Adyen-wide blocklist, return codes and documented unblock options: raw lines 82\u2013128.\n- Web, iOS, Android, Flutter, API-only and Pay by Link guide choices: raw lines 130\u2013166.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main online-bank-debit route.\n- [[adyen-risk-management]] \u2014 chargeback and blocked-account outcomes.\n- [[adyen-payment-capture]] \u2014 general capture context; method table limits are on this page.\n- [[source-adyen-docs-risk-management-chargeback-guidelines-ach-chargebacks]] \u2014 ACH reason-code and dispute guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15|ACH Direct Debit overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To accept ACH Direct Debit payments, you must have a registered business entity in the United States.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md:25 (entity requirement)"
+    },
+    {
+      "text": "The ACH network is unable to provide real-time authorizations.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md:29 (network boundary; repeated line 67)"
+    },
+    {
+      "text": "In addition to the SEC code requirement, Nacha requires that you have a mandate from the customer before initiating a one-off or recurring transaction.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md:63 (customer authorization)"
+    },
+    {
+      "text": "You cannot defend ACH Direct Debit chargebacks. Depending on the reason code, it may be allowed to retry the payment.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md:74 (Chargebacks)"
+    },
+    {
+      "text": "The blocklist is Adyen-wide: if Adyen receives a terminal return for a specific bank account from any merchant or platform, that account is blocked for all Adyen merchants going forward.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md:86 (Blocked bank accounts)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-direct-debit-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 2026-09-15 ACH Direct Debit method overview for US-entity eligibility, consumer validation, B2B allowlisting, SEC/mandate responsibilities, reversals, refund delay and bank-account blocklist; channel guides are separate.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      },
+      {
+        "update_id": "ach-direct-debit-risk-route",
+        "target_path": "wiki/concepts/adyen-risk-management.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH Direct Debit overview of nondefensible chargebacks, reason-code-qualified retries and Adyen-wide terminal-return bank-account blocking (2026-09-15 capture).\n",
+        "quote_indexes": [
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/2026-09-15.md",
+  "raw_sha256": "6e28724263b2ac3a2acc056dab79a5d87ab02833405e70d33dc982f82a5eac7a",
+  "status": "candidate_ready"
+}

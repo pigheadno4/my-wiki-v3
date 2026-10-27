@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bacs-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"BACS Direct Debit Android Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, android, drop-in, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds BACS Direct Debit to an existing Android Drop-in integration. It separates Sessions and Advanced server-side flows and covers method-specific request fields, optional Drop-in configuration and tokenized recurring use. It does not replace the base integration or the [[source-adyen-docs-payment-methods-bacs|BACS overview]] for DDI/mandate, clearing and chargeback rules (this raw lines 15\u201325, 431\u2013439; overview raw lines 23\u201327, 60\u201374).\n\n## Key takeaways\n\n- Sessions requires an existing Android Drop-in Sessions integration, Checkout API v68 or later and BACS enabled in Customer Area. It marks `shopperEmail` required on `/sessions`; examples use GB/GBP and an Android app-scheme return URL. The optional `setSubmitButtonVisible` configuration hides the submit button when false and defaults to true (raw lines 25\u201344, 46\u201367, 340\u2013360). The curl example lacks a line continuation before `-d` and should not be copied unchanged (raw lines 50\u201367).\n- Advanced requires an existing Android Drop-in Advanced integration, additional-action handling and BACS in Customer Area. Its action-handling link points to `#handle-the-redirect` while labeling `action.type: Direct`. Its `/payments` table marks `shopperEmail`, `paymentMethod.type: directdebit_GB`, holder name, bank account number and `bankLocationId` (bank routing/sort code) required. The submit-button option is repeated (raw lines 431\u2013475). Its curl example also lacks a continuation before `-d` (raw lines 481\u2013504).\n- For recurring BACS, the guide recommends tokenization and **strongly recommends** explicit shopper permission and transparency about schedule and amount. It separately says advance notice **must** be given if collection date or amount changes under the Direct Debit Guarantee and strongly recommends notice before each payment. To create a shopper token, add `shopperReference` and `storePaymentMethod: true` to an initial `/payments` request and save `storedPaymentMethodId` from `recurring.token.created`; later `/payments` requests use that token, shopper reference and `shopperInteraction: ContAuth` (raw lines 362\u2013415, 851\u2013904). The overview says shoppers confirm account ownership/agreement and Adyen submits the DDI, with clearing and settlement taking four to six days; BACS chargebacks cannot be defended (overview raw lines 23\u201327, 60\u201374).\n- Advanced prose says the response includes `action.type: Direct`, but the example labeled successful has `resultCode: Received` and `action.type: voucher` with `PDF_MANDATE_URL`. Preserve this source conflict rather than treating the PDF voucher, the Direct label or `Received` as a universal final success path. The recurring instructions say to use webhooks to track whether a received payment succeeded (raw lines 836\u2013849, 904).\n- The TEST section supplies an account name, account number and sort code and points to Customer Area for test status. The page requires a separate request in the **live** Customer Area before live BACS acceptance. Examples and the historical snapshot do not prove current enablement, a valid DDI, a completed debit or settled funds (raw lines 417\u2013429, 906\u2013916; overview raw lines 23\u201327).\n\n## Detail locators\n\n- Sessions prerequisites, required email and sample request: raw lines 25\u201367.\n- Sessions optional configuration, recurring token flow and test/live gate: raw lines 340\u2013429.\n- Advanced prerequisites, action label/link, optional config and required `/payments` fields: raw lines 431\u2013475.\n- Advanced request examples and Direct/voucher response conflict: raw lines 477\u2013849.\n- Advanced recurring/token route, webhook outcome and test/live gate: raw lines 851\u2013916.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-bacs|BACS overview (DDI, clearing and chargeback context)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15|BACS Direct Debit Android Drop-in, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "We strongly recommend that you request explicit permission from the shopper if you intend to make recurring BACS Direct Debit payments.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md:370"
+    },
+    {
+      "text": "Under the [Direct Debit Guarantee](https://www.directdebit.co.uk/direct-debit-explained/direct-debit-guarantee), if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md:372"
+    },
+    {
+      "text": "The response includes the `action.type`: **Direct**.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md:836"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md:904"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-bacs-android-dropin-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-android-drop-in]] \u2014 2026-09-15 BACS Android Drop-in Sessions/Advanced add-on for email/account fields and recurring tokens; source flags Direct/voucher action conflict, notice qualifications and intermediate `Received` outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/android-drop-in/2026-09-15.md",
+  "raw_sha256": "b756a68f23966ec591d27d521c517dd1d303f99d1c2312765eccf61e36399e4b",
+  "status": "candidate_ready"
+}

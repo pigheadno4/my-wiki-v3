@@ -1,0 +1,66 @@
+{
+  "job_id": "docs-payment-methods-bacs-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen BACS Direct Debit iOS Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bacs/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md\"\ntags: [adyen, bacs, direct-debit, ios, components, tokenization]\n---\n\n## Overview\n\nThis captured Adyen guide adds BACS Direct Debit to an existing iOS Components integration using Sessions or Advanced server-side flow. It specifies method additions, not the full native integration or proof of a completed debit. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-bacs]] for the GB/GBP method overview, Direct Debit Instruction (DDI), delayed clearing and chargeback risks.\n\n## Key takeaways\n\n- Sessions requires an existing iOS Components Sessions integration, Checkout API v68 or later, and BACS Direct Debit added in Customer Area. The method-specific `/sessions` addition is required `shopperEmail`; no additional BACS Component configuration is listed. The Swift example checks for `BACSDirectDebitPaymentMethod`, creates `BACSDirectDebitComponent`, makes the session its delegate and presents the view controller. The v71 test curl lacks a line continuation after `-X POST`, so the following `-d` is not in the same shell command as printed.\n- Advanced requires an existing integration and Customer Area setup. The requirements row labels it iOS Components but links to the iOS **Drop-in** base guide, while its action-handling link and Swift example point to Components. It says to handle an additional `action.type: Direct`, use `BACSDirectDebitComponent` with the integration as delegate, and send `/payments` with required `shopperEmail`, `paymentMethod.type: directdebit_GB`, holder name, bank account number and `bankLocationId` (sort code/routing identifier). The v72 test curl likewise omits a continuation after `-X POST`. Treat the mismatched base-guide link as a documentation conflict, not a reason to substitute Drop-in.\n- The Advanced prose says the response has `action.type: Direct`, but the adjacent `Received` example has `action.type: voucher` and `PDF_MANDATE_URL`; this source does not resolve the mismatch. Do not assume a single action shape from this example. `Received` is a received request, not proof of cleared funds; the method overview describes DDI submission and a four-to-six-day clearing/settlement cycle. Follow payment status with webhooks as the recurring section instructs.\n- For recurring BACS, tokenization is recommended for recurring/subscription models and explicit shopper permission is strongly recommended. Under the Direct Debit Guarantee, a changed collection date or amount requires advance notice; the guide separately recommends notice before each payment. To create a token, the initial `/payments` request includes `shopperReference` and `storePaymentMethod: true`; on `recurring.token.created`, retain `storedPaymentMethodId`. Later `/payments` use the stored method (or `recurringDetailReference` per the API v49+ wording), same shopper reference and `shopperInteraction: ContAuth`. A Sessions integration also uses `/payments` for later recurring charges. The token or `Received` examples do not establish that a debit cleared.\n- Test with the supplied account number/sort code and check the test Customer Area payment list; live acceptance needs a request in the live Customer Area. A captured guide cannot establish current approval, DDI validity or successful collection.\n\n## Detail locators\n\n- Sessions integration, v68+, Customer Area, required email and v71 curl line-continuation issue: pinned raw lines 25\u201368. No additional Component configuration and Swift construction/delegate: lines 341\u2013370.\n- Advanced prerequisites and inconsistent Drop-in link versus Components action link: pinned raw lines 439\u2013449. Component setup: lines 451\u2013479. Required `/payments` fields and v72 request/curl issue: lines 481\u2013523.\n- Advanced response conflict, `Direct` prose versus `voucher`/mandate-PDF example: pinned raw lines 854\u2013867.\n- Sessions recurring permission, Direct Debit Guarantee notice, token creation and shopper-absent reuse: pinned raw lines 372\u2013425; repeated Advanced route: lines 869\u2013922.\n- Test and live gates: pinned raw lines 427\u2013437 and 924\u2013934. Method overview's DDI/clearing/chargeback context: [[source-adyen-docs-payment-methods-bacs]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main integration concept\n- [[adyen-tokenization]] \u2014 recurring-token concept\n- [[source-adyen-docs-payment-methods-bacs]] \u2014 BACS method, DDI, advance notice and chargeback authority\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15|BACS Direct Debit iOS Component, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "The email of the shopper.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md:45"
+    },
+    {
+      "text": "if there is a change in the collection date or the amount, you must give the shopper advance notice of the payment.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md:382"
+    },
+    {
+      "text": "You can track whether the payment was successful using webhooks.",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md:425"
+    },
+    {
+      "text": "\"type\": \"voucher\"",
+      "location": "raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md:862"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bacs-ios-component-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-ios-component]] \u2014 2026-09-15 BACS iOS Components Sessions/Advanced add-on with shopper-email and bank-detail fields, token/notice route, and qualified `Direct`/`voucher` example conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced requirements link says iOS Components but targets a Drop-in base guide; adjacent prose/action example conflict on Direct versus voucher."
+        ]
+      },
+      {
+        "update_id": "bacs-ios-component-tokenization-reciprocal",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bacs-ios-component]] \u2014 2026-09-15 BACS iOS Components initial `/payments` token fields, `recurring.token.created` ID and later stored-method `ContAuth` reuse; notice and Received limitations remain in source.",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bacs/ios-component/2026-09-15.md",
+  "raw_sha256": "8874794c4029f3a677e5bcfefa33cf5ea4e9df21ef32c9fbff2af015589d853e",
+  "status": "candidate_ready"
+}

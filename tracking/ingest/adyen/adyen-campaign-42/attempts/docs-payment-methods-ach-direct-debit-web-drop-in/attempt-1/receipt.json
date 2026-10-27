@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-ach-direct-debit-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ACH Direct Debit Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ach-direct-debit/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md\"\ntags: [adyen, ach, direct-debit, web, drop-in, sessions, advanced-flow]\n---\n\n## Overview\n\nThis captured Adyen guide adds ACH Direct Debit to an existing Web Drop-in integration through Sessions or Advanced server-side flow. It covers method-specific setup, optional Drop-in configuration, asynchronous bank outcome and test data. It does not establish current merchant eligibility, account validation, customer authorization or cleared funds. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-ach-direct-debit]] for ACH scheme, consumer-account validation, SEC code, mandate, refund and chargeback conditions.\n\n## Key takeaways\n\n- Sessions requires an existing Web Drop-in Sessions integration, Checkout API v68 or later, ACH added in Customer Area and a subscription to `DIRECT_DEBIT_NOTICE_OF_CHANGE_NOTIFICATION` for outdated bank details. Ordinary `/sessions` needs no extra ACH-specific request parameters. Importing `Ach` individually is optional tree shaking, not a required setup step.\n- Advanced requires an existing Web Drop-in Advanced integration, ACH Customer Area setup and the same Notice of Change subscription; its ordinary `/payments` adds no ACH-specific parameters. Its requirements link contains an unresolved URL-encoded template expression for the platform, so use the guide's explicit Web/Drop-in scope rather than treating that generated URL as a verified base route. Neither flow's no-extra-parameters statement removes the ACH overview's separately stated account-validation, SEC-code or signed-mandate conditions.\n- Both flows list optional Drop-in configuration: `enableStoreDetails` (Web v5.24.0 or later) shows a save-details checkbox when true and defaults false; `hasHolderName` can hide the holder-name field if the merchant supplies data and defaults true; `holderNameRequired` can make the field optional and defaults true. Showing a save-details checkbox does not itself establish a created recurring token or shopper authorization. The example is a bash-fenced `var achConfiguration = Ach.Configuration()` snippet, not a complete verified Web Drop-in wiring example.\n- Receiving a payment request can precede bank authorization by up to five business days. The guide points to the Settlement details report if the bank authorizes and a `CHARGEBACK` webhook if it does not; do not treat an immediate response as settled funds. The ACH overview also states the network has no real-time authorizations and chargebacks cannot be defended.\n- For an API or Customer Area ACH refund, the guide requires the **Merchant allow bank-refund** role for the relevant actor. The method overview additionally says refunds are available after settlement and Adyen delays them for three days after settlement; this page does not provide a refund execution flow.\n- The guide permits test account/routing formats and uses an `ownerName` beginning `chargeback:` plus an ACH return reason such as `R01` to simulate chargebacks. It links, but does not explain, account validation with giact, tokenization and ACH chargeback/retry rules; these links do not prove account validation or general retry permission.\n\n## Detail locators\n\n- Sessions prerequisites, refund role, v68+, Notice of Change subscription and Customer Area setup: pinned raw lines 25\u201338. No added `/sessions` fields and optional `Ach` import: lines 40\u201356.\n- Optional Web v5.24.0+ save-details checkbox and holder-name controls, with the bash-fenced configuration sample: pinned raw lines 58\u201375 and 131\u2013148.\n- Advanced prerequisites (including templated base URL), conditional refund role and notice, optional import, no added `/payments` fields: pinned raw lines 105\u2013154.\n- Five-business-day bank outcome and settlement/chargeback route: pinned raw lines 77\u201383 and 156\u2013162. Test account data and `chargeback:R01` simulation: lines 85\u2013103 and 164\u2013182.\n- Consumer validation, SEC/mandate, US business entity, refunds and returns are in [[source-adyen-docs-payment-methods-ach-direct-debit]]; this Drop-in add-on does not independently specify those lifecycle rules.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main integration concept\n- [[source-adyen-docs-payment-methods-ach-direct-debit]] \u2014 ACH method-level eligibility, validation, authorization and funds-risk authority\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15|ACH Direct Debit Web Drop-in, 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md:36"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md:44"
+    },
+    {
+      "text": "The default is **false**.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md:66"
+    },
+    {
+      "text": "it may take up to five business days to know whether the payment was authorised by the bank.",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md:83"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md:154"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ach-direct-debit-web-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ach-direct-debit-web-drop-in]] \u2014 2026-09-15 ACH Web Drop-in Sessions/Advanced add-on with optional v5.24.0 save-details UI, Notice of Change setup and up-to-five-business-day bank outcome; overview holds validation/mandate/refund rules.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced base-guide URL contains an unresolved platform template expression; use the explicit Web Drop-in scope."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ach-direct-debit/web-drop-in/2026-09-15.md",
+  "raw_sha256": "e77cca78560f85260b63166443f76f30dae5208d64d8fd88b662e64c34047f17",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-sepa-direct-debit-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"SEPA Direct Debit Android Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/sepa-direct-debit/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md\"\ntags: [adyen, sepa-direct-debit, android, drop-in, tokenization, capture]\n---\n\n## Overview\n\nThis Adyen Android Drop-in add-on separates Sessions and Advanced server-side flows for SEPA Direct Debit. Sessions requires an existing Drop-in integration using Checkout API v68 or later; Advanced requires an existing Android Drop-in integration with additional-action handling, labeled `action.type: direct` even though its anchor says \u201chandle the redirect.\u201d Both require adding the method in Customer Area. The ordinary Sessions section says no SEPA-specific `/sessions` fields, while Advanced lists account details and conditional billing address for `/payments` (raw lines 15\u201350, 909\u2013953).\n\n## Key takeaways\n\n- Both flows show an optional `setSubmitButtonVisible` configuration entry: false hides the submit button; true is the default. The Sessions example and Advanced example are schematic, not complete application configuration (raw lines 42\u201362, 919\u2013939).\n- For Advanced `/payments`, the table marks `paymentMethod.sepa.ownerName` and `paymentMethod.sepa.ibanNumber` required and says not to encrypt the IBAN. It also requires street, house number/name, postal code, city and country when the IBAN country is one of the listed 11 non-EEA SEPA countries or four territories; consult the full table for the exact list (raw lines 941\u2013953). The later language-library token-creation examples often show only `sepadirectdebit` without the table's owner/IBAN fields, so they are not complete templates for that initial request (raw lines 1016\u20131357).\n- The Advanced response example is labeled a successful payment but contains `resultCode: Received`; this sample does not establish final authorization, capture or settled funds. The page gives no full webhook outcome sequence (raw lines 955\u2013987). The related SEPA overview separately requires the shopper's active mandate acceptance before debit and describes chargeback risk; do not interpret this add-on's recurring-permission recommendation as the complete mandate procedure (overview raw lines 29, 37\u201371, 100\u2013109).\n- In Advanced flow, if automatic capture is not used, the source lists delayed automatic or manual capture. It says SEPA Direct Debit authorizations do not expire and multiple partial captures require Support enablement; these are source-scoped claims, not proof of a merchant's configuration (raw lines 989\u2013998).\n- SEPA tokenization supports Subscription and UnscheduledCardOnFile. This guide **strongly recommends** explicit permission for future recurring charges and schedule/amount transparency; it does not phrase that recommendation as the SEPA mandate rule. It says to use standard tokenization fields, with no extra SEPA-specific token fields, and to wait for `recurring.token.created` with `storedPaymentMethodId`. Shopper-absent token use is limited here to `Subscription` or `UnscheduledCardOnFile` via `/payments`, with `ContAuth` shown in examples (raw lines 64\u201395, 273\u2013305, 1002\u20131010, 1359\u20131389, 1670\u20131697). The Advanced \u201ccreate a token\u201d curl omits a storage flag despite that label, so verify standard tokenization parameters in the linked authority rather than using the example as a complete token-creation recipe (raw lines 1008\u20131037).\n- The test sections list example names/IBANs for NL, AT and FR, and say a request for SEPA Direct Debit in live Customer Area precedes live acceptance. They do not prove a successful debit or current account eligibility (raw lines 893\u2013907, 1977\u20131989).\n\n## Detail locators\n\n- Sessions prerequisite, no ordinary method fields and optional submit button: raw lines 25\u201362.\n- Sessions token creation, lifecycle webhook and shopper-absent reuse: raw lines 64\u201395, 273\u2013305, 586\u2013612.\n- Advanced prerequisite, action label and account/billing request fields: raw lines 909\u2013953.\n- Advanced example `Received` and capture qualifications: raw lines 955\u2013998.\n- Advanced token-creation example limits and recurring/token reuse: raw lines 1002\u20131037, 1359\u20131389, 1670\u20131697.\n- TEST IBAN examples and live request gate: raw lines 893\u2013907, 1977\u20131989.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[adyen-payment-capture]]\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/2026-09-15|SEPA Direct Debit overview (related mandate and chargeback evidence)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15|SEPA Direct Debit Android Drop-in, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md:70"
+    },
+    {
+      "text": "Make sure that you do not encrypt this value.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md:952"
+    },
+    {
+      "text": "SEPA Direct Debit authorizations do not expire, so you can capture a payment any time after it is authorized.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md:996"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md:277"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c42-sepa-android-dropin-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-sepa-direct-debit-android-drop-in]] \u2014 2026-09-15 SEPA Android Drop-in Sessions/Advanced add-on for account fields, conditional billing, capture and shopper-absent token reuse; source qualifies mandate versus recommendation and incomplete examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/sepa-direct-debit/android-drop-in/2026-09-15.md",
+  "raw_sha256": "04e44af21eb8e71385a3b49beb60661f49dc647af8e86bc1efc7c8f09f531d48",
+  "status": "candidate_ready"
+}
