@@ -200,6 +200,10 @@ Experimental OnrampCoordinator.Presenter adds `fulfillKycRequirements()`, explic
 
 Release notes announce Google Pay/Samsung Pay card sublabels including Credit, Debit or Prepaid, with Card fallback. That formatting implementation is excluded, and label text does not prove wallet eligibility, funding authorization or successful checkout. Retained build changes add the moved core ApiConfigurationPreview opt-in; Onramp's API 24 floor remains unchanged. The cumulative changelog moves the older Identity/Onramp floor note from 23.15.0 to 23.17.0; preserve previous attributions separately from the observed retained build boundary. All older native/React Native/iOS findings remain version-qualified in [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
 
+### Android `23.25.0` Card Funding Display Declaration
+
+The compiled `PaymentMethodDisplayData` surface adds `getCardFunding(): CardFunding` alongside its existing label, sublabel, icon and type getters. This is display-model API evidence, not proof of its nullability, default value, parsing/formatting behavior, availability on each wallet or a new funding authorization. The model implementation is excluded and retained OnrampCoordinator/build are unchanged. Keep the `23.24.0` wallet-label announcement separate; no new React Native binding or payment capability is inferred. [[source-github-stripe-android]] [[changelog-github-stripe-android]]
+
 ## iOS `26.13.0` Alpha Delta
 
 This version-qualified native alpha flow is distinct from the older web/headless setup sequence above. `CryptoOnrampCoordinator.collectPaymentMethod(type:from:)` can present Apple Pay before Link authentication: its platform-client resolver now forwards an optional crypto customer ID instead of rejecting an absent one. Card/bank collection still checks verified Link state, and `createCryptoPaymentToken()` still requires a crypto customer ID. Collection creates a payment source; it does not perform checkout or prove payment success.

@@ -202,6 +202,21 @@ Compiled payments-core adds Mondu, NgBankTransfer, NgUssd and NgWallet types plu
 > [!warning] Contradiction
 > The newer cumulative changelog moves the Identity/Onramp API 24 note from 23.15.0 to 23.17.0 and adds older brandColor/manual-capture/upload/privacy-link notes. Preserve the prior raw/wiki attributions and observed 23.16.0 -> 23.17.0 floor/styling boundary; these retrospective edits are not new 23.24.0 runtime changes or proof of an earlier first implementation. [[source-github-stripe-android]] records the same distinction. The user approved additive full mode with focused reading; all earlier knowledge remains in [[changelog-github-stripe-android]]. No build/device/payment tests were run.
 
+## `23.25.0` Delta
+
+Compiled payments-core adds `PaymentMethod.Type.TouchNGo` and `TrueMoney`, plus static/Companion `createTouchNGo` and `createTrueMoney` overloads. Release notes announce Touch 'n Go PaymentSheet support for payments and setup and TrueMoney PaymentSheet support without an equivalent explicit setup claim. API presence does not establish serialized values, required fields, country/currency or merchant eligibility, recurring capability or a complete integration recipe. Review exhaustive type switches and test enabled methods. [[source-github-stripe-android]]
+
+AddressElement's discard-unsaved-changes confirmation is a release announcement; its UI implementation is excluded. Onramp adds a card-funding display getter, not a new funding/checkout operation; see [[stripe-crypto-onramp]]. Generated Link verification Compose accessors change, but they are not supported merchant entry points. Retained platform requirements and merchant PaymentSheet/FlowController call sites are unchanged.
+
+> [!warning] Contradiction
+> The newer raw changelog adds native Link email OTP/MFA support under `23.24.0`, absent from that earlier retained changelog/notes. Preserve that retrospective label and the older immutable evidence rather than call this a new `23.25.0` feature or infer the first implementation release. [[source-github-stripe-android]] records the same distinction. Older version knowledge remains intact; no build/device/payment tests.
+
+## `23.25.1` Delta
+
+Release notes announce a fix for PaymentSheet error messages disappearing after returning from Link. The error-state/return implementation is excluded; this is not proof of new authentication capability, changed payment status or successful device behavior. Regression-test error visibility after Link returns without equating displayed errors or SDK completion with server payment outcomes. [[source-github-stripe-android]]
+
+The retained payments-core build adds `implementation libs.androidx.webkit`. The alias's resolved version is outside the retained catalog, so no exact WebKit version, minimum-device change or security/runtime claim follows. All retained compiled API inventories, launcher/example source and other dependency declarations remain unchanged. All 23.25.0 and older findings remain preserved in [[changelog-github-stripe-android]]. No build/device/payment tests.
+
 ## Related
 
 - Source: [[source-github-stripe-android]]

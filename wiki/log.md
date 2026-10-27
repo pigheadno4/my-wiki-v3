@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-27] ingest | Stripe Android `23.25.1`
+
+- Approved serial focused-reading delta after 23.25.0: Link-return error-display fix announcement and WebKit dependency declaration; all older knowledge preserved. Details [[stripe-log]] and [[source-github-stripe-android]]. No build/device/payment test, commit or push.
+
+## [2026-10-27] ingest | Stripe Android `23.25.0`
+
+- Approved focused-reading delta: Touch 'n Go/TrueMoney declarations, Onramp display getter and qualified address/retrospective Link findings; all older history retained. Details [[stripe-log]] and [[source-github-stripe-android]]. No build/device/payment test, commit or push.
+
 ## [2026-10-27] ingest | Adyen website C42
 
 - Fifty independently approved ACH Direct Debit, BACS, SEPA Direct Debit, PAD, bank transfer and Revolut Pay documentation sources; first full-review approvals 43/50 and 7 targeted correction reviews. 7 concepts touched (0 new); source_count 2114 = 2100 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-42/`; details [[adyen-log]]. No commit/push.

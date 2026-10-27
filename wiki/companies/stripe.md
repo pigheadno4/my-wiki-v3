@@ -151,6 +151,12 @@ Recurring billing via Subscription objects. Also supports standalone Invoicing.
 
 `Event` objects represent activity (e.g. charge succeeded/failed). Integrations respond via webhook endpoints. Checkout and Payment Links integrations have pre-written event responses; custom integrations write their own.
 
+## Android SDK 23.25.0 Update
+
+The additive `stripe-android@23.25.0` delta adds Touch 'n Go/TrueMoney API declarations and an Onramp card-funding display getter. PaymentSheet method support and address-discard confirmation remain announcement-qualified; eligibility, request routing and UI behavior are not execution-tested. The newer changelog backdates Link email OTP/MFA support to 23.24.0; preserve that attribution without calling it a new 23.25.0 feature. All earlier SDK history remains in [[source-github-stripe-android]], [[changelog-github-stripe-android]] and [[stripe-android-sdk]].
+
+The following `23.25.1` delta announces a Link-return PaymentSheet error-display fix and adds a retained AndroidX WebKit dependency declaration, not a new payment/authentication API. The relevant fix implementation and exact resolved WebKit version remain outside the capsule; all earlier Android history is preserved. [[source-github-stripe-android]] [[changelog-github-stripe-android]]
+
 ## API Deprecations
 
 | API | Status |
@@ -208,8 +214,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract invoice-routing transitions between Stripe, NetSuite, and marketplaces
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
-- [[source-github-stripe-android]] — cumulative Android SDK through v23.24.0: preview annotation migration, four method declarations, restricted KYC and qualified UI/test-mode announcements; older knowledge/gaps retained
-- [[changelog-github-stripe-android]] — package-qualified Android history through v23.24.0; contracts, announcements and retrospective attribution distinguished
+- [[source-github-stripe-android]] — cumulative Android SDK through v23.25.1: method/display declarations, Link error-display announcement, dependency and historical attribution limits; older knowledge retained
+- [[changelog-github-stripe-android]] — package-qualified Android history through v23.25.1; contracts, announcements and retrospective attribution distinguished
 - [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.13.0: MoMo/GoPay/ShopeePay processing distinctions, FlowController plumbing and alpha pre-auth Apple Pay/KYC; older baselines, Pix caveat and evidence limits preserved
 - [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.13.0; processing contracts, migration/evidence limits and retrospective attribution changes
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@6.0.0` additive major: SPM, iOS 16, capture/consent/model/delegate migration; v5.8.0/5.8.1 retained

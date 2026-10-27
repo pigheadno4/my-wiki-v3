@@ -6,6 +6,16 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-27] ingest | Stripe Android `23.25.1`
+
+- Approved serial delta `github-3630ef97f4ea4cfafb7b` after 23.25.0 completed, SHA `bb0d8d09289cec10d303557e7300f6f5d58b9c06`. Approved focused reading: changed authored/content/build, prior build, comparison and cumulative history; unchanged APIs/history/manifests mechanically verified and relevant shared context read. Five modified/47 unchanged retained files, all 104 raw identities pass; 170 upstream dispositions classified without gaps.
+- Records Link-return error-display announcement with excluded implementation and AndroidX WebKit build dependency without a resolved-version claim. No new merchant/authentication/payment API or floor change inferred. All 4,921 prior raw changelog lines preserved with five release lines added. Android concept first, cumulative source/history/company/index/logs; earlier history/source count preserved. No extra collection, SDK/device/payment tests, commit or push. Details [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
+## [2026-10-27] ingest | Stripe Android `23.25.0`
+
+- Approved serial delta `github-f18b69e5db01f4521d42`, SHA `b792b5d72f208d155cb7564bcac239cfa87e1eb6`. Focused reading explicitly approved for both deltas: changed API/content, affected prior context, release/comparison and cumulative wiki history; unchanged APIs/history/inventories mechanically verified and relevant shared pages read. Seven modified/45 unchanged files; 104 prior/current raw identities pass, 206 upstream dispositions classified without gaps.
+- Adds method type/creation declarations and Onramp card-funding getter; distinguishes PaymentSheet/address announcements from excluded implementation. Retrospective Link OTP/MFA label under 23.24.0 preserved separately from new features. Android/Onramp concepts first, cumulative source/changelog/company/index/logs; all older history and source count retained. No build/device/payment test, extra collection, commit or push. Details [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## [2026-10-26] ingest | Stripe Terminal Android `6.0.0`
 
 - Serial approved additive full `github-78ec024faa51ef3d956e`, SHA `0829be9e77842bc12a6ba56d64fd152b53506025`, after both deltas. Approved focused reading: changed authored files (including outside routine selectors), semantic API changes/affected prior code, notes and cumulative history read; generated/version-only/unchanged evidence checked mechanically. Effective full assignment 94 paths/6,520,286 bytes; 450 current files, all 1,791 raw hashes/sizes/Git IDs checked across four snapshots.

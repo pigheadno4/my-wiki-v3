@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/stripe-android"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-20
+date_updated: 2026-10-27
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json"
+  - "github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json"
@@ -25,6 +27,28 @@ tags: [stripe, android, kotlin, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-android`. Durable architecture and integration knowledge belongs in [[source-github-stripe-android]] and the linked immutable evidence.
+
+## `stripe-android@23.25.1` - Change Set `bb0d8d0` (changelog date 2026-10-26)
+
+Approved serial delta from 23.25.0 after its completion, ingested 2026-10-27, SHA `bb0d8d09289cec10d303557e7300f6f5d58b9c06`. Publication 2026-10-27 04:25 China time.
+
+**Changes/impact:** announces a PaymentSheet error-visibility fix after Link return; actual error/return code is excluded. The retained payments-core build adds AndroidX WebKit via libs.androidx.webkit without exposing its resolved version. All retained APIs/launchers/examples and platform requirements remain unchanged; no new authentication/payment capability or merchant API/migration is inferred. Test affected UI paths and retain server-owned payment reconciliation.
+
+**Reading/history:** approved focused reading of changed short/authored content, complete prior/current build, comparison and cumulative history; unchanged API/history/manifests mechanically verified and relevant shared context read. Five modified/47 unchanged files; all 104 identities checked. All 170 upstream dispositions classified, zero gaps. Raw history preserves all 4,921 prior lines with five inserted release lines. Android concept first, cumulative source/changelog, company/catalog/logs; earlier history and source count retained. No extra collection, build/device/payment tests, commit or push.
+
+Evidence: [snapshot](raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json), [release](raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/manifest.json), [notes](raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/release-notes.md), [comparison](tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.25.0--23.25.1/comparison.json). Complete version-qualified findings: [[source-github-stripe-android]].
+
+## `stripe-android@23.25.0` - Change Set `b792b5d` (changelog date 2026-10-21)
+
+Approved serial delta from 23.24.0, ingested 2026-10-27, SHA `b792b5d72f208d155cb7564bcac239cfa87e1eb6`. Publication 2026-10-22 08:30 China time.
+
+**Changes:** TouchNGo/TrueMoney type and static/Companion creation declarations; announced Touch 'n Go PaymentSheet payments/setup and TrueMoney PaymentSheet support; announced address-discard confirmation. Onramp PaymentMethodDisplayData adds getCardFunding. Generated verification Compose accessors change. No new merchant call sequence or retained platform-floor change is documented.
+
+**Limits/history:** method routing/eligibility/fields, address-confirmation UI and Onramp model internals are excluded. Do not infer TrueMoney setup support, funding authorization or React Native bindings. Changelog inserts Link email OTP/MFA under 23.24.0 retrospectively, not a new 23.25.0 feature; source/concept warn and retain prior evidence. All 4,911 earlier raw changelog lines survive with ten insertions.
+
+**Reading/validation:** approved focused reading of changed declarations/authored content, affected prior context, release/comparison and cumulative source/changelog; unchanged APIs/history/manifests mechanically verified and relevant shared sections read. Seven modified/45 unchanged retained files; all 104 prior/current identities pass. All 206 upstream dispositions classified without gaps. Android/Onramp concepts first, cumulative source/history, company/catalog/logs; source count and older history preserved. No build/device/payment tests, extra collection, commit or push.
+
+Evidence: [snapshot](raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/manifest.json), [release](raw/github/stripe/stripe-android/releases/stripe-android/23.25.0/2026-10-27/manifest.json), [notes](raw/github/stripe/stripe-android/releases/stripe-android/23.25.0/2026-10-27/release-notes.md), [comparison](tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.24.0--23.25.0/comparison.json). Located API quotes and full boundaries: [[source-github-stripe-android]].
 
 ## `stripe-android@23.24.0` - Change Set `51f27a7` (upstream date 2026-10-19)
 

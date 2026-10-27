@@ -1,0 +1,134 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 24e7889..b3af7f2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,15 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.25.0 - 2026-10-21
++
++### PaymentSheet
++* [ADDED][14589](https://github.com/stripe/stripe-android/pull/14589) Added Touch 'n Go API bindings and PaymentSheet support for payments and setup.
++* [ADDED][14590](https://github.com/stripe/stripe-android/pull/14590) Added TrueMoney API bindings and PaymentSheet support.
++
++### AddressElement
++* [Changed] Address Element asks for confirmation before discarding unsaved address changes.
++
+ ## 23.24.0 - 2026-10-19
+ 
+ ### Crypto Onramp
+@@ -12,6 +21,7 @@ NEXT_VERSION_BUMP: PATCH
+ * [Fixed] Address country dropdowns now support autofill from saved addresses.
+ 
+ ### PaymentSheet
++* [ADDED] Added native support for email OTP and multi-factor authentication (MFA) accounts to the Link authentication flow.
+ * [CHANGED][15002](https://github.com/stripe/stripe-android/pull/15002) Moved `ApiConfigurationPreview` from the `paymentsheet` module to `stripe-core`. Update preview opt-in imports to `com.stripe.android.core.ApiConfigurationPreview`.
+ * [ADDED][14586](https://github.com/stripe/stripe-android/pull/14586) Added Naira bank transfer API bindings and PaymentSheet support for PaymentIntents.
+ * [ADDED][14830](https://github.com/stripe/stripe-android/pull/14830) Added Naira USSD API bindings and PaymentSheet support for PaymentIntents.
+diff --git a/README.md b/README.md
+index 90875cb..f93d3df 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.24.0'
++    implementation 'com.stripe:stripe-android:23.25.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 06785ed..8132075 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.24.0
++23.25.0
+diff --git a/crypto-onramp/api/crypto-onramp.api b/crypto-onramp/api/crypto-onramp.api
+index 2f9757d..89da9db 100644
+--- a/crypto-onramp/api/crypto-onramp.api
++++ b/crypto-onramp/api/crypto-onramp.api
+@@ -668,6 +668,7 @@ public final class com/stripe/android/crypto/onramp/model/OnrampVerifyKycInfoRes
+ public final class com/stripe/android/crypto/onramp/model/PaymentMethodDisplayData {
+ 	public static final field $stable I
+ 	public fun equals (Ljava/lang/Object;)Z
++	public final fun getCardFunding ()Lcom/stripe/android/model/CardFunding;
+ 	public final fun getIcon ()Landroid/graphics/drawable/Drawable;
+ 	public final fun getIconPainter (Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/graphics/painter/Painter;
+ 	public final fun getImageLoader ()Lkotlin/jvm/functions/Function1;
+diff --git a/gradle.properties b/gradle.properties
+index 036a18c..4ccd7f6 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -24,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.24.0
++VERSION_NAME=23.25.0
+diff --git a/payments-core/api/payments-core.api b/payments-core/api/payments-core.api
+index a97059a..1695642 100644
+--- a/payments-core/api/payments-core.api
++++ b/payments-core/api/payments-core.api
+@@ -2197,6 +2197,8 @@ public final class com/stripe/android/model/PaymentMethod$Type : java/lang/Enum,
+ 	public static final field ShopeePay Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Sunbit Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Swish Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field TouchNGo Lcom/stripe/android/model/PaymentMethod$Type;
++	public static final field TrueMoney Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field Twint Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field USBankAccount Lcom/stripe/android/model/PaymentMethod$Type;
+ 	public static final field WeChatPay Lcom/stripe/android/model/PaymentMethod$Type;
+@@ -2486,6 +2488,14 @@ public final class com/stripe/android/model/PaymentMethodCreateParams : android/
+ 	public static final fun createSwish (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSwish (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createSwish (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTouchNGo ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTouchNGo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTouchNGo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTouchNGo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTrueMoney ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTrueMoney (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTrueMoney (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static final fun createTrueMoney (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createTwint ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createTwint (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static final fun createTwint (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+@@ -2838,6 +2848,16 @@ public final class com/stripe/android/model/PaymentMethodCreateParams$Companion
+ 	public final fun createSwish (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createSwish (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public static synthetic fun createSwish$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTouchNGo ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTouchNGo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTouchNGo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTouchNGo (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createTouchNGo$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTrueMoney ()Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTrueMoney (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTrueMoney (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public final fun createTrueMoney (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;)Lcom/stripe/android/model/PaymentMethodCreateParams;
++	public static synthetic fun createTrueMoney$default (Lcom/stripe/android/model/PaymentMethodCreateParams$Companion;Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;Lcom/stripe/android/model/PaymentMethod$AllowRedisplay;ILjava/lang/Object;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createTwint ()Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createTwint (Lcom/stripe/android/model/PaymentMethod$BillingDetails;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+ 	public final fun createTwint (Lcom/stripe/android/model/PaymentMethod$BillingDetails;Ljava/util/Map;)Lcom/stripe/android/model/PaymentMethodCreateParams;
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index ad4d1f9..8561e6d 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -504,11 +504,12 @@ public final class com/stripe/android/link/ui/updatecard/ComposableSingletons$Up
+ public final class com/stripe/android/link/ui/verification/ComposableSingletons$VerificationBodyKt {
+ 	public static final field INSTANCE Lcom/stripe/android/link/ui/verification/ComposableSingletons$VerificationBodyKt;
+ 	public fun <init> ()V
++	public final fun getLambda$-1576354462$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
++	public final fun getLambda$-2092495767$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
++	public final fun getLambda$-2137421743$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$-391428647$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
+-	public final fun getLambda$1556541497$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
+ 	public final fun getLambda$1594811933$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
+ 	public final fun getLambda$1814127193$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
+-	public final fun getLambda$211050873$paymentsheet_release ()Lkotlin/jvm/functions/Function3;
+ }
+ 
+ public final class com/stripe/android/link/ui/verification/ComposableSingletons$VerificationDialogKt {

@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-android"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-20
+date_updated: 2026-10-27
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json"
+  - "github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-13-e6f4a67/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-13-ec79c21/manifest.json"
@@ -74,9 +76,62 @@ Repository: <https://github.com/stripe/stripe-android>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-android` | `23.24.0` | `51f27a791f68ff1f007b4179768ca5caf6c205b8` | Approved additive full mode with focused reading; all older baselines/deltas retained |
+| `stripe-android` | `23.25.1` | `bb0d8d09289cec10d303557e7300f6f5d58b9c06` | Approved delta with focused reading; all older baselines/deltas retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
+
+## `stripe-android@23.25.1` Integration Delta
+
+Approved serial delta `github-3630ef97f4ea4cfafb7b` after 23.25.0 completed, exact SHA `bb0d8d09289cec10d303557e7300f6f5d58b9c06`; ingested 2026-10-27. Changelog date 2026-10-26; release publication 2026-10-27 04:25 China time. No earlier version knowledge is replaced.
+
+### Link Return Error Display and Dependency Declaration
+
+The release announces a fix for error messages disappearing from PaymentSheet after returning from Link. Relevant view-model/Link/return implementations are outside the capsule, so this is announcement-qualified, not independently reproduced behavior or proof of the root cause. It does not introduce Link itself, email OTP/MFA, a new merchant return API or a payment-status change. Preserve the previous retrospective OTP/MFA annotation separately. Test error display after returning from Link and continue to reconcile authoritative payment status server-side.
+
+The complete retained payments-core build comparison adds only `implementation libs.androidx.webkit`. It is a production dependency declaration, not an exact resolved version or proof of a particular WebView feature, security fix, device floor or build success. The alias/version catalog is not retained; dependencies.gradle, migration guide, all compiled API inventories and retained merchant launcher/examples remain unchanged. README/VERSION/gradle.properties advance to 23.25.1. No new merchant call sequence or migration is documented.
+
+### Reading, History and Located Grounding
+
+Each snapshot retains 52 files: five modified and 47 unchanged; all 104 size/SHA-256/Git blob identities verified. All 170 upstream paths have dispositions (five retained, 165 exclusions), with zero gaps/unclassified changes. Raw changelog adds five release lines to its prior 4,921 lines, preserving every prior line and the retrospective Link note unchanged. User-approved focused reading covers complete changed short/authored content, prior/current build, comparison and cumulative wiki history; unchanged history, APIs and inventories mechanically verified and relevant shared context read. No extra collection, dependency resolution, SDK build/device/payment test, raw edit, commit or push.
+
+Located excerpts:
+
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/release-notes.md:2`: "Fixed an issue where error messages could disappear from the PaymentSheet after returning from Link."
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/payments-core/build.gradle:29`: `implementation libs.androidx.webkit`.
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/gradle.properties:27`: `VERSION_NAME=23.25.1`.
+
+## `stripe-android@23.25.0` Integration Delta
+
+Approved serial delta `github-f18b69e5db01f4521d42`, from 23.24.0 to exact SHA `b792b5d72f208d155cb7564bcac239cfa87e1eb6`; ingested 2026-10-27. Raw changelog labels the release 2026-10-21; publication was 2026-10-22 08:30 China time. All older histories remain version-qualified below.
+
+### New Payment-Method Declarations and Announcements
+
+Compiled payments-core adds `PaymentMethod.Type.TouchNGo` and `TrueMoney`. Both PaymentMethodCreateParams and Companion expose matching creation overloads: no arguments; BillingDetails; BillingDetails plus Map; and those plus AllowRedisplay. Synthetic default helpers appear on Companion. No earlier payments-core inventory line is removed. Review exhaustive enum switches, but do not treat a no-argument overload as proof that every server-side required field is optional.
+
+Release notes announce Touch 'n Go bindings and PaymentSheet support for payments and setup. TrueMoney is announced as bindings plus PaymentSheet support without explicitly specifying setup support. Model serialization, payment-method eligibility/forms, required fields, currencies, mandates, redirects and account enablement are outside the retained implementation. Neither symbol presence nor the Touch 'n Go setup announcement is proof of a complete recurring-payment integration or successful payment.
+
+### Display Metadata and UI Evidence
+
+Experimental Onramp's compiled PaymentMethodDisplayData adds `getCardFunding()` returning CardFunding; existing label/sublabel/icon/type members remain. This does not establish nullability, default funding type, wallet-specific population or formatting: model/interactor internals are excluded. OnrampCoordinator and its build file remain unchanged. This declaration is distinct from the earlier `23.24.0` wallet-label announcement and does not imply new React Native support. [[stripe-crypto-onramp]]
+
+AddressElement asks before discarding unsaved changes according to release notes; its implementation is excluded. Generated Link VerificationBody Compose accessors are replaced/added; these compiler-generated names are not supported merchant integration APIs, and their changes do not prove OTP/MFA behavior. Retained merchant PaymentSheet/FlowController/Embedded examples, public launcher source, module floors, dependencies and migration guide are unchanged. README/VERSION/gradle.properties advance the release version; no mandatory merchant call-sequence migration is stated. No SDK build, device/UI, authentication or payment test was performed.
+
+### Retrospective Link Note and Reading Scope
+
+> [!warning] Contradiction
+> The newer raw changelog inserts native Link email OTP and MFA support under `23.24.0`. That note is absent from the earlier retained `23.24.0` changelog/release notes. Preserve the later label separately from older evidence; do not attribute this as a new `23.25.0` feature or infer its exact first runtime release. Changed verification implementations are excluded. [[stripe-android-sdk]] records the same distinction.
+
+All 4,911 prior changelog lines remain: nine inserted lines introduce 23.25.0 and one inserts the retrospective Link note, yielding 4,921 lines. Each capsule retains 52 files: seven modified, 45 unchanged, none added/removed. All 104 raw sizes, SHA-256 and Git blob IDs verified. The packet classifies 206 upstream paths (seven retained, 199 policy exclusions) with no gaps/unclassified changes; classification does not mean semantic inspection of excluded code.
+
+User approved focused reading for both serial deltas: changed API declarations in affected context, authored content, release/comparison and cumulative wiki history read; unchanged API/changelog ranges and manifests mechanically verified, relevant shared pages read. This item is completed before starting 23.25.1. No extra collection, raw modification, cross-provider comparison, commit or push.
+
+### Located Grounding
+
+Under `raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/files/`:
+
+- `payments-core/api/payments-core.api:2200`: `public static final field TouchNGo Lcom/stripe/android/model/PaymentMethod$Type;`
+- `payments-core/api/payments-core.api:2495`: `public static final fun createTrueMoney ()Lcom/stripe/android/model/PaymentMethodCreateParams;`
+- `crypto-onramp/api/crypto-onramp.api:671`: `public final fun getCardFunding ()Lcom/stripe/android/model/CardFunding;`
 
 ## `stripe-android@23.24.0` Additive Full Ingest
 
@@ -735,6 +790,22 @@ The May 2026 manual capsule established PaymentSheet, FlowController, CustomerSh
 - History: [[changelog-github-stripe-android]]
 
 ## Raw Sources
+
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json` - 23.25.1 exact-SHA capsule; all identities checked against 23.25.0
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/manifest.json` - package-qualified publication identity
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/release-notes.md` - Link-return error-display fix announcement
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.25.0--23.25.1/comparison.json` - adjacent comparison.md and diff.patch
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/payments-core/build.gradle` - complete prior/current dependency comparison
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/CHANGELOG.md` - five-line release insertion; prior history mechanically verified
+
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/manifest.json` - 23.25.0 exact-SHA capsule; all prior/current identities checked
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.0/2026-10-27/manifest.json` - package-qualified publication identity
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.0/2026-10-27/release-notes.md` - support and address-confirmation announcements
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.24.0--23.25.0/comparison.json` - adjacent comparison.md and diff.patch; API additions and historical annotation
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/files/payments-core/api/payments-core.api` - changed method declarations in prior/current context
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/files/crypto-onramp/api/crypto-onramp.api` - card-funding getter declaration
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/files/paymentsheet/api/paymentsheet.api` - changed generated verification accessors
+- `raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/files/CHANGELOG.md` - release and retrospective Link additions; unchanged history mechanically verified
 
 - `raw/github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json` - exact-SHA 23.24.0 capsule; 52 current files hash/size verified against the prior 52-file capsule
 - `raw/github/stripe/stripe-android/releases/stripe-android/23.24.0/2026-10-20/manifest.json` - package-qualified release/publication identity
