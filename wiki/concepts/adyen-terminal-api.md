@@ -89,6 +89,9 @@ Terminal API defines terminal messages. Adyen's Cloud Device API, represented se
 
 ## Related
 
+- [[source-adyen-docs-point-of-sale-nfc-tags]] — 2026-09-15 Adyen POS NFC tag CardAcquisition guide for UID, memory and Ultralight AES counter operations, with terminal/tag/software qualifications and a separate payment-result boundary.
+
+
 - [[source-adyen-docs-point-of-sale-aid-selection-rules]] — 2026-09-15 POS terminal/standalone card-application guide for automatic selection, configurable cost, PIN and menu priorities (compliance and supported-feature rules fixed), and shopper Card options choice with an EEA software 1.109 qualification.
 
 

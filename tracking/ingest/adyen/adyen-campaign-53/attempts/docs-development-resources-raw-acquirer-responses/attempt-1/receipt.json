@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-development-resources-raw-acquirer-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Docs: Raw acquirer responses\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/development-resources/raw-acquirer-responses\"\nraw_files:\n  - \"adyen/docs/development-resources/raw-acquirer-responses/2026-09-15.md\"\ntags: [adyen, online-payments, raw-acquirer-responses, refusal-reasons, response-codes]\n---\n\n## Overview\n\nThis Adyen development-resources catalog, last modified 2024-10-16 and captured 2026-09-15, explains common raw responses for online payment declines, cancellations and related modification failures. Schemes and issuers can change raw text; Adyen maps failed-transaction raw responses to normalized `resultCode` and `refusalReason`. The tables also show last Customer Area journal type and, for some providers, API error codes or HTTP statuses. A raw code, journal label, HTTP status, normalized refusal and final payment outcome are different layers. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- For online payments, enable **Raw acquirer result** under merchant-account **Developers \u2192 Additional data** to receive `additionalData.refusalReasonRaw` on declines. `refusalCodeRaw`, the numeric portion, is available only for Visa and Mastercard on Adyen's own acquiring platform. The example raw `51 : Insufficient funds/over credit limit` maps to normalized `refusalReason=Not enough balance` and `resultCode=Refused`. Do not expose raw response details to shoppers because of misuse risk. See raw lines 19\u201382.\n- The Visa/Mastercard table contains network- and context-specific meanings. Code `65` is both withdrawal-count limit and Mastercard authentication-required soft decline; `70` differs for Mastercard contact issuer and Visa PIN data; `82` differs by network; `91` appears as both Refused and Error. `85` can be an authorized zero-value verification. Interpret a code with network, full raw text and journal context, not as a universal outcome. See raw lines 90\u2013150. Similar code strings mean different things in Discover, Mexico and other network/provider sections.\n- Retry guidance is **row and provider specific**. Visa/Mastercard raw codes can inform a merchant's own Visa excessive-retry-fee handling (raw 84\u201388), while Mastercard Merchant Advice Codes (MACs) are a separate `additionalData.merchantAdviceCode` field that some issuers return automatically for approved or refused payments. The MAC table ranges from no-retry `03`/`21` to prescribed delayed retries `02`/`24`\u2013`30`; an unknown MAC gives no actionable advice. See raw lines 519\u2013543. Do not turn a general timeout or insufficient-funds label into a universal retry permission.\n- Cash App Pay's listed errors are provider `errors[].code` values with payment/payout-processing categories and HTTP 400, not general Adyen HTTP or card-network refusal codes. The table distinguishes permanent declines from conditionally retryable merchant-state errors and correctable amount/currency/refund requests. PayTo's payment table explicitly labels retriable with the **same payment details**, whereas its agreement-refusal table has no such column. See raw lines 256\u2013286 and 822\u2013866.\n- The catalog extends beyond simple initial card refusals: Klarna includes pending, authorized, expired offer and pre-authorization-token cases; Alipay, PayPal, Swish, Ratepay and other sections include capture/refund failures or asynchronous provider states. PayPal is split between traffic moved to a newer API and traffic still on an older API; an error-code lookup must select the applicable table. See raw lines 182\u2013209, 491\u2013518, 749\u2013821 and 885\u2013967.\n\n## Important qualifications\n\n- This is an **online payments** guide; it separately points to Terminal API raw responses for in-person integration (raw 19\u201336, 978\u2013982). Individual catalog rows can still describe POS-specific circumstances, such as Alipay merchant cancellation and its `TRADE_NOT_EXIST` online/POS split (raw 190\u2013194). Preserve each row's stated context.\n- The general rule not to show **raw response details** to shoppers (raw 42\u201343) has a distinct Japan-specific field: the page recommends showing `additionalData.domesticShopperAdvice` on a Japanese checkout, alongside `domesticRefusalReasonRaw` diagnostics (raw 440\u2013472). Do not substitute the raw diagnostic for that shopper-advice text.\n- Some rows are internally awkward or contingent: Visa/Mastercard `00` has journal `Authorised` yet describes later cancellation (raw 92); MB WAY generic refusal/timeout rows say a shopper-completed app payment may still settle (raw 552\u2013559); Swish `No response from ACM` appears under Refused and Error (raw 956, 964). Treat the table as a diagnostic snapshot, not a complete or timeless truth table.\n- The wording of a raw response can change without notice, and this snapshot does not prove current network rules, account configuration, or an individual payment's final state (raw 23\u201329, 40\u201343).\n\n## Detail locators\n\n- Online requirements, receiving fields, normalization example and shopper-data warning: raw lines 19\u201382.\n- Visa/Mastercard common responses and Adyen for Platforms validation: raw lines 84\u2013163.\n- Accel, Afterpay, Alipay/AlipayHK, American Express and BLIK: raw lines 165\u2013254.\n- Cash App Pay provider codes/HTTP 400, Diners, Discover and GoPay: raw lines 256\u2013420.\n- GrabPay, Japan domestic issuer advice, KCP and Klarna: raw lines 422\u2013518.\n- Mastercard Merchant Advice Codes, MB WAY, Mexico and Nyce: raw lines 519\u2013695.\n- Oney, Czech/Poland/Slovakia online banking, Pay by Bank US: raw lines 697\u2013747.\n- PayPal newer versus older API, PayTo agreement/payment retriability, Pix refund codes: raw lines 749\u2013883.\n- Ratepay, SEPA Direct Debit, Star, Swish and TWINT: raw lines 885\u2013976.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment architecture and source routes.\n- [[source-adyen-docs-development-resources-overview-response-handling]] \u2014 separate overview of HTTP request, raw response, normalized refusal and payment-result layers.\n- [[source-adyen-docs-development-resources-refusal-reasons]] \u2014 normalized refusal reasons and result-code handling.\n- [[source-adyen-docs-development-resources-raw-acquirer-responses-visa-integrity-fees]] \u2014 separate Visa retry-fee category mapping.\n\n## Raw Sources\n\n- [[raw/adyen/docs/development-resources/raw-acquirer-responses/2026-09-15|Raw acquirer responses, 2026-09-15 capture]]\n",
+  "quotes": [
+    {
+      "text": "The many raw responses are slightly different between schemes and are subject to change.",
+      "location": "raw line 25, introduction"
+    },
+    {
+      "text": "To prevent the malicious use of data, you must not expose the details of raw responses to shoppers.",
+      "location": "raw line 43, Recommendations"
+    },
+    {
+      "text": "`refusalCodeRaw` (only available for Visa and Mastercard transactions through our own acquiring platform): the numeric part of the raw response.",
+      "location": "raw line 57, Receive raw responses"
+    },
+    {
+      "text": "The Merchant Advice Code (MAC) can be returned for both approved and refused Mastercard payments.",
+      "location": "raw line 521, Mastercard Merchant Advice Codes"
+    },
+    {
+      "text": "The Retriable column indicates whether you can retry the payment with the same payment details:",
+      "location": "raw line 852, PayTo payment refusal reasons"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c53-raw-acquirer-responses-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-development-resources-raw-acquirer-responses]] \u2014 2024-modified, 2026-09-15-captured online raw acquirer/provider response catalog with scoped code, journal, retry and shopper-disclosure diagnostics; source distinguishes normalized refusal, HTTP and payment outcome layers.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw codes and retry meanings are provider, network and row specific; some codes conflict across rows or network scopes.",
+          "Japan domesticShopperAdvice is a distinct shopper-facing field; do not expose raw response details."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/development-resources/raw-acquirer-responses/2026-09-15.md",
+  "raw_sha256": "0370b8229032a9b40f86e7b8c4d86593f74981f12c383c710410308e74b12a2a",
+  "status": "candidate_ready"
+}

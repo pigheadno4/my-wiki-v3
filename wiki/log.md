@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Adyen website C53
+
+- Three independently approved NFC tags, Issuing KYC and raw acquirer responses documentation sources; first full-review approvals 2/3 and 1 targeted correction reviews. 3 concepts touched (0 new); source_count 2554 = 2540 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-53/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-30] ingest | Adyen website C52
 
 - Three independently approved Pay by Link API, split-management API and Checkout migration documentation sources; first full-review approvals 3/3 and 0 targeted correction reviews. 3 concepts touched (0 new); source_count 2551 = 2537 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-52/`; details [[adyen-log]]. No commit/push.

@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Adyen website C53
+
+- All 3 exact-manifest NFC tags, Issuing KYC and raw acquirer responses General Docs sources independently approved and promoted. First full-review approvals 2/3; 1 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 3 concepts, including 0 new concept(s). Terminal/tag/operation and software eligibility, country/entity KYC cells, and raw versus normalized/HTTP/journal/payment outcomes remain distinct. Source conflicts and provider-specific retry conditions remain qualified. Original reviews, attempts and bounded correction evidence retained. Website guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 2554 = 2540 website + 14 GitHub summaries. All 3 raw hashes unchanged; 6 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-53/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-30] ingest | Adyen website C52
 
 - All 3 exact-manifest Pay by Link API, split-management API and Checkout migration General Docs sources independently approved and promoted. First full-review approvals 3/3; 0 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

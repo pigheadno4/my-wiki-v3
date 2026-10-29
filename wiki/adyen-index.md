@@ -2703,6 +2703,12 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-platforms-automatic-split-configuration-manage-split-configurations-api]] — Manage split configuration profiles through the Management API (webpage, 2026-10-30)
 - [[source-adyen-docs-online-payments-upgrade-your-integration-migrate-to-checkout-api]] — Adyen Docs: Migrate to Checkout API (webpage, 2026-10-30)
 
+### Website documentation — Campaign 53
+
+- [[source-adyen-docs-point-of-sale-nfc-tags]] — Adyen POS NFC tag reading and writing (webpage, 2026-10-30)
+- [[source-adyen-docs-issuing-verification-requirements-required-kyc-information]] — Adyen Issuing required KYC information by entity and country (webpage, 2026-10-30)
+- [[source-adyen-docs-development-resources-raw-acquirer-responses]] — Adyen Docs: Raw acquirer responses (webpage, 2026-10-30)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)

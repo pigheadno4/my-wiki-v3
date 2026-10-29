@@ -15,6 +15,9 @@ The overview says an Issuing integration must accept and handle webhooks for asy
 
 ## Sources
 
+- [[source-adyen-docs-issuing-verification-requirements-required-kyc-information]] — 2023-modified, 2026-09-15-captured Issuing KYC field matrix by entity type and country/region, with required, conditional, optional and not-applicable statuses; linked conditions are not expanded in the capture.
+
+
 - [[source-adyen-docs-issuing-authentication-label]] — 2026-09-15 title-only Issuing capture headed `process payments label`; no behavioral or API evidence.
 
 

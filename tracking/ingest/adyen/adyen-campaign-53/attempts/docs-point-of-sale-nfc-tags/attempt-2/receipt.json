@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-point-of-sale-nfc-tags",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen POS NFC tag reading and writing\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/point-of-sale/nfc-tags\"\nraw_files:\n  - \"adyen/docs/point-of-sale/nfc-tags/2026-09-15.md\"\ntags: [adyen, point-of-sale, terminal-api, nfc, card-acquisition]\n---\n\n## Overview\n\nAdyen's NFC tag guide describes identifying a presented tag by UID and type, reading and writing tag memory, and reading or incrementing MIFARE Ultralight AES counters through Terminal API CardAcquisition requests. Tags can include cards, phones, or bracelets; the examples cover loyalty, access, and stored value. These are terminal interactions, and a successful CardAcquisitionResponse or a terminal's optional green check mark is not evidence of payment authorization. The UID is an identifier for lookup in the merchant's system, not proof that a person or balance is valid.\n\n## Key takeaways\n\n- A Terminal API integration and a terminal model compatible with the chosen NFC tag are prerequisites. Adyen says Support creates the NFC configuration after receiving the tag type, access keys if used, and any dedicated Android app UI-hiding requirement. Hardware, tag, software, and app availability are conditional on the guide's captured matrix; the snapshot does not establish a particular terminal's current capability.\n- The request Base64-encodes an Operation JSON object in SaleData.SaleToPOIData and uses a Service-class CardAcquisition message. NFCReadUID returns NFC.uid and NFC.variant. NFCRead and NFCWrite take tag-specific sector, application/file, or page data and authentication conditions. Inspect NFC.status as well as the overall response. ExpectedUid on a write prevents writing to a different presented tag by returning WRONG_CARD; an empty or omitted value is ignored. An empty write NFCData returns identity without writing.\n- The requirements section says MIFARE DESFire writing and MIFARE Ultralight memory reading/writing are Android-terminal-only in this snapshot. The same guide says Engage can read/write only unlocked Ultralight C pages and cannot authenticate those tags; see the eligibility conflict below. Ultralight READ returns four consecutive pages (16 bytes) even if fewer pages were requested, so the returned data can include pages beyond the requested range.\n- Only Ultralight AES has the three independent 24-bit counter registers described here; the guide limits their read/write to Android terminals on software version 134 or later. A write increments a counter; it cannot set or decrease its total. NFC.data on a counter-write response is the increment amount, not the new total. Page and counter operations cannot share one NFCData array.\n- A multi-request Session begins with Session.Type Begin, carries the same Session.Id through subsequent operations, and ends with Session.Type End. In both single operations and a finished session, send EnableService with AbortTransaction to stop the loading screen. Optional DisplayOutput changes the displayed icon/message; its Approved/Declined icon is a display choice, not a payment decision.\n- Hiding Adyen's UI is an optional Support-enabled configuration for a dedicated Android app processing stored-value or identity cards, limited here to S1E, S1E2L, S1F2, and S1U2 on software 1.114+. If a regular payment card is presented in that configured NFC flow, BLOCK_CARD means the card cannot be used with that app; it does not mean the card itself is blocked. Ordinary card acquisition remains unaffected.\n\n> [!warning] Ultralight terminal eligibility conflict\n> The requirements say MIFARE Ultralight read/write is Android-terminal-only (raw lines 38\u201342), while the supported-products matrix marks several Engage models capable of MIFARE Ultralight and Ultralight C (2141\u20132175); the guide also limits Engage Ultralight C read/write to unlocked pages because those terminals cannot authenticate the tag (2165). The matrix does not establish which operation works for each model. Preserve both statements and verify the exact tag variant, read/write operation, terminal model, and installed software with Adyen before relying on this snapshot.\n\n> [!warning] Raw example and format conflicts\n> The session table labels a timeout Session.Timeout (raw lines 1833\u20131834), while its JSON example uses TimeoutMs (1840\u20131845). Counter response prose calls AdditionalResponse a Base64 string decoded to JSON (1512 and 1704), while the displayed responses contain URL-style key/value data (1537 and 1729). The broad Ultralight introduction says no keys (1204), while variant tables require or default authentication keys for Ultralight C/AES (1218\u20131225). Verify the applicable API contract and actual terminal response before implementing these points.\n\n## Detail locators\n\n- Requirements, Support setup, device/tag limitations, and basic flow: raw lines 30\u201362; complete model-by-tag matrix: 2141\u20132182.\n- UID request and response; CardAcquisition headers, optional TotalAmount with a required CardAcquisitionTransaction object, and service closure: 64\u2013231.\n- Classic, DESFire, and Ultralight read requests/responses, NFC.data/status, auth conditions, and Ultralight four-page overread: 233\u2013805, especially 713\u2013728.\n- Tag-specific writes, ExpectedUid and empty-write semantics: 807\u20131388. Check example page labels against request and response near 1300\u20131330 rather than inferring page results.\n- Ultralight AES counters, limits, little-endian values, separate page/counter requests, and errors: 1390\u20131798. The write response reports the increment, not the resulting stored total (1704\u20131709).\n- Multi-request Session lifecycle and final EnableService request: 1800\u20132089. UI hiding, BLOCK_CARD scope, and unaffected regular card acquisition: 2091\u20132139.\n\n## Related\n\n- [[adyen]] \u2014 provider context.\n- [[adyen-terminal-api]] \u2014 Terminal API message and card-acquisition boundary.\n- [[source-adyen-docs-point-of-sale-card-acquisition]] \u2014 general acquisition and finish/cancel flow; this NFC guide adds tag-specific operations and device constraints.\n\n## Raw Sources\n\n- [[raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15|Adyen Docs: NFC tags reading and writing (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Hiding the Adyen UI](#hide) for stored value cards and identity cards is only supported with terminal models S1E, S1E2L, S1F2, and S1U2 on software version 1.114 or later.",
+      "location": "raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15.md raw line 40"
+    },
+    {
+      "text": "Mifare Ultralight READ always returns four consecutive pages, or 16 bytes.",
+      "location": "raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15.md raw line 728"
+    },
+    {
+      "text": "Writing to a counter register increases its stored value by the amount you specify. You cannot set a counter to a specific value or decrease it.",
+      "location": "raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15.md raw line 1599"
+    },
+    {
+      "text": "All requests that belong to the session must contain the same `Session.Id` in the `SaleToPOIData`.",
+      "location": "raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15.md raw line 1808"
+    },
+    {
+      "text": "This does not mean that the card itself is blocked, but that it cannot be used for operations with your Android app.",
+      "location": "raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15.md raw line 2101"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c53-nfc-terminal-api-link",
+        "target_path": "wiki/concepts/adyen-terminal-api.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-point-of-sale-nfc-tags]] \u2014 2026-09-15 Adyen POS NFC tag CardAcquisition guide for UID, memory and Ultralight AES counter operations, with terminal/tag/software qualifications and a separate payment-result boundary.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This dated website guide conflicts internally on Ultralight Android-only read/write versus Engage support-matrix capability; preserve both and verify exact tag, operation, terminal model, and software with Adyen.",
+          "The guide has Session.Timeout versus TimeoutMs and AdditionalResponse encoding/example conflicts; keep detailed warnings in the source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/point-of-sale/nfc-tags/2026-09-15.md",
+  "raw_sha256": "50ac7638ec2ca1d41b97f400bf00e20a4f3f0e26dbe2b63489412c75c88603c8",
+  "status": "candidate_ready"
+}
