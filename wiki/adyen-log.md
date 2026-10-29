@@ -6,6 +6,11 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-29] ingest | PHP API Library `30.1.0`
+
+- Approved additive full `github-72873498ac9c3065c6c5`, SHA `7eda6b3956a61d41a1fb87ab6d4ef30c7d6712cb`, from 30.0.2; focused reading fully covers six changed retained files (including both generated models), affected prior comparison context, Config/Region dependencies and cumulative source/changelog. Unchanged source/generated inventories mechanically verified. Both 447-file capsules pass all 894 size/SHA-256/Git blob checks; six modified/441 unchanged, 45 upstream dispositions (six retained/39 exclusions), no gaps. Effective full assignment456 paths/7,513,409 bytes.
+- Records classic Payments transactionLinkId and conditional Mastercard MIT documentation without validation/Checkout-parity claims; region setter/deprecated helper with excluded PosPayment routing and inherited comment/throw discrepancy. FX/Payments App/webhook changes remain announcement-level, CodeSniffer security update development-only. PHP floor/runtime, Checkout models/services and stale support table unchanged. PHP concept first, then source/changelog/company/catalog/logs; all 30.0.2 history/raw links/source_count preserved, no new source/concept/comparison. No extra collection, PHP/Composer/Terminal/payment execution, commit or push. Details [[source-github-adyen-php-api-library]] and [[changelog-github-adyen-php-api-library]].
+
 ## [2026-10-29] ingest | Adyen website C47
 
 - All 50 exact-manifest PayPo, Walley, Titres-Restaurant, ANCV, IRIS and Online banking India General Docs sources independently approved and promoted. First full-review approvals 44/50; 6 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

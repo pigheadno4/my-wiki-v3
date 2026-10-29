@@ -1,0 +1,278 @@
+diff --git a/README.md b/README.md
+index 879b217..e18484c 100644
+--- a/README.md
++++ b/README.md
+@@ -32,6 +32,7 @@ The library supports all APIs under the following services:
+ | [Disputes API](https://docs.adyen.com/api-explorer/Disputes/30/overview)                                   | You can use the [Disputes API](https://docs.adyen.com/risk-management/disputes-api) to automate the dispute handling process so that you can respond to disputes and chargebacks as soon as they are initiated. The Disputes API lets you retrieve defense reasons, supply and delete defense documents, and accept or defend disputes. | [Disputes](src/Adyen/Service/DisputesApi.php)                           | **v30**                  |
+ | [POS Mobile API](https://docs.adyen.com/api-explorer/possdk/68/overview)                                   | The POS Mobile API is used in the mutual authentication flow between an Adyen Android or iOS [POS Mobile SDK](https://docs.adyen.com/point-of-sale/ipp-mobile/) and the Adyen payments platform. The POS Mobile SDK for Android or iOS devices enables businesses to accept in-person payments using a commercial off-the-shelf (COTS) device like a phone. For example, Tap to Pay transactions, or transactions on a mobile device in combination with a card reader | [POS Mobile](src/Adyen/Service/PosMobile.php)                           | **v68**                  |
+ | [Payments App API](https://docs.adyen.com/api-explorer/payments-app/1/overview)                                  | The Payments App API is used to Board and manage the Adyen Payments App on your Android mobile devices. | [PaymentsAppApi](src/Adyen/Service/PaymentsApp/PaymentsAppApi.php)                         | **v1**                  |
++| [Foreign Exchange API](https://docs.adyen.com/api-explorer/foreignexchange/1/overview)                     | The Foreign Exchange API provides an endpoint that you can use to calculate the amounts and rates required to convert the currency of a transaction.                                                                                                                                                                                    | [ForeignExchange](src/Adyen/Service/ForeignExchange)                    | **v1**                   |
+ 
+ ## Supported Webhook versions
+ The library supports all webhooks under the following model directories:
+diff --git a/VERSION b/VERSION
+index 4f3a069..a75ef34 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-30.0.2
++30.1.0
+diff --git a/composer.json b/composer.json
+index de4afec..f7dfa7f 100644
+--- a/composer.json
++++ b/composer.json
+@@ -20,7 +20,7 @@
+     "friendsofphp/php-cs-fixer": "*",
+     "phpunit/phpunit": "9.6.35",
+     "php-coveralls/php-coveralls": "2.7.0",
+-    "squizlabs/php_codesniffer": "4.0.1"
++    "squizlabs/php_codesniffer": "4.0.2"
+   },
+   "autoload": {
+     "psr-4": {
+diff --git a/src/Adyen/Client.php b/src/Adyen/Client.php
+index e81aef7..1116090 100644
+--- a/src/Adyen/Client.php
++++ b/src/Adyen/Client.php
+@@ -7,7 +7,7 @@ use Adyen\HttpClient\CurlClient;
+ 
+ class Client
+ {
+-    const LIB_VERSION = "30.0.2";
++    const LIB_VERSION = "30.1.0";
+     const LIB_NAME = "adyen-php-api-library";
+     const USER_AGENT_SUFFIX = "adyen-php-api-library/";
+     const ENDPOINT_TEST = "https://pal-test.adyen.com";
+@@ -179,13 +179,20 @@ class Client
+         $this->config->set('terminalApiCloudEndpoint', $endpoint);
+     }
+ 
++    public function setRegion(string $region): void
++    {
++        $this->config->set('region', $region);
++    }
++
+     /**
+      * Retrieve the cloud endpoint for a given region and environment.
+      *
+-     * @param string|null $region The region for which the endpoint is requested. Defaults to the EU endpoint if null or unsupported.
++     * @param string|null $region The region for which the endpoint is requested.
++     * Defaults to the EU endpoint if null or unsupported.
+      * @param string $environment The environment, either 'test' or 'live'.
+      * @return string The endpoint URL.
+      * @throws AdyenException
++     * @deprecated
+      */
+     public function retrieveCloudEndpoint(?string $region, string $environment): string
+     {
+@@ -196,13 +203,11 @@ class Client
+ 
+         // Check if the environment is LIVE
+         if ($environment === Environment::LIVE) {
+-            if ($environment === Environment::LIVE) {
+                 $region = $region ?? Region::EU;
+-                if (!array_key_exists($region, Region::TERMINAL_API_ENDPOINTS_MAPPING)) {
+-                    throw new AdyenException("TerminalAPI endpoint for $region is not supported yet");
+-                }
+-                return Region::TERMINAL_API_ENDPOINTS_MAPPING[$region];
++            if (!array_key_exists($region, Region::TERMINAL_API_ENDPOINTS_MAPPING)) {
++                throw new AdyenException("TerminalAPI endpoint for $region is not supported yet");
+             }
++                return Region::TERMINAL_API_ENDPOINTS_MAPPING[$region];
+         }
+         // Default to TEST endpoint if no valid environment is specified
+         return self::ENDPOINT_TERMINAL_CLOUD_TEST;
+diff --git a/src/Adyen/Model/Payments/AdditionalDataCommon.php b/src/Adyen/Model/Payments/AdditionalDataCommon.php
+index 389bdbd..f8bbd93 100644
+--- a/src/Adyen/Model/Payments/AdditionalDataCommon.php
++++ b/src/Adyen/Model/Payments/AdditionalDataCommon.php
+@@ -61,7 +61,8 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         'subMerchantPostalCode' => 'string',
+         'subMerchantState' => 'string',
+         'subMerchantStreet' => 'string',
+-        'subMerchantTaxId' => 'string'
++        'subMerchantTaxId' => 'string',
++        'transactionLinkId' => 'string'
+     ];
+ 
+     /**
+@@ -92,7 +93,8 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         'subMerchantPostalCode' => null,
+         'subMerchantState' => null,
+         'subMerchantStreet' => null,
+-        'subMerchantTaxId' => null
++        'subMerchantTaxId' => null,
++        'transactionLinkId' => null
+     ];
+ 
+     /**
+@@ -121,7 +123,8 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         'subMerchantPostalCode' => false,
+         'subMerchantState' => false,
+         'subMerchantStreet' => false,
+-        'subMerchantTaxId' => false
++        'subMerchantTaxId' => false,
++        'transactionLinkId' => false
+     ];
+ 
+     /**
+@@ -230,7 +233,8 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         'subMerchantPostalCode' => 'subMerchantPostalCode',
+         'subMerchantState' => 'subMerchantState',
+         'subMerchantStreet' => 'subMerchantStreet',
+-        'subMerchantTaxId' => 'subMerchantTaxId'
++        'subMerchantTaxId' => 'subMerchantTaxId',
++        'transactionLinkId' => 'transactionLinkId'
+     ];
+ 
+     /**
+@@ -259,7 +263,8 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         'subMerchantPostalCode' => 'setSubMerchantPostalCode',
+         'subMerchantState' => 'setSubMerchantState',
+         'subMerchantStreet' => 'setSubMerchantStreet',
+-        'subMerchantTaxId' => 'setSubMerchantTaxId'
++        'subMerchantTaxId' => 'setSubMerchantTaxId',
++        'transactionLinkId' => 'setTransactionLinkId'
+     ];
+ 
+     /**
+@@ -288,7 +293,8 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         'subMerchantPostalCode' => 'getSubMerchantPostalCode',
+         'subMerchantState' => 'getSubMerchantState',
+         'subMerchantStreet' => 'getSubMerchantStreet',
+-        'subMerchantTaxId' => 'getSubMerchantTaxId'
++        'subMerchantTaxId' => 'getSubMerchantTaxId',
++        'transactionLinkId' => 'getTransactionLinkId'
+     ];
+ 
+     /**
+@@ -383,6 +389,7 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+         $this->setIfExists('subMerchantState', $data ?? [], null);
+         $this->setIfExists('subMerchantStreet', $data ?? [], null);
+         $this->setIfExists('subMerchantTaxId', $data ?? [], null);
++        $this->setIfExists('transactionLinkId', $data ?? [], null);
+     }
+ 
+     /**
+@@ -949,6 +956,30 @@ class AdditionalDataCommon implements ModelInterface, ArrayAccess, \JsonSerializ
+ 
+         return $this;
+     }
++
++    /**
++     * Gets transactionLinkId
++     *
++     * @return string|null
++     */
++    public function getTransactionLinkId()
++    {
++        return $this->container['transactionLinkId'];
++    }
++
++    /**
++     * Sets transactionLinkId
++     *
++     * @param string|null $transactionLinkId Allows you to link the transaction to the original or previous one in a subscription/card-on-file chain For Mastercard payments. This field is required for token-based transactions where Adyen does not tokenize the card.  Transaction identifier from Mastercard.  Submit the original transaction ID of the contract in your payment request if you are not tokenizing card details with Adyen and are making a merchant-initiated transaction (MIT) for subsequent charges.  Make sure you are sending `shopperInteraction` **ContAuth** and `recurringProcessingModel` **Subscription** or **UnscheduledCardOnFile** to ensure that the transaction is classified as MIT.
++     *
++     * @return self
++     */
++    public function setTransactionLinkId($transactionLinkId)
++    {
++        $this->container['transactionLinkId'] = $transactionLinkId;
++
++        return $this;
++    }
+     /**
+      * Returns true if offset exists. False otherwise.
+      *
+diff --git a/src/Adyen/Model/Payments/ResponseAdditionalDataCommon.php b/src/Adyen/Model/Payments/ResponseAdditionalDataCommon.php
+index 58e4e94..60db681 100644
+--- a/src/Adyen/Model/Payments/ResponseAdditionalDataCommon.php
++++ b/src/Adyen/Model/Payments/ResponseAdditionalDataCommon.php
+@@ -103,6 +103,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         'tokenizationShopperReference' => 'string',
+         'tokenizationStoreOperationType' => 'string',
+         'tokenizationStoredPaymentMethodId' => 'string',
++        'transactionLinkId' => 'string',
+         'visaTransactionId' => 'string',
+         'xid' => 'string'
+     ];
+@@ -177,6 +178,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         'tokenizationShopperReference' => null,
+         'tokenizationStoreOperationType' => null,
+         'tokenizationStoredPaymentMethodId' => null,
++        'transactionLinkId' => null,
+         'visaTransactionId' => null,
+         'xid' => null
+     ];
+@@ -249,6 +251,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         'tokenizationShopperReference' => false,
+         'tokenizationStoreOperationType' => false,
+         'tokenizationStoredPaymentMethodId' => false,
++        'transactionLinkId' => false,
+         'visaTransactionId' => false,
+         'xid' => false
+     ];
+@@ -401,6 +404,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         'tokenizationShopperReference' => 'tokenization.shopperReference',
+         'tokenizationStoreOperationType' => 'tokenization.store.operationType',
+         'tokenizationStoredPaymentMethodId' => 'tokenization.storedPaymentMethodId',
++        'transactionLinkId' => 'transactionLinkId',
+         'visaTransactionId' => 'visaTransactionId',
+         'xid' => 'xid'
+     ];
+@@ -473,6 +477,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         'tokenizationShopperReference' => 'setTokenizationShopperReference',
+         'tokenizationStoreOperationType' => 'setTokenizationStoreOperationType',
+         'tokenizationStoredPaymentMethodId' => 'setTokenizationStoredPaymentMethodId',
++        'transactionLinkId' => 'setTransactionLinkId',
+         'visaTransactionId' => 'setVisaTransactionId',
+         'xid' => 'setXid'
+     ];
+@@ -545,6 +550,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         'tokenizationShopperReference' => 'getTokenizationShopperReference',
+         'tokenizationStoreOperationType' => 'getTokenizationStoreOperationType',
+         'tokenizationStoredPaymentMethodId' => 'getTokenizationStoredPaymentMethodId',
++        'transactionLinkId' => 'getTransactionLinkId',
+         'visaTransactionId' => 'getVisaTransactionId',
+         'xid' => 'getXid'
+     ];
+@@ -736,6 +742,7 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         $this->setIfExists('tokenizationShopperReference', $data ?? [], null);
+         $this->setIfExists('tokenizationStoreOperationType', $data ?? [], null);
+         $this->setIfExists('tokenizationStoredPaymentMethodId', $data ?? [], null);
++        $this->setIfExists('transactionLinkId', $data ?? [], null);
+         $this->setIfExists('visaTransactionId', $data ?? [], null);
+         $this->setIfExists('xid', $data ?? [], null);
+     }
+@@ -2350,6 +2357,30 @@ class ResponseAdditionalDataCommon implements ModelInterface, ArrayAccess, \Json
+         return $this;
+     }
+ 
++    /**
++     * Gets transactionLinkId
++     *
++     * @return string|null
++     */
++    public function getTransactionLinkId()
++    {
++        return $this->container['transactionLinkId'];
++    }
++
++    /**
++     * Sets transactionLinkId
++     *
++     * @param string|null $transactionLinkId Returned in the response for Mastercard payments.  This contains the Mastercard Transaction Link Identifier (TLID).
++     *
++     * @return self
++     */
++    public function setTransactionLinkId($transactionLinkId)
++    {
++        $this->container['transactionLinkId'] = $transactionLinkId;
++
++        return $this;
++    }
++
+     /**
+      * Gets visaTransactionId
+      *

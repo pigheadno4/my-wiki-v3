@@ -2541,6 +2541,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.12.1/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.12.0--26.12.1/comparison.json)
 
+## `github-72873498ac9c3065c6c5`
+
+- Repository: `adyen/adyen-php-api-library`
+- SHA: `7eda6b3956a61d41a1fb87ab6d4ef30c7d6712cb`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/adyen/adyen-php-api-library/snapshots/2026-10-29-7eda6b3/manifest.json)
+- Packet: [review packet](repos/adyen/adyen-php-api-library/ingest-packets/github-72873498ac9c3065c6c5/packet.md)
+- Review priority: `high`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `adyen-php-api-library@30.1.0` (recommended `full`)
+  Release: [manifest](../../raw/github/adyen/adyen-php-api-library/releases/adyen-php-api-library/30.1.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/adyen/adyen-php-api-library/comparisons/adyen-php-api-library/30.0.2--30.1.0/comparison.json)
+
 ## `github-72f033218ff5ef2cfae0`
 
 - Repository: `braintree/braintree_ios`

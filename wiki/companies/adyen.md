@@ -102,6 +102,8 @@ The Node library does not render shopper UI. Its broader API and webhook exports
 
 ## PHP server surface
 
+The additive `adyen/php-api-library@30.1.0` baseline adds classic Payments v68 transactionLinkId request/response model support and a client region setter; Checkout v71 services/models are unchanged. Mastercard MIT documentation is not validation or merchant enablement, and the setter alone does not prove the excluded Terminal routing flow. Foreign Exchange/Payments App/webhook updates remain release-note-level coverage under the checkout-focused capsule. PHP CodeSniffer 4.0.2 is development-only; PHP >=7.3 and runtime requirements are unchanged. All 30.0.2 history and the stale security-table qualification below remain intact. [[source-github-adyen-php-api-library]] [[changelog-github-adyen-php-api-library]]
+
 The retained `adyen/php-api-library@30.0.2` baseline provides typed PHP clients for Checkout API v71, classic Payments and Recurring APIs v68, tokenization webhooks, HMAC helpers, and merchant-specific live Checkout routing. Checkout operations cover payments, Sessions, methods, modifications, orders, links, stored methods, donations, and utilities.
 
 The PHP library is independently versioned from the Node library and does not render shopper UI. Its retained capsule is checkout-focused; broader README-listed API families are inventory evidence. The exact release's `SECURITY.md` still names `6.x.x` as supported, contradicting package and code version `30.0.2`, so that table is not treated as current support policy.
@@ -2663,8 +2665,8 @@ The plugin uses Checkout API v71, Checkout Components 6.35.0, and `adyen/php-api
 - [[changelog-github-adyen-react-native]] — package-qualified wrapper release ledger
 - [[source-github-adyen-node-api-library]] — cumulative Adyen Node.js server-library baseline
 - [[changelog-github-adyen-node-api-library]] — package-qualified server-library release ledger
-- [[source-github-adyen-php-api-library]] — cumulative Adyen PHP server-library baseline
-- [[changelog-github-adyen-php-api-library]] — package-qualified PHP server-library release ledger
+- [[source-github-adyen-php-api-library]] — cumulative PHP history through 30.1.0: classic Payments TLID, bounded region setter and non-checkout announcement coverage; 30.0.2 preserved
+- [[changelog-github-adyen-php-api-library]] — package-qualified PHP server-library release ledger through 30.1.0 with implementation/security boundaries
 - [[source-github-adyen-postman]] — cumulative Checkout, recurring, BIN lookup, test-card, and Terminal API examples
 - [[changelog-github-adyen-postman]] — commit-qualified Postman collection history
 - [[source-github-adyen-sdk-automation]] — cumulative SDK generation, CI provenance, and release-note automation baseline
