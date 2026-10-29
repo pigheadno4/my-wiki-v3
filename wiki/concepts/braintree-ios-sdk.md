@@ -65,6 +65,15 @@ PayPal return tokenization now runs on MainActor and wraps its account POST in a
 
 Locale, card-brand regex and CVV-delay implementations adopt iOS 15-compatible APIs. The Apple Pay demo wraps the native PKPaymentButton, and its recurringPaymentRequest remains explicitly gated to iOS 16+. A lower SDK floor does not enable that recurring metadata on iOS 15. See [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]]; not build or payment proof.
 
+## Unreleased `default-branch@9cfa623`: GraphQL Response Formats
+
+The exact-SHA ref `9cfa6232f165285ee7cfbdb644329c7e7a97c180` (commit 2026-10-29; ingested 2026-10-30) changes the shared GraphQL `Braintree-Version` header from `2018-03-06` to `2024-08-23`. This is unreleased evidence after `braintree-ios@7.13.0`, not a new package version or a retroactive change to that release. REST API version, package declarations and SDK version string remain unchanged.
+
+Its unreleased notes announce uppercase `YES`/`NO`/`UNKNOWN` for six `BTBinData` flags, two-letter `countryOfIssuance`, and two-letter Venmo address `countryCodeAlpha2`. These are upstream-described response changes, not locally executed gateway results. Card tokenization still selects GraphQL only when configured; do not generalize the header change to all REST responses.
+
+> [!warning] Contradiction
+> The new upstream notes announce uppercase BIN values, but unchanged `BTBinData` comments still list `Yes`/`No`/`Unknown`, and absent values still fall back to `"Unknown"`. Response strings pass through without local normalization; country parsing likewise does not convert three-letter codes. Audit case-sensitive comparisons and country-code expectations without assuming every value is uppercase or present. See the reciprocal warning in [[source-github-braintree-ios]] and the exact-ref entry in [[changelog-github-braintree-ios]].
+
 ## Prebuilt iOS Drop-in
 
 The additive `default-branch@ae66bc6` documentation delta (ingested 2026-10-27) preserves the `9.14.0` implementation baseline. Its README schedules deprecation/no updates from September 1, 2026 and unsupported status from September 1, 2027, after which processing can be suspended; it directs migration to the independently versioned modular Braintree iOS SDK. No retained payment source or dependency changed. [[source-github-braintree-ios-drop-in]] [[changelog-github-braintree-ios-drop-in]]

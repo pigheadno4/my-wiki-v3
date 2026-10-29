@@ -655,7 +655,7 @@ def load_packet_required_reading(
             or current.manifest_sha256 != document.get("snapshot_sha256")):
         raise PacketBuildError("full reading snapshot SHA mismatch")
     roots = ("",)
-    if config.version_strategy != "commit":
+    if config.version_strategy != "commit" and "ref" not in document:
         roots = tuple(sorted({
             path
             for package in document["packages"]

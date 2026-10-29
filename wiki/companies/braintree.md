@@ -1006,6 +1006,8 @@ Most selections return a nonce for server processing. PayPal defaults to a vault
 
 ## iOS SDK Surface
 
+The separately ingested unreleased `default-branch@9cfa623` (2026-10-30) corrects the GraphQL version header to `2024-08-23`. Upstream notes announce uppercase BIN flags and two-letter card/Venmo address country codes, but unchanged parsing still defaults missing BIN flags to `"Unknown"` and does not normalize country strings. Review case/country assumptions; gateway behavior was not executed. The latest ingested package remains `braintree-ios@7.13.0`; all released history below remains unchanged. [[source-github-braintree-ios]] [[changelog-github-braintree-ios]] [[braintree-ios-sdk]]
+
 `braintree-ios@7.12.0` announces Xcode 27/iOS 27 support and upgrades the PayPalMessages dependency to 2.0.0; its declared minimum remains iOS 16. Those are release/dependency statements, not local build or messaging eligibility proof. See [[source-github-braintree-ios]].
 
 `braintree-ios@7.13.0` lowers its declared minimum to iOS 15 and adds finite background-task handling around PayPal return tokenization. Cancellation maps to returnBackgroundTaskExpired without independently proving OS expiry. Apple Pay recurring metadata in the demo remains iOS 16+. Older deployment requirements remain version-qualified history; see [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]].

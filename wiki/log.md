@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Braintree iOS `default-branch@9cfa623`
+
+- Approved full ingest with focused reading: unreleased GraphQL header correction, announced BIN/country response formats and unchanged parser/fallback caveat. All released 7.13.0 and earlier history preserved; details [[braintree-log]], [[source-github-braintree-ios]] and [[changelog-github-braintree-ios]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-30] ingest | Adyen website C51
 
 - Thirty-four independently approved Pix, gift cards and PayTo chooser documentation sources; first full-review approvals 26/34 and 8 targeted correction reviews. 1 concepts touched (0 new); source_count 2548 = 2534 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-51/`; details [[adyen-log]]. No commit/push.

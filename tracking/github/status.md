@@ -1954,6 +1954,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/3.1.0/2026-10-16/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-ios/comparisons/paypal-ios/3.0.0--3.1.0/comparison.json)
 
+## `github-5efc2eb4eec2312c8b58`
+
+- Repository: `braintree/braintree_ios`
+- SHA: `9cfa6232f165285ee7cfbdb644329c7e7a97c180`
+- Collection date: `2026-10-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ios/ingest-packets/github-5efc2eb4eec2312c8b58/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@9cfa623` (recommended `delta`)
+  Ref: `main`
+  From SHA: `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`
+  To SHA: `9cfa6232f165285ee7cfbdb644329c7e7a97c180`
+  Comparison: [manifest](repos/braintree/braintree_ios/comparisons/default-branch/020dfb7--9cfa623/comparison.json)
+
 ## `github-5f21519e3eed9f164ede`
 
 - Repository: `stripe/stripe-react-native`

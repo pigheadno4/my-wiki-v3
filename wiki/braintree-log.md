@@ -6,6 +6,12 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | iOS `default-branch@9cfa623`
+
+- User-approved full ingest with focused reading, work item `github-5efc2eb4eec2312c8b58`, exact SHA `9cfa6232f165285ee7cfbdb644329c7e7a97c180` after released 7.13.0. Two selected changed/290 unchanged files; all 584 snapshot file sizes/SHA-256/Git IDs and packet/comparison hashes verified. Old raw changelog tail is identical. The selected comparison is not an exhaustive upstream-repository diff.
+- Records the GraphQL version header correction, upstream-announced uppercase BIN/two-letter country formats, and unchanged `"Unknown"` fallback/pass-through caveat. Concept updated first, then cumulative source/changelog/company/catalog/logs. All 7.13.0 and earlier history and source_count 797 preserved; package identity remains 7.13.0. No SDK build, gateway/payment execution, commit or push. [[source-github-braintree-ios]] [[changelog-github-braintree-ios]]
+- Fixed the narrow full-mode reading-expansion crash for ref packets on release-tracked repositories, with a failing-then-passing regression test; immutable packet unchanged.
+
 ## [2026-10-30] ingest | Node `3.41.0`
 
 - Approved focused-reading delta `github-bc23622312cd10e17c98`, exact SHA `5d24276b0a8345735c657c45af13b93af40e945d`, from 3.40.0. Five changed/165 unchanged retained files, 11 upstream dispositions and no gaps/unclassified changes. All 340 file sizes/SHA-256/Git IDs verified; old changelog tail identical.

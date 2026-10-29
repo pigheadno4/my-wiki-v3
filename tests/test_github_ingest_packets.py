@@ -556,6 +556,22 @@ class GitHubIngestPacketTests(unittest.TestCase):
         self.assertIn("ref", packet.document)
         self.assertNotIn("packages", packet.document)
         self.assertNotIn("release_manifest", json.dumps(packet.document))
+        packet_path = self.root / "ref-packet.json"
+        write_canonical_json(packet_path, packet.document)
+        before = packet_path.read_bytes()
+        full = load_packet_required_reading(
+            self.root, "ref-packet.json", mode="full", config=self.tagged_config()
+        )
+        current_files = str(PurePosixPath(self.relative(current)).parent / "files")
+        self.assertIn(current_files + "/src/message.swift", full)
+        self.assertTrue(set(packet.document["required_reading"]).issubset(full))
+        self.assertEqual(before, packet_path.read_bytes())
+        narrowed = load_packet_required_reading(
+            self.root, "ref-packet.json", mode="full",
+            config=replace(self.tagged_config(), ingest_required_paths=("src",)),
+        )
+        self.assertIn(current_files + "/src/message.swift", narrowed)
+        self.assertNotIn(current_files + "/CHANGELOG.md", narrowed)
         required = packet.document["required_reading"]
         self.assertIn(self.relative(prior), required)
         self.assertIn(self.relative(current), required)

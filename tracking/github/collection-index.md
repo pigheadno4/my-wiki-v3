@@ -23,9 +23,9 @@ Generated: `2026-10-30`
 | braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-29 | ingested | 2026-11-05 | `wait` |
 | braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-26 | ingested | 2026-11-02 | `wait` |
 | braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-27 | ingested | 2026-11-03 | `wait` |
-| braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
+| braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-30 | ingested | 2026-11-06 | `wait` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
-| braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
+| braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-30 | ingested | 2026-11-06 | `wait` |
 | braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `wait` |
 | braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-30 | ingested | 2026-11-30 | `wait` |
 | braintree | `braintree/braintree_php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-29 | ingested | 2026-11-29 | `wait` |

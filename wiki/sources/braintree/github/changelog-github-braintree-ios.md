@@ -2,8 +2,10 @@
 title: "GitHub changelog: braintree/braintree_ios"
 type: source
 date_ingested: 2026-10-04
+date_updated: 2026-10-30
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/manifest.json"
   - "github/braintree/braintree_ios/snapshots/2026-10-04-020dfb7/manifest.json"
   - "github/braintree/braintree_ios/snapshots/2026-10-04-09bc25a/manifest.json"
   - "github/braintree/braintree_ios/snapshots/2026-10-04-2a9aa1e/manifest.json"
@@ -15,6 +17,18 @@ tags: [braintree, ios, mobile-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree_ios`. Cumulative implementation knowledge belongs in [[source-github-braintree-ios]] and the linked immutable snapshot.
+
+## `default-branch@9cfa623` (unreleased; commit 2026-10-29)
+
+Full ingest from released `braintree-ios@7.13.0` at `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3` to exact ref `9cfa6232f165285ee7cfbdb644329c7e7a97c180`; ingested 2026-10-30. User overrides the collector's contained-change delta recommendation because the shared GraphQL header affects public response formats. Approved focused reading mechanically verifies inventories, unchanged source and older raw history. All 7.13.0 and earlier wiki history remains intact; no package release record is created.
+
+**Changes and impact:** GraphQL `Braintree-Version` changes `2018-03-06` -> `2024-08-23`. Unreleased upstream notes announce uppercase `YES`/`NO`/`UNKNOWN` for six BIN flags and two-letter country codes for card issuance and Venmo addresses. Model parsers and types do not change. REST version and SDK version string remain unchanged. The 292-file capsule has two selected modifications and 290 unchanged files; this is not a full upstream-repository diff claim.
+
+**Migration:** Audit case-sensitive BIN comparisons and alpha-2/alpha-3 mapping assumptions. Missing flags still produce `"Unknown"`, missing issuance country still produces an empty string, and address strings pass through without conversion. The notes-versus-comments/fallback contradiction is recorded in [[source-github-braintree-ios]] and [[braintree-ios-sdk]]. Gateway results were not executed; do not attribute this unreleased behavior retroactively to released 7.13.0 or every REST route.
+
+**Updated source sections:** additive unreleased full-ingest baseline, header wiring, response-format impact, parser caveat and migration; related concept/company/catalog/logs. No new cross-company comparison or source-count increase.
+
+**Evidence:** `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/manifest.json`; `tracking/github/repos/braintree/braintree_ios/comparisons/default-branch/020dfb7--9cfa623/comparison.json`; `tracking/github/repos/braintree/braintree_ios/comparisons/default-branch/020dfb7--9cfa623/diff.patch`. Exact raw implementation links in [[source-github-braintree-ios]]. No build or payment test.
 
 ## `braintree-ios@7.13.0` (2026-09-23)
 

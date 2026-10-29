@@ -2,8 +2,10 @@
 title: "GitHub: braintree/braintree_ios"
 type: source
 date_ingested: 2026-10-04
+date_updated: 2026-10-30
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/manifest.json"
   - "github/braintree/braintree_ios/snapshots/2026-10-04-020dfb7/manifest.json"
   - "github/braintree/braintree_ios/snapshots/2026-10-04-09bc25a/manifest.json"
   - "github/braintree/braintree_ios/snapshots/2026-10-04-2a9aa1e/manifest.json"
@@ -122,6 +124,31 @@ BackgroundTaskManaging moves from Analytics into shared Core with public visibil
 
 The Apple Pay demo wraps PKPaymentButton through UIViewRepresentable with zero corner radius. recurringPaymentRequest is gated to iOS 16+, so the new iOS 15 SDK floor does not enable recurring metadata on iOS 15. These compatibility changes do not establish a new server transaction/subscription capability.
 
+## Unreleased `default-branch@9cfa623` Full Ingest after `7.13.0`
+
+User-approved full ingest of exact SHA `9cfa6232f165285ee7cfbdb644329c7e7a97c180`, committed 2026-10-29 and collected/ingested 2026-10-30. The comparison starts at released `braintree-ios@7.13.0`, SHA `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`. This is an unreleased default-branch boundary, not a newly published package or a replacement for any earlier release section. The retained capsule has 292 files: two modified and 290 hash-identical. The selected comparison is not an exhaustive whole-repository change inventory.
+
+### Shared GraphQL Header and Public Response Impact
+
+`BTCoreConstants.graphQLVersion` changes from `2018-03-06` to `2024-08-23`. The unchanged `BTGraphQLHTTP` transport uses that constant for the `Braintree-Version` request header. REST `apiVersion` remains `2016-10-07`; `braintreeSDKVersion` remains `7.13.0`. The constants class is documented for internal use and outside semantic-versioning guarantees, not as a merchant customization API.
+
+The new raw `## unreleased` notes announce:
+
+- `BTBinData.prepaid`, `healthcare`, `debit`, `durbinRegulated`, `commercial` and `payroll`: `YES`, `NO`, `UNKNOWN` instead of `Yes`, `No`, `Unknown`.
+- `BTBinData.countryOfIssuance`: two-letter ISO 3166-1 alpha-2 instead of three-letter alpha-3.
+- Venmo address `countryCodeAlpha2`: two-letter ISO 3166-1 alpha-2 instead of three-letter alpha-3. This is address data, not a new direct property on `BTVenmoAccountNonce`.
+
+These are upstream-described outcomes associated with the header correction, not observed responses from a local gateway run. Card tokenization still chooses GraphQL when configuration contains `tokenize_credit_cards`, otherwise REST `v1/payment_methods/credit_cards`. No new card/Venmo method, request initializer, authorization scheme or merchant enablement is established; the retained model types and parsers are unchanged.
+
+### Parser Caveat and Migration
+
+> [!warning] Contradiction
+> The unreleased notes describe uppercase BIN values, while unchanged `BTBinData` property comments still advertise `Yes/No/Unknown` and its initializer still defaults missing flags to `"Unknown"`. It passes supplied strings through without uppercasing. Thus the new notes do not guarantee uppercase for every resulting model value. This mismatch is also recorded in [[braintree-ios-sdk]].
+
+`countryOfIssuance` still falls back to an empty string when absent. Venmo billing/shipping addresses use unchanged `BTJSON.asAddress()`, taking `country` then `countryCode` directly into optional `BTPostalAddress.countryCodeAlpha2`; there is no local alpha-3-to-alpha-2 conversion. The header-mediated format claim must not be generalized to every REST response or to guaranteed address availability.
+
+Before adopting a future release containing this commit, audit case-sensitive BIN comparisons, handling of absent/unknown values, and country-code storage/mapping assumptions. Verify actual responses in the relevant environment separately. Do not change internal constants as an integration workaround. Package/dependency/deployment declarations and all retained prior payment flows are hash-unchanged; no Swift build, SDK tests or payment execution was performed.
+
 ## Evidence Boundaries
 
 This capsule excludes tests, fixtures, CI, tooling, generated documentation, and binary framework internals. CardinalMobile, PPRiskMagnes, and PayPalMessages behavior beyond their declared versions is delegated evidence. The first exact-SHA baseline is 7.9.0; historical entries before that provide migration context, not retained version-to-version proof. Subsequent deltas have separately retained snapshots and comparisons. No build or live payment test was performed.
@@ -135,6 +162,16 @@ This capsule excludes tests, fixtures, CI, tooling, generated documentation, and
 - [[braintree]] - company and knowledge-status page
 
 ## Raw Sources
+
+- Unreleased ref snapshot: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/manifest.json`
+- Exact ref comparison: `tracking/github/repos/braintree/braintree_ios/comparisons/default-branch/020dfb7--9cfa623/comparison.json`; `tracking/github/repos/braintree/braintree_ios/comparisons/default-branch/020dfb7--9cfa623/comparison.md`; `tracking/github/repos/braintree/braintree_ios/comparisons/default-branch/020dfb7--9cfa623/diff.patch`
+- Unreleased announcement: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/CHANGELOG.md`
+- Header version: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCore/BTCoreConstants.swift`
+- Header wiring: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCore/BTGraphQLHTTP.swift`
+- BIN parsing/fallback: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCore/BTBinData.swift`
+- Address parsing/model: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCore/BTJSON.swift`; `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCore/BTPostalAddress.swift`
+- Card routing/nonce parsing: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCard/BTCardClient.swift`; `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeCard/BTCardNonce.swift`
+- Venmo address parsing: `raw/github/braintree/braintree_ios/snapshots/2026-10-30-9cfa623/files/Sources/BraintreeVenmo/BTVenmoAccountNonce.swift`
 
 - 7.13.0 snapshot: `raw/github/braintree/braintree_ios/snapshots/2026-10-04-020dfb7/manifest.json`
 - 7.13.0 release: `raw/github/braintree/braintree_ios/releases/braintree-ios/7.13.0/2026-10-04/manifest.json` and `raw/github/braintree/braintree_ios/releases/braintree-ios/7.13.0/2026-10-04/release-notes.md`
