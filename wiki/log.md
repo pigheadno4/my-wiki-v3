@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-27] ingest | Adyen website C43
+
+- Fifty independently approved Bancontact, EPS and Affirm documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 6 concepts touched (0 new); source_count 2164 = 2150 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-43/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-27] ingest | Stripe Android `23.25.1`
 
 - Approved serial focused-reading delta after 23.25.0: Link-return error-display fix announcement and WebKit dependency declaration; all older knowledge preserved. Details [[stripe-log]] and [[source-github-stripe-android]]. No build/device/payment test, commit or push.

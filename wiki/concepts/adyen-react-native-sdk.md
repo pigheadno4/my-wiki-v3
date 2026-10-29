@@ -70,6 +70,9 @@ The release updates Adyen Android to `5.19.0`, Adyen iOS to `5.25.1`, and the de
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-eps-react-native-component]] — 2026-09-15 EPS-specific React Native Components guide: Sessions unavailable on this page; Advanced redirect/recurring route, with Drop-in prerequisite-link caveat.
+
+
 - [[source-adyen-docs-payment-methods-bacs-react-native-component]] — 2026-09-16 BACS React Native Component Advanced-only add-on for request fields, mandate-action response and recurring tokens; source qualifies Drop-in link, Direct/voucher conflict and delayed outcome.
 
 

@@ -1,0 +1,11 @@
+# Fixed-query retrieval: source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-component
+
+Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-component]]. Canonical: https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile/android-component. Pinned raw: `raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md`.
+
+## Q1 — What is this source's purpose and version scope?
+
+It is a **Bancontact mobile Android Components** add-on for v5.0.0, released October 2023, and points older implementations to an earlier-versions guide (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:15-21). Sessions and Advanced each require an existing Android Components flow at minimum 5.0.0 and Bancontact added in Customer Area (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:23-39). The page does not prove current account eligibility, a successful app switch, or payment success; it does not describe app-switch/QR behavior at all (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:15-79).
+
+## Q2 — What does it change in each flow, and what testing warning applies?
+
+The Sessions add-on requires no extra `/sessions` fields or Component configuration and links onward to the base checkout-session step (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:41-45,51-63). Advanced requires no extra `/payments` fields or Component configuration and links to launch/show the Component (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:47-67). The page says Bancontact mobile has no test platform and recommends a EUR 0.01 penny test in live; that recommendation is not evidence that such a live test was performed or succeeded (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:69-73). It supplies no recurring, capture, redirect-response or webhook-result procedure (raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/2026-09-15.md:15-79).

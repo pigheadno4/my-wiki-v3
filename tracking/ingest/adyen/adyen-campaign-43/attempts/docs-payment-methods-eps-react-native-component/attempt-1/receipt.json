@@ -1,0 +1,78 @@
+{
+  "job_id": "docs-payment-methods-eps-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS React Native Component\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md\"\ntags: [adyen, eps, react-native, components, redirect, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 guide gives EPS-specific steps for an existing React Native Components integration. It explicitly says React Native Components do not support Sessions flow on this page; the described route is Advanced flow with redirect handling and EPS setup. It also describes future recurring payments through SEPA Direct Debit. This method page is not a complete integration guide or evidence of current merchant enablement, payment success or general React Native SDK Sessions capability. See [[adyen]], [[adyen-online-payments]], [[adyen-react-native-sdk]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-eps|the EPS overview]].\n\n## Key takeaways\n\n- The Sessions section says React Native Components do not support Sessions flow. For Advanced, the prerequisites are an existing React Native Components Advanced integration, `action.type=redirect` handling, and EPS added in Customer Area. The integration-type cell calls this Components but links to a React Native Drop-in base URL; the redirect and make-payment links target Components. Resolve the intended base guide by the named integration before using that prerequisite link.\n- The guide says EPS needs no additional Component configuration and no EPS-specific fields in the ordinary Advanced `/payments` request. General request construction and redirect completion remain in the linked base integration.\n- Recurring transactions for EPS are described through SEPA Direct Debit. The guide strongly recommends explicit shopper permission and clarity about payment schedule and amount. Token creation uses `storePaymentMethod=true` and a unique `shopperReference` of at least three characters in `/payments`. After the initial payment settles, the configured recurring-token lifecycle webhook delivers `recurring.token.created`; its `storedPaymentMethodId` is used in later `/payments` with the same shopper reference, `shopperInteraction=ContAuth`, and `recurringProcessingModel=Subscription` or `UnscheduledCardOnFile`. The webhook's `eventId` is the initial `pspReference`.\n- Test status can be checked in the test Customer Area. Before accepting live EPS, submit an EPS request in the live Customer Area. The page does not state a Checkout API or React Native SDK minimum version and does not establish current bank availability, authorization, settlement or recurring success.\n\n## Detail locators\n\n- EPS add-on scope and explicit Sessions unavailability: pinned raw lines 15\u201329. Advanced prerequisites and Drop-in URL in the Components integration-type cell: lines 31\u201341. No extra configuration or ordinary `/payments` fields: lines 43\u201353.\n- SEPA recurring permission, initial `/payments` token request, post-settlement webhook and later stored-token request: pinned raw lines 55\u201394. Test and live Customer Area gates: lines 96\u2013100.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 primary provider payment-integration route\n- [[adyen-react-native-sdk]] \u2014 platform wrapper context; this page's Sessions limit is method/Component scoped\n- [[adyen-tokenization]] \u2014 stored-method and recurring concepts\n- [[source-adyen-docs-payment-methods-eps]] \u2014 EPS method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15|EPS React Native Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md:29"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md:39"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for EPS.",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md:47"
+    },
+    {
+      "text": "We support recurring transactions for EPS through",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md:59"
+    },
+    {
+      "text": "Before you can accept live EPS payments, you need to",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md:100"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "eps-react-native-component-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-react-native-component]] \u2014 2026-09-15 EPS React Native Components Advanced-only redirect add-on (Sessions unsupported), no extra method fields, and SEPA recurring-token path; Components prerequisite links to Drop-in.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The Advanced Components integration-type row links to a Drop-in URL, while its redirect and payment links target Components; do not turn this method page's Sessions limit into a general SDK claim."
+        ]
+      },
+      {
+        "update_id": "eps-react-native-component-sdk-related",
+        "target_path": "wiki/concepts/adyen-react-native-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-react-native-component]] \u2014 2026-09-15 EPS-specific React Native Components guide: Sessions unavailable on this page; Advanced redirect/recurring route, with Drop-in prerequisite-link caveat.\n",
+        "quote_indexes": [
+          0,
+          1
+        ],
+        "warnings": [
+          "Scoped to EPS React Native Components, not the SDK's general Sessions support."
+        ]
+      },
+      {
+        "update_id": "eps-react-native-component-token-source",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-react-native-component]] \u2014 EPS React Native Components guide's SEPA Direct Debit recurring-token path after initial settlement, with permission recommendation and later stored-ID/ContAuth fields (2026-09-15).\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/react-native-component/2026-09-15.md",
+  "raw_sha256": "f3e38ea821879f86249f6664d3388e12a1c101864ffc502ba04eeacddddfc47b",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-affirm-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Affirm API-only integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/affirm/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/affirm/api-only/2026-09-15.md\"\ntags: [adyen, affirm, bnpl, api-only, redirect, capture, refund]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds Affirm to an existing API-only integration in which the merchant builds the payment form and makes server-side Checkout requests. It covers the `/payments` redirect, `/payments/details` result, later capture and refund/cancellation gates. It is documentation, not proof of current account enablement, shopper financing approval, authorisation, capture or live operation. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-affirm|the Affirm overview]].\n\n## Key takeaways\n\n- The prerequisite is an existing API-only integration and adding Affirm in the test Customer Area. The form section asks to collect first/last name, phone, email, billing and delivery addresses. From the server, send `/payments` with `paymentMethod.type=affirm` and the required shopper name, phone and email. `shopperReference` is optional with a three-character minimum if used. The `countryCode` requiredness cell is blank, but its prose requires it for Canada or the UK because omission defaults to US. `stateOrProvince` is required within Canadian/US addresses and optional for UK addresses; absent delivery address defaults to billing address.\n- The introduction says to provide details of purchased items in the payment request, but the `/payments` table explicitly labels `lineItems` optional and recommends them to improve approval rates. Keep that prose/table tension visible; do not treat the introductory wording as a required-field declaration. The form section lists both addresses to collect, while the request table leaves their outer requiredness cells blank and specifies the delivery fallback.\n- Inspect the `/payments` `action` for redirect information and send the shopper to its returned `action.url`; the shown `RedirectShopper` response is an example, not the only possible payment result. After the shopper returns to the website, POST `/payments/details` with the URL-decoded `redirectResult`; use its `resultCode` to present an outcome and retain `pspReference` as the transaction identifier. For mobile redirection, the guide recommends the device's default browser; its GET advice names SFSafariViewController/Chrome Custom Tabs in preference to WebViews. These are recommendations, not a claim that this API-only page is an iOS or Android SDK integration.\n- `/payments/details` result guidance distinguishes `Authorised` (then capture after dispatch), `Cancelled`, `Refused`, and `Pending`. Pending is not final; wait for the AUTHORISATION webhook to learn the final result. The sample `Authorised` response does not prove any real transaction was authorised.\n- Capture after goods are sent and within 28 days; capture starts the shopper's installment schedule, and the authorisation expires if the deadline is missed. For lesser fulfillment, this guide instructs capturing the authorised amount then refunding the difference. An uncaptured payment may be cancelled; after capture, returning funds requires a refund, with `amount` specified for a partial refund. The [[source-adyen-docs-payment-methods-affirm|Affirm overview]] instead marks partial and multiple-partial captures supported in its feature matrix; the precise applicability of that mark versus this guide's lesser-fulfillment instruction remains unresolved in these captures.\n- The curl examples show test `/v68/payments` and `/v72/payments/details`; these are sample API versions, not stated global minimums. The Go example says library v10.4.0 while importing `/v9/` paths, so do not copy its version declaration and imports without checking the applicable library. Test credentials come from Affirm; live processing needs Affirm's live credentials after test review, a live Customer Area request, and provision of those credentials to Adyen.\n\n## Detail locators\n\n- Purpose, fulfillment dependency and prerequisites: pinned raw lines 15\u201331. Form fields: lines 33\u201346. `/payments` request table, including country/address/line-item qualifications: lines 48\u201362. Curl test v68 example: lines 64\u2013126; SDK-language examples: lines 128\u2013800. Go version/import mismatch: lines 481\u2013490.\n- `/payments` action and redirect example: pinned raw lines 802\u2013816. Redirect recommendations, return and `/payments/details` request/response: lines 818\u2013857; details curl uses v72 at line 835. Result presentation and Pending webhook gate: lines 859\u2013870.\n- Capture timing and lesser-amount refund instruction: pinned raw lines 872\u2013876. Before/after capture cancellation/refund distinction and partial-refund amount: lines 878\u2013886. Test/live credentials and Customer Area gate: lines 888\u2013894. Cross-page partial-capture feature-matrix conflict: [[raw/adyen/docs/payment-methods/affirm/2026-09-15|Affirm overview raw]] lines 27\u201329 versus this guide line 876.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-affirm]] \u2014 method overview and financing/capability matrix\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15|Affirm API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "build your own payment form to have full control over the look and feel of your checkout page.",
+      "location": "raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15.md:19"
+    },
+    {
+      "text": "This is optional, but we recommend to include this data to improve approval rates.",
+      "location": "raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15.md:62"
+    },
+    {
+      "text": "object that contains the URL-decoded `redirectResult` returned when the shopper was redirected back to your site.",
+      "location": "raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15.md:830"
+    },
+    {
+      "text": "To know the final result of the payment, wait for the [AUTHORISATION webhook]",
+      "location": "raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15.md:869"
+    },
+    {
+      "text": "All Affirm payments have to be captured within 28 days.",
+      "location": "raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15.md:874"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "affirm-api-only-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-affirm-api-only]] \u2014 2026-09-15 Affirm API-only Web redirect guide covering merchant-built form, server `/payments` and returned `/payments/details`, Pending webhook, 28-day capture and before/after-capture refund gates; source qualifies line-item wording and overview capture conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Introductory item-detail language and form address collection list are broader than the `/payments` table's optional `lineItems` and blank outer address requiredness cells.",
+          "The guide instructs full capture then refund for lesser fulfillment, whereas the Affirm overview matrix marks partial and multiple-partial capture supported; preserve both with provenance.",
+          "The Go example says API Library v10.4.0 but imports v9 module paths."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/affirm/api-only/2026-09-15.md",
+  "raw_sha256": "b6f43d1ef521b5a257671f41bbfc6400d0ee1efaa9116038c2d649b79f393e4d",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,7 @@
+# C43 fixed retrieval queries — docs-payment-methods-bancontact-bancontact-card-android
+
+**Q1. What purpose/scope does this page serve, and what cannot be inferred?**
+The 2026-09-15 Bancontact card Android page is an integration chooser: it presents Drop-in and a prebuilt Component for an Android app, not a complete payment-flow guide (raw/adyen/docs/payment-methods/bancontact/bancontact-card/android/2026-09-15.md:15-27). It does not establish SDK version, request fields, redirect handling, merchant eligibility or live payment success; those require the chosen child authority (raw lines 19-29). Route: [[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android]].
+
+**Q2. What are the central capability, prerequisites and warnings?**
+Use the Drop-in child for the all-in-one UI route or the Component child for the prebuilt Component route; the page also links general Android Sessions-flow integration guides. Its links are navigation only and do not say that either method is enabled for a merchant or how payment outcomes are handled (raw/adyen/docs/payment-methods/bancontact/bancontact-card/android/2026-09-15.md:19-29). Child source stems: [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-drop-in]] and [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component]]. Route: [[index]] → [[adyen-index]] → [[adyen-android-sdk]] → [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android]].

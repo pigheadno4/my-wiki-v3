@@ -76,6 +76,18 @@ Evidence and exact file links: [[source-github-adyen-ios]] and [[changelog-githu
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-affirm-ios]] — iOS Affirm Drop-in/Redirect Component chooser (2026-09-15); child pages own flow-specific requirements.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-ios]] — Bancontact mobile iOS Drop-in/Components chooser (2019-modified, 2026-09-15 capture); its base-guide label/URL mismatch is qualified in the source.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-drop-in]] — iOS Drop-in Bancontact card v5.0.0+ Sessions default and v4.x.x no-extra-config tabs, with issuer 3DS redirect (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-affirm-ios-component]] — 2026-09-15 Affirm iOS Components Sessions/Advanced guide for request fields, native component setup and 28-day capture; source flags mixed Web examples and prerequisite links.
+
+
 - [[source-adyen-docs-payment-methods-bacs-ios]] — 2026-09-15 BACS iOS chooser for Drop-in and BACSDirectDebitComponent child guides plus Sessions/Advanced base routes; method behavior remains in linked sources.
 
 

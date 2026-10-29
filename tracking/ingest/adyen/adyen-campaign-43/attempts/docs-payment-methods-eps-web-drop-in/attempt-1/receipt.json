@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-eps-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md\"\ntags: [adyen, eps, web, drop-in, redirect, recurring]\n---\n\n## Overview\n\nAdyen's EPS Web Drop-in guide covers EPS-specific additions to an existing Sessions or Advanced Web Drop-in integration. Both flows require EPS enabled in Customer Area and handling a `redirect` action. The guide is an add-on to the parent Web Drop-in flow, not a complete payment-outcome or bank-selection procedure. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Sessions flow specifically requires Checkout API v68 or later, an existing Web Drop-in integration, and redirect handling. Advanced flow requires its existing Web Drop-in integration and redirect handling; this page does not repeat the v68 minimum in its Advanced requirements. Both require EPS added in Customer Area. The Advanced integration-type link contains an encoded template placeholder for `platform`, while its redirect link specifies Web; use the parent flow guide carefully rather than treating the placeholder URL as a valid resolved Web guide (raw lines 25-36, 105-115).\n- For the ordinary EPS payment, no additional parameters are needed in Sessions `/sessions` or Advanced `/payments`. Importing `EPS` from `@adyen/adyen-web` is optional for tree shaking, not a required Drop-in setup step. The parent's normal request and redirect flow still apply (raw lines 38-54, 117-133).\n- EPS recurring is via **SEPA Direct Debit**, not a claim that the initial EPS bank redirect repeats. The page recommends explicit permission for future SEPA payments and transparent schedule/amount to reduce chargeback risk. For token creation it instructs adding `storePaymentMethod: true` and a unique `shopperReference` of at least three characters in a `/payments` request\u2014even under the Sessions section\u2014so do not merge this conditional token route with the no-extra-fields ordinary `/sessions` statement (raw lines 56-74, 135-153).\n- Once the initial payment has settled, a `recurring.token.created` webhook supplies `storedPaymentMethodId`; the server must receive recurring-token lifecycle events. Future `/payments` use the stored ID, same shopper reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile`. A redirect action alone is not a settled payment or an available token (raw lines 74-95, 153-174).\n- Test EPS payment status is checked in test Customer Area. Live acceptance requires submitting an EPS request in live Customer Area; the captured guide and setup instructions do not establish current eligibility or a successful live payment (raw lines 97-103, 176-182).\n\n## Detail locators\n\n- Sessions prerequisites, no extra request parameters, optional import: raw lines 25-54.\n- Sessions recurring/SEPA token lifecycle and live gate: raw lines 56-103.\n- Advanced prerequisites, encoded integration-link placeholder, no extra request parameters, optional import: raw lines 105-133.\n- Advanced recurring/SEPA token lifecycle and live gate: raw lines 135-182.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15|EPS Web Drop-in guide (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md:34 (Sessions API requirement)"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md:42 (ordinary Sessions request)"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md:60 (recurring method)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md:74 (token timing)"
+    },
+    {
+      "text": "Before you can accept live EPS payments, you need to [submit a request for EPS](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md:103 (live gate; repeated at 182)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "eps-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-web-drop-in]] \u2014 2026-09-15 EPS Web Drop-in Sessions/Advanced redirect add-on; ordinary requests need no EPS parameters, while recurring tokens use SEPA Direct Debit after settlement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/web-drop-in/2026-09-15.md",
+  "raw_sha256": "2be99c07fe7530ab697ff46e957dbe883e2d70718ec7540e7702c43b88c0daa1",
+  "status": "candidate_ready"
+}

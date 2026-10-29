@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-eps-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS React Native Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, eps, react-native, drop-in, sessions, advanced, redirect, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 EPS React Native Drop-in add-on lists only EPS-specific steps for existing Sessions or Advanced integrations. Both rely on the base flow's `action.type=redirect` handling and describe future recurring payments through SEPA Direct Debit. It does not by itself establish a working integration, current EPS eligibility, completed bank redirect or successful recurring payment. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-eps|the EPS overview]].\n\n## Key takeaways\n\n- Sessions requires an existing React Native Drop-in Sessions flow, Checkout API v68 or later, redirect handling, and EPS added in Customer Area. The Sessions integration-type link is mislabeled: its text says Sessions but its URL points to an Advanced-flow path; the separate redirect and session-creation links do point to Sessions. Do not use that one URL as evidence that Sessions is Advanced.\n- Advanced requires an existing React Native Drop-in Advanced flow, redirect handling and EPS added in Customer Area. Its requirements do not state the Sessions v68+ minimum. For ordinary EPS payment creation, the page says no extra `/sessions` parameters in Sessions, no extra `/payments` parameters in Advanced, and no EPS-specific Drop-in configuration in either path. These statements are scoped to the ordinary flow, not the later recurring token recipe.\n- The repeated recurring section routes EPS recurring transactions through SEPA Direct Debit, not repeated EPS bank redirects. It strongly recommends explicit shopper permission and clear schedule/amount communication to reduce chargeback risk. Token creation is described via `/payments` with `storePaymentMethod=true` and `shopperReference` of at least three characters; after settlement, `recurring.token.created` supplies `storedPaymentMethodId` and the server must receive token lifecycle events. Future `/payments` uses that ID, the same shopper reference, `shopperInteraction=ContAuth`, and `recurringProcessingModel=Subscription` or `UnscheduledCardOnFile`. The Sessions subsection gives this `/payments` token recipe without specifying a Sessions-specific token-creation variant.\n- The test Customer Area payment list is a status-check route. Live EPS acceptance requires submitting an EPS request in live Customer Area. This source gives no test outcome, SDK version, bank issuer values or live-processing proof.\n\n## Detail locators\n\n- Page scope and flow split: pinned raw lines 15\u201325. Sessions prerequisites, mislabeled integration-type URL, v68+ and redirect handling: lines 29\u201336. No extra Sessions request fields or EPS configuration: lines 38\u201348.\n- Sessions recurring permission, token request, settlement webhook and future fields: pinned raw lines 50\u201389. Sessions test/live gates: lines 91\u201395. Advanced prerequisites: lines 97\u2013107; no extra configuration or ordinary `/payments` fields: lines 109\u2013119.\n- Advanced repeated SEPA recurring recipe: pinned raw lines 121\u2013160. Advanced test/live gates: lines 162\u2013166. Base flow guides linked in prerequisites own the generic redirect/result implementation.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-eps]] \u2014 method overview and capability marks\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15|EPS React Native Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md:42"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for EPS.",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit]",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md:54"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md:68"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "eps-react-native-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-react-native-drop-in]] \u2014 2026-09-15 EPS React Native Drop-in Sessions (Checkout API v68+) and Advanced method add-on with redirect prerequisites, no ordinary extra fields/configuration, and a SEPA Direct Debit recurring-token route; source flags the Sessions prerequisite's Advanced URL.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions integration-type link text names Sessions but its URL points to Advanced flow; other Sessions links on the page point to Sessions.",
+          "Checkout API v68+ is stated only in Sessions requirements, not the Advanced table.",
+          "The Sessions recurring subsection supplies `/payments` token instructions without a Sessions-specific token-creation variant; ordinary no-extra-fields statements and recurring fields have different scopes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "91a8cbbc52146bc61b4d657c6e95fed5a59a8da5bb971059e0109bd6a866075b",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-affirm-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Affirm Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/affirm/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md\"\ntags: [adyen, affirm, bnpl, web, drop-in, sessions, advanced]\n---\n\n## Overview\n\nThis 2026-09-15 capture explains how to add Affirm to an existing Adyen Web Drop-in integration in either Sessions or Advanced flow, after adding the method in Customer Area. It is a method-specific integration guide, not evidence of current account enablement, shopper approval or successful live capture. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-affirm|Affirm overview]].\n\n## Key takeaways\n\n- The page requires an existing Sessions or Advanced Web Drop-in integration and adding Affirm in Customer Area. Web Drop-in v6 users import `AdyenCheckout` and `Affirm`. Its `/sessions` tab says Sessions is the default with Drop-in v5.0.0 or later; its `/payments` tab addresses an additional use case. Those Drop-in versions are not stated Checkout API minimums.\n- Both endpoint tables mark shopper first/last name, telephone number and email required. `shopperReference` is optional with a three-character minimum if provided. Although the `countryCode` requiredness cell is blank, the prose requires it for Canada or the UK because omission defaults to US. The outer billing/delivery-address and `lineItems` rows are not marked required; the guide requires `stateOrProvince` for Canadian and US addresses, allows its omission for UK addresses, defaults a missing delivery address to the billing address, and recommends optional line items to improve approval rates. See the endpoint-specific tables before constructing a request.\n- The curl examples use Checkout test `/v69/sessions` and `/v72/payments` respectively. Both curl bodies contain literal `{hint:state.data...}` markup inside the JSON address-key strings even though the tables name `billingAddress` and `deliveryAddress`; do not copy those marked-up keys as API field names. The example versions and sample values are not general API minimums or proof of a valid production request.\n- `allowedCountries` controls the Affirm address-form dropdown, defaults to US and CA, and can include GB; it does not itself set a transaction's `countryCode`. Optional `data` pre-fills shopper fields. A `readOnly` visibility group needs corresponding pre-filled data; the default groups and values are listed in the raw.\n- After sending goods, the guide instructs capture within 28 days; capture starts the shopper's installment schedule and the authorization expires if not captured in time. For a lesser fulfilled amount, this guide instructs capturing the authorized amount and then refunding the difference. The separate [[source-adyen-docs-payment-methods-affirm|Affirm overview]] marks partial and multiple-partial capture supported in its feature matrix, so these captures disagree on the partial-capture path; this guide does not establish when partial capture can replace its full-capture/refund instruction.\n- Affirm supplies test credentials and, after review of test transactions, live-processing credentials. Live acceptance also requires a request for Affirm in the live Customer Area and supplying those live credentials. The test payment list is a status-check route, not evidence of a successful transaction.\n\n## Detail locators\n\n- Prerequisite flows and Customer Area addition: pinned raw lines 21\u201337. Web v6 import: lines 39\u201345. `/sessions` default statement and fields: lines 47\u201364; sample test endpoint and marked-up address keys: lines 66\u2013115.\n- `/payments` additional-use-case statement, fields, test endpoint and marked-up address keys: pinned raw lines 766\u2013821. The endpoint-specific example bodies continue in the raw; confirm request shape against the prose and Checkout API reference rather than treating copied hint markup as JSON field names.\n- `allowedCountries` address dropdown and GB example: pinned raw lines 1259\u20131279. Shopper pre-fill and visibility/defaults: lines 1281\u20131367. Capture timing, installment trigger, expiry and lesser-amount refund instruction: lines 1369\u20131373. Test/live credential and Customer Area gates: lines 1375\u20131381.\n- Cross-page capture conflict: this guide's pinned raw line 1373 versus [[raw/adyen/docs/payment-methods/affirm/2026-09-15|Affirm overview raw]] lines 27\u201329. Do not silently substitute one partial-capture workflow for the other.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-affirm]] \u2014 method overview, financing and capability table\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15|Affirm Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This is the default with [Drop-in v5.0.0]",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md:53"
+    },
+    {
+      "text": "Required when transacting in Canada or the UK, because the default **US** is used if you omit this parameter.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md:61"
+    },
+    {
+      "text": "The default is **US** and **CA**.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md:1265"
+    },
+    {
+      "text": "All Affirm payments have to be captured within 28 days.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md:1371"
+    },
+    {
+      "text": "you need to issue a [refund](/online-payments/refund) for the difference after the capture.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md:1373"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "affirm-web-drop-in-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-affirm-web-drop-in]] \u2014 2026-09-15 Affirm Web Drop-in Sessions/Advanced add-on with customer-data and address conditions, optional form configuration, test/live credential gates and 28-day capture instruction; source flags curl hint markup and the overview capture-matrix conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The curl examples' literal hint-marked address keys conflict with the request table's billingAddress/deliveryAddress field names; do not copy those marked-up keys as API names.",
+          "This guide's full-capture-then-refund instruction for a lesser fulfilled amount differs from the Affirm overview feature matrix's partial/multiple-partial-capture marks; preserve both with provenance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md",
+  "raw_sha256": "509bfe83b1923eddf5e289dbb9a23c3ad987b70e4749f010e74b0504560c6726",
+  "status": "candidate_ready"
+}

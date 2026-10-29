@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-eps-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md\"\ntags: [adyen, eps, android, drop-in, online-payments]\n---\n\n## Overview\n\nAn EPS-specific add-on for an existing **Android Drop-in** integration. It separates **Sessions** and **Advanced** server-side flows. The Sessions requirements name Checkout API **v68 or later**; both flows require EPS added in the Customer Area. This child page supplies the recurring mechanism absent from the EPS overview's unresolved \u201cSee note\u201d: it describes recurring transactions **through SEPA Direct Debit**, not a generic repeat EPS redirect. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- For **Sessions**, start with an existing Android Sessions Drop-in integration using Checkout API v68+, add EPS in Customer Area, and add **no EPS-specific `/sessions` parameters** for a base payment. The only listed optional EPS configuration is `setSubmitButtonVisible(false)` to hide the submit button; its default is true. The Kotlin sample is schematic, with placeholder `value` and nested braces, so it is a locator for the option rather than copy-ready code. See raw lines 25\u201362.\n- For **Advanced**, start with an existing Android Advanced Drop-in integration that handles an `action.type: redirect`; add EPS in Customer Area. It lists the same optional submit-button setting and **no additional EPS-specific `/payments` parameters** for a base payment. The redirect is an integration prerequisite, not evidence that returning from a bank proves authorization or settlement. See raw lines 113\u2013149; the EPS overview describes the bank redirect journey in [[source-adyen-docs-payment-methods-eps]].\n- In **both** flow sections, recurring is specifically via **SEPA Direct Debit**. The page strongly recommends explicit shopper permission and transparency about schedule and amount to reduce chargeback risk. To create a token it says to send `storePaymentMethod: true` and a unique `shopperReference` in **`/payments`**, even in the Sessions section. After settlement a `recurring.token.created` webhook supplies `storedPaymentMethodId`; the server must receive token-lifecycle events. Future `/payments` use the ID, shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. These are **tokenization-use-case additions**, so they do not contradict the no-extra-fields statements for the base EPS payment. See raw lines 64\u2013103 and 151\u2013190.\n- Test-payment status is checked in the test Customer Area. Before live EPS acceptance, the page says to request EPS in the live Customer Area. Neither a test-list view nor the request establishes completed live enablement or payment success. See raw lines 105\u2013111 and 192\u2013196.\n\n## Detail locators\n\n- Scope and Sessions prerequisite: raw lines 15\u201340.\n- Sessions optional configuration and SEPA recurring: raw lines 42\u2013103.\n- Advanced redirect prerequisite, optional configuration and base request: raw lines 113\u2013149.\n- Advanced repeated SEPA token guidance and test/live gate: raw lines 151\u2013196.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-eps]] \u2014 EPS overview and AT/EUR bank-redirect method context\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15|EPS Android Drop-in documentation capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md:40"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md:68"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md:120"
+    },
+    {
+      "text": "Before you can accept live EPS payments, you need to [submit a request for EPS](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md:196"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-eps-android-dropin-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-android-drop-in]] \u2014 2026-09-15 EPS Android Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on; base requests need no EPS fields, while recurring uses SEPA Direct Debit tokenization.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions recurring subsection specifies token creation in /payments despite the base Sessions /sessions flow; retain as a separate optional use case.",
+          "Schematic Kotlin setSubmitButtonVisible snippet has placeholder value/nested braces, not copy-ready code."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/android-drop-in/2026-09-15.md",
+  "raw_sha256": "57ca97e156177525ba4b8e0db3f1a64c9f3ab68f6c376463ce0d0db4b7ed2c1d",
+  "status": "candidate_ready"
+}

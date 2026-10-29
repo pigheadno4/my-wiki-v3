@@ -21,6 +21,147 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-affirm-web]] — 2026-09-15 Affirm Web chooser linking Drop-in and Components child guides plus general Web implementation routes.
+
+
+- [[source-adyen-docs-payment-methods-affirm-ios]] — 2026-09-15 Affirm iOS chooser for Drop-in and Redirect Component child guides with iOS Sessions base links; implementation and financing/capture details remain in child/overview sources.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-web]] — 2019-modified Bancontact mobile Web chooser for Drop-in and prebuilt Component child guides.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-web]] — 2026-09-15 Bancontact card Web navigation chooser for Drop-in versus Components; captured page itself uses generic “Payment method” placeholder text.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios]] — 2026-09-15 Bancontact Card iOS chooser for card-specific Drop-in/Components children and base iOS Sessions guides; implementation detail is in linked guides.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android]] — 2019-modified, 2026-09-15-captured Bancontact mobile Android chooser linking Drop-in and Components child guides; implementation facts reside in the children.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-ios]] — 2019-modified, 2026-09-15-captured Bancontact mobile iOS chooser for Drop-in/Components child guides; base Sessions link says Android Drop-in but targets iOS.
+
+
+- [[source-adyen-docs-payment-methods-eps-web]] — 2026-09-15 EPS Web navigation chooser for Drop-in versus Components and their Sessions/Advanced base guides.
+
+
+- [[source-adyen-docs-payment-methods-eps-android]] — 2026-09-15 EPS Android chooser for Drop-in versus `EPSComponent` child guides and four Sessions/Advanced base integrations; implementation detail resides in linked guides.
+
+
+- [[source-adyen-docs-payment-methods-eps-ios]] — 2026-09-15 EPS iOS chooser for Drop-in or `EPSComponent` plus four Sessions/Advanced base-guide routes; implementation details reside in linked guides.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card]] — 2023-modified, 2026-09-15-captured Bancontact card BE/EUR Debit Card overview: mandatory 3DS, co-badged CVC caveat, no separate capture, WIP-qualified recurring and Web/native/API-only routes.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in]] — 2026-09-15 Bancontact Mobile Android Drop-in v5.0.0 Sessions/Advanced add-on with no extra method-specific settings and a no-test-platform warning.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile]] — 2023-modified, 2026-09-15-captured Bancontact Mobile BE/EUR wallet overview with app/desktop-QR path, WIP-qualified recurring and Web/native/API-only/Pay by Link routes.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-component]] — 2026-09-15 Bancontact mobile Android Components v5.0.0+ Sessions/Advanced add-on with no extra method fields/configuration; source says no mobile test platform.
+
+
+- [[source-adyen-docs-payment-methods-eps-react-native-component]] — 2026-09-15 EPS React Native Components Advanced-only redirect add-on (Sessions unsupported), no extra method fields, and SEPA recurring-token path; Components prerequisite links to Drop-in.
+
+
+- [[source-adyen-docs-payment-methods-eps-react-native-drop-in]] — 2026-09-15 EPS React Native Drop-in Sessions (Checkout API v68+) and Advanced method add-on with redirect prerequisites, no ordinary extra fields/configuration, and a SEPA Direct Debit recurring-token route; source flags the Sessions prerequisite's Advanced URL.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-co-branded-cards]] — 2022-modified diagnostic for Bancontact/Visa co-badged card-entry and scheme-choice issues in older integrations, including sub-4.2.0 Web Drop-in/Components and a TEST-only fixture.
+
+
+- [[source-adyen-docs-payment-methods-eps-ios-drop-in]] — 2026-09-15 EPS iOS Drop-in Sessions/Advanced add-on with flow-specific requirements and SEPA Direct Debit recurring-token route.
+
+
+- [[source-adyen-docs-payment-methods-eps-flutter-drop-in]] — 2026-09-15 EPS Flutter Drop-in Sessions/Advanced redirect add-on with no extra ordinary request/configuration fields and a SEPA recurring-token path; source flags a Sessions prerequisite link to Advanced flow.
+
+
+- [[source-adyen-docs-payment-methods-eps-web-drop-in]] — 2026-09-15 EPS Web Drop-in Sessions/Advanced redirect add-on; ordinary requests need no EPS parameters, while recurring tokens use SEPA Direct Debit after settlement.
+
+
+- [[source-adyen-docs-payment-methods-eps-android-drop-in]] — 2026-09-15 EPS Android Drop-in Sessions (Checkout API v68+) and Advanced redirect add-on; base requests need no EPS fields, while recurring uses SEPA Direct Debit tokenization.
+
+
+- [[source-adyen-docs-payment-methods-eps-ios-component]] — 2026-09-15 EPS iOS Components Sessions/Advanced add-on for issuer-list redirect and SEPA Direct Debit token route; source flags flow-specific version and snippet/link caveats.
+
+
+- [[source-adyen-docs-payment-methods-eps-android-component]] — 2026-09-15 EPS Android Components Sessions (Checkout API v68+) and Advanced add-on, with Compose/view `EPSComponent` examples, redirect prerequisites and a separate SEPA Direct Debit token path.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-web-drop-in]] — 2026-09-15 Bancontact mobile Web Drop-in QR/app-switch guide with optional urlIntent setup, WIP-qualified recurring and no test platform.
+
+
+- [[source-adyen-docs-payment-methods-eps-web-component]] — 2026-09-15 EPS Web Components Sessions/Advanced redirect add-on with bank-issuer configuration, separate test/live lists and SEPA recurring-token path; source flags a sample issuer ID absent from its lists.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-ios-drop-in]] — 2026-09-15 Bancontact mobile iOS Drop-in app-switch/QR guide with conditional WIP recurring; page says no mobile test platform despite test Customer Area and recurring-test setup references.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-web-component]] — 2026-09-15-captured Bancontact Mobile Web Component guide for device-specific QR/app-switch behavior, v5/v6 mounting and WIP-qualified recurring; source says no test platform.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-ios-component]] — 2026-09-15 Bancontact Mobile iOS Components v5+/v4 guide for app-switch/QR, `bcmc_mobile` method selection and WIP-gated recurring; source preserves no-test-platform and test-environment wording tension.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-drop-in]] — 2026-09-15 Bancontact card iOS Drop-in Sessions/Advanced guide: mandatory 3DS, no method-specific extra fields, v5 Sessions default, WIP-gated recurring and co-badged TEST routing.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component]] — 2026-09-15-captured Bancontact card Android Component v5.0.0 guide for Sessions/Advanced setup and WIP-qualified recurring tokens.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-component]] — 2026-09-15 Bancontact card iOS Components Sessions/Advanced guide with v5+ `InstantPaymentComponent` versus v4.x.x snippets and WIP-qualified tokenization; card-entry details are not shown in the v5+ sample.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions]] — 2026-09-15 v4.x.x Bancontact card Android Advanced Component guide for BE/EUR `bcmc`, mandatory 3DS redirect, `/payments/details` and WIP-gated recurring; source warns scheme/sample and credential tensions.
+
+
+- [[source-adyen-docs-payment-methods-eps-api-only]] — 2026-09-15 EPS AT/EUR API-only bank-issuer redirect add-on and SEPA Direct Debit recurring-token path; source flags issuer-ID and recurring-field example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-web-component]] — 2026-09-15-captured Bancontact card Web Component guide for Sessions/Advanced, versioned mounting, mandatory 3DS and WIP-qualified recurring.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-web-drop-in]] — 2026-09-15-captured Bancontact card Web Drop-in Sessions/Advanced guide, optional card grouping, and WIP-qualified recurring; grouping prose/example disagree on `blockedPaymentMethods` placement.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions]] — 2026-09-15 v4.x.x Bancontact mobile Android Drop-in BE/EUR app/QR action guide; Pending/Received await AUTHORISATION webhook, WIP recurring is gated, and source says no test platform.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-drop-in-earlier-versions]] — 2026-09-15 Bancontact card Android Drop-in v4.x.x Advanced-flow guide for 3DS redirect/details and conditional WIP recurring; source includes return-target and Kotlin configuration-example caveats.
+
+
+- [[source-adyen-docs-payment-methods-affirm-api-only]] — 2026-09-15 Affirm API-only Web redirect guide covering merchant-built form, server `/payments` and returned `/payments/details`, Pending webhook, 28-day capture and before/after-capture refund gates; source qualifies line-item wording and overview capture conflict.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-component-earlier-versions]] — 2026-09-15-captured Bancontact Mobile Android Components v4.x.x app-return guide; source flags Redirect/QRCode naming conflict, WIP-gated recurring and no test platform.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-api-only]] — fetched 2026-09-15 Bancontact Mobile Web API-only QR/app-switch guide with 15-minute window, webhook/details outcome, WIP-gated recurring and no-test-platform caveat.
+
+
+- [[source-adyen-docs-payment-methods-affirm-web-drop-in]] — 2026-09-15 Affirm Web Drop-in Sessions/Advanced add-on with customer-data and address conditions, optional form configuration, test/live credential gates and 28-day capture instruction; source flags curl hint markup and the overview capture-matrix conflict.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-api-only]] — 2019-modified Bancontact raw-card API-only guide for PCI-gated 3DS Web flow and WIP-scoped recurring tokens; source flags discovery/payment type and omitted-brand examples.
+
+
+- [[source-adyen-docs-payment-methods-affirm-ios-drop-in]] — 2026-09-15 Affirm iOS Drop-in add-on for Sessions/Advanced, request fields and 28-day capture; optional configuration examples are Web-oriented despite the iOS title.
+
+
+- [[source-adyen-docs-payment-methods-affirm]] — 2026-09-15 capture of a 2022-modified Affirm BNPL overview for CA/GB/US redirect, financing packages, default Core price plan and conditional shopper approval/capture; source qualifies historical offer figures.
+
+
+- [[source-adyen-docs-payment-methods-affirm-web-component]] — 2026-09-15 Affirm Web Components Sessions/Advanced guide for conditional country/address fields, v5/v6 mounting, form prefill, 28-day capture and Affirm plus Customer Area live gates.
+
+
+- [[source-adyen-docs-payment-methods-eps]] — 2026-09-15 AT/EUR EPS online-banking redirect overview with historical feature marks and Web/native/API-only routes; recurring “See note” is unresolved in the capture.
+
+
+- [[source-adyen-docs-payment-methods-bancontact]] — 2019-modified, 2026-09-15-captured Bancontact card/mobile BE/EUR overview: card 3DS/auto-capture versus mobile app/QR, feature table and WIP-qualified recurring; child guides are separate.
+
+
 - [[source-adyen-docs-payment-methods-sepa-direct-debit-web]] — 2026-09-15 SEPA Web chooser for Drop-in versus `SepaDirectDebit` Components and four base Sessions/Advanced guides; implementation and mandate/outcome details reside in child/overview sources.
 
 

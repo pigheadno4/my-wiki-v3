@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-eps-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS API-only integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/api-only/2026-09-15.md\"\ntags: [adyen, eps, api-only, austria, redirect, issuer, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 EPS API-only add-on covers the method-specific steps for an existing Adyen Web API-only integration: present a bank list, pass an issuer ID, request AT/EUR availability and initiate an EPS bank redirect. Its recurring section describes a later SEPA Direct Debit token path, not repeat EPS redirects. The base integration guide owns general redirect handling; this page does not prove current bank coverage, merchant enablement, a completed payment or live recurring eligibility. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-eps|the EPS overview]].\n\n## Key takeaways\n\n- Prerequisites are an existing API-only integration that handles `action.type=redirect` and EPS added in Customer Area. The shopper chooses EPS and a bank, is redirected to the bank site to enter bank details, then returns to the merchant site. Show available banks in the payment form and send the selected bank's issuer ID to the server. The document gives separate test/live issuer lists and says issuer data can also come from `/paymentMethods`.\n- To surface EPS in `/paymentMethods`, the guide specifies `countryCode=AT`, `amount.currency=EUR` and the payment amount. The response example places `type=eps` and an `issuers` array in the payment-method object. For `/payments`, add `paymentMethod.type=eps`, the selected `paymentMethod.issuer` and a `returnUrl` of at most 1024 characters. The general `/payments` fields and redirect completion are delegated to the linked base guide.\n- Do not blindly copy issuer examples: the live list assigns Dolomitenbank ID `b42dd796-8bda-4893-acc2-ddfae9c9cdb7`, while the example `/paymentMethods` response assigns it `d5d5b133-1c0d-4c08-b2be-3c9b116dc326`. The `/payments` prose says issuer value, then gives 'Dolomitenbank' as an example even though that is a bank name rather than either listed ID. Use the chosen environment's returned issuer ID; the captured examples conflict and do not establish present bank availability.\n- Recurring is described through SEPA Direct Debit: request a shopper token with `storePaymentMethod=true` and a unique `shopperReference` of at least three characters. The page strongly recommends explicit shopper permission for future SEPA payments and clear schedule/amount communication. Only after the first payment settles does it say a `recurring.token.created` webhook supplies `storedPaymentMethodId`; configure the recurring-token lifecycle webhook. Future `/payments` prose calls for `paymentMethod.storedPaymentMethodId`, the same `shopperReference`, `shopperInteraction=ContAuth`, and `recurringProcessingModel=Subscription` or `UnscheduledCardOnFile`.\n- The recurring examples use `paymentMethod.type=sepadirectdebit` and mostly `recurringDetailReference`, contradicting the prose's `storedPaymentMethodId` field; they must not be copied as authoritative request shape without reconciling this difference. The `/paymentMethods` curl example also lacks a shell continuation after `-X POST` before `-d`, and its JSON response example contains a comment. The NodeJS availability examples instantiate `Config` and `EnvironmentEnum` without importing them. These sample defects do not alter the stated AT/EUR, issuer and token-flow concepts.\n- Check EPS test statuses in the test Customer Area. Before accepting live EPS, submit an EPS request in live Customer Area. The sample Checkout v72 URLs and library-version labels are examples, not declared minimums or proof of live setup.\n\n## Detail locators\n\n- Scope, prerequisites and bank redirect: pinned raw lines 15\u201335. Form issuer choice and separate test/live bank IDs: lines 37\u201384. AT/EUR `/paymentMethods` inputs and curl example: lines 86\u2013114. Response issuer example: lines 363\u2013383. The Dolomitenbank table/response ID mismatch is lines 65 and 375\u2013376.\n- `/payments` method-specific fields and `returnUrl` maximum: pinned raw lines 385\u2013391. The prose's bank-name-as-issuer example is line 390. General redirect handling is linked from line 28, not specified as a new response workflow here.\n- SEPA recurring scope, permission and token creation: pinned raw lines 393\u2013416. Future payment prose fields: lines 418\u2013430. Divergent `recurringDetailReference` examples start at lines 432\u2013453 and continue through line 733; compare prose line 422. Curl line-break defect: lines 101\u2013106. NodeJS undeclared configuration symbols: lines 221\u2013231 and 335\u2013346. Test/live Customer Area gates: lines 736\u2013740.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-eps]] \u2014 method overview and capability marks\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/api-only/2026-09-15|EPS API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The available banks for EPS are different in the test and live environment:",
+      "location": "raw/adyen/docs/payment-methods/eps/api-only/2026-09-15.md:46"
+    },
+    {
+      "text": "You can also get the issuer list from the [/paymentMethods]",
+      "location": "raw/adyen/docs/payment-methods/eps/api-only/2026-09-15.md:84"
+    },
+    {
+      "text": "The EPS issuer value of the shopper's selected bank. For example, Dolomitenbank.",
+      "location": "raw/adyen/docs/payment-methods/eps/api-only/2026-09-15.md:390"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit]",
+      "location": "raw/adyen/docs/payment-methods/eps/api-only/2026-09-15.md:395"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/eps/api-only/2026-09-15.md:409"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "eps-api-only-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-api-only]] \u2014 2026-09-15 EPS AT/EUR API-only bank-issuer redirect add-on and SEPA Direct Debit recurring-token path; source flags issuer-ID and recurring-field example conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The listed live Dolomitenbank issuer ID differs from the example `/paymentMethods` response ID, and `/payments` prose gives the bank name as an issuer-value example; use environment-specific returned IDs rather than a copied sample.",
+          "Future-token prose requests paymentMethod.storedPaymentMethodId but recurring examples use recurringDetailReference; do not silently equate them.",
+          "The `/paymentMethods` curl example lacks a continuation before `-d`, and NodeJS configuration examples omit Config/EnvironmentEnum imports."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/api-only/2026-09-15.md",
+  "raw_sha256": "d7be45c6c36679e8920170556708cca9ad053ece06980896933a68de7d83a690",
+  "status": "candidate_ready"
+}

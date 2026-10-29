@@ -1,0 +1,64 @@
+{
+  "job_id": "docs-payment-methods-eps-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, eps, flutter, drop-in, redirect, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 EPS Flutter Drop-in guide supplies method-specific additions to an existing Sessions or Advanced Flutter Drop-in integration. It requires redirect readiness and EPS setup, says the ordinary flow needs no EPS-specific request or configuration parameters, and describes future recurring payments through SEPA Direct Debit. It is not a standalone Flutter integration or evidence of current EPS enablement or payment success. See [[adyen]], [[adyen-online-payments]], [[adyen-tokenization]] and [[source-adyen-docs-payment-methods-eps|the EPS overview]].\n\n## Key takeaways\n\n- For Sessions, the page requires an existing Flutter Drop-in Sessions flow, Checkout API v68 or later, redirect handling for `action.type=redirect`, and contacting Adyen Support to add EPS in Customer Area. It says to add no EPS-specific `/sessions` parameters or Drop-in configuration. Its Sessions integration-type cell links to an Advanced-flow URL even though the row and redirect link say Sessions; follow the named flow and check the linked base integration before implementing.\n- For Advanced, the page requires an existing Flutter Drop-in Advanced flow, redirect handling and EPS added in Customer Area. It says to add no EPS-specific Drop-in configuration or ordinary `/payments` parameters; the base guide owns general request construction and redirect handling. The Advanced setup row links to the add-payment-methods route, whereas the Sessions setup row directs the reader to Support. The capture does not resolve whether one setup path supersedes the other.\n- EPS recurring is described through SEPA Direct Debit, not repeat EPS redirects. The guide strongly recommends explicit shopper permission and transparency about the schedule and amount. To create a token, send `storePaymentMethod=true` and a unique `shopperReference` of at least three characters in `/payments`. After settlement, a configured recurring-token lifecycle webhook delivers `recurring.token.created` with `storedPaymentMethodId` and an `eventId` equal to the initial payment's `pspReference`. Later `/payments` requests use `paymentMethod.storedPaymentMethodId`, the same shopper reference, `shopperInteraction=ContAuth`, and `recurringProcessingModel=Subscription` or `UnscheduledCardOnFile`. The token operations are server-side `/payments` steps even when the initial Drop-in checkout uses Sessions.\n- Check test payment statuses in the test Customer Area. Before accepting live EPS, the guide requires a request in the live Customer Area. These setup and status instructions do not prove live entitlement, current coverage, settlement or recurring success.\n\n## Detail locators\n\n- Scope and Sessions prerequisites, including the mismatched Advanced-flow link in its Sessions integration-type cell: pinned raw lines 15\u201336. No added `/sessions` or Drop-in configuration fields: lines 38\u201348.\n- Sessions SEPA recurring permission, token-creation fields, post-settlement webhook and later stored-token payment: pinned raw lines 50\u201389. Test/live Customer Area instructions: lines 91\u201395.\n- Advanced prerequisites and add-payment-methods setup: pinned raw lines 97\u2013107; no extra configuration or ordinary `/payments` parameters: lines 109\u2013119. Repeated recurring detail: lines 121\u2013160; repeated test/live gate: lines 162\u2013166.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 primary provider integration route\n- [[adyen-tokenization]] \u2014 recurring stored-payment concepts\n- [[source-adyen-docs-payment-methods-eps]] \u2014 method overview\n- [[source-adyen-docs-payment-methods-eps-api-only]] \u2014 server API-only issuer details\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15|EPS Flutter Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you",
+      "location": "raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md:42"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for EPS.",
+      "location": "raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "We support recurring transactions for EPS through",
+      "location": "raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md:54"
+    },
+    {
+      "text": "Before you can accept live EPS payments, you need to",
+      "location": "raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md:166"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "eps-flutter-drop-in-online-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-flutter-drop-in]] \u2014 2026-09-15 EPS Flutter Drop-in Sessions/Advanced redirect add-on with no extra ordinary request/configuration fields and a SEPA recurring-token path; source flags a Sessions prerequisite link to Advanced flow.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": [
+          "The Sessions integration-type cell links to an Advanced-flow URL; the named Sessions flow and its redirect link are distinct. Sessions setup points to Support, while Advanced setup points to add-payment-methods and the go-live section requires a live Customer Area request."
+        ]
+      },
+      {
+        "update_id": "eps-flutter-drop-in-token-source",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-flutter-drop-in]] \u2014 EPS Flutter Drop-in guide's SEPA Direct Debit recurring-token path after initial settlement, with permission recommendation and later stored-ID/ContAuth fields (2026-09-15).\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "4cd8776045017b1c463b1f41e4f30682a8a68f496eeecc00317106454e9640ab",
+  "status": "candidate_ready"
+}

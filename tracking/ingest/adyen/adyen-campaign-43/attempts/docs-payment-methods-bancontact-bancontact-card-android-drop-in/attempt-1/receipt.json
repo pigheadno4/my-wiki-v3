@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bancontact card Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md\"\ntags: [adyen, bancontact, card, android, drop-in, tokenization]\n---\n\n## Overview\n\nAdyen's Bancontact card guide explains adding the card method to an existing Android Drop-in integration, in either Sessions or Advanced flow, with a minimum Drop-in version of 5.0.0. It points earlier versions to a separate guide. This is Bancontact *card* guidance, not the Bancontact mobile app or QR route. See [[adyen]] and [[adyen-android-sdk]].\n\n## Key takeaways\n\n- Both Sessions and Advanced flows require Android Drop-in v5.0.0 or later and Bancontact card enabled in Customer Area. For a base Bancontact card payment, the page requires no additional method-specific fields in `/sessions` or `/payments`, and no extra Drop-in configuration. The Sessions flow creates a checkout session; Advanced launches and shows Drop-in after configuration. These statements do not remove the parent flow's usual request requirements (raw lines 21-67).\n- Recurring use is a separate, conditional Bancontact Wallet Initiated Program (WIP) path. The page recommends explicit shopper permission. WIP requires signup, is not available to every company, needs Support enablement and has transaction amount limits. The page describes first-transaction consent and SCA followed by later transactions without SCA, with an issuer-liability statement; treat these as WIP-scoped source claims rather than general or current guarantees (raw lines 69-88).\n- For WIP token creation, send `storePaymentMethod: true` and a unique `shopperReference` of at least three characters in `/sessions` or `/payments`. After the initial payment has settled, the `recurring.token.created` lifecycle webhook provides `storedPaymentMethodId`; the server must receive those events. A later `/payments` request uses the stored ID, the same shopper reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile`. Support configures the test environment for recurring tests. These tokenization fields are conditional additions, not a contradiction of the base payment's no-additional-fields statement (raw lines 90-124).\n- The page supplies TEST co-badged BCMC/Mastercard Debit, BCMC/Maestro and BCMC/Visa Debit cards. The Visa fixture may route to Bancontact or Visa depending on payment-method setup, and a `holderName: \"DECLINED\"` fixture forces refusal. Bancontact card must be added separately in live Customer Area. Fixtures and captured instructions do not prove current eligibility or a live payment result (raw lines 465-498).\n\n## Detail locators\n\n- Version, flow prerequisites, base API and Drop-in configuration: raw lines 15-67.\n- WIP eligibility, consent, SCA and amount-limit qualifications: raw lines 69-88.\n- Token creation, after-settlement webhook and later recurring request: raw lines 90-124; language examples continue through line 463.\n- Co-badged TEST cards, routing caveat, forced decline and live setup: raw lines 465-498.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15|Bancontact card Android Drop-in guide (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "This page is for **v5.0.0**, released in October 2023. If you are using an earlier version, use [the guide for earlier versions](/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions) instead.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md:21 (version boundary)"
+    },
+    {
+      "text": "When you [make the `/sessions` request](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in#create-a-payment-session), Bancontact card does not require any additional fields.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md:45 (Sessions base request)"
+    },
+    {
+      "text": "When you [make the `/payments` request](/online-payments/build-your-integration/advanced-flow?platform=Android\\&integration=Drop-in#make-a-payment), Bancontact card does not require any additional fields.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md:49 (Advanced base request)"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md:84 (WIP eligibility)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md:106 (token timing)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bancontact-card-android-drop-in-android-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-drop-in]] \u2014 Bancontact card Android Drop-in v5.0.0+ Sessions/Advanced guide; base requests need no extra method fields, while recurring tokenization is WIP-gated and the token arrives after settlement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/2026-09-15.md",
+  "raw_sha256": "6740e4a003d96aa0424d2d21b70b6299e58129a2e310cc1a1f0ad35732e18f02",
+  "status": "candidate_ready"
+}

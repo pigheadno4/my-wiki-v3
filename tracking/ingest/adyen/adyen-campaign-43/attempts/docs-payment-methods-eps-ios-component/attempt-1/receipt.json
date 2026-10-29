@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-eps-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"EPS iOS Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/ios-component/2026-09-15.md\"\ntags: [adyen, eps, ios, components, redirect, sepa-direct-debit, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured EPS iOS Component guide adds EPS-specific steps to an **existing** iOS Components integration. It has separate Sessions and Advanced sections; both use `EPSComponent` to present an issuer-list payment method and require the host integration to handle an `action.type: redirect` return. It does not itself document a full redirect-result or final payment-status workflow, and its setup text is not proof of merchant enablement or completed payment (raw lines 15\u201336, 50\u201373, 122\u2013168).\n\n## Key takeaways\n\n- **Sessions:** Requires an existing iOS Components Sessions flow, **Checkout API v68 or later**, redirect handling and EPS added in Customer Area. The page says no EPS-specific `/sessions` parameters or Component configuration are needed. Its sample resolves `IssuerListPaymentMethod`, creates `EPSComponent`, sets the **session as delegate**, then presents the view controller (raw lines 25\u201373). The no-extra-configuration prose coexists with a sample argument `configuration: epsConfiguration`; verify how that object is supplied before copying the snippet, rather than treating it as a newly required EPS setting (raw lines 46\u201369).\n- **Advanced:** Requires an existing iOS Components Advanced flow, redirect handling and EPS added in Customer Area. It says no additional EPS configuration or `/payments` parameters are needed. Its sample again uses `IssuerListPaymentMethod` and `EPSComponent`, but sets **self as delegate**. The Advanced requirement table labels the integration as Components while its integration-type link points to a Drop-in URL; follow the actual Advanced Components integration guide before implementing that linked step (raw lines 122\u2013168). Unlike Sessions, the Advanced section does not state a Checkout API version minimum (raw lines 126\u2013132).\n- Both flow sections describe EPS recurring transactions **through SEPA Direct Debit**, not ordinary repeat EPS redirects. Explicit shopper permission, payment schedule and amount disclosure are strongly recommended to reduce chargeback risk. Token creation is specified on a `/payments` request with `storePaymentMethod: true` and a shopper reference of at least three characters; **after settlement**, a `recurring.token.created` webhook provides `storedPaymentMethodId`, and the server must receive token lifecycle events. Later `/payments` use that token and shopper reference with `ContAuth` plus `Subscription` or `UnscheduledCardOnFile` (raw lines 75\u2013114, 170\u2013209). The Sessions section also names `/payments` for token creation, so do not silently rewrite it to `/sessions` (raw lines 84\u201393).\n- Test payment status is checked in test Customer Area. Before accepting **live** EPS, the page says to submit an EPS request in live Customer Area. These are separate setup/status steps, not evidence of a live approval, authorization, settlement or recurring charge (raw lines 116\u2013120, 211\u2013215).\n\n## Detail locators\n\n- Sessions requirements, redirect action and API v68+: raw lines 25\u201336.\n- Sessions no-extra-fields/configuration and `EPSComponent` delegate sample: raw lines 38\u201373.\n- Advanced requirements, link mismatch, no-extra-fields/configuration and self-delegate sample: raw lines 122\u2013168.\n- SEPA Direct Debit recurring-token path repeated under Sessions and Advanced: raw lines 75\u2013114, 170\u2013209.\n- Test status lookup and separate live EPS request: raw lines 116\u2013120, 211\u2013215.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-eps|EPS overview]]\n- [[source-adyen-docs-payment-methods-sepa-direct-debit|SEPA Direct Debit overview]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15|EPS iOS Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15.md:35"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for EPS.",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15.md:48"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15.md:79"
+    },
+    {
+      "text": "Before you can accept live EPS payments, you need to [submit a request for EPS](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15.md:120"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-eps-ios-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-ios-component]] \u2014 2026-09-15 EPS iOS Components Sessions/Advanced add-on for issuer-list redirect and SEPA Direct Debit token route; source flags flow-specific version and snippet/link caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/ios-component/2026-09-15.md",
+  "raw_sha256": "ff1298d8b8749773bb8ddb738f656ed97d7d4a66bee72c01096db737b0c2ae1f",
+  "status": "candidate_ready"
+}

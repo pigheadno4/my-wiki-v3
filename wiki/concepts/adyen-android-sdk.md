@@ -64,6 +64,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android]] — 2026-09-15 Bancontact card Android chooser routing to Drop-in and prebuilt Component child guides.
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-drop-in]] — Bancontact card Android Drop-in v5.0.0+ Sessions/Advanced guide; base requests need no extra method fields, while recurring tokenization is WIP-gated and the token arrives after settlement.
+
+
 - [[source-adyen-docs-payment-methods-sepa-direct-debit-android]] — 2026-09-15 SEPA Android chooser for Drop-in and SepaComponent children plus Sessions/Advanced base guides; source qualifies chooser redirect wording against the Component child's direct action.
 
 
@@ -128,6 +134,12 @@ Drop-in and Component analytics are enabled by default from the 5.x line. `Analy
 - [[adyen]] - company and knowledge-status page
 
 ## Sources
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions]] — historical Android v4.x.x `BcmcComponent`/Redirect Component flow, client-side encrypted details and server `/payments/details` handoff (2026-09-15 capture).
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions]] — historical v4 Android Drop-in `bcmc_mobile` app/QR action and server `/payments/details` return handoff (2026-09-15 capture).
+
 
 - [[source-adyen-docs-payment-methods-bacs-android]] — BACS Android Drop-in-versus-Components chooser and base Sessions/Advanced route links (2026-09-15); method children supply setup details.
 

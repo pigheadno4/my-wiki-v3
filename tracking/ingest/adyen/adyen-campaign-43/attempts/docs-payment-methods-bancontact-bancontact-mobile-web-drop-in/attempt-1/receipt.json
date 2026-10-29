@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-mobile-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bancontact mobile Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md\"\ntags: [adyen, bancontact, mobile, web, drop-in, tokenization]\n---\n\n## Overview\n\nAdyen's Bancontact mobile guide describes adding the mobile-app/QR payment route to an existing Web Drop-in integration. Desktop shoppers see a QR code; mobile shoppers switch to the Bancontact app with a QR fallback if switching fails; tablet shoppers see both QR and an app-switch button. This is Bancontact *mobile*, not Bancontact card-entry guidance. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The page requires an existing Web Drop-in integration and Bancontact mobile added in the test Customer Area. To receive `bcmcmobile.urlIntent` in the payment response, enable **3DS2 Additional Fields** under **Developers > Additional data** in Customer Area. This is a conditional response-field setup, not a universal requirement for rendering the method (raw lines 19-37).\n- No Bancontact-mobile-specific fields are needed for the base API request, and no method-specific Drop-in configuration is required. The page names `/sessions` as the default for Drop-in v5.0.0 or later and `/payments` for an implemented additional use case; the parent integration's ordinary fields and flow still apply (raw lines 39-48).\n- Recurring is a distinct Bancontact Wallet Initiated Program (WIP) route. The page recommends explicit shopper permission. WIP requires signup and Support enablement, is not available to every company, and has transaction amount limits. It describes initial shopper consent/SCA and later transactions without SCA, with issuer liability stated for that WIP scenario; these are source-scoped claims, not a general current guarantee (raw lines 50-78).\n- To create a WIP token, request `storePaymentMethod: true` and a unique `shopperReference` of at least three characters in `/sessions` or `/payments`. After the initial payment settles, the `recurring.token.created` lifecycle webhook supplies `storedPaymentMethodId`, which the server must receive. Later `/payments` use the stored ID, same shopper reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile`; the example selects `paymentMethod.type: bcmc_mobile` and `Subscription`. Recurring tests need Support configuration (raw lines 78-130; language examples through line 444).\n- The page explicitly says Bancontact mobile has no test platform and recommends a EUR 0.01 penny test in the live environment. This is a testing recommendation, not permission to initiate a live charge or proof of live operation. The page does not give a payment-outcome flow for the shopper app/QR path; use a relevant payment-flow source for result handling (raw lines 446-450).\n\n## Detail locators\n\n- Device-dependent QR/app-switch behavior and Customer Area setup: raw lines 15-37.\n- Base request and Drop-in configuration boundaries: raw lines 39-48.\n- WIP eligibility, consent, SCA and amount limits: raw lines 50-78.\n- Token creation, after-settlement webhook and subsequent recurring request: raw lines 80-107; request examples 109-444.\n- No test platform and live penny-test recommendation: raw lines 446-450.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15|Bancontact mobile Web Drop-in guide (2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "For shoppers on desktop or laptop, the shopper is presented a QR code.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md:23 (desktop behavior)"
+    },
+    {
+      "text": "For shoppers on mobile, the shopper is switched to the Bancontact mobile app. If this fails, the shopper is presented a QR code as a fallback.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md:24 (mobile app switch)"
+    },
+    {
+      "text": "You do not need to send additional fields for Bancontact mobile.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md:41 (base request)"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md:65 (WIP eligibility)"
+    },
+    {
+      "text": "Bancontact mobile does not have a test platform.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md:448 (test boundary)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bancontact-mobile-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-web-drop-in]] \u2014 2026-09-15 Bancontact mobile Web Drop-in QR/app-switch guide with optional urlIntent setup, WIP-qualified recurring and no test platform.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/web-drop-in/2026-09-15.md",
+  "raw_sha256": "25b499e10e79aa34783dd1afcc9749a73171de50e18f39accacee93f947efeb5",
+  "status": "candidate_ready"
+}

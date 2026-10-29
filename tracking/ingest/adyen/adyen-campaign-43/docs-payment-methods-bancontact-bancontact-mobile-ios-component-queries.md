@@ -1,0 +1,13 @@
+# Fixed retrieval checks: Bancontact Mobile iOS Component
+
+Canonical source stem: `source-adyen-docs-payment-methods-bancontact-bancontact-mobile-ios-component`
+Pinned raw: `raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/ios-component/2026-09-15.md` (SHA-256 `39ea59ff1b0bd5ebf04c2c7de9ea5a8270e9414a87b53a009e43839375d53d9e`)
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-bancontact-bancontact-mobile-ios-component.md`
+
+## Q1 — What is this page for, and what should a reader not infer?
+
+It is the captured Bancontact Mobile add-on for an existing iOS Components integration (`raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/ios-component/2026-09-15.md:15-30`). It covers mobile app switching with QR fallback, tablet QR plus switch button (`:21-24`), method-specific Customer Area setup (`:31-36`), versioned Component examples (`:45-100`), and a gated WIP recurring path (`:102-159`). It does not establish eligibility for WIP, a successful app return/payment, any current merchant configuration, or a usable Bancontact Mobile test platform; the page expressly says there is no test platform (`:498-502`). The base iOS integration remains the route for general payment/result handling (`:30`, `:506`).
+
+## Q2 — What capabilities, prerequisites and warnings matter most?
+
+Have an iOS Components integration and add Bancontact in Customer Area; enabling 3DS2 Additional Fields is conditional on receiving `bcmcmobile.urlIntent` (`:26-36`). No extra method request fields are stated (`:38-43`). For v5+, select `.other(\"bcmc_mobile\")`, create `InstantPaymentComponent`, set the session delegate in Sessions or self in Advanced, then initiate; v4.x.x shows a different generic Component path (`:45-100`). WIP recurring is signup/eligibility gated with unspecified amount limits; explicit shopper permission is strongly recommended, the first consent transaction has SCA, and the page states no liability shift with issuer liability (`:102-121`). After settlement, `recurring.token.created` supplies the token, then future `/payments` uses `storedPaymentMethodId`, the shopper reference, ContAuth and a recurring model (`:123-159`). The page mentions support-configured recurring test environment (`:130`) and shows TEST requests (`:161-180`), but also says Bancontact Mobile has no test platform and recommends a EUR 0.01 live penny test (`:498-502`); none of those statements proves test execution or authorizes a live test. NodeJS example configuration symbols lack imports (`:315-327`, `:459-469`).

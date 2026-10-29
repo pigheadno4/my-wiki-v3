@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-eps-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"EPS iOS Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md\"\ntags: [adyen, eps, ios, drop-in, redirect, sepa-direct-debit, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured guide gives the EPS-specific additions to an **existing iOS Drop-in** integration. It separates Sessions and Advanced server-side flows. It does not present a standalone checkout or final payment-result procedure, and its setup directions do not prove merchant approval or a completed payment (raw lines 15\u201325, 97\u2013119).\n\n## Key takeaways\n\n- **Sessions flow:** The page requires an existing iOS Drop-in Sessions integration using **Checkout API v68 or later** and EPS added in Customer Area. It says there are no EPS-specific parameters to add when creating `/sessions` and no extra EPS Drop-in configuration. The Sessions requirement table does not separately spell out redirect handling; use the linked base integration guide for the host flow rather than importing the Advanced-specific checklist into this section (raw lines 25\u201346).\n- **Advanced flow:** The page requires an existing iOS Drop-in Advanced integration, EPS added in Customer Area and existing handling for `action.type: redirect`. It says no EPS-specific Drop-in configuration or extra `/payments` parameters are needed. Unlike Sessions, this section does not state a Checkout API minimum (raw lines 97\u2013119). Redirect handling is a prerequisite, not a final authorization or settlement result.\n- Both sections say EPS recurring transactions run **through SEPA Direct Debit**. They strongly recommend explicit shopper permission and disclosure of payment schedule and charged amount to reduce chargeback risk. For the token path, the guide instructs a `/payments` request with `storePaymentMethod: true` and a shopper reference of at least three characters; **after settlement**, `recurring.token.created` supplies `storedPaymentMethodId`, and the server must accept token lifecycle events. Future `/payments` use the token and same shopper reference with `ContAuth` plus `Subscription` or `UnscheduledCardOnFile` (raw lines 48\u201387, 121\u2013160). The Sessions section also names `/payments` for this recurring token step; do not silently rewrite it to `/sessions` (raw lines 57\u201366).\n- Test EPS payment status can be checked in test Customer Area. Before accepting **live** EPS payments, submit an EPS request in live Customer Area. These are distinct test/live instructions and do not evidence a successful authorization, settlement, recurring charge or approved live account (raw lines 89\u201395, 162\u2013168).\n\n## Detail locators\n\n- EPS iOS Drop-in scope and Sessions requirements/no-extra-settings: raw lines 15\u201346.\n- Sessions SEPA recurring-token route: raw lines 48\u201387.\n- Advanced requirements, redirect and no-extra-settings: raw lines 97\u2013119.\n- Advanced SEPA recurring-token route: raw lines 121\u2013160.\n- Test payment lookup and live EPS request: raw lines 89\u201395, 162\u2013168.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-eps|EPS overview]]\n- [[source-adyen-docs-payment-methods-sepa-direct-debit|SEPA Direct Debit overview]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15|EPS iOS Drop-in, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for EPS.",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md:46"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md:106"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit](/payment-methods/sepa-direct-debit).",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md:52"
+    },
+    {
+      "text": "Before you can accept live EPS payments, you need to [submit a request for EPS](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md:95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-eps-ios-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-ios-drop-in]] \u2014 2026-09-15 EPS iOS Drop-in Sessions/Advanced add-on with flow-specific requirements and SEPA Direct Debit recurring-token route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "0dd8ef44c6931fd587609b204da964340386c02567e9f32d6e60cb85dea17718",
+  "status": "candidate_ready"
+}

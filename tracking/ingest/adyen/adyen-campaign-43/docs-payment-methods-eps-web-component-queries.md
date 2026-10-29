@@ -1,0 +1,13 @@
+# Fixed retrieval checks: EPS Web Component
+
+Canonical source stem: `source-adyen-docs-payment-methods-eps-web-component`
+Pinned raw: `raw/adyen/docs/payment-methods/eps/web-component/2026-09-15.md` (SHA-256 `2e91a8298751e6d688bf8a28b4151658a34b67e9dc0275912f0c1dd5bc063e20`)
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-eps-web-component.md`
+
+## Q1 — What is this page for, and what should a reader not infer?
+
+It is the EPS-specific add-on for existing Web Components Sessions and Advanced integrations, not a complete integration guide (`raw/adyen/docs/payment-methods/eps/web-component/2026-09-15.md:15-24`, `:26-28`, `:181-189`). It covers `EPS` import/mount, bank-issuer presentation and redirect readiness (`:34-35`, `:45-90`, `:188`, `:193-218`), plus future recurring via SEPA Direct Debit (`:136-173`, `:265-304`). The captured test/live lists (`:92-134`, `:220-260`) do not prove current bank coverage, merchant enablement or successful payment; live EPS still requires a live Customer Area request (`:310`).
+
+## Q2 — What capabilities, prerequisites and warnings matter most?
+
+Sessions needs an existing Components integration, Checkout API v68+, EPS in Customer Area and `action.type=redirect` handling (`:30-36`). It needs no EPS-specific `/sessions` parameters (`:39-42`); optional bank configuration includes `issuer`, `highlightedIssuers` (v5.1.0+) and `placeholder` (`:61-75`). Advanced likewise needs the existing Advanced flow, redirect handling and EPS setup (`:183-189`), imports/mounts `EPS` (`:193-218`), and calls for no extra method-specific `/payments` fields in the ordinary payment (`:261-263`). The configuration sample preselects `d5d5b133-1c0d-4c08-b2be-3c9b116dc326` (`:72-73`), but that ID is absent from this page's test and live lists (`:96-134`); the sample's single-string `highlightedIssuers` should not establish the accepted shape for multiple banks. Test and live bank lists differ (`:96-134`), and live acceptance needs a request in the live Customer Area (`:310`). For future recurring, this guide uses SEPA Direct Debit, strongly recommends explicit shopper permission, asks for `storePaymentMethod=true` plus `shopperReference`, waits until settlement for `recurring.token.created`/`storedPaymentMethodId`, then uses the stored ID with `ContAuth` and Subscription or UnscheduledCardOnFile (`:136-173`, repeated at `:265-304`). Even the Sessions section names server-side `/payments` for these later token steps (`:146-170`); do not conflate them with ordinary `/sessions` setup.

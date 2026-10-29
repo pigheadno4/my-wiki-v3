@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-mobile-android-component-earlier-versions",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Bancontact Mobile Android Component v4.x.x (earlier versions) | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, bancontact, mobile, android, components, v4, app-switch, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured page is expressly the **Bancontact Mobile Android Components v4.x.x earlier-versions** guide. It adds Bancontact to an existing Android Components integration and describes an app handoff, Android return intent, server-side `/payments/details` and optional WIP recurring payments. It should not be substituted for a current Android SDK guide or for Bancontact card payments (raw lines 15\u201329, 395\u2013488, 748\u2013801).\n\n## Key takeaways\n\n- The guide requires an existing Android Components integration and Bancontact enabled in the test Customer Area. Its integration prerequisite links to a Sessions Components guide, while the return-intent `/payments` step links to an Advanced Components guide; this historical page does not establish one consistent Sessions or Advanced base flow (raw lines 28, 442). To receive `bcmcmobile.urlIntent`, enable **3DS2 Additional Fields** in Customer Area. `/paymentMethods` uses BE/EUR and returns `bcmc_mobile`; the form says no shopper information is needed. It shows an optional `BcmcConfiguration` example that makes holder name required, so the optional sample should not erase the no-required-form-data statement or be assumed to apply to the later QR handling automatically (raw lines 24\u201362).\n- The `/payments` request uses `paymentMethod.type: bcmc_mobile` and a Component-derived return URL. The prose spells the request field `returnURL`, while its JSON and library examples use `returnUrl`; do not assume those casings are interchangeable, and verify the API field before implementation (raw lines 66-69, 87, 119). The sample response is `Pending` with `action.type: qrCode`, QR data and `additionalData.bcmcmobile.urlIntent`, and the page says to pass `action` to the client (raw lines 64\u201369, 372\u2013393). The introductory text calls this a **Redirect Component** guide, but the actual handling section instructs `QRCodeComponent`, `qr-code` module, `QRCodeConfiguration` and `handleAction`; the response JSON is also incomplete at the closing braces. Preserve this source-level Redirect-versus-QR naming/example conflict rather than treating the snippets as validated drop-in code (raw lines 15\u201319, 378\u2013391, 395\u2013438).\n- For the app return, add an `IntentFilter` matching the `adyencheckout` scheme and app host, then pass the return intent to the Component from `onCreate` or `onNewIntent` according to launch mode. The observer produces `actionComponentData`, which the app sends to the server; the server posts `actionComponentData.details` to `/payments/details`. Use its `resultCode` for the shopper display and expect an asynchronous webhook. `Pending`/`Received` means the payment is still awaiting final `AUTHORISATION`, while `Authorised`, `Cancelled`, `Error` and `Refused` have separate actions. A sample `Authorised` response is not proof of real payment success (raw lines 440\u2013488, 719\u2013746).\n- Recurring use is conditional on Bancontact **WIP** signup, eligibility, Support enablement and transaction limits. The page strongly recommends explicit permission for future charges. It says the first consent transaction has SCA, later WIP transactions do not, and issuer liability remains with no liability shift for that first transaction. Create a token with `storePaymentMethod: true` and a shopper reference of at least three characters; after settlement, `recurring.token.created` supplies `storedPaymentMethodId`. Later `/payments` use that ID, the same shopper reference, `ContAuth` and `Subscription` or `UnscheduledCardOnFile`. Test recurring configuration needs Support (raw lines 748\u2013805). This does not imply WIP access for all Bancontact merchants.\n- The page says Bancontact Mobile has **no test platform** and recommends a EUR 0.01 live penny test; no live test was run here. The same historical page includes test Customer Area and `checkout-test` examples, so those snippets are not evidence of an available full test platform or current live capability (raw lines 29\u201334, 71\u201389, 1144\u20131148).\n\n## Detail locators\n\n- v4.x.x identity, setup, Sessions prerequisite link, BE/EUR discovery and optional Bcmc configuration: raw lines 15\u201362; Advanced return-intent link at line 442.\n- `/payments`, `returnURL` versus `returnUrl` casing, Pending `qrCode` action and Redirect/QRCode naming conflict: raw lines 64\u201369, 87, 119, 372\u2013438.\n- Android return intent and server `/payments/details` handling: raw lines 440\u2013488.\n- Result-code/webhook boundary: raw lines 719\u2013746.\n- WIP eligibility, first SCA, settled-token lifecycle and later recurring fields: raw lines 748\u2013805.\n- No test platform and historical live penny-test recommendation: raw lines 1144\u20131148.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-bancontact|Bancontact overview (card/mobile distinction)]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15|Bancontact Mobile Android Component earlier versions, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "# Bancontact mobile Redirect Component v4.x.x integration",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md:15"
+    },
+    {
+      "text": "Use our [Redirect Component](/online-payments/build-your-integration/sessions-flow/?platform=Android\\&integration=Components#handle-a-redirect) to handle the redirect to the Bancontact app.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "Use the `QRCodeComponent` to redirect the shopper to the Bancontact app:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md:397"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md:763"
+    },
+    {
+      "text": "Bancontact mobile does not have a test platform.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md:1146"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-bancontact-mobile-android-component-v4-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-component-earlier-versions]] \u2014 2026-09-15-captured Bancontact Mobile Android Components v4.x.x app-return guide; source flags Redirect/QRCode naming conflict, WIP-gated recurring and no test platform.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "cbeabcbb3e02967e4f0ed89190655fdf0285e4958d601b616eb6b6447afbc7e7",
+  "status": "candidate_ready"
+}

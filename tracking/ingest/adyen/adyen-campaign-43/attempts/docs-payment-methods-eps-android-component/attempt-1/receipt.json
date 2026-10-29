@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-eps-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen EPS Android Component integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/eps/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/eps/android-component/2026-09-15.md\"\ntags: [adyen, eps, android, components, sessions, advanced, redirect, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 EPS Android Component add-on describes method-specific setup for existing Sessions and Advanced Android Components integrations, including the `EPSComponent` with or without Jetpack Compose. It delegates base redirect/action handling to the parent flow guides and describes future recurring payments through SEPA Direct Debit rather than repeated EPS redirects. The page is integration guidance, not proof of current method enablement or payment success. See [[adyen]], [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-eps|the EPS overview]].\n\n## Key takeaways\n\n- The Sessions path requires an existing Sessions Android Components integration, Checkout API v68 or later, redirect handling for `action.type=redirect`, and EPS added in Customer Area. It states no EPS-specific additions to an ordinary `/sessions` request. The v68+ requirement appears in the Sessions requirement table; the separate Advanced table does not state an API minimum.\n- The Advanced path requires an existing Advanced Android Components integration, additional-action handling for `action.type=redirect`, and EPS added in Customer Area. It likewise states no EPS-specific additions to an ordinary `/payments` request. These 'no additions' statements do not negate the later tokenization fields for recurring SEPA payments.\n- Both paths import `com.adyen.checkout:eps`; with Compose they also import `components-compose`. Both use `EPSComponent`. Sessions examples select EPS from `checkoutSession` and pass that session to the provider, while Advanced examples select EPS from the `/paymentMethods` response and omit a session argument. Compose examples use a distinct component key when the screen/session changes; non-Compose examples attach to a view. `setSubmitButtonVisible` is optional, defaults true, and may be set false. The shown configuration snippets have doubled opening braces and a placeholder `value`, so they are illustrative rather than copy-ready Kotlin.\n- The recurring section says EPS recurring transactions use SEPA Direct Debit. It strongly recommends explicit shopper permission and transparency on amount/schedule to reduce chargeback risk. For token creation it specifies `storePaymentMethod=true` and a shopper reference of at least three characters in `/payments` even under the Sessions section; after settlement, `recurring.token.created` provides `storedPaymentMethodId`, and the server must receive recurring-token lifecycle events. A later token `/payments` request uses `paymentMethod.storedPaymentMethodId`, the same shopper reference, `shopperInteraction=ContAuth`, and `recurringProcessingModel=Subscription` or `UnscheduledCardOnFile`. The page does not spell out a Sessions-specific token-creation request despite repeating this `/payments` recipe there.\n- Test statuses can be checked in the test Customer Area. A live EPS request in live Customer Area is required before acceptance. Neither route proves availability or completion for a merchant; the capture has no test transaction evidence.\n\n## Detail locators\n\n- Page scope and flow split: pinned raw lines 15\u201325. Sessions prerequisites, v68+ and no additional ordinary session fields: lines 29\u201342. Sessions module imports, optional button configuration and Component examples: lines 44\u2013142.\n- Sessions SEPA recurring consent, `/payments` token creation, settlement webhook and future request fields: pinned raw lines 144\u2013183. Test/live gates: lines 185\u2013189.\n- Advanced requirements and redirect action: pinned raw lines 191\u2013199. Imports, optional button configuration and `EPSComponent` examples: lines 201\u2013301. No additional ordinary `/payments` fields: lines 303\u2013307. Repeated SEPA token recipe and test/live gates: lines 309\u2013354. Configuration snippet brace/placeholder issue: lines 79\u201387 and 235\u2013244.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-eps]] \u2014 method overview and capability marks\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/eps/android-component/2026-09-15|EPS Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/eps/android-component/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/eps/android-component/2026-09-15.md:42"
+    },
+    {
+      "text": "use the `EPSComponent` class.",
+      "location": "raw/adyen/docs/payment-methods/eps/android-component/2026-09-15.md:93"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw/adyen/docs/payment-methods/eps/android-component/2026-09-15.md:307"
+    },
+    {
+      "text": "We support recurring transactions for EPS through [SEPA Direct Debit]",
+      "location": "raw/adyen/docs/payment-methods/eps/android-component/2026-09-15.md:313"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "eps-android-component-online-payments-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-eps-android-component]] \u2014 2026-09-15 EPS Android Components Sessions (Checkout API v68+) and Advanced add-on, with Compose/view `EPSComponent` examples, redirect prerequisites and a separate SEPA Direct Debit token path.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Checkout API v68+ is stated in the Sessions requirements, not the separate Advanced table; do not apply it to Advanced without another source.",
+          "The Sessions recurring subsection gives `/payments` token-creation fields rather than spelling out a Sessions-specific token request; ordinary no-extra-fields statements and recurring fields have different scopes.",
+          "The optional configuration snippets contain doubled braces and placeholder value, and are not copy-ready Kotlin."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/eps/android-component/2026-09-15.md",
+  "raw_sha256": "e6af6c7ec1359841cbbbf89f3450338d72801bd39e97285ee0a839e9d3d4926c",
+  "status": "candidate_ready"
+}

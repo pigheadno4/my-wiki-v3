@@ -1,0 +1,82 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bancontact card iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md\"\ntags: [adyen, bancontact, card, ios, drop-in, 3d-secure, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds **Bancontact card** to an existing **iOS Drop-in** Sessions or Advanced integration. It describes card/3DS differences, method-specific no-extra-field/configuration scope, WIP-gated recurring tokens and TEST/live gates. It is distinct from Bancontact mobile app/QR acceptance and is not proof of enabled live processing or a successful payment. [[adyen]] [[adyen-online-payments]] [[adyen-ios-sdk]]\n\n## Key takeaways\n\n- **Card/3DS:** Bancontact card lacks CVC, though a co-badged card may display a CVC field. **3D Secure is mandatory**, and separate captures are not supported. iOS Drop-in securely collects card details and redirects to the issuer website for 3DS. These card statements do not describe Bancontact mobile wallet handoff. See raw lines 19\u201325 and [[source-adyen-docs-payment-methods-bancontact]].\n- **Flow/version:** start with matching iOS Drop-in Sessions or Advanced integration and add Bancontact card in Customer Area. The page says no **Bancontact-card-specific** additional fields on `/sessions` or `/payments`; `/sessions` is called the default for Drop-in **v5.0.0+**, with `/payments` for an additional use case. Both v5.0.0+ and v4.x.x tabs say no required card-specific Drop-in configuration. This does not waive base-flow fields, 3DS handling or merchant setup. See raw lines 27\u201360.\n- **Recurring WIP gate:** the page recommends explicit shopper permission and says recurring goes through **Bancontact Wallet Initiated Program**. WIP needs signup/Support enablement, excludes some companies and has transaction amount limits. Its described first transaction includes shopper SCA/consent; later WIP transactions do not need SCA, and the issuer remains liable (the page says no liability shift). Do not read the tokenization statement as universal Bancontact recurring availability. See raw lines 62\u201381. [[adyen-tokenization]]\n- **Token lifecycle:** create an initial token with `storePaymentMethod=true` and a shopper reference (at least three characters) on `/sessions` or `/payments`; after **settlement** the `recurring.token.created` lifecycle webhook supplies `storedPaymentMethodId`. A later server `/payments` uses `paymentMethod.storedPaymentMethodId`, matching shopper reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile`; the sample uses `type=bcmc` and EUR. Support configures recurring TEST. See raw lines 83\u2013119 and 121\u2013456.\n- **TEST/live:** the BCMC/Visa co-badged test card can route to **Bancontact or Visa depending on payment-method setup**; `holderName=DECLINED` simulates refusal. TEST results are inspectable in test Customer Area. Live acceptance requires adding Bancontact card in live Customer Area. Test fixtures and example token IDs do not demonstrate a real authorization, routing or settlement. See raw lines 458\u2013491.\n\n## Detail locators\n\n- Card/CVC/3DS/capture scope and iOS issuer redirect: raw lines 15\u201325.\n- Sessions/Advanced setup, v5 default and no-extra-method-fields/config: raw lines 27\u201360.\n- WIP permission, eligibility, amount, SCA and liability qualifications: raw lines 62\u201381.\n- Token creation after settlement and future `/payments` fields/examples: raw lines 83\u2013456.\n- Co-badged TEST routing, decline fixture and live gate: raw lines 458\u2013491.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Bancontact card payment route.\n- [[adyen-ios-sdk]] \u2014 iOS Drop-in/3DS handoff context.\n- [[adyen-tokenization]] \u2014 WIP-gated recurring token lifecycle.\n- [[source-adyen-docs-payment-methods-bancontact]] \u2014 card/mobile overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15|Bancontact card iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For co-badged cards, the CVC field can still appear.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md:21 (card CVC qualification)"
+    },
+    {
+      "text": "3D Secure authentication",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md:22 (mandatory card 3DS)"
+    },
+    {
+      "text": "You do not need to send additional fields for Bancontact card.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md:47 (method-specific API fields)"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md:77 (WIP gate)"
+    },
+    {
+      "text": "Depending on your payment method setup, transactions with this test card are routed to Bancontact or Visa.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md:468 (co-badged TEST routing)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bancontact-card-ios-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-drop-in]] \u2014 2026-09-15 Bancontact card iOS Drop-in Sessions/Advanced guide: mandatory 3DS, no method-specific extra fields, v5 Sessions default, WIP-gated recurring and co-badged TEST routing.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Card-only route; no-extra-field statement does not remove base flow or 3DS requirements. WIP signup/eligibility qualifies recurring, and TEST co-badged routing is setup-dependent."
+        ]
+      },
+      {
+        "update_id": "bancontact-card-ios-drop-in-sdk-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-drop-in]] \u2014 iOS Drop-in Bancontact card v5.0.0+ Sessions default and v4.x.x no-extra-config tabs, with issuer 3DS redirect (2026-09-15 capture).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "This page does not state a universal iOS SDK minimum or generic mobile-wallet redirect contract."
+        ]
+      },
+      {
+        "update_id": "bancontact-card-ios-drop-in-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-drop-in]] \u2014 WIP-gated Bancontact card iOS Drop-in recurring, with token-created webhook after settlement and later stored-ID/ContAuth server payments (2026-09-15).\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "Signup, merchant eligibility, amount limits and Support TEST configuration limit this recurring route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "14299ff567c8f0d6bed02f1819084c8cb894f99dca6672594b636cfe15ba6919",
+  "status": "candidate_ready"
+}

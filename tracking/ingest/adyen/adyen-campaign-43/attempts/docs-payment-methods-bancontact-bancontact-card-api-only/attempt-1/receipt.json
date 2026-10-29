@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bancontact card API-only\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md\"\ntags: [adyen, bancontact, card, api-only, pci, 3d-secure, recurring]\n---\n\n## Overview\n\nAdyen's Bancontact card API-only guide was last modified in 2019 and captured on 2026-09-15. It describes a merchant-built Web checkout that collects raw Bancontact card data, submits a server-side card payment, redirects for mandatory 3D Secure, and optionally uses the separately enabled Bancontact Wallet Initiated Program (WIP) for tokenized recurring payments. It is a card route, not Bancontact mobile app or QR guidance. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Raw card collection requires the merchant to be fully PCI compliant and to have an API-only Advanced integration and Bancontact card added in test Customer Area. The page directs merchants without full PCI compliance to Web or Android Bancontact card Components. Card number and expiry month/year are required in the form; holder name is shown as optional there. Bancontact itself has no CVC, although one can appear for co-badged cards. 3D Secure is mandatory and separate captures are unsupported (raw lines 19-49).\n- For method discovery, the page says call `/paymentMethods` with `countryCode: BE` and `amount.currency: EUR`; required fields appear under method type `bcmc` (raw lines 51-56). For the server-side `/payments` request, prose instead says `paymentMethod.type: scheme` with `paymentMethod.brand: bcmc`, plus card number/expiry/holder name, Web `browserInfo` and a post-3DS return URL (raw lines 60-82). The principal TEST payment examples show `type: scheme` but omit `brand: bcmc`, while the later decline example uses `type: bcmc`; do not treat either snippet as a complete authoritative replacement for the prose or assume routing from the examples alone (raw lines 86-110, 915-932).\n- The payment response is shown as `RedirectShopper` with a `redirect` action. Redirect the shopper for 3D Secure, then use `/payments/details` resultCode for shopper messaging and an asynchronous webhook for the payment outcome. The page lists `Authorised`, `Cancelled`, `Error` and `Refused` result handling; a redirect action is not authorization or capture (raw lines 468-505).\n- WIP provides Bancontact One-Click Pay and merchant-initiated recurring/subscription routes only after signup and Support enablement; the page says not every company is eligible and amount limits apply. It describes first-transaction shopper consent and SCA, with subsequent transactions not requiring SCA, and states issuer liability for that first transaction. Treat these as WIP-scoped source claims, not general Bancontact card or current issuer guarantees (raw lines 507-535).\n- For WIP token creation, the page instructs `storePaymentMethod: true` and `shopperReference` in `/sessions` or `/payments`; the `recurring.token.created` webhook containing `storedPaymentMethodId` arrives when the initial payment has settled. Later `/payments` use the stored ID, same shopper reference, `ContAuth`, and `Subscription` or `UnscheduledCardOnFile`. The example uses `paymentMethod.type: bcmc` for the stored-token payment; that is a later WIP path, not the initial raw-card request shape (raw lines 537-587).\n- TEST co-badged fixtures can route to Bancontact or Visa depending on payment-method setup; a forced-decline fixture is also shown. Live Bancontact card must be added separately in live Customer Area. TEST examples, historic library snippets and the captured page do not establish current merchant eligibility, PCI compliance or live payment operation (raw lines 903-936).\n\n## Detail locators\n\n- Card/PCI prerequisites, CVC, 3DS and capture limitations: raw lines 19-49.\n- Discovery versus initial `/payments` field instructions and raw-card examples: raw lines 51-466.\n- Redirect, details result and asynchronous outcome: raw lines 468-505.\n- WIP eligibility, first SCA/consent, token settlement and subsequent request: raw lines 507-901.\n- TEST cards, route-dependent co-badge, forced decline and live setup: raw lines 903-936.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15|Bancontact card API-only guide (2019-modified, 2026-09-15 capture)]]\n",
+  "quotes": [
+    {
+      "text": "[3D Secure authentication](/online-payments/3d-secure) is mandatory.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md:22 (card requirement)"
+    },
+    {
+      "text": "Separate captures are not supported.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md:23 (capture limitation)"
+    },
+    {
+      "text": "To collect raw card data, you need to be [fully PCI compliant](/development-resources/pci-dss-compliance-guide?tab=api_only_4).",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md:27 (raw-card prerequisite)"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md:522 (WIP eligibility)"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md:544 (token timing)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bancontact-card-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-api-only]] \u2014 2019-modified Bancontact raw-card API-only guide for PCI-gated 3DS Web flow and WIP-scoped recurring tokens; source flags discovery/payment type and omitted-brand examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/api-only/2026-09-15.md",
+  "raw_sha256": "4294d16d8c200e8cdf9b63385d6869763aa02786fbbd986ce651934a60587570",
+  "status": "candidate_ready"
+}

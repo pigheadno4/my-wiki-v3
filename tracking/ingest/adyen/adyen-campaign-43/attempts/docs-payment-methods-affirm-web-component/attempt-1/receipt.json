@@ -1,0 +1,68 @@
+{
+  "job_id": "docs-payment-methods-affirm-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Affirm Web Component integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/affirm/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/affirm/web-component/2026-09-15.md\"\ntags: [adyen, affirm, web, components, financing, capture]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds Affirm to an **existing Web Components** Sessions or Advanced integration. It covers shopper/request data, version-specific Component mounting, optional address/form configuration, a consequential **28-day capture deadline**, and separate test/live credential gates. It does not prove current financing eligibility, approval, authorization, capture, settled funds or live activation. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Base setup:** build the matching Web Components Sessions or Advanced flow and add Affirm in Customer Area. For Web Components **v6**, import `AdyenCheckout` and `Affirm`; v6.0.0+ mounts `new Affirm(checkout)`, whereas v5.x.x or earlier uses `checkout.create('affirm')`. The v6 import link itself carries Drop-in parameters despite this Components page, so follow the Components flow for actual setup. The `/sessions` tab calls Components v5.0.0+ its default. See raw lines 19\u201353 and 1259\u20131289.\n- **Both `/sessions` and `/payments` tables** mark `shopperName` (first/last), `telephoneNumber` and `shopperEmail` required. `shopperReference` is optional here with minimum length three. The `countryCode` Required cell is blank, but its description explicitly makes it **required for Canada or the UK**, because omission defaults to **US**. For billing/delivery addresses, `stateOrProvince` is required in Canada and US, optional in UK; absent delivery address falls back to billing address. `lineItems` are optional and recommended to improve approval rates, not required or a guarantee of approval. See raw lines 51\u201364 and 766\u2013779.\n- **Advanced sample scope:** `/payments` curl uses `paymentMethod.type=affirm` and a v72 TEST endpoint, while `/sessions` curl uses v69 TEST; neither example sets a universal API minimum. Both curl examples contain literal `{hint:...}billingAddress{/hint}` and delivery-address keys, so are not copy-ready JSON field names. The Advanced language samples vary in age/shape; rely on the endpoint table and current API reference for implementation. See raw lines 66\u2013126, 781\u2013844 and 845\u20131258.\n- **Form options:** `allowedCountries` controls **address dropdown options**, default **US/CA**, with GB in the listed possible values. This is UI configuration, not evidence of approval or merchant market eligibility. `data` can pre-fill personal/billing/delivery fields; visibility groups can be `hidden`, `readOnly` or `editable`. A `readOnly` group **must** have corresponding pre-filled information. Defaults are company/bank hidden and personal/billing/delivery editable. See raw lines 1291\u20131397.\n- **Capture:** after goods are sent, capture is required within **28 days**; the guide says capture starts the shopper's installment schedule, while an uncaptured authorization expires after 28 days. If fulfilling less than authorized, it instructs capturing the authorized amount and **refunding the difference after capture**, rather than a lower capture. This payment-method-specific instruction should not be replaced by a generic partial-capture assumption. See raw lines 1399\u20131403. [[adyen-payment-capture]]\n- **Test/live:** obtain TEST credentials from Affirm; after reviewing test transactions, Affirm provides live-processing credentials. The merchant also submits an Affirm request in **live Customer Area** and provides its Affirm live credentials to Adyen before accepting live payments. A TEST transaction or form render does not prove that gate is complete. See raw lines 1405\u20131411.\n\n## Detail locators\n\n- Flow prerequisites, v6 import and endpoint tables: raw lines 19\u201364 and 766\u2013779.\n- Sessions/Advanced language request examples and literal hint keys: raw lines 66\u2013765 and 781\u20131258.\n- Component mounting by v6 versus v5: raw lines 1259\u20131289.\n- Allowed-country dropdown, pre-fill and visibility rules: raw lines 1291\u20131397.\n- Capture deadline/refund-after-capture and test/live gates: raw lines 1399\u20131411.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Web Components payment route.\n- [[adyen-payment-capture]] \u2014 Affirm capture deadline and refund-after-capture qualification.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15|Affirm Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required when transacting in Canada or the UK, because the default **US** is used if you omit this parameter.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15.md:61 (Sessions countryCode description; repeated payments line 776)"
+    },
+    {
+      "text": "If you set any group of fields with this value, you must provide the corresponding information in the pre-filled object.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15.md:1373 (readOnly visibility)"
+    },
+    {
+      "text": "All Affirm payments have to be captured within 28 days.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15.md:1401 (capture deadline)"
+    },
+    {
+      "text": "you need to issue a [refund](/online-payments/refund) for the difference after the capture.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15.md:1403 (lesser-fulfillment case)"
+    },
+    {
+      "text": "provide us with your Affirm live credentials.",
+      "location": "raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15.md:1411 (live gate)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "affirm-web-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-affirm-web-component]] \u2014 2026-09-15 Affirm Web Components Sessions/Advanced guide for conditional country/address fields, v5/v6 mounting, form prefill, 28-day capture and Affirm plus Customer Area live gates.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The countryCode table cell is blank but prose requires it for CA/UK; allowedCountries is an address-dropdown setting, not eligibility. Curl examples contain literal hint-wrapped address keys and are not copy-ready."
+        ]
+      },
+      {
+        "update_id": "affirm-web-component-capture-route",
+        "target_path": "wiki/concepts/adyen-payment-capture.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-affirm-web-component]] \u2014 Affirm Web Component method-specific capture within 28 days after authorization; capture starts installments, and lesser fulfillment calls for capture then refund of the difference (2026-09-15).\n",
+        "quote_indexes": [
+          2,
+          3
+        ],
+        "warnings": [
+          "Preserve Affirm-specific capture/refund instruction; do not replace it with generic partial-capture behavior or infer that authorization means captured funds."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/affirm/web-component/2026-09-15.md",
+  "raw_sha256": "2039ab5bd84dc136b9e1e3717446e4378dde64861ed8599166c249690643a974",
+  "status": "candidate_ready"
+}

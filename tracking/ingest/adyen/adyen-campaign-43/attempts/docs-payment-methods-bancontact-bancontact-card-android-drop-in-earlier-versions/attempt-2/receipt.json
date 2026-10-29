@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-android-drop-in-earlier-versions",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Bancontact card Android Drop-in v4.x.x integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, bancontact, android, drop-in, earlier-versions, online-payments]\n---\n\n## Overview\n\nAn **earlier-versions v4.x.x** guide for adding **Bancontact card** to an existing Android Drop-in integration. It requires an **Advanced flow** Android Drop-in integration and Bancontact card enabled in the Customer Area. This is a Bancontact **card** path, not a general Bancontact mobile-app guide or evidence of current merchant eligibility. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The page distinguishes Bancontact card from a regular card payment: no CVC for Bancontact (though a co-badged card can show a CVC field), mandatory 3D Secure authentication, and no separate captures. To show the method, the `/paymentMethods` request specifies `countryCode: BE` and `amount.currency: EUR`. See raw lines 19\u201341.\n- The Requirements table specifies Advanced-flow Android Drop-in, but the opening, optional-configuration and See also links point to Sessions-flow guides; those links are not verified Advanced base routes (raw lines 25, 33, 45, 909). In this v4.x.x flow, Android Drop-in collects card details and returns `paymentComponentData`; the app passes it to the merchant server. The server is instructed to send `/payments` with the returned `paymentMethod`, required `channel: Android`, and a return URL from `RedirectComponent.getReturnUrl(context)`. Every illustrated `/payments` request omits `channel`; use the prose requirement and treat the examples as incomplete request templates (raw lines 69\u201372, 75\u2013401). The illustrated response has a `redirect` action; the server returns that action to the client. After the shopper returns, Drop-in supplies `actionComponentData.details` for the server's `/payments/details` request. Present the result from its `resultCode`; the outcome also arrives asynchronously by webhook. Possible result codes listed here are `Authorised`, `Cancelled`, `Error`, and `Refused`. See raw lines 63\u201374, 403\u2013472.\n- **Redirect wording conflict:** the opening says the shopper returns to a \u201cwebsite,\u201d while the dedicated redirect section says the shopper returns to the Android app. Treat the Android app return flow as the platform-specific description, and verify the return URL against the Android integration. The `/payments` curl snippet has markup-like hint text embedded in the `paymentMethod` key; it is an annotated example, not literal request JSON. See raw lines 25\u201327, 73, 87\u201395, 426\u2013445.\n- The optional Kotlin `BcmcConfiguration` example is labeled as making cardholder name required, but the shown builder only sets the test environment and adds the configuration to Drop-in; it does not show a cardholder-name requirement setting. Do not infer that behavior from the snippet. See raw lines 43\u201361.\n- Recurring use is qualified by Bancontact Wallet Initiated Program (WIP) signup and eligibility, with amount limits; the page recommends explicit shopper permission. The first consented transaction uses SCA, while its WIP discussion says subsequent transactions do not and states no liability shift for the initial transaction. Token creation calls for `storePaymentMethod: true` and a unique `shopperReference`; after settlement, a `recurring.token.created` webhook supplies `storedPaymentMethodId`. Future `/payments` use that ID, the reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. Test-environment recurring setup requires Support. This is a conditional WIP path, not general recurring availability. See raw lines 474\u2013531.\n- The test section has co-badged card examples and warns one BCMC/Visa test card may route to Bancontact or Visa depending on method setup. Its live section says to add Bancontact card in the live Customer Area and mentions a Client Encryption Public Key, but gives no complete current live-key procedure. See raw lines 870\u2013905.\n\n## Detail locators\n\n- v4.x.x identity, method distinctions, Advanced prerequisite versus Sessions links: raw lines 15\u201334, 45, 909.\n- BE/EUR method display and optional configuration: raw lines 36\u201361.\n- `/payments` Android-channel requirement, omission in examples, and redirect action: raw lines 63\u2013424.\n- Redirect details, shopper result, asynchronous webhook: raw lines 426\u2013472.\n- WIP enrollment, token creation, recurring payment request: raw lines 474\u2013868.\n- Test credentials, co-badge routing caveat, live notes: raw lines 870\u2013905.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15|Bancontact card Android Drop-in earlier-versions capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "A Bancontact card payment is like a regular [card payment](/payment-methods/cards), except for the following:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Drop-in integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in).",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md:33"
+    },
+    {
+      "text": "The [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response contains an `action` object with `type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md:403"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md:463"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md:489"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-bancontact-card-android-v4-dropin-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-drop-in-earlier-versions]] \u2014 2026-09-15 Bancontact card Android Drop-in v4.x.x Advanced-flow guide for 3DS redirect/details and conditional WIP recurring; source includes return-target and Kotlin configuration-example caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening website-return wording conflicts with platform-specific app-return section; Kotlin example does not show its claimed cardholder-name requirement setting.",
+          "Earlier-versions v4.x.x instructions and live-key note must not be presented as current Android implementation or safe live-key handling."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "f327799688c376dcc86c310e27573a3e5923093270cec18baacded386c749ccb",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-mobile-api-only",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Bancontact Mobile API-only integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md\"\ntags: [adyen, bancontact, mobile, api-only, qr-code, app-switch, tokenization]\n---\n\n## Overview\n\nThis captured Bancontact Mobile guide (fetched 2026-09-15; source `last_modified` 2025-02-04) describes a **Web API-only** merchant-built checkout for payments completed in the shopper's Bancontact Pay app. It separates desktop QR and mobile app-switch paths, then gives optional Bancontact Wallet Initiated Program (WIP) recurring-token steps. This is not a card-data or generic Bancontact integration guide and does not prove current method or WIP eligibility (raw lines 1\u201325, 48\u201360, 1013\u20131032).\n\n## Key takeaways\n\n- The page requires an existing Web API-only integration at minimum version **53** and Bancontact added in the test Customer Area. To receive `bcmcmobile.urlIntent` in the response, enable **3DS2 Additional Fields** under **Developers > Additional data > 3D Secure**. The API-only form need not collect shopper information. If using `/paymentMethods`, request `countryCode: BE` and `amount.currency: EUR`; the method type shown is `bcmc_mobile` (raw lines 21\u201346). These request parameters are not proof that an account or shopper is enabled.\n- For desktop/laptop, show a QR code from `/payments` `action.qrCodeData`; for mobile, provide a button that opens the Bancontact app using `additionalData.bcmcmobile.urlIntent`; tablet can use either or both. The page recommends screen size to choose the presentation. The payment request examples use `paymentMethod.type: bcmc_mobile`. Both desktop and mobile prose bullets spell the return field `returnURL`, while their `/payments` JSON examples use `returnUrl`; verify the Checkout API field before implementing because the source does not reconcile this casing conflict (raw lines 65, 85, 413, 433). The mobile example also contains `action.url` and `action.qrCodeData`, but the prose directs the app switch to `urlIntent`, whose availability depends on the Additional data setting; do not substitute the redirect URL silently (raw lines 28\u201331, 718\u2013754).\n- Both payment-initiation examples show `resultCode: Pending`, and the shopper has **15 minutes** to complete the payment; showing the timer is recommended. Desktop QR completion is reported through `AUTHORISATION` webhooks: `success: false` means do not proceed, `success: true` means proceed. For mobile app return, POST the URL-decoded `redirectResult` in `/payments/details`; its `resultCode` informs the shopper-facing result, with asynchronous webhook outcome also supplied. `Pending`/`Received` after details mean the final result is still unknown and comes through `AUTHORISATION`, not that the order can be fulfilled (raw lines 370\u2013405, 718\u2013754, 985\u20131011). The mobile `/payments/details` sample `Authorised` is an illustration, not proof of a live authorization (raw lines 990\u20131001).\n- Recurring payments are conditional on Bancontact **WIP** signup, eligibility and Support enablement; WIP provides One-Click Pay and merchant-initiated recurring/subscription billing and applies transaction amount limits. The page says first-transaction consent and SCA precede later no-SCA transactions and describes issuer liability/no liability shift for that initial flow. Explicit shopper permission for future recurring charges is **strongly recommended**. To create a token, set `storePaymentMethod: true` and a shopper reference of at least three characters on `/sessions` or `/payments`; after the initial payment settles, `recurring.token.created` carries `storedPaymentMethodId`. Later WIP `/payments` include that token, shopper reference, `ContAuth` and `Subscription` or `UnscheduledCardOnFile`. Test recurring setup also needs Support (raw lines 1013\u20131070). WIP conditions do not make ordinary Bancontact Mobile payments automatically recurring-capable for every merchant.\n- The page says Bancontact Mobile has **no test platform** and recommends a **EUR 0.01 live penny test**. That recommendation is historical documentation, not authorization to run a live payment. The same guide shows test Customer Area setup and `checkout-test` example requests; preserve this test-example versus no-platform tension and verify any current testing path separately. No actual test or live payment was performed for this source (raw lines 25\u201331, 71\u201387, 417\u2013435, 1409\u20131414).\n\n## Detail locators\n\n- API-only v53, test-area/additional-data setup and BE/EUR method discovery: raw lines 21\u201346.\n- Device-specific QR/app path and desktop request/result/webhook: raw lines 48\u201365, 370\u2013405.\n- Mobile `urlIntent`, 15-minute window, return/details and result codes: raw lines 718\u2013754, 985\u20131011.\n- WIP eligibility, initial SCA, token creation after settlement and recurring token request: raw lines 1013\u20131070.\n- No test platform and historical live penny-test recommendation: raw lines 1409\u20131414.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15|Bancontact Mobile API only, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 53.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md:25"
+    },
+    {
+      "text": "To receive the `bcmcmobile.urlIntent` parameter in the payment response:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "After initiating the payment, the shopper has 15 minutes to complete it.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md:387"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md:1028"
+    },
+    {
+      "text": "Bancontact mobile does not have a test platform.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md:1411"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-bancontact-mobile-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-api-only]] \u2014 fetched 2026-09-15 Bancontact Mobile Web API-only QR/app-switch guide with 15-minute window, webhook/details outcome, WIP-gated recurring and no-test-platform caveat.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/api-only/2026-09-15.md",
+  "raw_sha256": "7611c24570a3954a67fcbbae4045aa63cbe1ed3d1c56f05d47fe624cd2022fd0",
+  "status": "candidate_ready"
+}

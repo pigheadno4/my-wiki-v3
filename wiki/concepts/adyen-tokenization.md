@@ -15,6 +15,24 @@ A token must be associated with a shopper-unique reference. References and token
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-eps-react-native-component]] — EPS React Native Components guide's SEPA Direct Debit recurring-token path after initial settlement, with permission recommendation and later stored-ID/ContAuth fields (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-eps-flutter-drop-in]] — EPS Flutter Drop-in guide's SEPA Direct Debit recurring-token path after initial settlement, with permission recommendation and later stored-ID/ContAuth fields (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-eps-web-component]] — EPS Web Component guide's SEPA Direct Debit recurring-token path after initial settlement, with shopper-permission recommendation and later stored-ID/ContAuth fields (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-ios-drop-in]] — WIP-gated Bancontact card iOS Drop-in recurring, with token-created webhook after settlement and later stored-ID/ContAuth server payments (2026-09-15).
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions]] — Bancontact WIP-only recurring token creation after initial settlement and later stored-ID/ContAuth use; requires signup, eligibility and amount limits (2026-09-15 v4 guide).
+
+
+- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions]] — Bancontact mobile WIP-gated recurring: initial SCA/consent, token webhook after settlement and later `bcmc_mobile` stored-ID/ContAuth payments, subject to signup/limits (v4 guide).
+
+
 - [[source-adyen-docs-payment-methods-pad-web-drop-in]] — PAD Canada Web Drop-in initial-payment token creation and recurring reuse in Sessions/Advanced; future recurring debits require shopper mandate and later requests omit mandate ID (2026-09-15).
 
 

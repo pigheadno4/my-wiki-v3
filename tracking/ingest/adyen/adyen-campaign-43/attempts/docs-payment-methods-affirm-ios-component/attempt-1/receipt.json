@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-affirm-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Affirm iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/affirm/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md\"\ntags: [adyen, affirm, ios, components, financing, capture]\n---\n\n## Overview\n\nAdyen's 2026-09-15 guide adds Affirm to an existing iOS Components integration, covering Sessions and Advanced server flows, Checkout request data, native `AffirmComponent` creation, capture and test/live setup. Its mixed native and Web examples require scope-aware reading. See [[adyen]] and [[adyen-ios-sdk]].\n\n## Key takeaways\n\n- The merchant first needs an iOS Components Sessions or Advanced integration and Affirm added in Customer Area. Both prerequisite base-guide URLs contain an unresolved encoded `getParameter('platform')` placeholder, though the later Sessions link explicitly targets iOS; those placeholder URLs are not verified iOS base-guide routes (raw lines 21-45). The page labels `/sessions` the default for Components v5.0.0 or later; `/payments` is the other tab (raw lines 39-45, 758-760).\n- Both endpoint tables mark `shopperName`, `telephoneNumber` and `shopperEmail` required. `countryCode` is required for Canada or the UK because omission defaults to US. When supplying billing or delivery address, `stateOrProvince` is required for Canada and US and optional for UK; missing delivery address defaults to billing. `lineItems` is optional but recommended to improve approval rates; `shopperReference` is optional with minimum length three (raw lines 47-56, 762-771). TEST request examples use US/USD and an app return URL; they do not establish country, currency or financing eligibility beyond the table statements (raw lines 58-117, 773-835).\n- In iOS Components v5.0.0 or later, the Swift examples check for `AffirmPaymentMethod`, create `AffirmComponent`, keep a reference and present it. Sessions assigns the session as delegate; Advanced assigns the merchant object. The v4.x.x example uses an earlier `apiContext` and `FormComponentStyle` initializer. The page says no Affirm-specific Component configuration is required (raw lines 1251-1308).\n- Later sections under \u201cOptional configuration\u201d show TypeScript/JavaScript `affirm: { ... }`, `AdyenCheckout`, `checkout.create('affirm', ...).mount('#affirm-container')`, and a malformed v6 constructor example. These are Web-style snippets inside an iOS page and do not establish equivalent native Swift `AffirmComponent` properties or a native v6 integration route. Likewise some `/payments` SDK examples set `channel: Web` despite the iOS title, and the curl examples contain literal `{hint:...}` address keys; use the prose tables and native Swift section for the iOS route, and verify request/example syntax independently (raw lines 79-93, 797-812, 855, 938, 1010, 1251-1437).\n- Capture after goods are sent is required within 28 days or the Affirm authorization expires. Capture triggers the shopper's installment schedule. If fulfillment is less than the authorized amount, this page instructs capture of the authorized amount then refund of the difference, rather than a lesser capture (raw lines 1439-1443).\n- TEST credentials come from Affirm, and Affirm provides live credentials after reviewing test transactions. Live use also requires a live Customer Area request and supplying Adyen with Affirm live credentials. TEST examples or test-payment status do not prove live approval or successful financing (raw lines 1445-1451).\n\n## Detail locators\n\n- Flow prerequisites, endpoint field tables and examples: raw lines 21-1249.\n- Native Swift Component versions and delegate assignments: raw lines 1251-1308.\n- Mixed Web-style optional configuration/code and copy limitations: raw lines 1310-1437.\n- Capture, refund difference and 28-day expiry: raw lines 1439-1443.\n- Test credentials and live enablement: raw lines 1445-1451.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15|Affirm iOS Component integration (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Components) or later.",
+      "location": "raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md:45 (Sessions API reference)"
+    },
+    {
+      "text": "Required when transacting in Canada or the UK, because the default **US** is used if you omit this parameter.",
+      "location": "raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md:53 (countryCode condition)"
+    },
+    {
+      "text": "There are no configuration steps specific to Affirm required for Components.",
+      "location": "raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md:1308 (native Component configuration)"
+    },
+    {
+      "text": "All Affirm payments have to be captured within 28 days.",
+      "location": "raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md:1441 (capture expiry)"
+    },
+    {
+      "text": "Before you can accept live Affirm payments, you need to [submit a request for Affirm](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/), and provide us with your Affirm live credentials.",
+      "location": "raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md:1451 (live setup)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "affirm-ios-component-sdk-route",
+        "target_path": "wiki/concepts/adyen-ios-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-affirm-ios-component]] \u2014 2026-09-15 Affirm iOS Components Sessions/Advanced guide for request fields, native component setup and 28-day capture; source flags mixed Web examples and prerequisite links.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/affirm/ios-component/2026-09-15.md",
+  "raw_sha256": "8365fffc55780939d7156bbc15b10cf02e8c93b6ecb17b82574fa5567bd2f0b1",
+  "status": "candidate_ready"
+}

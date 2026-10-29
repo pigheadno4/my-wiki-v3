@@ -1,0 +1,82 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bancontact mobile Android Drop-in v4.x.x integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, bancontact, mobile, android, drop-in, earlier-versions, qr, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 page describes **Bancontact mobile Android Drop-in v4.x.x**: a BE/EUR mobile app handoff, server `/payments` and `/payments/details`, intermediate versus final outcomes, and WIP-gated recurring tokens. It is a historical version-specific guide, not Bancontact card behavior, current app coverage or successful live-payment evidence. [[adyen]] [[adyen-online-payments]] [[adyen-android-sdk]]\n\n## Key takeaways\n\n- **Setup/display:** start from an Android Drop-in integration and add Bancontact in **test Customer Area**. To receive `bcmcmobile.urlIntent` in the payment response, enable **3DS2 Additional Fields** in Customer Area's Additional data settings; the setting is described here as a response-field prerequisite, not proof that the wallet flow is a card 3DS challenge. Drop-in uses `/paymentMethods` `countryCode=BE` and `amount.currency=EUR` to show Bancontact. The optional `BcmcConfiguration` sample uses a client key and TEST environment. See raw lines 15\u201355.\n- **Payment/app action:** pass Drop-in's `paymentComponentData.paymentMethod` to the merchant server and send `/payments` with a return URL from `RedirectComponent.getReturnUrl(context)`; examples use `bcmc_mobile` and an Android app-scheme return. The curl has a literal hint-wrapped `paymentMethod` key, so it is not copy-ready JSON. The displayed `/payments` response is `Pending`, with `action.type=qrCode`, `url`, `qrCodeData` and optional `additionalData.bcmcmobile.urlIntent`; despite prose calling this a redirect, do not assume a plain `redirect` action. Pass the action to Drop-in for app handoff. See raw lines 57\u201386 and 369\u2013390.\n- **Completion/outcome:** after shopper return, send Drop-in `actionComponentData.details` to server-side `/payments/details`, then present its `resultCode`. The guide also calls for asynchronous webhook outcome. Its table explicitly treats **Pending/Received as order receipt, waiting for clearing**, with final result in an `AUTHORISATION` webhook; `Authorised`, `Cancelled`, `Error` and `Refused` have separate actions. A sample `Authorised` response is not proof of live success. See raw lines 392\u2013439.\n- **Recurring WIP gate:** tokenization is described through **Bancontact Wallet Initiated Program**, requiring signup and Support enablement, with company eligibility and amount limits. It says first transaction has shopper SCA/consent, later WIP transactions need no SCA, and issuer liability remains. To create a token use `storePaymentMethod=true` plus shopper reference; after **settlement** `recurring.token.created` supplies stored ID via lifecycle webhook. Subsequent `/payments` uses `bcmc_mobile`, stored ID, same shopper reference, `ContAuth`, and Subscription or UnscheduledCardOnFile. Support must configure recurring TEST. Do not generalize WIP recurring to every Bancontact merchant. See raw lines 441\u2013498. [[adyen-tokenization]]\n- **Testing limit:** the page explicitly says **Bancontact mobile does not have a test platform** and recommends a **live EUR 0.01 penny test**. This is source advice, not authorization to run a financial transaction or evidence that the test succeeded. Earlier examples contain `checkout-test`/`bcmc-test` strings; they do not establish a usable Bancontact mobile test platform in view of the explicit statement. See raw lines 69\u201387, 377\u2013386 and 837\u2013841.\n\n## Detail locators\n\n- v4 scope, Customer Area response-field setting, BE/EUR display and client config: raw lines 15\u201355.\n- Server request, method/app return and historical language examples: raw lines 57\u2013368.\n- `Pending` QR/app-intent action and post-return `/payments/details`: raw lines 369\u2013426.\n- Intermediate versus final result table and webhook: raw lines 427\u2013439.\n- WIP eligibility, SCA/consent, token lifecycle and recurring request: raw lines 441\u2013836.\n- No test platform and live penny-test recommendation: raw lines 837\u2013841.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Bancontact mobile payment route.\n- [[adyen-android-sdk]] \u2014 historical Drop-in/app handoff context.\n- [[adyen-tokenization]] \u2014 WIP recurring token path.\n- [[source-adyen-docs-payment-methods-bancontact]] \u2014 card versus mobile overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15|Bancontact mobile Android Drop-in v4.x.x, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "To receive the `bcmcmobile.urlIntent` parameter in the payment response:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md:28 (Additional data prerequisite)"
+    },
+    {
+      "text": "\"type\": \"qrCode\"",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md:383 (sample action)"
+    },
+    {
+      "text": "The payment order was successfully received.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md:438 (Pending/Received result table)"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md:456 (WIP gate)"
+    },
+    {
+      "text": "Bancontact mobile does not have a test platform.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md:839 (TEST boundary)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bancontact-mobile-android-v4-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions]] \u2014 2026-09-15 v4.x.x Bancontact mobile Android Drop-in BE/EUR app/QR action guide; Pending/Received await AUTHORISATION webhook, WIP recurring is gated, and source says no test platform.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The response sample is qrCode/Pending despite redirect wording. TEST-looking endpoint strings do not override the explicit no-test-platform statement; live penny-test advice is not execution authorization."
+        ]
+      },
+      {
+        "update_id": "bancontact-mobile-android-v4-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions]] \u2014 historical v4 Android Drop-in `bcmc_mobile` app/QR action and server `/payments/details` return handoff (2026-09-15 capture).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "The guide calls the handoff a redirect but displays a qrCode action with urlIntent/qrCodeData; do not replace action shape with a generic redirect."
+        ]
+      },
+      {
+        "update_id": "bancontact-mobile-android-v4-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions]] \u2014 Bancontact mobile WIP-gated recurring: initial SCA/consent, token webhook after settlement and later `bcmc_mobile` stored-ID/ContAuth payments, subject to signup/limits (v4 guide).\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "WIP signup, eligibility, amount limits and Support configuration qualify the recurring route; token availability is not universal."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "e3a5659a1ef983c7af182f4dde5a84a9651b92163cc043d288ee1e360dcb8179",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bancontact card Android Component v5.0.0 | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md\"\ntags: [adyen, bancontact, card, android, components, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured Bancontact **card** Android Component page explains how to add the method to an existing Android Components integration. It describes itself as the guide for **v5.0.0** (released October 2023) and points earlier SDK users to a separate guide. It is not the Bancontact Mobile app-switch/QR path, and this snapshot does not establish current SDK behavior or merchant eligibility (raw lines 5\u201321).\n\n## Key takeaways\n\n- Both **Sessions** and **Advanced** paths require an existing Android Components integration at minimum version **5.0.0** and Bancontact card added in Customer Area. The base `/sessions` or `/payments` request needs no Bancontact-card-specific additional fields, and the Component needs no additional configuration. Sessions proceeds to create the checkout session; Advanced launches and shows the Component (raw lines 23\u201367). These steps describe setup, not a successful authorization or capture.\n- A separate recurring route is through **Bancontact Wallet Initiated Program (WIP)**. The page strongly recommends explicit shopper permission for future charges. WIP requires signup, eligibility and Support enablement, with transaction amount limits; first consent transaction uses SCA, subsequent WIP transactions do not, and the source states no liability shift on the first transaction because the issuer remains liable. Support is also needed to configure recurring tests (raw lines 69\u201398). None of this implies ordinary Bancontact card merchants have WIP enabled.\n- To create a recurring token, send `storePaymentMethod: true` and a shopper reference of at least three characters in `/sessions` or `/payments`. **After settlement**, the `recurring.token.created` webhook supplies `storedPaymentMethodId`; the server must receive token lifecycle events. Later `/payments` use that ID and the same shopper reference with `ContAuth` and `Subscription` or `UnscheduledCardOnFile` (raw lines 99\u2013124). The v72 TEST subscription request and language-specific library snippets are illustrative, not proof of a live charge or current compatibility (raw lines 126\u2013463).\n- The test section includes co-badged test cards, a `holderName: DECLINED` refusal fixture and a note that the Visa Debit example can route to Bancontact **or Visa depending on payment-method setup**. It separately directs readers to inspect test payments in Customer Area and add Bancontact card in the live Customer Area. Test credentials and examples do not establish live account setup or an actual payment outcome (raw lines 465\u2013504).\n\n## Detail locators\n\n- Android card identity, v5.0.0 scope and earlier-guide pointer: raw lines 15\u201321.\n- Sessions/Advanced prerequisites and base request/Component configuration: raw lines 23\u201367.\n- WIP consent, enrollment, limits, first SCA, token creation and later token payment: raw lines 69\u2013124.\n- v72 TEST recurring examples by server language: raw lines 126\u2013463.\n- Test fixtures, conditional co-badged routing and live Customer Area setup: raw lines 465\u2013504.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-bancontact|Bancontact card/mobile overview]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15|Bancontact card Android Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for **v5.0.0**, released in October 2023.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md:21"
+    },
+    {
+      "text": "When you [make the `/sessions` request](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#create-a-payment-session), Bancontact card does not require any additional fields.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md:45"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md:84"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md:106"
+    },
+    {
+      "text": "Depending on your payment method setup, transactions with this test card are routed to Bancontact or Visa.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md:475"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-bancontact-card-android-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component]] \u2014 2026-09-15-captured Bancontact card Android Component v5.0.0 guide for Sessions/Advanced setup and WIP-qualified recurring tokens.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/2026-09-15.md",
+  "raw_sha256": "4e44af54a8fa72f488a76b08df4c11ee821534e83ace876d8121d1166a86cb58",
+  "status": "candidate_ready"
+}

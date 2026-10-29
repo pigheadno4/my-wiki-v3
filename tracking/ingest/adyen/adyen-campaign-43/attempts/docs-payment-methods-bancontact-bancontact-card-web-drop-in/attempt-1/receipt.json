@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Bancontact card Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md\"\ntags: [adyen, bancontact, web, drop-in, online-payments]\n---\n\n## Overview\n\nAdyen's guide for adding **Bancontact card** to an existing **Web Drop-in** integration. It covers both Sessions and Advanced server-side flows and requires Bancontact card added in the Customer Area. The page was last modified 2022-12-19 in the pinned capture, so its versioned options and examples are historical source evidence, not proof of current merchant enablement or live payment behavior. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Bancontact card is described as card-like, with no CVC for Bancontact (a co-badged card may still show the CVC field), mandatory 3D Secure authentication, and no separate captures. Web Drop-in collects card information and redirects the shopper for 3D Secure. See raw lines 19\u201327.\n- The base Bancontact card API reference says there are **no additional fields** to send. It points to `/sessions` as the default with Drop-in v5.0.0+ and to `/payments` for additional use cases; choose the corresponding existing Web Drop-in flow. For v6, the page shows an `AdyenCheckout` import. See raw lines 29\u201360. These base-flow statements do not remove the separate fields required for optional tokenization.\n- Optional `bcmc` configuration includes a cardholder-name field and requiredness (`holderNameRequired` also needs `hasHolderName`), a stored-details checkbox, brands, styling, billing-address controls and version-marked options. The example adds `bcmcConfiguration` under `paymentMethodsConfiguration.bcmc`. See raw lines 62\u2013125.\n- To put Bancontact card among other cards instead of showing it separately, the prose says to include `bcmc` in `blockedPaymentMethods` when making a `/sessions` or `/paymentMethods` request, then include `bcmc` in the `card` brands array. **Placement conflict:** the immediately following example puts `blockedPaymentMethods` in a client `configuration` object alongside `environment` and `clientKey`, while the prose names server requests. The example also has a stray closing `});`. Do not treat it as a validated copy-and-paste request or resolve placement from this source alone. See raw lines 128\u2013159.\n- Recurring payments are described through the **Bancontact Wallet Initiated Program (WIP)**, for which signup and eligibility are required and amount limits apply. The page strongly recommends explicit shopper permission; its WIP discussion says the first consented transaction uses SCA, subsequent transactions do not, and the issuer remains liable without a liability shift for the first transaction. Testing recurring payments needs Support configuration. See raw lines 161\u2013189.\n- For token creation, the `/sessions` or `/payments` request includes `storePaymentMethod: true` and a unique `shopperReference`. After the initial payment settles, a `recurring.token.created` webhook contains the `storedPaymentMethodId`. Future `/payments` pass that ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. The sample uses test `/payments` v72 and `bcmc`; it is not evidence that an account is WIP-enabled. See raw lines 191\u2013240.\n- The test table has co-badged card examples; one Bancontact/Visa test card can route to either method depending on payment-method setup. A `DECLINED` holder-name example illustrates a refusal. Live setup points to adding Bancontact card in the live Customer Area, without documenting a completed live transaction. See raw lines 557\u2013590.\n\n## Detail locators\n\n- Method identity, 3DS/capture limitations and base Web integration: raw lines 15\u201360.\n- Optional Drop-in settings and separate-versus-card-list configuration: raw lines 62\u2013159.\n- WIP eligibility, token lifecycle and conditional request fields: raw lines 161\u2013240.\n- Recurring request examples across server libraries: raw lines 220\u2013555.\n- Test cards, co-badge routing and live Customer Area link: raw lines 557\u2013590.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15|Bancontact card Web Drop-in documentation capture (2026-09-15)]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Bancontact card to your existing Web Drop-in integration.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md:25"
+    },
+    {
+      "text": "You do not need to send additional fields for Bancontact card.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md:57"
+    },
+    {
+      "text": "By default, Drop-in renders Bancontact card separately from other [cards](/payment-methods/cards/).",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md:130"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md:176"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md:198"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-bancontact-card-web-dropin-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-web-drop-in]] \u2014 2026-09-15-captured Bancontact card Web Drop-in Sessions/Advanced guide, optional card grouping, and WIP-qualified recurring; grouping prose/example disagree on `blockedPaymentMethods` placement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The card-grouping prose places blockedPaymentMethods in /sessions or /paymentMethods, but the adjacent example puts it in a client configuration object and has malformed closing syntax.",
+          "The page's 2022-12-19 last_modified and version-marked options should remain historical, not current eligibility claims."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-drop-in/2026-09-15.md",
+  "raw_sha256": "01f056d4ab3020af2580dd7dc1647196b9d4ff227cb76429041241dfffd19e15",
+  "status": "candidate_ready"
+}

@@ -19,6 +19,9 @@ A successful `CAPTURE` webhook means the request was valid and submitted onward,
 
 ## Related
 
+- [[source-adyen-docs-payment-methods-affirm-web-component]] — Affirm Web Component method-specific capture within 28 days after authorization; capture starts installments, and lesser fulfillment calls for capture then refund of the difference (2026-09-15).
+
+
 - [[source-adyen-docs-payment-methods-sepa-direct-debit-flutter-drop-in]] — Advanced Flutter Drop-in SEPA guide for delayed/manual capture when auto-capture is off, stated nonexpiring authorization and Support-enabled multiple partial captures (2026-09-15 capture).
 
 

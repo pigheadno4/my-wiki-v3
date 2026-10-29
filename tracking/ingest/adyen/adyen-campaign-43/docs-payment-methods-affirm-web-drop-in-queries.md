@@ -1,0 +1,13 @@
+# Fixed retrieval checks: Affirm Web Drop-in
+
+Canonical source stem: `source-adyen-docs-payment-methods-affirm-web-drop-in`
+Pinned raw: `raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md` (SHA-256 `509bfe83b1923eddf5e289dbb9a23c3ad987b70e4749f010e74b0504560c6726`)
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-affirm-web-drop-in.md`
+
+## Q1 — What is this page for, and what should a reader not infer?
+
+It is the captured method-specific guide to add Affirm to an existing Adyen Web Drop-in Sessions or Advanced integration, with prior Customer Area method setup (`raw/adyen/docs/payment-methods/affirm/web-drop-in/2026-09-15.md:15-37`). It covers a Web v6 import (`:39-45`), endpoint reference (`:47-64`, `:766-779`), form configuration (`:1259-1367`), capture (`:1369-1373`), and test/live gates (`:1375-1381`). Its Drop-in v5.0.0 default-flow statement is not a Checkout API minimum (`:51-53`); the sample `/v69/sessions` and `/v72/payments` URLs are examples (`:66-69`, `:781-784`). The capture does not prove current merchant enablement, shopper financing approval or a successful live payment. The curl address-key hint markup is not a reliable API field name (`:87-95`, `:805-813`).
+
+## Q2 — What capabilities, prerequisites and warnings matter most?
+
+Start with an existing Sessions or Advanced Web Drop-in and add Affirm in Customer Area (`:21-37`). For either endpoint, provide shopper first/last name, phone and email; provide `countryCode` for Canada/UK despite its blank requiredness cell because omission defaults to US; Canadian/US addresses need `stateOrProvince`, UK addresses do not, and a missing delivery address falls back to billing. `lineItems` are optional but recommended (`:55-64`, `:770-779`). `allowedCountries` controls only the address-form dropdown, defaulting to US/CA; GB is configurable (`:1259-1279`). Read-only form groups require matching pre-fill (`:1336-1352`). Capture after goods are sent and within 28 days or authorization expires; capture triggers installments (`:1369-1371`). For lesser fulfillment this guide says capture the authorized amount and refund the difference (`:1373`), while the separately captured Affirm overview matrix marks partial and multiple-partial capture supported (`raw/adyen/docs/payment-methods/affirm/2026-09-15.md:27-29`); retain that conflict rather than promise an unqualified partial-capture path. Affirm test credentials, review before live credentials, a live Customer Area request, and provision of live credentials are separate gates (`:1375-1381`).

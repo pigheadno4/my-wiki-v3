@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bancontact card Web Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md\"\ntags: [adyen, bancontact, card, web-components, 3d-secure, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 capture of Adyen's Bancontact **card** Web Component guide adds the method to an existing Sessions or Advanced Web Components integration. The page's `last_modified` metadata is 2021-10-27. Its Component collects card data and redirects the shopper for 3D Secure authentication; it is distinct from Bancontact Mobile's app-switch/QR route. This document alone does not establish current SDK support, merchant eligibility or a completed payment (raw lines 5\u201345).\n\n## Key takeaways\n\n- Bancontact card behaves like a card payment with **no CVC** (a CVC field may still appear for co-badged cards), **mandatory 3D Secure authentication**, and **no separate captures**. The page says the Component securely collects card information and redirects for authentication; it does not give a standalone authorization/capture-result workflow (raw lines 19\u201327).\n- The prerequisites are an existing **Sessions or Advanced** Web Components flow and adding Bancontact card in Customer Area. The API-reference section says no Bancontact-specific additional fields are needed; it points to `/sessions` as the default for Components v5.0.0+ and `/payments` for an additional use case (raw lines 29\u201360). These are flow-specific routes, not proof the method is enabled for a merchant.\n- For Web Components v6, the guide imports `Bancontact` and mounts `new Bancontact(checkout)`; v5.x.x or earlier uses `checkout.create('bcmc')`. Configuration can optionally show/require holder name, display a save-details checkbox and customize brands; the example enables holder name and storage, but those are **optional configuration**, not baseline required card fields. Bancontact can also be included in a Cards Component `brands` array as `bcmc` (raw lines 47\u201353, 72\u2013168).\n- Recurring is a separate **Bancontact Wallet Initiated Program (WIP)** path. Explicit shopper permission for future charges is strongly recommended; WIP requires signup, eligibility and Support enablement, with transaction limits. The page says the first consent transaction uses SCA, later transactions do not, and no liability shift occurs because the issuer remains liable. Token creation uses `storePaymentMethod: true` plus a shopper reference of at least three characters in `/sessions` or `/payments`; only after settlement does the `recurring.token.created` webhook provide `storedPaymentMethodId`. Subsequent `/payments` use that token and shopper reference with `ContAuth` and `Subscription` or `UnscheduledCardOnFile`. Test recurring configuration also needs Support (raw lines 170\u2013225). The v72/TEST recurring request is an example, not evidence of WIP access or successful execution (raw lines 227\u2013250).\n- The testing section lists co-badged test cards and a `holderName: DECLINED` refusal fixture. It warns that the Visa Debit example may route to Bancontact **or Visa depending on payment-method setup**. It directs readers to test Customer Area for payment status and separately to add Bancontact card in live Customer Area; these instructions and fixtures do not establish a live payment or current account setup (raw lines 566\u2013599).\n\n## Detail locators\n\n- Bancontact card distinctions, Component function and Sessions/Advanced prerequisites: raw lines 15\u201345.\n- v6 import, v6/v5 mounting, optional configuration and combined Cards Component: raw lines 47\u2013168.\n- WIP eligibility, consent/SCA, settlement-triggered token and later recurring fields: raw lines 170\u2013250.\n- Language-specific recurring TEST request examples: raw lines 252\u2013564.\n- Test credentials, conditional co-badged routing, decline fixture and separate live setup: raw lines 566\u2013599.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[adyen-tokenization]]\n- [[source-adyen-docs-payment-methods-bancontact|Bancontact card/mobile overview]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15|Bancontact card Web Component, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "There is no CVC. For co-badged cards, the CVC field can still appear.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md:21"
+    },
+    {
+      "text": "[3D Secure authentication](/online-payments/3d-secure) is mandatory.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md:22"
+    },
+    {
+      "text": "Separate captures are not supported.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md:23"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md:185"
+    },
+    {
+      "text": "Depending on your payment method setup, transactions with this test card are routed to Bancontact or Visa.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md:576"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c43-bancontact-card-web-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-web-component]] \u2014 2026-09-15-captured Bancontact card Web Component guide for Sessions/Advanced, versioned mounting, mandatory 3DS and WIP-qualified recurring.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/web-component/2026-09-15.md",
+  "raw_sha256": "85d0bba59d20a33fadec570403817f1c9641f7a9585fc8802924c1612d5029df",
+  "status": "candidate_ready"
+}

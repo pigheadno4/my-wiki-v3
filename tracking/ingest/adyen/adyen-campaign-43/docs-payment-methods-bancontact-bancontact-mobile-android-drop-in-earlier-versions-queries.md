@@ -1,0 +1,11 @@
+# Fixed retrieval checks — Bancontact mobile Android Drop-in earlier versions
+
+Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions.md`.
+
+## Q1. What is this source's purpose and scope, and what cannot be inferred?
+
+This 2026-09-15 source describes **Bancontact mobile Android Drop-in v4.x.x**, from BE/EUR method display through app/QR handoff and post-return payment-result handling (primary raw `raw/adyen/docs/payment-methods/bancontact/bancontact-mobile/android-drop-in/earlier-versions/2026-09-15.md:15-55,57-439`; canonical source stem `source-adyen-docs-payment-methods-bancontact-bancontact-mobile-android-drop-in-earlier-versions`). It is not Bancontact card handling, a current SDK guide, WIP entitlement, a usable TEST platform or proof of final/live payment success. The source explicitly says Bancontact mobile **does not have a test platform** despite TEST-looking request/response strings, and its EUR 0.01 live penny-test advice is not evidence that one occurred (`:69-87,377-386,837-841`).
+
+## Q2. What are the central capabilities, prerequisites and warnings?
+
+Start with Android Drop-in, add Bancontact in test Customer Area, and enable **3DS2 Additional Fields** if `bcmcmobile.urlIntent` is needed; request BE/EUR in `/paymentMethods` (`:21-40`). Server `/payments` uses Drop-in method data `bcmc_mobile` and an Android return URL; the curl's hint-wrapped key is not copy-ready (`:57-87`). Displayed `/payments` response is **Pending** with `action.type=qrCode`, `qrCodeData`, URL and app intent, although prose calls the process redirect; pass action to Drop-in and submit returned details to `/payments/details` (`:369-426`). `Pending`/`Received` mean received order awaiting clearing, with final result by AUTHORISATION webhook (`:427-439`). WIP recurring requires signup/eligibility and amount limits, initial SCA/consent, token-created event after settlement and later stored-ID/ContAuth payments (`:441-498`). The page has no test platform and recommends a live EUR 0.01 check; no financial action is implied by this record (`:837-841`).

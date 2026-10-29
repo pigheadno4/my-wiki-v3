@@ -1,0 +1,82 @@
+{
+  "job_id": "docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Bancontact card Android Component v4.x.x integration\"\ntype: source\ndate_ingested: 2026-10-27\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/bancontact/bancontact-card/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, bancontact, card, android, components, earlier-versions, 3d-secure, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 guide is for **Bancontact card Android Component v4.x.x**, with an existing **Advanced-flow Android Components** integration. It covers `BcmcComponent`, encrypted card-data handoff to the merchant server, mandatory 3D Secure redirect, `/payments/details`, WIP-gated recurring tokens and TEST/live setup. It is version-scoped historical integration evidence, not proof of current Android SDK behavior, WIP eligibility, live acceptance or payment success. [[adyen]] [[adyen-online-payments]] [[adyen-android-sdk]]\n\n## Key takeaways\n\n- **Card-only scope:** Bancontact card has no CVC, though a co-badged card may show one; **3D Secure is mandatory** and separate captures are unsupported. The Component collects sensitive card information without sending it through the merchant server, and this guide requires Redirect Component handling for 3DS. Its requirement is **Advanced-flow Android Components** plus Bancontact card addition in Customer Area, although several handling/See-also links point to Sessions guides. Use the matching version/flow, not the linked label alone. See raw lines 15\u201335 and 944\u2013948.\n- **Show and submit:** request `/paymentMethods` for `countryCode=BE`, `amount.currency=EUR`, select method `type=bcmc`, add the `com.adyen.checkout:bcmc` module, configure `BcmcConfiguration` with a client key, and attach `BcmcComponent`. Only submit valid Component state after the shopper proceeds; send `paymentComponentState.data` to the server for `/payments`. The `<latest-version>` dependency placeholder is not a stated v4 patch version. See raw lines 36\u2013102.\n- **Server/redirect:** the prose calls for Component payment data, Android channel and an app return URL obtained through `RedirectComponent.getReturnUrl(context)` (it writes `returnURL`). But `/payments` curl and language samples show a web `returnUrl`, `paymentMethod.type=scheme` despite earlier `bcmc` selection, and the curl has a literal hint-wrapped `paymentMethod` key. Treat these as unresolved prose/sample differences, not a copy-ready Bancontact request or safe card-data recipe. The examples are TEST endpoints using v68 `/payments`, not a universal minimum. See raw lines 102\u2013135 and 137\u2013441.\n- **Authentication/outcome:** `/payments` may return `RedirectShopper` with `action.type=redirect`; use the Redirect Component for 3DS, then send its `actionComponentData.details` to server-side `/payments/details`. Its sample uses a v72 TEST endpoint and `Authorised` response. Present the synchronous `resultCode`, but the guide also says payment outcome arrives asynchronously by webhook. Possible result codes here are `Authorised`, `Cancelled`, `Error` and `Refused`. A sample `Authorised` is not live-payment proof. See raw lines 442\u2013509.\n- **Recurring is WIP-gated:** the guide recommends explicit shopper permission, says **Bancontact Wallet Initiated Program (WIP)** requires signup and not all companies qualify, and says amount limits apply. Under its WIP description, the first transaction involves SCA/consent; later transactions do not require SCA, while the issuer remains liable (the page says no liability shift). To create a token add `storePaymentMethod=true` and a shopper reference; after settlement receive `recurring.token.created` via the lifecycle webhook. Later `/payments` uses stored ID, same shopper reference, `ContAuth` and `Subscription` or `UnscheduledCardOnFile`. Contact Support to configure recurring TEST. Do not infer general Bancontact recurring from tokenization text alone. See raw lines 511\u2013568. [[adyen-tokenization]]\n- **TEST/live:** the co-badged BCMC/Visa test card may route to Bancontact **or Visa depending on payment-method setup**. `holderName=DECLINED` is a test refusal trigger. For live, add Bancontact card in live Customer Area. The setup prose earlier requests a **client key**, but final live step says **Client Encryption Public Key**; preserve this credential-label conflict and verify the applicable v4 setup before implementation. See raw lines 57\u201368 and 907\u2013942.\n\n## Detail locators\n\n- v4 scope, card/CVC/3DS/capture, Advanced requirement and Sessions-link tension: raw lines 15\u201335.\n- BE/EUR `bcmc` selection, module, client key and Component lifecycle: raw lines 36\u2013102.\n- Server handoff, channel/return URL and inconsistent `scheme`/hint examples: raw lines 102\u2013441.\n- Redirect, `/payments/details`, synchronous result and async webhook: raw lines 442\u2013509.\n- WIP eligibility, amount/SCA/liability, token webhook and reuse: raw lines 511\u2013906.\n- Co-badged TEST routing, refusal and live credential-label conflict: raw lines 907\u2013942.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 Bancontact card online route.\n- [[adyen-android-sdk]] \u2014 version-scoped Android Component setup.\n- [[adyen-tokenization]] \u2014 WIP-gated recurring token path.\n- [[source-adyen-docs-payment-methods-bancontact]] \u2014 card/mobile overview and WIP footnote.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15|Bancontact card Android Component v4.x.x, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For co-badged cards, the CVC field can still appear.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md:21 (card CVC qualification)"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md:33 (v4 requirement)"
+    },
+    {
+      "text": "Put the object with `type`: **bcmc** in a `PaymentMethod` object.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md:45 (method selection; example scheme line 127)"
+    },
+    {
+      "text": "You have to sign up to be able to use this service and not all companies are eligible to use Bancontact WIP.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md:526 (WIP gate)"
+    },
+    {
+      "text": "Depending on your payment method setup, transactions with this test card are routed to Bancontact or Visa.",
+      "location": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md:917 (co-badged TEST routing)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "bancontact-card-android-v4-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions]] \u2014 2026-09-15 v4.x.x Bancontact card Android Advanced Component guide for BE/EUR `bcmc`, mandatory 3DS redirect, `/payments/details` and WIP-gated recurring; source warns scheme/sample and credential tensions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Version-specific Advanced source has Sessions handling links, bcmc selection versus scheme request samples, web returnUrl versus Android return prose, and client-key versus live encryption-public-key wording. Treat examples as illustrative and verify the actual v4 contract."
+        ]
+      },
+      {
+        "update_id": "bancontact-card-android-v4-sdk-route",
+        "target_path": "wiki/concepts/adyen-android-sdk.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions]] \u2014 historical Android v4.x.x `BcmcComponent`/Redirect Component flow, client-side encrypted details and server `/payments/details` handoff (2026-09-15 capture).\n",
+        "quote_indexes": [
+          0,
+          1,
+          2
+        ],
+        "warnings": [
+          "Do not apply `<latest-version>` placeholder or conflicting client-key/live-encryption-key wording to current SDK setup without version verification."
+        ]
+      },
+      {
+        "update_id": "bancontact-card-android-v4-token-route",
+        "target_path": "wiki/concepts/adyen-tokenization.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-bancontact-bancontact-card-android-component-earlier-versions]] \u2014 Bancontact WIP-only recurring token creation after initial settlement and later stored-ID/ContAuth use; requires signup, eligibility and amount limits (2026-09-15 v4 guide).\n",
+        "quote_indexes": [
+          3
+        ],
+        "warnings": [
+          "The guide's WIP eligibility and Support gates qualify recurring; tokenization availability is not a general Bancontact merchant entitlement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/bancontact/bancontact-card/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "e9a25733dcbf3c84afa60a09fcb68fa0c006fca4b861ee35c40f6fbe1f68cd1a",
+  "status": "candidate_ready"
+}
