@@ -1,0 +1,2108 @@
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index efddd98..85ddeb9 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -47,12 +47,14 @@ type loginCmd struct {
+ type loginListCmd struct {
+ 	cmd           *cobra.Command
+ 	accessBaseURL string
++	apiBaseURL    string
+ }
+ 
+ type loginSwitchCmd struct {
+ 	cmd           *cobra.Command
+ 	livemode      bool
+ 	accessBaseURL string
++	apiBaseURL    string
+ }
+ 
+ func newLoginCmd() *loginCmd {
+@@ -148,6 +150,8 @@ works here too, printing a browser_url and a next_step of
+ 	}
+ 	listCmd.cmd.Flags().StringVar(&listCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	listCmd.cmd.Flags().MarkHidden("access-base") // #nosec G104
++	listCmd.cmd.Flags().StringVar(&listCmd.apiBaseURL, "api-base", stripe.DefaultAPIBaseURL, "Sets the API base URL")
++	listCmd.cmd.Flags().MarkHidden("api-base") // #nosec G104
+ 
+ 	lc.cmd.AddCommand(listCmd.cmd)
+ 
+@@ -162,6 +166,8 @@ works here too, printing a browser_url and a next_step of
+ 	switchCmd.cmd.Flags().BoolVar(&switchCmd.livemode, "live", false, "Select live mode for the given account")
+ 	switchCmd.cmd.Flags().StringVar(&switchCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	switchCmd.cmd.Flags().MarkHidden("access-base") // #nosec G104
++	switchCmd.cmd.Flags().StringVar(&switchCmd.apiBaseURL, "api-base", stripe.DefaultAPIBaseURL, "Sets the API base URL")
++	switchCmd.cmd.Flags().MarkHidden("api-base") // #nosec G104
+ 
+ 	lc.cmd.AddCommand(switchCmd.cmd)
+ 	return lc
+@@ -185,12 +191,12 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 	}
+ 
+ 	if lc.completeDevice {
+-		return login.PollPendingDeviceAuth(cmd.Context(), &Config)
++		return login.PollPendingDeviceAuth(cmd.Context(), lc.apiBaseURL, &Config)
+ 	}
+ 
+ 	if lc.completeReauth {
+ 		uat, _ := Config.Profile.GetUAT()
+-		return pollPendingReauth(cmd.Context(), lc.accessBaseURL, uat, &Config.Profile)
++		return pollPendingReauth(cmd.Context(), lc.accessBaseURL, lc.apiBaseURL, uat, &Config.Profile)
+ 	}
+ 
+ 	if lc.completeURL != "" {
+@@ -229,7 +235,7 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 		return login.InteractiveLogin(cmd.Context(), &Config)
+ 	}
+ 
+-	return login.Login(cmd.Context(), lc.dashboardBaseURL, lc.accessBaseURL, &Config)
++	return login.Login(cmd.Context(), lc.dashboardBaseURL, lc.accessBaseURL, lc.apiBaseURL, &Config)
+ }
+ 
+ // sessionIsValid reports whether the current OAuth session is still usable,
+@@ -263,7 +269,7 @@ func (lc *loginCmd) reauthorizeSession(cmd *cobra.Command, uat string) error {
+ 		return initiateReauth(cmd.Context(), lc.accessBaseURL, uat)
+ 	}
+ 	printAlreadyLoggedIn(cmd, lc.apiBaseURL, lc.accessBaseURL, uat)
+-	return reauth(cmd.Context(), lc.accessBaseURL, uat, &Config.Profile)
++	return reauth(cmd.Context(), lc.accessBaseURL, lc.apiBaseURL, uat, &Config.Profile)
+ }
+ 
+ // printAlreadyLoggedIn prints a summary of the currently authenticated
+@@ -288,7 +294,7 @@ func printAlreadyLoggedIn(cmd *cobra.Command, apiBaseURL, accessBaseURL, uat str
+ 		fmt.Fprintln(cmd.OutOrStdout(), "You're already logged in.")
+ 	}
+ 	if contextCount > 1 {
+-		login.PrintAuthorizedContextsList(&Config.Profile, accounts)
++		login.PrintAuthorizedAccounts(cmd.Context(), apiBaseURL, &Config.Profile, uat, accounts)
+ 	}
+ }
+ 
+@@ -339,7 +345,10 @@ func (lc *loginListCmd) listLoggedInAccountsCmd(cmd *cobra.Command, args []strin
+ 		if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
+ 			return err
+ 		}
+-		return login.PrintAuthorizedContexts(cmd.Context(), lc.accessBaseURL, uat, &Config.Profile)
++		if err := stripe.ValidateAPIBaseURL(lc.apiBaseURL); err != nil {
++			return err
++		}
++		return login.PrintAuthorizedContexts(cmd.Context(), lc.accessBaseURL, lc.apiBaseURL, uat, &Config.Profile)
+ 	}
+ 	return Config.ListProfiles()
+ }
+@@ -350,11 +359,14 @@ func (lc *loginSwitchCmd) switchLoggedInAccountCmd(cmd *cobra.Command, args []st
+ 		if err := login.ValidateAccessBaseURL(lc.accessBaseURL); err != nil {
+ 			return err
+ 		}
++		if err := stripe.ValidateAPIBaseURL(lc.apiBaseURL); err != nil {
++			return err
++		}
+ 		accountID := ""
+ 		if len(args) > 0 {
+ 			accountID = args[0]
+ 		}
+-		result, err := login.SwitchContext(cmd.Context(), lc.accessBaseURL, &Config, accountID, lc.livemode)
++		result, err := login.SwitchContext(cmd.Context(), lc.accessBaseURL, lc.apiBaseURL, &Config, accountID, lc.livemode)
+ 		if err != nil {
+ 			return err
+ 		}
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 32b1ec4..1bcbf78 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -245,7 +245,7 @@ func Execute(ctx context.Context) {
+ 			} else {
+ 				fmt.Fprintf(os.Stderr, "%s. Running `stripe login`...\n", string(errRunes))
+ 
+-				err = login.Login(updatedCtx, stripe.DefaultDashboardBaseURL, rootAccessBaseURL, &Config)
++				err = login.Login(updatedCtx, stripe.DefaultDashboardBaseURL, rootAccessBaseURL, rootAPIBaseURL, &Config)
+ 
+ 				if err != nil {
+ 					fmt.Fprintln(os.Stderr, err)
+diff --git a/pkg/cmd/switch.go b/pkg/cmd/switch.go
+index 3b41c2e..4db8265 100644
+--- a/pkg/cmd/switch.go
++++ b/pkg/cmd/switch.go
+@@ -9,6 +9,7 @@ import (
+ 
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
++	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/pkg/validators"
+ )
+ 
+@@ -20,6 +21,7 @@ type switchContextCmd struct {
+ 	cmd           *cobra.Command
+ 	livemode      bool
+ 	accessBaseURL string
++	apiBaseURL    string
+ 	format        string
+ }
+ 
+@@ -73,12 +75,17 @@ func addSwitchContextFlags(cmd *cobra.Command, ctxCmd *switchContextCmd) {
+ 	cmd.Flags().StringVar(&ctxCmd.format, "format", "", "Output format: 'json' for a stable JSON schema (suitable for scripting)")
+ 	cmd.Flags().StringVar(&ctxCmd.accessBaseURL, "access-base", login.DefaultAccessBaseURL, "Sets the access base URL")
+ 	cmd.Flags().MarkHidden("access-base") //nolint:errcheck
++	cmd.Flags().StringVar(&ctxCmd.apiBaseURL, "api-base", stripe.DefaultAPIBaseURL, "Sets the API base URL")
++	cmd.Flags().MarkHidden("api-base") //nolint:errcheck
+ }
+ 
+ func (sc *switchContextCmd) run(cmd *cobra.Command, args []string) error {
+ 	if err := login.ValidateAccessBaseURL(sc.accessBaseURL); err != nil {
+ 		return err
+ 	}
++	if err := stripe.ValidateAPIBaseURL(sc.apiBaseURL); err != nil {
++		return err
++	}
+ 	accountID := ""
+ 	if len(args) > 0 {
+ 		accountID = args[0]
+@@ -86,7 +93,7 @@ func (sc *switchContextCmd) run(cmd *cobra.Command, args []string) error {
+ 	if accountID == "" && strings.EqualFold(sc.format, "json") {
+ 		return errorcategory.UserInputErrorf("--format json requires an account_id argument; the interactive selector isn't scriptable")
+ 	}
+-	result, err := login.SwitchContext(cmd.Context(), sc.accessBaseURL, &Config, accountID, sc.livemode)
++	result, err := login.SwitchContext(cmd.Context(), sc.accessBaseURL, sc.apiBaseURL, &Config, accountID, sc.livemode)
+ 	if err != nil {
+ 		return err
+ 	}
+diff --git a/pkg/cmd/whoami.go b/pkg/cmd/whoami.go
+index 26ce6bf..7bec4f9 100644
+--- a/pkg/cmd/whoami.go
++++ b/pkg/cmd/whoami.go
+@@ -10,6 +10,7 @@ import (
+ 
+ 	"github.com/spf13/cobra"
+ 
++	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
+ 	"github.com/stripe/stripe-cli/pkg/errorcategory"
+ 	"github.com/stripe/stripe-cli/pkg/login"
+@@ -53,11 +54,16 @@ type whoamiOutput struct {
+ // authorized accounts. Fields not surfaced in the text output (e.g. profile
+ // name, API version) are intentionally omitted here.
+ type whoamiOAuthOutput struct {
+-	DisplayName        string                     `json:"display_name,omitempty"`
+-	AccountID          string                     `json:"account_id,omitempty"`
+-	Mode               string                     `json:"mode,omitempty"`
+-	Email              string                     `json:"email,omitempty"`
+-	Role               string                     `json:"role,omitempty"`
++	DisplayName string `json:"display_name,omitempty"`
++	AccountID   string `json:"account_id,omitempty"`
++	Mode        string `json:"mode,omitempty"`
++	Email       string `json:"email,omitempty"`
++	Role        string `json:"role,omitempty"`
++	// Authorized is false when the active account/mode is no longer present
++	// among the UAT's authorized accounts (e.g. access was revoked or scoped
++	// down since the context was selected). Nil when there's no active
++	// context to evaluate.
++	Authorized         *bool                      `json:"authorized,omitempty"`
+ 	ExpiresAt          *int64                     `json:"expires_at,omitempty"`
+ 	AuthorizedAccounts []config.AuthorizedAccount `json:"authorized_accounts,omitempty"`
+ }
+@@ -191,6 +197,10 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 		} else {
+ 			fmt.Fprintf(tw, "Account\t%s · %s\n", out.DisplayName, displayModeText(out.Mode))
+ 		}
++		if out.Authorized != nil && !*out.Authorized {
++			color := ansi.Color(w)
++			fmt.Fprintf(tw, "\t%s Not authorized — run 'stripe switch'\n", color.Yellow("⚠"))
++		}
+ 		if out.Role != "" {
+ 			fmt.Fprintf(tw, "Role\t%s\n", out.Role)
+ 		}
+@@ -201,7 +211,7 @@ func (wc *whoamiCmd) runWhoamiOAuth(cmd *cobra.Command, uat string) error {
+ 		fmt.Fprintln(w)
+ 	}
+ 
+-	login.PrintAuthorizedContextsList(wc.profile, accounts)
++	login.PrintAuthorizedAccounts(cmd.Context(), wc.apiBaseURL, wc.profile, uat, accounts)
+ 	fmt.Fprintln(w)
+ 	fmt.Fprintln(w, "Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ 	fmt.Fprintln(w, "Run 'stripe switch' to switch to a different account, or between live mode and a sandbox.")
+@@ -237,6 +247,9 @@ func buildOAuthWhoamiOutput(accounts []config.AuthorizedAccount, ac *config.Acti
+ 		out.Mode = "test"
+ 	}
+ 
++	authorized := isActiveContextAuthorized(accounts, ac)
++	out.Authorized = &authorized
++
+ 	if hasExpiry {
+ 		ts := expiresAt.Unix()
+ 		out.ExpiresAt = &ts
+@@ -245,6 +258,36 @@ func buildOAuthWhoamiOutput(accounts []config.AuthorizedAccount, ac *config.Acti
+ 	return out
+ }
+ 
++// isActiveContextAuthorized reports whether ac's account and mode are still
++// present among accounts. The stored active context can go stale when access
++// is revoked or scoped down (e.g. from the dashboard) after it was selected,
++// without anything locally updating it.
++func isActiveContextAuthorized(accounts []config.AuthorizedAccount, ac *config.ActiveContext) bool {
++	wantMode := "test"
++	if ac.Livemode {
++		wantMode = "live"
++	}
++
++	for _, a := range accounts {
++		if a.ID != ac.AccountID {
++			continue
++		}
++		modes := a.Modes
++		if len(modes) == 0 {
++			// An account with no reported modes is treated as test-mode-only
++			// everywhere else in the CLI (see switchRowsForAccount).
++			modes = []string{"test"}
++		}
++		for _, m := range modes {
++			if m == wantMode {
++				return true
++			}
++		}
++		return false
++	}
++	return false
++}
++
+ // displayModeText maps the internal "test"/"live" mode value to the CLI's
+ // sandbox-oriented display terminology.
+ func displayModeText(mode string) string {
+diff --git a/pkg/login/login.go b/pkg/login/login.go
+index 059cc3f..458b81a 100644
+--- a/pkg/login/login.go
++++ b/pkg/login/login.go
+@@ -33,7 +33,7 @@ func warnIfInsecureStorage() {
+ // enrolled in the OAuth feature flag and the OAuth device-code flow is used
+ // instead of the legacy RAK flow. accessBaseURL controls which access-srv
+ // environment is used (production by default; QA via --access-base).
+-func Login(ctx context.Context, dashboardBaseURL, accessBaseURL string, cfg *config.Config) error {
++func Login(ctx context.Context, dashboardBaseURL, accessBaseURL, apiBaseURL string, cfg *config.Config) error {
+ 	links, useOAuth, err := GetLinks(ctx, dashboardBaseURL, cfg.Profile.DeviceName, cfg.GetMachineUUID())
+ 	if err != nil {
+ 		return err
+@@ -43,7 +43,7 @@ func Login(ctx context.Context, dashboardBaseURL, accessBaseURL string, cfg *con
+ 	_ = cfg.RemoveAuthFields(cfg.Profile.ProfileName)
+ 
+ 	if useOAuth {
+-		return LoginWithDeviceCode(ctx, accessBaseURL, cfg)
++		return LoginWithDeviceCode(ctx, accessBaseURL, apiBaseURL, cfg)
+ 	}
+ 
+ 	configurer := keys.NewRAKConfigurer(cfg, afero.NewOsFs())
+@@ -328,7 +328,7 @@ func CheckPendingOAuthLogin(ctx context.Context, cfg *config.Config) (*DeviceCod
+ 
+ // PollPendingDeviceAuth loads the OAuth device auth state saved by InitiateLogin and polls
+ // the token endpoint until the user approves.
+-func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
++func PollPendingDeviceAuth(ctx context.Context, apiBaseURL string, cfg *config.Config) error {
+ 	waitCtx, stop := signal.NotifyContext(ctx, os.Interrupt)
+ 	defer stop()
+ 
+@@ -344,7 +344,8 @@ func PollPendingDeviceAuth(ctx context.Context, cfg *config.Config) error {
+ 		return nil
+ 	}
+ 
+-	printAuthorizedSummary(result.Accounts, result.ActiveAccountID, result.ActiveLivemode)
++	uat, _ := cfg.Profile.GetUAT()
++	printAuthorizedSummary(ctx, apiBaseURL, &cfg.Profile, uat, result.Accounts)
+ 	warnIfInsecureStorage()
+ 	return nil
+ }
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index cd987e2..7a0813a 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -10,6 +10,7 @@ import (
+ 	"net/url"
+ 	"os"
+ 	"strings"
++	"unicode/utf8"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/ansi"
+ 	"github.com/stripe/stripe-cli/pkg/config"
+@@ -125,14 +126,15 @@ func ListAuthorizedAccountsForActiveSession(ctx context.Context, accessBaseURL s
+ }
+ 
+ // PrintAuthorizedContexts fetches the authorized accounts for accessToken and
+-// prints them as a formatted list, marking the active context.
+-func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile) error {
++// prints them as a formatted list, grouped by parent account where that can
++// be resolved (see PrintAuthorizedAccounts), marking the active context.
++func PrintAuthorizedContexts(ctx context.Context, accessBaseURL, apiBaseURL, accessToken string, profile *config.Profile) error {
+ 	accounts, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
+ 	if err != nil {
+ 		return fmt.Errorf("failed to fetch authorized accounts: %w", err)
+ 	}
+ 
+-	PrintAuthorizedContextsList(profile, accounts)
++	PrintAuthorizedAccounts(ctx, apiBaseURL, profile, accessToken, accounts)
+ 	return nil
+ }
+ 
+@@ -196,6 +198,255 @@ func displayMode(m string) string {
+ 	return m
+ }
+ 
++// Indents used when rendering accountRow. They differ in width, so printRow
++// compensates to keep the id and mode columns aligned across rows.
++const (
++	headerIndent = "  "
++	nestedIndent = "    └─ "
++)
++
++type accountRow struct {
++	name   string
++	id     string
++	mode   string
++	active bool
++	// nested marks a row that belongs to another account shown above it
++	// (a sandbox under its parent, or a legacy account's own test-mode row
++	// under its live row), so it renders with a tree connector.
++	nested bool
++}
++
++// accountHasLiveMode reports whether modes includes "live".
++func accountHasLiveMode(modes []string) bool {
++	for _, m := range modes {
++		if m == "live" {
++			return true
++		}
++	}
++	return false
++}
++
++// orderModesLiveFirst returns modes with "live" moved to the front (other
++// modes keep their relative order). For a legacy combined account, this
++// guarantees the live row renders before its nested test-mode row — the API
++// doesn't promise any particular mode ordering.
++func orderModesLiveFirst(modes []string) []string {
++	ordered := make([]string, 0, len(modes))
++	for _, m := range modes {
++		if m == "live" {
++			ordered = append(ordered, m)
++		}
++	}
++	for _, m := range modes {
++		if m != "live" {
++			ordered = append(ordered, m)
++		}
++	}
++	return ordered
++}
++
++// rowsForAccount builds the row(s) for a single authorized account. A legacy
++// combined account shares one account ID across both modes (no distinct
++// sandbox account); its test-mode row is labeled "Test mode" and marked
++// nested, since it belongs to the live row above it rather than standing on
++// its own.
++func rowsForAccount(a config.AuthorizedAccount, activeID, activeMode string) []accountRow {
++	modes := a.Modes
++	if len(modes) == 0 {
++		modes = []string{"test"}
++	}
++	isLegacyCombined := accountHasLiveMode(modes)
++	modes = orderModesLiveFirst(modes)
++
++	rows := make([]accountRow, 0, len(modes))
++	for _, m := range modes {
++		name := a.Name
++		nested := false
++		if m == "test" && isLegacyCombined {
++			name = "Test mode"
++			nested = true
++		}
++		rows = append(rows, accountRow{
++			name:   name,
++			id:     a.ID,
++			mode:   displayMode(m),
++			active: a.ID == activeID && m == activeMode,
++			nested: nested,
++		})
++	}
++	return rows
++}
++
++// classifiedAccounts partitions accounts by parent: header accounts (in
++// original order) and each header's nested child accounts (also in original
++// order, keyed by the header's ID). Shared by every presentation of the
++// authorized-accounts list (whoami, login, switch) so they all group the
++// same way.
++type classifiedAccounts struct {
++	headers          []config.AuthorizedAccount
++	childrenByParent map[string][]config.AuthorizedAccount
++}
++
++// classifyAccountsByParent sorts accounts into grouping headers (accounts
++// with a live mode of their own, ones referenced as a parent, or standalone
++// sandboxes with no resolvable parent) and the accounts that nest under each,
++// using parentAccountIDs to resolve sandboxes to their parent. A sandbox with
++// no known parent is shown as its own standalone account rather than being
++// grouped under a catch-all heading.
++func classifyAccountsByParent(accounts []config.AuthorizedAccount, parentAccountIDs map[string]string) classifiedAccounts {
++	byID := make(map[string]config.AuthorizedAccount, len(accounts))
++	for _, a := range accounts {
++		byID[a.ID] = a
++	}
++
++	// An account is a grouping header if it has a live mode of its own, or if
++	// some sandbox resolved it as its parent.
++	isHeader := make(map[string]bool, len(accounts))
++	for _, a := range accounts {
++		if accountHasLiveMode(a.Modes) {
++			isHeader[a.ID] = true
++		}
++	}
++	for _, parentID := range parentAccountIDs {
++		if _, ok := byID[parentID]; ok {
++			isHeader[parentID] = true
++		}
++	}
++
++	result := classifiedAccounts{childrenByParent: make(map[string][]config.AuthorizedAccount)}
++	for _, a := range accounts {
++		if isHeader[a.ID] {
++			result.headers = append(result.headers, a)
++			continue
++		}
++
++		parentID, hasParent := parentAccountIDs[a.ID]
++		if hasParent && isHeader[parentID] {
++			result.childrenByParent[parentID] = append(result.childrenByParent[parentID], a)
++			continue
++		}
++
++		result.headers = append(result.headers, a)
++	}
++
++	return result
++}
++
++// groupedAccountRows holds the result of grouping accounts by parent, ready
++// to render. headerRows and childRows are both keyed by the parent/header
++// account's ID.
++type groupedAccountRows struct {
++	headerRows map[string][]accountRow
++	childRows  map[string][]accountRow
++	totalRows  int
++}
++
++// groupAccountsByParent builds the printable rows for each account, grouped
++// by parent per classifyAccountsByParent.
++func groupAccountsByParent(accounts []config.AuthorizedAccount, parentAccountIDs map[string]string, activeID, activeMode string) groupedAccountRows {
++	classified := classifyAccountsByParent(accounts, parentAccountIDs)
++
++	result := groupedAccountRows{
++		headerRows: make(map[string][]accountRow, len(classified.headers)),
++		childRows:  make(map[string][]accountRow, len(classified.childrenByParent)),
++	}
++
++	for _, a := range classified.headers {
++		rows := rowsForAccount(a, activeID, activeMode)
++		result.headerRows[a.ID] = rows
++		result.totalRows += len(rows)
++	}
++	for parentID, children := range classified.childrenByParent {
++		for _, a := range children {
++			rows := rowsForAccount(a, activeID, activeMode)
++			for i := range rows {
++				rows[i].nested = true
++			}
++			result.childRows[parentID] = append(result.childRows[parentID], rows...)
++			result.totalRows += len(rows)
++		}
++	}
++
++	return result
++}
++
++// PrintGroupedAuthorizedAccounts prints already-fetched authorized accounts as
++// a formatted list, grouping sandboxes underneath their parent (live)
++// account. parentAccountIDs maps a sandbox's account ID to its parent account
++// ID, as resolved via the Stripe CLI context status API (see
++// requests.GetContextStatuses). A sandbox missing from the map, or whose
++// resolved parent isn't itself an authorized account, is shown as its own
++// standalone account instead of being grouped under a catch-all heading.
++func PrintGroupedAuthorizedAccounts(profile *config.Profile, accounts []config.AuthorizedAccount, parentAccountIDs map[string]string) {
++	ac, _ := profile.GetActiveContext()
++	activeID, activeMode := "", "test"
++	if ac != nil {
++		activeID = ac.AccountID
++		if ac.Livemode {
++			activeMode = "live"
++		}
++	}
++
++	grouped := groupAccountsByParent(accounts, parentAccountIDs, activeID, activeMode)
++
++	nameW, idW := 0, 0
++	measure := func(rows []accountRow) {
++		for _, r := range rows {
++			if len(r.name) > nameW {
++				nameW = len(r.name)
++			}
++			if len(r.id) > idW {
++				idW = len(r.id)
++			}
++		}
++	}
++	for _, rows := range grouped.headerRows {
++		measure(rows)
++	}
++	for _, rows := range grouped.childRows {
++		measure(rows)
++	}
++
++	// Indents vary in width (a plain "  " header indent vs. the wider
++	// "    └─ " tree connector), but the id and mode columns should still
++	// line up regardless of indent. Widen the name field to make up the
++	// difference, so indent width + padded name width is constant.
++	maxIndentWidth := 0
++	for _, indent := range []string{headerIndent, nestedIndent} {
++		if w := utf8.RuneCountInString(indent); w > maxIndentWidth {
++			maxIndentWidth = w
++		}
++	}
++
++	color := ansi.Color(os.Stdout)
++	printRow := func(indent string, r accountRow) {
++		namePad := nameW + (maxIndentWidth - utf8.RuneCountInString(indent))
++		if r.active {
++			fmt.Printf("%s%-*s  %-*s  %-7s  %s\n", indent, namePad, r.name, idW, r.id, r.mode, color.Green("● active"))
++		} else {
++			fmt.Printf("%s%-*s  %-*s  %s\n", indent, namePad, r.name, idW, r.id, r.mode)
++		}
++	}
++
++	fmt.Printf("Authorized (%d accounts):\n", grouped.totalRows)
++	for _, a := range accounts {
++		rows, ok := grouped.headerRows[a.ID]
++		if !ok {
++			continue
++		}
++		for _, r := range rows {
++			indent := headerIndent
++			if r.nested {
++				indent = nestedIndent
++			}
++			printRow(indent, r)
++		}
++		for _, r := range grouped.childRows[a.ID] {
++			printRow(nestedIndent, r)
++		}
++	}
++}
++
+ // pickActiveContext selects the active account and livemode from the list of
+ // authorized accounts. It prefers the first test-mode account; if none is
+ // found it falls back to the first account's first mode.
+diff --git a/pkg/login/oauth_accounts_test.go b/pkg/login/oauth_accounts_test.go
+index 3b4f420..3bd090c 100644
+--- a/pkg/login/oauth_accounts_test.go
++++ b/pkg/login/oauth_accounts_test.go
+@@ -1,11 +1,15 @@
+ package login
+ 
+ import (
++	"bytes"
+ 	"context"
+ 	"encoding/json"
+ 	"net/http"
+ 	"net/http/httptest"
++	"os"
++	"strings"
+ 	"testing"
++	"unicode/utf8"
+ 
+ 	"github.com/stretchr/testify/assert"
+ 	"github.com/stretchr/testify/require"
+@@ -13,6 +17,26 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/config"
+ )
+ 
++// capturePrintedOutput redirects os.Stdout for the duration of fn and returns
++// everything written to it. PrintGroupedAuthorizedAccounts and its siblings
++// write via fmt.Print* directly to os.Stdout rather than an injectable
++// io.Writer, so tests must intercept it at that level.
++func capturePrintedOutput(t *testing.T, fn func()) string {
++	t.Helper()
++	orig := os.Stdout
++	r, w, err := os.Pipe()
++	require.NoError(t, err)
++	os.Stdout = w
++
++	fn()
++
++	w.Close()
++	os.Stdout = orig
++	var buf bytes.Buffer
++	buf.ReadFrom(r) //nolint:errcheck
++	return buf.String()
++}
++
+ func TestFetchAuthorizedAccounts_success(t *testing.T) {
+ 	want := []config.AuthorizedAccount{
+ 		{ID: "acct_123", Name: "Test Co", Modes: []string{"test"}},
+@@ -126,3 +150,126 @@ func TestListAuthorizedAccountsForActiveSession_ReturnsAccountsAndActiveContext(
+ 	assert.Equal(t, "acct_456", result.ActiveAccountID)
+ 	assert.True(t, result.ActiveLivemode)
+ }
++
++func TestPrintGroupedAuthorizedAccounts_GroupsSandboxesUnderParent(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++		{ID: "acct_sandbox2", Name: "Acme Staging", Modes: []string{"test"}},
++		{ID: "acct_orphan", Name: "Mystery Sandbox", Modes: []string{"test"}},
++		{ID: "acct_orphan2", Name: "Second Mystery", Modes: []string{"test"}},
++	}
++	parentAccountIDs := map[string]string{
++		"acct_sandbox1": "acct_live1",
++		"acct_sandbox2": "acct_live1",
++	}
++
++	output := capturePrintedOutput(t, func() {
++		PrintGroupedAuthorizedAccounts(&cfg.Profile, accounts, parentAccountIDs)
++	})
++
++	liveIdx := indexOf(t, output, "Acme Inc")
++	sandbox1Idx := indexOf(t, output, "Acme Dev")
++	sandbox2Idx := indexOf(t, output, "Acme Staging")
++	orphanIdx := indexOf(t, output, "Mystery Sandbox")
++	orphan2Idx := indexOf(t, output, "Second Mystery")
++
++	assert.Less(t, liveIdx, sandbox1Idx, "parent account should print before its sandboxes")
++	assert.Less(t, sandbox1Idx, sandbox2Idx)
++	assert.Less(t, sandbox2Idx, orphanIdx, "standalone sandboxes should print after the grouped ones")
++	assert.Less(t, orphanIdx, orphan2Idx)
++	assert.Contains(t, output, "Authorized (5 accounts):")
++	assert.NotContains(t, output, "Other sandboxes", "standalone sandboxes shouldn't be grouped under a catch-all heading")
++	assert.Contains(t, output, "└─ Acme Dev", "sandboxes with a known parent should render with a tree connector showing they belong to it")
++	assert.Contains(t, output, "└─ Acme Staging")
++	assert.NotContains(t, output, "└─ Acme Inc", "the parent account's own row shouldn't be nested under itself")
++	assert.NotContains(t, output, "└─ Mystery Sandbox", "a standalone sandbox has no parent to connect to, so no connector")
++	assert.NotContains(t, output, "└─ Second Mystery")
++
++	// The id column should line up across rows even though the header and
++	// nested indents are different widths. Measure the display column (rune
++	// count), not the byte offset, since the "└─" connector is multi-byte
++	// UTF-8 but renders as single-width characters.
++	idColumn := func(line string) int {
++		idx := strings.Index(line, "acct_")
++		require.NotEqual(t, -1, idx, "expected line %q to contain an account id", line)
++		return utf8.RuneCountInString(line[:idx])
++	}
++	lines := strings.Split(strings.TrimRight(output, "\n"), "\n")
++	var idColumns []int
++	for _, line := range lines {
++		if strings.Contains(line, "acct_") {
++			idColumns = append(idColumns, idColumn(line))
++		}
++	}
++	require.Len(t, idColumns, 5)
++	for _, col := range idColumns[1:] {
++		assert.Equal(t, idColumns[0], col, "the id column should be at the same offset on every row")
++	}
++}
++
++func TestPrintGroupedAuthorizedAccounts_StandaloneSandboxesShownAsRegularAccounts(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_sandbox1", Name: "Solo Sandbox", Modes: []string{"test"}},
++		{ID: "acct_sandbox2", Name: "Another Sandbox", Modes: []string{"test"}},
++	}
++
++	output := capturePrintedOutput(t, func() {
++		PrintGroupedAuthorizedAccounts(&cfg.Profile, accounts, nil)
++	})
++
++	assert.NotContains(t, output, "Other sandboxes", "standalone sandboxes shouldn't be grouped under a catch-all heading, no matter how many there are")
++	assert.NotContains(t, output, "└─", "a standalone sandbox isn't nested under anything, so no connector")
++	assert.Contains(t, output, "Solo Sandbox")
++	assert.Contains(t, output, "Another Sandbox")
++}
++
++func TestPrintGroupedAuthorizedAccounts_LegacyCombinedAccountShowsTestMode(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_legacy", Name: "Acme Inc", Modes: []string{"live", "test"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++	}
++	parentAccountIDs := map[string]string{"acct_sandbox1": "acct_legacy"}
++
++	output := capturePrintedOutput(t, func() {
++		PrintGroupedAuthorizedAccounts(&cfg.Profile, accounts, parentAccountIDs)
++	})
++
++	assert.Contains(t, output, "Acme Inc", "the live row should still show the account name")
++	assert.Contains(t, output, "└─ Test mode", "the legacy same-ID test row should be labeled Test mode and connected to its live row")
++	assert.Contains(t, output, "└─ Acme Dev", "a distinct sandbox account should still show its own name, connected to its parent")
++	assert.Equal(t, 1, strings.Count(output, "Acme Inc"), "the account name shouldn't be repeated for its own test-mode row")
++}
++
++func TestPrintGroupedAuthorizedAccounts_LiveModeRendersBeforeNestedTestModeRegardlessOfAPIOrder(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_legacy", Name: "Acme Inc", Modes: []string{"test", "live"}},
++	}
++
++	output := capturePrintedOutput(t, func() {
++		PrintGroupedAuthorizedAccounts(&cfg.Profile, accounts, nil)
++	})
++
++	liveIdx := indexOf(t, output, "Acme Inc")
++	testModeIdx := indexOf(t, output, "└─ Test mode")
++	assert.Less(t, liveIdx, testModeIdx, "the live row should render before its nested test-mode row even when the API returns test before live")
++}
++
++func indexOf(t *testing.T, s, substr string) int {
++	t.Helper()
++	idx := strings.Index(s, substr)
++	require.NotEqual(t, -1, idx, "expected %q to contain %q", s, substr)
++	return idx
++}
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index 7920353..66ca560 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -264,7 +264,7 @@ func saveDeviceCredentials(ctx context.Context, accessBaseURL string, tokenResp
+ }
+ 
+ // LoginWithDeviceCode runs the full OAuth 2.1 device-code flow and saves credentials.
+-func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.Config) error {
++func LoginWithDeviceCode(ctx context.Context, accessBaseURL, apiBaseURL string, cfg *config.Config) error {
+ 	authResp, clientID, err := RequestDeviceCodeForAccessBase(ctx, accessBaseURL)
+ 	if err != nil {
+ 		return fmt.Errorf("failed to request device code: %w", err)
+@@ -321,90 +321,53 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 		}
+ 	}
+ 
+-	printAuthorizedSummary(result.Accounts, result.ActiveAccountID, result.ActiveLivemode)
++	uat, _ := cfg.Profile.GetUAT()
++	printAuthorizedSummary(ctx, apiBaseURL, &cfg.Profile, uat, result.Accounts)
+ 	warnIfInsecureStorage()
+ 	return nil
+ }
+ 
+-type contextRow struct {
+-	name   string
+-	mode   string
+-	id     string
+-	active bool
+-}
+-
+-func buildContextRows(accounts []config.AuthorizedAccount, activeID string, activeLivemode bool) []contextRow {
+-	activeMode := "test"
+-	if activeLivemode {
+-		activeMode = "live"
+-	}
+-	var rows []contextRow
++// totalAuthorizedContexts counts (account, mode) pairs across accounts, the
++// unit printAuthorizedSummary uses to decide how much detail to show.
++func totalAuthorizedContexts(accounts []config.AuthorizedAccount) int {
++	count := 0
+ 	for _, a := range accounts {
+-		modes := a.Modes
+-		if len(modes) == 0 {
+-			modes = []string{"test"}
+-		}
+-		for _, m := range modes {
+-			rows = append(rows, contextRow{
+-				name:   a.Name,
+-				mode:   m,
+-				id:     a.ID,
+-				active: a.ID == activeID && m == activeMode,
+-			})
++		if len(a.Modes) == 0 {
++			count++
++		} else {
++			count += len(a.Modes)
+ 		}
+ 	}
+-	return rows
++	return count
+ }
+ 
+-// printAuthorizedSummary prints the "Done! The Stripe CLI is authorized for
+-// ..." banner and context table shared by login and reauth.
+-func printAuthorizedSummary(accounts []config.AuthorizedAccount, activeID string, activeLivemode bool) {
++// printAuthorizedSummary prints the "Done! ..." banner shared by login and
++// reauth. For a single authorized context it prints a short one-liner; for
++// more than one, it prints the same parent-grouped account list whoami,
++// login list, and switch use (see PrintAuthorizedAccounts) — including its
++// own "● active" marker, so there's no need to separately call out which
++// context is active.
++func printAuthorizedSummary(ctx context.Context, apiBaseURL string, profile *config.Profile, uat string, accounts []config.AuthorizedAccount) {
+ 	color := ansi.Color(os.Stdout)
+-	rows := buildContextRows(accounts, activeID, activeLivemode)
+ 
+-	if len(rows) == 0 {
++	switch totalAuthorizedContexts(accounts) {
++	case 0:
+ 		fmt.Printf("%s Done! The Stripe CLI is configured with your credentials.\n", color.Green("✓"))
+-		return
+-	}
+-
+-	if len(rows) == 1 {
+-		r := rows[0]
+-		ctx := fmt.Sprintf("%s · %s", r.name, displayMode(r.mode))
+-		fmt.Printf("%s Done! The Stripe CLI is authorized for %s (%s)\n\n", color.Green("✓"), ctx, r.id)
+-		fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+-		return
+-	}
+-
+-	fmt.Printf("%s Done! The Stripe CLI is authorized for:\n\n", color.Green("✓"))
+-
+-	nameW, modeW, idW := 0, 0, 0
+-	for _, r := range rows {
+-		if len(r.name) > nameW {
+-			nameW = len(r.name)
+-		}
+-		if dl := len(displayMode(r.mode)); dl > modeW {
+-			modeW = dl
+-		}
+-		if len(r.id) > idW {
+-			idW = len(r.id)
+-		}
+-	}
+-
+-	var active contextRow
+-	for _, r := range rows {
+-		mode := displayMode(r.mode)
+-		if r.active {
+-			active = r
+-			fmt.Printf("  %-*s  %-*s  %-*s  %s active\n", nameW, r.name, modeW, mode, idW, r.id, color.Green("●"))
+-		} else {
+-			fmt.Printf("  %-*s  %-*s  %s\n", nameW, r.name, modeW, mode, r.id)
++	case 1:
++		a := accounts[0]
++		mode := "test"
++		if len(a.Modes) > 0 {
++			mode = a.Modes[0]
+ 		}
++		fmt.Printf("%s Done! The Stripe CLI is authorized for %s · %s (%s)\n\n", color.Green("✓"), a.Name, displayMode(mode), a.ID)
++		fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
++	default:
++		fmt.Printf("%s Done!\n\n", color.Green("✓"))
++		PrintAuthorizedAccounts(ctx, apiBaseURL, profile, uat, accounts)
++		fmt.Println()
++		fmt.Println("Run 'stripe switch' to switch to a different account, or between live mode and a sandbox.")
++		fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ 	}
+-
+-	fmt.Println()
+-	fmt.Printf("Currently active: %s · %s (%s)\n\n", active.name, displayMode(active.mode), active.id)
+-	fmt.Println("Run 'stripe switch' to switch to a different account, or between live mode and a sandbox.")
+-	fmt.Println("Run 'stripe login' to change permissions or authorize access to additional accounts or sandboxes.")
+ }
+ 
+ // RefreshAccessToken exchanges a refresh token for a new access token.
+diff --git a/pkg/login/oauth_device_test.go b/pkg/login/oauth_device_test.go
+index 40dac0b..ef0f8af 100644
+--- a/pkg/login/oauth_device_test.go
++++ b/pkg/login/oauth_device_test.go
+@@ -279,7 +279,7 @@ func TestLoginWithDeviceCodeFailsWhenAccountsFetchFails(t *testing.T) {
+ 	}))
+ 	defer ts.Close()
+ 
+-	err := LoginWithDeviceCode(context.Background(), ts.URL, cfg)
++	err := LoginWithDeviceCode(context.Background(), ts.URL, ts.URL, cfg)
+ 	require.Error(t, err)
+ 	assert.Contains(t, err.Error(), "failed to fetch account info")
+ }
+@@ -339,7 +339,7 @@ func TestLoginWithDeviceCode_VerificationMessage(t *testing.T) {
+ 			require.NoError(t, err)
+ 			os.Stdout = w
+ 
+-			loginErr := LoginWithDeviceCode(context.Background(), ts.URL, cfg)
++			loginErr := LoginWithDeviceCode(context.Background(), ts.URL, ts.URL, cfg)
+ 
+ 			w.Close()
+ 			os.Stdout = oldStdout
+diff --git a/pkg/login/oauth_reauth.go b/pkg/login/oauth_reauth.go
+index 67ea848..3b36be9 100644
+--- a/pkg/login/oauth_reauth.go
++++ b/pkg/login/oauth_reauth.go
+@@ -38,19 +38,19 @@ type reauthResponse struct {
+ // otherwise the URL is printed for the user to visit manually. It then waits
+ // for the authorized-accounts list to change before printing the updated list
+ // of authorized contexts.
+-func Reauth(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile) error {
+-	return reauth(ctx, accessBaseURL, accessToken, profile, false)
++func Reauth(ctx context.Context, accessBaseURL, apiBaseURL, accessToken string, profile *config.Profile) error {
++	return reauth(ctx, accessBaseURL, apiBaseURL, accessToken, profile, false)
+ }
+ 
+ // ReauthImmediately fetches a reauthentication URL for the active OAuth session
+ // and opens it without waiting for an additional Enter confirmation. It then
+ // waits for the authorized-accounts list to change before printing the updated
+ // list of authorized contexts.
+-func ReauthImmediately(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile) error {
+-	return reauth(ctx, accessBaseURL, accessToken, profile, true)
++func ReauthImmediately(ctx context.Context, accessBaseURL, apiBaseURL, accessToken string, profile *config.Profile) error {
++	return reauth(ctx, accessBaseURL, apiBaseURL, accessToken, profile, true)
+ }
+ 
+-func reauth(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile, openImmediately bool) error {
++func reauth(ctx context.Context, accessBaseURL, apiBaseURL, accessToken string, profile *config.Profile, openImmediately bool) error {
+ 	before, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
+ 	if err != nil {
+ 		return err
+@@ -68,7 +68,7 @@ func reauth(ctx context.Context, accessBaseURL, accessToken string, profile *con
+ 		fmt.Scanln() //nolint:errcheck
+ 	})
+ 
+-	return waitForReauthCompletion(ctx, accessBaseURL, accessToken, before, browserOpened, nil, profile)
++	return waitForReauthCompletion(ctx, accessBaseURL, apiBaseURL, accessToken, before, browserOpened, nil, profile)
+ }
+ 
+ func presentReauthURL(reauthURL string, openImmediately bool, waitForEnter func()) <-chan struct{} {
+@@ -142,7 +142,7 @@ func InitiateReauth(ctx context.Context, accessBaseURL, accessToken string) erro
+ // this, and one who runs `--complete-reauth` without a snapshot at all (e.g.
+ // skipped `--non-interactive`). Only if there's a snapshot and nothing has
+ // changed yet does it fall back to waiting/polling for a change.
+-func PollPendingReauth(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile) error {
++func PollPendingReauth(ctx context.Context, accessBaseURL, apiBaseURL, accessToken string, profile *config.Profile) error {
+ 	before, err := loadPendingReauthAccounts()
+ 	if err != nil {
+ 		return err
+@@ -157,18 +157,12 @@ func PollPendingReauth(ctx context.Context, accessBaseURL, accessToken string, p
+ 		if before != nil {
+ 			clearPendingReauthAccounts()
+ 		}
+-		ac, _ := profile.GetActiveContext()
+-		activeID, activeLivemode := "", false
+-		if ac != nil {
+-			activeID = ac.AccountID
+-			activeLivemode = ac.Livemode
+-		}
+-		printAuthorizedSummary(accounts, activeID, activeLivemode)
++		printAuthorizedSummary(ctx, apiBaseURL, profile, accessToken, accounts)
+ 		return nil
+ 	}
+ 
+ 	fmt.Println("Waiting for you to finish in the browser. Press ^C to cancel.")
+-	return waitForReauthCompletion(ctx, accessBaseURL, accessToken, before, nil, func([]config.AuthorizedAccount) {
++	return waitForReauthCompletion(ctx, accessBaseURL, apiBaseURL, accessToken, before, nil, func([]config.AuthorizedAccount) {
+ 		clearPendingReauthAccounts()
+ 	}, profile)
+ }
+@@ -179,7 +173,7 @@ func PollPendingReauth(ctx context.Context, accessBaseURL, accessToken string, p
+ // so a change to the accounts/scopes returned for the token is used as a
+ // proxy for completion. onComplete, if non-nil, runs once a change is
+ // detected and before the summary is printed.
+-func waitForReauthCompletion(ctx context.Context, accessBaseURL, accessToken string, before []config.AuthorizedAccount, browserOpened <-chan struct{}, onComplete func([]config.AuthorizedAccount), profile *config.Profile) error {
++func waitForReauthCompletion(ctx context.Context, accessBaseURL, apiBaseURL, accessToken string, before []config.AuthorizedAccount, browserOpened <-chan struct{}, onComplete func([]config.AuthorizedAccount), profile *config.Profile) error {
+ 	waitCtx, stop := signal.NotifyContext(ctx, os.Interrupt)
+ 	defer stop()
+ 
+@@ -204,13 +198,7 @@ func waitForReauthCompletion(ctx context.Context, accessBaseURL, accessToken str
+ 		onComplete(after)
+ 	}
+ 
+-	ac, _ := profile.GetActiveContext()
+-	activeID, activeLivemode := "", false
+-	if ac != nil {
+-		activeID = ac.AccountID
+-		activeLivemode = ac.Livemode
+-	}
+-	printAuthorizedSummary(after, activeID, activeLivemode)
++	printAuthorizedSummary(ctx, apiBaseURL, profile, accessToken, after)
+ 	return nil
+ }
+ 
+diff --git a/pkg/login/oauth_reauth_test.go b/pkg/login/oauth_reauth_test.go
+index 63618ca..ce299ac 100644
+--- a/pkg/login/oauth_reauth_test.go
++++ b/pkg/login/oauth_reauth_test.go
+@@ -253,7 +253,7 @@ func TestReauthImmediatelyValidatesURLBeforeDisplayingOrOpening(t *testing.T) {
+ 
+ 	var reauthErr error
+ 	stdout, _ := captureReauthOutput(t, func() {
+-		reauthErr = ReauthImmediately(context.Background(), srv.URL, "oak_test", &config.Profile{})
++		reauthErr = ReauthImmediately(context.Background(), srv.URL, srv.URL, "oak_test", &config.Profile{})
+ 	})
+ 
+ 	require.Error(t, reauthErr)
+@@ -309,14 +309,16 @@ func TestReauthImmediatelyPreservesSelectedProfileContext(t *testing.T) {
+ 
+ 	var reauthErr error
+ 	stdout, stderr := captureReauthOutput(t, func() {
+-		reauthErr = ReauthImmediately(ctx, srv.URL, "oak_test", &cfg.Profile)
++		reauthErr = ReauthImmediately(ctx, srv.URL, srv.URL, "oak_test", &cfg.Profile)
+ 	})
+ 
+ 	require.NoError(t, reauthErr)
+ 	assert.Equal(t, reauthURL, openedURL)
+ 	assert.NotContains(t, stdout, "Press enter")
+ 	assert.Contains(t, stdout, "Created sandbox")
+-	assert.Contains(t, stdout, "Currently active: Selected account · live (acct_selected)")
++	assert.Contains(t, stdout, "Selected account")
++	assert.Contains(t, stdout, "acct_selected")
++	assert.Contains(t, stdout, "● active", "the active row should be marked inline, same as whoami/login list/switch")
+ 	assert.Empty(t, stderr)
+ }
+ 
+diff --git a/pkg/login/oauth_refresh.go b/pkg/login/oauth_refresh.go
+index f5690b9..c37ccae 100644
+--- a/pkg/login/oauth_refresh.go
++++ b/pkg/login/oauth_refresh.go
+@@ -19,8 +19,15 @@ func init() {
+ }
+ 
+ // refreshOAuthToken exchanges the stored refresh token for a new access token
+-// and updates p in-place. On invalid_grant it clears all OAuth credentials so
+-// the next ResolveCredentials call surfaces an actionable re-login error.
++// and updates p in-place. On invalid_grant or invalid_scope — the latter
++// happens when the active account/mode was deauthorized, so the server won't
++// reissue a token scoped to it — it clears all OAuth credentials so the next
++// ResolveCredentials call surfaces an actionable re-login error. Credentials
++// have to go in both cases: without a usable access token, nothing else
++// (including 'stripe switch', which itself needs a valid token to list
++// accounts) can recover the session, so 'stripe login' is the only way
++// forward; it already falls back to a fresh device-auth flow whenever the
++// existing session can't be revived (see sessionIsValid in cmd/login.go).
+ func refreshOAuthToken(p *config.Profile) error {
+ 	if config.KeyRing == nil {
+ 		return errorcategory.New(errorcategory.Auth, "keyring unavailable; run 'stripe login' to re-authenticate")
+@@ -43,10 +50,11 @@ func refreshOAuthToken(p *config.Profile) error {
+ 	tokenResp, err := doRefreshToken(context.Background(), accessBaseURL, clientID, string(refreshTokenBytes))
+ 	if err != nil {
+ 		var oauthErr *OAuthError
+-		if errors.As(err, &oauthErr) && oauthErr.Code == "invalid_grant" {
+-			// Token is invalid or consumed; clear credentials so the user gets a
+-			// clear "run stripe login" error on the next attempt rather than an
+-			// opaque 401 from the Stripe API.
++		if errors.As(err, &oauthErr) && (oauthErr.Code == "invalid_grant" || oauthErr.Code == "invalid_scope") {
++			// Token is invalid, consumed, or no longer covers an authorized
++			// scope; clear credentials so the user gets a clear "run stripe
++			// login" error on the next attempt rather than an opaque 401 from
++			// the Stripe API.
+ 			_ = clearOAuthCredentialsForProfile(p)
+ 			return errorcategory.New(errorcategory.Auth, "session expired; run 'stripe login' to re-authenticate")
+ 		}
+diff --git a/pkg/login/oauth_refresh_test.go b/pkg/login/oauth_refresh_test.go
+index 3c99faf..db1336d 100644
+--- a/pkg/login/oauth_refresh_test.go
++++ b/pkg/login/oauth_refresh_test.go
+@@ -11,6 +11,7 @@ import (
+ 	"github.com/stretchr/testify/require"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/keyring"
+ )
+ 
+ // TestRefreshOAuthToken_PreservesProfileMetadata guards against a regression
+@@ -54,3 +55,37 @@ func TestRefreshOAuthToken_PreservesProfileMetadata(t *testing.T) {
+ 	assert.Equal(t, "acct_123", viper.GetString(p.GetConfigField(config.AccountIDName)))
+ 	assert.Equal(t, "user_123", viper.GetString(p.GetConfigField(config.UserIDName)))
+ }
++
++// TestRefreshOAuthToken_InvalidScopeClearsCredentials covers the case where
++// the active account/mode has since been deauthorized, so the server refuses
++// to reissue a token scoped to it. There's no recovery short of 'stripe
++// login': without a usable access token, even 'stripe switch' can't list
++// authorized accounts (it hit the same wall with a raw 401 from the
++// accounts endpoint when this was tried), so credentials are cleared the
++// same way invalid_grant clears them.
++func TestRefreshOAuthToken_InvalidScopeClearsCredentials(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	cfg.Profile.UAT = "oaac_old_access"
++	require.NoError(t, cfg.Profile.CreateProfile())
++	require.NoError(t, config.KeyRing.Set(cfg.Profile.KeyringKey(config.OAuthRefreshTokenKeychainKey), []byte("oart_old_refresh"), "test"))
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusBadRequest)
++		json.NewEncoder(w).Encode(tokenErrorResponse{Error: "invalid_scope", ErrorDescription: "Invalid scope"}) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	p := &config.Profile{
++		ProfileName:        cfg.Profile.ProfileName,
++		OAuthAccessBaseURL: ts.URL,
++	}
++	err := refreshOAuthToken(p)
++	require.Error(t, err)
++	assert.ErrorContains(t, err, "stripe login")
++
++	_, keyErr := config.KeyRing.Get(cfg.Profile.KeyringKey(config.OAuthRefreshTokenKeychainKey))
++	assert.ErrorIs(t, keyErr, keyring.ErrKeyNotFound, "invalid_scope is unrecoverable, so the refresh token should be cleared just like invalid_grant")
++}
+diff --git a/pkg/login/parent_accounts.go b/pkg/login/parent_accounts.go
+new file mode 100644
+index 0000000..f1d090d
+--- /dev/null
++++ b/pkg/login/parent_accounts.go
+@@ -0,0 +1,72 @@
++package login
++
++import (
++	"context"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/requests"
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++// ResolveParentAccounts looks up the parent (live) account for each sandbox
++// among accounts via the Stripe CLI context status API, so callers can group
++// sandboxes under their parent (see PrintGroupedAuthorizedAccounts and
++// classifyAccountsByParent). The bool result is false only when the lookup
++// itself failed (as opposed to succeeding with nothing to report); callers
++// should fall back to an ungrouped list in that case rather than treating
++// every sandbox as having no known parent.
++//
++// The request must be authenticated with the active account/livemode as the
++// OAK context (the same credentials GetUserInfo uses) — the API rejects a
++// bare UAT with no Stripe-Context/Stripe-Livemode with a 403, since it can't
++// otherwise resolve which permission grant applies. Without an active
++// context there's no context to authenticate with, so the lookup is skipped
++// (this isn't a failure: there's simply nothing to group beyond what's
++// already derivable locally).
++func ResolveParentAccounts(ctx context.Context, apiBaseURL string, profile *config.Profile, uat string, ac *config.ActiveContext, accounts []config.AuthorizedAccount) (map[string]string, bool) {
++	if ac == nil {
++		return nil, true
++	}
++
++	var queries []requests.ContextStatusQuery
++	for _, a := range accounts {
++		if accountHasLiveMode(a.Modes) {
++			continue
++		}
++		queries = append(queries, requests.ContextStatusQuery{AccountID: a.ID, Livemode: false})
++	}
++	if len(queries) == 0 {
++		return nil, true
++	}
++
++	creds := stripe.NewOAKCredentials(uat, ac.AccountID, ac.Livemode)
++	statuses, err := requests.GetContextStatuses(ctx, apiBaseURL, profile, creds, queries)
++	if err != nil {
++		return nil, false
++	}
++
++	parentAccountIDs := make(map[string]string, len(statuses))
++	for _, s := range statuses {
++		if s.ParentAccountID != "" {
++			parentAccountIDs[s.AccountID] = s.ParentAccountID
++		}
++	}
++	return parentAccountIDs, true
++}
++
++// PrintAuthorizedAccounts prints accounts grouped by parent when parent info
++// can be resolved via the context status API, falling back to the plain,
++// ungrouped list when the lookup itself fails.
++func PrintAuthorizedAccounts(ctx context.Context, apiBaseURL string, profile *config.Profile, uat string, accounts []config.AuthorizedAccount) {
++	ac, _ := profile.GetActiveContext()
++	if parentAccountIDs, ok := ResolveParentAccounts(ctx, apiBaseURL, profile, uat, ac, accounts); ok {
++		PrintGroupedAuthorizedAccounts(profile, accounts, parentAccountIDs)
++	} else {
++		// The context status lookup itself failed (as opposed to succeeding
++		// with nothing to report), so we have no trustworthy grouping
++		// information. Fall back to the plain list rather than dumping
++		// every sandbox under "Other sandboxes", which would look like we
++		// checked and found no parent rather than couldn't check at all.
++		PrintAuthorizedContextsList(profile, accounts)
++	}
++}
+diff --git a/pkg/login/parent_accounts_test.go b/pkg/login/parent_accounts_test.go
+new file mode 100644
+index 0000000..7e04298
+--- /dev/null
++++ b/pkg/login/parent_accounts_test.go
+@@ -0,0 +1,100 @@
++package login
++
++import (
++	"context"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++
++	"github.com/stretchr/testify/assert"
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++)
++
++func TestResolveParentAccounts_OnlyQueriesSandboxes(t *testing.T) {
++	var gotAccountIDs []string
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		// The API 403s without an OAK context identifying the caller's
++		// active account/livemode, so these must always be sent.
++		assert.Equal(t, "acct_live1", r.Header.Get("Stripe-Context"))
++		assert.Equal(t, "true", r.Header.Get("Stripe-Livemode"))
++
++		require.NoError(t, r.ParseForm())
++		gotAccountIDs = append(gotAccountIDs, r.Form.Get("contexts[0][account_id]"), r.Form.Get("contexts[1][account_id]"))
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"contexts": [
++			{"account_id": "acct_sandbox1", "livemode": false, "valid": true, "parent_account_id": "acct_live1"},
++			{"account_id": "acct_sandbox2", "livemode": false, "valid": true}
++		]}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++		{ID: "acct_sandbox2", Name: "Acme Staging", Modes: []string{"test"}},
++	}
++	ac := &config.ActiveContext{AccountID: "acct_live1", Livemode: true}
++
++	got, ok := ResolveParentAccounts(context.Background(), ts.URL, nil, "oak_test_123", ac, accounts)
++
++	assert.Equal(t, []string{"acct_sandbox1", "acct_sandbox2"}, gotAccountIDs, "accounts with a live mode shouldn't be queried for a parent")
++	assert.True(t, ok)
++	assert.Equal(t, map[string]string{"acct_sandbox1": "acct_live1"}, got)
++}
++
++func TestResolveParentAccounts_FailsOnError(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusInternalServerError)
++	}))
++	defer ts.Close()
++
++	accounts := []config.AuthorizedAccount{{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}}}
++	ac := &config.ActiveContext{AccountID: "acct_live1", Livemode: true}
++
++	got, ok := ResolveParentAccounts(context.Background(), ts.URL, nil, "oak_test_123", ac, accounts)
++	assert.False(t, ok, "a lookup failure should be reported so the caller can fall back to an ungrouped list")
++	assert.Nil(t, got)
++}
++
++func TestResolveParentAccounts_NoActiveContextSkipsLookup(t *testing.T) {
++	var requestReceived bool
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		requestReceived = true
++		w.WriteHeader(http.StatusOK)
++	}))
++	defer ts.Close()
++
++	accounts := []config.AuthorizedAccount{{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}}}
++
++	got, ok := ResolveParentAccounts(context.Background(), ts.URL, nil, "oak_test_123", nil, accounts)
++
++	assert.True(t, ok, "no active context isn't itself a failure, just nothing to look up with")
++	assert.Nil(t, got)
++	assert.False(t, requestReceived, "without an active context there's nothing to authenticate the lookup with, so it shouldn't be attempted")
++}
++
++func TestPrintAuthorizedAccounts_FallsBackToFlatListOnError(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++	require.NoError(t, cfg.Profile.SaveActiveContext("acct_live1", true))
++
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusInternalServerError)
++	}))
++	defer ts.Close()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++	}
++
++	output := capturePrintedOutput(t, func() {
++		PrintAuthorizedAccounts(context.Background(), ts.URL, &cfg.Profile, "oak_test_123", accounts)
++	})
++
++	assert.Contains(t, output, "Authorized (2 accounts):")
++	assert.NotContains(t, output, "Other sandboxes", "a failed lookup shouldn't be reported as 'checked, no parent found'")
++	assert.NotContains(t, output, "└─", "a failed lookup means we have no grouping info, so the list should be flat")
++}
+diff --git a/pkg/login/print_authorized_summary_test.go b/pkg/login/print_authorized_summary_test.go
+new file mode 100644
+index 0000000..863669b
+--- /dev/null
++++ b/pkg/login/print_authorized_summary_test.go
+@@ -0,0 +1,95 @@
++package login
++
++import (
++	"context"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++
++	"github.com/stretchr/testify/assert"
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++)
++
++func TestPrintAuthorizedSummary_NoContexts(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	output := capturePrintedOutput(t, func() {
++		printAuthorizedSummary(context.Background(), "http://unused.example", &cfg.Profile, "oak_test_123", nil)
++	})
++
++	assert.Contains(t, output, "Done! The Stripe CLI is configured with your credentials.")
++	assert.NotContains(t, output, "Authorized (")
++}
++
++func TestPrintAuthorizedSummary_SingleContext(t *testing.T) {
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_only", Name: "Solo Co", Modes: []string{"test"}},
++	}
++
++	output := capturePrintedOutput(t, func() {
++		printAuthorizedSummary(context.Background(), "http://unused.example", &cfg.Profile, "oak_test_123", accounts)
++	})
++
++	assert.Contains(t, output, "Done! The Stripe CLI is authorized for Solo Co · sandbox (acct_only)")
++	assert.NotContains(t, output, "Authorized (", "a single context doesn't need the full grouped list")
++	assert.NotContains(t, output, "Run 'stripe switch'", "there's nothing to switch between with only one context")
++}
++
++func TestPrintAuthorizedSummary_MultipleContextsUsesGroupedList(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.NoError(t, r.ParseForm())
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"contexts": [
++			{"account_id": "acct_sandbox1", "livemode": false, "valid": true, "parent_account_id": "acct_live1"}
++		]}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++	require.NoError(t, cfg.Profile.SaveActiveContext("acct_live1", true))
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++	}
++
++	output := capturePrintedOutput(t, func() {
++		printAuthorizedSummary(context.Background(), ts.URL, &cfg.Profile, "oak_test_123", accounts)
++	})
++
++	assert.Contains(t, output, "Done!")
++	assert.Contains(t, output, "Authorized (2 accounts):", "more than one context should use the same grouped list as whoami/login list/switch")
++	assert.Contains(t, output, "└─ Acme Dev", "the sandbox's resolved parent should nest it, same as everywhere else")
++	assert.Contains(t, output, "● active", "the active row is marked inline, so no separate 'Currently active' line is needed")
++	assert.Contains(t, output, "Run 'stripe switch'")
++}
++
++func TestPrintAuthorizedSummary_FallsBackToFlatListWhenLookupFails(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusInternalServerError)
++	}))
++	defer ts.Close()
++
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++	require.NoError(t, cfg.Profile.SaveActiveContext("acct_live1", true))
++
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++	}
++
++	output := capturePrintedOutput(t, func() {
++		printAuthorizedSummary(context.Background(), ts.URL, &cfg.Profile, "oak_test_123", accounts)
++	})
++
++	assert.Contains(t, output, "Authorized (2 accounts):")
++	assert.NotContains(t, output, "└─", "a failed lookup means no grouping info, so the list should be flat")
++}
+diff --git a/pkg/login/switch_context.go b/pkg/login/switch_context.go
+index 7f49a6a..ba40123 100644
+--- a/pkg/login/switch_context.go
++++ b/pkg/login/switch_context.go
+@@ -4,6 +4,7 @@ import (
+ 	"context"
+ 	"fmt"
+ 	"strings"
++	"unicode/utf8"
+ 
+ 	tea "charm.land/bubbletea/v2"
+ 	"charm.land/lipgloss/v2"
+@@ -29,7 +30,7 @@ func (r *SwitchResult) DisplayMode() string {
+ // active. If accountID is non-empty it selects that account directly (test mode by default, live
+ // if livemode is true). Otherwise it shows an interactive list, returning a nil result if the
+ // user cancels it.
+-func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config, accountID string, livemode bool) (*SwitchResult, error) {
++func SwitchContext(ctx context.Context, accessBaseURL, apiBaseURL string, cfg *config.Config, accountID string, livemode bool) (*SwitchResult, error) {
+ 	uat, err := cfg.Profile.GetUAT()
+ 	if err != nil {
+ 		return nil, err
+@@ -46,7 +47,10 @@ func SwitchContext(ctx context.Context, accessBaseURL string, cfg *config.Config
+ 	if accountID != "" {
+ 		return switchByID(cfg, accounts, accountID, livemode)
+ 	}
+-	return runSwitchContextTUI(cfg, accounts)
++
++	ac, _ := cfg.Profile.GetActiveContext()
++	parentAccountIDs, _ := ResolveParentAccounts(ctx, apiBaseURL, &cfg.Profile, uat, ac, accounts)
++	return runSwitchContextTUI(cfg, accounts, parentAccountIDs)
+ }
+ 
+ func switchByID(cfg *config.Config, accounts []config.AuthorizedAccount, accountID string, livemode bool) (*SwitchResult, error) {
+@@ -89,18 +93,20 @@ func applyContext(cfg *config.Config, account config.AuthorizedAccount, mode str
+ 
+ // --- TUI ---
+ 
+-type switchRow struct {
+-	isSeparator    bool
+-	isSectionLabel bool
+-	label          string
+-	name           string
+-	id             string
+-	mode           string
+-	active         bool
+-}
++// switchNestedIndent marks a row that belongs to another account shown above
++// it (a sandbox under its parent, or a legacy account's own test-mode row
++// under its live row) — the same tree-connector convention as
++// PrintGroupedAuthorizedAccounts, scaled down for the TUI's tighter layout.
++const switchNestedIndent = "└─ "
+ 
+-func (r switchRow) selectable() bool {
+-	return !r.isSeparator && !r.isSectionLabel
++var switchIndentWidth = utf8.RuneCountInString(switchNestedIndent)
++
++type switchRow struct {
++	name   string
++	id     string
++	mode   string
++	active bool
++	nested bool
+ }
+ 
+ type switchContextModel struct {
+@@ -112,42 +118,64 @@ type switchContextModel struct {
+ 	quit   bool
+ }
+ 
+-func buildSwitchRows(accounts []config.AuthorizedAccount, activeID, activeMode string) (rows []switchRow, nameW, idW int) {
+-	var liveRows, sandboxRows []switchRow
+-	for _, a := range accounts {
+-		for _, m := range a.Modes {
+-			row := switchRow{
+-				name:   a.Name,
+-				id:     a.ID,
+-				mode:   m,
+-				active: a.ID == activeID && m == activeMode,
+-			}
+-			if len(a.Name) > nameW {
+-				nameW = len(a.Name)
+-			}
+-			if len(a.ID) > idW {
+-				idW = len(a.ID)
+-			}
+-			if m == "live" {
+-				liveRows = append(liveRows, row)
+-			} else {
+-				sandboxRows = append(sandboxRows, row)
+-			}
++// switchRowsForAccount builds the row(s) for a single authorized account,
++// matching the grouping rules PrintGroupedAuthorizedAccounts uses: a legacy
++// combined account's test-mode row is labeled "Test mode" and nested under
++// its own live row.
++func switchRowsForAccount(a config.AuthorizedAccount, nested bool, activeID, activeMode string) []switchRow {
++	modes := a.Modes
++	if len(modes) == 0 {
++		modes = []string{"test"}
++	}
++	isLegacyCombined := accountHasLiveMode(modes)
++	modes = orderModesLiveFirst(modes)
++
++	rows := make([]switchRow, 0, len(modes))
++	for _, m := range modes {
++		name := a.Name
++		rowNested := nested
++		if m == "test" && isLegacyCombined {
++			name = "Test mode"
++			rowNested = true
++		}
++		rows = append(rows, switchRow{
++			name:   name,
++			id:     a.ID,
++			mode:   m,
++			active: a.ID == activeID && m == activeMode,
++			nested: rowNested,
++		})
++	}
++	return rows
++}
++
++// buildSwitchRows builds the interactive selector's rows, grouping sandboxes
++// underneath their parent (live) account the same way whoami and login list
++// do (see classifyAccountsByParent). A sandbox whose parent can't be
++// resolved is shown as its own standalone row rather than being grouped
++// under a catch-all heading.
++func buildSwitchRows(accounts []config.AuthorizedAccount, parentAccountIDs map[string]string, activeID, activeMode string) (rows []switchRow, nameW, idW int) {
++	classified := classifyAccountsByParent(accounts, parentAccountIDs)
++
++	for _, a := range classified.headers {
++		rows = append(rows, switchRowsForAccount(a, false, activeID, activeMode)...)
++		for _, child := range classified.childrenByParent[a.ID] {
++			rows = append(rows, switchRowsForAccount(child, true, activeID, activeMode)...)
+ 		}
+ 	}
+ 
+-	rows = append(rows, liveRows...)
+-	if len(sandboxRows) > 0 {
+-		if len(rows) > 0 {
+-			rows = append(rows, switchRow{isSeparator: true})
++	for _, r := range rows {
++		if len(r.name) > nameW {
++			nameW = len(r.name)
++		}
++		if len(r.id) > idW {
++			idW = len(r.id)
+ 		}
+-		rows = append(rows, switchRow{isSectionLabel: true, label: "Sandboxes"})
+-		rows = append(rows, sandboxRows...)
+ 	}
+ 	return rows, nameW, idW
+ }
+ 
+-func newSwitchContextModel(accounts []config.AuthorizedAccount, profile *config.Profile) switchContextModel {
++func newSwitchContextModel(accounts []config.AuthorizedAccount, profile *config.Profile, parentAccountIDs map[string]string) switchContextModel {
+ 	activeID, activeMode := "", "test"
+ 	if ac, _ := profile.GetActiveContext(); ac != nil {
+ 		activeID = ac.AccountID
+@@ -156,24 +184,15 @@ func newSwitchContextModel(accounts []config.AuthorizedAccount, profile *config.
+ 		}
+ 	}
+ 
+-	rows, nameW, idW := buildSwitchRows(accounts, activeID, activeMode)
++	rows, nameW, idW := buildSwitchRows(accounts, parentAccountIDs, activeID, activeMode)
+ 
+-	m := switchContextModel{rows: rows, nameW: nameW, idW: idW, cursor: -1}
++	m := switchContextModel{rows: rows, nameW: nameW, idW: idW}
+ 	for i, r := range rows {
+-		if !r.selectable() {
+-			continue
+-		}
+-		if m.cursor == -1 {
+-			m.cursor = i
+-		}
+ 		if r.active {
+ 			m.cursor = i
+ 			break
+ 		}
+ 	}
+-	if m.cursor == -1 {
+-		m.cursor = 0
+-	}
+ 	return m
+ }
+ 
+@@ -186,18 +205,12 @@ func (m switchContextModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+ 	}
+ 	switch {
+ 	case key.Code == tea.KeyUp || key.Code == 'k':
+-		for i := m.cursor - 1; i >= 0; i-- {
+-			if m.rows[i].selectable() {
+-				m.cursor = i
+-				break
+-			}
++		if m.cursor > 0 {
++			m.cursor--
+ 		}
+ 	case key.Code == tea.KeyDown || key.Code == 'j':
+-		for i := m.cursor + 1; i < len(m.rows); i++ {
+-			if m.rows[i].selectable() {
+-				m.cursor = i
+-				break
+-			}
++		if m.cursor < len(m.rows)-1 {
++			m.cursor++
+ 		}
+ 	case key.Code == tea.KeyEnter:
+ 		m.done = true
+@@ -212,7 +225,6 @@ func (m switchContextModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+ var (
+ 	switchHeaderStyle  = lipgloss.NewStyle().Faint(true)
+ 	switchDividerStyle = lipgloss.NewStyle().Faint(true)
+-	switchSectionStyle = lipgloss.NewStyle().Faint(true)
+ 	switchCursorStyle  = lipgloss.NewStyle().Bold(true)
+ 	switchActiveStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("2"))
+ )
+@@ -220,41 +232,43 @@ var (
+ func (m switchContextModel) View() tea.View {
+ 	var sb strings.Builder
+ 
+-	// pointer(2) + name(nameW) + sep(2) + id(idW) + sep(2) = nameW+idW+6 before mode
+-	// Header "Account" starts at col 2 (after pointer space), "Mode" at nameW+idW+6
+-	header := fmt.Sprintf("  %-*sMode", m.nameW+m.idW+4, "Account")
++	// The name column is widened by switchIndentWidth so a nested row's
++	// "└─ " connector plus name lines up in the same space a top-level row's
++	// bare name would occupy — otherwise the id/mode columns would drift
++	// out of alignment between nested and top-level rows.
++	nameRegion := m.nameW + switchIndentWidth
++
++	// pointer(2) + nameRegion + sep(2) + id(idW) + sep(2) = nameRegion+idW+6 before mode
++	// Header "Account" starts at col 2 (after pointer space), "Mode" at nameRegion+idW+6
++	header := fmt.Sprintf("  %-*sMode", nameRegion+m.idW+4, "Account")
+ 	sb.WriteString(switchHeaderStyle.Render(header))
+ 	sb.WriteByte('\n')
+ 
+-	divLen := 2 + m.nameW + 2 + m.idW + 2 + 7 + 2 + 8 // ends after "● active"
++	divLen := 2 + nameRegion + 2 + m.idW + 2 + 7 + 2 + 8 // ends after "● active"
+ 	sb.WriteString(switchDividerStyle.Render(strings.Repeat("─", divLen)))
+ 	sb.WriteByte('\n')
+ 
+ 	for i, r := range m.rows {
+-		switch {
+-		case r.isSeparator:
+-			sb.WriteString(switchDividerStyle.Render("──"))
+-			sb.WriteByte('\n')
+-		case r.isSectionLabel:
+-			sb.WriteString(switchSectionStyle.Render(r.label))
+-			sb.WriteByte('\n')
+-		default:
+-			pointer := "  "
+-			if i == m.cursor {
+-				pointer = "▶ "
+-			}
+-			activeMarker := ""
+-			if r.active {
+-				activeMarker = "  " + switchActiveStyle.Render("● active")
+-			}
+-			line := fmt.Sprintf("%s%-*s  %-*s  %-7s%s", pointer, m.nameW, r.name, m.idW, r.id, displayMode(r.mode), activeMarker)
+-			line = strings.TrimRight(line, " ")
+-			if i == m.cursor {
+-				line = switchCursorStyle.Render(line)
+-			}
+-			sb.WriteString(line)
+-			sb.WriteByte('\n')
++		pointer := "  "
++		if i == m.cursor {
++			pointer = "▶ "
++		}
++		indent := ""
++		if r.nested {
++			indent = switchNestedIndent
++		}
++		namePad := nameRegion - utf8.RuneCountInString(indent)
++		activeMarker := ""
++		if r.active {
++			activeMarker = "  " + switchActiveStyle.Render("● active")
++		}
++		line := fmt.Sprintf("%s%s%-*s  %-*s  %-7s%s", pointer, indent, namePad, r.name, m.idW, r.id, displayMode(r.mode), activeMarker)
++		line = strings.TrimRight(line, " ")
++		if i == m.cursor {
++			line = switchCursorStyle.Render(line)
+ 		}
++		sb.WriteString(line)
++		sb.WriteByte('\n')
+ 	}
+ 
+ 	sb.WriteString("\nRun 'stripe login' to authorize additional accounts or sandboxes.\n\n")
+@@ -262,11 +276,11 @@ func (m switchContextModel) View() tea.View {
+ 	return tea.NewView(sb.String())
+ }
+ 
+-func runSwitchContextTUI(cfg *config.Config, accounts []config.AuthorizedAccount) (*SwitchResult, error) {
++func runSwitchContextTUI(cfg *config.Config, accounts []config.AuthorizedAccount, parentAccountIDs map[string]string) (*SwitchResult, error) {
+ 	if len(accounts) == 0 {
+ 		return nil, errorcategory.Errorf(errorcategory.Auth, "no authorized accounts found")
+ 	}
+-	m := newSwitchContextModel(accounts, &cfg.Profile)
++	m := newSwitchContextModel(accounts, &cfg.Profile, parentAccountIDs)
+ 
+ 	final, err := tea.NewProgram(m).Run()
+ 	if err != nil {
+diff --git a/pkg/login/switch_context_test.go b/pkg/login/switch_context_test.go
+new file mode 100644
+index 0000000..303c36c
+--- /dev/null
++++ b/pkg/login/switch_context_test.go
+@@ -0,0 +1,102 @@
++package login
++
++import (
++	"testing"
++
++	"github.com/stretchr/testify/assert"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++)
++
++func rowKeys(rows []switchRow) []string {
++	keys := make([]string, 0, len(rows))
++	for _, r := range rows {
++		keys = append(keys, r.id+"/"+r.mode)
++	}
++	return keys
++}
++
++func TestBuildSwitchRows_GroupsSandboxesUnderParent(t *testing.T) {
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++		{ID: "acct_sandbox1", Name: "Acme Dev", Modes: []string{"test"}},
++		{ID: "acct_sandbox2", Name: "Acme Staging", Modes: []string{"test"}},
++		{ID: "acct_orphan", Name: "Mystery Sandbox", Modes: []string{"test"}},
++		{ID: "acct_orphan2", Name: "Second Mystery", Modes: []string{"test"}},
++	}
++	parentAccountIDs := map[string]string{
++		"acct_sandbox1": "acct_live1",
++		"acct_sandbox2": "acct_live1",
++	}
++
++	rows, nameW, idW := buildSwitchRows(accounts, parentAccountIDs, "", "test")
++
++	assert.Equal(t, []string{
++		"acct_live1/live",
++		"acct_sandbox1/test",
++		"acct_sandbox2/test",
++		"acct_orphan/test",
++		"acct_orphan2/test",
++	}, rowKeys(rows), "standalone sandboxes should appear as their own accounts, not grouped under a heading")
++
++	for _, r := range rows {
++		if r.id == "acct_sandbox1" || r.id == "acct_sandbox2" {
++			assert.True(t, r.nested, "sandboxes with a known parent should be nested")
++		}
++		if r.id == "acct_live1" || r.id == "acct_orphan" || r.id == "acct_orphan2" {
++			assert.False(t, r.nested)
++		}
++	}
++
++	assert.Equal(t, len("Mystery Sandbox"), nameW)
++	assert.Equal(t, len("acct_sandbox1"), idW)
++}
++
++func TestBuildSwitchRows_LegacyCombinedAccountNestsTestMode(t *testing.T) {
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_legacy", Name: "Acme Inc", Modes: []string{"live", "test"}},
++	}
++
++	rows, _, _ := buildSwitchRows(accounts, nil, "", "test")
++
++	assert.Len(t, rows, 2)
++	assert.Equal(t, "Acme Inc", rows[0].name)
++	assert.False(t, rows[0].nested)
++	assert.Equal(t, "Test mode", rows[1].name)
++	assert.True(t, rows[1].nested)
++}
++
++func TestBuildSwitchRows_LiveModeRendersBeforeNestedTestModeRegardlessOfAPIOrder(t *testing.T) {
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_legacy", Name: "Acme Inc", Modes: []string{"test", "live"}},
++	}
++
++	rows, _, _ := buildSwitchRows(accounts, nil, "", "test")
++
++	assert.Len(t, rows, 2)
++	assert.Equal(t, "live", rows[0].mode, "the live row should come first even when the API returns test before live")
++	assert.False(t, rows[0].nested)
++	assert.Equal(t, "Test mode", rows[1].name)
++	assert.True(t, rows[1].nested)
++}
++
++func TestBuildSwitchRows_NoSandboxes(t *testing.T) {
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live"}},
++	}
++
++	rows, _, _ := buildSwitchRows(accounts, nil, "", "test")
++
++	assert.Equal(t, []string{"acct_live1/live"}, rowKeys(rows))
++}
++
++func TestBuildSwitchRows_MarksActiveRow(t *testing.T) {
++	accounts := []config.AuthorizedAccount{
++		{ID: "acct_live1", Name: "Acme Inc", Modes: []string{"live", "test"}},
++	}
++
++	rows, _, _ := buildSwitchRows(accounts, nil, "acct_live1", "test")
++
++	assert.False(t, rows[0].active)
++	assert.True(t, rows[1].active)
++}
+diff --git a/pkg/requests/context_statuses.go b/pkg/requests/context_statuses.go
+new file mode 100644
+index 0000000..79f3023
+--- /dev/null
++++ b/pkg/requests/context_statuses.go
+@@ -0,0 +1,98 @@
++package requests
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++	"net/http"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++// contextStatusesBatchSize is the maximum number of contexts the
++// /v1/stripecli/context_statuses endpoint accepts per request.
++const contextStatusesBatchSize = 100
++
++// ContextStatusQuery identifies an (account, mode) pair to resolve via
++// GetContextStatuses.
++type ContextStatusQuery struct {
++	AccountID string
++	Livemode  bool
++}
++
++// ContextStatus is the per-context result from POST /v1/stripecli/context_statuses.
++// ParentAccountID is only populated for sandbox (non-live) contexts whose
++// parent account is both known and within the caller's permission grant.
++type ContextStatus struct {
++	AccountID       string `json:"account_id"`
++	Livemode        bool   `json:"livemode"`
++	Valid           bool   `json:"valid"`
++	ParentAccountID string `json:"parent_account_id,omitempty"`
++}
++
++type contextStatusesResponse struct {
++	Contexts []ContextStatus `json:"contexts"`
++}
++
++// GetContextStatuses resolves parent-account and validity info for a batch of
++// (account_id, livemode) contexts via POST /v1/stripecli/context_statuses.
++// creds must carry an OAK context/livemode (e.g. via stripe.NewOAKCredentials)
++// identifying the caller's active account — the API 403s on a bare token
++// with no Stripe-Context/Stripe-Livemode, since it can't otherwise resolve
++// which permission grant to check the queried contexts against.
++func GetContextStatuses(ctx context.Context, apiBaseURL string, profile *config.Profile, creds stripe.Credentials, queries []ContextStatusQuery) ([]ContextStatus, error) {
++	if len(queries) == 0 {
++		return nil, nil
++	}
++
++	var results []ContextStatus
++	for start := 0; start < len(queries); start += contextStatusesBatchSize {
++		end := start + contextStatusesBatchSize
++		if end > len(queries) {
++			end = len(queries)
++		}
++
++		batch, err := getContextStatusesBatch(ctx, apiBaseURL, profile, creds, queries[start:end])
++		if err != nil {
++			return nil, err
++		}
++		results = append(results, batch...)
++	}
++	return results, nil
++}
++
++func getContextStatusesBatch(ctx context.Context, apiBaseURL string, profile *config.Profile, creds stripe.Credentials, queries []ContextStatusQuery) ([]ContextStatus, error) {
++	contexts := make([]interface{}, 0, len(queries))
++	for _, q := range queries {
++		contexts = append(contexts, map[string]interface{}{
++			"account_id": q.AccountID,
++			"livemode":   q.Livemode,
++		})
++	}
++
++	base := &Base{
++		Profile:        profile,
++		Method:         http.MethodPost,
++		SuppressOutput: true,
++		APIBaseURL:     apiBaseURL,
++		// Needed so a 401 retry re-resolves credentials for the right mode
++		// (see Base.performRequest's refresh-and-retry path); without it,
++		// Livemode defaults to false and a live-context retry fails with a
++		// mode-mismatch error instead of succeeding.
++		Livemode: creds.Livemode(),
++	}
++
++	resp, err := base.MakeRequest(ctx, creds, "/v1/stripecli/context_statuses", &RequestParameters{}, map[string]interface{}{
++		"contexts": contexts,
++	}, true, nil)
++	if err != nil {
++		return nil, err
++	}
++
++	var result contextStatusesResponse
++	if err := json.Unmarshal(resp, &result); err != nil {
++		return nil, fmt.Errorf("failed to decode context statuses response: %w", err)
++	}
++	return result.Contexts, nil
++}
+diff --git a/pkg/requests/context_statuses_test.go b/pkg/requests/context_statuses_test.go
+new file mode 100644
+index 0000000..73e4559
+--- /dev/null
++++ b/pkg/requests/context_statuses_test.go
+@@ -0,0 +1,163 @@
++package requests
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++	"net/http"
++	"net/http/httptest"
++	"strconv"
++	"strings"
++	"testing"
++
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/keyring"
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++func TestGetContextStatuses(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.Equal(t, http.MethodPost, r.Method)
++		require.Equal(t, "/v1/stripecli/context_statuses", r.URL.Path)
++		require.Equal(t, "Bearer oak_test_123", r.Header.Get("Authorization"))
++		// The API 403s without an OAK context identifying the caller's
++		// active account/livemode, so these must always be sent.
++		require.Equal(t, "acct_live", r.Header.Get("Stripe-Context"))
++		require.Equal(t, "true", r.Header.Get("Stripe-Livemode"))
++
++		require.NoError(t, r.ParseForm())
++		require.Equal(t, "acct_111", r.Form.Get("contexts[0][account_id]"))
++		require.Equal(t, "true", r.Form.Get("contexts[0][livemode]"))
++		require.Equal(t, "acct_222", r.Form.Get("contexts[1][account_id]"))
++		require.Equal(t, "false", r.Form.Get("contexts[1][livemode]"))
++
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"contexts": [
++			{"account_id": "acct_111", "livemode": true, "valid": true},
++			{"account_id": "acct_222", "livemode": false, "valid": true, "parent_account_id": "acct_111"}
++		]}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_live", true)
++	statuses, err := GetContextStatuses(context.Background(), ts.URL, nil, creds, []ContextStatusQuery{
++		{AccountID: "acct_111", Livemode: true},
++		{AccountID: "acct_222", Livemode: false},
++	})
++	require.NoError(t, err)
++	require.Equal(t, []ContextStatus{
++		{AccountID: "acct_111", Livemode: true, Valid: true},
++		{AccountID: "acct_222", Livemode: false, Valid: true, ParentAccountID: "acct_111"},
++	}, statuses)
++}
++
++func TestGetContextStatuses_Empty(t *testing.T) {
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_live", true)
++	statuses, err := GetContextStatuses(context.Background(), "http://unused.example", nil, creds, nil)
++	require.NoError(t, err)
++	require.Nil(t, statuses)
++}
++
++func TestGetContextStatuses_Batches(t *testing.T) {
++	var requestSizes []int
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.NoError(t, r.ParseForm())
++
++		var accountIDs []string
++		for key, vals := range r.Form {
++			if strings.HasSuffix(key, "[account_id]") {
++				accountIDs = append(accountIDs, vals[0])
++			}
++		}
++		requestSizes = append(requestSizes, len(accountIDs))
++
++		var contexts []string
++		for _, id := range accountIDs {
++			contexts = append(contexts, fmt.Sprintf(`{"account_id": %q, "livemode": false, "valid": true}`, id))
++		}
++		w.WriteHeader(http.StatusOK)
++		fmt.Fprintf(w, `{"contexts": [%s]}`, strings.Join(contexts, ","))
++	}))
++	defer ts.Close()
++
++	queries := make([]ContextStatusQuery, 150)
++	for i := range queries {
++		queries[i] = ContextStatusQuery{AccountID: "acct_" + strconv.Itoa(i), Livemode: false}
++	}
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_live", true)
++	statuses, err := GetContextStatuses(context.Background(), ts.URL, nil, creds, queries)
++	require.NoError(t, err)
++	require.Len(t, statuses, 150)
++	require.ElementsMatch(t, []int{100, 50}, requestSizes)
++}
++
++// TestGetContextStatuses_RetriesWithLiveCredentialsAfterTokenRefresh exercises
++// Base.performRequest's 401-refresh-and-retry path for a live active
++// context. The retry re-resolves credentials via
++// Profile.ResolveCredentials(rb.Livemode); if Livemode isn't set to match
++// creds (as GetUserInfo already does), the retry fails with a mode-mismatch
++// error instead of succeeding, silently disabling grouping.
++func TestGetContextStatuses_RetriesWithLiveCredentialsAfterTokenRefresh(t *testing.T) {
++	activeContext, err := json.Marshal(config.ActiveContext{AccountID: "acct_live", Livemode: true})
++	require.NoError(t, err)
++
++	origKeyRing, origRefresher := config.KeyRing, config.OAuthTokenRefresher
++	config.KeyRing = keyring.NewMemoryStore(map[string][]byte{
++		config.UATKeychainItemKey:            []byte("oak_initial"),
++		config.OAuthActiveContextKeychainKey: activeContext,
++	})
++	t.Cleanup(func() {
++		config.KeyRing = origKeyRing
++		config.OAuthTokenRefresher = origRefresher
++	})
++
++	refreshes := 0
++	config.OAuthTokenRefresher = func(p *config.Profile) error {
++		refreshes++
++		p.UAT = "oak_refreshed"
++		return config.KeyRing.Set(config.UATKeychainItemKey, []byte(p.UAT), "refreshed test token")
++	}
++
++	requests := 0
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		requests++
++		if requests == 1 {
++			w.WriteHeader(http.StatusUnauthorized)
++			w.Write([]byte(`{"error": {"code": "unauthorized", "message": "expired"}}`)) //nolint:errcheck
++			return
++		}
++
++		require.Equal(t, "Bearer oak_refreshed", r.Header.Get("Authorization"))
++		require.Equal(t, "true", r.Header.Get("Stripe-Livemode"), "the retry must resolve live credentials, matching the active context")
++		w.WriteHeader(http.StatusOK)
++		w.Write([]byte(`{"contexts": [{"account_id": "acct_sandbox1", "livemode": false, "valid": true}]}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	profile := &config.Profile{ProfileName: "default"}
++	creds := stripe.NewOAKCredentials("oak_initial", "acct_live", true)
++	statuses, err := getContextStatusesBatch(context.Background(), ts.URL, profile, creds, []ContextStatusQuery{
++		{AccountID: "acct_sandbox1", Livemode: false},
++	})
++	require.NoError(t, err)
++	require.Equal(t, 1, refreshes)
++	require.Equal(t, 2, requests)
++	require.Equal(t, []ContextStatus{{AccountID: "acct_sandbox1", Livemode: false, Valid: true}}, statuses)
++}
++
++func TestGetContextStatuses_ErrOnStatus(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusUnauthorized)
++		w.Write([]byte(`{"error": {"message": "invalid token"}}`)) //nolint:errcheck
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_live", true)
++	_, err := GetContextStatuses(context.Background(), ts.URL, nil, creds, []ContextStatusQuery{
++		{AccountID: "acct_111", Livemode: true},
++	})
++	require.Error(t, err)
++}

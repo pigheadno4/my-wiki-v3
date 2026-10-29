@@ -6,6 +6,34 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Stripe CLI `1.55.3`
+
+- Approved serial focused delta, `github-541a1da1348b9d86a709`, SHA `b93a4f3e0562b551febc89f5d349ff27cf4450c1`: all 12 changed/new retained files and affected prior code read; 113 unchanged/inventories verified, 21 assigned paths. Records grouping/fallbacks, whoami authorized/exit-code limit, invalid_scope re-login and note-only trigger additions. Concept first; cumulative source/changelog/company/catalog/logs preserve history/source_count 666. Seven-release loop complete after per-item validation; no CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
+## [2026-10-30] ingest | Stripe CLI `1.55.2`
+
+- Approved serial focused delta, `github-ee8ed1b44af70b36fab6`, SHA `2713dc4726cefb2ae5c9107330f0c0d5f922140f`: nine assigned paths, 123 unchanged retained files verified. Packaging announcements only; excluded workflow/installer limits preserved. Concept first, cumulative wiki cycle retains all history/source_count 666. No install/CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
+## [2026-10-30] ingest | Stripe CLI `1.55.1`
+
+- Approved serial focused delta, `github-8eee50d578a32111fa93`, SHA `4501fc5a6e58dacab6a60a089e93317cc7b84861`: full changed request file/affected prior code read, 122 unchanged verified, ten required paths. Records multipart parameter merge, basename/error/expand/boundary handling and dry-run limits; generated endpoint selection remains excluded. Concept first; all cumulative wiki/shared updates preserve older history/source_count 666. No file upload/CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
+## [2026-10-30] ingest | Stripe CLI `1.55.0`
+
+- Approved serial focused delta, `github-0410aa98455f316b0c06`, SHA `98302498324cd6c538324dc874a7260b417aa030`: all four modified retained files/affected prior code read, 119 unchanged and inventories verified, 13 required paths. Records signal-bounded plugin cleanup, optional bounded HTTP-outcome telemetry and request-local copy; no universal crash or full excluded reporting audit claimed. Existing concept first; all cumulative wiki/shared updates preserve earlier history/source_count 666. No CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
+## [2026-10-30] ingest | Stripe CLI `1.54.1`
+
+- Approved serial focused delta, `github-2dcde1134ba2cdd1da0c`, SHA `e04aea5379b04001cb449b4e24b2f65ce7af4446`: notes/comparison/records read; 123 unchanged retained files verified, nine required paths. Daily version-check/opt-out announcement only; excluded implementation, exact variable and updater relationship not inferred. Concept first and full wiki cycle completed, older history/source_count 666 retained. No CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
+## [2026-10-30] ingest | Stripe CLI `1.54.0`
+
+- Approved serial additive full/focused reading, `github-ee134a80def44f62fd7f`, SHA `7839c312a40ed89ecc48d16fc5fb8bca7dbfac49`; ten changed/new retained files read, 113 unchanged mechanically verified, full assignment 132 paths. Records path validation, account pagination, immediate-reauth helper versus ordinary caller, workspace/playground helpers and plugin dependency metadata; sandbox/install/orchestration remain excluded. Concept first; source/changelog/company/catalog/logs preserve all earlier history/source_count 666. No CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
+## [2026-10-30] ingest | Stripe CLI `1.53.1`
+
+- Approved serial additive full with focused reading, `github-bdd83d8728d39c32d305`, SHA `9725e09740487b1c709b66b8c782f6b7a762bc3a`: all 12 changed retained files and authored comparison/prior context read; 108 unchanged files and 240 prior/current identities verified. Full assignment 129 paths. Profile-scoped OAuth storage/refresh/revoke/context, banner guard and RPC path escaping; excluded updater/agent/Terminal details remain announcements. Existing concept first, cumulative source/changelog/company/catalog/logs updated, older history/source_count 666 retained. No CLI/API/payment execution, commit or push. [[source-github-stripe-cli]] [[changelog-github-stripe-cli]]
+
 ## [2026-10-29] ingest | Stripe React Native `0.84.0`
 
 - Approved full additive `github-e889941d7b5280b9c509`, SHA `33ef1ee27ad7b7dc6be86e80b9830ab7daa696ed`, after 0.83.0 completion. Focused reading covers changed retained source, affected prior code, release/comparison/cumulative history and the approved exact-SHA SPM helper. Unchanged source/history/generated inventories and duplicated diff checked mechanically. All 505 file identities pass (252 current/252 prior plus supplement); 18 modified/234 unchanged, 45 upstream dispositions, full assignment 264 paths.

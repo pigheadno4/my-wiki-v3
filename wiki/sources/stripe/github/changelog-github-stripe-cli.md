@@ -2,9 +2,16 @@
 title: "GitHub changelog: stripe/stripe-cli"
 type: source
 date_ingested: 2026-08-14
-date_updated: 2026-10-07
+date_updated: 2026-10-30
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-b93a4f3/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-2713dc4/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-4501fc5/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-9830249/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-e04aea5/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-7839c31/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-9725e09/manifest.json"
   - "github/stripe/stripe-cli/snapshots/2026-10-06-a915fc6/manifest.json"
   - "github/stripe/stripe-cli/snapshots/2026-10-06-eea8a71/manifest.json"
   - "github/stripe/stripe-cli/snapshots/2026-10-06-1090068/manifest.json"
@@ -208,6 +215,57 @@ Package-qualified retained history for `stripe/stripe-cli`. Durable implementati
 - **Updates/impact:** Notes announce stripe version --notes; 120 retained files unchanged. Version command/library/tests are excluded upstream changes, so detailed command behavior requires a pinned supplement.
 - **Sections:** additive source/changelog, existing concept, company/catalog and log. Qualified the empty comparison upstream list against the packet's four excluded upstream changes; prior warnings preserved. No cross-company comparison warranted.
 - [Snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-a915fc6/manifest.json), [release record](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.0/2026-10-06/manifest.json), [notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.0/2026-10-06/release-notes.md), [comparison](../../../../tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.2--1.53.0/comparison.md), [comparison record](../../../../tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.2--1.53.0/comparison.json).
+
+## `stripe-cli@1.53.0` to `stripe-cli@1.53.1` (2026-10-07)
+
+- **Identity/mode:** SHA `9725e09740487b1c709b66b8c782f6b7a762bc3a`; ingested 2026-10-30, approved additive full with focused reading (collector delta overridden). Twelve modified/108 unchanged retained files; all 240 prior/current file identities verified. Earlier knowledge preserved.
+- **Changes/impact:** non-default profile-scoped OAuth keys, profile-aware refresh/revoke/context operations, propagated whoami context-read errors, stale-name banner guard and RPC event-ID path escaping. Default legacy keys remain; missing named credentials require login rather than an inferred migration. Pending reauth files, scope-only detection limits and revoke-failure behavior remain qualified.
+- **Announcements only:** generated resource escaping, removed P400 quickstart, custom-directory updater and OpenClaw setup have excluded implementations. No new checkout payment method or runtime/payment proof.
+- **Updated sections:** additive 1.53.1 source and existing CLI concept, company/catalog/logs; no substantive cross-company comparison or new contradiction. Source count unchanged.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-9725e09/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.1/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.1/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.53.0--1.53.1/comparison.json` and `diff.patch`. Implementation grounding in [[source-github-stripe-cli]].
+
+## `stripe-cli@1.53.1` to `stripe-cli@1.54.0` (2026-10-16)
+
+- **Identity/mode:** SHA `7839c312a40ed89ecc48d16fc5fb8bca7dbfac49`, ingested 2026-10-30; approved additive full/focused reading. Ten changed/new, 113 unchanged retained files; earlier history retained.
+- **Changes/impact:** rejects empty/dot positional segments, shared event-resend formatter, paginated authorized accounts, separate immediate-reauth helper, workspace/playground request helpers and plugin minimum-dependency metadata. Ordinary login still uses the non-immediate Reauth path; account paging has no explicit repeated-cursor guard. New structs are not merchant eligibility or dependency-install proof.
+- **Announcement boundaries:** published sandbox management and Windows version-selecting install script are excluded implementations. Retained help changes to plural sandboxes create; exact command/alias and full management behavior require pinned supplemental evidence. No runtime/payment execution.
+- **Updated sections:** additive 1.54.0 source, existing CLI concept, company/catalog/logs; no new cross-company comparison or unresolved contradiction. Source count unchanged.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-7839c31/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.0/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.0/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.53.1--1.54.0/comparison.json` and `diff.patch`. Implementation grounding in [[source-github-stripe-cli]].
+
+## `stripe-cli@1.54.0` to `stripe-cli@1.54.1` (2026-10-19)
+
+- **Identity/mode:** SHA `e04aea5379b04001cb449b4e24b2f65ce7af4446`, ingested 2026-10-30; approved focused delta. Zero retained source changes, 123 unchanged files verified; three upstream version/sandbox/test paths are policy-excluded.
+- **Finding/impact:** note-backed daily version-check limit and environment opt-out. Exact variable, timing, cache and binary-updater relationship require supplemental evidence. No implementation-level migration inferred; all history preserved.
+- **Updated sections:** source 1.54.1, existing concept, company/catalog/logs; no new comparison/contradiction, source count unchanged. No CLI/API/payment execution.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-e04aea5/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.1/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.1/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.54.0--1.54.1/comparison.json`.
+
+## `stripe-cli@1.54.1` to `stripe-cli@1.55.0` (2026-10-21)
+
+- **Identity/mode:** SHA `98302498324cd6c538324dc874a7260b417aa030`, ingested 2026-10-30; approved focused delta. Four modified/119 unchanged retained files, prior history preserved.
+- **Changes/impact:** root SIGINT/SIGTERM handler calls plugin cleanup then exits 1; not a universal crash/SIGKILL/descendant guarantee. Request-local copied telemetry metadata carries bounded HTTP-outcome categories; RequestError exposes stored status. The latter implementation finding is absent from the brief notes. Excluded plugin/reporting code prevents full pipeline/lifecycle claims.
+- **Updated sections:** source 1.55.0, existing concept, company/catalog/logs; no new comparison or unresolved contradiction; source count unchanged. No runtime/payment execution.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-9830249/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.0/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.0/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.54.1--1.55.0/comparison.json` and `diff.patch`.
+
+## `stripe-cli@1.55.0` to `stripe-cli@1.55.1` (2026-10-22)
+
+- **Identity/mode:** SHA `4501fc5a6e58dacab6a60a089e93317cc7b84861`, ingested 2026-10-30; approved focused delta. One modified/122 unchanged retained files; older history preserved.
+- **Changes/impact:** multipart merges generated parameters with duplicate-key checks, emits expand fields, uses file basenames, propagates file/field/boundary errors and closes the writer before returning. Bodies remain buffered; no upload size/path-trust guarantee added. Multipart-aware dry run does not open files or prove upload success. OpenAPI/operation/template selection remains excluded.
+- **Updated sections:** source 1.55.1, existing CLI concept, company/catalog/logs; no new comparison/contradiction, count unchanged. No upload/CLI/API/payment execution.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-4501fc5/manifest.json`; same snapshot `files/pkg/requests/base.go`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.1/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.1/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.55.0--1.55.1/comparison.json` and `diff.patch`.
+
+## `stripe-cli@1.55.1` to `stripe-cli@1.55.2` (2026-10-26)
+
+- **Identity/mode:** SHA `2713dc4726cefb2ae5c9107330f0c0d5f922140f`, ingested 2026-10-30; approved focused delta, 123 unchanged retained files, nine assigned paths.
+- **Changes/impact:** upstream notes announce forwarding macOS signing secrets and failing install.sh without a SHA-256 tool. Both implementations are excluded; no signature/notarization or checksum-order/coverage audit claimed. No retained implementation change or new payment feature established.
+- **Updated sections:** existing concept first, cumulative source/changelog, company/catalog/logs; all older history and source count preserved. No runtime/install/payment execution.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-2713dc4/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.2/2026-10-30/manifest.json` and `release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.55.1--1.55.2/comparison.json` and `diff.patch`.
+
+## `stripe-cli@1.55.2` to `stripe-cli@1.55.3` (2026-10-27)
+
+- **Identity/mode:** SHA `b93a4f3e0562b551febc89f5d349ff27cf4450c1`, ingested 2026-10-30; approved focused delta, two added/ten modified retained files fully read with affected prior code, 113 unchanged verified, 21 assigned paths.
+- **Changes/impact:** parent-grouped account text/TUI via active OAK context-status requests in batches of 100, with plain-list/standalone fallbacks; JSON accounts remain flat. whoami adds optional authorized based on account/mode membership, not a deletion/scope diagnosis or automatic switch; false alone still returns success. invalid_scope refresh now attempts OAuth cleanup and requires re-login, with cleanup errors ignored. Issuing/charge/refund/tax-ID trigger additions are note-only because recipes are excluded.
+- **Updated sections:** concept first, cumulative source/changelog, company/catalog/logs through 1.55.3; older findings, contradictions and source count preserved. No new comparison page or runtime/API/payment proof.
+- **Evidence:** `raw/github/stripe/stripe-cli/snapshots/2026-10-30-b93a4f3/manifest.json`; retained cmd/login/request files; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.3/2026-10-30/manifest.json` and `release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.55.2--1.55.3/comparison.json` and `diff.patch`.
 
 ## Baseline Evidence
 

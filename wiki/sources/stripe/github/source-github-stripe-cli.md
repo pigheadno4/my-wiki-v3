@@ -2,9 +2,16 @@
 title: "GitHub: stripe/stripe-cli"
 type: source
 date_ingested: 2026-08-14
-date_updated: 2026-10-07
+date_updated: 2026-10-30
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-b93a4f3/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-2713dc4/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-4501fc5/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-9830249/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-e04aea5/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-7839c31/manifest.json"
+  - "github/stripe/stripe-cli/snapshots/2026-10-30-9725e09/manifest.json"
   - "github/stripe/stripe-cli/snapshots/2026-10-06-a915fc6/manifest.json"
   - "github/stripe/stripe-cli/snapshots/2026-10-06-eea8a71/manifest.json"
   - "github/stripe/stripe-cli/snapshots/2026-10-06-1090068/manifest.json"
@@ -32,11 +39,11 @@ tags: [stripe, stripe-cli, developer-tools, webhooks, fixtures, api-testing, git
 
 Repository: <https://github.com/stripe/stripe-cli>
 
-An additive full ingest on 2026-10-07 adds `stripe-cli@1.50.1`, SHA `4a89968de966ca1978eb4c8da558367233769b4c`, without replacing the `1.50.0` baseline below. Sequential additive history now reaches `stripe-cli@1.53.0`; this is curated history, not a claim about the latest upstream version.
+An additive full ingest on 2026-10-07 adds `stripe-cli@1.50.1`, SHA `4a89968de966ca1978eb4c8da558367233769b4c`, without replacing the `1.50.0` baseline below. Sequential additive history now reaches `stripe-cli@1.55.3`; this is curated history, not a claim about the latest upstream version.
 
 ## Evidence Boundary
 
-- Findings are version-qualified to the retained capsules through `stripe-cli@1.53.0`, not an unqualified latest CLI.
+- Findings are version-qualified to the retained capsules through `stripe-cli@1.55.3`, not an unqualified latest CLI.
 - The capsule focuses on checkout-relevant command, authentication, fixture, request, proxy, RPC, telemetry, and WebSocket code. It does not represent the complete upstream tree.
 - This first immutable snapshot retains 28 Go test files as an approved one-time collection superset. The corrected future capsule policy excludes Go tests.
 - Embedded trigger fixtures demonstrate how the CLI generates test events. They do not independently establish canonical API lifecycle, production availability, or merchant eligibility.
@@ -465,6 +472,106 @@ This focused delta records the release announcement and identity without attribu
 
 [Snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-a915fc6/manifest.json), [release record](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.0/2026-10-06/manifest.json), [notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.0/2026-10-06/release-notes.md), [comparison](../../../../tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.2--1.53.0/comparison.md), [comparison record](../../../../tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.52.2--1.53.0/comparison.json).
 
+## Version `1.53.1`: Profile-Scoped OAuth Sessions and Path Escaping
+
+Additive full ingest, exact SHA `9725e09740487b1c709b66b8c782f6b7a762bc3a`, released 2026-10-07 and ingested 2026-10-30. The approved focused read covers all 12 modified retained files, authored comparison changes, affected prior code and cumulative wiki history; inventories and 108 unchanged files are mechanically verified. All earlier version sections remain historical evidence.
+
+`Profile.KeyringKey(base)` retains the legacy base key for default/empty profile names and returns `base + ":" + ProfileName` otherwise. UAT, refresh token, active context and UAT expiry storage/read/cleanup now use it. Refresh, revoke, login/reauth and context display/switching pass the selected Profile instead of reading global session slots. `RevokeToken` now takes a profile; its missing-token no-op and warn/continue caller behavior remain. Clearing auth requests deletion of that profile's OAuth keys even without a config entry; some cleanup callers still ignore deletion errors. This is not guaranteed remote revocation or atomic multi-store persistence.
+
+Default sessions retain their stored identity without migration. No copy of a former global OAuth session into a named profile is established; a named profile lacking its new keys needs its own login. Pending reauth storage and its ID/name/mode completion proxy remain unchanged; profile-keyed tokens do not establish per-profile pending-file isolation or fix scope-only completion detection. Existing API-key keyring paths and override precedence are not newly changed by this release.
+
+OAuth `whoami` now returns active-context keyring read errors instead of silently omitting the context. The banner suppresses a display name when its stored account ID conflicts with the active context. `pkg/rpcservice/events_resend.go` escapes each path argument with `url.PathEscape`; this is not the later rejection of bare dot segments. Release notes additionally announce generated-resource escaping, removal of the P400 Terminal quickstart, custom-directory automatic updates and OpenClaw agent setup. Those implementations are policy-excluded; root registration of a Terminal quickstart constructor is not proof that the old payment implementation remains. `Credentials.IsOAK` and the old Terminal device field/getter are removed from retained code; do not treat internal Go helpers as stable merchant APIs.
+
+**Grounding:** `return base + ":" + p.ProfileName` (`pkg/config/profile.go:84`); `func (p *Profile) GetActiveContext() (*ActiveContext, error)` (same file:915); `func RevokeToken(ctx context.Context, accessBaseURL string, profile *config.Profile) error` (`pkg/login/oauth_credentials.go:51`); `s[i] = url.PathEscape(v)` (`pkg/rpcservice/events_resend.go:98`). Paths refer to the `9725e09` snapshot below. No CLI build, credential mutation or API/payment execution was performed.
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-9725e09/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.1/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.1/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.53.0--1.53.1/comparison.json`. Authored code under `raw/github/stripe/stripe-cli/snapshots/2026-10-30-9725e09/files/pkg/` includes `config/profile.go`, `config/config.go`, `cmd/login.go`, `cmd/whoami.go`, `login/oauth_credentials.go`, `login/oauth_refresh.go`, `login/oauth_reauth.go`, `login/oauth_accounts.go`, `login/switch_context.go`, `rpcservice/events_resend.go`, `stripe/client.go` and `cmd/root.go`.
+
+## Version `1.54.0`: Path Validation, Account Pagination and Context Helpers
+
+Approved additive full with focused reading; SHA `7839c312a40ed89ecc48d16fc5fb8bca7dbfac49`, released 2026-10-16, ingested 2026-10-30. All ten added/modified retained files and authored comparison changes read, with affected prior code; 113 unchanged files/inventories checked mechanically. Earlier history is preserved. The effective full assignment has 132 paths.
+
+`EscapePathSegment` rejects raw empty strings, `.` and `..`, then uses `url.PathEscape`; `FormatURLPath` applies it to positional placeholders. RPC event resend adopts the shared formatter and maps failures to gRPC InvalidArgument before its API request. This is not arbitrary URL normalization or proof that every generic HTTP command rejects those inputs; generated resource-command callers are outside the snapshot.
+
+Authorized-account listing now follows `has_more` pages using `limit=100` and the last returned ID as `starting_after`. An empty page with has_more is an error; no explicit repeated-cursor guard/page cap appears. A typed wrapped HTTP 401 can be detected by `IsAuthorizedAccountsUnauthorized`. This helper does not itself refresh/retry or validate every caller's access origin.
+
+`ReauthImmediately` calls the shared reauth implementation with `openImmediately=true`, skipping Enter only where a browser can be opened. Normal `Reauth` still uses false and the retained login command still calls it; do not generalize automatic browser opening to every login. The account-signature completion proxy, scope-only limitation and timeout/cancel behavior remain. Device-code messaging says confirm when a server-prefilled URL exists, otherwise enter the code.
+
+New request helpers GET `/v1/stripecli/playground_context` and `/v1/stripecli/workspace_context`, decoding `playground_id` or `workspace_id` through the existing request layer. `PluginMetadata.MinPluginVersions` adds an optional map decoded from `min_plugin_versions`; comments describe version floors, but this struct performs no dependency installation or semver validation. Sandbox management, plugin dependency orchestration, Windows install.ps1 version selection and config migration changes are excluded. Notes announce sandbox command publication, while root/login agent guidance now names plural `stripe sandboxes create`; constructor names alone do not establish complete command syntax or aliases. These are CLI context/tooling capabilities, not payment-method enablement.
+
+**Grounding:** `"path arguments cannot be . or .."` (`pkg/stripe/path.go:20`); `query.Set("limit", "100")` (`pkg/login/oauth_accounts.go:53`); `func ReauthImmediately` (`pkg/login/oauth_reauth.go:49`); `MinPluginVersions map[string]string` (`pkg/requests/plugin.go:44`). Paths refer to snapshot `7839c31`. No CLI/API/payment execution.
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-7839c31/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.0/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.0/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.53.1--1.54.0/comparison.json`. Implementation under that snapshot's `files/pkg/`: `stripe/path.go`, `rpcservice/events_resend.go`, `login/oauth_accounts.go`, `login/oauth_device.go`, `login/oauth_reauth.go`, `requests/playground_context.go`, `requests/workspace_context.go`, `requests/plugin.go`, `cmd/login.go` and `cmd/root.go`.
+
+## Version `1.54.1`: Daily Version-Check Announcement
+
+Approved focused-reading delta at SHA `e04aea5379b04001cb449b4e24b2f65ce7af4446`, released 2026-10-19 and ingested 2026-10-30. All 123 retained files are hash-identical to 1.54.0. Notes announce checking for new CLI versions at most once daily and an environment variable to disable it. The actual `pkg/version/version.go`, its test and `pkg/cmd/sandbox.go` changes are classified policy exclusions. The empty selected comparison does not mean no upstream changes.
+
+Do not invent the variable name, caching/clock rules, failure behavior or claim that this also disables the separately wired binary auto-update mechanism. Those require an approved exact-SHA supplement. Earlier authentication, request and webhook knowledge remains intact. No CLI/network/payment execution.
+
+**Grounding:** "Check for new CLI versions at most once a day an env var to disable it (#2149)" (release-notes.md:5); `"version":"1.54.1"` and `"tag":"v1.54.1"` (release manifest:1).
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-e04aea5/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.1/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.1/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.54.0--1.54.1/comparison.json`.
+
+## Version `1.55.0`: Signal Cleanup and Bounded HTTP Telemetry
+
+Approved focused delta at SHA `98302498324cd6c538324dc874a7260b417aa030`, released 2026-10-21, ingested 2026-10-30. Four modified retained files read fully with affected prior code; 119 unchanged retained files and generated inventories verified mechanically. The notes announce peer-plugin cleanup on abnormal termination, while authored retained code also establishes HTTP-outcome telemetry changes not enumerated in the notes.
+
+`Execute` installs a signal handler for `os.Interrupt` and SIGTERM. On receipt it calls `plugins.CleanupAllClients()` then `os.Exit(1)`. Although the comment says guarantees every plugin, retained wiring alone proves only these handled-signal paths and the cleanup call; SIGKILL, all crash modes and cleanup of arbitrary descendants are not established. Plugin lifecycle/rendering/protocol and reporting implementations are excluded. Exiting here also bypasses ordinary defers; no runtime process-cleanup test was performed.
+
+`RequestError.HTTPStatusCode()` returns its stored status. Telemetry metadata adds optional `http_outcome`; `HTTPOutcomeForStatusCode` maps positive statuses into `2xx`, `not_found` for 404, `other_4xx`, `5xx`, or `other_non_200`, and returns empty for nonpositive values. After a successful HTTP round trip, the client copies invocation metadata, attaches the response category to the request-local context and sends the API-request event with the request ID. It does not mutate the shared invocation metadata. Transport failure returns before this event path. The retained field is a bounded category, not a raw HTTP status field or proof that a payment succeeded. Existing telemetry opt-outs/entrypoint history remain version-qualified; the excluded reporting layer prevents describing the entire error-event pipeline.
+
+**Grounding:** `signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)` (`pkg/cmd/root.go:169`); `plugins.CleanupAllClients()` (same file:172); `HTTPOutcome string` (`pkg/stripe/analytics_telemetry.go:63`); `requestMetadata.HTTPOutcome = HTTPOutcomeForStatusCode(resp.StatusCode)` (`pkg/stripe/client.go:205`). Snapshot `9830249`; no CLI/API/payment execution.
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-9830249/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.0/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.0/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.54.1--1.55.0/comparison.json` and `diff.patch`. Implementation in that snapshot's `files/pkg/cmd/root.go`, `files/pkg/requests/base.go`, `files/pkg/stripe/analytics_telemetry.go` and `files/pkg/stripe/client.go`.
+
+## Version `1.55.1`: Multipart Parameters and Upload Error Handling
+
+Approved focused delta, SHA `4501fc5a6e58dacab6a60a089e93317cc7b84861`, released 2026-10-22, ingested 2026-10-30. The complete changed `pkg/requests/base.go`, authored comparison and prior affected implementation were read; 122 unchanged retained files/inventories checked mechanically. All historical knowledge remains intact.
+
+`MakeMultiPartRequest` delegates to new `MakeMultiPartRequestWithAdditionalParams`, which uses existing `createV1Params` to merge raw data with generated non-file parameters before building multipart data. Exact duplicate keys supplied in both sources fail; other parser conversions remain delegated to the existing parser. Original request parameters still drive headers/version/idempotency through `performRequest`, rather than the merged body-only copy. Files remain selected by an `@` value prefix, opened locally, and fully buffered into a bytes.Buffer before sending, not streamed end-to-end.
+
+File parts now use `filepath.Base(val)` rather than the full local path. The implementation checks file-copy and close errors, field-write errors, writes requested `expand[]` fields and explicitly checks `mp.Close()` before returning the complete boundary-bearing body. Missing/unreadable files fail before the API request. This does not introduce upload size limits or prove safety for untrusted local file paths.
+
+`Base.RequestMediaType == "multipart/form-data"` changes dry-run parsing/content-type selection, including on V2 paths; dry run validates merged parameter conflicts but does not build the multipart body, open files or show a real boundary. Ordinary V2 JSON behavior remains when the multipart marker is absent. Actual OpenAPI media-type selection and generated operation/template changes are excluded, so do not claim every raw `stripe post` automatically detects uploads or list supported endpoints from this helper alone. Existing custom-header output and recursive OAuth-refresh caveats are unchanged. No CLI build, file upload or API/payment execution was performed.
+
+**Grounding:** `return rb.MakeMultiPartRequestWithAdditionalParams` (`pkg/requests/base.go:278`); `isMultipart := rb.RequestMediaType == "multipart/form-data"` (same file:463); `mp.CreateFormFile(key, filepath.Base(val))` (934); `if err := mp.Close(); err != nil` (958). Snapshot `4501fc5`.
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-4501fc5/manifest.json`; `raw/github/stripe/stripe-cli/snapshots/2026-10-30-4501fc5/files/pkg/requests/base.go`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.1/2026-10-30/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.1/2026-10-30/release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.55.0--1.55.1/comparison.json` and `diff.patch`.
+
+## Version `1.55.2`: Release Packaging Announcements
+
+Approved focused delta of `stripe-cli@1.55.2`, SHA `2713dc4726cefb2ae5c9107330f0c0d5f922140f`, released 2026-10-26 and ingested 2026-10-30. All 123 retained files are hash-identical to 1.55.1; nine assigned paths were covered by reading notes/comparison/identity and mechanically verifying inventories. All prior history remains.
+
+Notes announce macOS signing-secret forwarding to GoReleaser and install.sh failing when no SHA-256 tool is available. Changes are confined to excluded release workflow and installer paths. These are upstream announcements, not an implementation audit or proof of artifact signature/notarization validity, secret contents, checksum coverage or verification ordering. No CLI/install/API/payment execution was performed.
+
+**Grounding:** `Pass macOS signing secrets to GoReleaser in release workflow` (`release-notes.md:5`); `Fail install.sh when no SHA-256 tool is available` (6); package-qualified `1.55.2` identity (`manifest.json:1`) in this release directory.
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-2713dc4/manifest.json`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.2/2026-10-30/manifest.json` and `release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.55.1--1.55.2/comparison.json` and `diff.patch`.
+
+## Version `1.55.3`: Account Grouping and Stale Contexts
+
+Approved focused delta of `stripe-cli@1.55.3`, SHA `b93a4f3e0562b551febc89f5d349ff27cf4450c1`, released 2026-10-27 and ingested 2026-10-30. Fully read all two added/ten modified retained files and affected prior code/comparison; mechanically verified 113 unchanged files and generated inventories. The 21-path assignment and all earlier history remain accounted for.
+
+### Parent-grouped OAuth account presentation
+
+Text output in login/login list, completed device login/reauthorization and whoami shares parent-grouped account rendering with interactive switch. Live modes come first; a legacy account's own test row is labeled Test mode beneath its live row. Distinct sandboxes nest only under a resolved parent that is also authorized; unknown/inaccessible parents leave standalone rows. The heading counts account/mode rows, not necessarily unique accounts. The JSON authorized_accounts array remains flat and switch JSON retains account_id/display_name/mode.
+
+`ResolveParentAccounts` queries non-live-only accounts using the active account/mode's OAK credentials. No active context or no queries skips lookup successfully. POST `/v1/stripecli/context_statuses` batches at 100; a failed batch returns an error instead of partial results. The request copies credential livemode into Base for mode-correct refresh/retry. This is an internal CLI request helper, not a merchant checkout API. Text printing falls back to the old ungrouped list on lookup failure; the TUI ignores the success boolean and groups from a nil map. Missing parent information does not establish no parent exists. Its returned Valid field is not the basis for whoami's authorized calculation.
+
+### Authorization and re-login handling
+
+OAuth whoami adds optional boolean `authorized`, computed from active account ID plus live/test mode membership in the authorized list. No active context leaves it omitted; empty modes are treated as test-only for this check. False displays Not authorized and stripe switch guidance, but both normal text and JSON paths still return nil if other operations succeed. Scripts must inspect the field rather than treating exit zero as valid selected-context proof. It does not distinguish deleted accounts from revoked/reduced permission, validate every permission scope, clear the active selection or automatically switch it. User-info fetching remains best effort. Direct switch-by-ID still checks explicit reported modes, so the empty-modes presentation fallback is not a guarantee of direct switching success.
+
+Refresh-token `invalid_scope` now joins `invalid_grant`: the helper attempts profile OAuth credential cleanup and returns re-login guidance. Cleanup errors are ignored; no atomic removal or remote revocation guarantee follows. An unusable session can fall through to fresh device login; do not promise stripe switch can recover when no usable token remains. Older account-signature/scope-only reauthorization and pending-state caveats remain unchanged.
+
+### Announced trigger additions and evidence limits
+
+Notes announce Issuing authorization/card/cardholder triggers, charge.updated, refund.created/refund.updated and customer.tax_id.created/deleted. Their individual fixture recipes are intentionally excluded, as are changed plugin/sandbox/reauth-command internals and tests. Exact recipe payloads, prerequisites and plugin end-to-end behavior are not established. No CLI build, credential mutation, API call or payment execution was performed.
+
+**Grounding:** `Authorized         *bool` (`pkg/cmd/whoami.go:66`); `out.Authorized = &authorized` (251); `const contextStatusesBatchSize = 100` (`pkg/requests/context_statuses.go:15`); `PrintAuthorizedContextsList(profile, accounts)` (`pkg/login/parent_accounts.go:70`); `oauthErr.Code == "invalid_scope"` (`pkg/login/oauth_refresh.go:53`). Snapshot `b93a4f3`.
+
+Evidence: `raw/github/stripe/stripe-cli/snapshots/2026-10-30-b93a4f3/manifest.json` and its retained `files/pkg/cmd`, `files/pkg/login`, `files/pkg/requests/context_statuses.go`; `raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.3/2026-10-30/manifest.json` and `release-notes.md`; `tracking/github/repos/stripe/stripe-cli/comparisons/stripe-cli/1.55.2--1.55.3/comparison.json` and `diff.patch`.
+
 ## Related
 > [!warning] Contradiction
 > In `1.50.11`, the reauthorization comment mentions scope changes, but `accountsSignature` compares only ID, name and modes. Scope-only reauthorization is not a reliable completion signal. See [[stripe-cli]].
@@ -475,6 +582,27 @@ This focused delta records the release announcement and identity without attribu
 - History: [[changelog-github-stripe-cli]]
 
 ## Raw Sources
+
+- [1.55.3 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-b93a4f3/manifest.json)
+- [1.55.3 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.3/2026-10-30/release-notes.md)
+
+- [1.55.2 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-2713dc4/manifest.json)
+- [1.55.2 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.2/2026-10-30/release-notes.md)
+
+- [1.55.1 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-4501fc5/manifest.json)
+- [1.55.1 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.1/2026-10-30/release-notes.md)
+
+- [1.55.0 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-9830249/manifest.json)
+- [1.55.0 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.55.0/2026-10-30/release-notes.md)
+
+- [1.54.1 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-e04aea5/manifest.json)
+- [1.54.1 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.1/2026-10-30/release-notes.md)
+
+- [1.54.0 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-7839c31/manifest.json)
+- [1.54.0 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.54.0/2026-10-30/release-notes.md)
+
+- [1.53.1 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-30-9725e09/manifest.json)
+- [1.53.1 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.1/2026-10-30/release-notes.md)
 
 - [1.53.0 snapshot](../../../../raw/github/stripe/stripe-cli/snapshots/2026-10-06-a915fc6/manifest.json)
 - [1.53.0 notes](../../../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.53.0/2026-10-06/release-notes.md)

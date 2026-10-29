@@ -21,7 +21,7 @@ Stripe CLI is Stripe's command-line developer tool for building, testing, and op
 
 - Embedded trigger fixtures are executable examples for test setup, not the canonical definition of an API object's lifecycle or merchant eligibility.
 - CLI success does not replace webhook signature verification, idempotent fulfillment, or server-side reconciliation.
-- The retained source history covers `stripe-cli@1.50.0` through `1.53.0`; later behavior requires its cumulative source and changelog.
+- The retained source history covers `stripe-cli@1.50.0` through `1.55.3`; claims remain version-qualified in the cumulative source and changelog.
 - Version `1.50.0` adds agent host and self-reported agent identifiers to telemetry. Users can opt out through `STRIPE_CLI_TELEMETRY_OPTOUT` or `DO_NOT_TRACK`.
 
 ## Authentication and Tooling Changes in `1.50.1`
@@ -100,6 +100,36 @@ OAuth login prefers the server-provided verification_uri_complete URL, falling b
 ## Version `1.53.0`: Version Release-Notes Command Announcement
 
 Release 1.53.0 announces `stripe version --notes`. All 120 retained files match 1.52.2; four upstream version-command/library/test paths are intentionally excluded. The announcement is note-backed, not an implementation audit; an empty retained diff does not mean an unchanged upstream repository. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.53.1`: Profile-Scoped OAuth Sessions
+
+OAuth UAT, refresh token, active context and expiry use `base:profileName` keyring identities for non-default profiles; default/empty names keep legacy unscoped keys. Login, refresh, revocation and context callers use the selected profile. This avoids sharing these stored session slots across profiles, not a proof that all pending-login files or concurrent processes are isolated. Named profiles with no new scoped credentials may need a fresh login; no legacy-to-named session copy is established. `whoami` now propagates active-context read errors, and banners avoid stale account names. RPC event-resend path arguments gain `url.PathEscape`; generated resource-path escaping is also announced, but its implementation is excluded. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.54.0`: Path Validation and Context Helpers
+
+Shared path formatting now rejects empty, `.` and `..` segments before escaping; event-resend RPC returns InvalidArgument on formatter failure. This is stronger than 1.53.1 escaping alone, not validation of every arbitrary raw HTTP URL. OAuth account listing paginates with limit 100/starting_after and rejects an empty page that claims more results. A separate `ReauthImmediately` helper can skip Enter; ordinary login still calls `Reauth`. New workspace/playground request helpers and plugin `min_plugin_versions` metadata do not prove full sandbox-management or dependency-install behavior. Sandbox command publication and Windows version selection remain upstream announcements with excluded implementations. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.54.1`: Version-Check Announcement
+
+Upstream notes announce checking for new CLI versions at most daily and an environment-variable opt-out. All 123 retained files match 1.54.0; version/sandbox helpers are excluded. The variable name, timing/cache semantics and relationship to automatic binary updates are not established by this evidence. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.55.0`: Plugin Cleanup and HTTP-Outcome Telemetry
+
+Root execution registers SIGINT/SIGTERM handling that calls plugin cleanup then exits 1. It does not establish cleanup for SIGKILL, every crash or every descendant; plugin implementation remains excluded. API-response telemetry gains bounded `http_outcome` categories on a copied request-local metadata object, not raw status numbers or payment-result classification. `RequestError.HTTPStatusCode()` exposes the stored status to callers; excluded reporting code prevents a full error-telemetry audit. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.55.1`: Multipart Upload Encoding
+
+The shared multipart helper now merges additional generated-flag parameters, emits `expand[]`, sends file basenames and checks copy/close/field/boundary errors. Dry-run media type can be multipart even on a V2 path, but dry run neither opens upload files nor proves a successful upload. Bodies remain buffered in memory; generated endpoint/media-type selection is excluded evidence. Existing custom-header disclosure and OAuth retry caveats remain. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.55.2`: Release Packaging Announcements
+
+Notes announce forwarding macOS signing secrets to GoReleaser and failing install.sh when no SHA-256 tool is available. All 123 retained files match 1.55.1; the workflow and installer are excluded. This does not establish signature/notarization validity, secret contents, or the installer's verification order and coverage. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
+
+## Version `1.55.3`: Account Grouping and Stale Contexts
+
+OAuth text lists and the interactive switch selector group sandboxes beneath authorized parent accounts; legacy combined accounts put live mode first with a nested Test mode row. Parent lookup uses the active OAK context and POST context_statuses in batches of 100. Lookup failure falls back to a plain text list; unresolved parents leave standalone rows. The JSON accounts array stays flat.
+
+OAuth whoami adds optional `authorized`: false means the stored account/mode is absent from the authorized list, not a diagnosis of deletion versus revoked access. No active context omits the field; an empty modes list is treated as test-only for this check. False alone does not make whoami fail or automatically switch context; scripts must inspect it. Refresh now clears profile OAuth credentials on invalid_scope as well as invalid_grant and requires re-login, with cleanup errors ignored rather than an atomic-removal guarantee. Newly announced Issuing, charge/refund and customer tax-ID triggers have excluded recipe implementations. See [[source-github-stripe-cli]] and [[changelog-github-stripe-cli]].
 
 ## Related
 > [!warning] Contradiction

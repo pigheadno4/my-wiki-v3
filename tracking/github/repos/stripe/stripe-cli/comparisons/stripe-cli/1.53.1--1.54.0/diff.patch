@@ -1,0 +1,1054 @@
+diff --git a/pkg/cmd/login.go b/pkg/cmd/login.go
+index d5e10e6..efddd98 100644
+--- a/pkg/cmd/login.go
++++ b/pkg/cmd/login.go
+@@ -109,7 +109,7 @@ works here too, printing a browser_url and a next_step of
+   #   Step 2 – after the user approves in the browser, complete login
+   stripe login --complete 'https://dashboard.stripe.com/stripecli/auth/...'`,
+ 		Annotations: map[string]string{
+-			AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandbox create` instead (provisions a claimable sandbox without a browser).\n" +
++			AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandboxes create` instead (provisions a claimable sandbox without a browser).\n" +
+ 				"  Prefer setting STRIPE_API_KEY or using `--api-key` over `stripe login` for non-interactive use.\n" +
+ 				"  If authentication is required, run `stripe login` — in agent contexts it automatically outputs\n" +
+ 				"  a browser URL and a `next_step` command to complete login with user action.",
+@@ -220,7 +220,7 @@ func (lc *loginCmd) runLoginCmd(cmd *cobra.Command, args []string) error {
+ 
+ 	if lc.nonInteractive || !shouldAutoLogin(os.Getenv, term.IsTerminal(int(os.Stdin.Fd()))) {
+ 		if useragent.DetectAIAgent(os.Getenv) != "" {
+-			fmt.Fprintln(os.Stderr, "If you do not have an account, run `stripe sandbox create` instead (provisions a claimable sandbox without a browser).")
++			fmt.Fprintln(os.Stderr, "If you do not have an account, run `stripe sandboxes create` instead (provisions a claimable sandbox without a browser).")
+ 		}
+ 		return initiateLogin(cmd.Context(), lc.dashboardBaseURL, lc.accessBaseURL, &Config)
+ 	}
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index a58df47..78c2bec 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -62,7 +62,7 @@ var rootCmd = &cobra.Command{
+ 		"listen":    "webhooks",
+ 		"logs":      "stripe",
+ 		"resources": "resources",
+-		AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandbox create` (provisions a claimable sandbox without a browser).\n" +
++		AIAgentHelpAnnotationKey: "  If you do not have an account, run `stripe sandboxes create` (provisions a claimable sandbox without a browser).\n" +
+ 			"  Run `stripe agent setup` to install or update the Stripe plugin.\n" +
+ 			"  Additional commands (apps, directory, generate, projects) are available as installable plugins — run the command directly to install, or use `stripe plugin install <name>`.",
+ 	},
+@@ -216,7 +216,7 @@ func Execute(ctx context.Context) {
+ 				fmt.Fprintln(os.Stderr, "  If you already have a key: set STRIPE_API_KEY or pass --api-key <key>.")
+ 				fmt.Fprintln(os.Stderr, "  To authenticate to an existing account: run `stripe login` (outputs a browser URL for the user).")
+ 				if useragent.DetectAIAgent(os.Getenv) != "" {
+-					fmt.Fprintln(os.Stderr, "  If you do not have an account, run `stripe sandbox create` (provisions a claimable sandbox).")
++					fmt.Fprintln(os.Stderr, "  If you do not have an account, run `stripe sandboxes create` (provisions a claimable sandbox).")
+ 				}
+ 			} else {
+ 				fmt.Fprintf(os.Stderr, "%s. Running `stripe login`...\n", string(errRunes))
+diff --git a/pkg/login/oauth_accounts.go b/pkg/login/oauth_accounts.go
+index a43a2fa..cd987e2 100644
+--- a/pkg/login/oauth_accounts.go
++++ b/pkg/login/oauth_accounts.go
+@@ -3,9 +3,11 @@ package login
+ import (
+ 	"context"
+ 	"encoding/json"
++	"errors"
+ 	"fmt"
+ 	"io"
+ 	"net/http"
++	"net/url"
+ 	"os"
+ 	"strings"
+ 
+@@ -16,6 +18,21 @@ import (
+ 
+ type listAccountsResponse struct {
+ 	Accounts []config.AuthorizedAccount `json:"accounts"`
++	HasMore  bool                       `json:"has_more"`
++}
++
++type accountsRequestError struct {
++	statusCode int
++	body       string
++}
++
++func (e *accountsRequestError) Error() string {
++	return fmt.Sprintf("accounts request failed (status %d): %s", e.statusCode, e.body)
++}
++
++func IsAuthorizedAccountsUnauthorized(err error) bool {
++	var requestErr *accountsRequestError
++	return errors.As(err, &requestErr) && requestErr.statusCode == http.StatusUnauthorized
+ }
+ 
+ // ListAuthorizedAccounts returns the Stripe accounts accessible to accessToken.
+@@ -24,33 +41,54 @@ func ListAuthorizedAccounts(ctx context.Context, accessBaseURL, accessToken stri
+ }
+ 
+ func fetchAuthorizedAccounts(ctx context.Context, accessBaseURL, accessToken string) ([]config.AuthorizedAccount, error) {
+-	endpoint := accessBaseURL + accessAPNPath + "/token/accounts"
+-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, nil)
++	endpoint, err := url.Parse(accessBaseURL + accessAPNPath + "/token/accounts")
+ 	if err != nil {
+ 		return nil, err
+ 	}
+-	req.Header.Set("Authorization", "Bearer "+accessToken)
+ 
+-	resp, err := accessSrvHTTPClient.Do(req)
+-	if err != nil {
+-		return nil, err
+-	}
+-	defer resp.Body.Close()
++	var accounts []config.AuthorizedAccount
++	startingAfter := ""
++	for {
++		query := endpoint.Query()
++		query.Set("limit", "100")
++		if startingAfter != "" {
++			query.Set("starting_after", startingAfter)
++		}
++		endpoint.RawQuery = query.Encode()
+ 
+-	body, err := io.ReadAll(resp.Body)
+-	if err != nil {
+-		return nil, err
+-	}
++		req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
++		if err != nil {
++			return nil, err
++		}
++		req.Header.Set("Authorization", "Bearer "+accessToken)
+ 
+-	if resp.StatusCode != http.StatusOK {
+-		return nil, errorcategory.Errorf(errorcategory.Auth, "accounts request failed (status %d): %s", resp.StatusCode, string(body))
+-	}
++		resp, err := accessSrvHTTPClient.Do(req)
++		if err != nil {
++			return nil, err
++		}
++		body, readErr := io.ReadAll(resp.Body)
++		resp.Body.Close()
++		if readErr != nil {
++			return nil, readErr
++		}
+ 
+-	var result listAccountsResponse
+-	if err := json.Unmarshal(body, &result); err != nil {
+-		return nil, fmt.Errorf("failed to parse accounts response: %w", err)
++		if resp.StatusCode != http.StatusOK {
++			return nil, errorcategory.With(&accountsRequestError{statusCode: resp.StatusCode, body: string(body)}, errorcategory.Auth)
++		}
++
++		var result listAccountsResponse
++		if err := json.Unmarshal(body, &result); err != nil {
++			return nil, fmt.Errorf("failed to parse accounts response: %w", err)
++		}
++		accounts = append(accounts, result.Accounts...)
++		if !result.HasMore {
++			return accounts, nil
++		}
++		if len(result.Accounts) == 0 {
++			return nil, errorcategory.Errorf(errorcategory.API, "accounts response indicated more results but returned an empty page")
++		}
++		startingAfter = result.Accounts[len(result.Accounts)-1].ID
+ 	}
+-	return result.Accounts, nil
+ }
+ 
+ // AuthorizedAccountsResult bundles the accounts a user has authorized with which account and
+diff --git a/pkg/login/oauth_accounts_test.go b/pkg/login/oauth_accounts_test.go
+index bf9c73c..3b4f420 100644
+--- a/pkg/login/oauth_accounts_test.go
++++ b/pkg/login/oauth_accounts_test.go
+@@ -42,6 +42,44 @@ func TestFetchAuthorizedAccounts_non200(t *testing.T) {
+ 	assert.ErrorContains(t, err, "404")
+ }
+ 
++func TestFetchAuthorizedAccounts_paginates(t *testing.T) {
++	requests := 0
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		requests++
++		assert.Equal(t, "100", r.URL.Query().Get("limit"))
++		w.Header().Set("Content-Type", "application/json")
++		switch requests {
++		case 1:
++			assert.Empty(t, r.URL.Query().Get("starting_after"))
++			json.NewEncoder(w).Encode(listAccountsResponse{
++				Accounts: []config.AuthorizedAccount{{ID: "acct_first", Name: "First", Modes: []string{"live"}}},
++				HasMore:  true,
++			})
++		case 2:
++			assert.Equal(t, "acct_first", r.URL.Query().Get("starting_after"))
++			json.NewEncoder(w).Encode(listAccountsResponse{
++				Accounts: []config.AuthorizedAccount{{ID: "acct_second", Name: "Second", Modes: []string{"test"}}},
++			})
++		default:
++			t.Fatalf("unexpected request %d", requests)
++		}
++	}))
++	defer srv.Close()
++
++	got, err := fetchAuthorizedAccounts(context.Background(), srv.URL, "oak_test")
++	require.NoError(t, err)
++	assert.Equal(t, []config.AuthorizedAccount{
++		{ID: "acct_first", Name: "First", Modes: []string{"live"}},
++		{ID: "acct_second", Name: "Second", Modes: []string{"test"}},
++	}, got)
++	assert.Equal(t, 2, requests)
++}
++
++func TestIsAuthorizedAccountsUnauthorized(t *testing.T) {
++	assert.True(t, IsAuthorizedAccountsUnauthorized(&accountsRequestError{statusCode: http.StatusUnauthorized}))
++	assert.False(t, IsAuthorizedAccountsUnauthorized(&accountsRequestError{statusCode: http.StatusForbidden}))
++}
++
+ func TestListAuthorizedAccounts_returnsRealDataWhenAvailable(t *testing.T) {
+ 	want := []config.AuthorizedAccount{
+ 		{ID: "acct_real", Name: "Real Business", Modes: []string{"live", "test"}},
+diff --git a/pkg/login/oauth_device.go b/pkg/login/oauth_device.go
+index 87db44f..7920353 100644
+--- a/pkg/login/oauth_device.go
++++ b/pkg/login/oauth_device.go
+@@ -275,7 +275,11 @@ func LoginWithDeviceCode(ctx context.Context, accessBaseURL string, cfg *config.
+ 	}
+ 
+ 	fmt.Printf("To authorize, visit %s\n\n", browserURL)
+-	fmt.Println("When prompted, enter your verification code:")
++	if authResp.VerificationURIComplete != "" {
++		fmt.Println("When prompted, confirm your verification code:")
++	} else {
++		fmt.Println("When prompted, enter your verification code:")
++	}
+ 	fmt.Println()
+ 	fmt.Println(ansi.Purple(authResp.UserCode))
+ 	fmt.Println()
+diff --git a/pkg/login/oauth_device_test.go b/pkg/login/oauth_device_test.go
+index b5120e7..40dac0b 100644
+--- a/pkg/login/oauth_device_test.go
++++ b/pkg/login/oauth_device_test.go
+@@ -1,11 +1,13 @@
+ package login
+ 
+ import (
++	"bytes"
+ 	"context"
+ 	"encoding/json"
+ 	"errors"
+ 	"net/http"
+ 	"net/http/httptest"
++	"os"
+ 	"sync/atomic"
+ 	"testing"
+ 	"time"
+@@ -282,6 +284,76 @@ func TestLoginWithDeviceCodeFailsWhenAccountsFetchFails(t *testing.T) {
+ 	assert.Contains(t, err.Error(), "failed to fetch account info")
+ }
+ 
++func TestLoginWithDeviceCode_VerificationMessage(t *testing.T) {
++	testCases := []struct {
++		name                    string
++		verificationURIComplete string
++		wantText                string
++		dontWantText            string
++	}{
++		{
++			name:                    "verification_uri_complete present",
++			verificationURIComplete: "https://dashboard.stripe.com/verify?user_code=ABCD-EFGH",
++			wantText:                "When prompted, confirm your verification code:",
++			dontWantText:            "When prompted, enter your verification code:",
++		},
++		{
++			name:                    "verification_uri_complete absent",
++			verificationURIComplete: "",
++			wantText:                "When prompted, enter your verification code:",
++			dontWantText:            "When prompted, confirm your verification code:",
++		},
++	}
++
++	for _, tc := range testCases {
++		t.Run(tc.name, func(t *testing.T) {
++			origCanOpenBrowser := canOpenBrowser
++			canOpenBrowser = func() bool { return false }
++			t.Cleanup(func() { canOpenBrowser = origCanOpenBrowser })
++
++			cfg, cleanup := setupOAuthTestConfig(t)
++			defer cleanup()
++
++			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				w.Header().Set("Content-Type", "application/json")
++				switch r.URL.Path {
++				case "/stripecli/oauth2/device/authorization":
++					json.NewEncoder(w).Encode(DeviceAuthResponse{ //nolint:errcheck
++						DeviceCode:              "device-code",
++						UserCode:                "ABCD-EFGH",
++						VerificationURI:         "https://dashboard.stripe.com/verify",
++						VerificationURIComplete: tc.verificationURIComplete,
++						ExpiresIn:               30,
++						Interval:                1,
++					})
++				case "/stripecli/oauth2/token/accounts":
++					http.Error(w, "unavailable", http.StatusInternalServerError)
++				default:
++					http.NotFound(w, r)
++				}
++			}))
++			defer ts.Close()
++
++			oldStdout := os.Stdout
++			r, w, err := os.Pipe()
++			require.NoError(t, err)
++			os.Stdout = w
++
++			loginErr := LoginWithDeviceCode(context.Background(), ts.URL, cfg)
++
++			w.Close()
++			os.Stdout = oldStdout
++			var buf bytes.Buffer
++			buf.ReadFrom(r) //nolint:errcheck
++
++			require.Error(t, loginErr)
++			output := buf.String()
++			assert.Contains(t, output, tc.wantText)
++			assert.NotContains(t, output, tc.dontWantText)
++		})
++	}
++}
++
+ func TestRefreshAccessToken_NoRefreshTokenInResponse(t *testing.T) {
+ 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+ 		w.Header().Set("Content-Type", "application/json")
+diff --git a/pkg/login/oauth_reauth.go b/pkg/login/oauth_reauth.go
+index d959b7c..67ea848 100644
+--- a/pkg/login/oauth_reauth.go
++++ b/pkg/login/oauth_reauth.go
+@@ -39,6 +39,18 @@ type reauthResponse struct {
+ // for the authorized-accounts list to change before printing the updated list
+ // of authorized contexts.
+ func Reauth(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile) error {
++	return reauth(ctx, accessBaseURL, accessToken, profile, false)
++}
++
++// ReauthImmediately fetches a reauthentication URL for the active OAuth session
++// and opens it without waiting for an additional Enter confirmation. It then
++// waits for the authorized-accounts list to change before printing the updated
++// list of authorized contexts.
++func ReauthImmediately(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile) error {
++	return reauth(ctx, accessBaseURL, accessToken, profile, true)
++}
++
++func reauth(ctx context.Context, accessBaseURL, accessToken string, profile *config.Profile, openImmediately bool) error {
+ 	before, err := ListAuthorizedAccounts(ctx, accessBaseURL, accessToken)
+ 	if err != nil {
+ 		return err
+@@ -52,14 +64,30 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string, profile *con
+ 		return err
+ 	}
+ 
++	browserOpened := presentReauthURL(reauthURL, openImmediately, func() {
++		fmt.Scanln() //nolint:errcheck
++	})
++
++	return waitForReauthCompletion(ctx, accessBaseURL, accessToken, before, browserOpened, nil, profile)
++}
++
++func presentReauthURL(reauthURL string, openImmediately bool, waitForEnter func()) <-chan struct{} {
+ 	var browserOpened chan struct{}
+ 	fmt.Println()
+ 	if !isSSH() && canOpenBrowser() {
+ 		browserOpened = make(chan struct{})
+ 		fmt.Printf("To authorize more accounts in live mode or a sandbox, visit %s\n\n", reauthURL)
++		if openImmediately {
++			if err := openBrowser(reauthURL); err != nil {
++				fmt.Fprintf(os.Stderr, "Failed to open browser: %s\n", err)
++			}
++			close(browserOpened)
++			return browserOpened
++		}
++
+ 		fmt.Println("Press enter to open the browser (^C to quit)")
+ 		go func() {
+-			fmt.Scanln() //nolint:errcheck
++			waitForEnter()
+ 			if err := openBrowser(reauthURL); err != nil {
+ 				fmt.Fprintf(os.Stderr, "Failed to open browser: %s\n", err)
+ 			}
+@@ -69,7 +97,7 @@ func Reauth(ctx context.Context, accessBaseURL, accessToken string, profile *con
+ 		fmt.Printf("Visit the following URL to re-authorize the CLI:\n  %s\n", reauthURL)
+ 	}
+ 
+-	return waitForReauthCompletion(ctx, accessBaseURL, accessToken, before, browserOpened, nil, profile)
++	return browserOpened
+ }
+ 
+ type reauthSessionOutput struct {
+diff --git a/pkg/login/oauth_reauth_test.go b/pkg/login/oauth_reauth_test.go
+index 2ea4494..63618ca 100644
+--- a/pkg/login/oauth_reauth_test.go
++++ b/pkg/login/oauth_reauth_test.go
+@@ -3,8 +3,10 @@ package login
+ import (
+ 	"context"
+ 	"encoding/json"
++	"io"
+ 	"net/http"
+ 	"net/http/httptest"
++	"os"
+ 	"sync/atomic"
+ 	"testing"
+ 	"time"
+@@ -91,3 +93,256 @@ func TestWaitForAccountsChange_propagatesRequestError(t *testing.T) {
+ 	_, err := waitForAccountsChange(context.Background(), srv.URL, "oak_test", before, time.Millisecond, time.Second)
+ 	assert.ErrorContains(t, err, "401")
+ }
++
++func TestPresentReauthURL_immediateOpenDoesNotPrompt(t *testing.T) {
++	t.Setenv("SSH_TTY", "")
++	t.Setenv("SSH_CONNECTION", "")
++	t.Setenv("SSH_CLIENT", "")
++
++	origOpenBrowser := openBrowser
++	origCanOpenBrowser := canOpenBrowser
++	t.Cleanup(func() {
++		openBrowser = origOpenBrowser
++		canOpenBrowser = origCanOpenBrowser
++	})
++
++	const reauthURL = "https://dashboard.stripe.com/reauth"
++	var openedURL string
++	openBrowser = func(url string) error {
++		openedURL = url
++		return nil
++	}
++	canOpenBrowser = func() bool { return true }
++
++	stdout, stderr := captureReauthOutput(t, func() {
++		browserOpened := presentReauthURL(reauthURL, true, nil)
++		require.NotNil(t, browserOpened)
++		select {
++		case <-browserOpened:
++		default:
++			t.Fatal("expected immediate browser handoff to complete before polling")
++		}
++	})
++
++	assert.Equal(t, reauthURL, openedURL)
++	assert.Contains(t, stdout, reauthURL)
++	assert.NotContains(t, stdout, "Press enter")
++	assert.Empty(t, stderr)
++}
++
++func TestPresentReauthURL_withoutBrowserPrintsURL(t *testing.T) {
++	t.Setenv("SSH_TTY", "")
++	t.Setenv("SSH_CONNECTION", "")
++	t.Setenv("SSH_CLIENT", "")
++
++	origOpenBrowser := openBrowser
++	origCanOpenBrowser := canOpenBrowser
++	t.Cleanup(func() {
++		openBrowser = origOpenBrowser
++		canOpenBrowser = origCanOpenBrowser
++	})
++
++	const reauthURL = "https://dashboard.stripe.com/reauth"
++	opened := false
++	openBrowser = func(string) error {
++		opened = true
++		return nil
++	}
++	canOpenBrowser = func() bool { return false }
++
++	stdout, stderr := captureReauthOutput(t, func() {
++		browserOpened := presentReauthURL(reauthURL, true, nil)
++		assert.Nil(t, browserOpened)
++	})
++
++	assert.Contains(t, stdout, reauthURL)
++	assert.False(t, opened)
++	assert.Empty(t, stderr)
++}
++
++func TestPresentReauthURL_browserFailureKeepsManualURL(t *testing.T) {
++	t.Setenv("SSH_TTY", "")
++	t.Setenv("SSH_CONNECTION", "")
++	t.Setenv("SSH_CLIENT", "")
++
++	origOpenBrowser := openBrowser
++	origCanOpenBrowser := canOpenBrowser
++	t.Cleanup(func() {
++		openBrowser = origOpenBrowser
++		canOpenBrowser = origCanOpenBrowser
++	})
++
++	const reauthURL = "https://dashboard.stripe.com/reauth"
++	openBrowser = func(string) error { return assert.AnError }
++	canOpenBrowser = func() bool { return true }
++
++	stdout, stderr := captureReauthOutput(t, func() {
++		browserOpened := presentReauthURL(reauthURL, true, nil)
++		require.NotNil(t, browserOpened)
++		<-browserOpened
++	})
++
++	assert.Contains(t, stdout, reauthURL)
++	assert.Contains(t, stderr, "Failed to open browser")
++	assert.Contains(t, stderr, assert.AnError.Error())
++}
++
++func TestPresentReauthURL_existingModeWaitsForEnter(t *testing.T) {
++	t.Setenv("SSH_TTY", "")
++	t.Setenv("SSH_CONNECTION", "")
++	t.Setenv("SSH_CLIENT", "")
++
++	origOpenBrowser := openBrowser
++	origCanOpenBrowser := canOpenBrowser
++	t.Cleanup(func() {
++		openBrowser = origOpenBrowser
++		canOpenBrowser = origCanOpenBrowser
++	})
++
++	const reauthURL = "https://dashboard.stripe.com/reauth"
++	var openedURL string
++	openBrowser = func(url string) error {
++		openedURL = url
++		return nil
++	}
++	canOpenBrowser = func() bool { return true }
++
++	stdout, stderr := captureReauthOutput(t, func() {
++		browserOpened := presentReauthURL(reauthURL, false, func() {})
++		require.NotNil(t, browserOpened)
++		<-browserOpened
++	})
++
++	assert.Contains(t, stdout, "Press enter to open the browser (^C to quit)")
++	assert.Equal(t, reauthURL, openedURL)
++	assert.Empty(t, stderr)
++}
++
++func TestReauthImmediatelyValidatesURLBeforeDisplayingOrOpening(t *testing.T) {
++	t.Setenv("SSH_TTY", "")
++	t.Setenv("SSH_CONNECTION", "")
++	t.Setenv("SSH_CLIENT", "")
++
++	origOpenBrowser := openBrowser
++	origCanOpenBrowser := canOpenBrowser
++	t.Cleanup(func() {
++		openBrowser = origOpenBrowser
++		canOpenBrowser = origCanOpenBrowser
++	})
++
++	const untrustedURL = "https://evil.example.com/reauth"
++	openCalls := 0
++	openBrowser = func(string) error {
++		openCalls++
++		return nil
++	}
++	canOpenBrowser = func() bool { return true }
++
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		switch r.URL.Path {
++		case "/stripecli/oauth2/token/accounts":
++			_, _ = w.Write([]byte(`{"accounts":[]}`))
++		case "/stripecli/oauth2/token/reauth":
++			_, _ = w.Write([]byte(`{"reauth_url":"` + untrustedURL + `"}`))
++		default:
++			http.NotFound(w, r)
++		}
++	}))
++	defer srv.Close()
++
++	var reauthErr error
++	stdout, _ := captureReauthOutput(t, func() {
++		reauthErr = ReauthImmediately(context.Background(), srv.URL, "oak_test", &config.Profile{})
++	})
++
++	require.Error(t, reauthErr)
++	assert.Contains(t, reauthErr.Error(), "untrusted URL")
++	assert.NotContains(t, stdout, untrustedURL)
++	assert.Equal(t, 0, openCalls)
++}
++
++func TestReauthImmediatelyPreservesSelectedProfileContext(t *testing.T) {
++	const reauthURL = "https://dashboard.stripe.com/reauth"
++	cfg, cleanup := setupOAuthTestConfig(t)
++	defer cleanup()
++	require.NoError(t, cfg.Profile.SaveActiveContext("acct_selected", true))
++	defaultProfile := config.Profile{ProfileName: "default"}
++	require.NoError(t, defaultProfile.SaveActiveContext("acct_other", false))
++	t.Setenv("SSH_TTY", "")
++	t.Setenv("SSH_CONNECTION", "")
++	t.Setenv("SSH_CLIENT", "")
++
++	origOpenBrowser, origCanOpenBrowser := openBrowser, canOpenBrowser
++	t.Cleanup(func() {
++		openBrowser, canOpenBrowser = origOpenBrowser, origCanOpenBrowser
++	})
++	var openedURL string
++	openBrowser = func(url string) error {
++		openedURL = url
++		return nil
++	}
++	canOpenBrowser = func() bool { return true }
++
++	accounts := []config.AuthorizedAccount{{ID: "acct_selected", Name: "Selected account", Modes: []string{"live"}}}
++	var accountCalls atomic.Int32
++	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.Header().Set("Content-Type", "application/json")
++		switch r.URL.Path {
++		case "/stripecli/oauth2/token/accounts":
++			result := accounts
++			if accountCalls.Add(1) > 1 {
++				result = append(append([]config.AuthorizedAccount{}, accounts...), config.AuthorizedAccount{
++					ID: "acct_created", Name: "Created sandbox", Modes: []string{"test"},
++				})
++			}
++			json.NewEncoder(w).Encode(listAccountsResponse{Accounts: result}) //nolint:errcheck
++		case "/stripecli/oauth2/token/reauth":
++			json.NewEncoder(w).Encode(reauthResponse{ReauthURL: reauthURL}) //nolint:errcheck
++		default:
++			http.NotFound(w, r)
++		}
++	}))
++	defer srv.Close()
++	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
++	defer cancel()
++
++	var reauthErr error
++	stdout, stderr := captureReauthOutput(t, func() {
++		reauthErr = ReauthImmediately(ctx, srv.URL, "oak_test", &cfg.Profile)
++	})
++
++	require.NoError(t, reauthErr)
++	assert.Equal(t, reauthURL, openedURL)
++	assert.NotContains(t, stdout, "Press enter")
++	assert.Contains(t, stdout, "Created sandbox")
++	assert.Contains(t, stdout, "Currently active: Selected account · live (acct_selected)")
++	assert.Empty(t, stderr)
++}
++
++func captureReauthOutput(t *testing.T, fn func()) (string, string) {
++	t.Helper()
++
++	origStdout := os.Stdout
++	origStderr := os.Stderr
++	stdoutReader, stdoutWriter, err := os.Pipe()
++	require.NoError(t, err)
++	stderrReader, stderrWriter, err := os.Pipe()
++	require.NoError(t, err)
++	os.Stdout = stdoutWriter
++	os.Stderr = stderrWriter
++	defer func() {
++		os.Stdout = origStdout
++		os.Stderr = origStderr
++	}()
++
++	fn()
++	require.NoError(t, stdoutWriter.Close())
++	require.NoError(t, stderrWriter.Close())
++
++	stdout, err := io.ReadAll(stdoutReader)
++	require.NoError(t, err)
++	stderr, err := io.ReadAll(stderrReader)
++	require.NoError(t, err)
++	return string(stdout), string(stderr)
++}
+diff --git a/pkg/requests/playground_context.go b/pkg/requests/playground_context.go
+new file mode 100644
+index 0000000..4abe2a7
+--- /dev/null
++++ b/pkg/requests/playground_context.go
+@@ -0,0 +1,38 @@
++package requests
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++	"net/http"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++// PlaygroundContext is the response from GET /v1/stripecli/playground_context.
++type PlaygroundContext struct {
++	PlaygroundID string `json:"playground_id"`
++}
++
++// GetPlaygroundContext fetches the playground associated with the active OAuth context.
++func GetPlaygroundContext(ctx context.Context, apiBaseURL string, profile *config.Profile, creds stripe.Credentials, livemode bool) (PlaygroundContext, error) {
++	base := &Base{
++		Profile:        profile,
++		Method:         http.MethodGet,
++		SuppressOutput: true,
++		APIBaseURL:     apiBaseURL,
++		Livemode:       livemode,
++	}
++
++	resp, err := base.MakeRequest(ctx, creds, "/v1/stripecli/playground_context", &RequestParameters{}, nil, true, nil)
++	if err != nil {
++		return PlaygroundContext{}, err
++	}
++
++	var playgroundContext PlaygroundContext
++	if err := json.Unmarshal(resp, &playgroundContext); err != nil {
++		return PlaygroundContext{}, fmt.Errorf("failed to decode playground context response: %w", err)
++	}
++	return playgroundContext, nil
++}
+diff --git a/pkg/requests/playground_context_test.go b/pkg/requests/playground_context_test.go
+new file mode 100644
+index 0000000..1b8ef62
+--- /dev/null
++++ b/pkg/requests/playground_context_test.go
+@@ -0,0 +1,67 @@
++package requests
++
++import (
++	"context"
++	"errors"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++func TestGetPlaygroundContext(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.Equal(t, http.MethodGet, r.Method)
++		require.Equal(t, "/v1/stripecli/playground_context", r.URL.Path)
++		require.Empty(t, r.URL.RawQuery)
++		require.Equal(t, "Bearer oak_test_123", r.Header.Get("Authorization"))
++		require.Equal(t, "acct_123", r.Header.Get("Stripe-Context"))
++		require.Equal(t, "true", r.Header.Get("Stripe-Livemode"))
++
++		body, err := io.ReadAll(r.Body)
++		require.NoError(t, err)
++		require.Empty(t, body)
++
++		w.WriteHeader(http.StatusOK)
++		_, _ = w.Write([]byte(`{"playground_id":"play_live_123"}`))
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	playgroundContext, err := GetPlaygroundContext(context.Background(), ts.URL, nil, creds, true)
++	require.NoError(t, err)
++	require.Equal(t, PlaygroundContext{PlaygroundID: "play_live_123"}, playgroundContext)
++}
++
++func TestGetPlaygroundContext_MalformedJSON(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusOK)
++		_, _ = w.Write([]byte(`{"playground_id":`))
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	_, err := GetPlaygroundContext(context.Background(), ts.URL, nil, creds, true)
++	require.Error(t, err)
++	require.ErrorContains(t, err, "failed to decode playground context response")
++}
++
++func TestGetPlaygroundContext_Non2xx(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusBadGateway)
++		_, _ = w.Write([]byte(`{"error":{"message":"backend unavailable"}}`))
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	_, err := GetPlaygroundContext(context.Background(), ts.URL, nil, creds, true)
++	require.Error(t, err)
++
++	var requestErr RequestError
++	require.True(t, errors.As(err, &requestErr))
++	require.Equal(t, http.StatusBadGateway, requestErr.StatusCode)
++}
+diff --git a/pkg/requests/plugin.go b/pkg/requests/plugin.go
+index 0a52009..5586c69 100644
+--- a/pkg/requests/plugin.go
++++ b/pkg/requests/plugin.go
+@@ -35,6 +35,13 @@ type PluginMetadata struct {
+ 	// AutoUpdateDefault enables automatic updates when the user has not chosen a
+ 	// per-plugin or global setting. Older responses that omit it default to false.
+ 	AutoUpdateDefault bool `json:"auto_update_default"`
++	// MinPluginVersions holds the minimum versions of other plugins the resolved
++	// release declares it needs, keyed by plugin shortname (e.g. {"apps": "1.17.0"}).
++	// Each value is a bare x.y.z minimum — a floor, never a range, and never the
++	// plugin itself. A response that omits the field decodes to nil, which means
++	// the release declares no requirements and everything behaves as it did before
++	// the field existed.
++	MinPluginVersions map[string]string `json:"min_plugin_versions"`
+ }
+ 
+ func getPluginMetadataPath(apiKey string) string {
+diff --git a/pkg/requests/workspace_context.go b/pkg/requests/workspace_context.go
+new file mode 100644
+index 0000000..93451e5
+--- /dev/null
++++ b/pkg/requests/workspace_context.go
+@@ -0,0 +1,38 @@
++package requests
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++	"net/http"
++
++	"github.com/stripe/stripe-cli/pkg/config"
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++// WorkspaceContext is the response from GET /v1/stripecli/workspace_context.
++type WorkspaceContext struct {
++	WorkspaceID string `json:"workspace_id"`
++}
++
++// GetWorkspaceContext fetches the workspace associated with the active OAuth context.
++func GetWorkspaceContext(ctx context.Context, apiBaseURL string, profile *config.Profile, creds stripe.Credentials, livemode bool) (WorkspaceContext, error) {
++	base := &Base{
++		Profile:        profile,
++		Method:         http.MethodGet,
++		SuppressOutput: true,
++		APIBaseURL:     apiBaseURL,
++		Livemode:       livemode,
++	}
++
++	resp, err := base.MakeRequest(ctx, creds, "/v1/stripecli/workspace_context", &RequestParameters{}, nil, true, nil)
++	if err != nil {
++		return WorkspaceContext{}, err
++	}
++
++	var workspaceContext WorkspaceContext
++	if err := json.Unmarshal(resp, &workspaceContext); err != nil {
++		return WorkspaceContext{}, fmt.Errorf("failed to decode workspace context response: %w", err)
++	}
++	return workspaceContext, nil
++}
+diff --git a/pkg/requests/workspace_context_test.go b/pkg/requests/workspace_context_test.go
+new file mode 100644
+index 0000000..0fba04a
+--- /dev/null
++++ b/pkg/requests/workspace_context_test.go
+@@ -0,0 +1,67 @@
++package requests
++
++import (
++	"context"
++	"errors"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"testing"
++
++	"github.com/stretchr/testify/require"
++
++	"github.com/stripe/stripe-cli/pkg/stripe"
++)
++
++func TestGetWorkspaceContext(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		require.Equal(t, http.MethodGet, r.Method)
++		require.Equal(t, "/v1/stripecli/workspace_context", r.URL.Path)
++		require.Empty(t, r.URL.RawQuery)
++		require.Equal(t, "Bearer oak_test_123", r.Header.Get("Authorization"))
++		require.Equal(t, "acct_123", r.Header.Get("Stripe-Context"))
++		require.Equal(t, "true", r.Header.Get("Stripe-Livemode"))
++
++		body, err := io.ReadAll(r.Body)
++		require.NoError(t, err)
++		require.Empty(t, body)
++
++		w.WriteHeader(http.StatusOK)
++		_, _ = w.Write([]byte(`{"workspace_id":"wksp_live_123"}`))
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	workspaceContext, err := GetWorkspaceContext(context.Background(), ts.URL, nil, creds, true)
++	require.NoError(t, err)
++	require.Equal(t, WorkspaceContext{WorkspaceID: "wksp_live_123"}, workspaceContext)
++}
++
++func TestGetWorkspaceContext_MalformedJSON(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusOK)
++		_, _ = w.Write([]byte(`{"workspace_id":`))
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	_, err := GetWorkspaceContext(context.Background(), ts.URL, nil, creds, true)
++	require.Error(t, err)
++	require.ErrorContains(t, err, "failed to decode workspace context response")
++}
++
++func TestGetWorkspaceContext_Non2xx(t *testing.T) {
++	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		w.WriteHeader(http.StatusBadGateway)
++		_, _ = w.Write([]byte(`{"error":{"message":"backend unavailable"}}`))
++	}))
++	defer ts.Close()
++
++	creds := stripe.NewOAKCredentials("oak_test_123", "acct_123", true)
++	_, err := GetWorkspaceContext(context.Background(), ts.URL, nil, creds, true)
++	require.Error(t, err)
++
++	var requestErr RequestError
++	require.True(t, errors.As(err, &requestErr))
++	require.Equal(t, http.StatusBadGateway, requestErr.StatusCode)
++}
+diff --git a/pkg/rpcservice/events_resend.go b/pkg/rpcservice/events_resend.go
+index 1b8546f..c432bf2 100644
+--- a/pkg/rpcservice/events_resend.go
++++ b/pkg/rpcservice/events_resend.go
+@@ -5,12 +5,11 @@ import (
+ 	"encoding/json"
+ 	"fmt"
+ 	"net/http"
+-	"net/url"
+-	"regexp"
+ 	"strings"
+ 
+ 	"github.com/stripe/stripe-cli/pkg/proxy"
+ 	"github.com/stripe/stripe-cli/pkg/requests"
++	"github.com/stripe/stripe-cli/pkg/stripe"
+ 	"github.com/stripe/stripe-cli/rpc"
+ 
+ 	"google.golang.org/grpc/codes"
+@@ -36,7 +35,10 @@ func (srv *RPCService) EventsResend(ctx context.Context, req *rpc.EventsResendRe
+ 		}
+ 	}
+ 
+-	path := formatURL("/v1/events/{event}/retry", []string{req.EventId})
++	path, err := stripe.FormatURLPath("/v1/events/{event}/retry", []string{req.EventId})
++	if err != nil {
++		return nil, status.Error(codes.InvalidArgument, err.Error())
++	}
+ 
+ 	stripeReq := &requests.Base{
+ 		Method:         strings.ToUpper(http.MethodPost),
+@@ -92,18 +94,6 @@ func (srv *RPCService) EventsResend(ctx context.Context, req *rpc.EventsResendRe
+ 	}, nil
+ }
+ 
+-func formatURL(path string, urlParams []string) string {
+-	s := make([]interface{}, len(urlParams))
+-	for i, v := range urlParams {
+-		s[i] = url.PathEscape(v)
+-	}
+-
+-	re := regexp.MustCompile(`{\w+}`)
+-	format := re.ReplaceAllString(path, "%s")
+-
+-	return fmt.Sprintf(format, s...)
+-}
+-
+ func getParamsFromReq(req *rpc.EventsResendRequest) (*requests.RequestParameters, error) {
+ 	params := requests.RequestParameters{}
+ 
+diff --git a/pkg/stripe/path.go b/pkg/stripe/path.go
+new file mode 100644
+index 0000000..29b2f18
+--- /dev/null
++++ b/pkg/stripe/path.go
+@@ -0,0 +1,39 @@
++package stripe
++
++import (
++	"fmt"
++	"net/url"
++	"regexp"
++
++	"github.com/stripe/stripe-cli/pkg/errorcategory"
++)
++
++var pathPlaceholderRegexp = regexp.MustCompile(`{\w+}`)
++
++// EscapePathSegment encodes a raw positional argument for one API path segment.
++func EscapePathSegment(value string) (string, error) {
++	switch value {
++	case "":
++		return "", errorcategory.New(errorcategory.UserInput, "path arguments cannot be empty")
++	case ".", "..":
++		// PathEscape leaves bare dot segments unchanged; URL resolution removes them.
++		return "", errorcategory.New(errorcategory.UserInput, "path arguments cannot be . or ..")
++	default:
++		return url.PathEscape(value), nil
++	}
++}
++
++// FormatURLPath inserts raw positional arguments into an API path template.
++func FormatURLPath(path string, values []string) (string, error) {
++	segments := make([]interface{}, len(values))
++	for i, value := range values {
++		segment, err := EscapePathSegment(value)
++		if err != nil {
++			return "", err
++		}
++		segments[i] = segment
++	}
++
++	format := pathPlaceholderRegexp.ReplaceAllString(path, "%s")
++	return fmt.Sprintf(format, segments...), nil
++}
+diff --git a/pkg/stripe/path_test.go b/pkg/stripe/path_test.go
+new file mode 100644
+index 0000000..8e94d0e
+--- /dev/null
++++ b/pkg/stripe/path_test.go
+@@ -0,0 +1,49 @@
++package stripe
++
++import (
++	"testing"
++
++	"github.com/stretchr/testify/require"
++)
++
++func TestFormatURLPath(t *testing.T) {
++	tests := []struct {
++		name, input, want string
++	}{
++		{"ordinary ID", "cus_123", "/v1/customers/cus_123"},
++		{"slash and traversal", "id1/../../customers/cus_123", "/v1/customers/id1%2F..%2F..%2Fcustomers%2Fcus_123"},
++		{"percent", "50%", "/v1/customers/50%25"},
++		// Positional arguments are raw IDs. A pre-encoded slash is intentionally escaped again.
++		{"pre-encoded slash", "%2F", "/v1/customers/%252F"},
++		{"space", "a b", "/v1/customers/a%20b"},
++		{"plus", "a+b", "/v1/customers/a+b"},
++		{"query and fragment", "a?b#c", "/v1/customers/a%3Fb%23c"},
++		{"unicode", "café", "/v1/customers/caf%C3%A9"},
++		{"punctuation", "a;b,c@d:e", "/v1/customers/a%3Bb%2Cc@d:e"},
++		{"other dots", "test..", "/v1/customers/test.."},
++		{"dots with suffix", "..?", "/v1/customers/..%3F"},
++		{"pre-encoded dots", "%2E%2E", "/v1/customers/%252E%252E"},
++		{"backslash", `a\..\b`, "/v1/customers/a%5C..%5Cb"},
++	}
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			got, err := FormatURLPath("/v1/customers/{customer}", []string{tt.input})
++			require.NoError(t, err)
++			require.Equal(t, tt.want, got)
++		})
++	}
++	got, err := FormatURLPath("/v1/accounts/{account}/customers/{customer}", []string{"acct/one", "cus?two"})
++	require.NoError(t, err)
++	require.Equal(t, "/v1/accounts/acct%2Fone/customers/cus%3Ftwo", got)
++
++	for _, value := range []string{".", ".."} {
++		for _, params := range [][]string{{value, "cus_123"}, {"acct_123", value}} {
++			got, err := FormatURLPath("/v1/accounts/{account}/customers/{customer}", params)
++			require.Empty(t, got)
++			require.ErrorContains(t, err, "path arguments cannot be . or ..")
++		}
++	}
++	got, err = FormatURLPath("/v1/customers/{customer}", []string{""})
++	require.Empty(t, got)
++	require.ErrorContains(t, err, "path arguments cannot be empty")
++}

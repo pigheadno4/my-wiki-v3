@@ -1,0 +1,370 @@
+diff --git a/pkg/cmd/root.go b/pkg/cmd/root.go
+index 78c2bec..32b1ec4 100644
+--- a/pkg/cmd/root.go
++++ b/pkg/cmd/root.go
+@@ -9,8 +9,10 @@ import (
+ 	"errors"
+ 	"fmt"
+ 	"os"
++	"os/signal"
+ 	"slices"
+ 	"strings"
++	"syscall"
+ 	"unicode"
+ 
+ 	log "github.com/sirupsen/logrus"
+@@ -152,9 +154,31 @@ func showSuggestion() {
+ 		os.Args[1], rootCmd.CommandPath(), suggStr))
+ }
+ 
++// installPluginReaper guarantees every plugin subprocess this CLI launched -- including
++// peer plugins started on another plugin's behalf via CoreCLIHelper.RunPeerPlugin -- gets
++// killed if this process is interrupted or terminated, not just when a plugin's blocking
++// RunCommand call returns normally. Without this, a peer plugin can be left running
++// indefinitely past the end of the command that started it: the OS doesn't reliably deliver
++// the parent's signal to it, and the host's RPC call to its own direct child plugin isn't
++// wired to any cancellable context, so nothing here today reaps it on its own.
++//
++// plugins.CleanupAllClients kills every client go-plugin is tracking for this process, so one
++// handler covers both the plain "launch one plugin" case and the nested peer-plugin case.
++func installPluginReaper() {
++	sigCh := make(chan os.Signal, 1)
++	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
++	go func() {
++		<-sigCh
++		plugins.CleanupAllClients()
++		os.Exit(1)
++	}()
++}
++
+ // Execute adds all child commands to the root command and sets flags appropriately.
+ // This is called by main.main(). It only needs to happen once to the rootCmd.
+ func Execute(ctx context.Context) {
++	installPluginReaper()
++
+ 	emitClaudeCodePluginHint()
+ 
+ 	reporting.SetAccountIDProvider(Config.Profile.GetAccountID)
+diff --git a/pkg/requests/base.go b/pkg/requests/base.go
+index c8048c7..59ac73c 100644
+--- a/pkg/requests/base.go
++++ b/pkg/requests/base.go
+@@ -95,6 +95,11 @@ func (e RequestError) Error() string {
+ 	return fmt.Sprintf("%s, status=%d, body=%s", e.msg, e.StatusCode, e.Body)
+ }
+ 
++// HTTPStatusCode returns the response status for status-based error reporting.
++func (e RequestError) HTTPStatusCode() int {
++	return e.StatusCode
++}
++
+ // IsAPIKeyExpiredError returns true if the provided error was caused by a
+ // request returning an `api_key_expired` error code.
+ //
+diff --git a/pkg/requests/base_test.go b/pkg/requests/base_test.go
+index bdec367..06fae22 100644
+--- a/pkg/requests/base_test.go
++++ b/pkg/requests/base_test.go
+@@ -18,6 +18,20 @@ import (
+ 	"github.com/stripe/stripe-cli/pkg/stripe"
+ )
+ 
++func TestRequestErrorHTTPStatusCode(t *testing.T) {
++	for _, test := range []struct {
++		err    error
++		status int
++	}{
++		{err: RequestError{StatusCode: http.StatusInternalServerError}, status: http.StatusInternalServerError},
++		{err: &RequestError{StatusCode: http.StatusNotFound}, status: http.StatusNotFound},
++	} {
++		var statusErr interface{ HTTPStatusCode() int }
++		require.True(t, errors.As(fmt.Errorf("wrapped: %w", test.err), &statusErr))
++		require.Equal(t, test.status, statusErr.HTTPStatusCode())
++	}
++}
++
+ func TestBuildDataForRequest(t *testing.T) {
+ 	rb := Base{}
+ 	params := &RequestParameters{data: []string{"bender=robot", "fry=human"}}
+diff --git a/pkg/stripe/analytics_telemetry.go b/pkg/stripe/analytics_telemetry.go
+index aa05364..bc4f13e 100644
+--- a/pkg/stripe/analytics_telemetry.go
++++ b/pkg/stripe/analytics_telemetry.go
+@@ -58,6 +58,9 @@ type CLIAnalyticsEventMetadata struct {
+ 	InTmux            bool   `url:"in_tmux"`                    // whether the CLI was invoked from within tmux
+ 	InScreen          bool   `url:"in_screen"`                  // whether the CLI was invoked from within GNU Screen
+ 	TerminalProgram   string `url:"terminal_program,omitempty"` // the terminal program that invoked the CLI, if any
++
++	// HTTPOutcome is a bounded HTTP outcome for API request and error events.
++	HTTPOutcome string `url:"http_outcome,omitempty"`
+ }
+ 
+ // TelemetryClient is an interface that can send two types of events: an API request, and just general events.
+@@ -81,6 +84,25 @@ type NoOpTelemetryClient struct {
+ // Public functions
+ //
+ 
++// HTTPOutcomeForStatusCode maps a response status to a bounded telemetry outcome.
++// A nonpositive status indicates no HTTP response and has no outcome.
++func HTTPOutcomeForStatusCode(status int) string {
++	switch {
++	case status <= 0:
++		return ""
++	case status >= 200 && status < 300:
++		return "2xx"
++	case status == http.StatusNotFound:
++		return "not_found"
++	case status >= 400 && status < 500:
++		return "other_4xx"
++	case status >= 500 && status < 600:
++		return "5xx"
++	default:
++		return "other_non_200"
++	}
++}
++
+ // NewEventMetadata initializes an instance of CLIAnalyticsEventContext
+ func NewEventMetadata() *CLIAnalyticsEventMetadata {
+ 	agentHostKind, agentHostRaw := useragent.DetectAgentHost(os.Getenv)
+diff --git a/pkg/stripe/analytics_telemetry_test.go b/pkg/stripe/analytics_telemetry_test.go
+index 4ed1dec..7ed7955 100644
+--- a/pkg/stripe/analytics_telemetry_test.go
++++ b/pkg/stripe/analytics_telemetry_test.go
+@@ -2,6 +2,7 @@ package stripe_test
+ 
+ import (
+ 	"context"
++	"fmt"
+ 	"io"
+ 	"net/http"
+ 	"net/http/httptest"
+@@ -197,6 +198,98 @@ func TestSendEvent(t *testing.T) {
+ 	analyticsClient.SendEvent(processCtx, "foo", "bar")
+ }
+ 
++func TestHTTPOutcomeForStatusCode(t *testing.T) {
++	for _, test := range []struct {
++		status int
++		want   string
++	}{
++		{status: -1, want: ""},
++		{status: 0, want: ""},
++		{status: 100, want: "other_non_200"},
++		{status: 199, want: "other_non_200"},
++		{status: 200, want: "2xx"},
++		{status: 201, want: "2xx"},
++		{status: 204, want: "2xx"},
++		{status: 299, want: "2xx"},
++		{status: 300, want: "other_non_200"},
++		{status: 302, want: "other_non_200"},
++		{status: 399, want: "other_non_200"},
++		{status: 400, want: "other_4xx"},
++		{status: 401, want: "other_4xx"},
++		{status: 403, want: "other_4xx"},
++		{status: 404, want: "not_found"},
++		{status: 429, want: "other_4xx"},
++		{status: 499, want: "other_4xx"},
++		{status: 500, want: "5xx"},
++		{status: 599, want: "5xx"},
++		{status: 600, want: "other_non_200"},
++	} {
++		t.Run(fmt.Sprint(test.status), func(t *testing.T) {
++			require.Equal(t, test.want, stripe.HTTPOutcomeForStatusCode(test.status))
++		})
++	}
++}
++
++func TestSendAPIRequestEvent_HTTPOutcome(t *testing.T) {
++	for _, status := range []int{0, 200, 201, 204, 302, 400, 401, 403, 404, 429, 500} {
++		t.Run(fmt.Sprint(status), func(t *testing.T) {
++			forms := make(chan url.Values, 1)
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				if err := r.ParseForm(); err != nil {
++					t.Error(err)
++				}
++				forms <- r.PostForm
++			}))
++			defer server.Close()
++			baseURL, err := url.Parse(server.URL)
++			require.NoError(t, err)
++			client := stripe.AnalyticsTelemetryClient{BaseURL: baseURL, HTTPClient: server.Client()}
++			outcome := stripe.HTTPOutcomeForStatusCode(status)
++			metadata := &stripe.CLIAnalyticsEventMetadata{CommandPath: "stripe get", HTTPOutcome: outcome}
++			ctx := stripe.WithEventMetadata(context.Background(), metadata)
++
++			resp, err := client.SendAPIRequestEvent(ctx, "", false)
++			require.NoError(t, err)
++			require.NoError(t, resp.Body.Close())
++
++			form := <-forms
++			require.Equal(t, "API Request", form.Get("event_name"))
++			require.Equal(t, outcome, form.Get("http_outcome"))
++			require.Equal(t, outcome != "", form.Has("http_outcome"))
++			require.False(t, form.Has("http_status_code"))
++		})
++	}
++}
++
++func TestSendEvent_HTTPOutcome(t *testing.T) {
++	for _, outcome := range []string{"", "not_found", "other_4xx", "5xx", "other_non_200"} {
++		t.Run("outcome="+outcome, func(t *testing.T) {
++			forms := make(chan url.Values, 1)
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				if err := r.ParseForm(); err != nil {
++					t.Error(err)
++				}
++				forms <- r.PostForm
++			}))
++			defer server.Close()
++			baseURL, err := url.Parse(server.URL)
++			require.NoError(t, err)
++			client := stripe.AnalyticsTelemetryClient{BaseURL: baseURL, HTTPClient: server.Client()}
++			metadata := &stripe.CLIAnalyticsEventMetadata{CommandPath: "get", HTTPOutcome: outcome}
++			ctx := stripe.WithEventMetadata(context.Background(), metadata)
++
++			client.SendEvent(ctx, "CLI Error", "api")
++
++			form := <-forms
++			require.Equal(t, "CLI Error", form.Get("event_name"))
++			require.Equal(t, "api", form.Get("event_value"))
++			require.Equal(t, outcome, form.Get("http_outcome"))
++			require.Equal(t, outcome != "", form.Has("http_outcome"))
++			require.False(t, form.Has("http_status_code"))
++		})
++	}
++}
++
+ func TestSendEvent_WithAIAgent(t *testing.T) {
+ 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+ 		body, err := io.ReadAll(r.Body)
+diff --git a/pkg/stripe/client.go b/pkg/stripe/client.go
+index 7468b73..d957d33 100644
+--- a/pkg/stripe/client.go
++++ b/pkg/stripe/client.go
+@@ -198,9 +198,17 @@ func (c *Client) PerformRequest(ctx context.Context, method, path string, params
+ 		return nil, err
+ 	}
+ 
++	// Keep response metadata local to this event, not the shared invocation.
++	requestCtx := req.Context()
++	if metadata := GetEventMetadata(requestCtx); metadata != nil {
++		requestMetadata := *metadata
++		requestMetadata.HTTPOutcome = HTTPOutcomeForStatusCode(resp.StatusCode)
++		requestCtx = WithEventMetadata(requestCtx, &requestMetadata)
++	}
++
+ 	// RequestID of the API Request
+ 	requestID := resp.Header.Get("Request-Id")
+-	go sendTelemetryEvent(ctx, requestID, c.Credentials.Livemode())
++	go sendTelemetryEvent(requestCtx, requestID, c.Credentials.Livemode())
+ 	return resp, nil
+ }
+ 
+diff --git a/pkg/stripe/client_test.go b/pkg/stripe/client_test.go
+index 3fb6a49..a32c0fd 100644
+--- a/pkg/stripe/client_test.go
++++ b/pkg/stripe/client_test.go
+@@ -7,7 +7,10 @@ import (
+ 	"net/http"
+ 	"net/http/httptest"
+ 	"net/url"
++	"strconv"
++	"sync"
+ 	"testing"
++	"time"
+ 
+ 	"github.com/stretchr/testify/require"
+ )
+@@ -81,6 +84,92 @@ func TestApplyAccountContextHeaders_UAT(t *testing.T) {
+ 	})
+ }
+ 
++type apiStatusTelemetryClient struct {
++	statuses chan *CLIAnalyticsEventMetadata
++}
++
++func (c *apiStatusTelemetryClient) SendAPIRequestEvent(ctx context.Context, _ string, _ bool) (*http.Response, error) {
++	c.statuses <- GetEventMetadata(ctx)
++	return nil, nil
++}
++
++func (c *apiStatusTelemetryClient) SendEvent(ctx context.Context, _ string, _ string) {
++	c.statuses <- GetEventMetadata(ctx)
++}
++
++func TestPerformRequest_TelemetryHTTPOutcome(t *testing.T) {
++	statuses := []int{200, 201, 204, 302, 400, 401, 403, 404, 429, 500}
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		status, err := strconv.Atoi(r.URL.Query().Get("status"))
++		if err != nil {
++			t.Error(err)
++			w.WriteHeader(http.StatusBadRequest)
++			return
++		}
++		w.WriteHeader(status)
++	}))
++	defer server.Close()
++	baseURL, err := url.Parse(server.URL)
++	require.NoError(t, err)
++	client := Client{BaseURL: baseURL, httpClient: server.Client()}
++	telemetry := &apiStatusTelemetryClient{statuses: make(chan *CLIAnalyticsEventMetadata, len(statuses)+1)}
++	metadata := &CLIAnalyticsEventMetadata{CommandPath: "stripe get", InvocationID: "test-invocation"}
++	original := *metadata
++	ctx := WithEventMetadata(WithTelemetryClient(context.Background(), telemetry), metadata)
++
++	var wg sync.WaitGroup
++	for _, status := range statuses {
++		wg.Go(func() {
++			resp, err := client.PerformRequest(ctx, http.MethodGet, "/v1/test", "status="+strconv.Itoa(status), nil)
++			if err != nil {
++				t.Error(err)
++				return
++			}
++			defer resp.Body.Close()
++			if resp.StatusCode != status {
++				t.Errorf("response status = %d, want %d", resp.StatusCode, status)
++			}
++		})
++	}
++	wg.Wait()
++
++	var gotOutcomes []string
++	for range statuses {
++		select {
++		case eventMetadata := <-telemetry.statuses:
++			require.NotSame(t, metadata, eventMetadata)
++			require.Equal(t, original.CommandPath, eventMetadata.CommandPath)
++			require.Equal(t, original.InvocationID, eventMetadata.InvocationID)
++			gotOutcomes = append(gotOutcomes, eventMetadata.HTTPOutcome)
++		case <-time.After(time.Second):
++			t.Fatal("timed out waiting for API request telemetry")
++		}
++	}
++	require.ElementsMatch(t, []string{"2xx", "2xx", "2xx", "other_non_200", "other_4xx", "other_4xx", "other_4xx", "not_found", "other_4xx", "5xx"}, gotOutcomes)
++	require.Equal(t, original, *metadata)
++	telemetry.SendEvent(ctx, "Command Invoked", "")
++	require.Empty(t, (<-telemetry.statuses).HTTPOutcome)
++}
++
++func TestPerformRequest_NoResponseHasNoOutcomeTelemetry(t *testing.T) {
++	baseURL, err := url.Parse("http://127.0.0.1")
++	require.NoError(t, err)
++	client := Client{BaseURL: baseURL}
++	telemetry := &apiStatusTelemetryClient{statuses: make(chan *CLIAnalyticsEventMetadata, 1)}
++	ctx := WithEventMetadata(WithTelemetryClient(context.Background(), telemetry), &CLIAnalyticsEventMetadata{})
++	ctx, cancel := context.WithCancel(ctx)
++	cancel()
++
++	resp, err := client.PerformRequest(ctx, http.MethodGet, "/v1/test", "", nil)
++	if resp != nil {
++		defer resp.Body.Close()
++	}
++
++	require.ErrorIs(t, err, context.Canceled)
++	require.Nil(t, resp)
++	require.Empty(t, telemetry.statuses)
++}
++
+ func TestPerformRequest_ParamsEncoding_Delete(t *testing.T) {
+ 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+ 		require.Equal(t, "/delete", r.URL.Path)

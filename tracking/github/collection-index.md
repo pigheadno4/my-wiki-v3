@@ -13,7 +13,7 @@ Generated: `2026-10-30`
 | adyen | `adyen/adyen-3ds2-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-3ds2-ios-swift` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-magento2` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-25 | ingested | 2026-09-25 | `collect-baseline` |
-| adyen | `adyen/adyen-node-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
+| adyen | `adyen/adyen-node-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-30 | ingested | 2026-11-30 | `wait` |
 | adyen | `adyen/adyen-php-api-library` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-29 | ingested | 2026-11-29 | `wait` |
 | adyen | `adyen/adyen-postman` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `wait` |
 | adyen | `adyen/adyen-wechatpay-ios` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-26 | ingested | 2026-09-26 | `collect-baseline` |
@@ -70,7 +70,7 @@ Generated: `2026-10-30`
 | stripe | `stripe/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-13 | ingested | 2026-09-13 | `collect-baseline` |
 | stripe | `stripe/link-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-08-15 | ingested | 2026-09-15 | `collect-baseline` |
 | stripe | `stripe/stripe-apps` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-28 | ingested | 2026-09-28 | `collect-baseline` |
-| stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-06 | ingested | 2026-11-06 | `wait` |
+| stripe | `stripe/stripe-cli` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-30 | ingested | 2026-11-30 | `wait` |
 | stripe | `stripe/stripe-node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-18 | ingested | 2026-11-18 | `wait` |
 | stripe | `stripe/stripe-php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-18 | ingested | 2026-11-18 | `wait` |
 | stripe | `stripe/sync-engine` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-26 | ingested | 2026-09-26 | `collect-baseline` |

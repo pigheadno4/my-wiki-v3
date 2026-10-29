@@ -1,5 +1,33 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Stripe CLI `1.55.3`
+
+- Final serial focused delta records grouped accounts, stale-context reporting and invalid_scope recovery limits; all seven approved releases now documented without replacing history. Details: [[stripe-log]], [[source-github-stripe-cli]], [[changelog-github-stripe-cli]].
+
+## [2026-10-30] ingest | Stripe CLI `1.55.2`
+
+- Serial approved focused delta records release-packaging announcements with excluded implementation qualified; all prior history preserved. Details: [[stripe-log]], [[source-github-stripe-cli]], [[changelog-github-stripe-cli]].
+
+## [2026-10-30] ingest | Stripe CLI `1.55.1`
+
+- Approved serial focused delta: multipart parameter/file/error-handling fixes with explicit buffering, dry-run and generated-code boundaries. Earlier history retained; details [[stripe-log]] and [[source-github-stripe-cli]]. No CLI/upload/API/payment execution, commit or push.
+
+## [2026-10-30] ingest | Stripe CLI `1.55.0`
+
+- Approved serial focused delta: bounded signal cleanup and request-local HTTP-outcome telemetry, including findings beyond the brief release notes. Earlier history preserved; details [[stripe-log]] and [[source-github-stripe-cli]]. No CLI/API/payment execution, commit or push.
+
+## [2026-10-30] ingest | Stripe CLI `1.54.1`
+
+- Approved serial focused delta: daily version-check and opt-out announcement, unchanged retained source and explicit implementation limits. Earlier history retained; details [[stripe-log]] and [[source-github-stripe-cli]]. No CLI/API/payment execution, commit or push.
+
+## [2026-10-30] ingest | Stripe CLI `1.54.0`
+
+- Approved serial focused-reading additive full: path validation, paginated accounts and bounded context/tooling helpers. All earlier history retained; details [[stripe-log]] and [[source-github-stripe-cli]]. No CLI/API/payment execution, commit or push.
+
+## [2026-10-30] ingest | Stripe CLI `1.53.1`
+
+- Approved focused-reading additive full: profile-scoped OAuth sessions and bounded path-escaping findings, with all earlier history preserved. Details [[stripe-log]] and [[source-github-stripe-cli]]. No CLI/API/payment execution, commit or push.
+
 ## [2026-10-30] ingest | Adyen website C54
 
 - Three independently approved plugin release notes, native 3DS2 and dispute reason codes documentation sources; first full-review approvals 1/3 and 2 targeted correction reviews. 6 concepts touched (0 new); source_count 2557 = 2543 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-54/`; details [[adyen-log]]. No commit/push.
