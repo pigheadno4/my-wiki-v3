@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-online-payments-3d-secure-native-3ds2",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen native 3D Secure 2 authentication\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/online-payments/3d-secure/native-3ds2\"\nraw_files:\n  - \"adyen/docs/online-payments/3d-secure/native-3ds2/2026-09-15.md\"\ntags: [adyen, 3d-secure, 3ds2, authentication, web, ios, android, flutter, react-native]\n---\n\n## Overview\n\nAdyen's 2026-09-15 webpage snapshot (metadata last modified 2023-05-10) guides native 3D Secure 2 for existing Web, iOS, Android, Flutter, and React Native checkout integrations. It covers Web/iOS/Android Drop-in and Components, Flutter Drop-in and Components, and React Native Drop-in. These are Checkout `/payments` and `/payments/details` merchant integration routes, not standalone authentication or the separately versioned native 3DS2 SDK runtime. [[adyen]] [[adyen-3d-secure]]\n\n## Key takeaways\n\n- For the Advanced flow, the merchant server sends the `/payments` request with the channel-specific 3DS2 data; the client handles a returned authentication `action` through Drop-in or a Component, then passes authentication details for a server `/payments/details` request. Sessions-flow sections say no additional 3DS2 configuration is needed. Flutter and React Native Advanced-flow sections specify Checkout API v71 or later. See the respective integration and action sections below.\n- Checkout API v69 or later tables set `authenticationData.threeDSRequestData.nativeThreeDS` to `preferred`; v68 or earlier tables use `additionalData.allow3DS2`. iOS and Android sections distinguish `threeDS2` actions for v67+ from `threeDS2Fingerprint`/`threeDS2Challenge` for v66 and earlier, including the older `paymentData` handoff. Follow the exact platform and API-version section.\n- A returned `action` can be native 3DS2 or redirect. A response with no `action` is described as exempted or outside 3DS2 scope; use its `resultCode` for the payment result. Authentication and challenge completion do not by themselves establish an authorized payment. The guide also directs readers to the asynchronous payment webhook.\n- Web native challenges can be blocked by a strict Content Security Policy; Adyen says it does not maintain a complete list of challenge URLs and offers redirect as an alternative. Mobile return and redirect handling is platform-specific. All requests for one live payment session should use the same live endpoint region.\n- The tables distinguish required fields from Visa/JCB conditional fields and recommendations. For example, `shopperEmail` can be replaced by a phone-number path in the stated Visa/JCB case; mobile `shopperIP` is conditional for redirect fallback. Do not generalize Web `browserInfo` requirements to native mobile.\n\n## Detail locators\n\n- **Web Drop-in:** raw lines 19-903; requirements and CSP 27-36, `/payments` table 102-130, action cases 770-795, details and result 797-885. **Web Components:** lines 904-2035; Card Component versus own-form tabs 935-978, request variants 980-1030, action/component handling 1696-1790, details and result 1790-2027.\n- **iOS Drop-in:** lines 2036-2904; requirements 2044-2053, request fields and SDK version 2097-2135, v67+/v66- action tables 2622-2682, details transition 2684-2850. **iOS Components:** lines 2905-3940; requirements 2913-2922, request fields 2958-2993, action/version handling 3480-3540, Action Component, details, and redirect 3542-3880.\n- **Android Drop-in:** lines 3941-4808; requirements 3949-3958, request fields 4005-4032, action and details 4515-4770. **Android Components:** lines 4809-5670; requirements 4817-4826, request fields 4862-4890, action/component and redirect 5372-5632.\n- **Flutter Drop-in and Components:** lines 5671-6451 and 6452-7241 respectively; both Advanced-flow prerequisites and return handling 5675-5785 and 6456-6557; action/details/result 6280-6444 and 7052-7234. **React Native Drop-in:** lines 7242-8060; v71+ prerequisite 7246-7255, request and platform-select values 7331-7355 and 7854-7874, details/result 7876-8054.\n- The request examples are language-specific illustrations (curl, Java, PHP, C#, JavaScript, Go, Python, Ruby, TypeScript) and must be read within their surrounding platform/API-version tables. Web request examples show empty `returnUrl` in several SDK snippets although the adjacent tables mark it required and describe a usable return URL (for example raw lines 123, 250, 335, 424, 486). Flutter request tables say `channel` Android while also documenting iOS return handling (lines 5774-5776 and 6545-6549); do not infer that Android applies to iOS. The React Native narrative's `onSubmit` link points to Flutter (line 7333), while its own section describes React Native.\n\n## Related\n\n- [[source-adyen-docs-online-payments-3d-secure]] \u2014 high-level 3DS2 purpose and route selection.\n- [[source-adyen-docs-online-payments-3d-secure-api-reference]] \u2014 detailed 3DS2 request parameter reference.\n- [[source-adyen-docs-online-payments-3d-secure-redirect-3ds2]] \u2014 redirect route.\n- [[source-adyen-docs-online-payments-3d-secure-standalone-authentication]] \u2014 separate authentication and authorization flow.\n- [[adyen-3ds2-ios-sdk]] and [[adyen-3ds2-android-sdk]] \u2014 separately versioned SDK implementation evidence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/online-payments/3d-secure/native-3ds2/2026-09-15|Native 3D Secure 2 authentication (2026-09-15 snapshot)]]\n",
+  "quotes": [
+    {
+      "text": "Support 3D Secure 2 natively on your website or mobile app.",
+      "location": "raw line 17, page opening"
+    },
+    {
+      "text": "A strict [Content Security Policy (CSP)]",
+      "location": "raw line 35, Web Drop-in Requirements, Limitations row"
+    },
+    {
+      "text": "For **Checkout API v68 or earlier**: use `additionalData.allow3DS2` instead.",
+      "location": "raw line 119, Web Drop-in Make a payment table, nativeThreeDS row"
+    },
+    {
+      "text": "Your next steps depend on whether the response contains an `action` object, and on the `action.type`.",
+      "location": "raw line 770, Web Drop-in Make a payment, after language examples"
+    },
+    {
+      "text": "Using different regions for [/payments]",
+      "location": "raw line 885, Web Drop-in Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c54-native-3ds2-reciprocal",
+        "target_path": "wiki/concepts/adyen-3d-secure.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Related",
+        "proposed_markdown": "- [[source-adyen-docs-online-payments-3d-secure-native-3ds2]] \u2014 2026-09-15 snapshot of the Checkout native 3DS2 Web, iOS, Android, Flutter, and React Native Drop-in/Components implementation guide, with Advanced-flow API/version qualifications and redirect fallback; consult the platform sections for request fields and action handoffs.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": [
+          "Snapshot examples and prose contain platform-specific inconsistencies; do not use this reciprocal route as a universal field contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/online-payments/3d-secure/native-3ds2/2026-09-15.md",
+  "raw_sha256": "078fabd39b9bd0a3d3d7c1043c572df4fcbb121a4f672de04751c51c43860237",
+  "status": "candidate_ready"
+}

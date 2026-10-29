@@ -19,6 +19,9 @@ This is a 2023-modified webpage captured 2026-09-15, without a package version o
 
 ## Sources
 
+- [[source-adyen-docs-plugins-release-notes]] — 2019–2026 captured NetSuite Payments and separate Reconciliation Bundle release entries for versioned payment-link, SDR import, matching and deposit-record changes.
+
+
 - [[source-adyen-docs-plugins-netsuite-payment-notifications-in-netsuite]] — 2023-modified NetSuite asynchronous payment/chargeback notification log guide captured 2026-09-15, including revocable `approved` status and multiple notification entries; log receipt is not financial finality.
 
 

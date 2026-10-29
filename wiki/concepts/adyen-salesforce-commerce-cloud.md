@@ -15,6 +15,9 @@ This overview is a captured documentation page, not a versioned implementation a
 
 ## Sources
 
+- [[source-adyen-docs-plugins-release-notes]] — 2019–2026 captured SFCC SFRA and Composable Storefront release chronology, including separate v26.1 SFRA webhook-cartridge and v4.0 Composable companion-cartridge migration locators.
+
+
 - [[source-adyen-docs-plugins-salesforce-commerce-cloud-composable-storefront-upgrade]] — 2023-modified, 2026-09-15-captured Retail React `@adyen/adyen-salesforce-pwa` dependency-upgrade outline with major-release recommendation and MRT deployment link; build step repeats `npm install`, so verify the actual build and selected-release compatibility.
 
 

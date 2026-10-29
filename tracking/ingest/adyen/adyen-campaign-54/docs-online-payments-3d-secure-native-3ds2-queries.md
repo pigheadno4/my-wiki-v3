@@ -1,0 +1,13 @@
+# Native 3DS2 retrieval checks
+
+Source stem: `source-adyen-docs-online-payments-3d-secure-native-3ds2`
+Canonical URL: https://docs.adyen.com/online-payments/3d-secure/native-3ds2
+Pinned raw: `raw/adyen/docs/online-payments/3d-secure/native-3ds2/2026-09-15.md`
+
+## Q1. Where does this guide route a merchant implementing native 3DS2, and what happens after an authentication action?
+
+It has Web Drop-in (raw lines 19-903), Web Components (904-2035), iOS Drop-in (2036-2904), iOS Components (2905-3940), Android Drop-in (3941-4808), Android Components (4809-5670), Flutter Drop-in (5671-6451), Flutter Components (6452-7241), and React Native Drop-in (7242-8060). Advanced-flow `/payments` returns an action when authentication or redirect handling is needed; Drop-in or a Component handles the action, and the client supplies resulting details for server `/payments/details`. See Web Drop-in lines 770-840, iOS Drop-in 2622-2850, Flutter Drop-in 6280-6428, and React Native Drop-in 7850-8020. The resulting `resultCode` and asynchronous webhook concern payment outcome (Web lines 864-875), not a guarantee from the authentication action itself.
+
+## Q2. Which version, channel, and fallback qualifications stop a single request recipe from applying everywhere?
+
+Web Advanced-flow tables set `channel` Web and require `browserInfo`, `origin`, and a `returnUrl` for redirect fallback (raw lines 118-125); the iOS and Android tables set the respective mobile channel and recommend browser information for possible redirects (iOS lines 2112-2118; Android lines 4017-4023). The iOS Drop-in and Components sections also explicitly require the current 3DS2 SDK version in the payment request; they show `ADY3DS2SDKVersion()` for obtaining it (lines 2124-2133 and 2982-2991). This native SDK-version prerequisite is separate from the Checkout API thresholds: for v69+ the tables prescribe `authenticationData.threeDSRequestData.nativeThreeDS=preferred`, while v68 and earlier use `additionalData.allow3DS2` (lines 119 and 2112). iOS v67+ uses `threeDS2` actions, while v66 and earlier has `threeDS2Fingerprint` and `threeDS2Challenge` with older `paymentData` details handoff (lines 2624-2688 and 2716-2727). Flutter and React Native Advanced-flow sections specify Checkout API v71+ (lines 5681, 6462, 7252). Web CSP can block the native challenge, and a redirect flow may be used (line 35); mobile app return setup depends on platform. The page's Web examples with empty `returnUrl`, Flutter tables' Android channel alongside iOS return instructions, and React Native's Flutter `onSubmit` link are snapshot inconsistencies (lines 123/250, 5774-5776, 6545-6549, 7333), so use the platform prose and surrounding tables rather than copying a sample indiscriminately.

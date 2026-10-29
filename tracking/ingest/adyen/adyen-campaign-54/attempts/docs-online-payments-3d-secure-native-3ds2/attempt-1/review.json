@@ -1,0 +1,21 @@
+{
+  "job_id": "docs-online-payments-3d-secure-native-3ds2",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The full 8,062-line pinned raw matches the trusted SHA, the candidate and accepted receipt agree, and all five quotes are exact. The source page preserves the principal Checkout flow and platform/version boundaries. Two narrow retrieval issues remain: the reciprocal label implies React Native Components coverage that this raw does not contain, and Q2 omits the explicit iOS SDK-version payment-request prerequisite while answering version qualifications.",
+  "required_changes": [
+    "Narrow suggestion c54-native-3ds2-reciprocal so its platform list cannot imply React Native Components support. Raw sections are Web Drop-in/Components (lines 19-2035), iOS Drop-in/Components (2036-3940), Android Drop-in/Components (3941-5670), Flutter Drop-in/Components (5671-7241), and React Native Drop-in only (7242-8060). A React Native Components query would otherwise select the wrong source from the concept route.",
+    "Add to external Q2 that the iOS Drop-in and Components sections explicitly require the current 3DS2 SDK version in the payment request, with locators at raw lines 2124-2133 and 2982-2991. Keep this distinct from the Checkout API v69/v68 and v67/v66 distinctions already stated; otherwise Q2's version-prerequisite answer could lead an iOS implementer to omit a native-triggering prerequisite."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    {
+      "update_id": "c54-native-3ds2-reciprocal",
+      "verdict": "rejected",
+      "reason": "Current platform wording can be read as covering React Native Components, but the pinned raw has only React Native Drop-in (lines 7242-8060). Revise the label to enumerate coverage precisely."
+    }
+  ],
+  "reviewer_identity": "c54-rdocs-online-payments-3d-secure-native-3ds2",
+  "reviewer_model": "gpt-6-sol"
+}

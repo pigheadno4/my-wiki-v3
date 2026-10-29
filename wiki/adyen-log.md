@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Adyen website C54
+
+- All 3 exact-manifest plugin release notes, native 3DS2 and dispute reason codes General Docs sources independently approved and promoted. First full-review approvals 1/3; 2 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 6 concepts, including 0 new concept(s). Plugin/product/version and historical chronology, channel/API/SDK and authentication versus payment outcomes, and scheme/event/region/date-specific dispute deadlines and evidence conditions remain distinct. Material source conflicts and Klarna phase qualifications remain explicit. Original reviews, attempts and bounded correction evidence retained. Website guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 2557 = 2543 website + 14 GitHub summaries. All 3 raw hashes unchanged; 6 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-54/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-30] ingest | Adyen website C53
 
 - All 3 exact-manifest NFC tags, Issuing KYC and raw acquirer responses General Docs sources independently approved and promoted. First full-review approvals 2/3; 1 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

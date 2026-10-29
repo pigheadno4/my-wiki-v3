@@ -22,6 +22,9 @@ The risk-management documentation also routes to dispute monitoring and handling
 The Adyen POS guide fetched 2026-09-15, whose raw metadata says last modified 2022-12-26 and calls the engine RevenueProtect, describes a separate Customer Area switch for POS risk checks. It focuses on MOTO and Manual Key Entry (MKE), not routine in-person payments. At company scope the switch defaults across merchant accounts; a merchant account can override company settings. The guide says the company default profile applies once enabled and recommends a dedicated profile when that merchant account processes only POS, because ecommerce-oriented shared-IP and shopper-reference rules can wrongly decline terminal traffic. It also describes MOTO/MKE as having no liability shift and merchant fraud-chargeback liability. These dated POS claims do not establish current Protect account settings or the liability of other POS entry modes. [[source-adyen-docs-point-of-sale-risk-management-pos]]
 ## Sources
 
+- [[source-adyen-docs-risk-management-understanding-disputes-dispute-reason-codes]] — 2026-09-15 Adyen webpage snapshot of scheme- and event-specific chargeback, RFI, and nondefendable NoF reason codes, response windows, and linked evidence requirements; a listed defense does not guarantee a win or establish a current case deadline.
+
+
 - [[source-adyen-docs-payment-methods-ach-direct-debit]] — ACH Direct Debit overview of nondefensible chargebacks, reason-code-qualified retries and Adyen-wide terminal-return bank-account blocking (2026-09-15 capture).
 
 

@@ -19,6 +19,9 @@ The host-version floor is not an exact CPOS package release or current device/me
 
 ## Sources
 
+- [[source-adyen-docs-plugins-release-notes]] — 2019–2026 captured Cegid Retail Y2 CPOS release history, including version-qualified installation and the v2.1.12 receipt/reconciliation issue marked fixed in v2.1.13.
+
+
 - [[source-adyen-docs-plugins-cegid-retail-y2-pay-by-link]] — 2026-09-15 Cegid Retail Y2 Mobile POS/Live Store Pay by Link guide for versioned prerequisites, Cegid activation, hosted-page terms, QR/text link access and in-app result; link presentation is not payment proof.
 
 

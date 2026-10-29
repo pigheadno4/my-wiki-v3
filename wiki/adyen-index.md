@@ -2709,6 +2709,12 @@ Operations history: [[adyen-log]]
 - [[source-adyen-docs-issuing-verification-requirements-required-kyc-information]] — Adyen Issuing required KYC information by entity and country (webpage, 2026-10-30)
 - [[source-adyen-docs-development-resources-raw-acquirer-responses]] — Adyen Docs: Raw acquirer responses (webpage, 2026-10-30)
 
+### Website documentation — Campaign 54
+
+- [[source-adyen-docs-plugins-release-notes]] — Adyen plugin release notes (2019–2026 snapshot) (webpage, 2026-10-30)
+- [[source-adyen-docs-online-payments-3d-secure-native-3ds2]] — Adyen native 3D Secure 2 authentication (webpage, 2026-10-30)
+- [[source-adyen-docs-risk-management-understanding-disputes-dispute-reason-codes]] — Adyen dispute reason codes and defense requirements (webpage, 2026-10-30)
+
 ### GitHub repository evidence
 
 - [[source-github-adyen-3ds2-ios-swift]] — cumulative `adyen-3ds2-ios-swift@3.0.1` baseline: Swift concurrency, transaction and challenge APIs, lifecycle, security warnings, privacy, appearance, and legacy compatibility (github-repo, 2026-08-29)

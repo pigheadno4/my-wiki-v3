@@ -27,6 +27,9 @@ In `@adyen/adyen-web@6.47.0`, the challenge handler checks for a missing `result
 
 ## Related
 
+- [[source-adyen-docs-online-payments-3d-secure-native-3ds2]] — 2026-09-15 snapshot of the Checkout native 3DS2 guide for Web, iOS, Android, and Flutter Drop-in/Components, plus React Native Drop-in; consult the platform sections for Advanced-flow API/version qualifications, request fields, action handoffs, and redirect fallback.
+
+
 - [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-3d-secure-authentication-3d-secure-1-custom-3d-secure-implementation]] — 2019-modified Classic custom 3DS1 chooser for external versus acquirer-hosted/non-standard MPI SOAP routes; new Classic integrations no longer accepted (2026-09-15 snapshot).
 
 

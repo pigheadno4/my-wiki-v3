@@ -41,6 +41,9 @@ The standard retained capsule is checkout-focused. For rough questions about oth
 
 ## Related
 
+- [[source-adyen-docs-plugins-release-notes]] — 2019–2026 captured cross-plugin release chronology; Adobe Commerce v10/v11 and separate Express/Hyvä entries provide version-specific migration and breaking-change locators, with technical minor/patch details routed to GitHub.
+
+
 - [[source-adyen-docs-plugins-adobe-commerce-upgrade]] — 2026-09-15-captured default/customized `adyen/module-payment` Composer, database-upgrade and cache-flush procedure with custom-code compatibility checks; target-major prerequisites remain in the separate migration guide.
 
 
