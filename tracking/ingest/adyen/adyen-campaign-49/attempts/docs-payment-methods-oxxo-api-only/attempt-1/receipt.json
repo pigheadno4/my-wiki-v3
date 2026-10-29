@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-oxxo-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"OXXO API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/oxxo/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/oxxo/api-only/2026-09-15.md\"\ntags: [adyen, oxxo, mexico, api-only, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **OXXO to an existing API-only integration**. It covers MX/MXN payment-method discovery, voucher action presentation, and the delayed offer-to-sale transition reported through webhooks. Voucher creation is an open offer, not a paid transaction. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-oxxo]] for the Mexican cash-voucher journey, unpaid expiry, and capability matrix.\n\n## Key takeaways\n\n- The guide requires an existing API-only Advanced flow, handling of `action.type: voucher`, and OXXO added in Customer Area (raw lines 23\u201329). The shopper selects OXXO, receives a voucher, then uses it in-store to finalize payment (raw lines 31\u201336).\n- To discover OXXO through `/paymentMethods`, specify `countryCode: MX` and `amount.currency: MXN`. The sample response uses method `type: oxxo`; the request example is a **test** endpoint with placeholder credentials and a sample amount, not proof of present merchant availability (raw lines 46\u201385).\n- The payment form section says no shopper information needs to be collected. The `/payments` section says no OXXO-specific additional parameters are needed, and its response contains a **voucher** action that must be shown to the shopper (raw lines 38\u201344, 87\u201391).\n- **Source conflict:** the `## How it works` list says the payment request includes additional information about the items the shopper intends to purchase, but `## Add additional parameters to your /payments request` explicitly says no additional parameters are needed (raw lines 31\u201336 versus 87\u201391). The first list also says the shopper enters details in a payment form, while the form section says no information needs collection (raw lines 34 and 42). The captured guide does not resolve these statements; do not invent an item-field or shopper-detail requirement from the list.\n- OXXO is offline. Creating the voucher produces an **Open** offer in Customer Area; method-specific **PENDING** webhooks are available if configured. After the shopper pays in-store, the offer becomes a sale with **Received** status, and the final result arrives via an **AUTHORISATION** webhook (raw lines 93\u2013101). Payment is not established by voucher presentation or the pending webhook.\n- In **test**, the page simulates payment by manually promoting the pending offer to a sale in test Customer Area; paid vouchers appear in **Payments > Payment list** and reconciliation should be tested. Live acceptance requires submitting an OXXO method request in live Customer Area (raw lines 103\u2013114). The shown `/paymentMethods` curl example omits a line continuation after `-X POST` before `-d`, so it should not be copied as a complete shell command without checking syntax (raw lines 57\u201372).\n\n> [!warning] Conflicting request-field guidance\n> The high-level flow says to include item information and enter shopper details (raw lines 34\u201335), while the dedicated form and `/payments` sections say no shopper information or extra OXXO fields are needed (raw lines 42, 89). Treat the specific requirements as the guide's API instruction and verify any item-data need in the applicable API contract before implementation.\n\n## Detail locators\n\n- API-only, voucher-action and Customer Area prerequisites: raw `## Requirements`, lines 23\u201329.\n- Shopper flow and internal field conflict: raw `## How it works` lines 31\u201336; `## Build your payment form` lines 38\u201344; `## Add additional parameters to your /payments request` lines 87\u201391.\n- MX/MXN discovery and sample curl/response: raw lines 46\u201385.\n- Offline status, webhook finality, test promotion and live request: raw `## Test and go live`, lines 93\u2013114.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-oxxo]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/oxxo/api-only/2026-09-15|OXXO API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: voucher.",
+      "location": "raw line 28, ## Requirements"
+    },
+    {
+      "text": "When you make the payment request, you [include additional information about the items that the shopper intends to purchase]",
+      "location": "raw line 35, ## How it works"
+    },
+    {
+      "text": "You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 42, ## Build your payment form"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [make a payment]",
+      "location": "raw line 89, ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "You will receive the final result of the payment in an [AUTHORISATION webhook]",
+      "location": "raw line 101, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "oxxo-api-only-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-oxxo-api-only]] \u2014 2026-09-15-captured MX/MXN OXXO API-only voucher guide for method discovery, offer-to-sale webhooks and test reconciliation; source flags conflicting item/shopper-field wording.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "How-it-works item-information and shopper-detail statements conflict with dedicated no-extra-fields/no-collection sections; do not invent required fields.",
+          "Open voucher/PENDING notification is not paid status; final result comes through AUTHORISATION after in-store payment.",
+          "The sample /paymentMethods curl command lacks a continuation after -X POST before -d."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/oxxo/api-only/2026-09-15.md",
+  "raw_sha256": "7e82e4faed6361923a0f1ccca008095ebe7b771ebb91d6deab8252faa52befec",
+  "status": "candidate_ready"
+}

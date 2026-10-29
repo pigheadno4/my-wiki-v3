@@ -1,0 +1,9 @@
+# docs-payment-methods-online-banking-slovakia-ios-drop-in retrieval checks
+
+## Q1 — purpose and flow scope
+Query: What does the Online banking Slovakia iOS Drop-in guide add for Sessions and Advanced?
+Expected: Existing iOS Drop-in and Customer Area setup. Sessions explicitly requires Checkout API v68+ with no extra method /sessions fields or configuration. Advanced requires redirect handling and shopper-selected paymentMethod.issuer in /payments; no extra method configuration. Do not extend the Sessions v68 statement to Advanced from this page. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-ios-drop-in]] → [[raw/adyen/docs/payment-methods/online-banking-slovakia/ios-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/online-banking-slovakia/ios-drop-in`. Verify raw lines 25–84.
+
+## Q2 — example and test/live boundaries
+Query: What do the Advanced issuer/type sample and iOS return URL establish, and how does the page say to test?
+Expected: TEST v72 samples use onlineBanking_SK, issuer cs, EUR and HTTPS returnUrl; issuer cs and HTTPS URL are examples, not a universal bank selection or a demonstrated native callback. Handle the redirect action as part of the actual iOS base flow. The page instructs testing with real details/small amounts and checking test Customer Area status; live acceptance requires adding the method in Customer Area. No payment execution/current eligibility is shown. Go sample labels v10.4.0 but imports v9 paths. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-ios-drop-in]] → [[raw/adyen/docs/payment-methods/online-banking-slovakia/ios-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/online-banking-slovakia/ios-drop-in`. Verify raw lines 84–107, 263–272 and 398–406.

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Boleto Banc\u00e1rio Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/android-drop-in/2026-09-15.md\"\ntags: [adyen, boleto-bancario, android, drop-in, voucher, brazil]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Boleto Banc\u00e1rio** to an existing **Android Drop-in** integration, separately for Sessions and Advanced server-side flows. It gives Boleto-specific request fields, optional UI settings, a voucher action for Advanced, and test/live setup. It is an add-on to [[adyen-online-payments]], not a full base integration or proof of a paid voucher or enabled live merchant. The separate [[source-adyen-docs-payment-methods-boleto-bancario|method overview]] describes the Brazilian Boleto de Proposta and later shopper payment paths; this child page does not make voucher presentation final payment. See [[adyen]].\n\n## Key takeaways\n\n- **Sessions prerequisites and fields:** Use an existing Android Drop-in Sessions flow with Checkout API **v68 or later**, and add Boleto Banc\u00e1rio in Customer Area. The /sessions table marks shopperName (first and last name), billingAddress, and socialSecurityNumber (CPF or CNPJ) required. It lists **deliverAt** as optional for the UTC ISO 8601 due date, with a five-day default and next-working-day payment when that date falls on a weekend or national holiday; shopperEmail and shopperStatement are also optional. The billingAddress row names city, country, houseNumberOrName, postalCode, stateOrProvince and street, with a formatting flaw between postalCode and stateOrProvince in the raw. [Raw: lines 25\u201349]\n- **Advanced prerequisites and fields:** Use an existing Android Drop-in Advanced flow, handle **action.type: voucher**, and add Boleto Banc\u00e1rio in Customer Area. Its /payments table marks paymentMethod.type **boletobancario**, shopperName, billingAddress and socialSecurityNumber required. It calls the optional UTC due-date field **deliveryDate**, rather than Sessions **deliverAt**; shopperEmail and shopperStatement remain optional. Do not substitute one flow's field name for the other. [Raw: lines 106\u2013154]\n- **Voucher presentation and payment finality:** The Advanced response lists resultCode **PresentToShopper** and a voucher action with a downloadable PDF URL, expiresAt, issuing-bank paymentMethodType, barcode reference, and totalAmount, alongside pspReference. PresentToShopper and voucher issuance are not confirmation of offline payment. The default Portuguese shopperStatement says an order is processed only after confirmed Boleto payment with no paid-amount mismatch; an included custom statement must say payments above or below the original amount or after the due date are not accepted. [Raw: lines 49\u201358, 154\u2013177]\n- **UI and test/live setup:** Both flows list optional setSubmitButtonVisible (default true) and setEmailVisibility (default false) settings. In the **test** Customer Area, a pending Boleto offer can be promoted manually to a sale to simulate payment and test reconciliation; pending/expired Boletos appear under Payments > Offers, while paid/promoted tests appear under Payment list. Live acceptance requires a separate Boleto Banc\u00e1rio request in the **live** Customer Area. Test promotion is not evidence of a real shopper's payment. [Raw: lines 60\u2013104, 116\u2013138, 179\u2013197]\n\n> [!warning] Due date and offer status are distinct\n> This child guide labels the optional due-date request fields deliverAt for Sessions and deliveryDate for Advanced, gives a five-day default with a next-working-day weekend/holiday qualification, and calls the Advanced action's expiresAt the time when the due date expires (raw lines 47, 152, 165\u2013177). Its default payment text warns against late or mismatched payments and processing before confirmation (raw lines 49\u201358, 154\u2013163). The [[source-adyen-docs-payment-methods-boleto-bancario|approved method overview]] says an unpaid transaction remains open in Customer Area for 15 days after the due date before the Boleto expires and status becomes Offer cancelled (overview raw line 39). Preserve these separate statements; an open offer is not proof late payment will be accepted, and the request due date is not evidence of paid status.\n\n## Detail locators\n\n- Add-on scope, Sessions v68+ prerequisite and required/optional /sessions fields: pinned raw lines 15\u201349.\n- Sessions default Portuguese shopperStatement, Android settings and test/live offer simulation: pinned raw lines 51\u2013104.\n- Advanced voucher prerequisite, settings and /payments fields: pinned raw lines 106\u2013154.\n- Advanced default payment text, PresentToShopper/voucher response fields, test/live setup: pinned raw lines 156\u2013197.\n- Method-level Boleto de Proposta, shopper payment paths and due-date/Offer cancelled timing: [[source-adyen-docs-payment-methods-boleto-bancario]] and its pinned raw lines 23\u201343; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/android-drop-in/2026-09-15|Boleto Banc\u00e1rio Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Boleto Banc\u00e1rio to your existing integration. The following instructions show only what you must add to your integration specifically for Boleto Banc\u00e1rio.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "raw line 47"
+    },
+    {
+      "text": "Your order will only be processed once the payment of this Boleto has been confirmed and as long as there is no difference between the payable and paid amounts.",
+      "location": "raw line 56"
+    },
+    {
+      "text": "**boletobancario**",
+      "location": "raw line 148"
+    },
+    {
+      "text": "The response includes the `action.type`: **voucher**, and the following:",
+      "location": "raw line 165"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-boleto-bancario-android-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-android-drop-in]] \u2014 2026-09-15-captured Android Drop-in Sessions/Advanced Boleto add-on covering required shopper fields, flow-specific due-date keys, voucher presentation, and test/live offer lifecycle; source distinguishes due date from later Offer cancelled status.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions names the optional due-date field deliverAt; Advanced names it deliveryDate. Do not substitute them.",
+          "PresentToShopper/voucher issuance and test promotion are not proof of real paid status.",
+          "The approved Boleto overview says unpaid offers remain open for 15 days after the due date before Offer cancelled; this does not establish late-payment acceptance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/android-drop-in/2026-09-15.md",
+  "raw_sha256": "248d5234b537c01d4d83844be67484d61d7e57f190e71fd7e86915a1fc3dfad0",
+  "status": "candidate_ready"
+}

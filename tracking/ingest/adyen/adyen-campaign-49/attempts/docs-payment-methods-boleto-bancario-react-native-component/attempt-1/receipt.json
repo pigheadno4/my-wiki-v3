@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Boleto Banc\u00e1rio React Native Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/react-native-component/2026-09-15.md\"\ntags: [adyen, boleto-bancario, react-native, components, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Boleto Banc\u00e1rio to an existing **Advanced React Native Components** integration. React Native Components Sessions is explicitly unavailable. The Advanced server `/payments` response provides a voucher action for presentation; Boleto is offline, so `PresentToShopper` does not mean the shopper paid. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-boleto-bancario]] for the Boleto de Proposta method overview.\n\n## Key takeaways\n\n- Begin with an existing Advanced React Native Components integration, voucher-action handling, and Boleto Banc\u00e1rio added in Customer Area. No additional Boleto Component configuration parameters are specified. The requirements-table link says Components but selects `integration=Drop-in`; nearby payment and action links select Components. The voucher action link uses a `#handle-the-redirect` fragment despite stating `action.type: voucher`; do not infer a redirect action from that anchor. See raw lines 25\u201353.\n- The `/payments` table marks `paymentMethod.type: boletobancario`, `shopperName` first/last, `billingAddress`, and `socialSecurityNumber` (shopper CPF or CNPJ) required. `deliveryDate`, `shopperEmail`, and `shopperStatement` are unmarked optional. The due-date description specifies ISO 8601 UTC, a five-day default, and next-working-day payment if due date falls on a weekend or national holiday. The address row prints `postalCode,stateOrProvince` without a separator; consult the API schema for exact fields. See raw lines 55\u201363.\n- If a custom `shopperStatement` is supplied, it should state that payment above/below the original amount or after the due date is not accepted. If omitted, default Portuguese instructions include processing the order only after confirmed payment with matching amount and automatic cancellation for nonpayment. These are voucher instructions, not payment-finality evidence. See raw lines 63\u201372.\n- The documented `/payments` response has `resultCode: PresentToShopper` and `action.type: voucher`; the action contains PDF `downloadUrl`, `expiresAt`, issuing-bank `paymentMethodType`, barcode `reference`, and `totalAmount`. It is a voucher issuance/presentation stage. The separate method overview says unpaid transactions stay open 15 days after due date before **Offer cancelled**; preserve that distinction from the initial five-day default due date. See raw lines 74\u201386 and [[source-adyen-docs-payment-methods-boleto-bancario]].\n- In test, a pending offer may be manually promoted to sale under **Payments > Offers** using its PSP reference; pending/expired offers remain under Offers and paid/test-promoted payments appear in **Payment list**. This is reconciliation simulation, not a real voucher redemption. Live acceptance requires a separate request in live Customer Area. See raw lines 88\u2013106.\n\n## Detail locators\n\n- Sessions exclusion and Advanced prerequisites/link mismatches: raw lines 25\u201353.\n- Required request fields, optional due date and instructions: raw lines 55\u201372.\n- Advanced voucher response fields: raw lines 74\u201386.\n- Test promotion, status routes and live request: raw lines 88\u2013106.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/react-native-component/2026-09-15|Fully read Boleto Banc\u00e1rio React Native Component raw]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "line 29"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Boleto Banc\u00e1rio.",
+      "location": "line 47"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "line 61"
+    },
+    {
+      "text": "The response includes the `action.type`: **voucher**",
+      "location": "line 74"
+    },
+    {
+      "text": "In the test environment, you can simulate a Boleto payment by promoting the pending payment to a sale.",
+      "location": "line 92"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-boleto-bancario-react-native-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-react-native-component]] \u2014 2026-09-15-captured Advanced-only Boleto React Native Components guide for shopper/CPF-CNPJ fields, due date, voucher presentation and offline test offer handling.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requirements table labels React Native Components but links integration=Drop-in; action link has a redirect-named fragment despite voucher type.",
+          "PresentToShopper/voucher is not paid status; test offer promotion is simulation.",
+          "Five-day default due date and method-overview 15-day later Offer cancelled status are distinct."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-component/2026-09-15.md",
+  "raw_sha256": "eed6459a5eeb4cd8b8cfb2cd8e0fb1d651b0208a790d442368fe47283b5eba9c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Boleto Banc\u00e1rio Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/web-drop-in/2026-09-15.md\"\ntags: [adyen, boleto-bancario, brazil, web, drop-in, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Boleto Banc\u00e1rio to an existing Web Drop-in integration for Sessions or Advanced flow. It covers shopper identity/address fields, voucher due date/instructions, Advanced `voucher` action, and test offer promotion. Boleto is an **offline voucher**: presenting it to the shopper is not payment completion. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-boleto-bancario]] for the separate Boleto de Proposta method overview.\n\n## Key takeaways\n\n- **Sessions:** use an existing Web Drop-in Sessions flow with **Checkout API v68 or later** and Boleto Banc\u00e1rio added in Customer Area. The `/sessions` table marks `shopperName` (first/last), `billingAddress`, and `socialSecurityNumber` (shopper CPF or CNPJ) required. `deliverAt` is an unmarked optional due-date field; `shopperEmail` and `shopperStatement` are also unmarked. The due-date description says ISO 8601 UTC, default five days, with payment possible the next working day if the due date is a weekend or national holiday. See raw lines 25\u201350.\n- **Advanced:** use an existing Web Drop-in Advanced flow, add Boleto in Customer Area and handle `action.type: voucher`. The `/payments` table additionally marks `paymentMethod.type: boletobancario` required, with the same shopper name/address/CPF-or-CNPJ fields. Its optional due-date field is named **`deliveryDate`**, not `deliverAt`; retain the flow-specific names rather than silently merging them. Optional `shopperEmail` is for sending a copy of the form. See raw lines 95\u2013133.\n- If you supply `shopperStatement`, the page says to state that payments above/below the original amount or after the due date are not accepted. If left empty, the page supplies Portuguese default instructions including payment confirmation before processing an order, no cheque/deposit/transfer, and automatic order cancellation for nonpayment. These are voucher instructions, not a guarantee that an issued voucher was paid. See raw lines 50\u201359 and 133\u2013142.\n- The Advanced response includes `resultCode: PresentToShopper`, `action.type: voucher`, and voucher details: PDF `downloadUrl`, `expiresAt`, issuing-bank `paymentMethodType`, barcode `reference`, and `totalAmount`. Presenting this response is an issuance step, not paid/final status. The method overview separately states that an unpaid transaction remains open 15 days after its due date before **Offer cancelled**; keep the due date distinct from the later cancellation status. See raw lines 144\u2013156 and [[source-adyen-docs-payment-methods-boleto-bancario]].\n- Both flows offer optional individual `Boleto` import for tree shaking. In test, a pending offer can be manually promoted to sale by PSP reference under **Payments > Offers**; pending/expired offers remain there, while paid or test-promoted entries appear in **Payments > Payment list**. This is reconciliation simulation, not real voucher payment. Live acceptance requires a separate request in live Customer Area. See raw lines 61\u201393 and 107\u2013117, 158\u2013178.\n- **Link caveats:** the Advanced base-integration URL contains an encoded template placeholder for `platform`; its voucher action requirement links to a `handle-the-redirect` fragment. Verify the actual Web Drop-in Advanced base/voucher handling path. The table writes `postalCode,stateOrProvince` without separating punctuation; use API field definitions for exact address schema. See raw lines 103\u2013104, 46 and 129.\n\n## Detail locators\n\n- Sessions prerequisites and request table: raw lines 25\u201350.\n- Portuguese default statement and optional import: raw lines 52\u201371.\n- Advanced prerequisites and request table: raw lines 95\u2013133.\n- Advanced `PresentToShopper` voucher response fields: raw lines 144\u2013156.\n- Test promotion/status and live request: raw lines 73\u201393 and 158\u2013178.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/web-drop-in/2026-09-15|Fully read Boleto Banc\u00e1rio Web Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "line 48"
+    },
+    {
+      "text": "make sure to state that you do not accept payments for a higher or lower amount than the original amount, or payments after the due date.",
+      "location": "line 50"
+    },
+    {
+      "text": "Boleto Banc\u00e1rio is an offline payment method.",
+      "location": "line 77"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "line 104"
+    },
+    {
+      "text": "**PresentToShopper**",
+      "location": "line 148"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-boleto-bancario-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-web-drop-in]] \u2014 2026-09-15-captured Boleto Banc\u00e1rio Web Drop-in Sessions/Advanced guide for shopper/CPF/CNPJ fields, flow-specific due-date names, voucher presentation and test-offer promotion; source warns issuance is not payment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions uses deliverAt while Advanced uses deliveryDate for the due-date description; do not silently normalize.",
+          "PresentToShopper/voucher is issuance, not paid status; test promotion is simulation.",
+          "Advanced base-guide URL has an encoded platform template placeholder and voucher requirement links to handle-the-redirect fragment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/web-drop-in/2026-09-15.md",
+  "raw_sha256": "420a8fe725703f998ffe32349b9ea4e4ff89d53bcca1ca3ec84c3f46be864f7f",
+  "status": "candidate_ready"
+}

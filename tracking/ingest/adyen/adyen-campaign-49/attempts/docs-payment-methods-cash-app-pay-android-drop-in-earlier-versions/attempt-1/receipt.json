@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cash-app-pay-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Cash App Pay Android Drop-in v4.x.x guide\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-pay/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-pay/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, cash-app-pay, android, drop-in, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured **Cash App Pay** guide is titled for Android Drop-in **v4.x.x** and requires at least **4.12.0** for an existing **Advanced-flow** integration. It is about Cash App Pay, not Cash App Afterpay. It covers method discovery, one-off payment results and tokenized future payments; it is historical version-scoped documentation, not proof of current SDK behavior, account enablement or a completed live payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Before starting, the guide requires Advanced-flow Android Drop-in v4.12.0+, the **Recurring tokens life cycle events** webhook, Cash App Pay added in Customer Area, and **Recurring details** selected under Developer > Additional data > Payment. `/paymentMethods` uses **US**, **USD**, and amount value in minor units. The optional Drop-in toggles `setShowStorePaymentField` (default true) and `setStorePaymentMethod` (default false) control how token storage is offered or automatic; they do not independently prove shopper permission or token creation (raw lines 14\u201346).\n- For a one-off payment, the server sends `/payments` with `paymentMethod.type: cashapp` and a `returnUrl` the page says to obtain from `CashAppPayComponent.getReturnUrl(context)`. The example includes `shopperReference` and uses a test endpoint. The guide says `/payments/details` `resultCode` can be used to show the shopper result and an asynchronous webhook also reports the outcome. **Received** means final status is unknown and an AUTHORISATION webhook follows; **Authorised** is successful, and manual-capture users must still capture. Cancelled, Error and Refused are separate outcomes (raw lines 48\u201396).\n- The page says Cash App Pay supports tokenization for future recurring and card-on-file payments. It **strongly recommends explicit shopper permission** for future charges and transparency about recurring schedule/amount. To create a token, send the client's `storePaymentMethod` state and a unique `shopperReference` in `/payments`; Drop-in may expose a shopper toggle, or configuration can store automatically without one. Do not turn the recommendation into an API-required consent field or infer consent merely from auto-store configuration (raw lines 98\u2013113).\n- To include a recognizable **$cashtag** on future recurring payments, the page recommends enabling **Token information for digital wallets** additional data, then reading `additionalData.cashapp.cashtag`, shopper reference and stored payment method ID from `/payments/details`. The `recurring.token.created` webhook includes token references but **not** the $cashtag. For a token payment, send `state.data.paymentMethod` and the general one-off/recurring tokenization parameters; `paymentMethod.cashtag` is **optional**. The example uses `shopperInteraction: ContAuth` and `recurringProcessingModel: CardOnFile`; it is a CardOnFile example, not a universal recurring recipe (raw lines 115\u2013170, 172\u2013197).\n- If a shopper deletes stored details, the page says Adyen sends `recurring.token.disabled`; remove the unusable token and ask the shopper to choose another method to avoid future failed payments. Test scenarios use the Cash App Pay sandbox magic values and test Customer Area; live setup requires adding Cash App Pay in the live Customer Area (raw lines 533\u2013559).\n\n> [!warning] Historical snippet and route limits\n> The opening Android Drop-in link uses `version=latest` despite this page's v4.x.x heading and 4.12.0 minimum (raw lines 14\u201324); use the version-specific base guide. The one-off curl snippet is inside a `json` fence and has no shell line continuations (raw lines 57\u201376), while a details response example spells `merchantRreference` with an extra `R` (lines 134\u2013155). The Java token example contains a comma after the `.cashtag(...)` call and the Go v10.4.0 comment imports `/v9/` paths (lines 219\u2013222, 372\u2013377). Treat these as illustrative examples requiring verification, not copy-ready code.\n\n## Detail locators\n\n- Version, prerequisites, discovery and optional storage toggles: raw lines 14\u201346.\n- One-off `/payments`, `/payments/details` results and asynchronous finality: raw lines 48\u201396.\n- Token creation, shopper permission recommendation and $cashtag retrieval: raw lines 98\u2013155.\n- Token payment example and optional $cashtag: raw lines 157\u2013518.\n- Token-disabled webhook, test and live setup: raw lines 533\u2013559.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-pay/android-drop-in/earlier-versions/2026-09-15|Cash App Pay Android Drop-in v4.x.x guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 4.12.0.",
+      "location": "raw line 24, ## Requirements"
+    },
+    {
+      "text": "Enable the [Recurring tokens life cycle events](/online-payments/tokenization/create-tokens#enable-the-webhook) webhook.",
+      "location": "raw line 25, ## Requirements"
+    },
+    {
+      "text": "`paymentMethod.type`: Set this to **cashapp**.",
+      "location": "raw line 54, ## Make a payment"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw line 92, ## Show the payment result / Received row"
+    },
+    {
+      "text": "When a shopper deletes their stored payment details in Cash App Pay, Adyen sends a `recurring.token.disabled` webhook.",
+      "location": "raw line 535, ### Receive a notification when a shopper deletes stored Cash App Pay details"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cash-app-pay-android-drop-in-earlier-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-pay-android-drop-in-earlier-versions]] \u2014 2026-09-15-captured Cash App Pay Android Drop-in v4.x.x/4.12.0+ Advanced guide for US/USD one-off results, token storage, cashtag and disabled-token webhook.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "This is historical Cash App Pay v4.x.x guidance, distinct from Cash App Afterpay; opening base link uses latest despite page version scope.",
+          "Received is interim, manual capture remains after Authorised when configured, and automatic storage configuration is not proof of shopper consent."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-pay/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "a8f0c3081d114813fbaf2b0c91b7b7b118046595e5579d2d648a1940a5735cff",
+  "status": "candidate_ready"
+}

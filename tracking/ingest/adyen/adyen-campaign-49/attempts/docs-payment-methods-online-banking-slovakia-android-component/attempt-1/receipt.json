@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-online-banking-slovakia-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Slovakia Android Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-slovakia/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md\"\ntags: [adyen, online-banking-slovakia, android, component, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online banking Slovakia to an existing Android Components integration, with separate Sessions and Advanced server-side flows. It covers the bank-selection Component, redirect handling, the Advanced issuer field, and test/live setup. It is a method-specific supplement to [[adyen-online-payments]], not a complete base integration or evidence of payment success. [[adyen]]\n\n## Key takeaways\n\n- **Sessions prerequisites and request:** Start with an existing Android Components Sessions flow, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and Online banking Slovakia added in Customer Area. The page says no extra method-specific `/sessions` parameters are needed. Import `onlineBankingSKComponent`; add `components-compose` if using Jetpack Compose. The optional `setSubmitButtonVisible` configuration controls button visibility. [Raw: lines 23\u201384]\n- **Sessions Component:** Use `OnlineBankingSKComponent` with `PaymentMethodTypes.ONLINE_BANKING_SK` from the checkout session. The Compose example supplies a unique component key for each screen/payment session or reset, whereas the non-Compose example attaches the Component to a view. Those are distinct UI patterns, not server-side request fields. [Raw: lines 86\u2013139]\n- **Advanced prerequisites and Component:** Start with an existing Android Components Advanced flow that handles redirect and has the method added in Customer Area. Its Checkout API row literally reads \u201cv or later\u201d with no number; do not infer an Advanced minimum from that row or carry over the Sessions v68 minimum. The Advanced Component examples select `ONLINE_BANKING_SK` from the `/paymentMethods` response, with Compose/non-Compose variants and the same optional submit-button setting. [Raw: lines 151\u2013260]\n- **Advanced server request:** The method-specific `/payments` table marks `paymentMethod.issuer` required as the issuing bank selected by the shopper. The examples use `paymentMethod.type: onlineBanking_SK`, `issuer: cs`, EUR 1000 minor units and an HTTPS `returnUrl`; these are examples, not proof that `cs` is the only issuer or that every EUR request succeeds. The page does not provide a final result sequence beyond the redirect prerequisite. [Raw: lines 263\u2013295]\n- **Example and environment caveats:** The request samples cover curl and Java v27.0.0, PHP v19.0.0, .NET v17.0.0, Node v18.0.0, Go v10.4.0, Python v12.5.1 and Ruby v9.5.1. The Go sample labels its library v10.4.0 but imports `.../v9/src/...`; treat the version/import mismatch as an unresolved sample conflict. The examples target test and say live use additionally needs `liveEndpointUrlPrefix`. They are illustrations, not executed calls. [Raw: lines 275\u2013584]\n- **Test/live:** The guide says to test with real payment details and small amounts, check test-payment status in test Customer Area, and add the method in Customer Area to accept live payments. This is provider guidance, not an instruction here to conduct payments or a claim that a live account is enabled. [Raw: lines 142\u2013148, 585\u2013591]\n\n> [!WARNING] Incomplete Advanced version row\n> The Advanced requirements table says \u201cCheckout API v or later\u201d (raw line 157) without a version number. Only the Sessions table clearly states v68 or later (raw line 32). Verify the applicable base guide/API contract before relying on an Advanced version threshold.\n\n## Detail locators\n\n- Sessions requirements, module/configuration and Component variants: pinned raw lines 23\u2013139.\n- Advanced requirements, module/configuration and Component variants: pinned raw lines 151\u2013260.\n- Required issuer and sample request/library variants: pinned raw lines 263\u2013584.\n- Test/live instructions: pinned raw lines 142\u2013148 and 585\u2013591.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-online-banking-slovakia]] \u2014 approved overview for SK/EUR redirect journey and method-level capabilities, distinct from this Android guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15|Online banking Slovakia Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md:32"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md:33"
+    },
+    {
+      "text": "Make sure that you use Checkout API v or later.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md:157"
+    },
+    {
+      "text": "The issuing bank that the shopper selected.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md:271"
+    },
+    {
+      "text": "// Adyen Go API Library v10.4.0",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md:453"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-online-banking-slovakia-android-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-slovakia-android-component]] \u2014 2026-09-15-captured Android Component guide for Sessions/Advanced redirect flows, bank-selection UI and required Advanced issuer; source flags blank Advanced API minimum and Go sample version/import mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced Checkout API minimum is incomplete as \u201cv or later\u201d; Sessions v68+ does not establish an Advanced threshold.",
+          "Go request sample labels library v10.4.0 but imports /v9/src paths.",
+          "Real-details/small-amount test guidance is a provider instruction, not evidence of performed payments."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md",
+  "raw_sha256": "9e84c70e9bfe0b742718e327afdee53e37de68c59e8b85e7818d6f604baad7fa",
+  "status": "candidate_ready"
+}

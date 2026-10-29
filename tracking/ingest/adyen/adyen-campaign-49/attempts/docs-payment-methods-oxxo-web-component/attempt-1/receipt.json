@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-oxxo-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"OXXO Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/oxxo/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/oxxo/web-component/2026-09-15.md\"\ntags: [adyen, oxxo, web, components, voucher]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds OXXO to an existing Adyen Web Components integration for Sessions or Advanced server-side flow. OXXO is an offline cash voucher method, described further in [[source-adyen-docs-payment-methods-oxxo]]. Voucher creation and presentation are separate from payment confirmation. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** requires an existing Web Components Sessions integration, Checkout API v68 or later, and adding OXXO in Customer Area. The guide says no **additional OXXO-specific** `/sessions` parameters or Component configuration are needed. It imports `Oxxo` from Adyen Web and mounts `new Oxxo(checkout, ...)`. See raw lines 25\u201375.\n- **Advanced flow:** requires an existing Web Components Advanced integration, handling an additional `action.type: voucher`, and Customer Area setup. It uses the `Oxxo` import/component and says no **additional OXXO-specific** `/payments` parameters. Its requirements table does not state the Sessions v68 minimum. The base integration still supplies common request and action handling. See raw lines 100\u2013142.\n- The voucher first appears as an **Open** offer in Customer Area. Webhooks are needed to follow its status; optional OXXO **PENDING** webhooks report pending vouchers. When the shopper pays at an OXXO store, the offer becomes a sale and status **Received**; the final payment result comes in an **AUTHORISATION** webhook. Treat Open, Received and final authorization as distinct stages. The linked overview says OXXO confirmation typically arrives within one business day but may take longer, and describes a seven-day open period after an unpaid voucher's due date before expiry; this child does not define those timing rules. See child raw lines 77\u201385 and 144\u2013152; overview raw lines 23\u201331.\n- In test, a pending offer can be manually promoted to sale to simulate OXXO payment and test reconciliation. Paid or promoted test vouchers appear in **Payment list**. This simulation is not evidence that a shopper paid cash. Before live acceptance, separately request OXXO in the **live Customer Area**. See raw lines 87\u201398 and 154\u2013165.\n\n> [!warning] Action link label\n> The Advanced action-handling prerequisite states `action.type: voucher` but its base-guide URL uses a `#handle-the-redirect` anchor (raw line 107). The anchor label does not turn the OXXO action into a redirect; follow the stated voucher type and base guide's applicable action handling.\n\n## Detail locators\n\n- Sessions requirements, import and Component mount: raw lines 25\u201375.\n- Advanced requirements, import, mount and request scope: raw lines 100\u2013142.\n- Offline status/webhook sequence and test/live setup: raw lines 77\u201398 and 144\u2013165.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-oxxo]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/oxxo/web-component/2026-09-15|OXXO Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "include `Oxxo`.",
+      "location": "pinned raw line 47"
+    },
+    {
+      "text": "OXXO is an offline payment method. This means that there is time between the shopper receiving the voucher and the actual processing of the payment.",
+      "location": "pinned raw line 79"
+    },
+    {
+      "text": "You will receive the final result of the payment in an [AUTHORISATION webhook](/development-resources/webhooks/webhook-types).",
+      "location": "pinned raw line 85"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "pinned raw line 107"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-oxxo-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-oxxo-web-component]] \u2014 2026-09-15-captured OXXO Web Components Sessions/Advanced add-on for voucher action, offline Open/Received/webhook stages and test/live setup; source flags action-link label.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/oxxo/web-component/2026-09-15.md",
+  "raw_sha256": "56ee8b0d8ea95ea56565aebcb2f47f5e43fbea083e02c7792ed0da02ddeed78d",
+  "status": "candidate_ready"
+}

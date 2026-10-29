@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Adyen website C49
+
+- Fifty independently approved Online banking Slovakia, Boleto Bancario, Cash App Pay, OXXO and econtext Konbini documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 1 concepts touched (0 new); source_count 2464 = 2450 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-49/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-29] ingest | Braintree Ruby `4.42.0`
 
 - Approved focused-reading delta after completed 4.41.0: reversal, Mastercard external-vault inputs and validation diagnostics with client/server limits. All earlier history preserved; details [[braintree-log]] and [[source-github-braintree-ruby]]. No Ruby/gateway/payment execution, commit or push.

@@ -1,0 +1,17 @@
+# Cash App Pay API-only retrieval checks
+
+## Q1 — Purpose, identity and scope
+
+**Query:** What does the captured Cash App Pay API-only guide cover, and does it establish current availability or a successful live payment?
+
+**Expected route:** `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-cash-app-pay-api-only.md` → `raw/adyen/docs/payment-methods/cash-app-pay/api-only/2026-09-15.md` `# Cash App Pay for API only` lines 15–19, `## Requirements` lines 21–30, `## Build your payment form for Cash App Pay` lines 32–45, `## Test and go live` lines 1245–1249. Canonical stem: `/payment-methods/cash-app-pay/api-only`.
+
+**Expected answer:** It is a 2026-09-15-captured add-on to an existing merchant-built API-only integration for the Cash App Pay wallet, distinct from Cash App Afterpay. API-only setup requires Support to add Cash App Pay; the merchant cannot self-add it in Customer Area, and the page also lists recurring-token webhook and additional-data setup. Conditional `/paymentMethods` discovery specifies US, USD minor-unit amount, and Web/iOS/Android channel, returning `cashapp`. Test magic values and a live Customer Area step are documented, but this snapshot does not prove current eligibility, completed authorization, settlement or a live transaction. The separately captured method overview raw `raw/adyen/docs/payment-methods/cash-app-pay/2026-09-15.md` lines 23–27 provides method-level US/USD context, not a substitute for this child flow.
+
+## Q2 — Redirect, result, token and warning boundaries
+
+**Query:** How does Cash App Pay API-only payment and future-token handling work, and which captured conflicts or example limits must be preserved?
+
+**Expected route:** Same root/provider/concept/source route to `raw/adyen/docs/payment-methods/cash-app-pay/api-only/2026-09-15.md` `## Make a payment` lines 47–74 and 374–388, `## Handle the redirect` lines 390–429, `## Present the payment result` lines 431–443, `## Recurring and card-on-file payments` lines 445–857 and 859–1221, `### Receive a notification when a shopper deletes stored Cash App Pay details` lines 1223–1243, and `## Test and go live` lines 1245–1249. Canonical stem: `/payment-methods/cash-app-pay/api-only`.
+
+**Expected answer:** `/payments` uses `paymentMethod.type: cashapp`, `subtype: redirect`, and Web/iOS/Android channel. Follow the returned redirect action URL, then send URL-decoded `redirectResult` to `/payments/details`; the page recommends mobile browser choices. `Received` awaits AUTHORISATION webhook; `Authorised` may still require manual capture. Optional future recurring/card-on-file use starts with a shopper-permission-qualified token-creating transaction; the shopper's `$cashtag` is obtained through enabled digital-wallet additional data in `/payments/details`, not the `recurring.token.created` webhook, and is optional on later stored-token requests. `recurring.token.disabled` follows deletion of stored details. Preserve the API-only Support requirement despite later live Customer Area wording. The overview's Direct matrix label does not replace this child's redirect action. Example `/payments` v52 and `/payments/details` v72 do not set an API minimum; initial-token examples disagree on string versus boolean `storePaymentMethod`, and later-token curl is missing a comma after `returnUrl`. No example is live-payment proof.

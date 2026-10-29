@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cash-app-pay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cash App Pay iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-pay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-pay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, cash-app-pay, ios, drop-in, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Cash App Pay** to iOS Drop-in for Sessions or Advanced flow. Drop-in renders the method and redirects the shopper to Cash App Pay to authorize; the Advanced return callback supplies data for a server request, not proof of authorization. It also details tokenization, $cashtag retrieval, asynchronous payment results and stored-token disabling. This method is distinct from Cash App Afterpay. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-cash-app-pay]].\n\n## Key takeaways\n\n- Both Sessions and Advanced requirement tables specify iOS Drop-in **minimum 5.2.0**, enabling **Recurring tokens life cycle events** webhooks, adding Cash App Pay in Customer Area with a Cash App client ID, and enabling **Payment > Recurring details** additional data. The Swift Package Manager installation section separately specifies Adyen iOS package **at least v5.42.0** and inclusion of `AdyenCashAppPay`; CocoaPods uses `Adyen/CashAppPay`. Keep these version contexts distinct. See raw lines 18\u201357.\n- The page says no additional Cash App Pay fields are needed for `/sessions` or `/payments`. Set `dropInConfiguration.cashAppPay` with `CashAppPayConfiguration(redirectURL: ...)`. Sessions delegates to `AdyenSession`. In Advanced, after the shopper returns, `didSubmit` supplies `data.paymentMethod` to pass to the server; `didFail` and `didCancel` are separate app callbacks. Returning to the app or receiving `didSubmit` does not by itself establish payment success. See raw lines 59\u2013118.\n- Use the `/payments/details` `resultCode` to show the result and the asynchronous webhook for outcome updates. `Received` means shopper completion with final result **not yet known**, pending an **AUTHORISATION** webhook; `Authorised` is successful, and manual capture still needs capture. `Cancelled`, `Error`, and `Refused` have separate actions. See raw lines 129\u2013141.\n- For future recurring/card-on-file payments, the page supports tokenization and **strongly recommends explicit shopper permission**. Sessions `storedPaymentMethodMode` defaults to `disabled`; `askForConsent` and `enabled` depend on `shopperReference`, and storing details creates a token when the shopper pays. Advanced token creation passes client `data.storePaymentMethod` and `shopperReference` to `/payments`; stored payments use the `didSubmit` payment method. These are distinct flow recipes, not a blanket unattended-charge permission. See raw lines 143\u2013165 and 177\u2013192, 236\u2013249.\n- The page recommends including the shopper's **$cashtag** in recurring payments to help recognition. It says to obtain the $cashtag from `/payments/details` after enabling **Token information for digital wallets**; the `recurring.token.created` webhook includes shopper/token references but **not** $cashtag. Sessions users wanting it must switch to Advanced and implement both `/payments/details` and `/payments`. A `recurring.token.disabled` webhook signals shopper deletion of stored Cash App Pay details; remove the stored token and ask for another method to avoid future failed payments. See raw lines 167\u2013175 and 194\u2013254.\n- **Configuration naming caveat:** the optional configuration table uses `showsStorePaymentField`, while later prose uses `showsStorePaymentMethodField`; the Sessions prose also says `storedPaymentMethod` where the table names `storePaymentMethod`. Check the actual SDK/API version before implementing consent controls. The `/payments/details` example has `merchantRreference`, apparently a typo. See raw lines 120\u2013127, 161\u2013164, 181\u2013185 and 213\u2013234.\n- Test in the test environment using Cash App Pay magic values and check test Customer Area payment status. Going live requires adding Cash App Pay in live Customer Area. These are instructions, not proof of current enablement or a completed transaction. See raw lines 273\u2013277.\n\n## Detail locators\n\n- Requirements, webhook/additional-data setup and package installation: raw lines 18\u201357.\n- No extra API fields, Drop-in configuration and app callbacks: raw lines 59\u2013118.\n- Result codes and asynchronous outcome: raw lines 129\u2013141.\n- Sessions/Advanced token and consent flows: raw lines 143\u2013192.\n- $cashtag, token response and disabled-token notification: raw lines 194\u2013271.\n- Test and live steps: raw lines 273\u2013277.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-cash-app-pay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-pay/ios-drop-in/2026-09-15|Fully read Cash App Pay iOS Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.2.0.",
+      "location": "line 26"
+    },
+    {
+      "text": "The version to be at least **v5.42.0**",
+      "location": "line 49"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "line 137"
+    },
+    {
+      "text": "you need to switch to the Advanced flow and implement both the `/payments/details` request and the `/payments` request.",
+      "location": "line 171"
+    },
+    {
+      "text": "When a shopper deletes their stored payment details in Cash App Pay, Adyen sends a `recurring.token.disabled` webhook.",
+      "location": "line 253"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-cash-app-pay-ios-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-pay-ios-drop-in]] \u2014 2026-09-15-captured Cash App Pay iOS Drop-in Sessions/Advanced guide for app return, asynchronous results, token consent/$cashtag and disabled-token webhooks; source distinguishes 5.2.0 flow and 5.42.0 SPM minimums.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Optional token configuration uses inconsistent property names (showsStorePaymentField vs showsStorePaymentMethodField, and storedPaymentMethod vs storePaymentMethod); confirm actual SDK contract.",
+          "Received and app didSubmit/return do not establish final authorization; use outcome and webhook."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-pay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "3938ef00ce0de69bbf53e13db32e1490a411af6dda886aeaccf0ac13f9ffa25f",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Online banking Slovakia Web Drop-in retrieval checks
+
+## Q1 — What does this Web Drop-in guide add to Sessions and Advanced integrations?
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-web-drop-in.md` → `raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md`.
+Expected answer: Sessions needs existing Web Drop-in, Checkout API v68+, redirect handling and Customer Area method setup, with no extra method-specific `/sessions` fields or Drop-in configuration. Advanced needs existing Web Drop-in, redirect handling and method setup; its `/payments` table requires shopper-selected `paymentMethod.issuer`. Optional tree-shaken import is described in both flows, but the snippets are malformed. Raw locators: lines 23–59, 73–108. Approved overview `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia.md` separately supports SK/EUR and bank redirect context.
+
+## Q2 — Which examples and test/live qualifications matter?
+Expected route: same root/provider/concept/source/raw chain.
+Expected answer: examples use `type=onlineBanking_SK`, `issuer=cs`, EUR 1000 minor units and a returnUrl, but do not establish all issuers, final success, or an Advanced API version minimum. The optional import prose says `OnlineBankingSK`, while both snippets put spaced `Online banking Slovakia` in a JavaScript named import (lines 46–51, 86–91); the Advanced integration link embeds an unresolved platform template (line 78); Go sample says v10.4.0 while importing /v9/src (lines 290–295). Test guidance says real details/small amounts and test Customer Area status; live acceptance requires adding the method in Customer Area (lines 62–69, 424–430). These are documentation statements, not evidence of actual tests or live enablement.

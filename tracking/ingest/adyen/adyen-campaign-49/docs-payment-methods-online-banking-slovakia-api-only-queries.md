@@ -1,0 +1,13 @@
+# Fixed retrieval checks — Online banking Slovakia API-only
+
+## Q1 — Purpose and scope
+
+**Query:** What does the captured Online banking Slovakia API-only page add to an existing integration, and what does it establish about current merchant availability or payment success?
+
+**Expected:** Route `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-api-only.md` → full pinned `raw/adyen/docs/payment-methods/online-banking-slovakia/api-only/2026-09-15.md`, canonical stem `https://docs.adyen.com/payment-methods/online-banking-slovakia/api-only`. It is a 2026-09-15-captured method-specific add-on for an existing API-only integration requiring redirect handling and Customer Area method setup (raw `# Online banking Slovakia for API only` lines 15–29). It does not show current merchant eligibility, completed authorization or a successful live payment; base result handling remains in the linked API-only guide.
+
+## Q2 — Issuer discovery, request and test boundaries
+
+**Query:** How does Online banking Slovakia API-only select a bank and send the payment request, and what testing and snapshot caveats apply?
+
+**Expected:** Use the same root/provider/concept/source/full-raw route and canonical stem. `/paymentMethods` specifies SK/EUR (raw `## Get Online banking Slovakia as an available payment method`, lines 31–39); the merchant-built form gets available issuing banks from the `onlineBanking_SK` response object, asks for selection, passes its Issuer ID to the server and asks for acceptance of linked terms (raw `## Build your payment form`, lines 40–61). The captured issuer table lists BLIK SK `bliksk`, VÚB `vub`, Poštová banka `posta`, Sporopay `sporo`, TatraPay `tatra`, Viamo `viamo`; these are issuer options within this method, not proof of a separate BLIK product or current bank availability. `/payments` requires method-specific `paymentMethod.issuer`; examples use `paymentMethod.type: onlineBanking_SK` and test `/v72/payments`, but no API minimum is stated (raw `## Add additional parameters to your /payments request`, lines 63–92). The page states `action.type: redirect` and says to test with real payment details and small amounts, inspect test Customer Area and add the method for live acceptance (raw `## Handle the additional action`, lines 383–387; `## Test and go live`, lines 389–395). Do not infer finality from redirect or success from the test instructions. The related method overview `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia.md` and pinned overview raw lines 23–31 provide method-level SK/EUR and bank-redirect context.

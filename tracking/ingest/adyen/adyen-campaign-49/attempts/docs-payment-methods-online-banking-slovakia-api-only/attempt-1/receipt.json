@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-online-banking-slovakia-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Slovakia API-only add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-slovakia/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-slovakia/api-only/2026-09-15.md\"\ntags: [adyen, online-banking-slovakia, api-only, bank-redirect, payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] page adds Online banking Slovakia to an existing API-only online-payment integration. A merchant-built form offers issuing banks, sends the chosen issuer to the server, and handles a `redirect` action through the existing integration. It is a method add-on rather than a standalone payment recipe or proof of current merchant eligibility or payment completion. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-online-banking-slovakia|the method overview]] for broader SK/EUR and capability context.\n\n## Key takeaways\n\n- **Prerequisites:** The page requires an existing API-only integration with redirect handling (`action.type: redirect`) and Online banking Slovakia added in Customer Area. It does not state a minimum Checkout API version; the test `/v72/payments` examples do not create one (raw lines 23\u201329, 73\u201392).\n- **Discovery and UI:** For `/paymentMethods`, the page specifies `countryCode: SK` and `amount.currency: EUR`. The form should obtain issuing-bank options from the returned `onlineBanking_SK` object, show them to the shopper, pass the selected Issuer ID to the server, and ask the shopper to accept the linked terms and conditions. The captured bank table lists BLIK SK (`bliksk`), ePlatby V\u00daB (`vub`), Po\u0161tov\u00e1 banka (`posta`), Sporopay (`sporo`), TatraPay (`tatra`), and Viamo (`viamo`). This is a snapshot list within Online banking Slovakia; `BLIK SK` here is an issuer option, not proof of eligibility for a separate BLIK integration. Use the actual discovery response for available choices (raw lines 31\u201361).\n- **Payment request:** The method-specific `/payments` addition is required `paymentMethod.issuer`, the issuing bank selected by the shopper. The examples also show `paymentMethod.type: onlineBanking_SK`, EUR amount and a `returnUrl` in a server-side test request; those samples supplement the base API-only request, not an executable or live-success guarantee (raw lines 63\u201392 and 218\u2013245).\n- **Action and testing:** The page reiterates that the additional action has type `redirect`, but does not itself give a complete returned-action or post-return status sequence. It says to test with real payment details and small amounts, inspect test payments in Customer Area, and add the method in Customer Area to accept live payments. These are documented steps, not evidence that a particular merchant is enabled or that a payment succeeded (raw lines 383\u2013399).\n\n## Detail locators\n\n- Requirements and method-specific discovery: raw lines 23\u201339.\n- Issuer choice, table and terms: raw lines 40\u201361. Bank names and IDs are captured values; check the `/paymentMethods` response for current available options.\n- `/payments` issuer field and language-specific test examples: raw lines 63\u2013381. The examples use a test endpoint, EUR 1000 minor-unit value and `vub` issuer; no minimum API/library version follows from those examples.\n- Action type and test/live steps: raw lines 383\u2013399.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-online-banking-slovakia]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-slovakia/api-only/2026-09-15|Online banking Slovakia API-only, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#handle-the-redirect). `action.type`: **redirect**",
+      "location": "raw line 28, Requirements table, Redirect handling"
+    },
+    {
+      "text": "Show a list of available issuing banks to your shopper. You can get the list of available issuing banks from the [/paymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods) response, in the object with `type`: **onlineBanking\\_SK**.",
+      "location": "raw line 46, Build your payment form"
+    },
+    {
+      "text": "Ask the shopper to accept Online banking Slovakia [terms and conditions](https://static.payu.com/sites/terms/files/payu_privacy_policy_sk.pdf).",
+      "location": "raw line 61, Build your payment form"
+    },
+    {
+      "text": "| `paymentMethod.issuer` | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | The issuing bank that the shopper selected. |",
+      "location": "raw line 69, Add additional parameters to your /payments request"
+    },
+    {
+      "text": "Test Online banking Slovakia payments with real payment details and small amounts.",
+      "location": "raw line 391, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-online-banking-slovakia-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-slovakia-api-only]] \u2014 2026-09-15-captured Online banking Slovakia API-only add-on for SK/EUR bank discovery, selected issuer, redirect handling and test/live steps.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-slovakia/api-only/2026-09-15.md",
+  "raw_sha256": "3536718d9b97d21f304399f9bc75372e107602dbaa8cd36753495c54b9c1a61a",
+  "status": "candidate_ready"
+}

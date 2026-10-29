@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Boleto Banc\u00e1rio iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/ios-component/2026-09-15.md\"\ntags: [adyen, boleto-bancario, ios, components, voucher, brazil]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Boleto Banc\u00e1rio to an existing iOS Components integration**. It separates Sessions and Advanced server-side flows, required shopper details, `BoletoComponent` initialization, voucher action/response, and test/live setup. Boleto is an offline voucher method: issuing or presenting a voucher is not confirmation that the shopper paid it. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-boleto-bancario|method overview]].\n\n## Key takeaways\n\n- **Sessions prerequisites:** existing iOS Components Sessions flow, Checkout API **v68 or later**, and Boleto Banc\u00e1rio added in Customer Area. The `/sessions` table marks `shopperName` (first/last), `billingAddress`, and `socialSecurityNumber` (CPF or CNPJ) required. It lists `deliverAt` as an optional UTC ISO 8601 due date, with five days by default and next-working-day payment if the specified date falls on a weekend or national holiday; `shopperEmail` and `shopperStatement` are optional (raw lines 25\u201350). The table's `postalCode,stateOrProvince` formatting is compressed; use the linked API schema rather than treating it as one field.\n- **Advanced prerequisites:** existing iOS Components Advanced flow, `action.type: voucher` handling, and Customer Area setup. Its integration-type link points to an **iOS Drop-in Advanced URL**, although the action/payment links use Components; follow the flow heading and matching Components base guide. The `/payments` table adds required `paymentMethod.type = boletobancario`, `shopperName`, `billingAddress`, and `socialSecurityNumber`. It calls the optional UTC due-date field **`deliveryDate`**, rather than Sessions' `deliverAt`; `shopperEmail` and `shopperStatement` remain optional (raw lines 112\u2013123, 154\u2013168).\n- If supplied, `shopperStatement` should say payments of higher/lower amounts or after the due date are not accepted. If omitted, the page supplies Portuguese default instructions that say the order is processed **only after payment confirmation** and no amount discrepancy; nonpayment cancels the order. Preserve the page's next-working-day due-date qualification alongside the default statement's generic no-after-due-date wording, rather than promising acceptance of late payments (raw lines 48\u201359, 166\u2013177).\n- Both flows say no extra Boleto-specific Component configuration is needed and initialize `BoletoComponent` after checking for `BoletoPaymentMethod`. Sessions delegates to the session; Advanced delegates to the merchant integration. The snippets illustrate UI initialization, not a full base integration (raw lines 61\u201390, 124\u2013152).\n- In Advanced, the response has `resultCode: PresentToShopper`, `action.type: voucher`, `pspReference`, and voucher action fields including PDF `downloadUrl`, `expiresAt`, bank-indicating `paymentMethodType`, barcode `reference`, and `totalAmount`. **PresentToShopper is voucher presentation, not paid status** (raw lines 179\u2013191). Test Customer Area can simulate payment by promoting a pending offer to sale; pending/expired Boletos remain under Offers and paid/promoted ones appear in Payment list. A live Customer Area request is required before live acceptance (raw lines 92\u2013110, 193\u2013211).\n- The separate [[source-adyen-docs-payment-methods-boleto-bancario|method overview]] calls this **Boleto de Proposta**, explains BR/BRL voucher payment routes, and says an unpaid Boleto remains open in Customer Area for **15 days after its due date** before `Offer cancelled`. Keep that later status transition separate from the child guide's default five-day payment due date (overview pinned raw lines 23\u201343).\n\n## Detail locators\n\n- Sessions prerequisites, identity fields, due-date and statement rules: raw lines 25\u201359.\n- Sessions no-extra-configuration, Component initialization, test/live simulation: raw lines 61\u2013110.\n- Advanced prerequisites and mismatched Drop-in integration link: raw lines 112\u2013123.\n- Advanced Component initialization and request fields: raw lines 124\u2013177.\n- Advanced `PresentToShopper` voucher response: raw lines 179\u2013191.\n- Advanced test/live simulation: raw lines 193\u2013211.\n- Method-level Boleto de Proposta, BR/BRL and due-date-to-`Offer cancelled` timing: [[source-adyen-docs-payment-methods-boleto-bancario]] and its pinned raw lines 23\u201343; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/ios-component/2026-09-15|Boleto Banc\u00e1rio iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Boleto Banc\u00e1rio to your existing integration. The following instructions show only what you must add to your integration specifically for Boleto Banc\u00e1rio.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "raw line 48"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "raw line 121"
+    },
+    {
+      "text": "* `resultCode`: **PresentToShopper**",
+      "location": "raw line 183"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "boleto-bancario-ios-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-ios-component]] \u2014 2026-09-15-captured Boleto Banc\u00e1rio iOS Components Sessions/Advanced add-on for shopper identity/due-date fields, BoletoComponent, voucher action and offline test/live status; source flags Advanced base-link mismatch.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced integration-type link points to iOS Drop-in while the guide is Components; use matching Components base route.",
+          "Sessions uses optional deliverAt and Advanced uses optional deliveryDate for due date; do not normalize them into one field.",
+          "Child default five-day payment due date and overview's later 15-day open/Offer-cancelled status describe different lifecycle points."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/ios-component/2026-09-15.md",
+  "raw_sha256": "85675d37acf1ada0cde977fb0743e86d3ba68f8c6c53ac84aead4c6d8d157e15",
+  "status": "candidate_ready"
+}

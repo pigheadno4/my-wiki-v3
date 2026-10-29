@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Boleto Banc\u00e1rio Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, boleto-bancario, flutter, drop-in, voucher]\n---\n\n## Overview\n\nThis 2026-09-15 guide describes Boleto Banc\u00e1rio-specific additions to an existing Flutter Drop-in integration, split between Sessions and Advanced server-side flows. Boleto is an offline voucher method; voucher presentation is not paid status. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-boleto-bancario]] for the method overview.\n\n## Key takeaways\n\n- **Sessions flow:** requires an existing Flutter Drop-in Sessions integration, Checkout API v68 or later, and contacting Support to add Boleto Banc\u00e1rio in Customer Area. Its `/sessions` table requires shopper first/last name, billing address, and CPF or CNPJ as `socialSecurityNumber`. Optional `deliverAt` is the due date in UTC ISO 8601; the page says the default is five days and a weekend or national-holiday due date can be paid on the next working day. `shopperEmail` and `shopperStatement` are optional. No extra method configuration is needed. See raw lines 25\u201365.\n- **Advanced flow:** requires an existing Flutter Drop-in Advanced integration, `voucher` additional-action handling, and Boleto Banc\u00e1rio in Customer Area. Its `/payments` table requires `paymentMethod.type = boletobancario`, shopper first/last name, billing address, and CPF/CNPJ; optional due date is called `deliveryDate` here, with the same five-day and next-working-day description. Email and statement are optional; no additional method configuration is stated. The Advanced requirements table does not state the Sessions v68 minimum. See raw lines 87\u2013119.\n- If `shopperStatement` is supplied, the guide says it should instruct that higher/lower amounts and payments after due date are not accepted. When omitted, default Portuguese instructions cover no cheque or after-date payment, processing only after confirmed matching payment, no penalty/interest for nonpayment, automatic order cancellation, and no deposit or bank transfer. These are the guide's displayed statement instructions, not proof that a pending voucher is paid. See raw lines 50\u201359 and 119\u2013128.\n- The Advanced response is described as `resultCode: PresentToShopper` with `action.type: voucher`; the action carries a PDF `downloadUrl`, `expiresAt` described as the due-date expiry, issuing-bank `paymentMethodType`, barcode `reference`, and `totalAmount`. Present the voucher and wait for actual payment confirmation before treating the order as paid. See raw lines 130\u2013142.\n- Testing is offline: in the test Customer Area, a pending offer can be manually promoted to sale to simulate payment and exercise reconciliation. Pending/expired Boletos are listed under **Offers** and paid/promoted test Boletos under **Payment list**. This test promotion is not a real shopper payment. Live acceptance requires a separate Boleto request in the **live Customer Area**. See raw lines 67\u201385 and 144\u2013162.\n\n> [!warning] Timing and navigation qualifications\n> The Sessions requirement text says Sessions Flutter Drop-in but links to an `advanced-flow` URL (raw line 33); its `/sessions` step at line 41 points to the Sessions flow. The Advanced voucher-action link uses a redirect-named anchor (line 96), which does not change the stated `voucher` action type. The optional due-date names differ by endpoint: `deliverAt` for `/sessions` (line 48), `deliveryDate` for `/payments` (line 117). The next-working-day exception in these rows sits beside default statement wording against payment after due date (lines 56, 125); preserve both rather than promising late acceptance. This child calls `action.expiresAt` due-date expiry (line 139), while the linked method overview says an unpaid transaction remains open 15 days after the due date before **Offer cancelled** (overview raw line 39). Do not equate the displayed due date with final transaction cancellation.\n\n## Detail locators\n\n- Sessions prerequisites and request table: raw lines 25\u201365.\n- Advanced prerequisites and request table: raw lines 87\u2013119.\n- Default Portuguese statement and voucher response: raw lines 50\u201359 and 121\u2013142.\n- Test promotion and live enablement: raw lines 67\u201385 and 144\u2013162.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/flutter-drop-in/2026-09-15|Boleto Banc\u00e1rio Flutter Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "pinned raw line 48"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "pinned raw line 96"
+    },
+    {
+      "text": "* `resultCode`: **PresentToShopper**",
+      "location": "pinned raw line 134"
+    },
+    {
+      "text": "In the test environment, you can simulate a Boleto payment by promoting the pending payment to a sale.",
+      "location": "pinned raw line 148"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-boleto-bancario-flutter-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-flutter-drop-in]] \u2014 2026-09-15-captured Boleto Flutter Drop-in Sessions/Advanced add-on for shopper identity, due date, voucher action and test promotion; source flags timing and link caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "32b346d5c217047bbe7b3e2feaf03a783f9f2b07eebbfbffc3165a14318be606",
+  "status": "candidate_ready"
+}

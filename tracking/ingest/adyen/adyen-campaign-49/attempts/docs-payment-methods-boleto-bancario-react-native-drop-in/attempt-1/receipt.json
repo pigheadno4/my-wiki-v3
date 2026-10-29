@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Boleto Banc\u00e1rio React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, boleto-bancario, react-native, drop-in, voucher, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Boleto Banc\u00e1rio to an existing React Native Drop-in integration. It separates Sessions and Advanced server-side flows, specifies identity/address and due-date fields, describes the Advanced voucher response, and explains test offer promotion. It is a method-specific supplement to [[adyen-online-payments]], not a completed-payment record or full base integration. [[adyen]]\n\n## Key takeaways\n\n- **Sessions flow:** The page calls for an existing React Native Sessions-flow Drop-in integration, Checkout API **v68 or later**, and Boleto Banc\u00e1rio added in Customer Area. Its `/sessions` table marks `shopperName` (first/last name), `billingAddress` (city, country, house number/name, postal code, state/province, street), and `socialSecurityNumber` (CPF or CNPJ) required. It lists optional `deliverAt` for due date, `shopperEmail` for sending a copy, and `shopperStatement` for instructions. No method-specific Drop-in configuration is required. The Sessions requirement row's base-integration link points to an **Advanced-flow** URL despite saying Sessions; use its Sessions flow text and the separate Sessions create-session link, rather than treating that URL as a flow change. [Raw: lines 25\u201365]\n- **Advanced flow:** Start with an existing React Native Advanced-flow Drop-in integration handling `action.type: voucher` and add the method in Customer Area. Its `/payments` table marks `paymentMethod.type: boletobancario`, `shopperName`, `billingAddress`, and `socialSecurityNumber` required; it lists optional **`deliveryDate`** (distinct from Sessions `deliverAt`), `shopperEmail`, and `shopperStatement`. No additional method-specific configuration is required. This section does not state an Advanced Checkout API minimum. [Raw: lines 87\u2013119]\n- **Due date and instructions:** The two optional due-date rows call for ISO 8601 UTC and say the shopper gets five days by default; a due date on a weekend or national holiday allows payment on the next working day. If a custom `shopperStatement` is supplied, the guide says it should state no higher/lower amount and no payment after due date. If omitted, default Portuguese instructions include no cheque or post-due-date payment, processing only after confirmed matching-amount payment, automatic order cancellation for nonpayment without fine/interest, and no deposit/transfer. The blanket no-late-payment wording and the next-working-day exception coexist in the captured page; do not erase the exception or infer exact bank acceptance policy. [Raw: lines 48\u201359, 117\u2013128]\n- **Voucher presentation versus settlement:** The Advanced response has `action.type: voucher`, `resultCode: PresentToShopper`, `pspReference`, and voucher details: PDF `downloadUrl`, due `expiresAt`, `paymentMethodType` described as issuing bank, barcode `reference`, and `totalAmount`. `PresentToShopper` means presenting the Boleto, not that an offline payment has been made. The approved [[source-adyen-docs-payment-methods-boleto-bancario]] overview separately states that an unpaid Boleto remains open for 15 days after due date before **Offer cancelled**; this child page's default order-cancellation text does not specify that transaction-status timing. [Child raw: lines 121\u2013146; overview raw: line 39]\n- **Test/live boundary:** In test Customer Area, a pending Boleto offer can be manually promoted to a sale under **Payments > Offers** using its PSP reference; pending/expired offers remain there, while paid or promoted test offers appear in **Payment list**. The page recommends this for reconciliation testing. Live acceptance requires submitting a Boleto Banc\u00e1rio request in the live Customer Area. Test promotion is a simulation, not live shopper payment. [Raw: lines 67\u201385, 144\u2013162]\n\n> [!WARNING] Voucher and timing qualifications\n> Do not treat `PresentToShopper` or a pending offer as paid. Preserve the page's weekend/holiday next-working-day exception alongside its no-post-due-date instruction text, and attribute the overview's 15-day open/Offer-cancelled timing to that overview rather than silently combining it with the child page's order-cancellation statement.\n\n## Detail locators\n\n- Sessions prerequisites, required/optional fields and default instructions: pinned raw lines 25\u201365.\n- Advanced prerequisites, required/optional fields and voucher response: pinned raw lines 87\u2013142.\n- Test promotion, status locations and live request: pinned raw lines 67\u201385 and 144\u2013162.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-boleto-bancario]] \u2014 approved overview for Boleto de Proposta, BR/BRL capability context and unpaid post-due-date transaction timing.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15|Boleto Banc\u00e1rio React Native Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "The shopper's CPF or CNPJ number.",
+      "location": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md:47"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md:96"
+    },
+    {
+      "text": "`resultCode`: **PresentToShopper**",
+      "location": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md:134"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-boleto-rn-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-react-native-drop-in]] \u2014 2026-09-15-captured React Native Drop-in guide for Boleto Sessions/Advanced identity and due-date fields, Advanced voucher presentation, and test/live offer handling; source distinguishes issued voucher from paid sale.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions uses deliverAt while Advanced uses deliveryDate; do not conflate the fields.",
+          "The source includes next-working-day weekend/holiday due-date relief alongside no-post-due-date statement wording.",
+          "Sessions requirement row links to Advanced-flow base URL despite Sessions label; do not treat that as a change of flow.",
+          "Advanced PresentToShopper and test offer promotion are not live-payment completion."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "436c1acae4190d828f89315aa1e3b30e47d9fe408502afccb519184909fe3972",
+  "status": "candidate_ready"
+}

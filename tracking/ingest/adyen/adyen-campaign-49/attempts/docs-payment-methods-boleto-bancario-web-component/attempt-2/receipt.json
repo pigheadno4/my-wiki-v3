@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-web-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Boleto Banc\u00e1rio Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/web-component/2026-09-15.md\"\ntags: [adyen, boleto-bancario, brazil, voucher, web-component]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Boleto Banc\u00e1rio to an existing Web Components integration**. It distinguishes Sessions and Advanced server-side flows, their request fields, voucher presentation, and test payment reconciliation. The `Boleto` Component is initialized for the shopper UI; the documented Advanced `/payments` response returns a voucher action and `PresentToShopper` for presentation. Voucher issuance or that response is not proof that the shopper paid. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-boleto-bancario]] for method-level lifecycle and capability context.\n\n## Key takeaways\n\n- **Sessions flow** requires an existing Web Components Sessions integration, Checkout API **v68 or later**, and Boleto added in Customer Area (raw lines 25\u201335). The `/sessions` additions list shopper name, billing address, and CPF/CNPJ `socialSecurityNumber` as required. Its optional `deliverAt` sets a UTC ISO 8601 due date; the page says the default is five days and a weekend or national holiday moves payment to the next working day (raw lines 39\u201350).\n- **Advanced flow** requires an existing Web Components Advanced integration, Customer Area setup, and action handling for `action.type: voucher` (raw lines 151\u2013159). The action-handling link at raw line 158 has a `#handle-the-redirect` fragment despite naming a voucher action; preserve voucher handling and do not infer redirect behavior from that anchor. Its `/payments` additions list `paymentMethod.type: boletobancario`, name, billing address, and CPF/CNPJ as required. Its optional due-date field is **`deliveryDate`**, distinct from Sessions `deliverAt` (raw lines 191\u2013203).\n- Both flows import and initialize the `Boleto` Component. Sessions optionally configures collection or prefilling of personal details, billing address, and email (raw lines 63\u201389, 115\u2013129, 163\u2013186). The displayed configuration object at raw lines 95\u2013113 appears to have incomplete JavaScript object syntax; consult the pinned raw and API/SDK references before using it as executable code.\n- For Advanced, the response has voucher action information and `resultCode: PresentToShopper`, including PDF `downloadUrl`, `expiresAt`, barcode `reference`, and amount (raw lines 214\u2013226). This describes voucher presentation, not final paid status.\n- Boleto is offline. In **test**, a pending offer can be promoted to a sale in test Customer Area; pending or expired Boletos appear under **Offers**, while paid ones appear under **Payment list**. The guide calls for reconciliation testing. Accepting live Boleto requires a request in live Customer Area (raw lines 131\u2013149, 228\u2013246). A manual test promotion does not prove a live payment.\n- If a custom `shopperStatement` is supplied, the page instructs that it say higher or lower payments and payments after the due date are not accepted. Its default Portuguese text also conditions order processing on confirmed payment with no amount difference (raw lines 50\u201359 and 203\u2013212). Keep due-date and amount rules separate from voucher creation.\n\n## Detail locators\n\n- Sessions prerequisites and `/sessions` fields: raw `## Sessions flow Component`, lines 25\u201350.\n- Sessions optional form configuration and initialization: raw lines 63\u2013129.\n- Test simulation, status locations, reconciliation, live request: raw `## Test and go live`, lines 131\u2013149 and 228\u2013246.\n- Advanced prerequisites, voucher action handling, and `/payments` fields: raw `## Advanced flow Component`, lines 151\u2013203.\n- Advanced voucher result payload: raw lines 214\u2013226.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/web-component/2026-09-15|Boleto Banc\u00e1rio Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "raw line 48, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "raw line 158, Advanced ## Requirements"
+    },
+    {
+      "text": "* `resultCode`: **PresentToShopper**",
+      "location": "raw line 218, Advanced /payments response"
+    },
+    {
+      "text": "* Boletos that have been paid (including test offers that you manually promoted to sale) are under **Payments**\u00a0>\u00a0**Payment list**.",
+      "location": "raw line 145, Sessions ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "boleto-bancario-web-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-web-component]] \u2014 2026-09-15-captured Boleto Web Component guide for Sessions and Advanced request fields, voucher action, and offline test reconciliation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Voucher presentation or PresentToShopper is not a paid/final status; test offer promotion is simulation.",
+          "Sessions deliverAt and Advanced deliveryDate are distinct optional due-date fields in this captured guide.",
+          "Displayed Sessions configuration example at raw lines 95\u2013113 appears syntactically incomplete and is not an executable recipe.",
+          "Advanced action-handling link at raw line 158 uses a #handle-the-redirect anchor although action.type is voucher; preserve voucher handling."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/web-component/2026-09-15.md",
+  "raw_sha256": "05ffe81e543b561aae79c96b2eb3993bfcc4ae908a4892e2b43828fe864c01d8",
+  "status": "candidate_ready"
+}

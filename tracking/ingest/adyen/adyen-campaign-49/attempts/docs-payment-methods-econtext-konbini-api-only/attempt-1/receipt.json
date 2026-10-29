@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-econtext-konbini-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Japanese convenience stores API-only (econtext)\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/econtext-konbini/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/econtext-konbini/api-only/2026-09-15.md\"\ntags: [adyen, econtext, konbini, japan, api-only, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] API-only add-on covers econtext payments at Japanese convenience stores and Pay-easy ATM/online. A merchant builds the payment form and uses a server-side Checkout `/payments` request. The page separates 7-Eleven redirect, other-store voucher, Pay-easy ATM voucher, and Pay-easy Online redirect paths; voucher issuance or redirect alone is not payment completion. See [[adyen-online-payments]] and the pinned raw for the method-specific steps.\n\n## Key takeaways\n\n- **Setup and discovery:** The page assumes an existing API-only integration and gives separate Customer Area additions: eContext Convenience Stores for Lawson, Mini Stop, Family Mart and Seicomart; eContext 7Eleven; eContext PayEasy ATM; and eContext PayEasy Online Banking. For `/paymentMethods`, it specifies `countryCode: JP`, `amount.currency: JPY`, and amount value in minor units. The types are `econtext_seven_eleven`, `econtext_stores`, `econtext_atm`, and `econtext_online` respectively (raw lines 32\u201371). These are documented setup/discovery paths, not proof of current merchant enablement.\n- **Shopper and request data:** Collect full first and last name, telephone number and email. The `/payments` table marks `paymentMethod` (type and those shopper details), `shopperLocale`, and `returnUrl` required; it states a 1024-character maximum for `returnUrl`. The email-voucher statement excludes 7-Eleven. Examples use 1,000 JPY and `ja-JP`; keep the fields and types scoped to the chosen path rather than copying sample values as universal rules (raw lines 21\u201326, 42\u201383).\n- **7-Eleven:** `/payments` can return `RedirectShopper` with a redirect action. Use the returned `action.method` and `action.url` to show the voucher on 7-Eleven's page; the shopper then pays cash at a store, with outcome learned through webhooks. This page says 7-Eleven voucher payments can only be tested in the live environment with Support-arranged penny testing (raw lines 433\u2013455, 1021\u20131023). The separately captured [[raw/adyen/docs/payment-methods/econtext-konbini/2026-09-15|method overview raw]] says a **local entity is required for 7-Eleven** (overview line 25); treat that as overview-scope historical prerequisite, not current account eligibility.\n- **Other stores and Pay-easy ATM:** `econtext_stores` returns `PresentToShopper` and a voucher action with expiry, reference and amount; present it and wait for the payment webhook. `econtext_atm` also uses a voucher; the page's dated change says the ATM voucher must display `collectionInstitutionNumber`, `reference`, and `alternativeReference` from `/payments`, with old payment numbers rejected from **24 February 2026 00:00 JST**. The ATM field table further identifies expiry and amount. This is the captured instruction, not proof of present-day ATM behavior (raw lines 28\u201330, 805\u2013915).\n- **Pay-easy Online:** `econtext_online` has a redirect response. Follow `action.url`, then submit the URL-decoded returned `redirectResult` in `/payments/details`; the page gives a `resultCode`/`pspReference` response example. Its mobile browser guidance is recommendation, not a universal mandate (raw lines 918\u2013999).\n- **Asynchronous outcome and live gate:** For 7-Eleven and other-store voucher paths, `RedirectShopper` and `PresentToShopper` mean wait for completion; the webhook table distinguishes `PENDING` success=true (voucher created, still pending), `AUTHORISATION` success=false (failed), `AUTHORISATION` success=true (completed), and `OFFER_CLOSED` success=true (expired). The page gives an econtext simulator procedure and separately says to request live Customer Area addition before live acceptance (raw lines 1001\u20131056). Do not treat the example `/payments/details` Authorised response as proof that a cash voucher was redeemed.\n\n> [!warning] Captured test and example conflicts\n> The page says 7-Eleven voucher payments can only be tested live with Support (raw lines 451 and 1023), yet its econtext simulator instructions also offer a 7-Eleven selection (line 1042). Confirm the applicable environment with Adyen rather than treating the simulator list as proof of 7-Eleven test availability. The other-store voucher response sample has blank currency and `totalAmount.value: 10000` after a 1,000 JPY request (raw lines 462\u2013480, 817\u2013837). The Pay-easy ATM field table calls `collectionInstitutionNumber` six digits, while its sample value `58091` has five digits (raw lines 883\u2013899). The Pay-easy Online test request is followed by an example redirect URL on a `checkoutshopper-live` host (raw lines 923\u2013956). These samples should not be used to infer production values or a complete executable recipe.\n\n> [!warning] Source-date and base-link scope\n> The raw frontmatter records `last_modified: 2020-06-12` (line 11), while its body includes the February 2026 Pay-easy ATM deadline (lines 28\u201330); this capture does not establish when that notice was inserted or its current operational state. The requirement's API-only base link is `/online-payments//` (line 36), while the page's `See also` section names an API-only integration guide at `/online-payments/api-only` (lines 1058\u20131060). Use the latter route for base integration navigation.\n\n## Detail locators\n\n- Four method types, setup divisions and JP/JPY discovery: raw lines 32\u201371.\n- Required request fields, example API-library variants and 7-Eleven redirect: raw lines 73\u2013455. Several language snippets use library-specific enum spellings; the API `type` list at lines 66\u201371 is the direct method identifier evidence.\n- Other-store voucher, Pay-easy ATM and Online examples and handling: raw lines 457\u2013999.\n- Result-code/webhook state table, simulator, live Customer Area and base guide: raw lines 1001\u20131062. The simulator credentials and references are historical test fixtures, not live-payment evidence.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/econtext-konbini/api-only/2026-09-15|Japanese convenience stores API-only, captured 2026-09-15]]\n- [[raw/adyen/docs/payment-methods/econtext-konbini/2026-09-15|Japanese convenience stores method overview, captured 2026-09-15; related context]]\n",
+  "quotes": [
+    {
+      "text": "To accept payments from Japanese convenience stores, you need to collect the shopper's full name, phone number, and email.",
+      "location": "raw line 21, introduction"
+    },
+    {
+      "text": "If you offer Pay-easy ATM with an API-only integration, you must display the `collectionInstitutionNumber`, `reference`, and `alternativeReference` from the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response on the voucher.",
+      "location": "raw line 28, introduction"
+    },
+    {
+      "text": "7-Eleven voucher payments can only be tested in the live environment.",
+      "location": "raw line 451, Handle the redirect to 7-Eleven"
+    },
+    {
+      "text": "The response contains `action.type` **voucher** along with the following parameters:",
+      "location": "raw line 805, Other convenience stores"
+    },
+    {
+      "text": "| **AUTHORISATION** | **true**      | The shopper successfully completed the payment.                           | Inform the shopper that the payment has been successful and proceed with the order. |",
+      "location": "raw line 1018, Present the payment result webhook table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-econtext-konbini-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-econtext-konbini-api-only]] \u2014 2026-09-15-captured econtext Japanese convenience-store and Pay-easy API-only add-on for redirect/voucher paths, dated ATM-number change and webhook finality; source flags test/example conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "7-Eleven live-only testing text conflicts with the simulator's 7-Eleven option; other-store voucher and Pay-easy ATM example values conflict with their request/table context."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/econtext-konbini/api-only/2026-09-15.md",
+  "raw_sha256": "ae4bbae9ad04975f81ccd8a392a25f4affe2e16e16162893c77a66d0a5ee3375",
+  "status": "candidate_ready"
+}

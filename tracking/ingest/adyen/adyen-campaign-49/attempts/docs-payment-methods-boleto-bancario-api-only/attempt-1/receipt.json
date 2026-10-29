@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Boleto Banc\u00e1rio API-only\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/api-only/2026-09-15.md\"\ntags: [adyen, boleto-bancario, api-only, voucher, brazil]\n---\n\n## Overview\n\nThis 2026-09-15 guide adds Boleto Banc\u00e1rio to an existing Adyen API-only integration. The merchant builds the payment form, discovers the method, makes a `/payments` request, presents the voucher and waits for the final result by webhook. Boleto is an offline voucher method; `PresentToShopper` is not paid status. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-boleto-bancario]].\n\n## Key takeaways\n\n- The guide requires an existing Web API-only Advanced integration, handling a `voucher` additional action, and Boleto Banc\u00e1rio setup in Customer Area. The form collects first/last name, CPF or CNPJ, billing address and email. Its numbered flow says to include information about items intended for purchase, but the shown additional `/payments` field table does not define a line-item parameter. See raw lines 23\u201347 and 90\u2013102.\n- For `/paymentMethods` discovery, specify `countryCode: BR` and `amount.currency: BRL`. The example response shows a method entry with `type: boleto`. In the later `/payments` table, `paymentMethod.type` is required as `boletobancario`; keep these endpoint-specific values distinct rather than substituting one into the other. See raw lines 49\u201399.\n- The `/payments` table also marks `shopperName` (first/last), `billingAddress`, and `socialSecurityNumber` (CPF/CNPJ) required. Optional `deliveryDate` is UTC ISO 8601 due date, defaulting to five days; a weekend or national-holiday due date can be paid on the next working day according to the row. `shopperEmail` and `shopperStatement` are optional; if a statement is supplied, the guide says to disallow higher/lower amounts and after-due-date payments. The default Portuguese instructions say to process the order only after confirmed matching payment and not to accept cheque, deposit, bank transfer or after-date payment. See raw lines 90\u2013111.\n- A successful voucher presentation response is described with `action.type: voucher`, `resultCode: PresentToShopper`, PDF `downloadUrl`, due-date `expiresAt`, barcode `reference`, and `totalAmount`. The merchant-built UI should offer PDF download and barcode copy. After presenting it, tell the shopper payment is pending; optional PENDING webhooks can report pending status, while an **AUTHORISATION** webhook carries the final result. Do not fulfill solely from `PresentToShopper`. See raw lines 137\u2013195.\n- In test, a pending Boleto can be manually promoted to sale in Customer Area to simulate payment and test reconciliation. Pending/expired vouchers are listed under **Offers**; paid/promoted test offers under **Payment list**. This is not real shopper payment. A separate Boleto request in the **live Customer Area** is needed for live acceptance. See raw lines 197\u2013215.\n\n> [!warning] Example and timing limitations\n> The `/payments` curl example uses **EUR** despite BR/BRL discovery and the Boleto overview's BR/BRL matrix; it also contains placeholder `otherData`/`paramOne`/`paramTwo` fields and an inline comment, while omitting the required identity/address fields (raw lines 113\u2013135). It is not copy-ready evidence of a valid Boleto request. The response table calls `action.paymentMethodType` an issuing bank, but its example value is `boletobancario` (lines 140, 164); do not infer a bank code from that example. The due-date row allows next-working-day payment after a weekend/holiday, while its default statement says no payment after the due date (lines 100, 108); preserve both, without promising late acceptance. This child describes `action.expiresAt` as due-date expiry (lines 146, 181), while the linked overview says unpaid transactions remain open 15 days after due date before **Offer cancelled** (overview raw line 39); do not equate due date with final cancellation.\n\n## Detail locators\n\n- Prerequisites and merchant form: raw lines 23\u201347.\n- BR/BRL method discovery and endpoint-specific type values: raw lines 49\u201399.\n- Required/optional request fields and instructions: raw lines 90\u2013111.\n- Voucher response, presentation and webhook result: raw lines 137\u2013195.\n- Test promotion and live request: raw lines 197\u2013215.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/api-only/2026-09-15|Boleto Banc\u00e1rio API-only, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "pinned raw line 28"
+    },
+    {
+      "text": "| [countryCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-countryCode)         | **BR**",
+      "location": "pinned raw line 55"
+    },
+    {
+      "text": "| paymentMethod.type",
+      "location": "pinned raw line 96"
+    },
+    {
+      "text": "* `resultCode`: **PresentToShopper**",
+      "location": "pinned raw line 141"
+    },
+    {
+      "text": "You will receive the final result of the payment in an [AUTHORISATION webhook](/development-resources/webhooks/webhook-types).",
+      "location": "pinned raw line 195"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-boleto-bancario-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-api-only]] \u2014 2026-09-15-captured Boleto API-only guide for BR/BRL discovery, voucher presentation, webhook finality and test/live setup; source flags endpoint type, example and due-date caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/api-only/2026-09-15.md",
+  "raw_sha256": "bb9130db884627c6e15b8023c1fcd2b762a080594df8e60b118caf62d134ddbb",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Online banking Slovakia Android Component retrieval checks
+
+## Q1 — What does this captured Android Component guide add to Sessions and Advanced flows?
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-android-component.md` → `raw/adyen/docs/payment-methods/online-banking-slovakia/android-component/2026-09-15.md`.
+Expected answer: Sessions requires an existing Android Components integration, Checkout API v68+, redirect handling, and Customer Area method setup, with no extra `/sessions` parameters. It imports `onlineBankingSKComponent` and optional Compose support, and uses `OnlineBankingSKComponent` with `ONLINE_BANKING_SK`. Advanced also requires existing integration, redirect handling, setup and Component selection from `/paymentMethods`; its version row lacks a number (“v or later”), so no Advanced minimum is established here. Raw locators: lines 23–139, 151–260. Approved overview `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia.md` supplies SK/EUR and bank redirect method context separately.
+
+## Q2 — What must the Advanced payment request and testing answer preserve?
+Expected route: same root/provider/concept/source/raw chain.
+Expected answer: the Advanced method-specific `/payments` table requires shopper-selected `paymentMethod.issuer`; examples use type `onlineBanking_SK`, issuer `cs`, EUR 1000 and a returnUrl, without establishing every issuer or payment result. The page says test with real details/small amounts, inspect test Customer Area, and add the method for live acceptance. The Advanced API version is incomplete at line 157, and Go sample says v10.4.0 while importing `/v9/src` paths at lines 453–458. Raw locators: lines 263–295, 453–458, 585–591. These are documentation examples and provider testing guidance, not execution evidence or a complete final-status recipe.

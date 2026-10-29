@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-econtext-konbini-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Japanese convenience stores Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/econtext-konbini/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/econtext-konbini/web-drop-in/2026-09-15.md\"\ntags: [adyen, econtext, konbini, japan, web-drop-in, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen page adds **Japanese convenience-store payments through econtext** to an existing Web Drop-in integration. It distinguishes store and Pay-easy Customer Area additions, optional shopper-detail configuration, simulator testing, and pending versus paid voucher status. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-econtext-konbini]] for the **7-Eleven local-entity condition**, redirect/native voucher distinction, and offer-expiry context.\n\n## Key takeaways\n\n- The guide requires an existing Web Drop-in integration and separate Customer Area additions: **eContext Convenience Stores** for Lawson, Mini Stop, Family Mart and Seicomart; **eContext PayEasy ATM** for ATM; **eContext PayEasy Online Banking** for online banking; and **eContext 7Eleven** for 7-Eleven (raw lines 21\u201329). These setup routes do not establish current merchant entitlement; the linked overview states a 7-Eleven local-entity condition.\n- For **Web Drop-in v6**, the page imports `Econtext` from `@adyen/adyen-web`. It says Japanese convenience stores need **no additional request fields** or required Drop-in-specific configuration. The API reference points to `/sessions` as the default with Drop-in v5.0.0 or later and to `/payments` for an additional use case (raw lines 31\u201350).\n- Optional `personalDetailsRequired: false` hides shopper name, email and telephone input fields; the table says it was added in **v5.2.0** and defaults to `true`. The example places it under `paymentMethodsConfiguration.econtext_stores` (raw lines 52\u201379). The sample's inline comment contains HTML/Markdown markup, and its mount line has an unquoted `#konbini-container`; treat it as illustrative, not copy-ready JavaScript (raw lines 62\u201390).\n- The test section says **7-Eleven voucher payments can only be tested in the live environment**, with Support setup for penny testing (raw line 95). Yet the subsequent econtext simulator procedure offers a **7-Eleven** selection (raw lines 97\u2013115). This is an unresolved source-level testing conflict; do not infer that the test simulator can complete a 7-Eleven payment. The raw gives simulator access details and a reference format derived from an `AUTHORISATION` webhook; use the pinned raw for those operational details rather than repeating credentials here (raw lines 97\u2013121).\n- The page says to wait **15 minutes for the webhook** during simulator testing. In test Customer Area, pending or expired vouchers are under **Offers** and paid vouchers under **Payment list**. A voucher/reference or an `AUTHORISATION` webhook reference alone is not equivalent to the later paid status. Live acceptance requires a request to add 7-Eleven or other Japanese convenience stores in live Customer Area (raw lines 109\u2013128).\n\n> [!warning] Conflicting 7-Eleven test instructions\n> Raw line 95 says 7-Eleven voucher payments can only be tested live with Support-assisted penny testing, while raw lines 111\u2013115 include a 7-Eleven simulator choice. The captured page does not resolve which path applies. Verify with Adyen before using that option to infer test coverage.\n\n## Detail locators\n\n- Web Drop-in and separate econtext method setup: raw `## Requirements`, lines 21\u201329.\n- Web v6 import, endpoint references and no-required-configuration claim: raw lines 31\u201350.\n- Optional shopper-detail fields and illustrative configuration: raw lines 52\u201390.\n- 7-Eleven testing conflict and simulator/webhook steps: raw `## Test and go live`, lines 93\u2013121.\n- Pending versus paid test status and live request: raw lines 123\u2013128.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-econtext-konbini]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/econtext-konbini/web-drop-in/2026-09-15|Japanese convenience stores Web Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to send additional fields for Japanese convenience stores.",
+      "location": "raw line 41, ## API reference"
+    },
+    {
+      "text": "There are no configuration steps specific to Japanese convenience stores required for Drop-in.",
+      "location": "raw line 50, ### Required configuration"
+    },
+    {
+      "text": "7-Eleven voucher payments can only be tested in the live environment.",
+      "location": "raw line 95, ## Test and go live"
+    },
+    {
+      "text": "* Select **\u30bb\u30d6\u30f3\u30a4\u30ec\u30d6\u30f3** for 7-Eleven.",
+      "location": "raw line 114, simulator step 3"
+    },
+    {
+      "text": "* Vouchers that have been paid are under **Payments** > **Payment list**.",
+      "location": "raw line 126, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "econtext-konbini-web-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-econtext-konbini-web-drop-in]] \u2014 2026-09-15-captured Japanese convenience-store Web Drop-in add-on for econtext setup, optional shopper-detail fields and voucher testing; source flags conflicting 7-Eleven test instructions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Raw line 95 says 7-Eleven voucher payments can only be tested live, while simulator steps include a 7-Eleven choice; do not infer test-environment support.",
+          "Voucher/reference and simulator action are not paid status; test Customer Area separates Offers from paid Payment list.",
+          "Method overview states a 7-Eleven local-entity condition.",
+          "The Drop-in mount example contains unquoted #konbini-container and other markup; do not present as copy-ready."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/econtext-konbini/web-drop-in/2026-09-15.md",
+  "raw_sha256": "df6a7b4ba6add37901be4d510fd34f4a0f8f09abc80613a277228e4c86257e6d",
+  "status": "candidate_ready"
+}

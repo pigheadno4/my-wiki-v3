@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-cash-app-pay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Cash App Pay Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-pay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-pay/android-drop-in/2026-09-15.md\"\ntags: [adyen, cash-app-pay, android, drop-in, payment-results]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen page adds **Cash App Pay** to an existing **Android Drop-in** integration. It is explicitly for **v5.0.0**, released in October 2023, and routes earlier versions to a separate guide. It covers Sessions and Advanced setup, payment-result handling, tokenization at overview level, and test/live steps. Cash App Pay is distinct from Cash App Afterpay. This page is not a complete base integration, proof of current account entitlement, or evidence of a live payment. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-cash-app-pay|method overview]] for its separate captured US/USD capability context.\n\n## Key takeaways\n\n- **Version and prerequisites:** For both Sessions and Advanced, the page requires an existing Android Drop-in integration at **v5.0.0 or later** and Cash App Pay added in Customer Area. It directs users of earlier versions to the separate earlier-versions guide. The page does not state a minimum Checkout API version. [Raw: lines 14\u201336]\n- **Method-specific add-on:** Cash App Pay needs no additional fields for the /sessions or /payments request and no additional Drop-in configuration in the corresponding flow. These are method-specific additions to an existing base integration, not permission to omit base request or Drop-in setup. Sessions then creates the checkout session; Advanced launches Drop-in. [Raw: lines 38\u201364]\n- **Outcome handling:** Use the /payments/details response resultCode to show the shopper a result, and receive payment outcome asynchronously by webhook. **Received** says the shopper completed the payment step but the final result is not known; inform the shopper that payment is pending and wait for the AUTHORISATION webhook update. **Authorised** is successful according to the table, but manual capture still needs a separate capture. **Cancelled**, **Error**, and **Refused** have different shopper guidance; Error and Refused point to refusalReason for diagnosis. Do not treat Received as authorization or Authorised as completed manual capture. [Raw: lines 66\u201378]\n- **Stored details and environments:** The guide says Cash App Pay supports tokenization for future recurring/card-on-file payments and says shopper permission at token creation can bypass shopper approval for later uses. It **strongly recommends** explicit permission, and transparency about recurring schedule and amount. This section gives no Android token-creation request recipe. Testing uses the test environment and Cash App Pay magic values; live use requires adding Cash App Pay in the live Customer Area. The test instruction is not proof of a real transaction or current live setup. [Raw: lines 80\u201390]\n\n## Detail locators\n\n- Page/version scope, both server-flow prerequisites: pinned raw lines 14\u201336.\n- No extra method request fields/configuration and base-flow navigation: pinned raw lines 38\u201364.\n- /payments/details, asynchronous webhook and resultCode table: pinned raw lines 66\u201378.\n- Tokenization and permission guidance, test/live setup: pinned raw lines 80\u201390.\n- Method-level US/USD capability and conditional adjustment/chargeback context: [[source-adyen-docs-payment-methods-cash-app-pay]] and its pinned raw; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-cash-app-pay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-pay/android-drop-in/2026-09-15|Cash App Pay Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page is for **v5.0.0**, released in October 2023.",
+      "location": "raw line 18"
+    },
+    {
+      "text": "Cash App Pay does not require any additional fields.",
+      "location": "raw line 42"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw line 68"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw line 74"
+    },
+    {
+      "text": "If you are using manual capture, you also need to [capture](/online-payments/capture#manual-capture) the payment.",
+      "location": "raw line 75"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-cash-app-pay-android-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-pay-android-drop-in]] \u2014 2026-09-15-captured Cash App Pay Android Drop-in v5.0.0+ Sessions/Advanced add-on for no extra method fields/configuration, asynchronous result handling, and tokenization/test/live notes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Received is not a final result; the page points to an AUTHORISATION webhook update.",
+          "Authorised still requires separate capture when manual capture is used.",
+          "Cash App Pay is distinct from Cash App Afterpay; the page gives no Android token-creation request recipe."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-pay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "7d081f0e397a421f1d4a38afbb6a00ff6dbb313634d831cf475e83facef8575e",
+  "status": "candidate_ready"
+}

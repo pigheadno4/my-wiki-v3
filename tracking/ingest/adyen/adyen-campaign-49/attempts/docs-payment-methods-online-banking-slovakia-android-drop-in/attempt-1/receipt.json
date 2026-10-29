@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-online-banking-slovakia-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Slovakia Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-slovakia/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-slovakia/android-drop-in/2026-09-15.md\"\ntags: [adyen, online-banking-slovakia, android, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured, Android-titled Adyen guide adds **Online banking Slovakia to Drop-in**, splitting instructions between Sessions and Advanced server-side flows. It describes an optional Android configuration switch, required Advanced selected-bank issuer, and test/live setup. The Sessions prerequisite and request links point to **iOS** Drop-in despite the Android page title and Kotlin configuration example; verify the appropriate base Android integration guide before implementing. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-online-banking-slovakia]] for method-level SK/EUR redirect and capability context.\n\n## Key takeaways\n\n- **Sessions flow** states that an existing Sessions Drop-in integration, Checkout API **v68 or later**, and Customer Area addition are required, but the linked integration and `/sessions` guides are explicitly `platform=iOS` (raw lines 23\u201338). The page says no additional `/sessions` parameters. Its optional Kotlin `onlineBankingSK` configuration has `setSubmitButtonVisible` to control submit-button visibility, and points to an **Android** configuration guide (raw lines 40\u201360). The mixed platform links should not be treated as a complete verified Android Sessions recipe.\n- **Advanced flow** requires an existing **Android Drop-in** integration, `action.type: redirect` handling and Customer Area setup (raw lines 72\u201380). Its optional `setSubmitButtonVisible` configuration repeats the Kotlin `onlineBankingSK` example (raw lines 82\u2013102).\n- Advanced `/payments` must include `paymentMethod.issuer`, the issuing bank selected by the shopper (raw lines 104\u2013112). Sample requests use `paymentMethod.type: onlineBanking_SK`, `issuer: cs`, EUR amount and `returnUrl` (raw lines 116\u2013135, 261\u2013289); `cs` is an example, not an exhaustive issuer list or proof of a merchant's current availability.\n- The Advanced request examples cover curl and several SDK languages with test endpoint/environment and placeholder credentials. The Go sample labels library **v10.4.0** yet imports `/v9/` module paths; verify version-specific SDK syntax before reuse (raw lines 116\u2013423, especially 291\u2013300). Example idempotency-key placeholders are not an operational guarantee.\n- The page says to test with real payment details and small amounts, check test status in test Customer Area **Payments > Payment list**, and add the method in Customer Area for live acceptance (raw lines 62\u201370, 426\u2013432). These are captured instructions, not evidence of completed payment or live merchant entitlement.\n\n## Detail locators\n\n- Sessions requirement and iOS-linked base guides: raw `## Sessions flow Drop-in`, lines 23\u201338.\n- Optional Android Kotlin submit-button configuration: raw lines 40\u201360.\n- Advanced Android/redirect prerequisites and configuration: raw `## Advanced flow Drop-in`, lines 72\u2013102.\n- Required issuer and request samples: raw lines 104\u2013423.\n- Test/live instructions: raw lines 62\u201370 and 426\u2013432.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-online-banking-slovakia]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-slovakia/android-drop-in/2026-09-15|Online banking Slovakia Android Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 31, Sessions ## Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 38, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "`setSubmitButtonVisible`",
+      "location": "raw line 48, Sessions ## Add additional configuration"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw line 79, Advanced ## Requirements"
+    },
+    {
+      "text": "The issuing bank that the shopper selected.",
+      "location": "raw line 112, Advanced ## Add additional parameters to your /payments request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "online-banking-slovakia-android-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-slovakia-android-drop-in]] \u2014 2026-09-15-captured Android-titled Drop-in Sessions/Advanced guide for submit-button option, redirect and Advanced selected issuer; source flags iOS-linked Sessions prerequisites.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Android-titled Sessions section links to platform=iOS base guides; verify Android base integration rather than treating these links as an Android recipe.",
+          "Go SDK example labels v10.4.0 but imports /v9/ paths."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-slovakia/android-drop-in/2026-09-15.md",
+  "raw_sha256": "241ae54c07db51b71de70986cb820dce482c7491f5a813d45f616e238c38a3c8",
+  "status": "candidate_ready"
+}

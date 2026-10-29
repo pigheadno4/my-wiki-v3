@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-online-banking-slovakia-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Slovakia Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-slovakia/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md\"\ntags: [adyen, online-banking-slovakia, web, drop-in, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online banking Slovakia to an existing Web Drop-in integration. It separates Sessions and Advanced server-side flows, redirect handling, the Advanced issuer field, and test/live setup. It is a method-specific supplement to [[adyen-online-payments]], not a complete base integration or proof of payment execution. [[adyen]]\n\n## Key takeaways\n\n- **Sessions flow:** Start with an existing Web Drop-in Sessions integration using Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and the method added in Customer Area. The page says there are no extra method-specific `/sessions` parameters or Drop-in configuration. It describes importing `OnlineBankingSK` individually as optional tree shaking, not a required import. [Raw: lines 23\u201359]\n- **Advanced flow:** Start with an existing Web Drop-in Advanced integration that handles `action.type: redirect` and has the method added in Customer Area. The method-specific `/payments` table requires `paymentMethod.issuer`, the bank selected by the shopper; the examples use `paymentMethod.type: onlineBanking_SK`, issuer `cs`, EUR amount 1000 minor units and an HTTPS `returnUrl`. Those are sample values, not a list of all issuers or a successful result. This page states no Advanced Checkout API minimum or final redirect outcome. [Raw: lines 73\u2013129]\n- **Broken import and navigation examples:** Both optional-import snippets show `import { AdyenCheckout, Dropin, Online banking Slovakia } from '@adyen/adyen-web';` despite prose naming `OnlineBankingSK`; the spaced text is not a valid JavaScript named import. The Advanced integration requirement URL contains an unresolved encoded template in its `platform` query, while other Advanced links name Web. Treat those lines as captured documentation defects rather than a copy-ready import or a different platform requirement. [Raw: lines 46\u201351, 78, 86\u201391]\n- **Server sample scope:** The page provides test-environment curl and Java v27.0.0, PHP v19.0.0, .NET v17.0.0, Node v18.0.0, Go v10.4.0, Python v12.5.1 and Ruby v9.5.1 request examples. They repeatedly say live use also needs `liveEndpointUrlPrefix`; the Go snippet labels v10.4.0 but imports `.../v9/src/...`, an unresolved version/import mismatch. These examples do not show an executed payment. [Raw: lines 112\u2013420]\n- **Test/live:** The guide says to test with real payment details and small amounts, check test payment status in test Customer Area, and add Online banking Slovakia in Customer Area for live acceptance. This is captured provider guidance, not evidence that an account is enabled or a payment was made. [Raw: lines 62\u201369, 424\u2013430]\n\n> [!WARNING] Do not copy the optional import snippet literally\n> The prose says `OnlineBankingSK`, but the JavaScript snippets use the spaced words `Online banking Slovakia` inside a named import (raw lines 46\u201351, 86\u201391). Resolve the import against the actual Adyen Web package/version before implementation; the page's example is internally inconsistent.\n\n## Detail locators\n\n- Sessions prerequisites, no-extra-parameter/configuration statements and import: pinned raw lines 23\u201359.\n- Advanced prerequisites, import and required issuer: pinned raw lines 73\u2013108.\n- Test request and language-library examples, including Go mismatch: pinned raw lines 112\u2013420.\n- Test/live guidance: pinned raw lines 62\u201369 and 424\u2013430.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-online-banking-slovakia]] \u2014 approved method overview for SK/EUR redirect journey and method-level capabilities, separate from this Web guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15|Online banking Slovakia Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md:32"
+    },
+    {
+      "text": "you can optionally import individual payment methods to optimize performance",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md:46"
+    },
+    {
+      "text": "import { AdyenCheckout, Dropin, Online banking Slovakia }",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md:51"
+    },
+    {
+      "text": "The issuing bank that the shopper selected.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md:108"
+    },
+    {
+      "text": "// Adyen Go API Library v10.4.0",
+      "location": "raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md:290"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c49-online-banking-slovakia-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-slovakia-web-drop-in]] \u2014 2026-09-15-captured Web Drop-in guide for Sessions/Advanced redirect flows and Advanced issuer field; source flags malformed optional import, Advanced guide URL and Go sample version mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The optional import prose names OnlineBankingSK, but both JavaScript snippets use invalid spaced words \u201cOnline banking Slovakia\u201d.",
+          "The Advanced integration link contains an unresolved encoded platform template.",
+          "Go example says library v10.4.0 but imports /v9/src paths."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-slovakia/web-drop-in/2026-09-15.md",
+  "raw_sha256": "f15f1df3a43dbc02117831daa8a68a939d3875daaba940715a140117a1cb7849",
+  "status": "candidate_ready"
+}

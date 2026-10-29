@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-boleto-bancario-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Boleto Banc\u00e1rio iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/boleto-bancario/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/boleto-bancario/ios-drop-in/2026-09-15.md\"\ntags: [adyen, boleto-bancario, ios, drop-in, voucher]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Boleto Banc\u00e1rio to an existing iOS Drop-in integration** through either Sessions or Advanced server-side flow. It covers shopper identity and due-date fields, voucher handling, and offline test reconciliation. A voucher or `PresentToShopper` response is not proof of paid status. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-boleto-bancario]] for voucher lifecycle and method capability context.\n\n## Key takeaways\n\n- **Sessions flow** requires an existing iOS Drop-in Sessions integration, Checkout API **v68 or later**, and Boleto Banc\u00e1rio added in Customer Area. Its `/sessions` additions require `shopperName`, `billingAddress`, and CPF/CNPJ `socialSecurityNumber`. Optional `deliverAt` is a UTC ISO 8601 due date; the page states a five-day default and next-working-day payment when it falls on a weekend or national holiday (raw lines 25\u201349).\n- **Advanced flow** requires an existing iOS Drop-in Advanced integration, Customer Area setup, and handling of the additional `action.type: voucher` action. The requirement points to a base guide anchor named `#handle-the-redirect`, although the actual action identified here is **voucher**; follow the voucher action contract rather than inferring a redirect from that link label (raw lines 88\u201398).\n- Advanced `/payments` additions require `paymentMethod.type: boletobancario`, shopper name, billing address, and CPF/CNPJ. Its optional due-date field is **`deliveryDate`**, distinct from Sessions `deliverAt`; both descriptions specify UTC ISO 8601, a five-day default, and the weekend/holiday next-working-day condition (raw lines 108\u2013120).\n- No Boleto-specific Drop-in configuration parameters are added in either flow (raw lines 60\u201364, 100\u2013104). Optional `shopperEmail` sends a copy of the form. If a custom `shopperStatement` is supplied, the page instructs it to rule out higher/lower amounts and payment after the due date; the default Portuguese text conditions order processing on confirmed payment with no amount difference (raw lines 48\u201358, 119\u2013129).\n- The Advanced response includes `action.type: voucher` and `resultCode: PresentToShopper`, with voucher PDF URL, expiry, issuing-bank indicator, barcode reference, and amount. This is presentation information, not paid confirmation (raw lines 131\u2013143).\n- Boleto is offline. In **test**, the page simulates payment by promoting a pending offer to sale in test Customer Area. Pending or expired Boletos are under **Offers**, paid Boletos under **Payment list**; reconciliation should be tested. Before accepting live Boleto payments, submit a request in live Customer Area (raw lines 68\u201386, 147\u2013165). Manual test promotion is not live-payment evidence.\n\n## Detail locators\n\n- Sessions prerequisite and `/sessions` fields: raw `## Sessions flow Drop-in`, lines 25\u201349.\n- Sessions statement defaults, no extra configuration, and test path: raw lines 51\u201386.\n- Advanced prerequisites and voucher-versus-redirect link mismatch: raw `## Advanced flow Drop-in`, lines 88\u2013104.\n- Advanced `/payments` fields and voucher response: raw lines 106\u2013143.\n- Advanced test and live request: raw lines 145\u2013165.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-boleto-bancario]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/boleto-bancario/ios-drop-in/2026-09-15|Boleto Banc\u00e1rio iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions ## Requirements"
+    },
+    {
+      "text": "By default, the shopper has five days to complete the payment.",
+      "location": "raw line 47, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "`action.type`: **voucher**.",
+      "location": "raw line 97, Advanced ## Requirements"
+    },
+    {
+      "text": "* `resultCode`: **PresentToShopper**",
+      "location": "raw line 135, Advanced voucher response"
+    },
+    {
+      "text": "* Boletos that have been paid (including test offers that you manually promoted to sale) are under **Payments**\u00a0>\u00a0**Payment list**.",
+      "location": "raw line 161, Advanced ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "boleto-bancario-ios-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-boleto-bancario-ios-drop-in]] \u2014 2026-09-15-captured iOS Drop-in Sessions/Advanced Boleto add-on for shopper fields, voucher action, and offline test reconciliation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Voucher presentation or PresentToShopper is not paid status; test offer promotion is simulation.",
+          "Sessions deliverAt and Advanced deliveryDate are different due-date fields.",
+          "Advanced voucher-action requirement links to a base-guide #handle-the-redirect anchor; do not recast the action as redirect."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/boleto-bancario/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "6917487156a7a5bd37907f886f7ce7327c36681481c708802ff9b7c5a0e45551",
+  "status": "candidate_ready"
+}

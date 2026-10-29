@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-econtext-konbini-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Japanese convenience stores Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/econtext-konbini/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/econtext-konbini/web-component/2026-09-15.md\"\ntags: [adyen, econtext, konbini, web, components, voucher, japan]\n---\n\n## Overview\n\nThis Adyen Web Component guide, captured on 2026-09-15 and marked last modified 2020-06-12 in the raw, adds Japanese convenience-store payments to an **existing Components integration**. It covers method-specific Customer Area setup, store type/Component choices, optional personal-detail UI, and test/live voucher status. It does not itself establish current merchant eligibility, voucher redemption, or a completed payment. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-econtext-konbini|method overview]].\n\n## Key takeaways\n\n- The guide requires an existing Web Components integration and **separate Customer Area additions**: `eContext Convenience Stores` for Lawson, Mini Stop, Family Mart and Seicomart; `eContext PayEasy ATM` for Pay-easy ATM; `eContext PayEasy Online Banking` for Pay-easy online banking; and `eContext 7Eleven` for 7-Eleven. The overview additionally marks **7-Eleven as local-entity-required**; Customer Area selection alone does not establish that eligibility (child raw lines 21\u201329; overview raw lines 23\u201330).\n- The API reference says **no additional Japanese convenience-store fields** are needed beyond the integrated endpoint's base request; it directs to `/sessions` for the default Components v5.0.0-or-later path and `/payments` for an additional use case. This is relative to the existing integration, not a claim that base request or shopper data requirements vanish (raw lines 39\u201344).\n- The Component section distinguishes `econtext_seven_eleven` (**7-Eleven redirect to voucher page**) from `econtext_stores` (**Lawson/Mini Stop/Family Mart/Seicomart native voucher**). Its examples mount `econtext_stores`: Web Components **v6** imports `AdyenCheckout` and `Econtext` and constructs `new Econtext(checkout)`; **v5.x.x or earlier** uses `checkout.create('econtext_stores')`. The page does not demonstrate a Pay-easy-specific Component type in these examples (raw lines 31\u201337, 46\u201383).\n- Optional `personalDetailsRequired: false`, added in **v5.2.0**, hides shopper name, email and telephone input fields; its default is **true**. This is a UI visibility option, not a waiver of the method overview's stated shopper full-name, phone and email requirement. The sample configuration line contains rendered HTML markup inside a JavaScript comment; use the parameter description rather than treating the snippet as a validated copy-ready recipe (raw lines 85\u2013120; overview raw lines 32\u201340).\n- **Testing conflict:** the page says 7-Eleven voucher payments can **only be tested in the live environment**, with Support setup for penny testing, but its later econtext-simulator instructions include selecting **7-Eleven**. Preserve both source statements; the latter does not resolve whether a test-environment 7-Eleven voucher payment is supported. The simulator steps use an acquirer reference constructed from a `pspReference` in an `AUTHORISATION` webhook and say to wait 15 minutes for a webhook; this is a test procedure, not a payment-finality guarantee. The raw includes simulator credentials; use the pinned raw for those test-only details rather than reproducing them here (raw lines 122\u2013150).\n- Pending/expired vouchers are listed under **test Customer Area > Payments > Offers**, while paid vouchers appear under **Payment list**. Live acceptance requires a request to add 7-Eleven or other Japanese convenience stores in **live Customer Area**. Voucher issue remains distinct from the later in-store cash payment described by the overview (child raw lines 152\u2013157; overview raw lines 32\u201342).\n\n## Detail locators\n\n- Existing Components integration and method-specific Customer Area setup: raw lines 15\u201329.\n- v6 import, endpoint scope and store-specific type/presentation: raw lines 31\u201353.\n- Component mounting by v6 versus v5.x.x/earlier: raw lines 55\u201383.\n- Optional personal-detail UI and configuration examples: raw lines 85\u2013120.\n- Live-only 7-Eleven test statement, simulator steps and conflicting 7-Eleven option: raw lines 122\u2013150.\n- Pending/expired versus paid test Customer Area status and live request: raw lines 152\u2013157.\n- Method-level local-entity condition, shopper data, later cash payment and default offer expiry: [[source-adyen-docs-payment-methods-econtext-konbini]] and its pinned raw lines 23\u201347; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-econtext-konbini]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/econtext-konbini/web-component/2026-09-15|Japanese convenience stores Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Japanese convenience stores to your existing Components integration.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "You do not need to send additional fields for Japanese convenience stores.",
+      "location": "raw line 41"
+    },
+    {
+      "text": "The shopper is redirected to 7-Eleven's page where they see the voucher.",
+      "location": "raw line 50"
+    },
+    {
+      "text": "Set to **false** to hide the input fields for shopper name, email, and telephone number.",
+      "location": "raw line 91"
+    },
+    {
+      "text": "7-Eleven voucher payments can only be tested in the live environment.",
+      "location": "raw line 124"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "econtext-konbini-web-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-econtext-konbini-web-component]] \u2014 2026-09-15-captured Japanese convenience-store Web Component add-on for store-specific setup/types, personal-detail UI, voucher status and test/live caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "7-Eleven live-only voucher-testing statement conflicts with later simulator option listing 7-Eleven; do not infer a supported test-environment 7-Eleven path.",
+          "personalDetailsRequired hides UI fields but does not resolve the method overview's stated shopper data requirement."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/econtext-konbini/web-component/2026-09-15.md",
+  "raw_sha256": "e87d9ab65a8d9c547f57069ac23eabf8a603402a6522d29ebda08ef49e766c26",
+  "status": "candidate_ready"
+}

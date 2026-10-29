@@ -1,0 +1,9 @@
+# docs-payment-methods-cash-app-pay retrieval checks
+
+## Q1 — identity and scope
+Query: What is Cash App Pay in this source, and is it Cash App Afterpay?
+Expected: A 2023-modified, 2026-09-15-captured Adyen overview of a US digital wallet funded by Cash App balance or linked card/bank, with a US/USD direct-wallet matrix. It is a separate method from Cash App Afterpay; this page does not establish current merchant entitlement or live success. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-cash-app-pay]] → [[raw/adyen/docs/payment-methods/cash-app-pay/2026-09-15]]. Canonical stem: `/payment-methods/cash-app-pay`. Verify raw lines 15–27.
+
+## Q2 — capabilities, adjustment and dispute windows
+Query: Which capture/refund/recurring capabilities and authorization-adjustment/chargeback conditions does the overview state?
+Expected: Matrix marks recurring, refund variants, separate and partial capture, chargebacks available; multiple partial captures unavailable. Incremental authorization adjustment is increase-only, synchronous, manual-capture only (disable auto-capture), and requires manual Cash App approval via Adyen. Shopper chargeback window is up to 120 days from payment/cancellation/expected receipt, and merchant has 13 days to defend after dispute; no response loses, successful timely defense returns funds. These are historical overview statements, not a live recipe or current legal guarantee. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-cash-app-pay]] → [[raw/adyen/docs/payment-methods/cash-app-pay/2026-09-15]]. Canonical stem: `/payment-methods/cash-app-pay`. Verify raw lines 25–44.

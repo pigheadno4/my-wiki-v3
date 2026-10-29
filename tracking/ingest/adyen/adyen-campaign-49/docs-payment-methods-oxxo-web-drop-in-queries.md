@@ -1,0 +1,9 @@
+# OXXO Web Drop-in retrieval checks
+
+## Q1 — What does the captured OXXO Web Drop-in guide add to Sessions and Advanced?
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-oxxo-web-drop-in.md` → `raw/adyen/docs/payment-methods/oxxo/web-drop-in/2026-09-15.md`.
+Expected answer: Sessions requires existing Web Drop-in, Checkout API v68+, and Customer Area OXXO setup, but no extra method-specific `/sessions` parameters; `Oxxo` import is optional for tree shaking. Advanced requires existing Web Drop-in, `action.type: voucher` handling, and method setup, but no extra method-specific `/payments` parameters. No Advanced-specific API minimum is stated. The Advanced integration link has an unresolved platform template and its action link targets a generic redirect anchor; these do not change the stated voucher action. Raw locators: lines 25–53 and 80–108. This is not a complete base integration.
+
+## Q2 — When does an OXXO voucher become a paid sale, and what is test-only?
+Expected route: same root/provider/concept/source/raw chain.
+Expected answer: creation produces an Open offer; an OXXO-specific PENDING webhook requires separate setup. Webhooks track status. After the shopper pays at a store, the offer becomes a Received sale and the final result is delivered by AUTHORISATION webhook. A pending test offer can be manually promoted in test Customer Area for reconciliation, while live acceptance requires a live Customer Area method request. Raw locators: lines 57–78 and 112–133. The approved `wiki/sources/adyen/source-adyen-docs-payment-methods-oxxo.md` separately supplies typical confirmation delay and unpaid voucher expiry timing; attribute those to its raw lines 29–31. Voucher issue, Open/PENDING and test promotion are not evidence of live payment.

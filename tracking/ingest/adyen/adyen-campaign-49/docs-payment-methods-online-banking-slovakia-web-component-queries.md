@@ -1,0 +1,13 @@
+# Fixed queries — Online banking Slovakia Web Component
+
+## Q1 — purpose, scope and limits
+
+**Query:** What does the captured Online banking Slovakia Web Component page cover, and what does it not prove?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/online-banking-slovakia/web-component` is a 2026-09-15-captured guide for adding the method to existing Web Components Sessions or Advanced integrations, including redirect handling, request/setup differences and test/live instructions. It does not prove current merchant enablement, completed authorization, or a successful live payment. Method-level SK/EUR capability context is in `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia.md` (full pinned `raw/adyen/docs/payment-methods/online-banking-slovakia/web-component/2026-09-15.md`, `# Web Component` lines 15–21; flow headings lines 23, 86). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-web-component.md`.
+
+## Q2 — flow prerequisites, issuer and sample warnings
+
+**Query:** What differs between Sessions and Advanced Web Component integration for Online banking Slovakia, and what cautions apply to the examples?
+
+**Expected answer:** Sessions requires existing Sessions Web Components, Checkout API v68+, `action.type: redirect` handling and Customer Area addition; it requires no extra `/sessions` parameters or Component configuration (pinned `raw/adyen/docs/payment-methods/online-banking-slovakia/web-component/2026-09-15.md`, `## Sessions flow Component` lines 23–40, 54–58). Advanced requires existing Advanced Web Components, redirect handling and Customer Area addition; `paymentMethod.issuer` in `/payments` is the bank the shopper selected (lines 86–94, 132–140). Sample requests use `onlineBanking_SK`, `issuer: cs`, EUR and `returnUrl` (lines 146–162), but these are examples, not a complete issuer list or live-operation proof. Both constructor snippets contain malformed `newOnlineBankingSK` text, and the Go example labels v10.4.0 while importing `/v9/` paths (lines 68–75, 122–130, 321–327); verify SDK syntax/version before reuse. Both flows direct test status checks to test Customer Area Payment list and require adding the method for live acceptance (lines 78–84, 454–460), without asserting redirect completion alone is final paid status. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-slovakia-web-component.md`.

@@ -1,0 +1,13 @@
+# Boleto Bancário iOS Component retrieval checks
+
+## Q1 — Purpose and payment-finality boundary
+
+Query: What does the Boleto Bancário iOS Component guide cover, and is PresentToShopper or a voucher proof of payment?
+
+Expected route: `wiki/index.md` line 10 → `wiki/adyen-index.md` line 2716 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-boleto-bancario-ios-component.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/boleto-bancario/ios-component/2026-09-15.md` `# Boleto Bancário iOS Component` lines 15–23, `## Sessions flow Component` lines 25–35, `## Advanced flow Component` lines 112–122 and voucher response lines 179–191. Expected answer: 2026-09-15-captured method-specific additions to an existing iOS Components integration. It prepares/presents an offline voucher; PresentToShopper, voucher issuance and test-offer promotion are not real shopper payment confirmation or proof of current live enablement.
+
+## Q2 — Fields, due-date lifecycle and source cautions
+
+Query: Which fields, Component setup and voucher handling differ by Sessions versus Advanced, and how do due date, later cancellation and test/live conditions work?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-boleto-bancario-ios-component.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/boleto-bancario/ios-component/2026-09-15.md` Sessions lines 25–110 and Advanced lines 112–211; for Boleto de Proposta, BR/BRL and later status timing follow `wiki/sources/adyen/source-adyen-docs-payment-methods-boleto-bancario.md` → `raw/adyen/docs/payment-methods/boleto-bancario/2026-09-15.md` lines 23–43. Expected answer: Sessions requires existing Components, Checkout API v68+, Customer Area setup and required shopperName, billingAddress, CPF/CNPJ socialSecurityNumber; optional due date is deliverAt. Advanced requires voucher-action handling, setup, same identity fields plus type boletobancario; optional due date is deliveryDate. Both initialize BoletoComponent and need no extra configuration. The default shopper payment due date is five days with next-working-day qualification; the overview separately describes a 15-day open period after due date before Offer cancelled. Pending/expired offers and paid/test-promoted sales have different Customer Area locations; live acceptance requires a live request. Warning: Advanced integration-type link points to Drop-in, and generic default statement language must not erase the next-working-day qualification.

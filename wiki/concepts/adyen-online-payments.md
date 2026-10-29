@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-cash-app-pay-android]] — 2026-09-15-captured Cash App Pay Android chooser for Drop-in/Components and Sessions base routes; child guides cover fuller flow and result behavior.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-web]] — 2026-09-15-captured Cash App Pay Web router linking Drop-in, Component and general Web UI guides; method facts remain in the separate approved overview, distinct from Cash App Afterpay.
+
+
+- [[source-adyen-docs-payment-methods-econtext-konbini-web]] — 2026-09-15-captured Japanese convenience-store Web router under econtext-konbini for Drop-in/Components child guides and general Web integration links.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-ios]] — 2026-09-15-captured Cash App Pay iOS chooser for Drop-in/Components child guides and general Sessions-flow iOS base routes.
+
+
+- [[source-adyen-docs-payment-methods-oxxo-web]] — 2026-09-15-captured OXXO Web chooser routing to Drop-in/Components and main Sessions/Advanced integration guides.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-web]] — 2026-09-15-captured Boleto Bancário Web chooser for Drop-in/Components and four Sessions/Advanced base routes; not a voucher or request recipe.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-android]] — 2026-09-15-captured Android Boleto Bancário router linking Drop-in/Components children and four Sessions/Advanced base guides; child link says “redirect,” which is navigation text, not a verified action contract.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-ios]] — 2026-09-15-captured Boleto Bancário iOS router to Drop-in/BoletoComponent child guides and Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-web]] — 2026-09-15-captured Web chooser for Online banking Slovakia Drop-in/OnlineBankingSK Components child guides and Sessions/Advanced base routes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-android]] — 2026-09-15-captured Android chooser routing to Drop-in/Components and main Sessions/Advanced guides.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-ios]] — 2026-09-15-captured iOS chooser for Online banking Slovakia Drop-in/OnlineBankingComponent child guides and Sessions/Advanced base routes.
+
+
+- [[source-adyen-docs-payment-methods-oxxo-api-only]] — 2026-09-15-captured MX/MXN OXXO API-only voucher guide for method discovery, offer-to-sale webhooks and test reconciliation; source flags conflicting item/shopper-field wording.
+
+
+- [[source-adyen-docs-payment-methods-econtext-konbini-web-drop-in]] — 2026-09-15-captured Japanese convenience-store Web Drop-in add-on for econtext setup, optional shopper-detail fields and voucher testing; source flags conflicting 7-Eleven test instructions.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-android-drop-in]] — 2026-09-15-captured Cash App Pay Android Drop-in v5.0.0+ Sessions/Advanced add-on for no extra method fields/configuration, asynchronous result handling, and tokenization/test/live notes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-react-native-drop-in]] — 2026-09-15-captured React Native Drop-in Sessions/Advanced redirect add-on for setup, required Advanced issuer and test/live guidance; source flags base-link and Go sample caveats.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-android-component]] — 2026-09-15-captured Android Components v5.0.0+ Sessions/Advanced add-on for result/webhook finality, conditional tokenized future payments and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-react-native-component]] — 2026-09-15-captured Advanced-only Boleto React Native Components guide for shopper/CPF-CNPJ fields, due date, voucher presentation and offline test offer handling.
+
+
+- [[source-adyen-docs-payment-methods-econtext-konbini-web-component]] — 2026-09-15-captured Japanese convenience-store Web Component add-on for store-specific setup/types, personal-detail UI, voucher status and test/live caveats.
+
+
+- [[source-adyen-docs-payment-methods-oxxo-web-drop-in]] — 2026-09-15-captured OXXO Web Drop-in guide for Sessions/Advanced voucher flow, Open-to-Received offer and webhook finality, test sale promotion, and live method request.
+
+
+- [[source-adyen-docs-payment-methods-oxxo-web-component]] — 2026-09-15-captured OXXO Web Components Sessions/Advanced add-on for voucher action, offline Open/Received/webhook stages and test/live setup; source flags action-link label.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-react-native-component]] — 2026-09-15-captured React Native Component guide: Sessions unavailable; Advanced redirect and selected issuer, with incomplete API minimum and mislinked base guide.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-ios-drop-in]] — 2026-09-15-captured Online banking Slovakia iOS Drop-in Sessions/Advanced add-on for no extra Sessions fields, Advanced issuer/redirect handling and test/live setup; source flags iOS return URL example.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-android-drop-in]] — 2026-09-15-captured Android-titled Drop-in Sessions/Advanced guide for submit-button option, redirect and Advanced selected issuer; source flags iOS-linked Sessions prerequisites.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-api-only]] — 2026-09-15-captured Online banking Slovakia API-only add-on for SK/EUR bank discovery, selected issuer, redirect handling and test/live steps.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-flutter-drop-in]] — 2026-09-15-captured Flutter Drop-in Sessions/Advanced redirect add-on with required Advanced issuer, test/live setup and source link/example caveats.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-web-drop-in]] — 2026-09-15-captured Web Drop-in guide for Sessions/Advanced redirect flows and Advanced issuer field; source flags malformed optional import, Advanced guide URL and Go sample version mismatch.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-api-only]] — 2026-09-15-captured Boleto API-only guide for BR/BRL discovery, voucher presentation, webhook finality and test/live setup; source flags endpoint type, example and due-date caveats.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-ios-drop-in]] — 2026-09-15-captured iOS Drop-in Sessions/Advanced Boleto add-on for shopper fields, voucher action, and offline test reconciliation.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-web-drop-in]] — 2026-09-15-captured Boleto Bancário Web Drop-in Sessions/Advanced guide for shopper/CPF/CNPJ fields, flow-specific due-date names, voucher presentation and test-offer promotion; source warns issuance is not payment.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-web-component]] — 2026-09-15-captured Boleto Web Component guide for Sessions and Advanced request fields, voucher action, and offline test reconciliation.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-flutter-drop-in]] — 2026-09-15-captured Boleto Flutter Drop-in Sessions/Advanced add-on for shopper identity, due date, voucher action and test promotion; source flags timing and link caveats.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-web-component]] — 2026-09-15-captured Web Component guide for Sessions and Advanced redirect flows, issuer request field, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-react-native-drop-in]] — 2026-09-15-captured React Native Drop-in guide for Boleto Sessions/Advanced identity and due-date fields, Advanced voucher presentation, and test/live offer handling; source distinguishes issued voucher from paid sale.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-android-drop-in]] — 2026-09-15-captured Android Drop-in Sessions/Advanced Boleto add-on covering required shopper fields, flow-specific due-date keys, voucher presentation, and test/live offer lifecycle; source distinguishes due date from later Offer cancelled status.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-ios-component]] — 2026-09-15-captured iOS-titled Sessions/Advanced bank-redirect add-on with required Advanced issuer; source flags Android/Kotlin material and a blank Advanced API minimum.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario-ios-component]] — 2026-09-15-captured Boleto Bancário iOS Components Sessions/Advanced add-on for shopper identity/due-date fields, BoletoComponent, voucher action and offline test/live status; source flags Advanced base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia-android-component]] — 2026-09-15-captured Android Component guide for Sessions/Advanced redirect flows, bank-selection UI and required Advanced issuer; source flags blank Advanced API minimum and Go sample version/import mismatch.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-ios-component]] — 2026-09-15-captured Cash App Pay iOS Components Sessions/Advanced guide for app return, asynchronous results and recurring tokens/$cashtag; source flags version and configuration-name caveats.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-ios-drop-in]] — 2026-09-15-captured Cash App Pay iOS Drop-in Sessions/Advanced guide for app return, asynchronous results, token consent/$cashtag and disabled-token webhooks; source distinguishes 5.2.0 flow and 5.42.0 SPM minimums.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-android-drop-in-earlier-versions]] — 2026-09-15-captured Cash App Pay Android Drop-in v4.x.x/4.12.0+ Advanced guide for US/USD one-off results, token storage, cashtag and disabled-token webhook.
+
+
+- [[source-adyen-docs-payment-methods-econtext-konbini-api-only]] — 2026-09-15-captured econtext Japanese convenience-store and Pay-easy API-only add-on for redirect/voucher paths, dated ATM-number change and webhook finality; source flags test/example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-api-only]] — 2026-09-15-captured Cash App Pay API-only guide for Support setup, cashapp redirect and asynchronous results, optional tokenized future payments, and test/live steps; source preserves example and method-label qualifications.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-android-component-earlier-versions]] — 2026-09-15-captured Cash App Pay Android Component v4.x.x Advanced guide for redirect, asynchronous payment results and recurring tokens; source flags version/link and example caveats.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-web-drop-in]] — 2026-09-15-captured Cash App Pay Web Drop-in Sessions/Advanced guide covering amount configuration, tokenization, stored payments, $cashtag retrieval, and test/live setup; source flags a tokenization example omission and consent boundary.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay-web-component]] — 2023-modified, 2026-09-15-captured Cash App Pay Web Components Sessions/Advanced add-on for versioned setup, optional tokenization, stored-detail payments, $cashtag retrieval and disabled-token webhook; source flags incomplete examples.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-slovakia]] — 2026-09-15-captured SK/EUR online-banking redirect overview with issuer selection, acquiring-bank contract statement, capability matrix and platform routes.
+
+
+- [[source-adyen-docs-payment-methods-oxxo]] — 2026-09-15-captured Mexican OXXO cash-voucher method overview with delayed payment confirmation, unpaid voucher expiry, MX/MXN capability matrix, and integration routes.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-pay]] — 2023-modified, 2026-09-15-captured US/USD Cash App Pay wallet overview for capability marks, approval-gated increase-only authorization adjustment, chargeback windows and platform routes.
+
+
+- [[source-adyen-docs-payment-methods-boleto-bancario]] — 2026-09-15-captured Boleto de Proposta BR/BRL voucher overview for payment paths, due-date/Offer-cancelled timing, capability matrix and integration choices.
+
+
+- [[source-adyen-docs-payment-methods-econtext-konbini]] — 2026-09-15-captured Japanese convenience-store/econtext overview with 7-Eleven local-entity condition, redirect versus native voucher, later cash payment, offer expiry and JP/JPY matrix.
+
+
 - [[source-adyen-docs-payment-methods-pay-by-bank-europe-web]] — 2026-09-15-captured Pay by Bank (Europe) Web router linking method Drop-in/Components and general Web guides; see child guides for implementation and the approved method overview for onboarding and transfer-finality caveats.
 
 

@@ -1,0 +1,13 @@
+# Fixed queries — Boleto Bancário iOS Drop-in
+
+## Q1 — purpose, scope and limits
+
+**Query:** What does the captured Boleto Bancário iOS Drop-in guide cover, and what does voucher presentation not prove?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/boleto-bancario/ios-drop-in` is a 2026-09-15-captured add-on guide for existing iOS Drop-in Sessions and Advanced integrations, covering request fields, voucher action and test reconciliation. It does not prove the shopper paid, current merchant enablement, or successful live operation. Method-level lifecycle and capability context is in `wiki/sources/adyen/source-adyen-docs-payment-methods-boleto-bancario.md` (full pinned `raw/adyen/docs/payment-methods/boleto-bancario/ios-drop-in/2026-09-15.md`, `# Boleto Bancário iOS Drop-in` lines 15–23; flow headings lines 25 and 88). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-boleto-bancario-ios-drop-in.md`.
+
+## Q2 — flow fields, voucher and offline finality
+
+**Query:** How do the Sessions and Advanced iOS Drop-in Boleto requirements and due-date fields differ, and how does the guide separate a presented voucher from a paid test Boleto?
+
+**Expected answer:** Sessions requires existing iOS Drop-in Sessions, Checkout API v68+, and Customer Area addition; required `/sessions` additions are shopper name, billing address and CPF/CNPJ, with optional UTC `deliverAt` due date (pinned `raw/adyen/docs/payment-methods/boleto-bancario/ios-drop-in/2026-09-15.md`, `## Sessions flow Drop-in` lines 25–49). Advanced requires existing iOS Drop-in Advanced, Customer Area setup and `action.type: voucher` handling; its `/payments` fields include required `paymentMethod.type: boletobancario`, shopper identifiers and optional **`deliveryDate`** (lines 88–120). The Advanced action requirement links to `#handle-the-redirect`, but the named action is voucher (line 97). Both due-date descriptions give a five-day default and a next-working-day allowance for weekends/national holidays (lines 47, 118). The Advanced response's `PresentToShopper` and voucher PDF/expiry/barcode/amount are presentation data, not paid status (lines 131–143). In test, pending offers may be manually promoted to sale; pending/expired are under Offers and paid under Payment list, with reconciliation testing advised (lines 68–86, 147–165). Live Boleto acceptance requires a request in live Customer Area (lines 86, 165). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-boleto-bancario-ios-drop-in.md`.
