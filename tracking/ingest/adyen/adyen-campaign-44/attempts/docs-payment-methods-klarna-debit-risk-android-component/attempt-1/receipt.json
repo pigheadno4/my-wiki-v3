@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-klarna-debit-risk-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna Debit Risk Android Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna-debit-risk/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna-debit-risk/android-component/2026-09-15.md\"\ntags: [adyen, klarna-debit-risk, android, components, sepa-direct-debit]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen guide adds Klarna Debit Risk to an existing Android Components integration. It has separate Sessions and Advanced flow instructions for a redirect action, and a conditional recurring route that first stores SEPA details using a Klarna Debit Risk payment and then charges the token as SEPA Direct Debit. It is distinct from Klarna financing methods. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Sessions needs an existing Android Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Klarna Debit Risk added in Customer Area. Advanced needs an existing Android Components Advanced integration, handling for the additional redirect action, and the same method setup. The page says no ordinary extra `/sessions` or Advanced `/payments` parameters and no Klarna Debit Risk-specific component configuration.\n- For either flow, import the Android `instant` module, adding `components-compose` when using Jetpack Compose. Create `InstantPaymentComponent` for method type `directEbanking`; Sessions obtains the method from `checkoutSession`, while Advanced selects it from the `/paymentMethods` response. Both flows show Compose and view-based mounts; the Compose key must vary when resetting the component or using a different screen/session.\n- Recurring is through **SEPA Direct Debit**, not a repeat Klarna Debit Risk checkout. The guide recommends explicit shopper permission and clear schedule/amount disclosure because of SEPA chargeback risk. For token creation, its `/payments` field table marks `paymentMethod.type: directEbanking`, `returnUrl`, `countryCode`, `recurringProcessingModel`, `shopperInteraction`, `shopperReference`, and `storePaymentMethod` as required. It says the online shopper interaction is `Ecommerce`, shopper reference must be unique, at least three characters, case-sensitive and free of PII, and `storePaymentMethod` is true for initial storage. A `recurring.token.created` webhook supplies the `storedPaymentMethodId`.\n- Use the stored token only for shopper-absent `Subscription` or `UnscheduledCardOnFile` payments. Those later examples send `paymentMethod.type: sepadirectdebit`, the stored ID, `shopperReference`, `shopperInteraction: ContAuth`, and the selected recurring model. The guide discourages SEPA `CardOnFile` due to chargeback risk, recommending shopper-present individual Klarna Debit Risk authorization instead.\n- **Source example conflict:** both token-creation field tables mark `countryCode` required and describe online `shopperInteraction` as `Ecommerce`, but their shown token-creation requests omit `countryCode` and send `ContAuth`. The curl/Node/Ruby/Python examples also use string forms of `storePaymentMethod` while typed examples use booleans. Do not copy the sample as proof those discrepancies are accepted by the API; reconcile with the chosen Checkout API version and base tokenization guide.\n- Test with Klarna sample data before live acceptance. The page separately says to enable Klarna Debit Risk on the live merchant account. TEST samples and a listed method do not prove live eligibility, authorization, settlement, or SEPA debit outcome.\n\n## Detail locators\n\n- Sessions requirements, no-extra-field claim, imports, `InstantPaymentComponent` and `directEbanking`: raw lines 25\u2013127.\n- Sessions recurring guidance, token field table and request examples: raw lines 128\u2013510. Tokenized subscription and unscheduled examples: raw lines 511\u20131128.\n- Advanced requirements, imports, mounting, no-extra-field claim: raw lines 1137\u20131237. Advanced recurring section repeats the field and sample tension: raw lines 1239\u20131621; token payment examples: raw lines 1622\u20132239.\n- Test and live enablement: raw lines 1129\u20131135 and 2240\u20132246. Curl payment examples use Checkout API v72 TEST; individual library snippets identify their own versions.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration context.\n- [[adyen-tokenization]] \u2014 general token lifecycle context; this source supplies the method-specific route.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna-debit-risk/android-component/2026-09-15|Klarna Debit Risk Android Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Klarna Debit Risk to your existing integration. The following instructions show only what you must add to your integration specifically for Klarna Debit Risk.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions flow Component > Requirements > Checkout API row"
+    },
+    {
+      "text": "We support recurring transactions for Klarna Debit Risk through [SEPA Direct Debit](https://docs.adyen.com/payment-methods/sepa-direct-debit).",
+      "location": "raw line 132, Sessions flow Component > Recurring payments"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw line 513, Sessions flow Component > Make a payment with a token"
+    },
+    {
+      "text": "Before going live make sure to enable Klarna Debit Risk on your live merchant account on the [Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 2246, Advanced flow Component > Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-debit-risk-android-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-debit-risk-android-component]] \u2014 2026-09-15 Android Components Sessions/Advanced Klarna Debit Risk add-on, with redirect setup and a separate SEPA Direct Debit recurring-token route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna-debit-risk/android-component/2026-09-15.md",
+  "raw_sha256": "114848f28a3293eaa73451d658fd235efc425971ec2f2ece1e3ed346152e98af",
+  "status": "candidate_ready"
+}

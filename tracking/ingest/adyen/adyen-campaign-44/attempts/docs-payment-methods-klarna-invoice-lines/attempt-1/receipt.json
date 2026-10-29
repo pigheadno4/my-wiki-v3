@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-klarna-invoice-lines",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna invoice lines and discounts\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/invoice-lines\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/invoice-lines/2026-09-15.md\"\ntags: [adyen, klarna, invoice-lines, discounts, capture, refund, authorization-adjustment]\n---\n\n## Overview\n\nThis Adyen Docs page, captured 2026-09-15 with a 2025-09-04 last-modified marker, explains Klarna line-item data for payment requests, partial captures/refunds, discounts and authorization adjustments. It is request-shaping guidance, not proof that a payment, capture, refund or adjustment succeeded. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Any Klarna payment request includes price/product `lineItems`; the page says Klarna approves only if their total matches `amount.value`. The request table marks `quantity`, `description` and per-item `amountIncludingTax` required, with tax/ID/URL fields described separately. The EUR 10 example's two product lines total EUR 10. This ordinary matching rule has an explicit discount fallback below.\n- For partial capture, supply `lineItems` to Checkout `/payments/{paymentPspReference}/captures`; the table marks quantity, amount excluding tax, tax percentage and description required. Partial refund uses Checkout `/payments/{paymentPspReference}/refunds` with the same listed fields and the original authorization PSP reference in the path. Each modification request returns a PSP reference, followed by a `CAPTURE` or `REFUND` webhook after processing. The examples alone do not prove final success, and both partial examples reuse `Item #1` for two different items, so their IDs should not be copied as unique-item evidence.\n- Discount options are: lower each affected item's pre-tax, tax and tax-inclusive amounts; retain original product prices and add a negative `Discount` line including product and VAT discount; or let Adyen add a discount line when `amount.value` is lower than the submitted line total. The last is described as a fallback when other methods do not work. It is the page's stated exception to the ordinary total-matching instruction; validate the applicable invoice behavior rather than assuming an arbitrary mismatch is accepted. The whole-basket sample includes a `//` comment inside a `json` fence and is illustrative, not strict JSON.\n- Authorization adjustment applies before full capture and is available for Klarna with Checkout API v70+. The update must include **all captured and refunded line items**, including when reducing an authorization or adding a product to a partly captured/refunded order. Its two `/amountUpdates` examples are illustrative: the base order uses SEK, while the updates use EUR, and their `curl https: //...` URL has a space. Do not treat those snippets as verified executable requests or infer an approved cross-currency adjustment.\n\n## Detail locators\n\n- Payment `lineItems` rule, field table and EUR 10 example: pinned raw lines 19\u201381. Partial capture/refund fields, examples and webhook boundaries: lines 83\u2013189.\n- Per-item, whole-basket and Adyen-added discount methods: lines 191\u2013355; fallback exception is at lines 322\u2013324.\n- Adjustment API version/all-item rule and original SEK example: lines 357\u20131061. Partial cancellation and added-product `/amountUpdates` examples, including EUR and malformed URL text: lines 1063\u20131143.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider concept and reciprocal source route\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/invoice-lines/2026-09-15|Klarna invoice lines and discounts, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "For any payment request, include price and product information in [lineItems](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments#request-lineItems).",
+      "location": "raw line 29, ## Make a payment request"
+    },
+    {
+      "text": "Klarna will only approve the payment if the total amount specified in `lineItems` matches the `amount.value`.",
+      "location": "raw line 33, ## Make a payment request"
+    },
+    {
+      "text": "You will receive a response containing a `pspReference`. Once we have processed your request, you will also receive a [CAPTURE](https://docs.adyen.com/api-explorer/Webhooks/latest/post/CAPTURE) webhook.",
+      "location": "raw line 135, ## Make a partial capture request"
+    },
+    {
+      "text": "In this case, Adyen adds a line item for the discount before sending to Klarna.",
+      "location": "raw line 324, ### Let Adyen add a discount line for you"
+    },
+    {
+      "text": "This is available for Klarna with Checkout API v70 and later.",
+      "location": "raw line 359, ## Adjust an authorization"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-invoice-lines-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-invoice-lines]] \u2014 2025-modified, 2026-09-15-captured Klarna invoice-line guide for payments, partial capture/refund, discounts and Checkout API v70+ authorization adjustments, with example inconsistencies qualified in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Discount fallback is an explicit exception to the ordinary line-total matching claim; adjustment examples mix SEK base order with EUR updates and contain malformed curl URL spacing."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/invoice-lines/2026-09-15.md",
+  "raw_sha256": "653cb23213a097a2670319afef2bce8c51026df219c4678ef4210194ae74dd8d",
+  "status": "candidate_ready"
+}

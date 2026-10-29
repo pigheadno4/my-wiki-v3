@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-klarna-debit-risk-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna Debit Risk Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna-debit-risk/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna-debit-risk/android-drop-in/2026-09-15.md\"\ntags: [adyen, klarna-debit-risk, android, drop-in, sepa-direct-debit, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs guide adds Klarna Debit Risk to an existing Android Drop-in integration using Sessions or Advanced flow. It provides method-specific additions and a recurring-token route through SEPA Direct Debit; the base Drop-in implementation and payment outcomes remain outside this page. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The Sessions branch requires an existing Android Drop-in Sessions integration with Checkout API v68 or later and Klarna Debit Risk added in Customer Area. The Advanced branch requires an existing Android Drop-in Advanced integration, redirect handling for `action.type: redirect`, and Customer Area setup. Neither branch adds ordinary method-specific `/sessions` or `/payments` request fields or Drop-in configuration parameters; those statements presuppose the linked base integration.\n- Recurring transactions are supported **through SEPA Direct Debit**. To create a token, the `/payments` table calls for `paymentMethod.type: directEbanking`, `returnUrl`, `countryCode`, `recurringProcessingModel`, `shopperInteraction`, non-PII `shopperReference` (at least three case-sensitive characters), and `storePaymentMethod: true`; email, phone and locale are optional in that table. The guide strongly recommends explicit shopper permission and clear schedule/amount disclosure to reduce SEPA chargebacks. It discourages SEPA CardOnFile because of chargeback risk and recommends shopper-present individual Debit Risk authorization instead.\n- A `recurring.token.created` webhook returns `storedPaymentMethodId`. Later token payments are limited by this guide to shopper-absent `Subscription` or `UnscheduledCardOnFile` scenarios; their `/payments` examples use `paymentMethod.type: sepadirectdebit`, the token ID, the shopper reference, `shopperInteraction: ContAuth` and the relevant recurring model. This method transition is material: a future token charge is not presented as another Debit Risk redirect payment.\n- The initial-token parameter table describes online `shopperInteraction` as `Ecommerce`, while its initial-token examples set `ContAuth`. The curl/Node/Python/Ruby examples also serialize `storePaymentMethod` as a string, whereas the table says to set it to true and typed examples use a boolean. Verify the intended initial-token request against the applicable API before copying these examples. Neither conflict establishes runtime behavior.\n- The guide says to test with Klarna sample data and inspect test payments in Customer Area before live acceptance, then enable Klarna Debit Risk on the live merchant account. A TEST example or this checklist does not establish live availability or a completed payment.\n\n## Detail locators\n\n- Sessions prerequisite and no-extra-parameter/configuration statements: pinned raw lines 25\u201346. Advanced prerequisite and no-extra statements: lines 1059\u20131079.\n- SEPA recurring purpose, permission advice and initial-token table: lines 48\u201379 and 1081\u20131112. The table's `Ecommerce` prose conflicts with `ContAuth` initial-token examples beginning at lines 83\u2013106 and 1116\u20131137.\n- `recurring.token.created`, shopper-absent restriction and SEPA subscription/unscheduled examples: lines 429\u20131047 and 1462\u20132080.\n- Test/live setup: lines 1049\u20131057 and 2082\u20132088.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-klarna-debit-risk]] \u2014 method overview and non-settlement risk\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna-debit-risk/android-drop-in/2026-09-15|Klarna Debit Risk Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions flow ## Requirements, integration row"
+    },
+    {
+      "text": "We support recurring transactions for Klarna Debit Risk through [SEPA Direct Debit](https://docs.adyen.com/payment-methods/sepa-direct-debit).",
+      "location": "raw line 52, Sessions flow ## Recurring payments"
+    },
+    {
+      "text": "We strongly recommend that you request explicit permission from the shopper if you intend to make recurring SEPA payments.",
+      "location": "raw line 57, Sessions flow ## Recurring payments"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw line 433, Sessions flow ### Make a payment with a token"
+    },
+    {
+      "text": "Before going live make sure to enable Klarna Debit Risk on your live merchant account on the [Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 2088, Advanced flow ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-debit-risk-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-debit-risk-android-drop-in]] \u2014 2026-09-15 Android Drop-in Sessions/Advanced add-on for Debit Risk, with Checkout API v68+ Sessions scope and shopper-absent SEPA recurring-token route.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Initial-token table says Ecommerce while examples say ContAuth; some examples encode storePaymentMethod as a string rather than a boolean. Keep qualifications in source."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna-debit-risk/android-drop-in/2026-09-15.md",
+  "raw_sha256": "70e8cf857d9ac5dd493b53a0198dbd88dccfe93b27a96ecf7e2a71b31322a58a",
+  "status": "candidate_ready"
+}

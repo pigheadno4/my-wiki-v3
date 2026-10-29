@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-klarna-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/web-component/2026-09-15.md\"\ntags: [adyen, klarna, web-components, buy-now-pay-later]\n---\n\n## Overview\n\nAdyen's Klarna Web Component guide adds Klarna to an existing Sessions or Advanced flow Web Components integration. The shopper can complete the payment in a Klarna widget in the merchant checkout or be redirected to Klarna. This is a 2026-09-15 documentation snapshot, not evidence of merchant enablement or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Add Klarna in Customer Area for either flow. The page says /sessions is the default with Components v5.0.0 or later; /payments covers an additional use case. Choose the configured component type: `klarna_paynow` (Pay Now), `klarna` (buy now, pay later), or `klarna_account` (Pay Over Time), subject to the method's supported countries and regions.\n- For the documented /sessions and /payments requests, line-item totals must equal `amount.value`, each item needs `description`, and `countryCode` must agree with the billing-address country. The page marks `shopperEmail` required and says to include it to defend against disputes; shopper name and billing address are recommended, while recipient name has a conditional delivery-address rule. Locale must match country and currency. Some products or business models may require Base64 encoded merchant data, but the page warns against test values in the test environment.\n- `useKlarnaWidget: true` shows the widget; omission or false initiates redirect. Web v6 imports `Klarna` and uses `new Klarna(checkout).mount(...)`; v5 and earlier show `checkout.create(...).mount(...)`. The optional-configuration prose says \u201cDrop-in\u201d although this page targets Components, and its v6 mount snippet does not pass the shown widget configuration; verify the version-specific configuration path before relying on that snippet.\n- Automatic capture can be configured in live Customer Area only when capture delay is immediate and the merchant complies with Klarna's shipping-within-24-hours scheme rule. Otherwise manually capture within 90 days of authorization, even if merchant-account automatic capture is enabled; uncaptured authorization then expires. The main manual flow uses `/payments/{paymentPspReference}/captures` with invoice line items. A `status: received` capture response is an accepted request, with a distinct capture PSP reference; wait for the CAPTURE webhook to determine success, and review failure reason before retrying.\n- The later shipping and partial-capture examples use the legacy `/capture` endpoint, `modificationAmount`, and `additionalData.openinvoicedata`, unlike the preceding Checkout `/captures` flow. Treat these as separately scoped examples rather than mixing their request shapes. Partial capture needs an amount below the authorized amount and correct invoice amounts. One delivery address applies to a multiple-item order.\n- For recurring Klarna, the page describes `storePaymentMethod: true` and `shopperReference` in an initial /payments request, then a `recurring.token.created` webhook after settlement. Future /payments calls use that shopper reference, the stored payment method ID, `shopperInteraction: ContAuth`, a recurring processing model, and all ordinary Klarna request parameters. The shown future-payment example is specifically Klarna Pay Now with an actively shopping customer.\n\n## Detail locators\n\n- Requirements and /sessions versus /payments API field tables: raw lines 27\u201374 and 771\u2013789. Sample /sessions curl uses Checkout API v70; /payments curl uses v72, both in TEST. The library snippets list their own versions and are examples, not an SDK-wide version promise.\n- Component types, widget option, and v6/v5 mounting: raw lines 1512\u20131569.\n- Automatic and manual capture requirements, /captures payload and outcome: raw lines 1571\u20131587 and 2033\u20132065.\n- Shipping/partial-capture legacy examples: raw lines 2068\u20132146.\n- Recurring token sequence and future payment: raw lines 2154\u20132266.\n- Test and go-live conditions: raw lines 2268\u20132295. In the source, live testing needs real shopper data and reasonable amounts; repeated same-device/IP tests can trigger velocity checks. Test bypasses those live checks, so test approval does not establish live eligibility.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 broader Adyen integration architecture.\n- [[adyen-payment-capture]] \u2014 general capture lifecycle; this source carries Klarna-specific capture conditions.\n- [[adyen-tokenization]] \u2014 general stored-payment context; this source carries Klarna's sequence.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/web-component/2026-09-15|Klarna Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Klarna to your existing Web Components integration.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Klarna only approves the payment if the total amount specified in `lineItems` matches the `amount.value`, and each line item contains a `description`.",
+      "location": "raw line 63, API reference > /sessions > lineItems row"
+    },
+    {
+      "text": "Otherwise, you must **manually capture Klarna payments** within 90 days after authorization, even if you enable automatic capture on your merchant account.",
+      "location": "raw line 1573, Capture the payment"
+    },
+    {
+      "text": "Wait for the [webhook event](/development-resources/webhooks). This informs you whether the final amount has been captured.",
+      "location": "raw line 2056, Capture manually, step 3"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw line 2168, Recurring payments > Create a token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-web-component]] \u2014 2026-09-15 Klarna Web Components Sessions/Advanced guide for widget or redirect checkout, method-specific request fields, capture conditions and recurring-token route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/web-component/2026-09-15.md",
+  "raw_sha256": "8f87e63c9dfa8cb0e21c7e29bfd280c331293884b9dfad61d1983e1ec93d45f2",
+  "status": "candidate_ready"
+}

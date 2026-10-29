@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-klarna-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna iOS Redirect Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/ios-component/2026-09-15.md\"\ntags: [adyen, klarna, ios, components, redirect, capture, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs guide adds Klarna to an existing iOS Components integration through Sessions or Advanced flow. It covers payment request data, Redirect Component configuration, capture, recurring tokens and test/live checks. It is integration guidance, not evidence of merchant enablement, shopper approval, capture or settlement. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- First build the matching Sessions or Advanced iOS Components integration and add Klarna in Customer Area. `/sessions` is described as the default with Components v5.0.0+; `/payments` is shown for an additional use case. In both request tables, `lineItems` must total `amount.value` and each line must have a `description`; `countryCode` must match the billing-address country. `shopperEmail` is marked required with an explicit dispute-defense note. Optional shopper name/address can be collected on Klarna's page, and some products or business models can require Base64-encoded merchant attachment data. The page warns not to send that merchant data in TEST because test values cause an error.\n- For iOS Components v5.0.0+, use `InstantPaymentComponent` for `.other(\"klarna\")`, retain it, assign the session as delegate for Sessions or self for Advanced, and initiate payment. The v4.x.x example uses `KlarnaComponent` and `KlarnaPaymentMethod`. No other Klarna-specific Component configuration is stated. These are versioned snippets, not proof that the sample request is valid for all markets.\n- Automatic capture can be configured when adding Klarna in live Customer Area only if capture delay is immediate and shipping complies with Klarna's 24-hour scheme rule. Otherwise manual capture is required within 90 days of authorization, even when merchant-account automatic capture is enabled; the authorization expires without it. Manual `/payments/{paymentPspReference}/captures` requires merchant account, amount and invoice `lineItems`. Its `status: received` response acknowledges the request; the later `CAPTURE` webhook reports success or failure. On failure, the guide says to review the reason, correct the issue and resubmit.\n- The separate partial-capture paragraph uses legacy `/capture` with `modificationAmount` below the authorized amount and correct `additionalData.openinvoicedata` for items charged. Its endpoint/field family differs from the preceding Checkout `/captures` manual-capture procedure; use each section's own route and linked API reference rather than combining the examples. Optional shipping/tracking invoice data cannot express different delivery addresses for one multi-item order.\n- The recurring section creates a token with `storePaymentMethod: true` and `shopperReference` in `/payments`; the `recurring.token.created` webhook follows settlement and yields `storedPaymentMethodId`. Future `/payments` calls use that ID, the same shopper reference, `shopperInteraction: ContAuth`, a recurring processing model and ordinary Klarna request parameters. Its concrete sample is **Klarna Pay Now** (`klarna_paynow`), not a universal template for every Klarna product.\n- Before live use, the guide calls for test-environment checks, adding Klarna to live Customer Area, accurate invoice lines/VAT, a fallback when Klarna rejects a shopper, and legal/privacy/brand review. Its live-test advice warns that unrealistic shopper data, unsuitable amount or repeated same-device/IP attempts can cause `Refused`; test bypasses those live checks. This snapshot does not prove live eligibility or results.\n\n> [!warning] Example conflict\n> The request tables say `shopperLocale` must match `countryCode` and currency, while the Sweden/SEK examples use `en_US`. Treat that locale as illustrative and verify a supported market combination; the page does not reconcile the mismatch.\n\n## Detail locators\n\n- Sessions/Advanced prerequisites and `/sessions` versus `/payments` tables, including email dispute note and TEST merchant-data warning: pinned raw lines 21\u201360 and 757\u2013774. Request samples and language-specific API-library versions: lines 62\u20131494.\n- Component v5.0.0+ and v4.x.x snippets: lines 1498\u20131553.\n- Automatic/manual capture condition, 90-day expiry, `/captures` request/response and webhook: lines 1555\u20131571 and 2017\u20132048. Shipping/tracking and partial `/capture` route: lines 2052\u20132130.\n- Recurring token creation/use and Pay Now sample: lines 2132\u20132244. Test/live guidance and refusal boundaries: lines 2246\u20132273.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/ios-component/2026-09-15|Klarna iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you begin, [add Klarna in your Customer Area](/payment-methods/add-payment-methods).",
+      "location": "raw line 30, ## Requirements, Sessions flow setup row"
+    },
+    {
+      "text": "[]()1You need to include `shopperEmail` to defend against potential disputes from shoppers.",
+      "location": "raw line 60, ## API reference, /sessions email note"
+    },
+    {
+      "text": "If your integration uses iOS Components v5.0.0 or later, configure and create an instance of the Klarna Component:",
+      "location": "raw line 1502, ## Component configuration"
+    },
+    {
+      "text": "Otherwise, you must **manually capture Klarna payments** within 90 days after authorization, even if you enable automatic capture on your merchant account. If the manual capture is not performed within 90 days, the authorization will expire.",
+      "location": "raw line 1557, ## Capture the payment"
+    },
+    {
+      "text": "Wait for the [webhook event](/development-resources/webhooks). This informs you whether the final amount has been captured.",
+      "location": "raw line 2040, ## Capture manually, step 3"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-ios-component]] \u2014 2026-09-15 Klarna iOS Redirect Component guide for Sessions/Advanced request data, versioned setup, conditional capture, recurring tokens and test/live checks.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source retains a shopperLocale versus SE/SEK sample mismatch and mixed /captures versus /capture capture paths; keep these qualifications in the source entry."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/ios-component/2026-09-15.md",
+  "raw_sha256": "c5ac9712dab7b9bdc615807738964d52636b3793c2c00437ff300f3e7bdfe5ba",
+  "status": "candidate_ready"
+}

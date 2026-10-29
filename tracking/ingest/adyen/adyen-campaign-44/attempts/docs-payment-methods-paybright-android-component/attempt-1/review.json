@@ -1,0 +1,17 @@
+{
+  "job_id": "docs-payment-methods-paybright-android-component",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The candidate preserves the no-new-integrations boundary, Advanced-flow requirement, payment and redirect sequence, capture constraints, and the main partial-capture/refund caveats. Two material defects in copyable raw examples are still unqualified: the required birth-date field is parsed with timestamp formats that reject the date-only sample, and the partial-refund example leaves both currency fields blank.",
+  "required_changes": [
+    "Add a narrow warning with raw line locators 199 and 566: Java OffsetDateTime.parse(\"1970-07-10\") rejects a date-only string, and Go time.Parse(time.RFC3339, \"1970-07-10\") ignores the parse error before returning a time value. Do not present those language examples as ready-to-use required dateOfBirth values; avoid inventing an SDK fix.",
+    "Extend the refund example caveat with raw lines 982-988: modificationAmount.currency and openinvoicedata.line1.currencyCode are empty strings. The illustrated partial-refund body therefore cannot be copied as a complete CAD request, in addition to the already documented endpoint/body-family mismatch."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "shared_update_decisions": [
+    "c44-paybright-android-component-online-payments-route"
+  ],
+  "reviewer_identity": "c44-rdocs-payment-methods-paybright-android-component",
+  "reviewer_model": "gpt-6-sol"
+}

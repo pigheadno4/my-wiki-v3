@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-scalapay-web]] — 2026-09-15-captured Web integration chooser for Scalapay Drop-in and Components, with general Web integration routes (page last modified 2022-11-21).
+
+
+- [[source-adyen-docs-payment-methods-klarna-web]] — 2026-09-15 Klarna Web integration chooser linking method-specific Drop-in and Components guides plus general Web routes.
+
+
+- [[source-adyen-docs-payment-methods-klarna-ios]] — 2026-09-15 Klarna iOS chooser for Drop-in and Redirect Component child guides plus generic iOS Sessions base links.
+
+
+- [[source-adyen-docs-payment-methods-paybright-web]] — 2026-09-15 PayBright Web Drop-in/Components chooser with Adyen's no-new-integrations notice.
+
+
+- [[source-adyen-docs-payment-methods-klarna-android]] — 2026-09-15 Android Klarna chooser for Drop-in, Redirect Component and general Sessions integration guides.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-ios]] — 2026-09-15 iOS integration chooser for Scalapay Drop-in and Components, with general iOS Sessions-flow routes.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-android]] — 2026-09-15 Scalapay Android chooser linking method-specific Drop-in and Components guides plus general Sessions-flow guides.
+
+
+- [[source-adyen-docs-payment-methods-klarna-android-component]] — 2026-09-15 Klarna Android Components v5.0.0+ Sessions/Advanced add-on for existing integrations, with scoped no-extra-field/configuration statements and test/live checks.
+
+
+- [[source-adyen-docs-payment-methods-klarna-billie]] — 2026-09-15 Billie via Klarna B2B invoice overview, `klarna_b2b`/company fields, no recurring and distinct redirect/widget response paths.
+
+
+- [[source-adyen-docs-payment-methods-paybright-ios]] — 2026-09-15 PayBright iOS chooser for Drop-in and Redirect Component, retaining Adyen's no-new-integrations warning.
+
+
+- [[source-adyen-docs-payment-methods-paybright-android]] — 2026-09-15 PayBright Android Drop-in/Redirect Component chooser with no-new-integrations notice and base Sessions links; child Drop-in requires Advanced.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-web]] — 2026-09-15 Web integration chooser for Klarna Debit Risk Drop-in and Components, with main Sessions/Advanced guide routes.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-android]] — 2026-09-15 Android integration chooser linking Klarna Debit Risk Drop-in and Components guides and Sessions/Advanced base guides.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-ios]] — 2026-09-15 iOS chooser for Klarna Debit Risk Drop-in/Components and base Sessions/Advanced guides; Components label contains unverified `None` wording.
+
+
+- [[source-adyen-docs-payment-methods-klarna-android-drop-in]] — 2026-09-15 Klarna Android Drop-in v5.0.0 Sessions/Advanced add-on with no extra method fields/configuration and test/live gates.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-ios-drop-in]] — 2026-09-15 Scalapay iOS Drop-in Sessions/Advanced add-on for request fields, pricing precheck and test/live routes; no method-specific Drop-in configuration is required.
+
+
+- [[source-adyen-docs-payment-methods-paybright-android-component]] — 2026-09-15 PayBright Android Redirect Component guide for an existing Advanced integration, with Adyen's no-new-integrations notice and capture/refund example caveats.
+
+
+- [[source-adyen-docs-payment-methods-klarna-raw-responses]] — 2026-09-15 Klarna raw acquirer response diagnostics for pending, authorisation, validation, expired offer/token and refusal.
+
+
+- [[source-adyen-docs-payment-methods-klarna-airlines]] — 2026-09-15 Klarna airline request supplement for required leg/passenger data, invoice lines, silent optional risk-data non-consumption and airline capture wording.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-web-drop-in]] — 2026-09-15 Scalapay Web Drop-in Sessions/Advanced add-on with country/name request fields, pricing setup and test/live gates.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-ios-component]] — 2026-09-15 Scalapay iOS Components Sessions/Advanced add-on for request fields, pricing precheck and versioned Component setup; source flags unresolved platform-template links.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-android-drop-in]] — 2026-09-15 Scalapay Android Drop-in v5.0.0+ Sessions/Advanced add-on with required country/name fields, conditional travel data, pricing check and live-request route.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-web-component]] — 2026-09-15 Scalapay Web Components Sessions/Advanced redirect add-on for country/name fields, optional flight/lodging data and v5/v6 mounting; overview owns product and recurring limits.
+
+
+- [[source-adyen-docs-payment-methods-paybright-android-drop-in]] — 2026-09-15 existing Advanced-flow Android Drop-in PayBright redirect guide, with no-new-integrations notice, result/webhook path and capture/refund boundaries.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-android-component]] — 2026-09-15 Scalapay Android Components v5.0.0+ Sessions/Advanced add-on, pricing eligibility and live request qualifications, with Advanced sample scope in source.
+
+
+- [[source-adyen-docs-payment-methods-scalapay-api-only]] — 2026-09-15-captured Scalapay API-only redirect guide for request fields, webhook result, seven-day capture and multiple partial capture/refund conditions.
+
+
+- [[source-adyen-docs-payment-methods-paybright-api-only]] — 2026-09-15 CA/CAD PayBright API-only Web redirect guide for merchant-built form, server request/return and lifecycle; source flags no-new-integration and example/API-shape conflicts.
+
+
+- [[source-adyen-docs-payment-methods-paybright-ios-drop-in]] — 2026-09-15 PayBright iOS Drop-in Sessions/Advanced guide for existing integrations, with no-new-onboarding warning, request fields and capture/refund routes.
+
+
+- [[source-adyen-docs-payment-methods-paybright-ios-component]] — 2026-09-15 PayBright iOS Redirect Component Sessions/Advanced guide with versioned component setup and capture/refund routes; source flags no-new-integration and request-example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-paybright-web-drop-in]] — 2026-09-15-captured PayBright Web Drop-in Sessions/Advanced guide with no-new-integrations warning, request fields and capture/refund conditions.
+
+
+- [[source-adyen-docs-payment-methods-paybright-web-component]] — 2026-09-15 existing-integration PayBright Web Component guide with no-new-integrations notice, shopper/request data, versioned mounting and capture/refund routes.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-api-only]] — 2026-09-15 API-only Debit Risk method discovery, redirect/result and SEPA recurring guide; its CH/CHF table conflicts with the narrower overview and does not prove account availability.
+
+
+- [[source-adyen-docs-payment-methods-klarna-invoice-lines]] — 2025-modified, 2026-09-15-captured Klarna invoice-line guide for payments, partial capture/refund, discounts and Checkout API v70+ authorization adjustments, with example inconsistencies qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-klarna-android-drop-in-earlier-versions]] — 2026-09-15 Klarna Android Drop-in v4.x.x Advanced-flow guide for redirect/details, capture and recurring; its introductory links point to Sessions.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-android-drop-in]] — 2026-09-15 Android Drop-in Sessions/Advanced add-on for Debit Risk, with Checkout API v68+ Sessions scope and shopper-absent SEPA recurring-token route.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-ios-drop-in]] — 2026-09-15 iOS Drop-in Sessions/Advanced Debit Risk add-on with base-flow requirements and separate SEPA Direct Debit recurring-token examples; source flags token-creation table/example mismatch.
+
+
+- [[source-adyen-docs-payment-methods-klarna-api-only]] — 2026-09-15 Klarna API-only guide for widget or redirect, dated details-call change, capture and scoped recurring-token paths.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-web-drop-in]] — 2026-09-15 Web Drop-in Sessions/Advanced method add-on and SEPA-token recurring route, with request example tensions.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-ios-component]] — 2026-09-15 iOS Components Sessions/Advanced add-on for Klarna Debit Risk redirect and SEPA-token recurring; source has unresolved `None` Component and configuration examples.
+
+
+- [[source-adyen-docs-payment-methods-klarna-web-drop-in]] — 2026-09-15 Klarna Web Drop-in Sessions/Advanced add-on for widget or redirect, request fields, capture/webhook boundary, qualified recurring tokens and live preparation.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-web-component]] — 2026-09-15 Web Components Sessions/Advanced add-on for Klarna Debit Risk redirect and SEPA Direct Debit recurring tokens, with version and shopper-absent-use qualifications.
+
+
+- [[source-adyen-docs-payment-methods-klarna-web-component]] — 2026-09-15 Klarna Web Components Sessions/Advanced guide for widget or redirect checkout, method-specific request fields, capture conditions and recurring-token route.
+
+
+- [[source-adyen-docs-payment-methods-klarna-android-component-earlier-versions]] — 2026-09-15 capture of Klarna Android Redirect Component v4.x.x Advanced-flow guide for server payment, redirect/details return, capture and token routes; page metadata says 2019-modified.
+
+
+- [[source-adyen-docs-payment-methods-klarna]] — 2026-09-15 Klarna payment-method overview for product and country/currency matrices, qualified recurring/capture features, Merchant Portal and integration routes; child guides own implementation details.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk-android-component]] — 2026-09-15 Android Components Sessions/Advanced Klarna Debit Risk add-on, with redirect setup and a separate SEPA Direct Debit recurring-token route.
+
+
+- [[source-adyen-docs-payment-methods-klarna-ios-component]] — 2026-09-15 Klarna iOS Redirect Component guide for Sessions/Advanced request data, versioned setup, conditional capture, recurring tokens and test/live checks.
+
+
+- [[source-adyen-docs-payment-methods-klarna-ios-drop-in]] — 2026-09-15 Klarna iOS Drop-in Sessions/Advanced add-on covering request fields, conditional capture, recurring tokens and live-test gates; source flags locale-example and capture-path mismatches.
+
+
+- [[source-adyen-docs-payment-methods-scalapay]] — 2026-09-15-captured Scalapay BNPL overview with country/currency and feature table plus Web, iOS, Android and API-only guide routes.
+
+
+- [[source-adyen-docs-payment-methods-paybright]] — 2026-09-15 capture of a 2022-modified CA/CAD PayBright BNPL redirect overview; Adyen says no new PayBright integrations are accepted.
+
+
+- [[source-adyen-docs-payment-methods-klarna-debit-risk]] — 2026-09-15 Klarna Debit Risk EUR online-banking redirect overview for five listed countries, distinguishing its non-guaranteed settlement and possible post-`AUTHORISATION` chargeback from Klarna Pay Now.
+
+
 - [[source-adyen-docs-payment-methods-affirm-web]] — 2026-09-15 Affirm Web chooser linking Drop-in and Components child guides plus general Web implementation routes.
 
 

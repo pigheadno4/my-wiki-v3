@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-klarna-billie",
+  "attempt": 3,
+  "source_page": "---\ntitle: \"Billie via Klarna | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/billie\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/billie/2026-09-15.md\"\ntags: [adyen, billie, klarna, b2b, buy-now-pay-later]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page describes **Billie via Klarna**, a B2B open-invoice/deferred-payment option offered through an Adyen Klarna integration. The page says Billie invoice payments can be immediately settled in full; that is a product description, not evidence of any particular merchant's settlement. Billie is not one of the consumer Klarna Pay later/Pay over time/Pay now choices. See [[adyen-online-payments]], [[source-adyen-docs-payment-methods-klarna]] and [[adyen]].\n\n> [!warning] Payment-flow contradiction\n> This Billie child page lists \"Redirect, Inline widget\" in its feature matrix (raw lines 27\u201329) and says the widget requires `paymentMethod.subtype: sdk` (lines 815\u2013843). The linked Klarna overview lists only \"Redirect\" for Billie (B2B) (`raw/adyen/docs/payment-methods/klarna/2026-09-15.md`, line 36). Preserve both captured claims when selecting an integration flow; these pages do not establish whether the inline widget is currently available to a particular merchant.\n\n## Key takeaways\n\n- The feature matrix labels Billie BNPL with **redirect or inline widget**, broad \"International\" country and \"Multiple\" currency categories but does not enumerate an eligibility list. It marks **recurring unsupported** and marks refunds, partial/multiple partial refunds, separate/partial/multiple partial captures and chargebacks available. These icons are documentation claims, not proof that a specific merchant is configured or that a modification succeeded.\n- Before adding Billie in **test Customer Area**, the guide requires a Klarna integration for the intended platform and integration type. Billie is an extension of that integration: use `paymentMethod.type: klarna_b2b` wherever the Klarna integration requires a method type. The `/payments` request must include `shopperName` and `company`; `company.name` is required, while `company.registrationNumber` is required outside DE and AT. The page also lists optional homepage, registry location, tax ID and company type fields. The DE/EUR example is a fixture, not a universal country/currency rule.\n- The **default redirect** `/payments` response carries `resultCode: RedirectShopper` and an `action` for the shopper to complete the payment at Klarna. For the **inline widget**, include `paymentMethod.subtype: sdk`; its sample response is `Pending` with `paymentData` and client-token data to be used later with `/payments/details`. Neither initial response proves final authorization, capture, settlement or payout. The page does not provide the full returned-shopper/details or webhook result path; follow the relevant platform's Klarna guide for that flow.\n- The sample curl `/payments` request has a trailing comma after `paymentMethod.type` before the object closes (raw lines 68\u201370), so the literal JSON block is malformed. Some language-library examples set subtype `sdk` even before the later text distinguishes widget from default redirect; select subtype according to the actual intended flow and its API/SDK reference.\n- The page's `## Test and go live` section only says to test Billie in Customer Area with its sandbox, then routes to Web, iOS, Android and API-only Klarna guides. It gives no live-account approval or live-payment outcome.\n\n## Detail locators\n\n- B2B identity, Adyen/Klarna relationship and feature matrix including no recurring: raw lines 23\u201329.\n- Klarna integration and test Customer Area prerequisites: `## Requirements`, lines 31\u201336.\n- `klarna_b2b`, required `shopperName`/`company`, registration-number country exception and other company fields: `## Required fields`, lines 38\u201351.\n- Versioned `/payments` request examples and malformed curl JSON: `## Payment request and response`, lines 53\u2013782; curl lines 61\u2013121, with trailing comma at line 69. Examples include TEST endpoint and DE/EUR values.\n- Redirect `RedirectShopper`/action versus widget `Pending`/`paymentData`/client token: lines 784\u2013843. The inline-widget requirement for `paymentMethod.subtype: sdk` is at lines 815\u2013823.\n- Sandbox statement and platform/integration chooser: lines 845\u2013873. Child guides own implementation and outcome behavior.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment context.\n- [[source-adyen-docs-payment-methods-klarna]] \u2014 Klarna overview with a separate Billie (B2B) row.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/billie/2026-09-15|2026-09-15 Billie via Klarna B2B overview and flow examples]]\n",
+  "quotes": [
+    {
+      "text": "Billie is a Berlin-based Buy Now Pay Later (BNPL) provider that specializes in providing open invoice and deferred payment options to Business-to-Business (B2B) customers.",
+      "location": "raw/adyen/docs/payment-methods/klarna/billie/2026-09-15.md:23"
+    },
+    {
+      "text": "Billie is an extension to a Klarna integration.",
+      "location": "raw/adyen/docs/payment-methods/klarna/billie/2026-09-15.md:40"
+    },
+    {
+      "text": "Required for all countries except DE and AT.",
+      "location": "raw/adyen/docs/payment-methods/klarna/billie/2026-09-15.md:48"
+    },
+    {
+      "text": "If you use the default redirect flow, the shopper is redirected to Klarna to complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/klarna/billie/2026-09-15.md:793"
+    },
+    {
+      "text": "To use the inline widget, your `/payments` request must include `paymentMethod.subtype`: **sdk**.",
+      "location": "raw/adyen/docs/payment-methods/klarna/billie/2026-09-15.md:817"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-billie-via-klarna-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-billie]] \u2014 2026-09-15 Billie via Klarna B2B invoice overview, `klarna_b2b`/company fields, no recurring and distinct redirect/widget response paths.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The raw curl payment example has a trailing comma after `paymentMethod.type`, and the guide does not supply final payment outcome steps.",
+          "Payment-flow contradiction: this Billie child page lists Redirect and Inline widget and requires `paymentMethod.subtype: sdk` for widget (raw lines 27\u201329 and 815\u2013843), while the linked Klarna overview Billie (B2B) row lists only Redirect (raw/adyen/docs/payment-methods/klarna/2026-09-15.md:36). Do not infer current merchant inline-widget availability; coordinator should repair the overview counterpart separately."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/billie/2026-09-15.md",
+  "raw_sha256": "038294b0746851809a0a9876b0c2bdd73abfb2c3d4287e1cd9546e88980dc71f",
+  "status": "candidate_ready"
+}

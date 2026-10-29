@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paybright-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayBright Android Redirect Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paybright/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paybright/android-component/2026-09-15.md\"\ntags: [adyen, paybright, affirm, android, components, redirect, capture, refund]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page describes PayBright in an existing Android Components integration. It opens by saying Affirm acquired PayBright and Adyen will not accept new PayBright integrations. The instructions therefore describe a historical/existing integration path, not current new-merchant eligibility or evidence of payment execution. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The requirements table specifies an **Advanced-flow Android Components** integration and PayBright added in Customer Area, although the opening and See also links point to Sessions-flow Components; use the Advanced requirement for the described server path and do not infer that the Sessions link establishes supported Sessions behavior. `/paymentMethods` uses CA, CAD and amount in minor units and returns `paymentMethod.type: paybright`; the merchant form need not collect PayBright-specific shopper information. The page's later instruction to request PayBright in live Customer Area does not override its upfront statement that Adyen accepts no new PayBright integrations.\n- The server `/payments` request specifies `paybright`, shopper name, date of birth, email, phone, country, billing/delivery addresses, `lineItems` and `returnUrl` from `RedirectComponent.getReturnUrl(context)`; locale is explicitly optional. The example uses a CAD 60 basket with shoes, socks and a negative discount line. The server passes the returned redirect `action` to Android; after the Redirect Component returns, send its `actionComponentData.details` to `/payments/details`, then present the result. If the shopper fails to return, use `AUTHORISATION` webhooks. `Authorised` is a payment result, not proof of capture or merchant settlement.\n- PayBright payments are automatically captured after authorization by default. Delayed or manual capture is needed to capture after shipping or to partially capture. The page says the shopper is charged the first installment at capture. Partial capture is unavailable with Customer Area automatic capture enabled. Its `/capture` section uses `modificationAmount` and optional `additionalData.openinvoicedata`; an initial partial capture cancels the remainder unless the account is enabled for multiple partial captures, which requires Support setup and creates a new invoice per capture.\n- Cancel an uncaptured payment; refund a captured one. For partial refunds, the page links Checkout `/payments/{paymentPspReference}/refunds` but illustrates a legacy-style `/refund` body with `modificationAmount` and optional `additionalData.openinvoicedata`. The guide does not reconcile the endpoint/body families, so verify the applicable API before use.\n\n> [!warning] Example inconsistency\n> The partial-capture prose says the shopper kept one pair of socks, but its example includes shoes and socks; its `modificationAmount.value` is 4500 while the pictured item totals are 4000 plus 1500, and currency fields are empty. The sample also has a trailing comma in a `json` fence. These values do not establish a valid partial capture request.\n\n## Detail locators\n\n- Acquisition/no-new-integration statement, Advanced requirement versus Sessions links, CA/CAD method discovery: pinned raw lines 15\u201342 and 1006\u20131010.\n- Server request fields and language-specific TEST examples: lines 44\u2013817; redirect action, details and result/webhook handling: lines 819\u2013889.\n- Automatic/manual capture, partial-capture effects and example: lines 891\u2013950. Cancel/refund and partial-refund endpoint/example: lines 952\u2013996. Test/live page statements: lines 998\u20131004.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider payment integration concept\n- [[source-adyen-docs-payment-methods-affirm]] \u2014 separate Affirm overview; PayBright acquisition does not make the two integration paths interchangeable\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paybright/android-component/2026-09-15|PayBright Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayBright has been acquired by [Affirm](/payment-methods/affirm). Adyen will not accept new PayBright integrations.",
+      "location": "raw line 19, introduction below # PayBright Redirect Component"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Components integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Components).",
+      "location": "raw line 27, ## Requirements, integration-type row"
+    },
+    {
+      "text": "Get this URL from the Component in the `RedirectComponent.getReturnUrl(context)`.",
+      "location": "raw line 64, ## Make a payment, returnUrl bullet"
+    },
+    {
+      "text": "By default, all PayBright payments are\u00a0[captured automatically](/online-payments/capture) after authorisation.",
+      "location": "raw line 893, ## Capture the payment"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "raw line 948, ### Partial captures"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-paybright-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paybright-android-component]] \u2014 2026-09-15 PayBright Android Redirect Component guide for an existing Advanced integration, with Adyen's no-new-integrations notice and capture/refund example caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Opening no-new-PayBright-integrations notice qualifies later Customer Area setup instructions; Sessions links conflict with Advanced requirement, and partial-capture example values are inconsistent."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paybright/android-component/2026-09-15.md",
+  "raw_sha256": "c3607ea97b9859de1ffb5598b0a95b285603b935e75d5025e72f04e520c0f0fb",
+  "status": "candidate_ready"
+}

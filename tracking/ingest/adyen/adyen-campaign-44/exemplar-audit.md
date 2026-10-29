@@ -1,0 +1,11 @@
+# Adyen C44 coordinator exemplar audit
+
+**PASS** — 2026-10-29. Three immutable manifest samples independently read end-to-end by coordinator, then compared with the promoted source and its two locator-backed retrieval answers. Raw was not changed. No material partial or failure was found in the final audited entries; no all-page expansion is triggered.
+
+| Fixed job | Full raw read | Final source and Q1/Q2 assessment |
+| --- | --- | --- |
+| docs-payment-methods-klarna | All 123 lines | PASS. Product/country matrix, separate Billie row, conditional risk claim, recurring Support/product restrictions, partial-capture enablement, authorization adjustment and immutable portal credential/dispute boundary retained. Orders editing is bounded to shipping/billing details. Reviewed counterpart warning preserves overview Redirect versus Billie child inline-widget scope. |
+| docs-payment-methods-klarna-web-component | All 2301 lines, contiguous ranges without truncation | PASS. Sessions/Advanced, Web version split, widget/redirect configuration, required line total/email/country and locale requirements, optional merchant data TEST warning, conditional 24-hour/90-day capture, distinct capture reference and webhook finality, legacy capture examples, settlement-before-token and server webhook prerequisite retained. Locale example mismatch is explicit. Q1/Q2 return these qualifications and exact raw locators. |
+| docs-payment-methods-scalapay-web-component | All 475 lines, contiguous ranges without truncation | PASS. Existing flow and Customer Area setup, pricing precheck, required country/name fields, optional flight/lodging alternatives, v6/v5 mount scope, unresolved template/import omissions, TEST/live separation and overview no-recurring navigation retained. No capture/refund procedure is inferred from this guide. Q1/Q2 resolve via source/concept/raw. |
+
+Each final entry was compared with its own complete pinned raw, not with worker summaries. The Klarna overview counterpart warning also has an independent bounded review retained under coordinator-repairs/billie-flow/. Initial reviewer corrections were resolved before their source was promoted. Catalog/count/link/hash checks remain exhaustive at close; this quality sample does not replace them.

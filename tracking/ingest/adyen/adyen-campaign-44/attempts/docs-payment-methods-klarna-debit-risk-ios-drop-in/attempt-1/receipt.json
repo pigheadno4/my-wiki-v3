@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-klarna-debit-risk-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Klarna Debit Risk iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna-debit-risk/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna-debit-risk/ios-drop-in/2026-09-15.md\"\ntags: [adyen, klarna-debit-risk, ios, drop-in, sepa-direct-debit, tokenization]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and last-modified on 2026-09-15, describes only the Klarna Debit Risk additions to an existing iOS Drop-in integration. It separates Sessions and Advanced flows, then repeats a method-specific SEPA Direct Debit recurring-token route. This is [[adyen-online-payments]] guidance for Debit Risk, not the separate Klarna financing products; the snapshot does not establish current merchant enablement or successful payment execution. See [[source-adyen-docs-payment-methods-klarna-debit-risk|Klarna Debit Risk overview]] for its country/currency and non-settlement qualifications.\n\n## Key takeaways\n\n- For Sessions, the page requires an existing iOS Drop-in Sessions integration, Checkout API v68 or later, and Klarna Debit Risk added in Customer Area. It says no extra `/sessions` parameters and no Klarna Debit Risk configuration are needed for the base integration. For Advanced, it requires an existing iOS Drop-in Advanced integration, redirect handling for `action.type: redirect`, Customer Area addition, and says no extra `/payments` parameters or method configuration are needed. Those no-extra-parameter statements concern the base flow; the recurring-token section separately lists parameters.\n- The guide says recurring Debit Risk transactions run through SEPA Direct Debit. It strongly recommends explicit shopper permission for recurring SEPA payments and transparent schedule/amount information to reduce chargeback risk. It limits tokenized follow-up payments to shopper-absent `Subscription` and `UnscheduledCardOnFile` cases, and recommends against SEPA Direct Debit `CardOnFile` flows because of chargeback risk.\n- For token creation, the `/payments` table lists `paymentMethod.type: directEbanking`, `returnUrl`, `countryCode`, `recurringProcessingModel`, `shopperInteraction`, a non-PII `shopperReference` of at least three characters, and `storePaymentMethod: true`. The table describes shopper-present online interaction as `Ecommerce`; email, phone and locale are optional, with locale documented as local language or en-US. The token-created webhook carries `storedPaymentMethodId`; receipt of that event is distinct from a completed future payment.\n- Subsequent shopper-absent `/payments` requests use `paymentMethod.type: sepadirectdebit` and the stored ID, with matching shopper reference, `shopperInteraction: ContAuth` and the applicable `Subscription` or `UnscheduledCardOnFile` model. The examples are TEST requests to Checkout API v72; library snippets name their own versions. They do not prove successful debit, settlement or chargeback protection.\n- The page instructs testing in the test environment, then enabling Klarna Debit Risk on the live merchant account before live use. It does not give capture, refund or final settlement mechanics here; follow the method overview and relevant lifecycle guides for those boundaries.\n\n> [!warning] Token-creation example conflicts with its parameter table\n> The token-creation table marks `countryCode` required and describes online shopper authorization as `shopperInteraction: Ecommerce`, but the example `/payments` requests omit `countryCode` and use `ContAuth`. Several curl/language examples also serialize `storePaymentMethod` as a string although the table says `true`. Reconcile these fields against the applicable Checkout API and tokenization guidance before adapting the example; this page does not resolve the conflict.\n\n## Detail locators\n\n- Scope and Sessions prerequisites, API v68 floor, base request/configuration statements: pinned raw lines 15\u201346.\n- Sessions recurring premise, permission recommendation and token-creation table: lines 50\u201379. Token-creation examples and webhook ID: lines 81\u2013429; compare table lines 71, 76 and 79 with curl lines 89\u2013104.\n- Sessions follow-up shopper-absent limitation and SEPA subscription/unscheduled examples: lines 431\u20131047; test/live instruction: lines 1049\u20131057.\n- Advanced redirect and setup prerequisites, base request/configuration statements: lines 1059\u20131081. The recurring premise, token table, examples and webhook repeat at lines 1083\u20131464; follow-up examples at 1466\u20132082; test/live instruction at 2084\u20132092.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider integration concept\n- [[adyen-tokenization]] \u2014 provider token lifecycle concept\n- [[source-adyen-docs-payment-methods-klarna-debit-risk]] \u2014 method scope and settlement risk\n- [[source-adyen-docs-payment-methods-sepa-direct-debit]] \u2014 separate SEPA Direct Debit method\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna-debit-risk/ios-drop-in/2026-09-15|Klarna Debit Risk iOS Drop-in guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Klarna Debit Risk.",
+      "location": "Klarna Debit Risk iOS Drop-in, line 19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "Sessions flow Drop-in > Requirements, line 33"
+    },
+    {
+      "text": "We support recurring transactions for Klarna Debit Risk through [SEPA Direct Debit](https://docs.adyen.com/payment-methods/sepa-direct-debit).",
+      "location": "Sessions flow Drop-in > Recurring payments, line 52"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "Sessions flow Drop-in > Make a payment with a token, line 433"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=iOS\\&integration=Drop-in#handle-the-redirect). `action.type`: **redirect**",
+      "location": "Advanced flow Drop-in > Requirements, line 1068"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "klarna-debit-risk-ios-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-debit-risk-ios-drop-in]] \u2014 2026-09-15 iOS Drop-in Sessions/Advanced Debit Risk add-on with base-flow requirements and separate SEPA Direct Debit recurring-token examples; source flags token-creation table/example mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Token-creation table says countryCode required and shopper-present Ecommerce, while its examples omit countryCode and use ContAuth."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna-debit-risk/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "b4cbd53c0b519b630737822d6e8139be08ab4799fdcf3287edc25f0e6f2f9ecb",
+  "status": "candidate_ready"
+}

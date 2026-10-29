@@ -1,0 +1,9 @@
+# Klarna Debit Risk Android Drop-in retrieval checks
+
+## Q1 — What does this guide add, and what is not established?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-klarna-debit-risk-android-drop-in]]` → `[[raw/adyen/docs/payment-methods/klarna-debit-risk/android-drop-in/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-klarna-debit-risk-android-drop-in`. Full pinned raw path: `raw/adyen/docs/payment-methods/klarna-debit-risk/android-drop-in/2026-09-15.md`. Raw lines 15–46 and 1059–1079 scope the page to an existing Android Drop-in Sessions/Advanced integration and method-specific setup; Sessions specifies Checkout API v68+. It does not establish current merchant eligibility, working base integration, live enablement or payment success.
+
+## Q2 — What is the recurring route and its material qualifications?
+
+Use the same root/provider/concept/source/raw route. Raw lines 50–79 and 1083–1112 state that recurring Debit Risk uses **SEPA Direct Debit** after a `directEbanking` token-creating payment, recommend explicit shopper permission, and list initial request fields. Raw lines 429–437 and 1462–1472 give the `recurring.token.created` token and limit future token payments to shopper-absent Subscription/UnscheduledCardOnFile, using `sepadirectdebit` and `ContAuth`. Both initial-token tables require `countryCode` at lines 71/1104 so the shopper can proceed, yet every initial-token example omits it (for example lines 85–104 and 1118–1137); no API rejection is inferred. The tables say `Ecommerce` at lines 76/1109 but code samples say `ContAuth` at lines 102/1135; curl examples serialize `storePaymentMethod` as a string at lines 103/1136, while table/typed samples describe true. Raw lines 1051–1057 and 2082–2088 require test/live setup without proving live results.

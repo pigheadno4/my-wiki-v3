@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-payment-methods-klarna-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/api-only/2026-09-15.md\"\ntags: [adyen, klarna, api-only, online-payments, capture, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide adds Klarna to an existing Web API-only checkout. The merchant builds the payment form and sends server-side Checkout API requests; the shopper either uses an embedded Klarna widget or redirects to Klarna. The guide covers Pay Now, Pay Later and Pay Over Time, plus capture and recurring-token paths. It is a 2026-09-15 capture of a page marked last modified 2024-01-02. Use [[adyen-online-payments]] for broader architecture and [[adyen-tokenization]] for stored-payment context.\n\n## Key takeaways\n\n- **Two payment paths and prerequisites:** The guide requires an existing API-only integration, Klarna added in test Customer Area and webhooks for payment outcome (raw lines 23\u201342). In the server-side `/payments` request, `paymentMethod.type` selects `klarna_paynow`, `klarna` or `klarna_account`; `paymentMethod.subtype: sdk` chooses the widget, while omitting the subtype chooses redirect (raw lines 130\u2013155). The widget returns a client token/category and later an authorization token; redirect uses the returned `action.url` and a return `redirectResult` (raw lines 899\u20131014).\n- **Request and approval conditions:** The country/currency/product matrix for `/paymentMethods` is method-specific (raw lines 56\u201381). For payment, `countryCode`, currency and billing-address country must agree, and alternative locale must match that combination (raw lines 91\u2013128). The guide's request table marks `lineItems`, `shopperEmail` and `countryCode`; line-item total must match `amount.value`, and each item needs a description. Name and billing address are recommended in the request; Klarna asks the shopper for them when absent. `shopperEmail` also has a dispute-defense note, despite the separate form table's blank Required column (raw lines 44\u201354, 157\u2013170). Refer to the raw table for other fields and market combinations.\n- **Outcome and dated change:** The page states that from **2024-01-31**, `/payments/details` is no longer required for Klarna transactions, though it can still check final status; webhooks are needed to update order management for all final outcomes (raw lines 19, 955, 1030). The widget and redirect instructions still describe `/payments/details` as a step (raw lines 938\u2013953, 985\u20131018), so follow the dated qualification rather than treating those examples as an unconditional requirement. Its presented results include Authorised, Cancelled and Refused; Klarna may refuse on risk checks (raw lines 1016\u20131028). Neither a shopper return nor `Pending` alone proves final authorization.\n- **Capture boundary:** Capture follows shipment. Automatic capture in live Customer Area is described only when capture delay is immediate **and** Klarna's shipping-within-24-hours Scheme Rule is met. Otherwise manual capture is required within **90 days** after authorization, even if merchant-account automatic capture is enabled; absent capture, authorization expires (raw lines 29\u201333, 1032\u20131034). The Checkout `/payments/{paymentPspReference}/captures` response has `status: received` and a separate capture PSP reference; wait for the `CAPTURE` webhook to determine success or failure (raw lines 1036\u20131052, 1494\u20131525). Partial capture needs a lower amount and correct invoice-line amounts (raw lines 1600\u20131607). The page also includes a separate legacy `/capture`/`openinvoicedata` shipping example (raw lines 1529\u20131607); do not merge its fields into the Checkout captures request without checking the endpoint.\n- **Recurring qualification:** The guide describes `storePaymentMethod: true` plus `shopperReference`, and a `recurring.token.created` webhook only after the initial payment settles; later requests use `storedPaymentMethodId`, shopper reference, `ContAuth` and a recurring processing model (raw lines 1609\u20131654). The related Klarna overview's recurring footnote says to contact Support, limits Pay Over Time to long-term subscriptions, and excludes monthly subscriptions and one-off on-demand tokenized purchases (Klarna overview raw lines 31\u201339). This guide's generic model table does not override those product conditions.\n- **Test/live boundary:** The guide asks for test-environment validation, separate addition of Klarna in live Customer Area and review of legal/privacy, presentation, invoice/VAT and rejection fallback (raw lines 1723\u20131738). It says live shopper-data, minimum-amount and velocity checks can yield Refused and are bypassed in test (raw lines 1740\u20131748). The captured examples use TEST endpoints and versioned library snippets; they do not establish live merchant enablement or payment success.\n\n## Detail locators\n\n- `/paymentMethods` country/currency/product matrix and type codes: pinned raw lines 56\u201387.\n- Country/currency/locale payment matrix: pinned raw lines 91\u2013128.\n- Server `/payments` fields and example clients: pinned raw lines 130\u2013892. Example SDK versions vary by language.\n- Widget, redirect, return and result handling: pinned raw lines 899\u20131030.\n- Capture request, response, webhook, optional shipping and partial capture: pinned raw lines 1032\u20131607.\n- Token creation and token payment fields: pinned raw lines 1609\u20131721.\n- Test and live checklist: pinned raw lines 1723\u20131750.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 API-only checkout and webhook context.\n- [[adyen-tokenization]] \u2014 provider tokenization context.\n- [[source-adyen-docs-payment-methods]] \u2014 broader catalog; product-specific conditions belong to the Klarna pages.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15|Klarna API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Starting January 31st, 2024, the `/payments/details` API call is no longer required for Klarna transactions.",
+      "location": "raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15.md:19"
+    },
+    {
+      "text": "* **The Klarna widget**: the shopper completes the payment in your checkout.",
+      "location": "raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15.md:25"
+    },
+    {
+      "text": "For Klarna to approve the payment, the total amount specified in `lineItems` must match the `amount.value`, and each line item must include a `description`.",
+      "location": "raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15.md:159"
+    },
+    {
+      "text": "Otherwise, you must **manually capture Klarna payments** within 90 days after authorization, even if you enable automatic capture on your merchant account.",
+      "location": "raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15.md:1034"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created]",
+      "location": "raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15.md:1623"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-api-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-api-only]] \u2014 2026-09-15 Klarna API-only guide for widget or redirect, dated details-call change, capture and scoped recurring-token paths.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "Klarna overview limits recurring use and calls for Support, beyond this guide's generic model table."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/api-only/2026-09-15.md",
+  "raw_sha256": "9c85e3364073ed8791e8ddcec6310a313740ec6aa20ebd1e5e812f42be105dfa",
+  "status": "candidate_ready"
+}

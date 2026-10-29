@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-paybright-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayBright iOS Redirect Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paybright/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paybright/ios-component/2026-09-15.md\"\ntags: [adyen, paybright, ios, components, redirect, capture, refund]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and last-modified on 2026-09-15, adds the PayBright Redirect Component to an existing iOS Components integration with Sessions or Advanced server flow. It explicitly says PayBright was acquired by Affirm and Adyen will not accept new PayBright integrations. See [[source-adyen-docs-payment-methods-paybright|PayBright overview]], [[source-adyen-docs-payment-methods-affirm|Affirm]] and [[adyen-online-payments]]. The snapshot does not establish current merchant eligibility, operational payment success or settlement.\n\n## Key takeaways\n\n- The guide assumes an existing iOS Components integration for the chosen server flow and PayBright added in Customer Area. It calls `/sessions` the default with Components v5.0.0 or later and shows `/payments` for an additional use case. Both request tables mark shopper first/last name, date of birth, email, phone, country, billing address and a unique shopper reference of at least three characters as required. Delivery address defaults to billing when blank or missing; `shopperLocale` and `lineItems` are optional, with line items recommended for approval rates. These are method-specific table markings, separate from the general Checkout schema.\n- For iOS Components v5.0.0+, the page checks for `paybright` as an `other` payment method, creates `InstantPaymentComponent`, assigns the Session or merchant delegate according to flow and initiates payment. The v4.x.x example instead uses `PayBrightPaymentMethod` and `PayBrightComponent`. The page says no additional PayBright-specific component configuration is required.\n- The capture section says PayBright payments are automatically captured after authorization by default; capture delay or manual capture is needed to capture after shipment or partially. Capturing charges the shopper's first installment. Partial capture is unavailable while automatic capture is enabled in Customer Area. Its `/capture` example uses `modificationAmount` and optional `additionalData.openinvoicedata`; after a partial capture, the unclaimed amount is automatically cancelled unless the account is enabled for multiple partial captures. That option requires Support and creates a new invoice per capture.\n- Before capture, cancel a payment; after capture, refund it. The partial-refund prose names `/payments/{paymentPspReference}/refunds` with `modificationAmount` and optional `additionalData.openinvoicedata`, while the example is labeled `/refund request` and uses an `originalReference` legacy-looking shape. The page does not reconcile those endpoint/payload forms; follow the applicable API reference before reuse.\n- The page calls for test details and a live Customer Area request. Its own opening warning says Adyen accepts no new PayBright integrations, so that older live-request instruction must not be read as current onboarding availability.\n\n> [!warning] Incomplete and inconsistent request examples\n> The Sessions and Advanced examples contain empty strings for required shopper values and `amount.currency`. The Advanced Java/PHP snippets use USD for CA, while the [[source-adyen-docs-payment-methods-paybright|PayBright overview]] lists CA/CAD. The examples also include render hints as JSON keys and some Web-channel snippets on this iOS page. They are illustrative, not ready-to-send requests; verify currency, values and channel against the applicable method/API documentation. The partial-capture example's amount is 4500 while its listed shoes plus one pair of socks total 5500 before any discount, and no discount line appears in that invoice example.\n\n## Detail locators\n\n- Acquisition/new-integration warning and Sessions/Advanced prerequisites: pinned raw lines 15\u201339. Request tables: lines 45\u201360 and 789\u2013804.\n- Test `/v69/sessions` samples: lines 62\u2013787; `/v72/payments` samples: lines 806\u20131310. Blank currency/required values are present in both; Advanced Java/PHP USD appears at lines 887 and 975.\n- Versioned iOS component creation: lines 1312\u20131367. Capture default, first-installment timing, partial-capture gate and unclaimed-balance effects: lines 1369\u20131428.\n- Cancel/refund boundary and endpoint/example mismatch: lines 1430\u20131474. Test and live instructions: lines 1476\u20131482.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online integration concept\n- [[source-adyen-docs-payment-methods-paybright]] \u2014 CA/CAD overview and no-new-integration warning\n- [[source-adyen-docs-payment-methods-affirm]] \u2014 separate Affirm method\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paybright/ios-component/2026-09-15|PayBright iOS Redirect Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayBright has been acquired by [Affirm](/payment-methods/affirm). Adyen will not accept new PayBright integrations.",
+      "location": "PayBright Redirect Component, line 19"
+    },
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Components) or later.",
+      "location": "API reference > /sessions, line 47"
+    },
+    {
+      "text": "By default, all PayBright payments are\u00a0[captured automatically](/online-payments/capture) after authorisation.",
+      "location": "Capture the payment, line 1371"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "Partial captures, line 1426"
+    },
+    {
+      "text": "Before you can accept live PayBright payments, you need to [submit a request for PayBright](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "Test and go live, line 1482"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paybright-ios-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paybright-ios-component]] \u2014 2026-09-15 PayBright iOS Redirect Component Sessions/Advanced guide with versioned component setup and capture/refund routes; source flags no-new-integration and request-example conflicts.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Guide's live-request instruction conflicts with its statement that Adyen accepts no new PayBright integrations.",
+          "CA request examples have blank currency or USD despite the overview's CA/CAD matrix."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paybright/ios-component/2026-09-15.md",
+  "raw_sha256": "4d35b93bac83501c0f680ffbc255f289a69955abd3d5eec739e8d99d3e06dc1b",
+  "status": "candidate_ready"
+}

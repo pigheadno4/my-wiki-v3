@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-klarna-airlines",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Klarna for airlines | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/airlines\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/airlines/2026-09-15.md\"\ntags: [adyen, klarna, airlines, travel, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs guide adds **airline-specific data** to Klarna `/sessions` or `/payments` requests. It is a supplement to a Klarna payment integration: it defines travel information under `additionalData`, required `lineItems` fields, and an airline capture note. It does not provide a complete checkout or final-outcome flow, or prove any airline's current eligibility. See [[adyen-online-payments]], [[source-adyen-docs-payment-methods-klarna]] and [[adyen]].\n\n## Key takeaways\n\n- For both endpoint tabs, `additionalData.additionalDataAirline` is marked required. The listed fields include an alphanumeric customer reference, leg departure/destination three-letter IATA airport codes, two-letter carrier accounting code, travel date/time formatted `yyyy-MM-dd HH:mm`, and passenger first/last name and traveller type (`mr`, `mrs`, `ms`). Each leg/passenger key needs a numeric `[itemNr]` suffix even when only one item exists. The single- and multi-leg JSON blocks are examples, not the whole payment request or proof of valid airport codes.\n- Optional `additionalData.openinvoicedata.merchantData` can carry Base64-encoded JSON of relevant product, purchase and customer details following Klarna's specification. **If the format is wrong, Klarna's risk engine will not consume the data and Klarna will not return validation errors for it.** The field being accepted in an API response therefore cannot establish that risk data was consumed. The general Klarna Web Drop-in guide additionally says not to include this field in TEST because test values cause an error; read the exact integration/environment before sending it.\n- Both `/sessions` and `/payments` airline `lineItems` tables mark `quantity`, `description` (maximum 10,000 characters) and `amountIncludingTax` (minor units) mandatory. They are method-specific request obligations, not a statement that other line-item fields or airline data are universally optional.\n- This airline page says immediate/automatic capture is supported because flight bookings are locked when payment is made, and says the default manual capture flow is also supported. The general Klarna Web Drop-in guide conditions automatic capture on immediate delay plus shipping within 24 hours and otherwise requires manual capture within 90 days. These pages give different contexts; the captured evidence does not settle whether an airline booking bypasses that general shipping condition. Verify the applicable merchant configuration and scheme rule before treating automatic capture as enabled. No capture or settlement outcome is shown here.\n\n## Detail locators\n\n- Airline-specific scope and both request routes: raw lines 15\u201319.\n- `/sessions` required airline fields, numbering rule, single/multi-leg fixtures and optional `merchantData` silent non-consumption: `## Additional data`, lines 21\u201391.\n- `/payments` parallel airline fields, numbering rule, fixtures and optional `merchantData` warning: lines 93\u2013159. Field labels vary in whether `airline.` is printed before `leg`; use the selected endpoint's API reference for exact keys rather than treating labels as a complete payload.\n- Mandatory airline `lineItems.quantity`, `description` and `amountIncludingTax` in both endpoint tabs: `## Line items`, lines 161\u2013183.\n- Airline immediate/manual capture statement: `## Capture payments`, lines 185\u2013187; compare the general Web Drop-in capture conditions in [[source-adyen-docs-payment-methods-klarna-web-drop-in]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment context.\n- [[source-adyen-docs-payment-methods-klarna]] \u2014 product, country and currency overview.\n- [[source-adyen-docs-payment-methods-klarna-web-drop-in]] \u2014 Web Drop-in field and capture conditions that need context-specific reconciliation.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15|2026-09-15 Klarna airline-specific request fields and capture note]]\n",
+  "quotes": [
+    {
+      "text": "When shoppers select Klarna to make payments to airlines, you have to include specific travel details in `additionalData` and `lineItems` of your [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) or [/sessions](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions) request.",
+      "location": "raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15.md:19"
+    },
+    {
+      "text": "The [`additionalData.additionalDataAirline`](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-additionalData-AdditionalDataAirline) object is required and includes:",
+      "location": "raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15.md:29"
+    },
+    {
+      "text": "There will also not be any validation errors from Klarna in this case, so take care to send the correct details in the correct format.",
+      "location": "raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15.md:91"
+    },
+    {
+      "text": "For airline payments, the mandatory parameters that must be included in the [lineItems](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-lineItems) object, include:",
+      "location": "raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15.md:167"
+    },
+    {
+      "text": "Because flight bookings are locked when the payment is made, immediate capture (also referred to as auto-capture) is supported by Klarna. However, the default manual capture flow is also supported.",
+      "location": "raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15.md:187"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-airlines-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-airlines]] \u2014 2026-09-15 Klarna airline request supplement for required leg/passenger data, invoice lines, silent optional risk-data non-consumption and airline capture wording.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Airline immediate-capture wording does not resolve the general Klarna Web Drop-in shipping-within-24-hours condition; preserve both contexts."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/airlines/2026-09-15.md",
+  "raw_sha256": "e4efd5b593359ec485613ad4b518dee40e07f48515c366c5d22bf8a197df5664",
+  "status": "candidate_ready"
+}

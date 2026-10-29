@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-paybright-ios-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen PayBright iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paybright/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paybright/ios-drop-in/2026-09-15.md\"\ntags: [adyen, paybright, affirm, ios, drop-in, buy-now-pay-later]\n---\n\n## Overview\n\nAdyen's captured iOS Drop-in guide describes adding PayBright to an existing Sessions or Advanced integration. It opens with a material lifecycle warning: PayBright was acquired by Affirm and Adyen will not accept new PayBright integrations. The later live section still describes requesting PayBright in live Customer Area; treat that as legacy setup text, not evidence that new onboarding is open. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Use an existing iOS Drop-in Sessions or Advanced flow and add PayBright in Customer Area for an existing integration. The page calls `/sessions` the Drop-in v5.0.0-or-later default, with `/payments` for an additional use case. Neither Drop-in v5+ nor v4.x.x has required PayBright-specific client configuration.\n- Both API tables mark `shopperName` (first and last), `dateOfBirth`, `shopperEmail`, `telephoneNumber`, `countryCode`, `billingAddress`, and a unique `shopperReference` of at least three characters as required. `deliveryAddress` falls back to billing address if absent/blank; `shopperLocale` and `lineItems` are optional, with line items recommended for approval. The examples are Canadian (`countryCode: CA`) and use an iOS return URL, but many required-field and currency values are empty placeholders. Some /payments Java/PHP examples use USD while most others leave currency blank; these snippets do not establish an accepted currency or runnable request.\n> [!warning] Contradiction\n> The PayBright [[source-adyen-docs-payment-methods-paybright|overview]] feature matrix identifies **CA/CAD** (overview raw lines 31\u201333). This iOS Drop-in guide's Canadian `/payments` Java and PHP examples use **USD** (raw lines 883\u2013888 and 970\u2013976), while most other examples leave currency blank. The USD snippets do not establish supported PayBright currency; resolve the integration against the overview and account-specific provider configuration before forming a payment request.\n\n- By default, the guide says PayBright payments capture automatically after authorization; capturing after goods ship or making a partial capture requires capture delay or manual capture. At capture, the shopper is charged the first installment. Partial capture is unavailable when automatic capture is enabled in Customer Area. A legacy `/capture` example uses `modificationAmount` and optional `additionalData.openinvoicedata`; unclaimed amount after partial capture is automatically cancelled unless the account is enabled for multiple partial captures. Multiple partial captures require Support setup and create a separate invoice per capture.\n- The guide separates cancel before capture from refund after capture. Its partial-refund prose links Checkout `/payments/{paymentPspReference}/refunds` but names `modificationAmount` and `additionalData.openinvoicedata`, and the example is labeled `/refund` with `originalReference`. Treat this as a mixed endpoint/request-shape example and verify the selected API before implementation.\n- The final \u201cSee also\u201d integration guide links to iOS **Components** even though this is a Drop-in page. Test details and test Customer Area status are documented, but do not establish live payment success; the stated no-new-integration warning remains controlling for new onboarding.\n\n## Detail locators\n\n- No-new-integration warning and Sessions/Advanced requirements: raw lines 15\u201340.\n- /sessions field table and TEST v69 sample: raw lines 41\u2013126; language-library examples through line 788. /payments field table and TEST v72 snippets: lines 789\u20131310. The /payments Java/PHP USD values conflict with blank currency in curl and other examples (lines 886\u2013887, 975\u2013976).\n- No required Drop-in configuration for v5+ or v4.x.x: raw lines 1312\u20131320.\n- Default capture, partial capture and remainder behavior: raw lines 1322\u20131381. Cancel/refund and mixed partial-refund endpoint wording: lines 1383\u20131427.\n- Testing, live request text and mismatched Components \u201cSee also\u201d link: raw lines 1429\u20131441.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration context.\n- [[adyen-payment-capture]] \u2014 general capture lifecycle.\n- [[adyen-refunds]] \u2014 general refund lifecycle.\n- [[source-adyen-docs-payment-methods-paybright]] \u2014 PayBright overview with CA/CAD matrix and no-new-integrations warning.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paybright/ios-drop-in/2026-09-15|PayBright iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayBright has been acquired by [Affirm](/payment-methods/affirm). Adyen will not accept new PayBright integrations.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "This is the default with [Drop-in v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in) or later.",
+      "location": "raw line 47, API reference > /sessions"
+    },
+    {
+      "text": "By default, all PayBright payments are\u00a0[captured automatically](/online-payments/capture) after authorisation.",
+      "location": "raw line 1324, Capture the payment"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "raw line 1379, Partial captures"
+    },
+    {
+      "text": "If\u00a0a payment has not yet been captured, you can\u00a0[cancel](/online-payments/cancel) it.",
+      "location": "raw line 1385, Refunds and cancellations"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-paybright-ios-dropin-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paybright-ios-drop-in]] \u2014 2026-09-15 PayBright iOS Drop-in Sessions/Advanced guide for existing integrations, with no-new-onboarding warning, request fields and capture/refund routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paybright/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "0f459188c382f222ae7386811fa777b1316b2fc478c2342bae1b781578101596",
+  "status": "candidate_ready"
+}

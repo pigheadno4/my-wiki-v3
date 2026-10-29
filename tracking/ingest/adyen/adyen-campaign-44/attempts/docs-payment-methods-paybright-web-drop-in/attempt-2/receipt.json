@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-payment-methods-paybright-web-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen PayBright Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paybright/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md\"\ntags: [adyen, paybright, web-drop-in, buy-now-pay-later, canada]\n---\n\n## Overview\n\nThis [[adyen]] guide describes PayBright additions to an existing Web Drop-in integration using Sessions or Advanced flow. It explicitly states that Adyen will **not accept new PayBright integrations**, following PayBright's acquisition by Affirm (raw line 19). Its subsequent setup and live-request instructions are retained as historical guidance for the described integration, not evidence that a new merchant can now enable PayBright. The related [[source-adyen-docs-payment-methods-paybright]] overview identifies the CA/CAD redirect product; [[adyen-online-payments]] provides general checkout context.\n\n## Key takeaways\n\n- **Eligibility and base flow:** The page asks for an existing Sessions or Advanced Drop-in integration and PayBright added in Customer Area (raw lines 28\u201344), while its opening says new integrations are not accepted (raw line 19). It says the merchant supplies shopper details for PayBright risk checks and product information through `lineItems` (raw lines 23\u201326). The later test/live section still describes a live Customer Area request (raw lines 1428\u20131434); that procedural text does not cancel the new-integration restriction.\n- **Request data and internal wording tension:** The `/sessions` route is described as the default for Drop-in v5.0.0 or later, with `/payments` shown for an additional use case (raw lines 50\u201352, 794\u2013809). Both request tables mark shopper name, birth date, email, phone, country, billing address and shopper reference as required; delivery address and locale are optional. They mark `lineItems` optional but recommended for approval rates, despite the opening instruction to provide them (raw lines 23\u201326, 54\u201365, 798\u2013809). Delivery address falls back to billing address if omitted. The examples use `CA`, `CAD`, `paybright` and a discount line (raw lines 67\u2013132, 811\u2013879). Some Advanced Java/PHP examples instead use `USD` with `CA`, conflicting with the CA/CAD overview and the other examples (raw lines 880\u2013967). The Advanced Java example also puts positive `amountExcludingTax` and `amountIncludingTax` values on its Discount line (raw lines 953\u2013959), whereas the other examples subtract that line; copying it would not provide a validated amount/line-item recipe. Use the raw table and product scope, not those examples alone, for field, currency or amount decisions.\n- **Drop-in and capture:** The guide says no PayBright-specific Drop-in configuration is needed (raw lines 1317\u20131319). It says automatic capture follows authorization by default; delayed or manual capture is needed if capture should follow shipment or a partial capture is wanted. It says the shopper is charged the first installment on capture (raw lines 1321\u20131327). Partial captures are unavailable with automatic capture enabled in Customer Area (raw lines 1329\u20131333). A single partial capture automatically cancels the unclaimed amount; an account enabled for multiple partial captures retains the remainder, requires Support setup and creates a new invoice per capture (raw lines 1378\u20131380).\n- **Modification boundary:** For the shown partial `/capture` path, specify `modificationAmount` and optionally invoice-line data; the guide maps `openinvoicedata.itemAmount` to `lineItems.amountExcludingTax` and `itemVatAmount` to `taxAmount` (raw lines 1333\u20131347). Uncaptured payments can be cancelled; captured payments require refund to return funds (raw lines 1382\u20131384). For partial refund, the prose links Checkout `/payments/{paymentPspReference}/refunds`, while its example is labelled `/refund` and uses legacy `originalReference`/`modificationAmount`/`openinvoicedata` fields (raw lines 1386\u20131426). Keep endpoint and field mappings separate; the examples do not demonstrate a completed capture or refund.\n- **Test boundary:** The source points to PayBright test details and test Customer Area status lookup (raw lines 1428\u20131432). It does not demonstrate live merchant enablement, shopper approval or payment execution. Example SDK/API snippets are mixed vintages and TEST-oriented; consult the specific integration version before use.\n\n## Detail locators\n\n- New-integration restriction and method-specific purpose: pinned raw lines 15\u201326.\n- Sessions/Advanced prerequisites and request tables: pinned raw lines 28\u201365, 794\u2013809.\n- Sessions `/sessions` examples: pinned raw lines 67\u2013793.\n- Advanced `/payments` examples and currency discrepancy: pinned raw lines 811\u20131315.\n- Drop-in, capture and partial-capture rules: pinned raw lines 1317\u20131380.\n- Refund/partial-refund prose and example: pinned raw lines 1382\u20131426.\n- Test/live instructions: pinned raw lines 1428\u20131434.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online checkout context.\n- [[source-adyen-docs-payment-methods-paybright]] \u2014 CA/CAD product overview and new-integration restriction.\n- [[source-adyen-docs-payment-methods-affirm]] \u2014 separate Affirm method; PayBright acquisition does not make its integration rules interchangeable.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15|PayBright Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "PayBright has been acquired by [Affirm](/payment-methods/affirm). Adyen will not accept new PayBright integrations.",
+      "location": "raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "This is the default with [Drop-in v5.0.0]",
+      "location": "raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md:52"
+    },
+    {
+      "text": "This is optional, but we recommend to include this data to improve approval rates.",
+      "location": "raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md:65"
+    },
+    {
+      "text": "Partial captures are not available if you enabled [automatic capture]",
+      "location": "raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md:1331"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md:1378"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-paybright-dropin-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paybright-web-drop-in]] \u2014 2026-09-15-captured PayBright Web Drop-in Sessions/Advanced guide with no-new-integrations warning, request fields and capture/refund conditions.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page still gives live-request instructions despite stating that Adyen accepts no new PayBright integrations."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paybright/web-drop-in/2026-09-15.md",
+  "raw_sha256": "8292eda4ef24a3a2a156c95aec00452e53ced2519e423d18297e9b53464a75bb",
+  "status": "candidate_ready"
+}

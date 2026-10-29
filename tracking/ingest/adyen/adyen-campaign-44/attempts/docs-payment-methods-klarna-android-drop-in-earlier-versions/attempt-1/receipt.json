@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-klarna-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna Android Drop-in v4.x.x\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, klarna, android, drop-in, v4]\n---\n\n## Overview\n\nThis 2026-09-15-captured guide adds Klarna to an existing **Android Drop-in v4.x.x Advanced flow**. Drop-in shows eligible Klarna methods and redirects the shopper to Klarna; the merchant server sends the payment request and returned action details, then captures an authorized payment under Klarna's shipping and timing rules. The page is an integration snapshot, not proof of current merchant enablement or a successful payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The requirements table calls for an existing Advanced-flow Android Drop-in integration and Klarna added in Customer Area. The introduction and \u201cSee also\u201d link instead target a Sessions-flow guide; use the actual Advanced prerequisite for this v4.x.x page. Drop-in uses `countryCode` and `amount.currency` from `/paymentMethods` to display the three product categories: Pay Now, Pay Later, and Pay Over Time, subject to the captured country/currency matrix.\n- When Drop-in returns `paymentComponentData.paymentMethod`, pass it to the merchant server for `/payments`. The request also needs `lineItems` totaling `amount.value`, each with a `description`; `shopperEmail` and `countryCode` are marked required. Country, currency, billing-address country and locale must be compatible. Shopper name and billing address are recommended; a different delivery recipient has conditional name fields. Some business models need encoded merchant data, but test values cause a TEST error.\n- A `RedirectShopper` response supplies the action for Drop-in. After the shopper returns, the server posts `actionComponentData.details` to `/payments/details`, then presents `Authorised`, `Cancelled`, or `Refused`. The guide attributes refusal to Klarna risk checks and advises another method. `Authorised` here precedes the separate capture step.\n- Automatic capture can be configured in the live Customer Area only if capture delay is immediate and the merchant complies with Klarna's shipping-within-24-hours scheme rule. Otherwise, manually capture within 90 days of authorization, even if merchant-account automatic capture is enabled; the authorization expires if not captured. The main manual route uses Checkout `/payments/{paymentPspReference}/captures` with invoice `lineItems`. A `status: received` response carries a capture PSP reference distinct from the payment reference; the CAPTURE webhook gives final success or failure and a reason for repair/retry.\n- Later shipping/tracking and partial-capture examples use legacy `/capture`, `modificationAmount`, and `additionalData.openinvoicedata`. They have a different request shape than Checkout `/captures`. For the legacy partial example, the amount is below the authorized amount and invoice amounts must be correct; one order cannot specify different delivery addresses per item.\n- The recurring route adds `storePaymentMethod: true` and `shopperReference` to /payments. Only after settlement does the page describe a `recurring.token.created` webhook with a stored method ID. Later /payments uses the ID, shopper reference, `ContAuth`, a recurring model, and the ordinary Klarna request parameters. The shown token example is Klarna Pay Now for an actively purchasing shopper.\n\n## Detail locators\n\n- v4.x.x scope, requirements and country/currency discovery matrix: raw lines 15\u201362. Payment data and locale matrix: lines 63\u2013126.\n- TEST `/payments` sample uses Checkout API v72; language-specific library examples show their own versions: raw lines 128\u2013846. Redirect and result handling: lines 848\u2013913.\n- Capture conditions and Checkout request/response/webhook distinction: raw lines 915\u2013931 and 1377\u20131410. Shipping/tracking and legacy partial-capture examples: lines 1412\u20131490.\n- Recurring token sequence: raw lines 1492\u20131604. Testing and live requirements: lines 1606\u20131633.\n- The \u201cSee also\u201d Android Drop-in route links to Sessions despite the Advanced requirement (raw line 1637).\n\n## Related\n\n- [[adyen-online-payments]] \u2014 broader provider integration context.\n- [[adyen-payment-capture]] \u2014 general capture lifecycle; this source holds Klarna-specific conditions.\n- [[adyen-tokenization]] \u2014 general stored method lifecycle; this source holds the Klarna example.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/android-drop-in/earlier-versions/2026-09-15|Klarna Android Drop-in v4.x.x, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [Android Drop-in](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in) renders Klarna in your payment form, and redirects the shopper to Klarna to complete the payment.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Drop-in integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in).",
+      "location": "raw line 29, Requirements > Integration type"
+    },
+    {
+      "text": "When the shopper proceeds to pay, Drop-in returns the `paymentComponentData.paymentMethod`.",
+      "location": "raw line 104, Make a payment request"
+    },
+    {
+      "text": "When the shopper returns back to your app, Drop-in provides the `actionComponentData` object.",
+      "location": "raw line 868, Check the payment result"
+    },
+    {
+      "text": "Otherwise, you must **manually capture Klarna payments** within 90 days after authorization, even if you enable automatic capture on your merchant account.",
+      "location": "raw line 917, Capture the payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-android-dropin-earlier-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-android-drop-in-earlier-versions]] \u2014 2026-09-15 Klarna Android Drop-in v4.x.x Advanced-flow guide for redirect/details, capture and recurring; its introductory links point to Sessions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "100e507cbfe99482e5817849bffc43e85a50c4c930a81a22e3941cc4ef2093e9",
+  "status": "candidate_ready"
+}

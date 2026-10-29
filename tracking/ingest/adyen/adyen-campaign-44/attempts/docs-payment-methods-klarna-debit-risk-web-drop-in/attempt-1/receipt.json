@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-payment-methods-klarna-debit-risk-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna Debit Risk Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna-debit-risk/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md\"\ntags: [adyen, klarna-debit-risk, web-drop-in, redirect, sepa-direct-debit, tokenization]\n---\n\n## Overview\n\nThis [[adyen]] guide describes method-specific additions for Klarna Debit Risk in an existing Web Drop-in integration. It separates Sessions and Advanced server-side flows and provides a recurring route through SEPA Direct Debit tokens. Klarna Debit Risk is distinct from Klarna Pay Now: the related [[source-adyen-docs-payment-methods-klarna-debit-risk]] overview describes non-guaranteed online-banking settlement and possible chargeback after an `AUTHORISATION` webhook. Use [[adyen-online-payments]] for the surrounding integration context. This guide alone does not prove enabled merchant access or payment settlement.\n\n## Key takeaways\n\n- **Sessions and Advanced setup:** Sessions requires an existing Web Drop-in Sessions flow, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and Klarna Debit Risk added in Customer Area (raw lines 25\u201336). Its ordinary `/sessions` request needs no method-specific additional parameters (raw lines 38\u201342). Advanced requires an existing Web Drop-in Advanced flow, redirect handling and Customer Area setup; its ordinary `/payments` request likewise needs no method-specific additions (raw lines 1066\u20131094). Optional tree-shaken import includes `Redirect` (raw lines 44\u201354, 1078\u20131088). These statements concern the ordinary Drop-in payment, not the separate token-creation request.\n- **SEPA token route:** Both sections describe creating a token from a Klarna Debit Risk payment, then using that token for later **SEPA Direct Debit** transactions (raw lines 58\u201373, 1098\u20131113). They strongly recommend explicit shopper permission and clear schedule/amount disclosure to reduce chargeback risk (raw lines 65, 1105). Token creation's request table marks `paymentMethod.type: directEbanking`, `returnUrl`, `countryCode`, `recurringProcessingModel`, `shopperInteraction`, `shopperReference` and `storePaymentMethod: true`; `shopperReference` must have at least three characters and no PII (raw lines 73\u201387, 1113\u20131127). The `recurring.token.created` webhook carries `storedPaymentMethodId` (raw lines 437, 1477).\n- **Token-use boundary:** This page says to use tokenized payments only without a present shopper, for `Subscription` or `UnscheduledCardOnFile`; the later payment is processed as `sepadirectdebit`, with the stored method ID, shopper reference and `ContAuth` shown in examples (raw lines 439\u2013450, 777\u2013807, 1479\u20131490, 1817\u20131847). The table also lists `CardOnFile` as a model while advising against SEPA Direct Debit for that flow because of chargebacks and favoring a shopper-authorized Klarna Debit Risk payment (raw lines 83, 1123). Do not infer a reusable Klarna wallet credential or guaranteed settlement.\n- **Prose/example tensions:** The token-creation table labels online `shopperInteraction` as `Ecommerce` and marks `countryCode` required, but the adjacent subscription token examples use `ContAuth` and omit `countryCode` (raw lines 79\u201387 versus 89\u2013112; repeated at 1119\u20131127 versus 1129\u20131152). The prose also says no extra token parameters while its table enumerates standard tokenization fields (raw lines 69\u201387). Follow the table and the main tokenization guide for the chosen operation; do not treat the example alone as a validated schema.\n- **Test and live:** The guide calls for test-environment/sample-data validation and a distinct live merchant-account enablement step (raw lines 1056\u20131064, 2096\u20132104). TEST endpoints and versioned library examples are reference material, not live-payment or funds-arrival evidence.\n\n## Detail locators\n\n- Sessions flow requirements, ordinary request and optional import: pinned raw lines 25\u201354.\n- Sessions token creation table, examples and webhook: pinned raw lines 58\u2013437.\n- Sessions token use and test/live guidance: pinned raw lines 439\u20131064.\n- Advanced flow requirements, ordinary request and optional import: pinned raw lines 1066\u20131094.\n- Advanced token creation, token use and test/live guidance: pinned raw lines 1098\u20132104.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider checkout context.\n- [[adyen-tokenization]] \u2014 token lifecycle context.\n- [[source-adyen-docs-payment-methods-klarna-debit-risk]] \u2014 method identity, EUR/country scope, non-guaranteed settlement and chargeback warning.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15|Klarna Debit Risk Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [create a payment session]",
+      "location": "raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md:42"
+    },
+    {
+      "text": "We support recurring transactions for Klarna Debit Risk through [SEPA Direct Debit]",
+      "location": "raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md:60"
+    },
+    {
+      "text": "We strongly recommend that you request explicit permission from the shopper if you intend to make recurring SEPA payments.",
+      "location": "raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md:65"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md:441"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-debit-risk-web-dropin-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-debit-risk-web-drop-in]] \u2014 2026-09-15 Web Drop-in Sessions/Advanced method add-on and SEPA-token recurring route, with request example tensions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "Keep Klarna Debit Risk non-guaranteed settlement and post-AUTHORISATION chargeback warning from its overview distinct from Klarna Pay Now."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna-debit-risk/web-drop-in/2026-09-15.md",
+  "raw_sha256": "bf5c6952b14501ae737dc0f8bd7a305da10aa8e68fa5fc64deccfc38c76d1349",
+  "status": "candidate_ready"
+}

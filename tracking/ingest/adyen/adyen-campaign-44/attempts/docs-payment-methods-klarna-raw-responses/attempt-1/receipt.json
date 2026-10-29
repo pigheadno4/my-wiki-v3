@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-klarna-raw-responses",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna raw acquirer responses\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/raw-responses\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md\"\ntags: [adyen, klarna, raw-acquirer-response, troubleshooting, payments]\n---\n\n## Overview\n\nThis [[adyen]] reference maps common **Klarna raw acquirer response** strings to a last journal type and a short diagnostic explanation for successful, refused, failed or cancelled transactions. It is a captured troubleshooting table, not a complete status machine or a substitute for payment `resultCode`, journal and webhook evidence. Use [[adyen-online-payments]] for the provider's payment context and the relevant Klarna integration guide for the chosen flow.\n\n## Key takeaways\n\n- **Expected and accepted:** `PENDING` has a blank last-journal-type cell and is described as expected for Klarna Widget integrations; it is not a success signal. `ACCEPTED` maps to last journal type `Authorised` and says the payment was authorised (raw lines 18\u201321). A raw response row is a diagnostic mapping, not evidence that any particular transaction was captured or settled.\n- **Validation and configuration errors:** `BAD_VALUE` rows cover locale, order-line and order tax calculations, purchase currency, postal codes, merchant-data attachment, phone and name encoding. The table routes these issues to the Klarna payment, invoice-line or API-only guides (raw lines 23\u201331). Other Error rows include `Internal error`, `Payment method not available (contact Klarna)`, `Allowed category list is empty`, `Missing returnUrl` and `No InvoiceLines provided` (raw lines 22, 32\u201335). Their descriptions offer possible causes or next checks, not a guarantee that one change will resolve the payment.\n- **Cancellation and token timing:** `NOT_FOUND : Invalid session id` maps to `OfferCancelled` and is attributed to an expired shopper offer; the page recommends retrying the transaction (raw line 36). `ReadSessionResponse does not have valid authorisation token` is explicitly **not linked to a payment status** and says to check logs. Its wrapped row gives two possible causes: `/payments/details` called before Klarna shopper authorisation, or a Klarna authorisation token expired after **60 minutes** (raw lines 37\u201338). Do not turn this diagnostic into a final payment status.\n- **Risk refusal:** `REFUSED` and `UNAVAILABLE_PAYMENT_METHOD`/`PAYMENT_METHOD_FAILED : Purchase for payment method failed` map to `Refused`; the page attributes these to Klarna's internal risk engine and offers an unpaid Klarna balance as a possible reason (raw lines 39\u201340). The table does not identify the actual reason for an individual shopper.\n\n## Detail locators\n\n- Table purpose and column meanings: pinned raw lines 14\u201319.\n- `PENDING`, `ACCEPTED`, generic and `BAD_VALUE` diagnostics: pinned raw lines 20\u201331.\n- Configuration, return URL and invoice-line errors: pinned raw lines 32\u201335.\n- Expired offer, authorisation-token timing and refused mappings: pinned raw lines 36\u201340.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 payment outcome and webhook context.\n- [[source-adyen-docs-payment-methods-klarna-api-only]] \u2014 Klarna Widget and API-only request/return route.\n- [[source-adyen-docs-payment-methods-klarna-invoice-lines]] \u2014 invoice-line and tax context for relevant `BAD_VALUE` rows.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15|Klarna raw acquirer response table, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "These are the most common raw acquirer responses from Klarna for successful, refused, failed or cancelled transactions.",
+      "location": "raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md:16"
+    },
+    {
+      "text": "This is an expected response for [Klarna Widget]",
+      "location": "raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md:20"
+    },
+    {
+      "text": "The payment was authorised.",
+      "location": "raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md:21"
+    },
+    {
+      "text": "The shopper has tried to make a payment for an offer that has expired.",
+      "location": "raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md:36"
+    },
+    {
+      "text": "The shopper's authorisation token from Klarna has expired after 60 minutes.",
+      "location": "raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md:38"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-raw-responses-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-raw-responses]] \u2014 2026-09-15 Klarna raw acquirer response diagnostics for pending, authorisation, validation, expired offer/token and refusal.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/raw-responses/2026-09-15.md",
+  "raw_sha256": "eacf547f92e6203ac1c759f21ce8226bdb4e0dd310be90cdd30193b30535882a",
+  "status": "candidate_ready"
+}

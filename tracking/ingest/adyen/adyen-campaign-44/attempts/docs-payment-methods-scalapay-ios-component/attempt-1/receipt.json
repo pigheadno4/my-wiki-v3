@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-scalapay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Scalapay iOS Redirect Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/scalapay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/scalapay/ios-component/2026-09-15.md\"\ntags: [adyen, scalapay, ios, components, redirect, sessions]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and last-modified on 2026-09-15, adds Scalapay to an existing iOS Components integration using Sessions or Advanced server flow. It gives method-specific request fields and versioned Component creation examples. It does not itself describe capture, refund, redirect-return outcome or tokenization mechanics. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-scalapay|Scalapay overview]] for the captured EUR redirect and feature matrix; this page does not prove current merchant eligibility or successful payment execution.\n\n## Key takeaways\n\n- Both flow tabs require an existing Components integration and Scalapay added in Customer Area. The page says activation defaults to standard pricing and instructs merchants to contact an account manager before activation to verify Enterprise-pricing eligibility if volume may qualify. That instruction concerns pricing eligibility, not a guarantee of method enablement.\n- The `/sessions` table, called the default with Components v5.0.0+, marks `countryCode` and `shopperName.firstName`/`lastName` required. It lists IT, FR, PT and ES as shopper country codes. Billing address, delivery address and `lineItems` are listed without required marks. The `/payments` table for an additional use case has the same core field markings, plus optional airline outbound flight date or lodging check-in date; its prose says to provide either field in the same transaction. Follow the verified table for format details.\n- The Advanced `/payments` example is TEST Checkout API v72 with `paymentMethod.type: scalapay_3x`, IT/EUR, shopper name and a `returnUrl` placeholder. The library examples list their own versions. These are examples for the named product/country, not evidence of support for every Scalapay offer or a completed authorization.\n- For iOS Components v5.0.0+, the guide looks up `.other(\"scalapay_3x\")`, creates an `InstantPaymentComponent`, sets the Session or merchant delegate based on flow, and calls `initiatePayment()`. The v4.x.x path uses `ScalapayPaymentMethod` and `ScalapayComponent`. It says there are no additional Scalapay-specific Component configuration steps.\n- The guide points to Scalapay test scenarios, test payment status in Customer Area and a live Customer Area request before accepting live payments. It does not establish live approval. Its requirement links contain an unresolved `{{getParameter('platform')}}` placeholder encoded in the URL; use the explicit iOS Components route in the page's See also section or the existing iOS integration rather than treating those template links as verified iOS URLs.\n\n## Detail locators\n\n- Existing-flow prerequisites and activation/pricing qualification: pinned raw lines 15\u201339. The platform placeholder appears in requirement links at lines 29 and 36.\n- `/sessions` field table and Components v5 default: lines 41\u201355. Advanced `/payments` fields, optional airline/lodging data and IT `scalapay_3x` example: lines 57\u201396; language examples: lines 98\u2013428.\n- iOS v5+ Sessions/Advanced `InstantPaymentComponent`, v4 `ScalapayComponent`, and no extra configuration: lines 430\u2013485.\n- Test and live instructions plus explicit iOS integration route: lines 487\u2013500.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider integration concept\n- [[source-adyen-docs-payment-methods-scalapay]] \u2014 captured method/country/currency and feature matrix\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/scalapay/ios-component/2026-09-15|Scalapay iOS Redirect Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add Scalapay to your existing iOS Components integration.",
+      "location": "Scalapay Redirect Component, line 17"
+    },
+    {
+      "text": "Activating Scalapay defaults the pricing to our standard pricing. Adyen offers Enterprise pricing for merchants with sufficient volume. Before activating Scalapay, contact your account manager to verify if you are eligible.",
+      "location": "Requirements, line 39"
+    },
+    {
+      "text": "The shopper's two-letter country code: **IT**, **FR**, **PT** or **ES**.",
+      "location": "API reference > /sessions > countryCode, line 51"
+    },
+    {
+      "text": "Provide either `additionalData.airline.flight_date` or `additionalData.lodging.checkInDate` in the same transaction.",
+      "location": "API reference > /payments > airline.flight_date, line 68"
+    },
+    {
+      "text": "There are no configuration steps specific to Scalapay required for Components.",
+      "location": "Component configuration > v4.x.x, line 485"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "scalapay-ios-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-scalapay-ios-component]] \u2014 2026-09-15 Scalapay iOS Components Sessions/Advanced add-on for request fields, pricing precheck and versioned Component setup; source flags unresolved platform-template links.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Requirement links contain an encoded unresolved platform template placeholder rather than an explicit iOS route."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/scalapay/ios-component/2026-09-15.md",
+  "raw_sha256": "c7224ddcc282b525f4d839bf271bb25e8d19089ceb272f181c276e2b4bf48974",
+  "status": "candidate_ready"
+}

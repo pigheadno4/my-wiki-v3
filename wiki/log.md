@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Adyen website C44
+
+- Fifty independently approved Klarna, Klarna Debit Risk, PayBright and Scalapay documentation sources; first full-review approvals 33/50 and 18 targeted correction reviews. 1 concepts touched (0 new); source_count 2214 = 2200 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-44/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-29] ingest | Stripe iOS `26.15.1`
 
 - Approved full additive ingest with focused reading and the exact-SHA CocoaPods migration supplement. Records SPM/XCFramework migration after 26.15.0, announced React Native initialization fix and bounded internal Checkout/SPI changes; all earlier history preserved. Details [[stripe-log]] and [[source-github-stripe-ios]]. No SDK/device/payment test, commit or push.

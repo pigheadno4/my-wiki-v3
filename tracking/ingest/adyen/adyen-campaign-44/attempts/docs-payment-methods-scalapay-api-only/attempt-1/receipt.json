@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-payment-methods-scalapay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Scalapay API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/scalapay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md\"\ntags: [adyen, scalapay, api-only, redirect, capture, refunds]\n---\n\n## Overview\n\nThis [[adyen]] guide describes adding Scalapay to an existing Web API-only integration with a merchant-built payment form and server-side Checkout API calls. The captured page is marked last modified 2019-09-06 and fetched 2026-09-15. It covers FR, IT, PT and ES in EUR, a redirect and return flow, result handling, capture and multiple partial capture. The separate [[source-adyen-docs-payment-methods-scalapay]] overview identifies Scalapay as buy now, pay later and marks recurring and chargebacks unsupported in its snapshot table. A generic tokenization link in this guide's See also section does not establish Scalapay recurring capability.\n\n## Key takeaways\n\n- **Setup and commercial gate:** The guide requires an existing API-only integration and adding Scalapay in test Customer Area (raw lines 21\u201326). It says activation defaults to standard pricing and asks merchants to contact their account manager before activation to verify Enterprise-pricing eligibility (raw line 28). For `/paymentMethods`, it specifies country code IT, FR, PT or ES and EUR (raw lines 30\u201337). The test setup, pricing note and method listing do not prove account enablement.\n- **Payment request:** The guide's `/payments` table marks `paymentMethod.type: scalapay_3x`, `countryCode`, `returnUrl` (maximum 1024 characters), `shopperEmail` and `shopperName` as required; billing/delivery addresses and `lineItems` are unmarked optional fields in this table. Flight and lodging dates are optional, with the instruction to provide **either** `additionalData.airline.flight_date` or `additionalData.lodging.checkInDate` in one transaction (raw lines 39\u201354). The curl and language snippets omit `shopperEmail` despite the table's required mark (raw lines 58\u2013413); do not use those examples alone as a complete request recipe. Examples use TEST v72 and various library versions.\n- **Redirect and outcome:** The server `/payments` response supplies an `action` of type redirect with the URL to use; after shopper return, the guide sends URL-decoded `redirectResult` in `/payments/details` (raw lines 415\u2013484). The page recommends system browser or mobile browser handling for app redirects (raw lines 431\u2013439). `/payments/details` can return Authorised, Cancelled, Error, Pending/Received or Refused. Pending/Received means final result is unknown and requires an `AUTHORISATION` webhook; if the shopper never returns, the page also directs use of that webhook for outcome (raw lines 486\u2013505). A redirect return or Pending is not capture or settlement.\n- **Capture and release:** Depending on settings, capture may be manual or automatic, delayed or immediate. Manual or delayed automatic capture must occur within **7 days** of authorization, after which authorization expires. The guide says to confirm successful capture **before shipping** and to cancel if no capture is intended, releasing authorized balance (raw lines 507\u2013515). Multiple partial captures need Support enablement; after enablement, they can be made up to the authorized amount. Any authorized remainder that will not be captured needs an explicit cancellation request, or settlement can wait up to seven days for Scalapay to release it (raw lines 517\u2013525).\n- **Refund reference and live gate:** With multiple partial captures enabled, Scalapay refunds require `capturePspReference`; the guide warns to ensure the integration can send it to avoid failed refund requests (raw line 527). Test scenarios use Scalapay test cards and test Customer Area, while live acceptance requires a separate live Customer Area request (raw lines 529\u2013535). Those instructions do not establish a successful payment, capture, refund or current merchant eligibility.\n\n## Detail locators\n\n- API-only prerequisite, activation pricing and method discovery: pinned raw lines 15\u201337.\n- Payment request field table, field conditions and TEST examples: pinned raw lines 39\u2013413.\n- Redirect action, return and result statuses: pinned raw lines 415\u2013505.\n- Capture, cancellation, multiple partial captures and refund reference: pinned raw lines 507\u2013527.\n- Test/live setup: pinned raw lines 529\u2013535.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 broader online API and webhook context.\n- [[source-adyen-docs-payment-methods-scalapay]] \u2014 product scope and snapshot feature matrix, including recurring and chargeback marks.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15|Scalapay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Activating Scalapay defaults the pricing to our standard pricing.",
+      "location": "raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "**scalapay\\_3x**",
+      "location": "raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md:45"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md:497"
+    },
+    {
+      "text": "make sure to capture authorized Scalapay transactions within **7 days**.",
+      "location": "raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md:511"
+    },
+    {
+      "text": "If multiple partial captures are enabled, Scalapay refunds require the `capturePspReference`.",
+      "location": "raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md:527"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-scalapay-apionly-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-scalapay-api-only]] \u2014 2026-09-15-captured Scalapay API-only redirect guide for request fields, webhook result, seven-day capture and multiple partial capture/refund conditions.",
+        "quote_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Request examples omit shopperEmail despite the source table marking it required; consult the table."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/scalapay/api-only/2026-09-15.md",
+  "raw_sha256": "6af93cd6517c72f17a83f347f3507299a7c5cc4109034273ac8fbc21e7295889",
+  "status": "candidate_ready"
+}

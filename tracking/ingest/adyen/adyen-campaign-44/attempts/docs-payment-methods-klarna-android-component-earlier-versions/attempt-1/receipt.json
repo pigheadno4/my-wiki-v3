@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-klarna-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Klarna Redirect Component v4.x.x for Android\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, klarna, android, components, redirect, v4]\n---\n\n## Overview\n\nThis captured Adyen guide describes adding Klarna to an existing **Android Components v4.x.x Advanced flow** using the Redirect Component. The merchant shows an eligible Klarna method, submits shopper and item details from its server, hands the returned redirect action to the Android app, sends returned details from the server, and captures an authorized payment after goods are sent. The page metadata says last modified 2019-09-06, while its examples include later Checkout API and library versions; this snapshot does not establish one historical runtime version or current merchant eligibility. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The guide requires an existing Advanced flow Android Components integration and Klarna added in Customer Area. `/paymentMethods` discovery is scoped by listed country/currency combinations for Pay Now (`klarna_paynow`), buy now pay later (`klarna`), and Pay Over Time (`klarna_account`). Its country/product table is a captured availability matrix, not proof of enablement for any merchant.\n- The server `/payments` request uses the chosen Klarna type, shopper data, matching country/billing country/currency and compatible locale, plus `lineItems` whose total matches `amount.value` and whose items have descriptions. The table marks `shopperEmail` and `countryCode` required; shopper name/billing address are recommended for experience, and recipient name in delivery address is conditional. Some products/business models may need encoded merchant data, but test values there cause an error in TEST.\n- A `RedirectShopper` result returns an `action` for the client. After the shopper returns, the server posts `actionComponentData.details` to `/payments/details`; its result can be `Authorised`, `Cancelled`, or `Refused`. `Authorised` is the payment authorization/result shown to the shopper, with capture still required under the stated rules. Refusal is attributed to Klarna risk checks; the guide advises offering another method.\n- Automatic capture can be configured in live Customer Area only when capture delay is immediate and the merchant complies with Klarna's shipping-within-24-hours scheme rule. Otherwise manually capture within 90 days of authorization even if merchant-account automatic capture is enabled; the authorization expires if missed. The main manual route uses Checkout `/payments/{paymentPspReference}/captures` with invoice `lineItems`. Its `status: received` response has a new capture PSP reference; the CAPTURE webhook reports final success or failure and supplies a reason for retry after repair.\n- The later shipping/tracking and partial-capture examples instead use legacy `/capture`, `modificationAmount`, and `additionalData.openinvoicedata`. Keep those request shapes distinct from Checkout `/captures`. A partial amount must be less than authorized and its invoice amounts correct; multiple items cannot have different delivery addresses in one order.\n- Recurring Klarna token creation adds `storePaymentMethod: true` and `shopperReference` to /payments. After settlement, the `recurring.token.created` webhook provides the stored ID. Later token payments include that ID, matching shopper reference, `ContAuth`, a recurring model and ordinary Klarna parameters. The sample is specifically Klarna Pay Now with an actively purchasing shopper.\n\n## Detail locators\n\n- v4.x.x identity, Advanced prerequisite, country/currency/product matrix: raw lines 15\u201379. The locale matrix is raw lines 83\u2013118.\n- /payments fields, TEST example (Checkout API v72), redirect action: raw lines 120\u2013142 and 866\u2013882; library examples occupy lines 146\u2013864.\n- Return and result handling: raw lines 884\u2013929. The redirect step links to a Sessions-flow anchor although the page requires Advanced flow; follow the actual base integration's return handling.\n- Capture conditions, Checkout capture fields and async outcome: raw lines 931\u2013947 and 1393\u20131426. The capture examples use later library versions than the payment examples.\n- Legacy shipping/partial-capture examples: raw lines 1428\u20131506. Recurring: lines 1508\u20131620. Testing/live caveats: lines 1622\u20131649.\n- The source's \u201cSee also\u201d Android Components link also points to Sessions despite the Advanced requirement (raw line 1653).\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration architecture.\n- [[adyen-payment-capture]] \u2014 general capture lifecycle; this source holds Klarna-specific conditions.\n- [[adyen-tokenization]] \u2014 general token lifecycle; this source holds the Klarna example.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna/android-component/earlier-versions/2026-09-15|Klarna Redirect Component v4.x.x, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you have an existing Android Components integration, you can use our Redirect Component to redirect the shopper to Klarna to complete the payment.",
+      "location": "raw line 19, introduction"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow [Android Components integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Components).",
+      "location": "raw line 31, Requirements > Integration type"
+    },
+    {
+      "text": "Klarna will only approve the payment if the country it is made from matches the currency and the country specified in the billing address.",
+      "location": "raw line 90, Make a payment > country/currency/locale conditions"
+    },
+    {
+      "text": "After the shopper returns to your app, make a POST [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request from your server, providing:",
+      "location": "raw line 887, Handle the redirect, step 2"
+    },
+    {
+      "text": "Otherwise, you must **manually capture Klarna payments** within 90 days after authorization, even if you enable automatic capture on your merchant account.",
+      "location": "raw line 933, Capture the payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-android-earlier-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-android-component-earlier-versions]] \u2014 2026-09-15 capture of Klarna Android Redirect Component v4.x.x Advanced-flow guide for server payment, redirect/details return, capture and token routes; page metadata says 2019-modified.",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "64d02897bbd4c4e5f7aca32aea6774c6118863d20e75ffaa9c2f19e34e4e063a",
+  "status": "candidate_ready"
+}

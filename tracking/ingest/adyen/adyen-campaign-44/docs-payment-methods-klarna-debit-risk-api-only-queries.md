@@ -1,0 +1,9 @@
+# Klarna Debit Risk API-only retrieval checks
+
+## Q1 — What does this API-only guide cover, and what must not be inferred?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-klarna-debit-risk-api-only]]` → `[[raw/adyen/docs/payment-methods/klarna-debit-risk/api-only/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-klarna-debit-risk-api-only`. Full pinned raw path: `raw/adyen/docs/payment-methods/klarna-debit-risk/api-only/2026-09-15.md`. Raw lines 15–42 identify an add-on to an existing API-only redirect integration, with merchant-built form and no added form fields. This page does not establish current account eligibility, a complete base integration or live payment success.
+
+## Q2 — Which request, outcome and risk boundaries matter?
+
+Use the same root/provider/concept/source/raw route. Raw lines 44–53 list CH/CHF alongside AT/BE/DE/NL/ES and EUR, conflicting with `raw/adyen/docs/payment-methods/klarna-debit-risk/2026-09-15.md` lines 30–42, which list five EUR countries. Raw lines 342–355 require `directEbanking`, return URL and country code; lines 705–743 describe redirect and `/payments/details`. Raw lines 745–764 distinguish intermediate Pending/Received and webhook fallback; the overview raw lines 44–48 show that successful `AUTHORISATION` can still precede non-settlement chargeback. Raw lines 766–795 and 1145–1153 distinguish initial Debit Risk token creation from shopper-absent SEPA token payments. Initial-token table `countryCode` at line 787 is marked required for shopper progression, but adjacent curl and other initial-token examples omit it (for example lines 802–820 and 846–855); do not infer API rejection. Initial-token table `Ecommerce` at line 792 conflicts with example `ContAuth` at line 818. Raw lines 1765–1771 give test/live setup, not proof of payment outcome.

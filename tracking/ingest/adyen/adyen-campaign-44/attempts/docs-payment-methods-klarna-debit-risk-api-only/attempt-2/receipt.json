@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-klarna-debit-risk-api-only",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Klarna Debit Risk API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/klarna-debit-risk/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/klarna-debit-risk/api-only/2026-09-15.md\"\ntags: [adyen, klarna-debit-risk, api-only, redirect, sepa-direct-debit, recurring]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs guide adds Klarna Debit Risk to an existing API-only integration. It describes method discovery, a merchant-built payment form, `/payments` redirect and return handling, result presentation, and a recurring-token path through SEPA Direct Debit. It is a method-specific add-on, not a complete base API integration or evidence of merchant enablement or successful payment execution. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Prerequisites are an existing API-only integration with redirect handling for `action.type: redirect` and Klarna Debit Risk added in Customer Area. The merchant-built form needs no additional Debit Risk fields, but must pass the shopper's correct country code. The `/paymentMethods` table lists AT, BE, DE, NL, ES and **CH**, with EUR and **CHF**; it does not map each country to a currency or prove method availability for a particular account. The guide does not resolve the relationship between its coverage table and the separate method overview.\n- The ordinary `/payments` table requires `paymentMethod.type: directEbanking`, `returnUrl` and `countryCode`; `shopperLocale`, email and telephone are optional in this table. The 10 EUR German example uses `DE` and `de-DE`. The page says no extra form details are required, yet the server request still needs these method identifiers and return data. Its curl example has `-X POST` on one line without a continuation before `-d`; treat this as illustrative rather than a copy-ready shell command.\n- Redirect the shopper to the `action.url` from `/payments`. For mobile, the guide recommends a device browser rather than an embedded WebView and mentions SFSafariViewController/Chrome Custom Tabs for GET. On return, send the URL-decoded `redirectResult` in `/payments/details`, then use its `resultCode` and `pspReference`. `Pending`/`Received` are intermediate and require the later `AUTHORISATION` webhook. If the shopper never returns, use webhook outcome. `Authorised` and `AUTHORISATION: true` indicate shopper completion/bank processing, **not guaranteed funds**: the linked Debit Risk overview warns that non-settlement can still become an undefendable chargeback.\n- Recurring payments use **SEPA Direct Debit** after a Debit Risk payment creates a shopper token. The guide strongly recommends explicit permission and clear amount/schedule disclosure to reduce chargebacks. The initial token request table calls for `directEbanking`, return URL, country code, recurring model, shopper interaction, non-PII shopper reference and `storePaymentMethod: true`; the `recurring.token.created` webhook gives `storedPaymentMethodId`. Later token payments are only for shopper-absent `Subscription` or `UnscheduledCardOnFile`, using `sepadirectdebit`, token ID and `ContAuth`. The initial-token table marks `countryCode` required so the shopper can proceed, but its adjacent curl and other initial-token examples omit it. The table describes initial online `shopperInteraction` as `Ecommerce`, but those examples say `ContAuth`; some also serialize `storePaymentMethod` as a string rather than a boolean. The page does not resolve these example conflicts or say whether the API rejects the samples.\n- The guide calls for test-environment checks and enabling Debit Risk on the live merchant account before accepting live payments. Neither sample responses nor this checklist establish a completed or settled live transaction.\n\n> [!warning] Contradiction\n> This API-only page's `/paymentMethods` table includes CH and CHF, while the [[source-adyen-docs-payment-methods-klarna-debit-risk|Klarna Debit Risk overview]] lists only AT/BE/DE/NL/ES in EUR. These dated snapshots do not establish which coverage applies to a merchant or which country/currency pairs are supported.\n\n## Detail locators\n\n- Requirements, form, method-discovery country/currency table: pinned raw lines 23\u201353; `/paymentMethods` examples: lines 55\u2013340. Compare with overview raw lines 30\u201342 for the CH/CHF discrepancy.\n- `/payments` parameter table and German example: lines 342\u2013380; code examples: lines 383\u2013703.\n- Redirect, `/payments/details`, result codes and webhook fallback: lines 705\u2013764.\n- SEPA recurring, initial-token table and examples, token-created webhook, shopper-absent use and future-payment examples: lines 766\u20131763. Initial-token `countryCode` is table-required at line 787 but omitted by examples at lines 802\u20131143. Test/live checklist: lines 1765\u20131771.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 main provider payment integration concept\n- [[source-adyen-docs-payment-methods-klarna-debit-risk]] \u2014 overview with narrower EUR coverage and non-settlement warning\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/klarna-debit-risk/api-only/2026-09-15|Klarna Debit Risk API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your existing integration is set up to [handle the redirect](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#handle-the-redirect). `action.type`: **redirect**.",
+      "location": "raw line 28, ## Requirements, redirect-handling row"
+    },
+    {
+      "text": "Include Klarna Debit Risk in the list of available payment methods. There are no additional fields that you have to include in your form.",
+      "location": "raw line 40, ## Build your payment form"
+    },
+    {
+      "text": "**AT**, **BE**, **DE**, **NL**, **ES**, **CH**",
+      "location": "raw line 50, ## Get Klarna Debit Risk as an available payment method, countryCode row"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw line 756, ## Show the payment result, Pending or Received row"
+    },
+    {
+      "text": "Only use tokenised payments in scenarios where the shopper is not present, that is, `UnscheduledCardOnFile` and `Subscription` payments.",
+      "location": "raw line 1149, ## Recurring payments > ### Make a payment with a token"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c44-klarna-debit-risk-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-klarna-debit-risk-api-only]] \u2014 2026-09-15 API-only Debit Risk method discovery, redirect/result and SEPA recurring guide; its CH/CHF table conflicts with the narrower overview and does not prove account availability.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "CH/CHF in this page's paymentMethods table conflicts with the overview's five EUR countries; retain both scoped claims without inventing country/currency pairs.",
+          "Initial-token table requires countryCode for Klarna progression, but adjacent curl and other initial-token examples omit it; no API rejection is inferred."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/klarna-debit-risk/api-only/2026-09-15.md",
+  "raw_sha256": "0d33491d6922289347d02af68a3184c32afe46f7634007556a454a0379949e46",
+  "status": "candidate_ready"
+}
