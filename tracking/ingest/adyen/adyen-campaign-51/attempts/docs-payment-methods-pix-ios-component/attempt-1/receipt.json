@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-pix-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pix iOS Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/ios-component/2026-09-15.md\"\ntags: [adyen, pix, ios, component, qr-code, asynchronous]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Pix to an existing **iOS Components** integration in either Sessions or Advanced server-side flow. It covers Pix-specific request data, `InstantPaymentComponent` initialization, Advanced QR action handling, and asynchronous test/live steps. It is an add-on to the base integration, not proof of current Pix enablement or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** an existing iOS Components Sessions integration, **Checkout API v68 or later**, and Pix added in Customer Area are prerequisites. The `/sessions` table marks `amount` required; `shopperName`, `socialSecurityNumber` (CPF/CNPJ), `shopperStatement`, and `lineItems` entries are unmarked. The table gives `shopperStatement` a 140-character maximum. These are Pix additions to a base request, not the full base schema. See raw lines 25\u201350.\n- Sessions needs no additional Pix configuration. Its Swift example obtains the supported `.other(\"pix\")` payment method, creates `InstantPaymentComponent`, delegates to the session, and calls `initiatePayment()`. The examples are illustrative; the `/sessions` curl sample uses a historical 2021 `sessionValidity` and should not be copied as a current expiry. See raw lines 52\u201392 and 507\u2013533.\n- **Advanced:** an existing iOS Components Advanced integration, `action.type: qrCode` handling, and Customer Area setup are prerequisites. No additional Pix configuration is stated. The prerequisite's *iOS Components* label points to a **Drop-in** base-guide URL, while its action link points to Components; follow the integration type stated in the row and verify the base guide. See raw lines 554\u2013576.\n- In Advanced `/payments`, the table marks `paymentMethod` and `amount` required. It recommends, rather than requires, both `shopperName` and `socialSecurityNumber` to help shoppers identify the payment. The table describes `paymentMethod` using front-end `state.data.paymentMethod` from an `onSubmit` event, although this iOS example initializes an `InstantPaymentComponent` and calls `initiatePayment()`; the page does not reconcile that event wording. Do not infer an iOS callback contract from it. See raw lines 580\u2013610.\n- The Advanced table gives `shopperStatement` a **less-than-60-character** limit when supplied, versus the Sessions table's 140-character maximum. It says `sessionValidity` defaults to **1 hour through Checkout API v71** and **24 hours from v72**. An example `/payments` response contains a `qrCode` action and `resultCode: Pending`; the QR action and pending response are not final payment success. The sample expiration timestamps are historical. See raw lines 45\u201350, 603\u2013608, 617\u2013651, and 1098\u20131118.\n- Pix is described as **asynchronous**. In the test Customer Area, a pending offer can be manually promoted to a sale, and paid/promoted records appear in **Payments > Payment list**; the page directs testing reconciliation this way. Before live acceptance it says to submit a Pix request in the live Customer Area. The page states a 90-day refund window via Customer Area or API. These are captured instructions/claims, not evidence of an actual payment, reconciliation, entitlement, or refund. See raw lines 535\u2013552 and 1120\u20131137.\n\n## Detail locators\n\n- Sessions prerequisites and Pix `/sessions` parameter table: raw `## Sessions flow Component`, lines 25\u201350; language examples lines 52\u2013505.\n- Sessions no-extra-configuration and Swift initialization: raw lines 507\u2013533.\n- Advanced prerequisites, QR action and conflicting Drop-in base link: raw `## Advanced flow Component`, lines 554\u2013564.\n- Advanced Swift initialization and `/payments` table, including optional fields, expiry and statement limits: raw lines 566\u2013610; language examples lines 612\u20131096.\n- Pending QR response, refund and asynchronous test/live steps: raw lines 1098\u20131137; duplicated Sessions refund/test/live text at lines 535\u2013552.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/ios-component/2026-09-15|Fully read Pix iOS Component raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Pix, use the `InstantPaymentComponent` class.",
+      "location": "raw line 517, Sessions ## Initialize the Component for Pix"
+    },
+    {
+      "text": "`action.type`: **qrCode**.",
+      "location": "raw line 563, Advanced ## Requirements"
+    },
+    {
+      "text": "Default: 1 hour (Checkout API v71 or earlier) or 24 hours (Checkout API v72 or later).",
+      "location": "raw line 606, Advanced /payments parameter table"
+    },
+    {
+      "text": "Pix is an asynchronous payment method. In the test environment, you can simulate a Pix payment by promoting the pending payment to a sale.",
+      "location": "raw line 541, Sessions ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-pix-ios-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-ios-component]] \u2014 2026-09-15-captured Pix iOS Components Sessions/Advanced add-on for request data, InstantPaymentComponent, QR action and asynchronous test/live handling.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced Components prerequisite points to a Drop-in base-guide URL; the /payments table uses onSubmit state wording that the iOS example does not reconcile.",
+          "Sessions and Advanced shopperStatement limits differ (140 characters versus under 60); sessionValidity defaults change at Checkout API v72.",
+          "The QR/Pending response and test offer promotion do not establish final live payment success or merchant eligibility."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/ios-component/2026-09-15.md",
+  "raw_sha256": "89ee10b36764b93741b4e56cbc8e75249dab1d38b8de7b3325d5a628bf004eb5",
+  "status": "candidate_ready"
+}

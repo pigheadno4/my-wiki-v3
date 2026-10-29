@@ -1,0 +1,13 @@
+# docs-payment-methods-pix-react-native-component retrieval checks
+
+## Q1 — Scope and fields
+
+Query: Is Pix available in React Native Components Sessions flow, and what does Advanced require?
+
+Expected: This dated add-on explicitly says React Native Components do not support Sessions (raw lines 25–29). Advanced requires existing React Native Components, qrCode action handling and Pix Customer Area setup, with no extra method configuration (lines 31–47). The /payments table marks paymentMethod and amount required; shopperName, CPF/CNPJ socialSecurityNumber, shopperStatement, sessionValidity and line-items are unmarked optional, with name plus number advised (lines 49–66). Supplied shopperStatement is under 60 characters and payment sessionValidity defaults one hour through Checkout v71 or 24 hours from v72. The BR/BRL sample and 2025 date are historical examples (lines 68–108). Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-pix-react-native-component]] → [[raw/adyen/docs/payment-methods/pix/react-native-component/2026-09-15]]. Full pinned raw: `raw/adyen/docs/payment-methods/pix/react-native-component/2026-09-15.md`, heading line 15.
+
+## Q2 — Callback, QR and finality
+
+Query: Does the React Native Pix qrCode response prove payment, and which base-route/callback and test limits matter?
+
+Expected: The Advanced example returns Pending with qrCodeData and pix.expirationDate (raw lines 554–574); this is not final paid status nor a separate documented QR display timer. Pix is asynchronous; test simulation promotes a pending offer to sale, paid/promoted offers appear in Payment list for reconciliation, and live Pix needs a live Customer Area request (lines 580–593). Refund is described within 90 days (lines 576–578). Warn that the Components prerequisite links to Drop-in (line 39), qrCode action link uses a redirect anchor (line 40), and Pix child paymentMethod says state.data.paymentMethod (line 57) while the React Native Components Advanced base guide describes onSubmit data handoff and complete paymentMethod object (base raw `raw/adyen/docs/online-payments/build-your-integration/advanced-flow/2026-09-15.md`, lines 17861–17871, 17942–17959); the web-style path is not verified for React Native. None of this proves live approval or actual payment. Route: [[index]] → [[adyen-index]] → [[adyen-online-payments]] → [[source-adyen-docs-payment-methods-pix-react-native-component]] → [[raw/adyen/docs/payment-methods/pix/react-native-component/2026-09-15]]. Full pinned raw: `raw/adyen/docs/payment-methods/pix/react-native-component/2026-09-15.md`.

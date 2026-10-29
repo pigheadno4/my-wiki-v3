@@ -1,0 +1,13 @@
+# Fixed queries — Gift card Web Component
+
+## Q1 — scope and versioned routes
+
+**Query:** What Web Component gift-card routes and version prerequisites does the captured guide describe, and what does it not prove?
+
+**Expected answer:** https://docs.adyen.com/payment-methods/gift-cards/web-component is a 2026-09-15-captured add-on to existing Web Components; test each intended variant in Customer Area. It says no extra gift-card request fields, but base endpoint fields remain. /sessions is the stated default for Components v5.0.0+, its gift-card Component tab says v5.18.0+, and the own-Pay-button tab says v5.21.0+; /payments covers merchants who implemented that route or integrated before v5.18.0 (full pinned raw/adyen/docs/payment-methods/gift-cards/web-component/2026-09-15.md, ## Requirements and ## API reference lines 28–40; tab headings/versions lines 56–58, 142–144, 244–246). This is historical documentation, not current provider/account enablement or payment proof. Provider context: wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards.md. Route: wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-online-payments.md → wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-web-component.md.
+
+## Q2 — balance, orders, partial payments and test/live caveats
+
+**Query:** How do Sessions, own-button and /payments paths handle a short gift-card balance, and what sample/test caveats matter?
+
+**Expected answer:** In Sessions, onOrderCreated(orderStatus) fires when balance is below the transaction amount, provides remainingAmount, and supports another method through the existing AdyenCheckout instance (pinned raw/adyen/docs/payment-methods/gift-cards/web-component/2026-09-15.md, lines 56–70). With a merchant-owned Pay button (v5.21.0+), call balanceCheck(); if balance covers the full amount, get shopper confirmation through onRequiringConfirmation before submit() (lines 142–160). For /payments or pre-v5.18.0, onBalanceCheck calls /paymentMethods/balance; a short balance has made no payment, so onOrderRequest creates a full-amount order, onOrderCancel cancels, and partial /payments calls occur outside the Component with order identifiers/data (lines 244–265, 326–354). Own-button and /payments snippets have incomplete JS/markup and mount examples differ (lines 128–140, 164–181, 224–242, 260–287). Amount suffix outcomes are test simulator examples; live acceptance requires provider onboarding, live variant addition and Support setup (lines 377–406). Route: wiki/index.md → wiki/adyen-index.md → wiki/concepts/adyen-online-payments.md → wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-web-component.md.

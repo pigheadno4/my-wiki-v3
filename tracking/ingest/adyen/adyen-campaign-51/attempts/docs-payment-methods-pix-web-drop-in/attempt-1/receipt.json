@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-pix-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pix Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md\"\ntags: [adyen, pix, web, drop-in, qr-code, asynchronous-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Pix to an existing Web Drop-in integration. It separates Sessions and Advanced server-side flows, method-specific fields, QR configuration, an Advanced `qrCode` action, refund window, and test/live steps. It supplements [[adyen-online-payments]] and does not establish current merchant enablement, a paid QR code, or a complete final-status integration. [[adyen]]\n\n## Key takeaways\n\n- **Sessions prerequisites and fields:** Start with an existing Web Drop-in Sessions integration, Checkout API **v68 or later**, and Pix added in Customer Area. The method-specific `/sessions` table marks `amount` (final purchase price) required. It lists `shopperName`, CPF/CNPJ `socialSecurityNumber`, `shopperStatement` (maximum **140 characters**), and `lineItems.id`/`amountIncludingTax` without required marks. The table gives line-item limits; the BR/BRL and `pix` values in samples are examples, not a blanket guarantee of eligibility. Its `sessionValidity` sample date is in 2021 and is not a usable current expiration. [Raw: lines 25\u201392]\n- **Sessions UI configuration:** Individually importing `Pix` for tree shaking is optional. The page lists `countdownTime`, a shopper payment countdown starting when the QR loads, default **15 minutes**, and `personalDetailsRequired`, default **false**; setting the latter true requires shopper personal details. The shown `Pix.Configuration()` fragment is fenced as bash while using JavaScript-like assignment and labels `countdownTime` \u201cRequired\u201d despite the table showing a default. Treat it as illustrative, not a validated copy-ready Web SDK constructor. [Raw: lines 508\u2013535]\n- **Advanced prerequisites and fields:** Start with an existing Web Drop-in Advanced integration that handles `action.type: qrCode` and has Pix added in Customer Area. The `/payments` table marks both `paymentMethod` (from frontend `onSubmit` `state.data.paymentMethod`) and `amount` required. It lists shopper name, CPF/CNPJ, shopper statement, `sessionValidity`, and line-item fields as unmarked; the page advises sending both name and CPF/CNPJ so the shopper can identify the payment. A custom **Advanced** `shopperStatement` must be under **60 characters**, unlike the Sessions table's 140-character maximum. [Raw: lines 563\u2013621]\n- **Distinct QR countdown and payment expiry:** Advanced UI configuration again lists a default **15-minute** `countdownTime` after QR display. Separately, its optional `sessionValidity` describes Pix payment expiry default **1 hour for Checkout API v71 or earlier** and **24 hours for v72 or later**. These clocks have different triggers and cannot be treated as one identical expiration. The Advanced code fragment repeats the same \u201cRequired\u201d/default and bash/JS ambiguity as Sessions. The Advanced requirement table states no separate API minimum; do not transfer the Sessions v68 statement to it. [Raw: lines 563\u2013601, 612\u2013618]\n- **QR response and asynchronous state:** The shown Advanced `/payments` response contains `resultCode: Pending` and `action.type: qrCode` with `qrCodeData`, `paymentData`, `pspReference`, and `pix.expirationDate`. It is a QR-presentation/pending step, not paid or authorized status. The page calls Pix asynchronous but does not give a final webhook/result protocol here; the base integration must supply final-state handling. [Raw: lines 1109\u20131128, 1139\u20131152]\n- **Refund and environment gates:** The guide says a Pix payment can be refunded within **90 days** through Customer Area or API. In test Customer Area, a pending Pix offer can be manually promoted to a sale for reconciliation testing; paid or promoted test payments appear in Payment list. Before live acceptance, submit a request for Pix in live Customer Area. Manual test promotion is not a live shopper payment. [Raw: lines 538\u2013559, 1131\u20131152]\n- **Example limits:** The Sessions and Advanced request samples include past `sessionValidity` timestamps (2021 and 2025 respectively) and app-scheme `returnUrl` placeholders on this Web page; do not copy them as current expiry or a universal Web return URL. Node examples reference `Config`/`EnvironmentEnum` without shown imports. The Advanced requirement link contains an unresolved encoded `platform` template, while its action-handling link points to a generic redirect anchor despite `qrCode` action text. [Raw: lines 55\u201392, 264\u2013301, 565\u2013570, 631\u2013668, 858\u2013900]\n\n> [!WARNING] Keep QR presentation and payment finality separate\n> The Advanced example is `Pending` with a `qrCode` action, not a completed Pix payment (raw lines 1109\u20131128). A 15-minute UI countdown is not the same as the version-dependent payment-expiry default (raw lines 593\u2013617), and test offer promotion is not live payment evidence (raw lines 1139\u20131152).\n\n## Detail locators\n\n- Sessions setup, required/optional fields and request examples: pinned raw lines 25\u2013505.\n- Sessions import, UI configuration, refund and test/live instructions: pinned raw lines 508\u2013559.\n- Advanced setup, configuration and required/optional fields: pinned raw lines 563\u2013621.\n- Advanced request examples and Pending QR action: pinned raw lines 623\u20131128.\n- Advanced refund and test/live instructions: pinned raw lines 1131\u20131152.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15|Pix Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "Maximum length: 140 characters.",
+      "location": "raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md:48"
+    },
+    {
+      "text": "The number of minutes after the QR code loads that the shopper must complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md:527"
+    },
+    {
+      "text": "Default: 1 hour (Checkout API v71 or earlier) or 24 hours (Checkout API v72 or later).",
+      "location": "raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md:617"
+    },
+    {
+      "text": "\"resultCode\": \"Pending\"",
+      "location": "raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md:1121"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-pix-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-web-drop-in]] \u2014 2026-09-15-captured Pix Web Drop-in guide for Sessions/Advanced fields, QR countdown versus payment expiry, Pending qrCode action, refund window and test/live gates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions shopperStatement max 140 characters differs from Advanced custom-value under-60 rule.",
+          "QR countdown default 15 minutes differs from Advanced payment expiry defaults of 1 hour through Checkout API v71 and 24 hours from v72.",
+          "Pending qrCode is not paid status; test offer promotion is simulation.",
+          "The Pix.Configuration example is fenced bash with JavaScript-like syntax and labels countdownTime required despite a table default."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/web-drop-in/2026-09-15.md",
+  "raw_sha256": "857a6f9cf19786e580f11a758b8633dfd7f16bc09b15fac0066f030df333485f",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-stored-value-api-change-status",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Stored Value API gift-card status change\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/stored-value-api/change-status\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/stored-value-api/change-status/2026-09-15.md\"\ntags: [adyen, gift-cards, stored-value, change-status, activation, deactivation]\n---\n\n## Overview\n\nThis Adyen page, **last modified 2020-11-17** and captured 2026-09-15, describes Stored Value API `/changeStatus` for activating or deactivating a gift card or other stored-value card, with optional loading during activation. It is a dated operational guide, not evidence that any status change or value movement was executed. See [[adyen]], [[adyen-online-payments]], and the cross-channel overview [[source-adyen-docs-payment-methods-gift-cards]].\n\n## Key takeaways\n\n- **Activation:** `status: active` makes stored funds available to the shopper. Virtual cards are activated automatically on issue and need no activation call. Plastic cards may be activated with or without a load amount; if funds were preloaded at issuance, specify no amount or exactly the preloaded amount. A later `/load` call is described for activation without an amount. Supported currencies differ by provider. These are source conditions, not a universal load option. See raw lines 19\u201325 and 49\u201362.\n- **Deactivation:** `status: inactive` is described for cases such as suspected fraud or a lost/stolen card. The page calls it an **end state**: the deactivated card cannot be used again and any remaining value is unavailable to the shopper. This is a consequential irreversible status in this guide. The separate See also `/void` link describes undoing a previous Stored Value API transaction from the last 24 hours but does not say it reverses a deactivation; do not infer a reactivation path. See raw lines 27\u201329 and 273\u2013278.\n- **Provider/channel matrix:** for **online**, Activate and Activate+load are crossed for Givex, SVS, Fiserv/ValueLink and Intersolve; Deactivate without amount is checked for **Givex only**. For **in-person**, Activate and Activate+load are checked for all four, while Deactivate without amount is again checked only for Givex. The following activation example uses SVS and a store ID; it does not override the online matrix or prove a channel-specific operation succeeded. Apply the matrix as this dated source's provider/channel state, not current merchant entitlement. See raw lines 31\u201347 and 100\u2013118.\n- An activation request specifies `status: active`, merchant account, card `paymentMethod.type`/number and conditional security code, plus a unique merchant reference; `amount` and in-person `store` are optional as described. The activation type list includes Givex, SVS, ValueLink and Intersolve-supported types, whereas deactivation type lists contain **Givex, SVS and ValueLink** only. The no-token deactivation identifies the card by number; the tokenized path instead uses `recurringDetailReference`, `shopperReference`, `shopperInteraction` and card type. `store` remains an in-person field. See raw lines 49\u201398 and 143\u2013250.\n- Responses describe `currentBalance`, `pspReference`, and `resultCode`; **Success** means the requested status change was carried out, while other result codes require their own interpretation. The activation sample `Success`/USD 10 balance is illustrative. On deactivation, a reported remaining balance is **not available to the shopper**. A request or sample response alone does not establish that a real card was changed or that funds are usable. See raw lines 120\u2013141, 207\u2013215 and 253\u2013261.\n\n## Detail locators\n\n- Operation purpose, activation/preload conditions and irreversible deactivation: raw lines 15\u201329.\n- Historical provider/channel operation matrix: raw lines 31\u201347.\n- Activation request fields and sample: raw lines 49\u2013118.\n- Activation response and result-code meaning: raw lines 120\u2013141.\n- No-token and tokenized deactivation request paths: raw lines 143\u2013250.\n- Deactivation responses and related load/balance/void navigation: raw lines 253\u2013278.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n- [[adyen-pos-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/change-status/2026-09-15|Fully read Stored Value API change-status raw]]\n",
+  "quotes": [
+    {
+      "text": "lets you activate or deactivate a gift card or other stored-value card and optionally load funds to it while activating.",
+      "location": "line 19"
+    },
+    {
+      "text": "When you activate such a preloaded card, you either do not specify an amount, or exactly specify the preloaded amount.",
+      "location": "line 25"
+    },
+    {
+      "text": "This is an end state, a deactivated card cannot be used again.",
+      "location": "line 29"
+    },
+    {
+      "text": "Deactivate (without amount)",
+      "location": "line 39"
+    },
+    {
+      "text": "**Success** means the status change has been carried out.",
+      "location": "line 126"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-gift-card-change-status-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-change-status]] \u2014 2020-modified, 2026-09-15-captured Stored Value API gift-card activation/deactivation guide for provider/channel limits, preload amount, token and no-token paths, irreversible deactivation and result-code interpretation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured provider/channel matrix crosses online activation and activation+load for Givex, SVS, Fiserv/ValueLink and Intersolve; only Givex online/in-person deactivation without amount is checked. Do not generalize endpoint prose/examples to availability.",
+          "Deactivation is described as an end state with remaining value unavailable; a separate void link does not state reactivation.",
+          "Success is the response result that means status change occurred; sample Success is not evidence of an executed operation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/change-status/2026-09-15.md",
+  "raw_sha256": "a4e50075b941b669fc3f108dd0dafb07476502064a6a5158c5b456b8a0632c32",
+  "status": "candidate_ready"
+}

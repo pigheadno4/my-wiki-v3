@@ -1,0 +1,40 @@
+---
+title: "Gift cards Android Drop-in v4.x.x integration"
+type: source
+date_ingested: 2026-10-30
+original_format: webpage
+canonical_url: "https://docs.adyen.com/payment-methods/gift-cards/android-drop-in/earlier-versions"
+raw_files:
+  - "adyen/docs/payment-methods/gift-cards/android-drop-in/earlier-versions/2026-09-15.md"
+tags: [adyen, gift-cards, android, drop-in, v4, partial-payments]
+---
+
+## Overview
+
+This Adyen page, last modified 2023-01-05 and captured 2026-09-15, is an earlier-version **Android Drop-in v4.x.x** gift-card add-on. Its requirements specify an existing **Advanced** flow and Customer Area method setup. It explains gift-card discovery, balance/order callbacks for partial payments, simulator scenarios, and provider-dependent live setup. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-gift-cards]]. This snapshot does not establish the current SDK recipe or live payment success.
+
+## Key takeaways
+
+- Drop-in filters available methods using countryCode and amount.currency from the server /paymentMethods request. The examples use NL and EUR, but both must be supported for the gift card in question; they are not universal country/currency settings. See raw lines 28–33.
+- For a gift-card balance below the transaction total, the v4.x.x Advanced guide requires extra DropInService methods to support partial payment and remainder tender. checkBalance calls /paymentMethods/balance; createOrder calls /orders with the total transaction amount; cancelOrder calls /orders/cancel if the shopper cancels. After order creation, partial payments are made from the Drop-in service. The example distinguishes update-payment-methods behavior on manual removal from cancellation when Drop-in closes. See raw lines 35–97.
+- The test section uses provider-dependent test-card numbers and a simulator, with last-three-digit amount mappings for Authorised, Refused and Error outcomes. For instance, 100 maps to Authorised only in that test simulation; it is not a real-payment guarantee. The page says to inspect test Payment list. Before live use, it lists provider onboarding, adding the gift-card variant in live Customer Area, and contacting Support to add the gift card there; end-to-end live tests with real card details and small amounts are presented as possible, not performed here. See raw lines 99–128.
+
+> [!warning] Historical guide route
+> The page title and requirements identify v4.x.x Advanced Android Drop-in (raw lines 15 and 25), while its opening Android Drop-in link points to a Sessions-flow base guide (line 19). Use the versioned Advanced requirement to interpret these callbacks; the linked Sessions route does not establish that this v4.x.x recipe applies to Sessions or newer SDK versions.
+
+## Detail locators
+
+- Version, Advanced prerequisite and Customer Area setup: raw lines 15–26.
+- Country/currency discovery: raw `## Show gift cards in your payment form`, lines 28–33.
+- Balance, order, cancel callbacks and partial tender: raw `## Drop-in configuration`, lines 35–97.
+- Provider-dependent simulator mappings and test/live setup: raw `## Test and go live`, lines 99–128.
+
+## Related
+
+- [[adyen-online-payments]]
+- [[source-adyen-docs-payment-methods-gift-cards]]
+- [[source-adyen-docs-payment-methods-gift-cards-api-only]]
+
+## Raw Sources
+
+- [[raw/adyen/docs/payment-methods/gift-cards/android-drop-in/earlier-versions/2026-09-15|Gift cards Android Drop-in v4.x.x guide, captured 2026-09-15]]

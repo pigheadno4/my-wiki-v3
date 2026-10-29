@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-pix-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pix Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, pix, flutter, drop-in, brazil, qr-code]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Pix to an existing Flutter Drop-in integration, separately for Sessions and Advanced server flows. It covers method setup, request additions, QR action handling, refund timing, and test/live steps. The guide's TEST BR/BRL examples and Customer Area simulation do not prove current merchant enablement or a real paid transaction. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** the page requires an existing Flutter Drop-in Sessions integration, Checkout API v68 or later, and contacting Support to add Pix in Customer Area. The Sessions prerequisite links to an **Advanced-flow** base guide despite naming Sessions; follow the Sessions-labeled payment-session link for that flow and verify the base guide. The `/sessions` table marks `amount` required; `shopperName`, CPF/CNPJ `socialSecurityNumber`, `shopperStatement`, and line-item fields are unmarked. It gives `shopperStatement` a 140-character maximum. The TEST v71 example uses BR/BRL and `pix`, with a now-past 2021 `sessionValidity` sample. See raw lines 25\u201396 and 509\u2013530.\n- **Advanced:** the page requires an existing Flutter Drop-in Advanced integration, `qrCode` additional-action handling, and Pix added in Customer Area. Its `/payments` table marks `paymentMethod` (from front-end `state.data.paymentMethod`) and `amount` required. It advises sending `shopperName` and CPF/CNPJ `socialSecurityNumber` for shopper recognition, but leaves them unmarked. For a supplied `shopperStatement`, this flow says **under 60 characters**, unlike the Sessions table's 140-character maximum; preserve the flow-specific wording. Optional `sessionValidity` defaults to one hour on Checkout API v71 or earlier and 24 hours on v72 or later. TEST v72 examples use BR/BRL and a now-past 2025 validity timestamp. See raw lines 532\u2013608.\n- Neither flow requires extra Pix configuration in this page. The Advanced example response shows `resultCode: Pending` with `action.type: qrCode` and QR data. Pix is asynchronous, so this QR action and a pending offer are **not paid confirmation**. The page does not give a Flutter SDK version or a complete final-status webhook recipe. See raw lines 509\u2013511, 546\u2013548, and 1055\u20131075.\n- The guide says refunds are available within **90 days after payment** through Customer Area or API. In TEST, promoting a pending offer to sale simulates a Pix payment and supports reconciliation testing; paid or promoted test offers appear in the Payment list. Before live acceptance, submit a Pix request in the **live Customer Area**. This simulation is not a real shopper payment or live authorization. See raw lines 513\u2013530 and 1077\u20131094.\n\n> [!warning] Flow and example qualifications\n> The Sessions prerequisite points to an Advanced-flow URL (raw line 33). Sessions and Advanced state different `shopperStatement` limits (lines 48 and 562); do not merge them into one universal limit. Example `sessionValidity` dates in 2021 and 2025 are past the 2026 capture (lines 71 and 597), and `Pending` plus `qrCode` is not final payment (lines 1055\u20131075).\n\n## Detail locators\n\n- Sessions prerequisites, setup, field table and TEST v71 request: raw lines 25\u201396; SDK-language examples continue through line 505.\n- No additional Pix configuration, refund window, TEST offer promotion and live request: raw lines 509\u2013530; repeated at 1077\u20131094.\n- Advanced prerequisites, action type, field table and TEST v72 request: raw lines 532\u2013608; SDK-language examples continue through line 1053.\n- Advanced pending QR response: raw lines 1055\u20131075.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/flutter-drop-in/2026-09-15|Fully read Pix Flutter Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions Requirements"
+    },
+    {
+      "text": "Maximum length: 140 characters.",
+      "location": "raw line 48, Sessions /sessions table"
+    },
+    {
+      "text": "Pix is an asynchronous payment method.",
+      "location": "raw line 519, Sessions Test and go live"
+    },
+    {
+      "text": "If you provide any value, keep the length under 60 characters.",
+      "location": "raw line 562, Advanced /payments table"
+    },
+    {
+      "text": "The expiration date of the Pix payment. Default: 1 hour (Checkout API v71 or earlier) or 24 hours (Checkout API v72 or later).",
+      "location": "raw line 563, Advanced /payments table"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-docs-payment-methods-pix-flutter-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-flutter-drop-in]] \u2014 2026-09-15-captured Pix Flutter Drop-in Sessions/Advanced add-on for request fields, QR/Pending action, versioned expiry, refund timing and test/live setup; source flags flow-specific limits and example caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions prerequisite link points to Advanced flow; Sessions and Advanced shopperStatement limits differ (140 versus under 60 characters).",
+          "Advanced QR/Pending response is asynchronous and not paid confirmation; TEST offer promotion is a simulation and live Pix requires a live Customer Area request.",
+          "Example sessionValidity timestamps precede the 2026 capture and are not copy-ready expiry values."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "811851c8f57c6f0a95a2a9a35a6c0d98abf52721c78ba77a26fc53804c54fbaf",
+  "status": "candidate_ready"
+}

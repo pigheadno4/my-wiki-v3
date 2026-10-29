@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-pix-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pix Android Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/android-component/2026-09-15.md\"\ntags: [adyen, pix, android, components, qr-code, asynchronous]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Pix** to an existing Android Components integration. It covers Sessions and Advanced request fields, `InstantPaymentComponent` setup, a QR-code action, payment expiry, refunds and TEST simulation. It is a method-specific guide, not proof of current merchant eligibility or a completed Pix payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** start with an existing Android Components Sessions integration, **Checkout API v68 or later**, and Pix added in Customer Area. The `/sessions` additions mark `amount` required; `shopperName`, `socialSecurityNumber` (CPF/CNPJ shown on the Pix form), `shopperStatement` (maximum 140 characters), and `lineItems.id`/`amountIncludingTax` are unmarked. The TEST v71 examples use BR/BRL and Pix, but display `sessionValidity: 2021-12-21...`, an already past date in this capture; do not copy it as a current payment-expiry value. See raw lines 25\u201392 and 262\u2013504.\n- Import Android `instant` for Pix, plus `components-compose` when using Jetpack Compose. `setSubmitButtonVisible` is unmarked/optional, defaults true, and false hides the button. Sessions examples retrieve `pix` from the checkout session and use `InstantPaymentComponent`; the Compose example requires a new unique key for a different screen or payment session reset. The sample configuration block contains placeholder/irregular braces and is not a complete copy-ready constructor. See raw lines 507\u2013605.\n- **Advanced:** start with an existing Android Components Advanced flow, handling the additional `action.type: qrCode`, and Pix added in Customer Area. Import the same modules, use `InstantPaymentComponent` with a `pix` payment method from `/paymentMethods`, and use the same optional submit-button setting. The v68 floor is stated in Sessions requirements only on this page. See raw lines 626\u2013737.\n- The Advanced `/payments` table marks `paymentMethod` (from the Component's `state.data.paymentMethod` on submit) and final `amount` required. It leaves name, CPF/CNPJ, statement, `sessionValidity` and line-item fields unmarked. The page **advises** sending both `shopperName` and `socialSecurityNumber` to identify the payment to the shopper; this is not table-requiredness. The Advanced statement field says a supplied value must stay **under 60 characters**, whereas Sessions gives a **140-character maximum**. The Advanced `sessionValidity` row says the Pix payment expires by default after **1 hour on Checkout API v71 or earlier** and **24 hours on v72 or later**. Do not apply those versioned defaults to the Sessions table, which does not state them. See raw lines 738\u2013755.\n- The TEST v72 `/payments` examples use BRL and `paymentMethod.type: pix` but display `sessionValidity: 2025-10-01...`, already past by the capture date. The sample response has `resultCode: Pending` with `action.type: qrCode`, QR data and a displayed `pix.expirationDate` from 2021. A QR action or Pending response is not payment success; use the actual current response and asynchronous outcome handling. See raw lines 757\u2013797 and 1243\u20131263.\n- The guide says a Pix payment can be refunded within **90 days after payment** via Customer Area or API. Pix is asynchronous. In TEST, it says a pending Pix offer can be manually promoted to a sale in Customer Area; paid/promoted offers appear in Payment list, and this promotion can test reconciliation. Live acceptance requires a Pix request in the **live** Customer Area. These are captured instructions, not evidence that any promotion, refund, or live payment was performed. See raw lines 607\u2013624 and 1265\u20131284.\n\n## Detail locators\n\n- Sessions prerequisites, request-field table and multilingual TEST examples: raw lines 25\u2013505.\n- Sessions Android module/configuration/Component setup: raw lines 507\u2013605.\n- Sessions refund and TEST/live instructions: raw lines 607\u2013624.\n- Advanced prerequisites and Android Component setup: raw lines 626\u2013737.\n- Advanced request table, versioned expiry rule and TEST examples: raw lines 738\u20131241.\n- Pending QR action, refund and TEST/live instructions: raw lines 1243\u20131284.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/android-component/2026-09-15|Fully read Pix Android Component raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "The shopper's CPF or CNPJ number. This will be shown to the shopper on the Pix payment form.",
+      "location": "line 47"
+    },
+    {
+      "text": "use the `InstantPaymentComponent` class.",
+      "location": "line 556"
+    },
+    {
+      "text": "Default: 1 hour (Checkout API v71 or earlier) or 24 hours (Checkout API v72 or later).",
+      "location": "line 751"
+    },
+    {
+      "text": "Pix is an asynchronous payment method.",
+      "location": "line 1273"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-pix-android-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-android-component]] \u2014 2026-09-15-captured Pix Android Components Sessions/Advanced guide for request fields, InstantPaymentComponent, QR action, versioned payment expiry, refunds and asynchronous TEST simulation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced sessionValidity default is 1 hour on Checkout API v71 or earlier and 24 hours on v72 or later; the captured TEST examples contain past explicit expiry timestamps.",
+          "Pending/qrCode is not payment success; test Customer Area offer promotion is a simulation and does not prove an actual Pix transfer.",
+          "Sessions shopperStatement maximum 140 characters differs from Advanced supplied-value under-60-character instruction; keep flow scopes distinct."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/android-component/2026-09-15.md",
+  "raw_sha256": "ef6d4df9a7b0427597ef8bc3ba3e8da67b585106a62af88e22187cfee388ec4f",
+  "status": "candidate_ready"
+}

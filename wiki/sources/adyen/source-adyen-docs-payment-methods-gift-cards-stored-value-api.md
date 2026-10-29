@@ -1,0 +1,43 @@
+---
+title: "Adyen Stored Value API for gift-card management"
+type: source
+date_ingested: 2026-10-30
+original_format: webpage
+canonical_url: "https://docs.adyen.com/payment-methods/gift-cards/stored-value-api"
+raw_files:
+  - "adyen/docs/payment-methods/gift-cards/stored-value-api/2026-09-15.md"
+tags: [adyen, gift-cards, stored-value, api, provider-matrix]
+---
+
+## Overview
+
+This Adyen Stored Value API overview, **last modified 2022-05-10** and captured 2026-09-15, describes a JSON-only API for managing online and point-of-sale gift cards and other stored-value cards. It routes to issue, status change, load, balance inquiry, balance merge and void operations, subject to provider/channel limits. It does **not** process gift-card payments, cancellation or payment refunds. This is a historical documentation snapshot, not proof of current provider access or an executed operation. See [[adyen]], [[adyen-online-payments]], the cross-channel [[source-adyen-docs-payment-methods-gift-cards]], and [[adyen-pos-gift-cards]] for separate Terminal API context.
+
+## Key takeaways
+
+- The management operations are **issue**, **activate/deactivate status**, **load**, **check balance**, **merge all funds to another card from the same provider**, and **void a Stored Value API transaction from the last 24 hours**. For an in-person integration, the page suggests Terminal API for those operations except issuing. The Stored Value API explicitly cannot **make, cancel or refund payments**; those are routed to separate online/POS payment APIs. Do not treat `/voidTransaction` as a payment refund or as an unrestricted reversal. See raw lines 19–38.
+- The “supported cards” list names **Intersolve, SVS and Fiserv/ValueLink**, while the provider/channel matrix also has a **Givex** column. Keep that source discrepancy visible rather than treating the list or matrix alone as a complete current provider entitlement. The matrix states transaction availability varies by both provider and channel. See raw lines 40–50.
+- **Online matrix:** issue is checked for Givex and Fiserv/ValueLink, crossed for SVS and Intersolve; activation and activation+load are checked only for SVS; deactivation without amount only for Givex; load, balance inquiry and void are checked for all four; balance merge only for Fiserv/ValueLink. A nearby note says **new** Stored Value API integrations cannot issue SVS cards, while **existing** integrations that have issued SVS cards may continue. Preserve the legacy exception rather than flattening the crossed SVS issue cell into a universal prohibition. See raw lines 52–63 and 78–81.
+- **In-person matrix:** issuing is crossed for all four; activation, activation+load, load, balance inquiry and void are checked for all four; deactivation without amount only for Givex; merge balance is crossed for all four. These are dated matrix marks, not current account permissions or proof that a card operation succeeded. For voids, these provider/channel-wide marks do not establish eligibility for every original operation. The separate [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-void]] supplies original-transaction-specific rows and the 24-hour condition; consult those details without treating the different table granularity as a contradiction. The separate status-change child page's online matrix crosses activation for **all** four providers, conflicting with this overview's online SVS activation check; neither captured page resolves the difference. See raw lines 65–76 and [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/change-status/2026-09-15|Status-change child raw, online matrix lines 33–39]].
+- The endpoint list names `/issue`, `/changeStatus`, `/load`, `/checkBalance`, `/mergeBalance` and `/voidTransaction` beneath the test/live Stored Value URL templates. The captured templates contain HTML-entity formatting in their version segment; use a verified endpoint reference for executable configuration rather than copying the rendered text. Result codes distinguish **Success** (operation completed), **Refused** and **Error** (with `refusalReason`), and **NotEnoughBalance** (card balance below request amount). A request or endpoint listing does not establish Success. See raw lines 83–106.
+- The page offers Adyen simulator card data and says to perform end-to-end testing with provider-supplied test data before switching to live endpoints. The sample Givex and SVS expiries are **12/2020** in this dated capture, so do not treat those entries as current copy-ready credentials. No simulator, provider, card, or live operation was performed for this entry. See raw lines 108–122.
+
+## Detail locators
+
+- Management operations and separate payment/cancel/refund boundary: raw lines 15–38.
+- Supported-card list and provider/channel introduction: raw lines 40–50.
+- Online provider matrix and SVS legacy-issuing note: raw lines 52–63 and 78–81.
+- In-person provider matrix: raw lines 65–76.
+- Endpoint names/templates and result codes: raw lines 83–106.
+- Simulator and end-to-end test guidance: raw lines 108–122.
+- Child-operation navigation: raw lines 124–142.
+
+## Related
+
+- [[adyen-online-payments]]
+- [[source-adyen-docs-payment-methods-gift-cards]]
+- [[adyen-pos-gift-cards]]
+
+## Raw Sources
+
+- [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/2026-09-15|Fully read Stored Value API overview raw]]

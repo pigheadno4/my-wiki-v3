@@ -1,0 +1,9 @@
+# Fixed retrieval checks — docs-payment-methods-gift-cards-stored-value-api-void
+
+## Q1
+**Question:** Can I use Stored Value API `/voidTransaction` to cancel or refund a gift-card payment, and how long after a stored-value operation can I undo it?
+**Answer route:** `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-stored-value-api-void.md` → `raw/adyen/docs/payment-methods/gift-cards/stored-value-api/void/2026-09-15.md` lines 19–28, 54–56. It is a synchronous undo for eligible Stored Value API transactions made in the past 24 hours. It is unrelated to payment cancellation or refund; those have separate linked routes. Do not infer a performed reversal.
+
+## Q2
+**Question:** Which original transactions and providers can be voided, and what references and result fields identify the request?
+**Answer route:** `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-stored-value-api-void.md` → `raw/adyen/docs/payment-methods/gift-cards/stored-value-api/void/2026-09-15.md` lines 30–52, 54–90. The child guide's provider/channel table must be checked by original transaction; online load is checked for all four, online merge only for Fiserv; in-person load is checked for all four, activation and activation-with-load only for SVS. Request `originalReference` points to original Stored Value API `pspReference`, while `reference` uniquely identifies this void request; response `pspReference`, `currentBalance` and `resultCode` describe it. The broader overview source `[[source-adyen-docs-payment-methods-gift-cards-stored-value-api]]` has a broader provider/channel void matrix; this child adds original-operation restrictions. Do not treat its broad checks or sample `Success` as eligibility or execution proof.

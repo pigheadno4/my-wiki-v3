@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-pix-recurring-payments",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Recurring payments with Pix Autom\u00e1tico\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/recurring-payments\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/recurring-payments/2026-09-15.md\"\ntags: [adyen, pix, pix-automatico, recurring-payments, tokenization, webhooks]\n---\n\n## Overview\n\nThis Adyen Pix Autom\u00e1tico guide, last modified 2024-03-25 and captured 2026-09-15, describes setting up a subscription billing plan with shopper QR confirmation, receiving a stored payment token, scheduling later charges, interpreting webhooks, retrying failures and ending a plan. It is for an API-only Checkout integration, not evidence of a created mandate, live enablement or successful charge. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-pix]] for Pix method context.\n\n## Key takeaways\n\n- Prerequisites are API-only Checkout API v49 or later, Standard and recurring-token lifecycle webhooks, Pix setup in Customer Area, and the Pix API-only integration. The page limits recurring Pix to the Subscription recurring processing model. It strongly recommends explicit shopper permission for future recurring charges; that advice is not itself stated as a required API field. See raw lines 23\u201336 and 65\u201369.\n- Journey 2 authorizes a subscription by QR code without an initial payment, using amount.value 0 for zero-value validation. Journey 3 combines QR authorization with an initial payment, using the immediate payment amount. Both create a billing plan and show action.qrCodeData for shopper confirmation. The page says recurring.token.created confirms token creation and supplies shopperReference/storedPaymentMethodId; Journey 3 also has an AUTHORISATION webhook for the immediate transaction. These are separate events. See raw lines 38\u201363 and 71\u201383, 138\u2013153.\n- Initial /payments setup marks pix type, shopperReference (case-sensitive, at least three characters, no PII), shopperInteraction Ecommerce, recurringProcessingModel Subscription, storePaymentMethod true and amount required. Pix-specific required fields are shopperName, CPF/CNPJ socialSecurityNumber and pixRecurring.frequency; the listed fixed recurringAmount or variable minAmount, dates, statement and retryPolicy are unmarked optional/conditional. Frequency choices are weekly, monthly, quarterly, half-yearly and yearly. Plan changes require cancelling and creating a new plan. See raw lines 71\u201397 and 155.\n- Schedule a later /payments charge ten to two days before its billing date. Use the webhook-supplied storedPaymentMethodId, the same shopperReference, shopperInteraction ContAuth, model Subscription, billingDate and amount. A fixed recurringAmount must match the plan. For a variable plan, minAmount is the minimum per recurring charge and the shopper can set a maximum in their banking app (raw line 93); the later charge instructions permit a new amount for a minAmount plan (lines 167\u2013168), not an unrestricted amount. The request resultCode Pending is not charge success. AUTHORISATION success true confirms scheduling only; after the billing date CAPTURE success true confirms a charge, while CAPTURE success false or EXPIRE success true signals failure/no capture. See raw lines 157\u2013173 and 201\u2013222.\n- Retry is limited to three attempts after the specified failure webhooks and only when retryPolicy was enabled at plan setup. Keep the failed amount, choose a new billingDate at least 24 hours ahead and within seven days of the failed billing date, and pass originalPspReference from the failure webhook's originalReference. To end a plan, the merchant must cancel its own billing plan and delete the stored token. A shopper can request cancellation at their bank, causing Adyen to delete the token; whenever a token is deleted, the recurring.token.disabled webhook follows. Merchant-side cleanup of remaining shopper details remains the merchant's responsibility after Adyen deletes stored payment details. Refund is described within 90 days after capture; an uncaptured scheduled payment may be cancelled before 10 PM on the day before its scheduled date. The source does not state a timezone for that cutoff. See raw lines 224\u2013287.\n\n> [!warning] Example request inconsistency\n> The fixed plan example sets recurringAmount.value to 10000 (raw lines 116\u2013120), while the later recurring-charge example sends amount.value 100000 (lines 183\u2013185), despite the stated fixed-amount match rule (lines 166\u2013168). The retry sample also has a malformed storedPaymentMethodId key and incomplete nesting (lines 256\u2013266); do not treat it as copy-ready JSON. Example 2025 billing dates precede the 2026 capture.\n\n## Detail locators\n\n- Scope, setup, model and two QR authorization journeys: raw lines 23\u201343.\n- QR presentation, token and transaction webhook sequence: raw lines 45\u201363 and 138\u2013153.\n- Initial token/billing-plan fields and consent advice: raw lines 65\u201397.\n- Schedule window, stored token and later charge fields: raw lines 157\u2013173.\n- Pending, scheduled-authorisation and final charge/failure webhook meanings: raw lines 201\u2013222.\n- Retry limits, dates and original reference: raw lines 224\u2013242.\n- Token deletion, refund/cancel and cutoff: raw lines 269\u2013287.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-pix]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/recurring-payments/2026-09-15|Pix Autom\u00e1tico recurring payments, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Recurring Pix payments are only available for the **Subscription**",
+      "location": "raw line 34, Requirements limitations"
+    },
+    {
+      "text": "We strongly recommend that you ask explicit permission from the shopper if you intend to make future recurring payments.",
+      "location": "raw line 67, Create a token with a billing plan"
+    },
+    {
+      "text": "Contains the `shopperReference`, and the `storedPaymentMethodId`.",
+      "location": "raw line 153, recurring.token.created webhook table"
+    },
+    {
+      "text": "Make a request for the recurring payment within a period of ten to two days before the billing date.",
+      "location": "raw line 159, Make recurring payments"
+    },
+    {
+      "text": "The shopper was successfully charged for the subscription.",
+      "location": "raw line 220, CAPTURE success true row"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-docs-payment-methods-pix-recurring-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-recurring-payments]] \u2014 2024-modified, 2026-09-15-captured Pix Autom\u00e1tico API-only Subscription guide for QR consent/token setup, scheduled charges, webhook finality, retry and cancellation; source flags sample amount/JSON caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Variable-plan minAmount is a per-charge minimum; shopper can set a bank-app maximum, so new amount is not unrestricted.",
+          "End plan requires merchant-side billing-plan cancellation plus token deletion; recurring.token.disabled follows deletion generally."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/recurring-payments/2026-09-15.md",
+  "raw_sha256": "370d27ee7769ac984ca4eb35cd8da24a3185fc6c898b61898e0ffc0c5a8bcf6b",
+  "status": "candidate_ready"
+}

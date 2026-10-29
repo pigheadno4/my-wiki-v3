@@ -1,0 +1,1 @@
+Initial proposal changes requested by independent reviewer: overview provider/channel-wide void checkmarks and child original-operation restrictions can coexist; calling them irreconcilable overstated a conflict. Revised overview and child wording independently approved; Q2 aligned. Original raw unchanged.

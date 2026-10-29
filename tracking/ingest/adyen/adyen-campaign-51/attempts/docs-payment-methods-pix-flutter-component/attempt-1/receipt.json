@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-pix-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Pix Flutter Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/flutter-component/2026-09-15.md\"\ntags: [adyen, pix, flutter, components, qr-code, brazil]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Pix** to an existing Flutter Components integration. It separates Sessions and Advanced server-side flows, describes method-specific request fields and an Advanced `qrCode` action, and gives refund and test/live instructions. Its examples use BR/BRL, but do not prove current account enablement or a completed payment. This is a method add-on to [[adyen-online-payments]], not a complete Flutter integration. See [[adyen]].\n\n## Key takeaways\n\n- **Sessions prerequisites and navigation:** The page names an existing Flutter Components Sessions flow, Checkout API v68 or later, and adding Pix in Customer Area (raw lines 25\u201333). Its integration-type link instead targets an **Advanced Flutter Drop-in** base guide (line 31), while the create-session link targets Flutter Components Sessions (line 39). Use the flow identity and inspect the base-guide target before implementing; the first link is inconsistent.\n- **Sessions request and samples:** The method-specific `/sessions` table marks `amount` required. It leaves `shopperName`, `socialSecurityNumber` (CPF/CNPJ shown on the Pix form), `shopperStatement` (maximum 140 characters), and `lineItems` fields unmarked (raw lines 37\u201348). The TEST v71 examples use BR/BRL and an app-scheme `returnUrl`; some show `paymentMethod.type: pix` and a `sessionValidity` dated 2021, while other SDK examples omit those fields. This is not an established Sessions requiredness rule or a current expiration value. The page says no additional Pix configuration parameters are needed (raw lines 50\u201390, 124\u2013137, 275\u2013305, 345\u2013357, 488\u2013509).\n- **Advanced prerequisites and request:** The Advanced section names existing Flutter Components and Customer Area setup, with `action.type: qrCode` handling; its integration-type link also targets Flutter **Drop-in**, and the action-handling link points to a `handle-the-redirect` anchor despite naming `qrCode` (raw lines 530\u2013546). Its `/payments` table marks `paymentMethod` from front-end `state.data.paymentMethod` and `amount` required. It leaves `shopperName` and `socialSecurityNumber` unmarked but advises sending both to help the shopper identify the payment. The page does not demonstrate a Flutter `onSubmit` callback, so its table wording is not a standalone Flutter UI recipe (raw lines 550\u2013565).\n- **Advanced limits and outcome:** For `/payments`, a provided `shopperStatement` must be under 60 characters, versus the Sessions table maximum of 140. `sessionValidity` defaults to one hour on Checkout API v71 or earlier and 24 hours on v72 or later; the v72 examples set a fixed 2025 date, not a present-time default (raw lines 45\u201348, 560\u2013563, 567\u2013606). The example response is `resultCode: Pending` with `action.type: qrCode` and `qrCodeData` (lines 1053\u20131073). That is a QR presentation step, not proof of payment completion; this child page does not give a final webhook-result recipe.\n- **Refund, simulation and live gate:** The page says a Pix payment may be refunded within 90 days in Customer Area or through an API (raw lines 511\u2013513, 1075\u20131077). It calls Pix asynchronous and instructs **test-environment** simulation by promoting a pending offer to a sale, then checking paid/promoted test offers in Payment list and testing reconciliation. A live Pix request in live Customer Area is needed before acceptance (raw lines 515\u2013528, 1079\u20131092). These captured instructions are not evidence of an actual payment, refund, reconciliation run or merchant approval.\n\n> [!warning] Base links and sample scope\n> Both integration-type rows call the integration Flutter Components but target Flutter Drop-in base guides (raw lines 31 and 538). The Sessions create-session and Advanced make-payment links target Components (lines 39 and 552). Follow the correct flow and platform integration; do not infer a QR action from a redirect-anchor label. Dated request examples and simulated test promotion are not live-payment outcomes.\n\n## Detail locators\n\n- Sessions requirements and request-field table: pinned raw lines 25\u201348; examples and no-extra-configuration statement: lines 50\u2013509.\n- Sessions refund and asynchronous test/live procedure: raw lines 511\u2013528.\n- Advanced requirements and request-field table: raw lines 530\u2013565; v72 examples: lines 567\u20131051.\n- Advanced Pending/qrCode response, refund and test/live procedure: raw lines 1053\u20131092.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/flutter-component/2026-09-15|Pix Flutter Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions requirements"
+    },
+    {
+      "text": "The `state.data.paymentMethod` from the `onSubmit` event from your front end.",
+      "location": "raw line 556, Advanced /payments table"
+    },
+    {
+      "text": "Default: 1 hour (Checkout API v71 or earlier) or 24 hours (Checkout API v72 or later).",
+      "location": "raw line 561, Advanced sessionValidity"
+    },
+    {
+      "text": "The response includes the `action.type`: **qrCode**.",
+      "location": "raw line 1053, Advanced response"
+    },
+    {
+      "text": "Pix is an asynchronous payment method. In the test environment, you can simulate a Pix payment by promoting the pending payment to a sale.",
+      "location": "raw line 1081, Advanced Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-pix-flutter-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-flutter-component]] \u2014 2026-09-15-captured Pix Flutter Components Sessions/Advanced add-on for request fields, QR action and asynchronous test/live and refund boundaries; source flags base-link and sample limitations.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both Flutter Components prerequisite links point to Flutter Drop-in base guides; follow flow-specific Components links in the raw.",
+          "Sessions and Advanced shopperStatement limits differ, and Advanced sessionValidity defaults depend on Checkout API version.",
+          "Pending qrCode response and test offer promotion are not final live-payment evidence; 90-day refund statement is captured guidance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/flutter-component/2026-09-15.md",
+  "raw_sha256": "5df46502899395f9520f7792e7c8c6b15e8dc453b26811be629d1da871ef87e4",
+  "status": "candidate_ready"
+}

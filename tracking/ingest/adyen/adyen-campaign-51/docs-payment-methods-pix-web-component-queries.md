@@ -1,0 +1,13 @@
+# Pix Web Component retrieval checks
+
+## Q1 — Purpose and payment-finality boundary
+
+Query: What does the Pix Web Component guide cover, and do QR display, Pending result or test-offer promotion prove a paid Pix transaction or merchant eligibility?
+
+Expected route: `wiki/index.md` line 10 → `wiki/adyen-index.md` line 2822 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-pix-web-component.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/pix/web-component/2026-09-15.md` `# Pix Web Component` lines 15–23, Sessions requirements lines 25–35, Advanced QR requirement lines 574–582, Pending/qrCode response lines 1117–1137 and asynchronous test/live lines 1139–1156. For Brazil local-entity condition, follow `wiki/sources/adyen/source-adyen-docs-payment-methods-pix.md` when promoted or the pinned `raw/adyen/docs/payment-methods/pix/2026-09-15.md` lines 23–40. Expected answer: a 2026-09-15-captured Pix add-on for Web Components Sessions/Advanced. QR/Pending is awaiting shopper transfer, and test Customer Area offer promotion is simulation; neither is real paid status or current eligibility. Overview states a Brazil local entity is needed.
+
+## Q2 — Flow fields, QR timing, refunds and source cautions
+
+Query: What differs between Pix Web Components Sessions and Advanced for fields, QR action, statement and expiry timing, refunds and live setup?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-pix-web-component.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/pix/web-component/2026-09-15.md` Sessions lines 25–50 and 507–572, Advanced lines 574–629 and 1117–1156; overview local entity/BRL/transaction conditions at `wiki/sources/adyen/source-adyen-docs-payment-methods-pix.md` or pinned `raw/adyen/docs/payment-methods/pix/2026-09-15.md` lines 23–67. Expected answer: Sessions needs existing Components, Checkout API v68+, Customer Area Pix and required final amount; optional shopperName/CPF-CNPJ/statement/line items, with statement max 140. Pix Component displays QR with countdownTime default 15 minutes and personalDetailsRequired default false. Advanced needs qrCode action handling, required paymentMethod from onSubmit state and amount; shopper identity advised, provided statement under 60, and optional sessionValidity default one hour on v71 or earlier versus 24 hours on v72+. The UI countdown and API payment expiry differ. Refund within 90 days is stated; live acceptance requires live Customer Area request. Example 2021/2025 validity dates are expired, and Pending/test promotion do not establish final payment.

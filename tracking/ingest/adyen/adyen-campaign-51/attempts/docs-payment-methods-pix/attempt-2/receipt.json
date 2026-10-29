@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-pix",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Pix payment method overview\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/2026-09-15.md\"\ntags: [adyen, pix, brazil, brl, qr-code, bank-transfer]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen overview describes **Pix** as a Brazil instant bank-transfer method operated through participating banks, digital accounts and wallets. An online shopper scans a QR code or copies its data in a banking or wallet app, then confirms payment. The page covers merchant locality, transaction checks, a capability matrix, the Pix Special Return Mechanism and integration routes. It is a historical documentation snapshot, not evidence of current merchant eligibility or live payment success. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The source says money moves from the shopper account to **Adyen's account** when Pix approves the transfer, and Adyen then transfers to the merchant bank account **once a day** (raw lines 23\u201325, 34). Do not conflate the instant Pix transfer with merchant settlement. The merchant must have a **local entity in Brazil** to accept Pix (raw line 36).\n- In the online flow, the merchant website or app shows a Pix QR code or copyable data; the shopper opens a participating bank/wallet app, scans or pastes it and confirms (raw lines 27\u201334). Before approval, Pix checks Central Bank transaction conditions, including sufficient funds, maximum transaction time, fraud/regulatory suspicion, authentication issues and participant exclusion; Adyen or the acquirer bank can also reject for fraud/regulatory suspicion or Pix ecosystem technical issues (raw lines 42\u201355). This overview does not state a specific QR expiry interval or make QR display proof of payment.\n- The matrix labels **real-time payments / `qrCode` / BR / BRL**. It marks recurring and refunds available; partial and multiple partial refunds have checkmarks with \u201cSee note\u201d, but the captured page supplies no corresponding explanatory note. It marks separate, partial and multiple partial captures unavailable. The Chargebacks cell is marked unavailable with \u201cSee note\u201d, yet the page separately describes the **Pix Special Return Mechanism** for suspected fraud or operational failure (raw lines 38\u201340, 57\u201367). Do not treat the crossed-out Chargebacks cell as an absence of Pix disputes.\n- For an unrecognized Pix transaction, the page says a shopper can raise a bank dispute **within 90 days**. It says the merchant need take no action for the Special Return Mechanism; dispute status can be viewed in Customer Area. The captured sequence starts with `OpenDispute`, then `RequestForInformation` and a `REQUEST_FOR_INFORMATION` webhook. At the subsequent evidence check, Adyen says it auto-defends **if suspicious-behavior evidence exists**; **if it does not**, Adyen closes the RFI and sends information to the bank, changes payment status to `InformationSupplied`, and sends an `INFORMATION_SUPPLIED` webhook. These are conditional dispute branches, not a guarantee that every case reaches `InformationSupplied` or that a QR checkout itself proves final settlement (raw lines 57\u201367).\n- The page routes to Web, iOS, Android, React Native, Flutter and API-only online integration guides, plus a separate in-person Pix route (raw lines 69\u2013111). Use the relevant child guide for request fields, QR timing and asynchronous status handling; this overview alone does not specify an end-to-end API/webhook recipe.\n\n## Detail locators\n\n- Identity, transfer/settlement distinction, shopper QR flow and local-entity condition: raw `# Pix`, lines 23\u201336.\n- BR/BRL method matrix and unresolved \u201cSee note\u201d markers: raw lines 38\u201340.\n- Pix and Adyen/acquirer transaction rejection conditions: raw `## Transaction conditions`, lines 42\u201355.\n- Special Return Mechanism, 90-day dispute window and status/webhook description: raw `## Chargebacks`, lines 57\u201367.\n- Online platform/API-only and separate in-person routes: raw `## How do you want to integrate?`, lines 69\u2013111.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/2026-09-15|Pix overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Pix is a payment method for instant direct bank transfers in Brazil",
+      "location": "raw line 23, # Pix"
+    },
+    {
+      "text": "The money is sent directly from the shopper account to Adyen's account, and then transferred once a day to the merchant's bank account.",
+      "location": "raw line 25, # Pix"
+    },
+    {
+      "text": "Note that the merchant needs to have a local entity in Brazil to accept Pix payments.",
+      "location": "raw line 36, # Pix"
+    },
+    {
+      "text": "| Real-time payments | qrCode       | BR        | BRL",
+      "location": "raw line 40, payment capability matrix"
+    },
+    {
+      "text": "Shoppers can use this Pix Special Return Mechanism for suspected fraud and for cases where there was an operational failure at your business.",
+      "location": "raw line 61, ## Chargebacks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "pix-overview-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix]] \u2014 2026-09-15-captured Pix BR/BRL overview for QR bank-transfer flow, local-entity requirement, capability matrix and Special Return Mechanism; source distinguishes instant transfer from daily merchant settlement.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Chargebacks matrix cell is crossed out, but the same page describes a Pix Special Return Mechanism and dispute workflow; retain both scopes.",
+          "Partial-refund and Chargebacks matrix cells say \u201cSee note\u201d, but this captured raw has no corresponding explanatory notes.",
+          "No QR expiry interval or final payment-status/webhook recipe is specified in this overview."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/2026-09-15.md",
+  "raw_sha256": "f08b32198c57822d3dba2f85ed4b6629cb6eda4f7f37c15e9db8a432be883520",
+  "status": "candidate_ready"
+}

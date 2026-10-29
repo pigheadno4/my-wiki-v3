@@ -21,6 +21,108 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-gift-cards-web]] — 2019-modified, 2026-09-15-captured gift-cards Web chooser for Drop-in/Components method guides and generic Web references.
+
+
+- [[source-adyen-docs-payment-methods-pix-web]] — 2026-09-15-captured Pix Web chooser for Drop-in/Components child guides and four Sessions/Advanced base routes; Components description is incomplete.
+
+
+- [[source-adyen-docs-payment-methods-pix-android]] — 2026-09-15-captured Android Pix chooser linking Drop-in/InstantPaymentComponent child guides and Sessions/Advanced base routes; source flags redirect teaser versus QR action wording.
+
+
+- [[source-adyen-docs-payment-methods-payto-web]] — 2026-09-15-captured PayTo Web chooser for Drop-in/Components child guides and Sessions/Advanced base-integration routes.
+
+
+- [[source-adyen-docs-payment-methods-pix-ios]] — 2026-09-15-captured iOS Pix chooser linking Drop-in/InstantPaymentComponent child guides and Sessions/Advanced base integrations.
+
+
+- [[source-adyen-docs-payment-methods-payto-ios]] — 2026-09-15-captured iOS PayTo chooser linking Drop-in/PayToComponent child guides and Sessions/Advanced base integrations.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-issue]] — 2023-modified, 2026-09-15-captured Stored Value API /issue guide for virtual card creation, provider/channel conditions, new-versus-existing SVS restriction and inconsistent sample response.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-void]] — 2026-09-15-captured Stored Value API /voidTransaction guide for eligible operations within 24 hours, provider/channel restrictions and response state; source distinguishes payment cancellation/refund and flags the overview-matrix conflict.
+
+
+- [[source-adyen-docs-payment-methods-payto-android]] — 2026-09-15-captured PayTo Android chooser for Drop-in/Redirect Component child guides and four Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-android-drop-in]] — 2026-09-15-captured Android Drop-in v5+ gift-card add-on for Sessions/Advanced setup and provider-dependent simulator/live gates; source distinguishes base-flow and partial-payment detail.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-android-drop-in-earlier-versions]] — 2023-modified, 2026-09-15-captured v4.x.x Android Drop-in Advanced gift-card add-on for discovery, balance/order partial payments, provider-dependent simulator and live setup; source flags Sessions base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-check-balance]] — 2026-09-15-captured Stored Value API balance-inquiry guide for card-number and token paths, minor-unit response balance and provider/channel scope; source flags Givex and SVS sample inconsistencies.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-ios-drop-in]] — 2025-modified, 2026-09-15-captured iOS Drop-in gift-card guide: /sessions no extra method integration, /payments partial-payment delegate, async result and provider-dependent test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-web-drop-in]] — 2023-modified, 2026-09-15-captured Web Drop-in gift-card guide contrasting /sessions automatic partial payments with /payments balance/order callbacks, result and provider-dependent test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api]] — 2022-modified, 2026-09-15-captured JSON-only Stored Value API overview for gift-card management operations, provider/channel matrix, SVS legacy-issuing exception and result codes; source separates payment APIs and flags matrix conflicts.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-merge-balance]] — 2026-09-15-captured Stored Value API full-balance merge guide for same-provider cards, Fiserv online-only matrix scope, tokenized target and response fields.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-load]] — 2026-09-15-captured Stored Value API /load guide for activated gift-card funding, token/non-token request paths and Success/balance response; source warns load is not a payment refund and examples conflict.
+
+
+- [[source-adyen-docs-payment-methods-pix-react-native-component]] — 2026-09-15-captured Pix React Native Components Advanced-only guide for QR/Pending action, versioned payment expiry, asynchronous test/live and refund boundaries; source flags base-link and callback wording caveats.
+
+
+- [[source-adyen-docs-payment-methods-pix-recurring-payments]] — 2024-modified, 2026-09-15-captured Pix Automático API-only Subscription guide for QR consent/token setup, scheduled charges, webhook finality, retry and cancellation; source flags sample amount/JSON caveats.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-api-only]] — 2026-09-15-captured gift-card API-only guide for provider/brand discovery, balance-to-order branching, payment outcome and simulator/live onboarding.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-change-status]] — 2020-modified, 2026-09-15-captured Stored Value API gift-card activation/deactivation guide for provider/channel limits, preload amount, token and no-token paths, irreversible deactivation and result-code interpretation.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards-web-component]] — 2026-09-15-captured Web Component guide for versioned Sessions/own-button and /payments gift-card balance, order and partial-payment flows; source flags incomplete sample code and provider-dependent test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-pix-flutter-component]] — 2026-09-15-captured Pix Flutter Components Sessions/Advanced add-on for request fields, QR action and asynchronous test/live and refund boundaries; source flags base-link, callback mapping and sample limitations.
+
+
+- [[source-adyen-docs-payment-methods-pix-react-native-drop-in]] — 2026-09-15-captured Pix React Native Drop-in Sessions/Advanced add-on for QR action, versioned expiry, 90-day refund window and asynchronous test reconciliation; source flags base-link and action-anchor mismatches.
+
+
+- [[source-adyen-docs-payment-methods-pix-flutter-drop-in]] — 2026-09-15-captured Pix Flutter Drop-in Sessions/Advanced add-on for request fields, QR/Pending action, versioned expiry, refund timing and test/live setup; source flags flow-specific limits and example caveats.
+
+
+- [[source-adyen-docs-payment-methods-pix-api-only]] — 2026-09-15-captured Pix API-only BR/BRL guide for shopper data, versioned payment expiry, Pending QR action, asynchronous webhook example, refunds and test/live gates; source flags example amount and field-requiredness caveats.
+
+
+- [[source-adyen-docs-payment-methods-pix-ios-drop-in]] — 2026-09-15-captured Pix iOS Drop-in Sessions/Advanced guide for QR action, versioned payment expiry, asynchronous test reconciliation, refund and live setup; source flags example/link caveats.
+
+
+- [[source-adyen-docs-payment-methods-pix-android-drop-in]] — 2026-09-15-captured Pix Android Drop-in Sessions/Advanced add-on for request fields, QR action, versioned expiry, refunds and asynchronous test-offer guidance; source warns about stale example dates.
+
+
+- [[source-adyen-docs-payment-methods-pix-web-component]] — 2026-09-15-captured Pix Web Components Sessions/Advanced guide for QR display/action, flow-specific fields/expiry, refund timing and asynchronous test/live status.
+
+
+- [[source-adyen-docs-payment-methods-pix-android-component]] — 2026-09-15-captured Pix Android Components Sessions/Advanced guide for request fields, InstantPaymentComponent, QR action, versioned payment expiry, refunds and asynchronous TEST simulation.
+
+
+- [[source-adyen-docs-payment-methods-pix]] — 2026-09-15-captured Pix BR/BRL overview for QR bank-transfer flow, local-entity requirement, capability matrix and Special Return Mechanism; source distinguishes instant transfer from daily merchant settlement.
+
+
+- [[source-adyen-docs-payment-methods-pix-ios-component]] — 2026-09-15-captured Pix iOS Components Sessions/Advanced add-on for request data, InstantPaymentComponent, QR action and asynchronous test/live handling.
+
+
+- [[source-adyen-docs-payment-methods-pix-web-drop-in]] — 2026-09-15-captured Pix Web Drop-in guide for Sessions/Advanced fields, QR countdown versus payment expiry, Pending qrCode action, refund window and test/live gates.
+
+
+- [[source-adyen-docs-payment-methods-gift-cards]] — 2023-modified, 2026-09-15-captured cross-channel gift-card overview for provider onboarding, partial payments, funding models, stored-value routes and dated brand/provider table.
+
+
 - [[source-adyen-docs-payment-methods-online-banking-poland-web]] — 2026-09-15-captured Web integration chooser for Poland Drop-in/Components child guides and Sessions/Advanced base guides.
 
 

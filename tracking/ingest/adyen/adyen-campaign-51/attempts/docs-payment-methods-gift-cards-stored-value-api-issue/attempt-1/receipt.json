@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-stored-value-api-issue",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Stored Value API issue virtual gift card\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/stored-value-api/issue\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md\"\ntags: [adyen, gift-cards, stored-value, issue, online-payments]\n---\n\n## Overview\n\nThis 2023-04-21-modified, 2026-09-15-captured Adyen guide describes Stored Value API `POST /issue` for creating a new **virtual** gift card or other stored-value card. The newly issued card is activated automatically; some providers preload it. The page gives provider/channel availability, request fields and response shape, with a specific exception for existing SVS integrations. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Virtual issuance and availability:** The guide says plastic gift cards cannot be issued through Stored Value API. Its provider matrix checks new-card issuance online for Givex and Fiserv (formerly ValueLink), and marks it unavailable in person for all four listed providers. Some providers automatically preload; that does not mean every issued card has the same balance. [Raw: lines 19\u201340]\n- **SVS legacy exception:** A *new* Stored Value API integration cannot issue SVS gift cards. An *existing* integration that has issued SVS cards can continue doing so. The accepted request type list and SVS amount rule below must be read with this integration-age restriction; neither establishes availability for a new merchant. [Raw: lines 35\u201340, 54\u201356]\n- **Request fields:** POST `/issue` with `merchantAccount`, `paymentMethod.type` and a unique `reference` (maximum 80 characters). The page lists `givex`, `svs` and `valuelink` as accepted types and says not to send other `paymentMethod` fields. `amount` is optional for Givex, must be greater than zero for SVS, and must not be sent for other cards. `giftCardPromoCode` is required only for Fiserv virtual cards and must not be used for other cards. The optional `store` field applies to transactions flagged as in-store and has a 16-character maximum. [Raw: lines 44\u201357]\n- **Response lifecycle:** The response lists card `currentBalance`, request `pspReference`, `resultCode` state, and newly issued `paymentMethod.number` and `paymentMethod.type`; merchant additional-data settings may add fields. A sample `Success` response is illustrative, not evidence of a created card or observed balance. [Raw: lines 90\u2013118]\n- **Sample mismatch:** The prose labels the sample response as an SVS card, but its `paymentMethod.type` is `givex`. Do not use this inconsistent example to infer provider-specific output or eligibility. [Raw: lines 102\u2013116]\n\n> [!WARNING] New SVS integrations cannot issue SVS cards\n> The source expressly limits continued SVS issuance to existing integrations that have issued SVS cards. Its accepted `svs` type and example do not override this restriction. [Raw: lines 35\u201338, 54\u201356, 102\u2013116]\n\n## Detail locators\n\n- Virtual-card behavior, provider/channel matrix and SVS legacy exception: pinned raw lines 15\u201340.\n- Request fields and illustrative Givex/Fiserv examples: pinned raw lines 42\u201388.\n- Response fields, additional data and mislabeled SVS/Givex sample: pinned raw lines 90\u2013118.\n- Load, balance, activation, merge and void navigation: pinned raw lines 120\u2013135.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment and payment-method route.\n- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api]] \u2014 broader Stored Value API scope and provider matrix.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15|Stored Value API issue guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The card is activated automatically, and some providers automatically preload the newly issued card with a certain amount.",
+      "location": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md:19"
+    },
+    {
+      "text": "If you are *building a new* Stored Value API integration, issuing SVS gift cards is not supported.",
+      "location": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md:36"
+    },
+    {
+      "text": "If you have an *existing* Stored Value API integration and have issued SVS gift cards, you can continue doing so.",
+      "location": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md:38"
+    },
+    {
+      "text": "You cannot issue plastic gift cards with the Stored Value API.",
+      "location": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md:40"
+    },
+    {
+      "text": "Sample response for a newly issued SVS gift card:",
+      "location": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md:102"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-gift-cards-stored-value-issue-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-issue]] \u2014 2023-modified, 2026-09-15-captured Stored Value API /issue guide for virtual card creation, provider/channel conditions, new-versus-existing SVS restriction and inconsistent sample response.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "New Stored Value API integrations cannot issue SVS gift cards; existing integrations that have issued them can continue.",
+          "Sample response is labeled SVS but its paymentMethod.type is givex; do not infer provider-specific behavior from it.",
+          "Online Givex/Fiserv matrix checks do not establish merchant-specific onboarding or live card issuance."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md",
+  "raw_sha256": "9e2f763747d38d88ef335bc9d62888b821746d912977d012c5a72154ea405a20",
+  "status": "candidate_ready"
+}

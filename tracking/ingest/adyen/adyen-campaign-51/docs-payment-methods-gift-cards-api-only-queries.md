@@ -1,0 +1,13 @@
+# Gift cards API-only retrieval checks
+
+## Q1 — Purpose and proof boundary
+
+Query: What does the gift-cards API-only guide cover, and do a balance result or simulated Authorised payment prove a live provider-backed purchase?
+
+Expected route: `wiki/index.md` line 10 → `wiki/adyen-index.md` line 2822 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-api-only.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/gift-cards/api-only/2026-09-15.md` `# Gift cards for API only` lines 15–30, Requirements lines 32–38, balance lines 64–75 and 326–343, result lines 708–725, Test and go live lines 727–756. Expected answer: a 2026-09-15-captured add-on to existing API-only checkout with merchant form, provider-specific setup, balance/order/payment steps and simulator/live gates. Balance Success is not purchase authorization; test simulator results do not prove a live provider connection, merchant enablement or completed live payment.
+
+## Q2 — Brand/card-number/CVC, partial order and outcome boundaries
+
+Query: How do gift-card discovery, balance and payment request identities differ, when is an /orders partial-payment flow needed, and what result/live qualifications apply?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-api-only.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/gift-cards/api-only/2026-09-15.md` Requirements/form lines 28–62, balance request/response lines 64–75 and 326–339, order branch lines 341–343, payment fields/examples lines 345–387, result/webhook lines 708–725, simulator/live lines 727–756. For provider onboarding, partial payments and dated brand table follow `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards.md` → `raw/adyen/docs/payment-methods/gift-cards/2026-09-15.md` lines 19–45 and 67–115. Expected answer: discover supported cards for selected country/currency with channel Web, then use response brand; balance check sends that brand as paymentMethod.type plus card number/CVC and merchantAccount. Payment sends type giftcard plus separate brand and number/CVC. Enough balance continues to payment; insufficient balance goes through /orders with gift-card part and a different method for remainder. /payments resultCode is shown to shopper and webhook reports asynchronous outcome; Authorised with manual capture still needs capture. Tests are simulator-only; live needs provider onboarding, variant in live Customer Area and Support. NL/EUR, Givex, sample card numbers/CVCs and amount endings are examples, not universal eligibility.

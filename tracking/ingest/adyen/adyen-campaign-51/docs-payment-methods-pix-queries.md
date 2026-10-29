@@ -1,0 +1,13 @@
+# Fixed queries — Pix payment method overview
+
+## Q1 — identity, flow and scope
+
+**Query:** What Pix payment flow and settlement timing does the captured overview describe, and what does this evidence not prove?
+
+**Expected answer:** At `https://docs.adyen.com/payment-methods/pix`, the 2026-09-15 capture calls Pix an instant direct bank-transfer method in Brazil. An online merchant shows a QR code or copyable data, and the shopper confirms in a participating bank/wallet app. On approval, funds move from the shopper account to Adyen; Adyen transfers to the merchant bank account **once a day**. The merchant needs a local Brazilian entity. The overview establishes no specific QR expiry interval, current account enablement or payment success from mere QR display (full pinned `raw/adyen/docs/payment-methods/pix/2026-09-15.md`, `# Pix` lines 23–36). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-pix.md`.
+
+## Q2 — capabilities, checks and dispute warning
+
+**Query:** What does the Pix matrix support, how can a payment fail, and how should the chargeback/dispute wording be read?
+
+**Expected answer:** The matrix labels real-time `qrCode`, BR/BRL; it marks recurring/refunds available, partial and multiple partial refunds with checkmarks plus unexplained “See note”, and separate/partial/multiple partial captures unavailable (pinned `raw/adyen/docs/payment-methods/pix/2026-09-15.md`, raw lines 38–40). Pix checks funds, Central Bank time limit, regulatory/fraud suspicion, authentication and participant status; Adyen/acquirer can reject for suspicion or technical issues (raw `## Transaction conditions` lines 42–55). Although the matrix crosses out Chargebacks with “See note”, the same page describes a Pix Special Return Mechanism: shoppers can raise an unrecognized-transaction bank dispute within 90 days, with `OpenDispute` followed by `RequestForInformation` and a `REQUEST_FOR_INFORMATION` webhook. The later outcome is conditional: when suspicious-behavior evidence exists Adyen says it auto-defends; otherwise it closes the RFI, sends information to the bank, changes payment status to `InformationSupplied` and sends an `INFORMATION_SUPPLIED` webhook (raw `## Chargebacks` lines 57–67). Treat these as different scopes, not an absence of disputes; the captured page supplies no explanatory matrix notes and no full asynchronous checkout outcome recipe. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-pix.md`.

@@ -1,0 +1,13 @@
+# Gift-card Stored Value API merge-balance retrieval checks
+
+## Q1 — Purpose and execution boundary
+
+Query: What does /mergeBalance do, and does this guide or its Success sample prove a current supported or executed transfer?
+
+Expected route: `wiki/index.md` line 10 → `wiki/adyen-index.md` line 2822 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-stored-value-api-merge-balance.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/gift-cards/stored-value-api/merge-balance/2026-09-15.md` `# Merge the balance of two gift cards` lines 15–19, provider/channel matrix lines 21–33 and response lines 122–143, 200–221. Expected answer: a 2026-09-15-captured operation guide for transferring a full balance between same-provider stored-value cards. It does not prove present provider/account enablement or an actual transfer; online matrix supports Fiserv/ValueLink only and in-person matrix supports none, despite optional store/POS fields.
+
+## Q2 — Source/target card, token and response scope
+
+Query: How do untokenized and tokenized target-card merge requests differ, what source/target security and provider constraints apply, and what can currentBalance establish?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-stored-value-api-merge-balance.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/gift-cards/stored-value-api/merge-balance/2026-09-15.md` provider/channel lines 15–33, `## Merge the balance` lines 35–119, tokenized path lines 145–198, and response lines 122–143/200–221; provider onboarding/channel context at `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards.md` → `raw/adyen/docs/payment-methods/gift-cards/2026-09-15.md` lines 19–45. Expected answer: source card number plus securityCode when the source has one; without token, target valuelink type and card number plus target securityCode when applicable; with token, target valuelink type, recurringDetailReference from tokenization and matching shopperReference, with shopperInteraction values as documented. Both cards must have same provider; full balance, not partial, is transferred. The example recurringDetailReference looks like a card number but prose requires a token. Response lists minor-unit currentBalance, PSP reference and resultCode; it does not identify whether currentBalance is source or target post-merge, and Success sample is not execution proof. Optional store/POS values do not override the matrix's no-in-person support.

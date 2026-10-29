@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-stored-value-api-merge-balance",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Merge gift-card balance with Stored Value API\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/stored-value-api/merge-balance\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/stored-value-api/merge-balance/2026-09-15.md\"\ntags: [adyen, gift-cards, stored-value, merge-balance, valuelink]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Stored Value API guide describes `/mergeBalance`, which transfers the **full stored value** from a source gift/stored-value card to a target card **of the same provider/type**. It gives channel/provider support marks, target-card details with and without a token, and the response fields. This is an operation guide, not evidence that a merge was executed, that a provider is currently enabled, or that a sample balance belongs to a particular card. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-gift-cards|gift-card overview]].\n\n## Key takeaways\n\n- **Provider/channel restriction:** the captured matrix marks online merge supported only for **Fiserv (formerly ValueLink)** among Givex, SVS, Fiserv and Intersolve. It marks merge unsupported for all four in the **in-person** row. Both source and target must be from the **same gift-card provider**; the request field accepts target `paymentMethod.type: valuelink`. This snapshot does not establish present account/provider enablement or an in-person route merely because an optional `store` field is documented (raw lines 15\u201333, 75\u201379, 174\u2013178).\n- **Without token:** POST `/mergeBalance` with `merchantAccount`, source card number and target `paymentMethod` type/number. If either card has a PIN/security code, obtain it from the shopper and include that card's `securityCode`; source/target expiry and holder name are optional. `store` is optional for in-store-flagged transactions (maximum **16 characters**), while `reference` identifies the transaction (maximum **80 characters**, hyphens separating multiple references). These are request-field descriptions, not a guarantee the in-person matrix supports merge (raw lines 35\u2013119).\n- **With token:** the **source** still uses `sourcePaymentMethod.number` and any applicable security code, but the **target** is identified by `paymentMethod.type: valuelink`, `recurringDetailReference` returned when target card was tokenized, and the corresponding `shopperReference`. `shopperInteraction` accepts Ecommerce, ContAuth, Moto or POS, with Ecommerce described as default for online; these accepted enum values do not override the channel/provider support matrix (raw lines 145\u2013178).\n- **Token example caveat:** the tokenized-target example assigns `recurringDetailReference` a card-number-looking value identical to the target number mentioned in its introductory sentence. The field description explicitly calls for the **token returned on tokenization**; do not treat the example as a rule that a raw card number can replace that token (raw lines 174\u2013198).\n- **Response and lifecycle:** both paths describe `currentBalance` as currency/value in minor units, plus a 16-character `pspReference` and `resultCode` indicating request state. The sample shows `Success`, but the text does **not identify whether `currentBalance` is the source or target card's post-merge balance**. Follow the linked Stored Value API result-code guidance for status meaning; this captured sample does not prove a transaction occurred or specify all failure/reversal behavior (raw lines 122\u2013143, 200\u2013221). The page's next-step links to status, balance and load operations are navigation, not part of a completed merge (raw lines 223\u2013241).\n\n## Detail locators\n\n- Full-value, same-provider operation and provider/channel matrix: raw lines 15\u201333.\n- Untokenized target request fields and reference limits: raw lines 35\u2013119.\n- Untokenized response fields and sample: raw lines 122\u2013143.\n- Tokenized target fields, shopper interaction and sample-token mismatch: raw lines 145\u2013198.\n- Tokenized response and unassigned currentBalance meaning: raw lines 200\u2013221.\n- Adjacent operation and Stored Value API routes: raw lines 223\u2013241.\n- Gift-card overview provider/onboarding and channel caveats: [[source-adyen-docs-payment-methods-gift-cards]] and its pinned raw lines 19\u201345; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/merge-balance/2026-09-15|Stored Value API merge-balance guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Transfer the value from one stored-value card to another one of the same type.",
+      "location": "raw line 17"
+    },
+    {
+      "text": "The source and target card need to be from the same gift card provider.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "the way to specify the card details of the target card depends on whether you [tokenized](/online-payments/tokenization) a payment that the shopper made with this card.",
+      "location": "raw line 37"
+    },
+    {
+      "text": "The token that identifies the target card. This was returned in the response when you tokenized the target card.",
+      "location": "raw line 175"
+    },
+    {
+      "text": "`resultCode`: Indicates the state of the request.",
+      "location": "raw line 206"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gift-cards-stored-value-api-merge-balance-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-merge-balance]] \u2014 2026-09-15-captured Stored Value API full-balance merge guide for same-provider cards, Fiserv online-only matrix scope, tokenized target and response fields.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Online provider matrix checks only Fiserv/ValueLink and in-person matrix checks none; optional store and POS enum do not establish in-person support.",
+          "Tokenized example uses a card-number-looking recurringDetailReference; field description calls for a token returned at tokenization.",
+          "currentBalance response text does not identify source versus target card; do not assign it without further authority."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/merge-balance/2026-09-15.md",
+  "raw_sha256": "565ddc06937f247e25b610762b4cf807351f1efcfea220be5889aa5e403dae1d",
+  "status": "candidate_ready"
+}

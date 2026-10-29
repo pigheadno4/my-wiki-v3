@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Gift cards API-only integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/api-only/2026-09-15.md\"\ntags: [adyen, gift-cards, api-only, stored-value, partial-payments]\n---\n\n## Overview\n\nThis Adyen API-only gift-card guide, last modified 2023-02-23 and captured 2026-09-15, adds gift-card payments to an **existing API-only integration** with a merchant-built payment form. It covers provider-specific setup and discovery, balance inquiry, full versus partial-order routing, payment request/result, and simulator/live onboarding. Its examples do not establish current provider coverage, merchant enablement, a protected card-data implementation or a completed live payment. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-gift-cards|gift-card overview]].\n\n## Key takeaways\n\n- **Provider and environment scope:** the merchant must build a separate integration for each gift-card provider and add each variant to be tested in Customer Area. The test simulator covers only a limited number of variants and approximates an end-to-end provider connection. Before live payments, the guide requires onboarding with a gift-card provider, adding the variant in live Customer Area, and contacting Adyen Support to add the card there. A test result or dated supported-card directory is not live entitlement (raw lines 28\u201344, 727\u2013756; overview raw lines 19\u201321 and 67\u2013115).\n- **Discovery and form:** if using `/paymentMethods`, specify a country where the card is supported, a supported currency, and `channel: Web`; the examples **NL/EUR** are illustrative, not universal gift-card geography/currency. The response lists available cards with a display name, `brand` and `type: giftcard`. Render brand/logo choices and collect the selected card's number and CVC/security code in the merchant's form. These are sensitive payment details; the page does not describe complete storage or protection controls (raw lines 40\u201362, 64\u201375).\n- **Balance check versus payment identity:** `/paymentMethods/balance` marks `paymentMethod.type` **as the selected brand** (for example `givex`), plus card number, CVC and merchant account required. Its response example returns `resultCode: Success` with a currency/value balance, which establishes a balance-check response in that example, not purchase authorization. By contrast, the later `/payments` table requires `paymentMethod.type: giftcard` **and a separate `paymentMethod.brand`**, plus number/CVC. Do not reuse the balance-check `type` shape unchanged for payment (raw lines 64\u201375, 326\u2013356).\n- **Partial-order boundary:** when balance is **at least the full payment amount**, continue to `/payments`. When balance is **less**, the guide says to create an `/orders` request so the gift card covers part and a different payment method covers the remainder. The partial-payment/order route is separate from this page's single gift-card `/payments` example; a successful balance inquiry does not by itself establish that the order was paid (raw lines 326\u2013356; overview raw lines 23\u201325).\n- **Payment outcome:** `/payments` returns a PSP reference, `resultCode` and merchant reference; the example is `Authorised`. Use `resultCode` to show the shopper a result, and receive the outcome asynchronously by webhook. The table distinguishes `Authorised`, `Cancelled`, `Error` and `Refused`; **manual capture requires a separate capture even after Authorised**. Provider-specific regulatory amount limits may apply; check with that provider rather than treating the examples as universal limits (raw lines 345\u2013387, 708\u2013725).\n- **Tests and examples:** test card numbers and payment amount endings trigger simulated Authorised/Refused/Error outcomes, including invalid PIN or too many PIN attempts. These are simulator controls, not a real provider or live-card result. Sample numbers/PINs and server-library versions are examples, not credentials or SDK minima; the Go balance/payment snippets label v10.4.0 but import `/v9/` packages, so they are not verified copy-ready builds (raw lines 77\u2013323, 389\u2013705, 727\u2013756).\n\n## Detail locators\n\n- Existing API-only integration, variant setup and provider onboarding: raw lines 15\u201344.\n- Web discovery, brand/type response and merchant form: raw lines 46\u201362.\n- Balance endpoint required fields, brand-as-type and example result: raw lines 64\u201375 and 326\u2013339; language examples lines 77\u2013323.\n- Full balance versus `/orders` partial payment routing: raw lines 341\u2013343.\n- Payment endpoint's giftcard type plus brand, number/CVC and provider amount limits: raw lines 345\u2013356; examples lines 358\u2013705.\n- Payment result/webhook and manual-capture boundary: raw lines 708\u2013725.\n- Simulator outcomes and live provider/variant/Support gate: raw lines 727\u2013756.\n- Method-level provider, funding and dated brand directory context: [[source-adyen-docs-payment-methods-gift-cards]] and its pinned raw lines 19\u201345, 67\u2013115; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/api-only/2026-09-15|Gift cards API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You must build a separate integration for each gift card provider.",
+      "location": "raw line 42"
+    },
+    {
+      "text": "The `brand` from the [/paymentMethods](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods) response.",
+      "location": "raw line 72"
+    },
+    {
+      "text": "If the balance is less than the full payment amount, make an [/orders](https://docs.adyen.com/api-explorer/Checkout/latest/post/orders) request.",
+      "location": "raw line 343"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "raw line 718"
+    },
+    {
+      "text": "Onboard with a gift card provider and add the [gift card variant](/payment-methods/gift-cards#supported-gift-cards) to your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw line 752"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gift-cards-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-api-only]] \u2014 2026-09-15-captured gift-card API-only guide for provider/brand discovery, balance-to-order branching, payment outcome and simulator/live onboarding.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Balance check uses paymentMethod.type as brand, while /payments uses type giftcard plus brand; preserve endpoint scope.",
+          "Insufficient balance routes through /orders partial payments and another method; a balance result is not purchase authorization."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/api-only/2026-09-15.md",
+  "raw_sha256": "50c255ddc2be5f560b6dfa39dfcc94c0dd7b84ecdbafbc5a9ec01e94658f789a",
+  "status": "candidate_ready"
+}

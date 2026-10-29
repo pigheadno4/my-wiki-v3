@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Gift card iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/ios-drop-in/2026-09-15.md\"\ntags: [adyen, gift-cards, ios, drop-in, partial-payments]\n---\n\n## Overview\n\nThis Adyen page, last modified 2025-08-11 and captured 2026-09-15, describes gift-card additions to an existing iOS Drop-in integration. It distinguishes the default /sessions path from the /payments additional-use-case path, with a partial-payment delegate for the latter. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-gift-cards]] for provider onboarding and broader method context. Example code and simulated outcomes do not establish current eligibility or successful live processing.\n\n## Key takeaways\n\n- The page assumes an existing iOS Drop-in integration and intended test gift-card variants added in Customer Area. It says only a limited number of variants can be tested through a simulator; before live use, onboard with a provider and add the variant in live Customer Area (raw lines 23\u201331). It says no **additional gift-card request fields**; /sessions is the stated default from Drop-in v5.0.0 onward and /payments covers an additional use case (lines 33\u201338). This does not remove base endpoint fields.\n- For the /sessions tab, the guide repeats the v5.0.0 default and says there is **no required gift-card-specific iOS Drop-in integration** (raw lines 40\u201348). That is a method-specific configuration statement, not a waiver of the existing Drop-in or account setup.\n- For /payments, configure a gift-card partial-payment delegate: checkBalance calls /paymentMethods/balance, requestOrder calls /orders with the **total transaction amount** when gift-card balance is short, and cancelOrder calls /orders/cancel on cancellation (raw lines 50\u201362). The Swift example sketches these methods with placeholder balance/order completions and comments for the API calls; it is not an end-to-end request implementation (lines 64\u201381). The merchant can use another payment method for the remainder, but this page does not give its complete payment-order recipe; follow the partial-payments guide for that.\n- The result section uses /payments response resultCode for the shopper message and separately says the outcome arrives asynchronously in a webhook. It lists Authorised, Cancelled, Error and Refused. Manual capture is an extra step **only when that capture mode is used** (raw lines 83\u201394). Do not equate a displayed response result with proof of final settlement.\n- Provider-dependent test-card numbers and amount-last-three-digit outcome codes are **simulator cases**; test Customer Area Payment list is the status check (raw lines 96\u2013117). For live use, the guide says to onboard with a gift-card provider, add its variant in live Customer Area, and contact Support to add the gift card there; only then does it mention small-amount tests using real gift-card details (lines 119\u2013125). This page does not record a live test or grant operational authorization.\n\n## Detail locators\n\n- Existing iOS Drop-in, limited test variants and provider prerequisite: raw lines 23\u201331.\n- No extra method fields and /sessions versus /payments route: raw lines 33\u201352.\n- /payments partial-payment delegate methods and placeholder Swift sample: raw lines 54\u201381.\n- Response, asynchronous webhook, result codes and conditional manual capture: raw lines 83\u201394.\n- Provider-dependent simulator and live setup: raw lines 96\u2013125.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/ios-drop-in/2026-09-15|Gift card iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to send additional fields for gift cards.",
+      "location": "raw line 35, ## API reference"
+    },
+    {
+      "text": "There is no required gift card specific integration for iOS Drop-in.",
+      "location": "raw line 48, Sessions tab"
+    },
+    {
+      "text": "Make a [/paymentMethods/balance](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods/balance) request.",
+      "location": "raw line 60, /payments configuration"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook]",
+      "location": "raw line 87, ## Show the payment result"
+    },
+    {
+      "text": "Onboard with a gift card provider and add the [gift card variant]",
+      "location": "raw line 121, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gift-cards-ios-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-ios-drop-in]] \u2014 2025-modified, 2026-09-15-captured iOS Drop-in gift-card guide: /sessions no extra method integration, /payments partial-payment delegate, async result and provider-dependent test/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The no-required-integration statement applies to gift-card-specific /sessions additions, not base iOS Drop-in or account setup.",
+          "/payments Swift code is a placeholder delegate example, not a complete balance/order API implementation.",
+          "Test amount suffixes are simulator cases; live acceptance requires provider onboarding, live variant addition and Support setup."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "4ef2099a5126a532f027edb6471f34a41a46812cac603fe787d57c3691d2009a",
+  "status": "candidate_ready"
+}

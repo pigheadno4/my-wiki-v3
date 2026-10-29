@@ -1,0 +1,9 @@
+# Fixed retrieval checks — docs-payment-methods-gift-cards-stored-value-api-issue
+
+## Q1
+**Question:** Can a new Stored Value API integration issue an SVS or plastic gift card, and which providers/channels does the guide list for virtual issuance?
+**Answer route:** `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-stored-value-api-issue.md` → `raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md` lines 19–40. The guide covers virtual cards, says plastic cards cannot be issued, checks online Givex and Fiserv issuance, and marks all four providers unavailable for in-person issuance. A new integration cannot issue SVS; an existing integration that has already issued SVS cards can continue. This historical matrix is not merchant-specific eligibility or execution proof.
+
+## Q2
+**Question:** Which fields are conditional in `POST /issue`, what does the response identify, and can the SVS sample be trusted as provider-specific output?
+**Answer route:** `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-gift-cards-stored-value-api-issue.md` → `raw/adyen/docs/payment-methods/gift-cards/stored-value-api/issue/2026-09-15.md` lines 44–57, 90–118. The guide lists type, merchantAccount and unique reference; amount is optional for Givex, positive for legacy SVS and prohibited for other cards; promo code is Fiserv-only; optional store is for in-store-flagged transactions. Response fields include currentBalance, pspReference, resultCode, newly issued number and type. The sample's label says SVS while its payload type is givex, so preserve the mismatch. Do not treat the sample as a real issued card.

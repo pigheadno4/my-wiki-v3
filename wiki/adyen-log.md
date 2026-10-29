@@ -6,6 +6,13 @@ tags: [adyen, github-repository, operations]
 
 > Adyen-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Adyen website C51
+
+- All 34 exact-manifest Pix, gift cards and PayTo chooser General Docs sources independently approved and promoted. First full-review approvals 26/34; 8 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.
+- Touched 1 concepts, including 0 new concept(s). Client/server and integration architecture, country/currency/entity and API/environment/version scope, redirect and app-switch handling, TEST versus LIVE prerequisites and request versus final payment/refund state remain distinct. Original reviews, attempts and bounded correction evidence retained. Website guide snapshots and exact-version repository evidence remain separately qualified. Historical regional/legal guidance remains separate from current advice or compliance proof.
+- Source_count 2548 = 2534 website + 14 GitHub summaries. All 34 raw hashes unchanged; 68 fixed query answers and three coordinator full-read exemplars retained. Structural and typed checks are recorded in `tracking/ingest/adyen/adyen-campaign-51/close-validation.md`.
+- Historical-snapshot wiki ingestion only. No provider/terminal/payment execution, collection, code/rule/schema changes, commit or push. Unrelated shared-checkout work preserved.
+
 ## [2026-10-30] ingest | Adyen website C50
 
 - All 50 exact-manifest Online banking Poland, Finland Online banking, Online banking Czech Republic and selected PayTo General Docs sources independently approved and promoted. First full-review approvals 45/50; 5 targeted correction reviews. Full pinned raw reads and quotes, independent first reviews, coordinator-only writes and concept-before-source promotion.

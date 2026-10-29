@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-stored-value-api-check-balance",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Stored Value API gift-card balance inquiry\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/stored-value-api/check-balance\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/stored-value-api/check-balance/2026-09-15.md\"\ntags: [adyen, gift-cards, stored-value, balance, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide describes Stored Value API `/checkBalance` for viewing the remaining balance of a gift card or other stored-value card. It has card-number and tokenized-card request paths plus provider/channel marks. A balance response is an inquiry result, not a payment, load, reserve or proof of currently spendable value. See [[adyen]], [[adyen-online-payments]], and the cross-channel [[source-adyen-docs-payment-methods-gift-cards]].\n\n## Key takeaways\n\n- The **online** and **in-person** matrices both check balance inquiry for Givex, SVS, Fiserv/ValueLink and Intersolve. Yet both request-path `paymentMethod.type` lists call **Givex \u201conly for in-person payments\u201d**. This captured page does not reconcile the online Givex check with its type restriction. Do not promise online Givex balance inquiry from either line alone; provider/channel support needs verification. See raw lines 21\u201333, 55 and 129.\n- **Without a token:** POST `/checkBalance` with `merchantAccount`, optional `store` only for in-store flagged transactions, a `paymentMethod` card type and number, conditional security code if the card has one, optional expiry/holder fields, and a transaction `reference` (maximum 80 characters; multiple references separated by hyphens). The type list names Givex with the in-person limit, SVS, ValueLink and Intersolve-supported types. See raw lines 35\u201379.\n- **With a token:** the request uses `paymentMethod.type`, `recurringDetailReference` returned at tokenization, the matching `shopperReference`, `shopperInteraction` (Ecommerce default for online, ContAuth, Moto or POS options), merchant account and reference; `store` is optional for in-store flagged transactions. This path identifies the stored card by token and shopper identity rather than a card number. The guide ties it to a payment previously tokenized; it does not say an arbitrary card can be queried by inventing a token. See raw lines 117\u2013148.\n- Both response sections list `currentBalance.currency` and total `value` **in minor units**, `pspReference`, and a `resultCode` whose value must be interpreted using Stored Value API result codes. The sample `Success`/EUR 5600 response illustrates a successful inquiry, not an actual payment, future available spending limit, or an executed balance check for this task. See raw lines 96\u2013115 and 150\u2013169.\n- The no-token example calls its card **SVS** but uses number `603628672882001915092` and code `5754`, which the separate Stored Value API overview's simulator table labels **Givex**. Treat the example brand/number pairing as inconsistent, not a provider test credential. See raw lines 81\u201394 and [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/2026-09-15|Stored Value API overview simulator table, lines 108\u2013116]]. The page's load, merge, issue, status and void links are separate operations, not effects of balance inquiry. See raw lines 171\u2013189.\n\n## Detail locators\n\n- Purpose and historical online/in-person provider marks: raw lines 15\u201333.\n- No-token card-number request and SVS-labeled sample: raw lines 35\u201394.\n- No-token response fields and sample: raw lines 96\u2013115.\n- Tokenized-card request and sample: raw lines 117\u2013148.\n- Tokenized response fields and sample: raw lines 150\u2013169.\n- Separate operation navigation: raw lines 171\u2013189.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n- [[adyen-pos-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/stored-value-api/check-balance/2026-09-15|Fully read Stored Value API check-balance raw]]\n",
+  "quotes": [
+    {
+      "text": "lets you view the remaining balance on a gift card or other type of stored-value card.",
+      "location": "line 19"
+    },
+    {
+      "text": "only for in-person payments",
+      "location": "line 55"
+    },
+    {
+      "text": "The `currency` and total `value` in minor units of the funds stored on the card.",
+      "location": "line 100"
+    },
+    {
+      "text": "The token that identifies the card. This was returned in the response when you tokenized the card.",
+      "location": "line 130"
+    },
+    {
+      "text": "This is the `shopperReference` that you used when you created the token.",
+      "location": "line 131"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-gift-card-check-balance-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-stored-value-api-check-balance]] \u2014 2026-09-15-captured Stored Value API balance-inquiry guide for card-number and token paths, minor-unit response balance and provider/channel scope; source flags Givex and SVS sample inconsistencies.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Online matrix checks Givex inquiry but both type lists say Givex only for in-person payments; captured page does not reconcile this.",
+          "SVS-labeled no-token sample uses a number/security-code pair labeled Givex in the Stored Value API overview simulator table.",
+          "A returned currentBalance/resultCode is inquiry output, not a gift-card payment, value reservation, or proof of available future spend."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/stored-value-api/check-balance/2026-09-15.md",
+  "raw_sha256": "2e1b1d0d725683ccf5c0f5336856ee10e198960ca907831b20ee110cc5c40289",
+  "status": "candidate_ready"
+}

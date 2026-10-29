@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-pix-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Pix iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/pix/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/pix/ios-drop-in/2026-09-15.md\"\ntags: [adyen, pix, ios, drop-in, qr-code, asynchronous-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen add-on describes Pix in an existing iOS Drop-in integration, with separate Sessions and Advanced flows. It covers request fields, the Advanced QR-code action, asynchronous test reconciliation, refund timing and live setup. See [[adyen]] and [[adyen-online-payments]]. This is a dated documentation snapshot, not evidence of current account eligibility or a completed Pix payment.\n\n## Key takeaways\n\n- Sessions requires an existing iOS Drop-in Sessions integration, Checkout API v68 or later, and Pix setup in Customer Area. Its /sessions table marks amount required; shopperName, socialSecurityNumber (CPF/CNPJ shown on the Pix form), shopperStatement (maximum 140 characters), and lineItems.id/amountIncludingTax are unmarked optional additions. The BR/BRL 10000 example has an app-style returnUrl and a 2021 sessionValidity value; it is sample data, not a reusable expiration setting. No additional Pix configuration is required. See raw lines 25\u201390 and 506\u2013510.\n- Advanced requires an existing iOS Drop-in Advanced integration, action handling for action.type qrCode, and Pix setup. Its /payments table marks paymentMethod and amount required; shopperName, socialSecurityNumber, shopperStatement, sessionValidity and line-item fields are unmarked optional. Sending shopperName and socialSecurityNumber is advice, not a requirement. The Advanced shopperStatement rule says a supplied value must be under 60 characters, distinct from the Sessions table's 140-character maximum. See raw lines 535\u2013570.\n- In Advanced, sessionValidity is described as Pix payment expiration: default one hour for Checkout API v71 or earlier and 24 hours for v72 or later. The response example has resultCode Pending and action.type qrCode plus pix.expirationDate in additionalData. QR-code presentation and an expiration value do not establish paid/final status; the page does not define a separate QR display lifetime. See raw lines 566 and 1058\u20131078.\n- The page calls Pix asynchronous. In test, a pending offer can be promoted to sale in the test Customer Area; paid/promoted payments then appear in Payment list, and the page recommends using this to test reconciliation. It says a paid payment can be refunded within 90 days via Customer Area or API, and live Pix requires a request in the live Customer Area. These are documentation instructions, not performed operations. See raw lines 512\u2013533 and 1080\u20131101.\n\n> [!warning] iOS example and link qualifications\n> The Advanced request table describes paymentMethod as state.data.paymentMethod from an onSubmit front-end event (raw line 561), wording to verify against the iOS Drop-in base integration. Its qrCode action-handling link points to a handle-the-redirect anchor (raw line 544). The Sessions sample sessionValidity is in 2021 and Advanced samples use 2025-10-01, both before this 2026 capture (raw lines 70, 600 and repeats); do not reuse those dates. The example pix.expirationDate describes the Pix payment response, not an independently documented QR display timer.\n\n## Detail locators\n\n- Sessions prerequisites and field table: raw `## Sessions flow Drop-in`, lines 25\u201349.\n- Sessions BR/BRL sample, app returnUrl and historical sessionValidity: raw lines 51\u201390.\n- Sessions configuration, refund and test/live guidance: raw lines 506\u2013533.\n- Advanced prerequisites and fields, including versioned expiration/default and flow-specific statement length: raw lines 535\u2013570.\n- Advanced sample request and historical validity: raw lines 572\u2013612 and repeated language examples through 1056.\n- Pending QR-code response and payment expiration field: raw lines 1058\u20131078.\n- Advanced refund and test/live instructions: raw lines 1080\u20131101.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-online-payments-classic-integrations-classic-api-integration-classic-pix]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/pix/ios-drop-in/2026-09-15|Pix iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions Requirements"
+    },
+    {
+      "text": "Maximum length: 140 characters.",
+      "location": "raw line 47, Sessions /sessions table"
+    },
+    {
+      "text": "Default: 1 hour (Checkout API v71 or earlier) or 24 hours (Checkout API v72 or later).",
+      "location": "raw line 566, Advanced /payments table"
+    },
+    {
+      "text": "\"resultCode\": \"Pending\",",
+      "location": "raw line 1070, Advanced example response"
+    },
+    {
+      "text": "Pix is an asynchronous payment method.",
+      "location": "raw line 1090, Advanced Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c51-docs-payment-methods-pix-ios-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-pix-ios-drop-in]] \u2014 2026-09-15-captured Pix iOS Drop-in Sessions/Advanced guide for QR action, versioned payment expiry, asynchronous test reconciliation, refund and live setup; source flags example/link caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/pix/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "eac496401b3aff97184b6b79b43b328b6dc7ab0ad26ba2c15255ecac95d9b473",
+  "status": "candidate_ready"
+}

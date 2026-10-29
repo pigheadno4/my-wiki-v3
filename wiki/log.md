@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Adyen website C51
+
+- Thirty-four independently approved Pix, gift cards and PayTo chooser documentation sources; first full-review approvals 26/34 and 8 targeted correction reviews. 1 concepts touched (0 new); source_count 2548 = 2534 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-51/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-30] ingest | Adyen website C50
 
 - Fifty independently approved Online banking Poland, Finland Online banking, Online banking Czech Republic and selected PayTo documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 1 concepts touched (0 new); source_count 2514 = 2500 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-50/`; details [[adyen-log]]. No commit/push.

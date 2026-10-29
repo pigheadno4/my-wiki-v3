@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Gift card Web Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/web-component/2026-09-15.md\"\ntags: [adyen, gift-cards, web, components, partial-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds gift-card payments to an existing Web Components integration. It separates Sessions, Sessions with a merchant-owned Pay button, and /payments paths, each with different balance and partial-order behavior. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-gift-cards]] for provider onboarding and broader gift-card scope. Sample outcomes do not prove current account enablement or real payment success.\n\n## Key takeaways\n\n- The guide assumes existing Web Components and says to add each gift-card variant intended for testing in Customer Area. It says no additional gift-card request fields; /sessions is the default for Components v5.0.0 or later, while /payments is offered for an additional use case (raw lines 28\u201340). Base endpoint fields still apply.\n- **Sessions Component:** this tab says Components v5.18.0+. Configure onOrderCreated(orderStatus) for a gift card whose balance is below the transaction amount; orderStatus.remainingAmount gives the remainder, and the existing AdyenCheckout instance can create another method's Component for it (raw lines 56\u201370). iDEAL and card are examples (lines 72\u2013105). Construction differs for v6.0.0+ (new Giftcard) versus v5.x.x or earlier (checkout.create); mount only after availability is checked (lines 107\u2013140).\n- **Sessions with own Pay button:** this tab says Components v5.21.0+. The button must call balanceCheck(); if balance covers the full amount, onRequiringConfirmation calls for shopper confirmation before submit() makes payment. A short balance invokes onOrderCreated for the remainder (raw lines 142\u2013162). The sample uses window.giftcard without showing a global assignment and has incomplete object syntax; do not copy it as a full runnable recipe (lines 164\u2013181). A later mount example explicitly calls isAvailable() (lines 224\u2013242).\n- **/payments Component:** this tab applies if /payments was implemented or Components were integrated before v5.18.0. Configure onBalanceCheck to call /paymentMethods/balance. If balance is short, no payment has yet been made: onOrderRequest creates a full-amount /orders order and onOrderCancel calls /orders/cancel; subsequent partial /payments calls take place outside the Component using pspReference, orderData and remainingAmount (raw lines 244\u2013265, 326\u2013354). The onOrderRequest table label has stray []() markup, and the JS event example omits separators; use the prose and endpoint route rather than treating the snippet as copy-ready (lines 260\u2013287).\n- Test card numbers and amount-last-three-digit outcomes are provider-dependent simulator examples, not production guarantees (raw lines 377\u2013398). Before live payments, the page says to onboard with a provider, add its variant in live Customer Area and contact Support to add the gift card there; it suggests real-detail, small-amount end-to-end live tests afterward (lines 400\u2013406). This snapshot does not establish a current provider agreement or authorize live operations.\n\n> [!warning] Version and example scope\n> Keep Sessions onOrderCreated remainder handling separate from the explicit /payments balance/order/partial-payment path. The own-button and /payments JavaScript snippets are incomplete, and the first Sessions mount snippet calls .then() on the Component while later snippets show isAvailable() (raw lines 128\u2013140, 164\u2013181, 224\u2013242, 267\u2013287, 311\u2013324). Verify the SDK version and base integration before using a sample.\n\n## Detail locators\n\n- Requirements and API-reference scope: raw lines 28\u201340.\n- Sessions v5.18+ partial-order callback, versioned construction and mount: raw lines 56\u2013140.\n- Own-button v5.21+ balance check and confirmation: raw lines 142\u2013242.\n- /payments balance/order/cancel callbacks and external partial payments: raw lines 244\u2013354.\n- Optional custom logo: raw lines 356\u2013375.\n- Provider-dependent simulator and live onboarding steps: raw lines 377\u2013406.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/web-component/2026-09-15|Gift card Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to send additional fields for gift cards.",
+      "location": "raw line 37, ## API reference"
+    },
+    {
+      "text": "Supported in [Components v5.18.0]",
+      "location": "raw line 58, Sessions tab"
+    },
+    {
+      "text": "`onOrderCreated(orderStatus)`",
+      "location": "raw line 68, Sessions required configuration"
+    },
+    {
+      "text": "When using your own **Pay** button for gift cards, you must call the `balanceCheck()` method",
+      "location": "raw line 148, own Pay button configuration"
+    },
+    {
+      "text": "When balance of the shopper's gift card is less than the payment amount, no payment is made.",
+      "location": "raw line 328, ### Making partial payments"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gift-cards-web-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-web-component]] \u2014 2026-09-15-captured Web Component guide for versioned Sessions/own-button and /payments gift-card balance, order and partial-payment flows; source flags incomplete sample code and provider-dependent test/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions v5.18+, own Pay button v5.21+, and /payments or pre-v5.18 paths have different callbacks; do not merge partial-payment semantics.",
+          "Own-button and /payments JavaScript snippets are incomplete, and Sessions mount examples differ in availability-check pattern.",
+          "Test amount suffixes are simulator results; live use requires provider onboarding, live variant addition and Support setup."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/web-component/2026-09-15.md",
+  "raw_sha256": "6676e08559f58bb153af9ab18a7b5eb53946b4459ae4eb64688adbf40f153c04",
+  "status": "candidate_ready"
+}

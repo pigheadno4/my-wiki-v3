@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-gift-cards-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Gift card Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/gift-cards/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/gift-cards/web-drop-in/2026-09-15.md\"\ntags: [adyen, gift-cards, web, drop-in, partial-payments]\n---\n\n## Overview\n\nThis Adyen page, last modified 2023-03-10 and captured 2026-09-15, describes adding gift cards to an existing Web Drop-in integration. It separates /sessions automatic partial payments from an additional-use-case /payments configuration, then gives payment-result and test/live guidance. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-gift-cards]] for provider onboarding and the broader gift-card scope. This snapshot does not establish current provider availability or a live payment outcome.\n\n## Key takeaways\n\n- An existing Web Drop-in integration and the intended gift-card variants in Customer Area are prerequisites for testing (raw lines 26\u201333). If using Web Drop-in v6, the page says to import AdyenCheckout and Giftcard (lines 35\u201341). It says no additional gift-card request fields; /sessions is the default from Drop-in v5.0.0 onward, while /payments is for an additional use case (lines 43\u201348). Base request fields remain applicable.\n- In the /sessions tab, Drop-in handles partial payments automatically (raw lines 50\u201358). This page does not specify a merchant-created order callback for that route.\n- In the /payments tab, configure gift-card partial payment with onBalanceCheck to call /paymentMethods/balance, onOrderRequest when balance is short to call /orders with total amount, merchantAccount and reference, and onOrderCancel to call /orders/cancel (raw lines 60\u201374). The sample code in lines 80\u2013102 is incomplete JavaScript: it places a const declaration within an object and omits separators. Follow the described event/endpoint obligations, not the sample as a ready-to-run implementation. It shows giftcardConfiguration passed under paymentMethodsConfiguration when constructing AdyenCheckout (lines 104\u2013121).\n- The result section says to use resultCode from a /payments response to inform the shopper, and separately notes asynchronous webhook outcomes. It lists Authorised, Cancelled, Error and Refused; manual capture is an additional step **only if manual capture is in use** (raw lines 123\u2013134). Do not collapse the shopper-facing result and webhook into proof that every order has settled.\n- For testing, provider-dependent test card numbers and last-three-digit amount codes drive simulator Authorised, Refused or Error examples; they are not live guarantees (raw lines 157\u2013178). Before live payments, the page says to onboard with a gift-card provider, add the variant in live Customer Area, and contact Support to add the gift card there; only then does it mention small-amount end-to-end live tests with real details (lines 180\u2013186). The guide itself records no executed live test.\n\n> [!warning] Versioned route and example caveat\n> /sessions auto-handling (v5.0.0+ default) and /payments custom balance/order callbacks are different routes. The /payments configuration snippet is syntactically incomplete (raw lines 80\u2013102). Test amount suffixes are simulator behavior, and live acceptance depends on separate provider and Customer Area setup.\n\n## Detail locators\n\n- Existing Drop-in, test variants, v6 import and no-extra-fields/API route: raw lines 26\u201348.\n- /sessions auto partial payments and /payments callback/endpoint table: raw lines 50\u201374.\n- Incomplete configuration example and construction route: raw lines 76\u2013121.\n- /payments resultCode table, webhook and conditional manual capture: raw lines 123\u2013134.\n- Optional brand logo: raw lines 136\u2013155.\n- Test simulator and provider/live setup: raw lines 157\u2013186.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-gift-cards]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/gift-cards/web-drop-in/2026-09-15|Gift card Web Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to send additional fields for gift cards.",
+      "location": "raw line 45, ## API reference"
+    },
+    {
+      "text": "Drop-in handles partial payments automatically.",
+      "location": "raw line 58, Sessions tab"
+    },
+    {
+      "text": "Make an [/orders](https://docs.adyen.com/api-explorer/Checkout/latest/post/orders) request including: - `amount` - `merchantAccount` - `reference`.",
+      "location": "raw line 73, /payments required configuration"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook]",
+      "location": "raw line 127, ## Show the payment result"
+    },
+    {
+      "text": "Onboard with a gift card provider and add the [gift card variant]",
+      "location": "raw line 182, ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "gift-cards-web-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-gift-cards-web-drop-in]] \u2014 2023-modified, 2026-09-15-captured Web Drop-in gift-card guide contrasting /sessions automatic partial payments with /payments balance/order callbacks, result and provider-dependent test/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Do not merge /sessions automatic partial handling with /payments merchant event/endpoint configuration.",
+          "The /payments configuration code is incomplete JavaScript and not copy-ready.",
+          "Test amount suffix outcomes are simulator cases; provider onboarding, live variant addition and Support setup remain prerequisites."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/gift-cards/web-drop-in/2026-09-15.md",
+  "raw_sha256": "2d95858e177530e75d1b9249fac7c7b09f59c2d46d419cd214342c20d7ec6162",
+  "status": "candidate_ready"
+}
