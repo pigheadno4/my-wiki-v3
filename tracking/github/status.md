@@ -4693,6 +4693,31 @@
   Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.9.0/2026-09-30/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.8.0--26.9.0/comparison.json)
 
+## `github-bc23622312cd10e17c98`
+
+- Repository: `braintree/braintree_node`
+- SHA: `5d24276b0a8345735c657c45af13b93af40e945d`
+- Collection date: `2026-10-30`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_node/ingest-packets/github-bc23622312cd10e17c98/packet.md)
+- Review priority: `normal`
+- Required reading: `14` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree@3.41.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_node/releases/braintree/3.41.0/2026-10-30/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_node/comparisons/braintree/3.40.0--3.41.0/comparison.json)
+
 ## `github-bd7fe849961b5c6b9964`
 
 - Repository: `paypal/paypal-js`

@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-10-29`
+Generated: `2026-10-30`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -27,7 +27,7 @@ Generated: `2026-10-29`
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
 | braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
 | braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `wait` |
-| braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-06 | ingested | 2026-11-06 | `wait` |
+| braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-30 | ingested | 2026-11-30 | `wait` |
 | braintree | `braintree/braintree_php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-29 | ingested | 2026-11-29 | `wait` |
 | braintree | `braintree/braintree_ruby` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-29 | ingested | 2026-11-29 | `wait` |
 | braintree | `braintree/credit-card-type` | tier3 | semver-tags / npm-tracked-source-v1 | monthly | 2026-08-29 | ingested | 2026-09-29 | `collect-baseline` |

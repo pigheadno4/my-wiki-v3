@@ -2,8 +2,10 @@
 title: "GitHub changelog: braintree/braintree_node"
 type: source
 date_ingested: 2026-10-06
+date_updated: 2026-10-30
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_node/snapshots/2026-10-30-5d24276/manifest.json"
   - "github/braintree/braintree_node/snapshots/2026-10-06-deb5227/manifest.json"
   - "github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/manifest.json"
 tags: [braintree, node-js-sdk, server-sdk, changelog, github-repository]
@@ -12,6 +14,20 @@ tags: [braintree, node-js-sdk, server-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree_node`. Cumulative implementation knowledge belongs in [[source-github-braintree-node]] and the linked immutable snapshots.
+
+## `braintree@3.41.0` (ingested 2026-10-30)
+
+- Node repository `braintree/braintree_node`, from 3.40.0 to SHA `5d24276b0a8345735c657c45af13b93af40e945d`; user-approved delta with focused reading. Release manifest October 19 timestamp is tag/commit-derived, not verified publication; empty GitHub Release-note body.
+- Adds `gateway.transaction.reverse()`: strict path-ID check, one POST, gateway-selected void/full refund. No client-side status decision/fallback. Null/omitted options send a null body; other options are wrapped without a field allowlist or amount normalization. Do not import PHP's restricted reversal signature or infer an amount-specific partial-refund contract.
+- Existing response handling resolves gateway validation failures as `success: false`, distinct from rejected path/transport errors. Reversal forwards `apiRequestKey`, but forwarding does not independently establish server eligibility, arbitrary-field acceptance or retry guarantees.
+- Adds previous Mastercard external-vault link ID to the signatures used by sale and verification create, plus five validation constants. Direct transaction create/credit already forward attributes without those key checks; existing reordered constants are not new features. Node/npm/dependencies remain unchanged except package version.
+- Five modified/165 unchanged retained files, 11 upstream dispositions (five retained/six exclusions), no gaps/unclassified changes. Changed source, affected prior code, response/helper dependencies and cumulative wiki history read; 340 snapshot identities and unchanged changelog tail checked mechanically. Existing concept first; source/company/index/logs updated, all 3.39.0/3.40.0 history and source_count preserved. No SDK/payment execution.
+
+Evidence:
+- `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/manifest.json`
+- `raw/github/braintree/braintree_node/releases/braintree/3.41.0/2026-10-30/manifest.json`
+- `tracking/github/repos/braintree/braintree_node/comparisons/braintree/3.40.0--3.41.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-braintree-node]] - source paths, five located quotes and language-specific boundaries
 
 ## `braintree@3.40.0` (2026-09-23)
 

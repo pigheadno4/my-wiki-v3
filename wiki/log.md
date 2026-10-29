@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Braintree Node `3.41.0`
+
+- Approved focused-reading delta: reversal with Node-specific options/result handling, external-vault signature additions and validation diagnostics; all earlier history preserved. Details [[braintree-log]] and [[source-github-braintree-node]]. No SDK/payment execution, commit or push.
+
 ## [2026-10-29] ingest | Braintree PHP `6.40.0`
 
 - Approved focused-reading delta after completed 6.39.0: dynamic-property compatibility fixes and version-qualified runtime guidance/advisory, without claiming an interpreter security patch. All earlier history preserved; details [[braintree-log]] and [[source-github-braintree-php]]. No PHP/runtime/payment execution, commit or push.

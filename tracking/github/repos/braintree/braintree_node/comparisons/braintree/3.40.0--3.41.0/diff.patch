@@ -1,0 +1,646 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7f9ba2b..7753b26 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,10 @@
+ # Changelog
+ 
++## 3.41.0
++
++- Add `Transaction.reverse()` to automatically void or fully refund a transaction
++- Add `previousMastercardTransactionLinkId` to `externalVault` on `Transaction` and `CreditCardVerification.create`
++
+ ## 3.40.0
+ 
+ - Add `achType` to transaction search
+diff --git a/lib/braintree/credit_card_verification_gateway.js b/lib/braintree/credit_card_verification_gateway.js
+index 413189d..f6f2bdb 100644
+--- a/lib/braintree/credit_card_verification_gateway.js
++++ b/lib/braintree/credit_card_verification_gateway.js
+@@ -127,6 +127,7 @@ class CreditCardVerificationGateway extends Gateway {
+         "creditCard[number]",
+         "externalVault",
+         "externalVault[previousNetworkTransactionId]",
++        "externalVault[previousMastercardTransactionLinkId]",
+         "externalVault[status]",
+         "intendedTransactionSource",
+         "paymentMethodNonce",
+diff --git a/lib/braintree/transaction_gateway.js b/lib/braintree/transaction_gateway.js
+index 7cd5a6e..5819064 100644
+--- a/lib/braintree/transaction_gateway.js
++++ b/lib/braintree/transaction_gateway.js
+@@ -106,6 +106,25 @@ class TransactionGateway extends Gateway {
+     return this.createResponseHandler("transaction", Transaction);
+   }
+ 
++  reverse(transactionId, options) {
++    if (Util.isInvalidPathSegment(transactionId)) {
++      return Promise.reject(exceptions.NotFoundError("Not Found")); // eslint-disable-line new-cap
++    }
++
++    if (typeof options === "function") {
++      options = null;
++    }
++
++    let body = options == null ? null : { transaction: options };
++
++    return this.gateway.http
++      .post(
++        `${this.config.baseMerchantPath()}/transactions/${transactionId}/reverse`,
++        body
++      )
++      .then(this.responseHandler());
++  }
++
+   sale(attributes) {
+     let invalidKeysError;
+ 
+@@ -658,6 +677,7 @@ class TransactionGateway extends Gateway {
+       "externalVault",
+       "externalVault[status]",
+       "externalVault[previousNetworkTransactionId]",
++      "externalVault[previousMastercardTransactionLinkId]",
+       "scaExemption",
+       "foreignRetailer",
+       "paymentFacilitator",
+diff --git a/lib/braintree/validation_error_codes.js b/lib/braintree/validation_error_codes.js
+index c8fc5e5..c51ca79 100644
+--- a/lib/braintree/validation_error_codes.js
++++ b/lib/braintree/validation_error_codes.js
+@@ -438,6 +438,7 @@ class ValidationErrorCodes {
+       CannotRefundWithPendingMerchantAccount: "91559",
+       CannotRefundWithSuspendedMerchantAccount: "91538",
+       CannotReleaseFromEscrow: "91561",
++      CannotReverseAtThisTime: "915282",
+       CannotSimulateSettlement: "91575",
+       CannotSubmitForPartialSettlement: "915103",
+       CannotSubmitForSettlement: "91507",
+@@ -453,11 +454,13 @@ class ValidationErrorCodes {
+       DiscountAmountCannotBeNegative: "915160",
+       DiscountAmountIsTooLarge: "915161",
+       ExternalVault: {
+-        StatusIsInvalid: "915175",
+-        StatusWithPreviousNetworkTransactionIdIsInvalid: "915177",
+-        PreviousNetworkTransactionIdIsInvalid: "915179",
+         // NEXT_MAJOR_VERSION remove this validation error as it is no longer returned by the gateway
+         CardTypeIsInvalid: "915178",
++        PreviousMastercardTransactionLinkIdIsInvalid: "915279",
++        PreviousNetworkTransactionIdIsInvalid: "915179",
++        StatusIsInvalid: "915175",
++        StatusWithPreviousMastercardTransactionLinkIdIsInvalid: "915278",
++        StatusWithPreviousNetworkTransactionIdIsInvalid: "915177",
+       },
+       ExchangeRateQuoteIdIsTooLong: "915229",
+       ApiRequestKeyTooLong: "915230",
+@@ -729,6 +732,10 @@ class ValidationErrorCodes {
+     };
+ 
+     this.Verification = {
++      ExternalVault: {
++        PreviousMastercardTransactionLinkIdIsInvalid: "942206",
++        StatusWithPreviousMastercardTransactionLinkIdIsInvalid: "942205",
++      },
+       Options: {
+         AmountCannotBeNegative: "94201",
+         AmountFormatIsInvalid: "94202",
+diff --git a/package-lock.json b/package-lock.json
+index 1adeda1..43c9111 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree",
+-  "version": "3.40.0",
++  "version": "3.41.0",
+   "lockfileVersion": 1,
+   "requires": true,
+   "dependencies": {
+diff --git a/package.json b/package.json
+index 1deb3da..d07fe08 100644
+--- a/package.json
++++ b/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "braintree",
+-  "version": "3.40.0",
++  "version": "3.41.0",
+   "description": "A library for server-side integrating with Braintree.",
+   "keywords": [
+     "braintree",
+diff --git a/test/integration/braintree/credit_card_verification_gateway_spec.js b/test/integration/braintree/credit_card_verification_gateway_spec.js
+index a2ca086..68e055d 100644
+--- a/test/integration/braintree/credit_card_verification_gateway_spec.js
++++ b/test/integration/braintree/credit_card_verification_gateway_spec.js
+@@ -462,6 +462,100 @@ describe("CreditCardVerificationGateway", function () {
+       );
+     });
+ 
++    it("creates a verification with externalVault previousMastercardTransactionLinkId", function (done) {
++      let params = {
++        creditCard: {
++          cardholderName: "John Smith",
++          number: "5555555555554444",
++          expirationDate: "05/2029",
++        },
++        externalVault: {
++          status: "vaulted",
++          previousMastercardTransactionLinkId: "1234567890123456789012",
++        },
++      };
++
++      specHelper.defaultGateway.creditCardVerification.create(
++        params,
++        function (err, response) {
++          assert.isNull(err);
++          assert.isTrue(response.success);
++
++          let verification = response.verification;
++
++          assert.equal(verification.processorResponseCode, "1000");
++          assert.equal(verification.processorResponseText, "Approved");
++          assert.equal(verification.processorResponseType, "approved");
++
++          done();
++        }
++      );
++    });
++
++    it("handles validation error status with previous mastercard transaction link id is invalid", function (done) {
++      let params = {
++        creditCard: {
++          cardholderName: "John Smith",
++          number: "5555555555554444",
++          expirationDate: "05/2029",
++        },
++        externalVault: {
++          status: "will_vault",
++          previousMastercardTransactionLinkId: "1234567890123456789012",
++        },
++      };
++
++      specHelper.defaultGateway.creditCardVerification.create(
++        params,
++        function (err, response) {
++          assert.isNull(err);
++          assert.isFalse(response.success);
++          assert.equal(
++            response.errors
++              .for("verification")
++              .for("externalVault")
++              .on("status")[0].code,
++            ValidationErrorCodes.Verification.ExternalVault
++              .StatusWithPreviousMastercardTransactionLinkIdIsInvalid
++          );
++
++          done();
++        }
++      );
++    });
++
++    it("handles validation error previous mastercard transaction link id is invalid", function (done) {
++      let params = {
++        creditCard: {
++          cardholderName: "John Smith",
++          number: "5555555555554444",
++          expirationDate: "05/2029",
++        },
++        externalVault: {
++          status: "vaulted",
++          previousMastercardTransactionLinkId: "1234567890123456789012123",
++        },
++      };
++
++      specHelper.defaultGateway.creditCardVerification.create(
++        params,
++        function (err, response) {
++          assert.isNull(err);
++          assert.isFalse(response.success);
++          assert.equal(
++            response.errors
++              .for("verification")
++              .for("externalVault")
++              .on("previousMastercardTransactionLinkId")[0].code,
++            ValidationErrorCodes.Verification.ExternalVault
++              .PreviousMastercardTransactionLinkIdIsInvalid
++          );
++
++          done();
++        }
++      );
++    });
++
+     it("supports intendedTransactionSource", function (done) {
+       let params = {
+         creditCard: {
+diff --git a/test/integration/braintree/transaction_gateway_spec.js b/test/integration/braintree/transaction_gateway_spec.js
+index 7f7edc2..20f746f 100644
+--- a/test/integration/braintree/transaction_gateway_spec.js
++++ b/test/integration/braintree/transaction_gateway_spec.js
+@@ -3333,6 +3333,31 @@ describe("TransactionGateway", function () {
+         });
+       });
+ 
++      it("supports previousMastercardTransactionLinkId", function (done) {
++        specHelper.defaultGateway.customer.create({}, function () {
++          let transactionParams = {
++            amount: "10.00",
++            creditCard: {
++              number: "5555555555554444",
++              expirationDate: "05/12",
++            },
++            externalVault: {
++              status: Transaction.ExternalVault.Vaulted,
++              previousMastercardTransactionLinkId: "1234567890123456789012",
++            },
++          };
++
++          specHelper.defaultGateway.transaction.sale(
++            transactionParams,
++            function (err, response) {
++              assert.isNull(err);
++              assert.isTrue(response.success);
++              done();
++            }
++          );
++        });
++      });
++
+       it("supports status vaulted without previousNetworkTransactionId", function (done) {
+         specHelper.defaultGateway.customer.create({}, function () {
+           let transactionParams = {
+@@ -3421,6 +3446,72 @@ describe("TransactionGateway", function () {
+           );
+         });
+       });
++
++      it("handles validation error status with previous mastercard transaction link id is invalid", function (done) {
++        specHelper.defaultGateway.customer.create({}, function () {
++          let transactionParams = {
++            amount: "10.00",
++            creditCard: {
++              number: "5555555555554444",
++              expirationDate: "05/12",
++            },
++            externalVault: {
++              status: Transaction.ExternalVault.WillVault,
++              previousMastercardTransactionLinkId: "1234567890123456789012",
++            },
++          };
++
++          specHelper.defaultGateway.transaction.sale(
++            transactionParams,
++            function (err, response) {
++              assert.isNull(err);
++              assert.isFalse(response.success);
++              assert.equal(
++                response.errors
++                  .for("transaction")
++                  .for("externalVault")
++                  .on("status")[0].code,
++                ValidationErrorCodes.Transaction.ExternalVault
++                  .StatusWithPreviousMastercardTransactionLinkIdIsInvalid
++              );
++              done();
++            }
++          );
++        });
++      });
++
++      it("handles validation error previous mastercard transaction link id is invalid", function (done) {
++        specHelper.defaultGateway.customer.create({}, function () {
++          let transactionParams = {
++            amount: "10.00",
++            creditCard: {
++              number: "5555555555554444",
++              expirationDate: "05/12",
++            },
++            externalVault: {
++              status: Transaction.ExternalVault.Vaulted,
++              previousMastercardTransactionLinkId: "1234567890123456789012123",
++            },
++          };
++
++          specHelper.defaultGateway.transaction.sale(
++            transactionParams,
++            function (err, response) {
++              assert.isNull(err);
++              assert.isFalse(response.success);
++              assert.equal(
++                response.errors
++                  .for("transaction")
++                  .for("externalVault")
++                  .on("previousMastercardTransactionLinkId")[0].code,
++                ValidationErrorCodes.Transaction.ExternalVault
++                  .PreviousMastercardTransactionLinkIdIsInvalid
++              );
++              done();
++            }
++          );
++        });
++      });
+     });
+ 
+     context("with paypal here", function () {
+@@ -6879,6 +6970,120 @@ describe("TransactionGateway", function () {
+     });
+   });
+ 
++  describe("reverse", function () {
++    it("voids a voidable transaction", (done) =>
++      specHelper.defaultGateway.transaction.sale(
++        {
++          amount: "5.00",
++          creditCard: {
++            number: "5105105105105100",
++            expirationDate: "05/2035",
++          },
++        },
++        (err, saleResponse) => {
++          assert.isNull(err);
++
++          specHelper.defaultGateway.transaction.reverse(
++            saleResponse.transaction.id,
++            (reverseErr, reverseResponse) => {
++              assert.isNull(reverseErr);
++              assert.isTrue(reverseResponse.success);
++              assert.equal(
++                saleResponse.transaction.id,
++                reverseResponse.transaction.id
++              );
++              assert.equal("voided", reverseResponse.transaction.status);
++              assert.isNull(reverseResponse.transaction.refundedTransactionId);
++              done();
++            }
++          );
++        }
++      ));
++
++    it("returns an error when reversing twice without an api request key", (done) =>
++      specHelper.defaultGateway.transaction.sale(
++        {
++          amount: "5.00",
++          creditCard: {
++            number: "5105105105105100",
++            expirationDate: "05/2035",
++          },
++        },
++        (saleErr, saleResponse) => {
++          assert.isNull(saleErr);
++
++          specHelper.defaultGateway.transaction.reverse(
++            saleResponse.transaction.id,
++            (firstReverseErr, firstReverseResponse) => {
++              assert.isNull(firstReverseErr);
++              assert.isTrue(firstReverseResponse.success);
++
++              specHelper.defaultGateway.transaction.reverse(
++                saleResponse.transaction.id,
++                (secondReverseErr, secondReverseResponse) => {
++                  assert.isNull(secondReverseErr);
++                  assert.isFalse(secondReverseResponse.success);
++                  assert.equal(
++                    secondReverseResponse.errors
++                      .for("transaction")
++                      .on("base")[0].code,
++                    "91506"
++                  );
++                  done();
++                }
++              );
++            }
++          );
++        }
++      ));
++
++    it("voids an explicitly created voidable refund", (done) =>
++      specHelper.createTransactionToRefund((transaction) =>
++        specHelper.defaultGateway.transaction.refund(
++          transaction.id,
++          (refundErr, refundResponse) => {
++            assert.isNull(refundErr);
++            assert.isTrue(refundResponse.success);
++
++            specHelper.defaultGateway.transaction.reverse(
++              refundResponse.transaction.id,
++              (reverseErr, reverseResponse) => {
++                assert.isNull(reverseErr);
++                assert.isTrue(reverseResponse.success);
++                assert.equal(
++                  refundResponse.transaction.id,
++                  reverseResponse.transaction.id
++                );
++                assert.equal("voided", reverseResponse.transaction.status);
++                assert.equal(
++                  transaction.id,
++                  reverseResponse.transaction.refundedTransactionId
++                );
++                done();
++              }
++            );
++          }
++        )
++      ));
++
++    it("refunds a settled transaction", (done) =>
++      specHelper.createTransactionToRefund((transaction) =>
++        specHelper.defaultGateway.transaction.reverse(
++          transaction.id,
++          (err, response) => {
++            assert.isNull(err);
++            assert.isTrue(response.success);
++            assert.equal("credit", response.transaction.type);
++            assert.equal(
++              transaction.id,
++              response.transaction.refundedTransactionId
++            );
++            done();
++          }
++        )
++      ));
++  });
++
+   describe("refund", function () {
+     it("refunds a transaction", (done) =>
+       specHelper.createTransactionToRefund((transaction) =>
+diff --git a/test/integration/braintree/transaction_idempotency_spec.js b/test/integration/braintree/transaction_idempotency_spec.js
+index a580069..e23da3c 100644
+--- a/test/integration/braintree/transaction_idempotency_spec.js
++++ b/test/integration/braintree/transaction_idempotency_spec.js
+@@ -492,4 +492,50 @@ describe("TransactionIdempotency", function () {
+       );
+     });
+   });
++
++  describe("reverse", function () {
++    it("returns the original reversal on duplicate request with the same api request key", function (done) {
++      let apiRequestKey =
++        "reverse-idempotency-key-" + Math.floor(Math.random() * 1000000);
++
++      specHelper.defaultGateway.transaction.sale(
++        {
++          amount: TransactionAmounts.Authorize,
++          creditCard: {
++            number: "4111111111111111",
++            expirationDate: "05/2035",
++          },
++        },
++        function (err, saleResult) {
++          assert.isNull(err);
++          assert.isTrue(saleResult.success);
++
++          let reverseRequest = { apiRequestKey: apiRequestKey };
++
++          specHelper.defaultGateway.transaction.reverse(
++            saleResult.transaction.id,
++            reverseRequest,
++            function (firstErr, firstResult) {
++              assert.isNull(firstErr);
++              assert.isTrue(firstResult.success);
++
++              specHelper.defaultGateway.transaction.reverse(
++                saleResult.transaction.id,
++                reverseRequest,
++                function (secondErr, secondResult) {
++                  assert.isNull(secondErr);
++                  assert.isTrue(secondResult.success);
++                  assert.equal(
++                    firstResult.transaction.id,
++                    secondResult.transaction.id
++                  );
++                  done();
++                }
++              );
++            }
++          );
++        }
++      );
++    });
++  });
+ });
+diff --git a/test/unit/braintree/credit_card_verification_gateway_spec.js b/test/unit/braintree/credit_card_verification_gateway_spec.js
+index d4e3b7d..bbdb02d 100644
+--- a/test/unit/braintree/credit_card_verification_gateway_spec.js
++++ b/test/unit/braintree/credit_card_verification_gateway_spec.js
+@@ -96,6 +96,29 @@ describe("CreditCardVerificationGateway", () =>
+         done();
+       });
+     });
++
++    it("accepts externalVault previousMastercardTransactionLinkId", function (done) {
++      let verificationGateway = new CreditCardVerificationGateway(fakeGateway);
++      let verificationParams = {
++        creditCard: {
++          number: "5555555555554444",
++          expirationDate: "05/2029",
++        },
++        externalVault: {
++          previousMastercardTransactionLinkId: "1234567890123456789012",
++        },
++      };
++
++      verificationGateway.create(verificationParams, (err, params) => {
++        assert.notExists(err);
++        assert.exists(params);
++        assert.equal(
++          params.verification.externalVault.previousMastercardTransactionLinkId,
++          "1234567890123456789012"
++        );
++        done();
++      });
++    });
+   }));
+ 
+ describe("CreditCardVerificationGateway - path traversal", () => {
+diff --git a/test/unit/braintree/transaction_gateway_spec.js b/test/unit/braintree/transaction_gateway_spec.js
+index 342b2f8..dcedfd5 100644
+--- a/test/unit/braintree/transaction_gateway_spec.js
++++ b/test/unit/braintree/transaction_gateway_spec.js
+@@ -180,6 +180,29 @@ describe("TransactionGateway", () =>
+         done();
+       });
+     });
++
++    it("accepts externalVault previousMastercardTransactionLinkId", function (done) {
++      let transactionGateway = new TransactionGateway(fakeGateway);
++      let transactionParams = {
++        amount: "5.00",
++        creditCard: {
++          number: "5555555555554444",
++          expirationDate: "05/12",
++        },
++        externalVault: {
++          previousMastercardTransactionLinkId: "1234567890123456789012",
++        },
++      };
++
++      transactionGateway.sale(transactionParams, (err, params) => {
++        assert.notExists(err);
++        assert.equal(
++          "1234567890123456789012",
++          params.transaction.externalVault.previousMastercardTransactionLinkId
++        );
++        done();
++      });
++    });
+   }));
+ 
+ describe("TransactionGateway", () =>
+@@ -245,6 +268,50 @@ describe("TransactionGateway", () =>
+     });
+   }));
+ 
++describe("TransactionGateway", () =>
++  describe("reverse", function () {
++    let fakeGateway = {
++      config: {
++        baseMerchantPath() {
++          return "";
++        },
++      },
++      http: {
++        post(url, params) {
++          return Promise.resolve(params || {});
++        },
++      },
++    };
++
++    it("posts an empty body when no reverse options are supplied", function (done) {
++      let transactionGateway = new TransactionGateway(fakeGateway);
++      let post = sinon.spy(fakeGateway.http, "post");
++
++      transactionGateway.reverse("fake_txn_id", (err) => {
++        assert.notExists(err);
++        assert.isTrue(
++          post.calledWith("/transactions/fake_txn_id/reverse", null)
++        );
++        post.restore();
++        done();
++      });
++    });
++
++    it("accepts apiRequestKey for idempotent reversals", function (done) {
++      let transactionGateway = new TransactionGateway(fakeGateway);
++
++      transactionGateway.reverse(
++        "fake_txn_id",
++        { apiRequestKey: "reverse-key-789" },
++        (err, params) => {
++          assert.notExists(err);
++          assert.equal("reverse-key-789", params.transaction.apiRequestKey);
++          done();
++        }
++      );
++    });
++  }));
++
+ describe("TransactionGateway", () => {
+   describe("path traversal", () => {
+     const traversalIds = [
+@@ -294,6 +361,7 @@ describe("TransactionGateway", () => {
+       { method: "cloneTransaction", args: [{}], stub: () => httpStubs.post },
+       { method: "find", args: [], stub: () => httpStubs.get },
+       { method: "refund", args: [{}], stub: () => httpStubs.post },
++      { method: "reverse", args: [{}], stub: () => httpStubs.post },
+       {
+         method: "submitForSettlement",
+         args: ["5.00", {}],

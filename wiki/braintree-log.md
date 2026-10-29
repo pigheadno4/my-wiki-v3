@@ -6,6 +6,11 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-30] ingest | Node `3.41.0`
+
+- Approved focused-reading delta `github-bc23622312cd10e17c98`, exact SHA `5d24276b0a8345735c657c45af13b93af40e945d`, from 3.40.0. Five changed/165 unchanged retained files, 11 upstream dispositions and no gaps/unclassified changes. All 340 file sizes/SHA-256/Git IDs verified; old changelog tail identical.
+- Records reversal with existing path checks and unfiltered options forwarding, resolved validation-result versus rejection handling, previous Mastercard external-vault signature additions and five constants. No dependency/runtime changes. Concept first, then source/changelog/company/catalog/logs; all 3.39.0/3.40.0 history and source_count 797 preserved. No Node/npm install, upstream tests, gateway/payment execution, commit or push. [[source-github-braintree-node]] [[changelog-github-braintree-node]]
+
 ## [2026-10-29] ingest | PHP `6.40.0`
 
 - Approved focused-reading delta `github-84f7911300e61e51e4b1`, exact SHA `b116668cb1c66b10aceb71e7753a49fbf4e44fd6`, after completed 6.39.0. Six changed/220 unchanged retained files, 33 upstream dispositions, no gaps/unclassified changes; 452 snapshot identities and unchanged historical changelog tail verified.

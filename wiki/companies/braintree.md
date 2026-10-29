@@ -918,6 +918,8 @@ The schema is field-level contract evidence, not proof of merchant enablement or
 
 ## Node.js Server SDK Surface
 
+Node package `braintree@3.41.0` adds gateway-selected void/full-refund reversal, previous Mastercard external-vault link inputs in sale/verification signatures, and five validation constants. Reversal validates the path ID but forwards options without PHP's explicit field allowlist; resolved API errors remain `success: false` results. Existing direct transaction create/credit forwarding, runtime/dependencies and all 3.39.0/3.40.0 history remain preserved. No merchant enablement or payment execution is inferred. [[source-github-braintree-node]] [[changelog-github-braintree-node]]
+
 `braintree@3.39.0` provides gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, card verification and 3DS data, plans and subscriptions, and signed webhook parsing.
 
 The server SDK does not render checkout. Browser or native SDKs collect approval or payment data and return a nonce or token to the merchant server. PayPal customer sessions are restricted to authorized merchants, and legacy Venmo SDK transaction parameters warn merchants to migrate to Pay with Venmo.
@@ -1062,7 +1064,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Ingested cumulative GitHub repository sources: 17
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
-- Latest retained Braintree Node release: `braintree@3.40.0` at `deb5227f1c4824b1f622115caf2ba4302134d375` (ingested 2026-10-06; `3.39.0` preserved)
+- Latest ingested Braintree Node release: `braintree@3.41.0` at `5d24276b0a8345735c657c45af13b93af40e945d` (ingested 2026-10-30; all earlier history preserved)
 - Latest ingested Braintree PHP release: `braintree_php@6.40.0` at `b116668cb1c66b10aceb71e7753a49fbf4e44fd6` (ingested 2026-10-29; all earlier history preserved)
 - Latest retained Braintree Ruby release: `braintree@4.42.0` at `647f4bb8a45a869cb4d664077d28287881d299b1`; all 4.40.0/4.41.0 history preserved
 - Latest retained Braintree Web release: `braintree-web@3.147.0` at `f3357c49c7b71f079d031c3ddf89cdfe444f6511`

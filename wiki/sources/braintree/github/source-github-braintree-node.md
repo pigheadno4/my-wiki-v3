@@ -2,8 +2,10 @@
 title: "GitHub: braintree/braintree_node"
 type: source
 date_ingested: 2026-10-06
+date_updated: 2026-10-30
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_node/snapshots/2026-10-30-5d24276/manifest.json"
   - "github/braintree/braintree_node/snapshots/2026-10-06-deb5227/manifest.json"
   - "github/braintree/braintree_node/snapshots/2026-08-09-7a9270a/manifest.json"
 tags: [braintree, node-js-sdk, server-sdk, checkout, paypal, venmo, subscriptions, webhooks, github-repository]
@@ -15,10 +17,13 @@ tags: [braintree, node-js-sdk, server-sdk, checkout, paypal, venmo, subscription
 
 Repository: <https://github.com/braintree/braintree_node>
 
+Latest ingested Node package: `braintree@3.41.0`, exact SHA `5d24276b0a8345735c657c45af13b93af40e945d`. All earlier baseline and version sections remain historical evidence, not replaced by this update.
+
 History now also includes `braintree@3.40.0` at SHA `deb5227f1c4824b1f622115caf2ba4302134d375`, released 2026-09-23 and ingested 2026-10-06. The original broad implementation sections below remain the `3.39.0` baseline; the new version-qualified section adds knowledge without replacing older findings. This is the Node repository's package, independently versioned from Ruby's identically named `braintree` package.
 
 ## Evidence Boundary
 
+- The 3.41.0 delta uses approved focused reading: all changed retained source, affected prior code, comparisons and cumulative wiki source/changelog; generated inventories and unchanged raw changelog history mechanically checked. Five modified/165 unchanged retained files; 11 upstream dispositions (five retained, five excluded tests and one excluded lockfile), no evidence gaps/unclassified changes. No Node/npm install, SDK test or gateway/payment execution.
 - This source proves implementation present in `braintree@3.39.0`; it does not replace current Braintree product documentation or prove merchant, buyer, country, currency, or payment-method eligibility.
 - The SDK performs server-side gateway operations. Browser and native SDKs independently collect payment details and return payment-method nonces or tokens to the merchant server.
 - PayPal customer sessions are marked as available only to authorized merchants. Recommendation types and app-installed inputs do not establish general PayPal or Venmo availability.
@@ -178,6 +183,35 @@ This example does not establish surcharge arithmetic, refund eligibility or a su
 
 `package.json` changes only the version. Node.js `>=10.0`, npm `>=6`, dependencies and development dependencies are unchanged. Client-token preferred-payment-method handling, server/client separation, authorization/settlement, vault, subscriptions and webhook knowledge remain preserved from the prior baseline. No newly introduced client checkout, PayPal/Venmo enablement or mandatory runtime migration is established by this comparison.
 
+## `3.41.0` Additive Delta from `3.40.0`
+
+Repository-qualified Node package `braintree@3.41.0`, exact SHA `5d24276b0a8345735c657c45af13b93af40e945d`, collected/ingested October 30, 2026. The release manifest's October 19 timestamp is tag/commit-derived, not a verified GitHub Release publication date. Its release-note body is empty; findings come from the retained repository changelog and implementation comparison. The complete 3.39.0 baseline and 3.40.0 security/search/refund history above remain intact.
+
+### Transaction Reversal
+
+`gateway.transaction.reverse(transactionId, options)` validates the ID through the existing nonempty ASCII letter/digit/underscore/hyphen string helper, rejecting invalid IDs with `NotFoundError("Not Found")` before HTTP. It POSTs to `/transactions/{id}/reverse` and uses the existing transaction response handler. The changelog describes automatic void or full refund; the gateway chooses, rather than the SDK inspecting transaction state or falling back between void/refund calls. Use the existing refund API for amount-specific refunds; this release does not establish a partial-refund contract for reversal.
+
+Omitted/null options produce a null body; a function in the second argument is treated as absent options. An options object, including an empty object, is wrapped as `{ transaction: options }`. Unlike this package's sale/verification key checks and PHP's explicit reversal signature, Node reversal performs no `verifyKeys()` call or amount normalization. `apiRequestKey` can be forwarded, but client forwarding alone does not prove gateway acceptance of arbitrary fields, universal idempotency, retry safety or merchant eligibility. The exported gateway retains its existing `@braintree/wrap-promise` wrapper with only search excluded; no new callback mechanism is introduced or independently executed here.
+
+The unchanged response handler resolves an API validation response as `ErrorResponse` with `success: false` and nested errors. A non-error response is marked successful and its transaction wrapped when present. Invalid path IDs and transport failures reject separately. Callers must check the result, not treat every resolved promise as a successful reversal. No PHP-style `reverseNoValidate()` or Ruby bang method is added to this Node gateway.
+
+### External Vault and Validation Diagnostics
+
+TransactionGateway's `_createSignature()` and CreditCardVerificationGateway's `_createSignature()` add `externalVault[previousMastercardTransactionLinkId]` alongside previous network transaction ID and status. Sale and card-verification create invoke `Util.verifyKeys()` before dispatch, so these entry points gain an accepted key. Direct transaction `create()` and `credit()` already forward attributes without this signature check; do not claim the older version could never transport that field through those paths. Card/customer signatures do not change in this release.
+
+Five new constants under `ValidationErrorCodes` are `Transaction.CannotReverseAtThisTime` (`915282`), `Transaction.ExternalVault.PreviousMastercardTransactionLinkIdIsInvalid` (`915279`), `Transaction.ExternalVault.StatusWithPreviousMastercardTransactionLinkIdIsInvalid` (`915278`), `Verification.ExternalVault.PreviousMastercardTransactionLinkIdIsInvalid` (`942206`), and `Verification.ExternalVault.StatusWithPreviousMastercardTransactionLinkIdIsInvalid` (`942205`). Existing external-vault constants are reordered, not removed or newly introduced. Constants describe diagnostics, not all server-required field relationships or merchant enablement.
+
+### Compatibility and Grounding
+
+`package.json` changes only version: Node `>=10.0`, npm `>=6`, dependencies and development dependencies remain identical. No broader runtime upgrade, client checkout/Venmo enablement, webhook or vault behavior change is demonstrated. Upstream test changes visible in the comparison were not executed and are not payment-outcome proof.
+
+Locations below are under `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/`:
+- `lib/braintree/transaction_gateway.js:109`: `reverse(transactionId, options) {`
+- `lib/braintree/transaction_gateway.js:118`: `let body = options == null ? null : { transaction: options };`
+- `lib/braintree/credit_card_verification_gateway.js:130`: `"externalVault[previousMastercardTransactionLinkId]",`
+- `lib/braintree/validation_error_codes.js:441`: `CannotReverseAtThisTime: "915282",`
+- `lib/braintree/util.js:298`: `return typeof value !== "string" || !/^[A-Za-z0-9_-]+$/.test(value);`
+
 ## Related
 
 - [[changelog-github-braintree-node]] - package-qualified release ledger
@@ -188,6 +222,17 @@ This example does not establish surcharge arithmetic, refund eligibility or a su
 
 ## Raw Sources
 
+- Snapshot manifest: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/manifest.json`
+- Release manifest: `raw/github/braintree/braintree_node/releases/braintree/3.41.0/2026-10-30/manifest.json` - adjacent empty release-notes.md
+- Exact comparison: `tracking/github/repos/braintree/braintree_node/comparisons/braintree/3.40.0--3.41.0/comparison.json` - adjacent comparison.md/diff.patch
+- Reversal and sale signatures: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/lib/braintree/transaction_gateway.js`
+- Verification signature: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/lib/braintree/credit_card_verification_gateway.js`
+- Validation constants: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/lib/braintree/validation_error_codes.js`
+- Response handler: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/lib/braintree/gateway.js`
+- Error response: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/lib/braintree/error_response.js`
+- Validation helper: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/lib/braintree/util.js`
+- Package metadata: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/package.json`
+- Repository changelog: `raw/github/braintree/braintree_node/snapshots/2026-10-30-5d24276/files/CHANGELOG.md`
 - Current snapshot manifest: `raw/github/braintree/braintree_node/snapshots/2026-10-06-deb5227/manifest.json`
 - Current release manifest: `raw/github/braintree/braintree_node/releases/braintree/3.40.0/2026-10-06/manifest.json`
 - Current release notes: `raw/github/braintree/braintree_node/releases/braintree/3.40.0/2026-10-06/release-notes.md` (empty upstream body)

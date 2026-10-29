@@ -44,6 +44,12 @@ Transaction search adds `achType` with `braintree.Transaction.AchType.SameDay` (
 
 These findings belong specifically to the Node repository, not Ruby's identically named `braintree` package. Historical baselines above remain valid. See [[source-github-braintree-node]] and [[changelog-github-braintree-node]].
 
+## Node.js `3.41.0` Reversal and External Vault
+
+Node package `braintree@3.41.0` adds `gateway.transaction.reverse(transactionId, options)` and posts to `/transactions/{id}/reverse`. The existing strict string path-ID helper rejects invalid IDs with `NotFoundError` before HTTP. The gateway chooses void or full refund; the SDK does not implement a local status-based fallback. Unlike PHP's explicit reversal signature, Node forwards non-null options under `transaction` without `verifyKeys()`. This is not evidence of arbitrary-field acceptance or an amount-specific partial-refund API. API validation failures remain resolved `success: false` results, distinct from rejected path/transport errors. [[source-github-braintree-node]]
+
+`externalVault.previousMastercardTransactionLinkId` is added to the transaction signature used by sale and the card-verification create signature. Direct transaction create/credit already forward attributes without that signature validation; the field addition must not be described as new forwarding in every entry point. Five validation constants cover reversal availability and transaction/verification external-vault errors. Node/npm requirements and dependencies are unchanged; all older Node and independently versioned Ruby/PHP history remain preserved. [[changelog-github-braintree-node]]
+
 ## PHP `6.38.0` Security and Transaction Boundary
 
 `braintree_php@6.38.0` at SHA `2a97c3d516a1ee66e710db8140a835d79789627a` extends use of the existing `Util::isInvalidPathSegment()` helper across 14 gateway classes. It requires a string matching `^[A-Za-z0-9_-]+$`; several gateway validators additionally reject PHP `empty()` values. Numeric IDs must therefore be passed as valid strings, and the string `"0"` is rejected by the validators using `empty()`. Existing regex checks are replaced in some classes, while others gain new checks before HTTP dispatch. Transaction-line-item lookup broadens its previous lowercase-only allowlist. These checks do not establish merchant authorization, object existence, or validation of every identifier in request bodies.
