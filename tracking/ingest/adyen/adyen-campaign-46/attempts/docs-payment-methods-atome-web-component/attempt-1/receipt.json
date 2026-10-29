@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-atome-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Atome Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/web-component/2026-09-15.md\"\ntags: [adyen, atome, web, components, redirect, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds Atome to an existing Web Components integration. It separates Sessions flow and Advanced flow, specifies the Atome shopper and order data, initializes the `Atome` Component, and points to redirect, refund, and test/live steps. It is method-specific guidance alongside the main [[adyen-online-payments]] integration guides, not a standalone checkout recipe.\n\n## Key takeaways\n\n- **Flows and prerequisites:** Sessions requires an existing Sessions Web Components integration, Checkout API v68 or later, redirect handling (`action.type: redirect`), and Atome added in Customer Area. Advanced requires an existing Advanced Web Components integration, redirect handling, and the same method setup. Both import `Atome` from `@adyen/adyen-web` and instantiate `new Atome(checkout, ...).mount(...)` (raw lines 23\u201336, 734\u2013741, 808\u2013821, 854\u2013889).\n- **Request data and geography:** For Sessions `/sessions` and Advanced `/payments`, the tables mark shopper name, email, phone, billing address, line items, and country code required; Advanced additionally marks `paymentMethod.type: atome` required. `deliveryAddress` has an unmarked Required cell and is described as optional when billing and delivery addresses match. The stated country/currency pairs are Malaysia/MYR and Singapore/SGD. The examples use Singapore/SGD and a 1000-minor-unit total made from one 400 unit line and two 300 unit lines; examples do not establish a merchant's live eligibility (raw lines 40\u201352, 894\u2013907; examples 54\u2013112 and 909\u2013976).\n- **Component fields:** Sessions allows prefilling personal and billing details through `data`. The page says Atome forces `deliveryAddress` and `companyDetails` hidden in the Component; its table shows personal and billing fields editable and bank account hidden. That display rule is separate from the server request fields (raw lines 746\u2013804).\n- **Redirect, result, and refunds:** The Advanced example response is labeled successful but has `resultCode: RedirectShopper` and a redirect `action`; that is a redirect instruction, not evidence of a completed or authorised payment. Both flow requirements defer redirect handling to the main guide. For partial refunds, the guide says to supply the refund `amount` to `/payments/{paymentPspReference}/refunds`; its \u201cRefunds and cancellations\u201d heading supplies no separate cancellation procedure (raw lines 34\u201335, 826\u2013832, 860\u2013861, 1624\u20131646).\n- **Test and live gates:** Testing requires an Atome sandbox shopper account requested through an Adyen contact, with separate accounts for multiple countries/regions. The guide lists QR test apps for MY and SG, Customer Area test status, and contacting Support to add Atome in the live Customer Area (raw lines 834\u2013852, 1648\u20131666). This captured page does not demonstrate a real payment or live enablement.\n- **Example caveats:** The Sessions curl sample has `-X POST` without a trailing line continuation before `-d`, a duplicate `countryCode` key, and an app custom-scheme `returnUrl` despite this being a Web guide. The Advanced curl sample also lacks the continuation before `-d`. The Sessions configuration-object snippet omits a closing brace. Treat those snippets as illustrative, not copy-ready (raw lines 58\u201378, 794\u2013806, 913\u2013919).\n\n## Detail locators\n\n- Page identity and Sessions requirements/request fields: pinned raw lines 15\u201352.\n- Sessions request examples: pinned raw lines 54\u2013731; import, configuration, refunds and test/live: lines 734\u2013852.\n- Advanced requirements/import/initialization/request table: pinned raw lines 854\u2013907; request examples: lines 909\u20131622.\n- Advanced redirect-action response, partial refund and test/live: pinned raw lines 1624\u20131666.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-atome]] \u2014 captured Atome method overview; this page gives the Web Component integration details.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/web-component/2026-09-15|Atome Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/atome/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "For Malaysia set to **MY**, for Singapore set to **SG**. Make sure that you use a supported combination of country/region and currency: **MY** with **MYR**, and **SG** with **SGD**.",
+      "location": "raw/adyen/docs/payment-methods/atome/web-component/2026-09-15.md:52"
+    },
+    {
+      "text": "Note that for **Atome**, `deliveryAddress` and `companyDetails` are forced to be hidden.",
+      "location": "raw/adyen/docs/payment-methods/atome/web-component/2026-09-15.md:752"
+    },
+    {
+      "text": "\"resultCode\":\"RedirectShopper\",",
+      "location": "raw/adyen/docs/payment-methods/atome/web-component/2026-09-15.md:1628"
+    },
+    {
+      "text": "To test Atome payments, you need a test shopper account in the Atome sandbox environment.",
+      "location": "raw/adyen/docs/payment-methods/atome/web-component/2026-09-15.md:1650"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "atome-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-web-component]] \u2014 2026-09-15-captured Atome Web Components guide for Sessions and Advanced flows, MY/MYR or SG/SGD request data, Component field visibility, redirect action, partial refunds, and sandbox/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/web-component/2026-09-15.md",
+  "raw_sha256": "8c5bc667301389f3ddeae6a9765359215292f8466ec1dcac4ee9155c448df58d",
+  "status": "candidate_ready"
+}

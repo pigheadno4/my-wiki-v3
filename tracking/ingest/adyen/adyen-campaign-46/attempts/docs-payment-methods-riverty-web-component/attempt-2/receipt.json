@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-riverty-web-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Riverty Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/riverty/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/riverty/web-component/2026-09-15.md\"\ntags: [adyen, riverty, web, components, redirect, invoice]\n---\n\n## Overview\n\nThis captured guide adds Riverty to existing Web Components Sessions and Advanced integrations. It covers request fields, optional profile tracking, Component setup, mandatory manual capture, partial modifications and checkout consent. It is a documentation snapshot, not proof of account eligibility, an executed payment or a completed capture/refund. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and pricing:** Sessions requires Web Components plus Checkout API v68 or later and redirect handling; Advanced requires Web Components plus additional `action.type=redirect` handling. Both require Riverty added in Customer Area. Activating Riverty defaults to standard pricing; contact an account manager before activation to verify Enterprise-pricing eligibility if relevant. The guide imports `Riverty` from Adyen Web and initializes `new Riverty(checkout, ...).mount(...)`; it says no additional Riverty configuration parameters are needed.\n- **Request conditions:** Sessions `/sessions` marks shopper first/last name, telephone, email, billing and delivery addresses, and `lineItems` required; DOB and shopper IP are unmarked. The line item needs quantity, description and ID. For DACH operation, VAT must not be null for the stated VAT reclaim process. The guide says B2B is not supported and using a business name as shopper name may cause rejection. Advanced `/payments` instead marks telephone and delivery address unrequired; send delivery address only if address or delivery person differs, with delivery first/last name even if that person is the shopper. It warns a first-time shopper may be rejected when delivery and billing differ, and in that case says to send billing address only with delivery there. Advanced method types listed are `riverty`, `riverty_account`, `sepadirectdebit_riverty`, and `riverty_installments`, with `paymentMethod.subtype=redirect`; IBAN is required only for the Secure Direct Debit type. The overview limits split installments to DE/AT/NL, so the method-type list is not a country-wide entitlement.\n- **Availability and profile tracking:** Advanced `/paymentMethods` lists country values AT, BE, DE, NL, CH and currency values EUR, CHF without explicit country/currency pairing. Profile tracking is **recommended** for Austria, Germany and Switzerland to improve acceptance, not required for all payments. Riverty's implementation support must provide `profileTrackingShopId` before implementing it. The script yields a profile ID, which the guide says to encrypt and send in `deviceFingerprint`.\n- **Fingerprint field warning:** the Advanced flow prose says top-level `deviceFingerprint`, and its curl example shows that top-level field, while the parameter table labels it `paymentMethod.deviceFingerprint`. This snapshot does not resolve the field path; do not treat the example as an authoritative correction. Its `RedirectShopper` response is an additional redirect action, not completed payment.\n- **Capture and modifications:** All Riverty payments need manual capture after shipment, even when other methods capture automatically. Capture triggers the shopper invoice and payment schedule; authorization expires if not captured within **30 days**, unless Support extends the period and confirms the change. Partial capture sends amount and matching `lineItems`; if sums differ, Adyen adds a dummy line item. Manually cancel remaining authorized balance. Multiple partial captures need Support setup and create an invoice per capture. Uncaptured payments can be cancelled; captured payments must be refunded to return funds. Partial refund uses amount, item data and `capturePspReference` to select the capture; absent that reference, the **last** capture is chosen automatically, possibly incorrectly. Full capture/refund does not need line items. The examples show `status=received`, which is receipt of a modification request, not final success.\n- **Go-live and sample warnings:** Riverty requires Terms & Conditions and data-protection guidelines shown for shopper approval before payment. Several curl samples omit a shell continuation after `-X POST`; the partial-capture URL is printed `https: //...`, so these samples are not ready-to-run commands.\n\n> [!warning] Contradiction: method overview versus Web Component flow\n> The [[source-adyen-docs-payment-methods-riverty|Riverty method overview]] matrix labels its payment flow **Direct** (overview raw `raw/adyen/docs/payment-methods/riverty/2026-09-15.md` lines 32\u201334). This Web Component guide instead requires `action.type=redirect` handling in Sessions and Advanced prerequisites, sets Advanced `paymentMethod.subtype=redirect`, and shows a `RedirectShopper` action (this raw lines 33\u201335, 371\u2013372, 494\u2013495 and 585\u2013599). The captured pages do not reconcile these labels; use the selected child flow instructions while verifying the discrepancy before implementation.\n\n## Detail locators\n\n- Raw `## Sessions flow Component`, lines 25\u201356: prerequisites, pricing, required fields, B2B/VAT conditions. Raw lines 130\u2013162: import, configuration and Component.\n- Raw `## Advanced flow Component`, lines 365\u2013405: prerequisites, flow, profile tracking. Raw `## Get Riverty as an available payment method`, lines 409\u2013437: value lists and `riverty` availability example. Raw `## Add additional parameters to your /payments request`, lines 488\u2013527: method variants, delivery risk, IBAN and fingerprint path mismatch.\n- Raw `## Capture the payment`, lines 166\u2013270 and 603\u2013707: manual capture, 30-day expiry, partial capture, cancellation and examples. Raw `## Refunds and cancellations`, lines 274\u2013355 and 709\u2013790: refund fields, capture selection and received response.\n- Raw `### Go-live requirements`, lines 361\u2013363 and 796\u2013798: consent requirement. [[source-adyen-docs-payment-methods-riverty]]: product scope and split-installment geography.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-riverty]] \u2014 method overview and product limits\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15|Riverty Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Activating Riverty defaults the pricing to our standard pricing. Adyen offers Enterprise pricing for merchants with sufficient volume. Before activating Riverty, contact your account manager to verify if you are eligible.",
+      "location": "raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15.md:38"
+    },
+    {
+      "text": "All Riverty payments must be manually captured, even if you have enabled automatic capture for other payment methods.",
+      "location": "raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15.md:168"
+    },
+    {
+      "text": "If you do not manually capture the payment within 30 days, the authorization will expire.",
+      "location": "raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15.md:170"
+    },
+    {
+      "text": "You must get the [`profileTrackingShopId` ](https://docs.riverty.com/bnpl/documentation/profile_tracking)from [Riverty\u2019s implementation support team](mailto:implementation_BNPL@riverty.com) before implementing profile tracking.",
+      "location": "raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15.md:399"
+    },
+    {
+      "text": "If not specified, the last capture will be chosen automatically, whether that was the intended capture to be refunded or not.",
+      "location": "raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15.md:284"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "riverty-web-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-riverty-web-component]] \u2014 2026-09-15-captured Riverty Web Components Sessions/Advanced guide for request, redirect, profile tracking, mandatory manual capture, partial modifications and checkout consent.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Cross-page flow discrepancy: Riverty overview raw lines 32\u201334 labels the method Direct, while this Web Component child raw lines 33\u201335, 371\u2013372, 494\u2013495 and 585\u2013599 requires redirect action handling/subtype and shows RedirectShopper; no reconciliation is established."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/riverty/web-component/2026-09-15.md",
+  "raw_sha256": "97269e6bdc344b1705f01f9dbf5a5b94f6f68c41d7cf3de0f297565f79a3b104",
+  "status": "candidate_ready"
+}

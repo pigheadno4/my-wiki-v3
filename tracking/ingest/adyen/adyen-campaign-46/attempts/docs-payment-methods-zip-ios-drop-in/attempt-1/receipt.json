@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-zip-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Zip iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/zip/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md\"\ntags: [adyen, zip, ios, drop-in, redirect, recurring, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds Zip to an existing iOS Drop-in integration. It provides endpoint-specific request fields and examples, a `/payments` redirect action, versioned Drop-in configuration notes, and a recurring-token route. It assumes Zip has been added in the **test** Customer Area; the guide does not establish live account eligibility. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Flow and version scope:** The guide requires an existing iOS Drop-in integration and Zip setup in the test Customer Area. Its `/sessions` tab is described as the default for Drop-in v5.0.0 or later. The `/payments` tab is for an implemented additional use case. Both v5+ and v4.x.x configuration tabs say no Zip-specific Drop-in integration is required; that statement does not erase the server request, redirect, or account-setup steps elsewhere on the page (raw lines 15\u201334, 681\u2013683, 1391\u20131399).\n- **Request details:** Both endpoint tables list shopper name, email, birth date, phone, billing/delivery addresses, and line items, but their Required cells are blank. They allow an optional line-item `imageURL` for Zip's product page, limited to 500 characters. The `/payments` table makes `paymentMethod.clickAndCollect: true` conditional on pickup instead of delivery. Examples use Zip `paymentMethod.type: zip`, AU/AUD, amount 1000, item lines totaling 1000, an app-scheme `returnUrl`, and test API endpoints. These AU examples do not state this guide's complete regional availability (raw lines 32\u2013101, 681\u2013752).\n- **Redirect action:** For the `/payments` path, the response example gives `resultCode: RedirectShopper` with a `zip` redirect `action`. The guide says to use the action object to redirect the shopper. This response is an intermediate action, not a completed-payment result; return handling and final outcome are not specified in this page and belong to the linked base integration/webhook guidance (raw lines 1375\u20131389, 1642\u20131646).\n- **Recurring route:** The guide says Zip supports recurring transactions. To create a token, it asks for `storePaymentMethod: true` and a unique `shopperReference` in an initial `/payments` request. **After settlement**, the `recurring.token.created` webhook supplies `storedPaymentMethodId`, and the server must be set up to receive recurring-token lifecycle events. Later `/payments` uses that ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile` (raw lines 1401\u20131434).\n- **Examples and gates:** The `/payments` curl sample contains literal `{hint:...}{/hint}` markup inside JSON, so it is illustrative rather than copy-ready. The recurring Java sample uses `setRecurringDetailReference` and omits `shopperReference`, in tension with the adjacent prose specifying `storedPaymentMethodId` and shopper reference; follow the prose and version-appropriate API contract. Test accounts are obtained from Zip test credentials; live acceptance requires a request in live Customer Area (raw lines 698\u2013722, 1424\u20131432, 1459\u20131487, 1634\u20131640).\n\n## Detail locators\n\n- Identity, prerequisites, Sessions tab and field table: pinned raw lines 15\u201344; Sessions examples: lines 46\u2013679.\n- Payments tab, conditional pickup and request examples: pinned raw lines 681\u20131373.\n- Redirect action and Drop-in configuration: pinned raw lines 1375\u20131399.\n- Recurring token lifecycle and request examples: pinned raw lines 1401\u20131632; test/live and related links: lines 1634\u20131646.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-zip]] \u2014 captured Zip method overview; use this iOS page for the Drop-in details.\n- [[adyen-tokenization]] \u2014 tokenization context; the Zip-specific settlement/webhook sequence is in this pinned guide.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15|Zip iOS Drop-in integration, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add Zip to an existing iOS Drop-in integration.",
+      "location": "raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md:17"
+    },
+    {
+      "text": "This is the default with [Drop-in v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in) or later.",
+      "location": "raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "In the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response, check the `action` object for the information that you must use to redirect the shopper.",
+      "location": "raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md:1375"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md:1415"
+    },
+    {
+      "text": "Before you can accept live Zip payments, you need to submit a request for Zip in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md:1640"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "zip-ios-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-zip-ios-drop-in]] \u2014 2026-09-15-captured Zip iOS Drop-in guide covering v5+ Sessions and additional-use-case Payments requests, redirect action, and settlement-dependent recurring-token flow.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/zip/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "f683243586a97de8d5a81367aa36e73018be6268f7f348d84821408d1889fa17",
+  "status": "candidate_ready"
+}

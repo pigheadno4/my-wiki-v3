@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-atome-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Atome iOS Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/ios-component/2026-09-15.md\"\ntags: [adyen, atome, ios, components, redirect, refunds]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Atome to an existing iOS Components integration using Sessions or Advanced server-side flow. It covers request additions, `AtomeComponent` initialization, redirect setup, partial refunds and sandbox/live routes. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-atome|the Atome overview]] for broader context. The examples do not prove eligibility or a completed payment.\n\n## Key takeaways\n\n- Sessions requires an existing iOS Components Sessions integration, Checkout API v68 or later, redirect handling and Atome added in Customer Area (raw lines 25\u201336). Advanced requires an existing iOS Components Advanced integration, redirect handling and the same setup (lines 793\u2013803). The Advanced Integration type label says Components but links to `integration=Drop-in` (line 801); verify the matching Components base guide.\n- Both request tables mark shopper full name, email, telephone, billing address, `lineItems` and `countryCode` required; `deliveryAddress` is optional when it matches billing (Sessions lines 40\u201352; Advanced lines 837\u2013850). The documented country/currency pairs are MY/MYR and SG/SGD. Advanced additionally requires `paymentMethod.type: atome` (line 843). TEST examples show SG/SGD with v71 `/sessions` and v72 `/payments`; sample versions do not replace the Sessions minimum (lines 54\u2013115, 852\u2013922).\n- Neither flow needs additional Atome configuration parameters (lines 732\u2013736, 805\u2013809). The iOS snippets use `AtomePaymentMethod` and `AtomeComponent`; Sessions assigns the session as delegate, Advanced assigns self (lines 738\u2013761, 811\u2013833). The Advanced example response is `RedirectShopper` with a redirect action (lines 1567\u20131579). Its \u201csuccessful payment\u201d heading does not establish final authorisation or settlement.\n- The Sessions curl repeats `countryCode: SG` (lines 72, 78), and both curl examples omit shell continuation between `-X POST` and `-d` (lines 63\u201364, 861\u2013862). Advanced's iOS example uses an HTTPS `returnUrl` (line 871), while the Sessions example uses `adyencheckout://your.package.name` (line 70). The guide does not reconcile these return-URL styles; verify the selected iOS base flow.\n- Both sections describe partial refund via `/payments/{paymentPspReference}/refunds` with an `amount` (lines 763\u2013771, 1581\u20131589); this page gives no capture or final-result procedure. Testing requires an Atome sandbox shopper account requested via an Adyen contact, with a different account per country/region tested; it lists MY/SG test apps and Customer Area status checks (lines 773\u2013789, 1591\u20131607). For live acceptance, contact Support to add Atome in live Customer Area (lines 791, 1609).\n\n## Detail locators\n\n- Scope and Sessions requirements/fields: raw lines 15\u201352.\n- Sessions v71 SG/SGD TEST request: lines 54\u2013731; repeated country code at 72/78 and curl continuation at 63\u201364.\n- Sessions configuration, Component, refund, test/live: lines 732\u2013791.\n- Advanced requirements, misrouted link, Component and fields: lines 793\u2013850.\n- Advanced v72 SG/SGD TEST request: lines 852\u20131565; curl continuation at 861\u2013862 and HTTPS return URL at 871.\n- Advanced redirect response, partial refund and test/live: lines 1567\u20131609.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment integration concept.\n- [[source-adyen-docs-payment-methods-atome]] \u2014 Atome method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15|2026-09-15 Atome iOS Component guide]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15.md:34"
+    },
+    {
+      "text": "Make sure that you use a supported combination of country/region and currency: **MY** with **MYR**, and **SG** with **SGD**.",
+      "location": "raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15.md:52"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Atome, use the `AtomeComponent` class.",
+      "location": "raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15.md:742"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [iOS Components integration]",
+      "location": "raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15.md:801"
+    },
+    {
+      "text": "To accept live Atome payments, you must contact our [Support Team]",
+      "location": "raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15.md:1609"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c46-atome-ios-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-ios-component]] \u2014 2026-09-15 Atome iOS Components Sessions/Advanced redirect add-on for MY/MYR or SG/SGD requests, partial refunds and test/live setup; source qualifies examples and Advanced base link.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced prerequisite label says iOS Components but links to `integration=Drop-in` (raw line 801). Its \u201csuccessful payment\u201d example is only `RedirectShopper`/redirect (lines 1567\u20131579). The iOS TEST examples use differing return-URL styles (lines 70, 871); both curl commands omit shell continuation before `-d` (lines 63\u201364, 861\u2013862)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/ios-component/2026-09-15.md",
+  "raw_sha256": "667d58e422f048de59532db70b5568bac8767344b1c2e5a689da64edc1be74e9",
+  "status": "candidate_ready"
+}

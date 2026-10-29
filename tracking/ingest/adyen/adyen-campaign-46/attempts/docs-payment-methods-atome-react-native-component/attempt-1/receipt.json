@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-atome-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Atome React Native Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/react-native-component/2026-09-15.md\"\ntags: [adyen, atome, react-native, components, advanced-flow, redirect]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and marked last modified 2026-09-15, adds Atome to an existing **React Native Components Advanced-flow** integration. It explicitly says React Native Components do **not** support Sessions flow. The page provides method-specific `/payments` fields, a redirect example, partial-refund note and test/live setup; it does not supply a standalone React Native Component implementation. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-atome|Atome overview]]. This snapshot does not establish current account eligibility or a completed payment.\n\n## Key takeaways\n\n- **Advanced-only setup:** Use an existing React Native Components Advanced integration with redirect handling and add Atome in Customer Area. No Atome-specific Component configuration parameters are required. The prerequisite integration link at raw line 39 is labeled React Native Components but its URL has `integration=Drop-in`; nearby redirect and payment links at lines 40 and 53 use `integration=Components`. Use the latter to navigate the relevant Components base steps; this page does not verify the mismatched prerequisite link's behavior.\n- **Payment fields and regions:** The `/payments` table marks `paymentMethod.type: atome`, shopper full name, email, phone, billing address, line items and country code required. Delivery address is optional when it equals billing. The supported country/currency pairs stated are **MY/MYR** and **SG/SGD**. The TEST v72 sample uses SG/SGD and an HTTPS `returnUrl`; a React Native app must configure return/redirect handling for its actual flow rather than assume that Web URL example works in-app. The curl sample omits a shell continuation before `-d`, so is not copy-ready.\n- **Redirect state:** The sample response has `resultCode: RedirectShopper` and `action.type: redirect`. Although its heading says \u201cexample response for a successful payment,\u201d this response requests further shopper action, not a completed authorization or capture.\n- **Refund and live boundary:** The method-specific partial-refund note specifies the refunded `amount` in `/payments/{paymentPspReference}/refunds`; the cancellations heading adds no method-specific cancel rule. Testing requires an Atome sandbox shopper account from an Adyen contact, a different account per country/region, and the page links QR test apps and test Customer Area status. Live acceptance requires Support to add Atome in live Customer Area. The separate overview contains a portable-electronics restriction and automatic-capture statement not repeated in this add-on.\n\n## Detail locators\n\n- Flow availability, Advanced requirements, link mismatch and no extra configuration: pinned raw lines 23\u201347. `/payments` fields, MY/MYR and SG/SGD pairs and TEST v72 request: lines 49\u2013129. Language SDK variants: lines 131\u2013779.\n- Misleading successful-payment heading and redirect action: lines 781\u2013793. Partial refund and test/live setup: lines 795\u2013823. See [[source-adyen-docs-payment-methods-atome]] for method-level restrictions.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-atome]] \u2014 method overview and product restrictions\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/react-native-component/2026-09-15|Atome React Native Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "Sessions flow Component > Not Available, line 29"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Atome.",
+      "location": "Advanced flow Component > Add additional configuration, line 47"
+    },
+    {
+      "text": "For Malaysia set to **MY**, for Singapore set to **SG**. Make sure that you use a supported combination of country/region and currency: **MY** with **MYR**, and **SG** with **SGD**.",
+      "location": "Advanced flow Component > /payments > countryCode, line 64"
+    },
+    {
+      "text": "**Example response for a successful payment**",
+      "location": "Advanced flow Component > example response heading, line 781"
+    },
+    {
+      "text": "To accept live Atome payments, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Atome in your live Customer Area.",
+      "location": "Test and go live, line 823"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "atome-react-native-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-react-native-component]] \u2014 2026-09-15 Atome React Native Components Advanced-only add-on for MY/MYR and SG/SGD requests, redirect and test/live setup; source flags base-link and sample-return caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions flow is expressly unavailable for React Native Components.",
+          "The labeled Components prerequisite URL points to Drop-in; nearby redirect/payment links use Components.",
+          "The sample response is RedirectShopper despite a successful-payment heading."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/react-native-component/2026-09-15.md",
+  "raw_sha256": "e57e0d835c09e5c624f636e548de919d39e6bc80fea061ed62b2c8f8326e8931",
+  "status": "candidate_ready"
+}

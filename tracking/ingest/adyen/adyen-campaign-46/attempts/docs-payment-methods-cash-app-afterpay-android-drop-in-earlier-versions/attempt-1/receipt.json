@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-cash-app-afterpay-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cash App Afterpay Android Drop-in v4.x.x\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, cash-app-afterpay, android, drop-in, earlier-versions, redirect]\n---\n\n## Overview\n\nThis captured guide adds Cash App Afterpay to an **Android Drop-in v4.x.x Advanced flow** integration. Drop-in shows the US method and redirects the shopper; the merchant server makes `/payments`, checks `/payments/details` after app return, and uses webhooks if the outcome is pending or the shopper does not return. It is a historical version-specific recipe, not proof of current eligibility or a successful live payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Prerequisites are an existing **Advanced flow Android Drop-in** integration and Cash App Afterpay added in Customer Area. `/paymentMethods` uses US/USD to show the method. Drop-in yields `paymentComponentData.paymentMethod`; pass it to the server along with shopper full name, email, billing/delivery addresses and `lineItems`. Telephone is optional. The payment example uses `paymentMethod.type=afterpaytouch_US` and an Android app return scheme. The introduction's Android Drop-in link and final See also link point to Sessions-flow URLs, while the Requirements row expressly says Advanced flow; select the Advanced guide for this v4.x.x path.\n- The `/payments` response's redirect `action` goes back to the client. On app return, Drop-in provides `actionComponentData.details`; the server sends it in `/payments/details` and presents that response's `resultCode`. `Pending` or `Received` means the final result is unknown, potentially for minutes or hours; wait for an AUTHORISATION webhook. If the shopper does not return, use the webhook outcome: `success=false` fails the transaction and `success=true` completes it. A redirect action or return alone is not final payment evidence.\n- Capture may be automatic or manual depending on merchant account configuration. Shipment-based delay needs delayed automatic or manual capture; partial capture requires manual capture. Capture must occur within **13 days** after authorization; otherwise the payment is cancelled and the first installment charged at authorization is refunded. Test authorizations expire in **one day**, requiring manual test capture within one day. Manual capture specifies `amount.value`, with optional `lineItems`.\n- After ordinary partial capture, the unclaimed amount is automatically cancelled. For accounts enabled for multiple partial captures, the balance is **not** automatically cancelled after the first capture; setup requires Support and each capture creates a separate invoice. Uncaptured payments may be cancelled; captured payments require refund to return funds. Full/partial refund specifies `amount.value` with optional `lineItems`.\n- The discount instruction uses a negative line amount. Its example is arithmetically coherent if the USD 1 discount applies to each of the two Item #2 units: 400 + 2\u00d7300 \u2212 2\u00d7100 = 800 minor units. The snippet has an ellipsis and a missing comma before the discount object, so it is not executable JSON. Test checkout uses a US Afterpay sandbox shopper account and test card; live acceptance needs a Cash App Afterpay request in live Customer Area. The related overview distinguishes this US/USD product from regional Afterpay/Clearpay naming.\n\n## Detail locators\n\n- Raw `# Cash App Afterpay Drop-in v4.x.x integration`, lines 15\u201341: version, redirect, Advanced prerequisite and US/USD. Raw `## Make a payment`, lines 43\u201363 and example lines 65\u2013125: client/server handoff and request fields.\n- Raw lines 520\u2013591: redirect action, `/payments/details`, Pending/Received and AUTHORISATION webhook outcome. Raw `## Capture the payment`, lines 593\u2013612: capture mode, deadlines and partial-capture exception.\n- Raw `## Refunds and cancellations`, lines 614\u2013623: cancel/refund conditions. Raw `## Discounts`, lines 625\u2013659: per-unit arithmetic and non-executable snippet. Raw `## Test and go live`, lines 661\u2013679: sandbox and live setup.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-cash-app-afterpay]] \u2014 US/USD regional product overview\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15|Cash App Afterpay Android Drop-in v4.x.x guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [Android Drop-in](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Drop-in) renders Cash App Afterpay in your payment form, and redirects the shopper to complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "| **Integration type** | Make sure that you have built an Advanced flow [Android Drop-in integration](/online-payments/build-your-integration/advanced-flow/?platform=Android\\&integration=Drop-in). |",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md:30"
+    },
+    {
+      "text": "Drop-in redirects the shopper to complete the payment. When the shopper returns back to your app, Drop-in provides the `actionComponentData` object.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md:540"
+    },
+    {
+      "text": "Cash App Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md:597"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md:610"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cash-app-afterpay-android-v4-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-afterpay-android-drop-in-earlier-versions]] \u2014 2026-09-15-captured Cash App Afterpay Android Drop-in v4.x.x Advanced guide for US/USD redirect, return/details/webhook results and capture/refund rules.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "fb5a7ed50977fcf6d68c36b9edff9568f21cd3a3e4ab55e3598f50787c91393b",
+  "status": "candidate_ready"
+}

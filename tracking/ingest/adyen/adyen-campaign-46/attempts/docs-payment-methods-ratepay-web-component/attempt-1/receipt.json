@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-ratepay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Ratepay Web Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ratepay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md\"\ntags: [adyen, ratepay, web, components, open-invoice, direct-debit]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] page, captured 2026-09-15 and marked last modified 2019-09-06, describes adding the Ratepay Component to an existing **Web Components** integration. It covers two distinct payment methods, **Ratepay Open Invoice** and **Ratepay Direct Debit**, along with shopper/order data, Ratepay device fingerprinting, request/result handling, invoice capture and modifications. See [[adyen-online-payments]]. It is historical captured documentation, not proof of current merchant or shopper availability.\n\n## Key takeaways\n\n- Build the Web Components integration and add Ratepay in the **test** Customer Area first (raw lines 28\u201333). For Web Components v6, the page shows a `RatePay` import (lines 35\u201341). Its `/paymentMethods` country/currency pairs are **AT/EUR, DE/EUR, NL/EUR (v3.22.1 or later), and CH/CHF**; the returned method types are `ratepay` for Open Invoice and `ratepay_directdebit` for Direct Debit (**v5.13.0 or later**) (lines 43\u201363). These are documented discovery pairs, not a live-eligibility guarantee.\n- The Component collects payment-form details. Optional prefill and `visibility` settings differ by Open Invoice and Direct Debit; the raw gives property tables and defaults (lines 75\u2013289). Before `/payments`, implement Ratepay device fingerprinting and send the calculated `deviceFingerprint`; the page says Ratepay uses it for risk evaluation (lines 21\u201325, 291\u2013293). After valid Component `onSubmit`, pass `state.data` to the server for `/payments` (lines 295\u2013299).\n- Both request tables mark shopper name, telephone, email, date of birth, billing address, fingerprint and `lineItems` required; `deliveryAddress` is required only when different from billing (Open Invoice lines 301\u2013314; Direct Debit lines 971\u2013990). Open Invoice uses `paymentMethod.type: ratepay`. Direct Debit uses `ratepay_directdebit` and additionally requires bank country, IBAN and account-holder name; it is **not available for shoppers in Switzerland** (lines 971\u2013990). The Direct Debit **curl** sample nevertheless sends `paymentMethod.type: ratepay` at lines 1021\u20131023, and its other language samples likewise retain `ratepay`; do not copy them as a validated Direct Debit request. Prefill labels `bankAccount.ibanNumber` (lines 127, 216), while the Direct Debit request table specifies `bankAccount.iban` (line 988); distinguish UI prefill data from the server request.\n- The response section lists `resultCode`, `pspReference` and `merchantReference`; **Open Invoice only** also lists `additionalData.openinvoicedata.descriptor` for the bank-transfer purpose printed on the invoice (lines 2323\u20132341). The result table lists `Authorised`, `Cancelled` and `Refused` and actions for the shopper (lines 2343\u20132353). A sample `Authorised` response is authorisation evidence in the example, not capture, invoice delivery or settlement proof.\n- The capture section explicitly applies **only to Open Invoice**: manually capture after sending goods even if automatic capture is enabled elsewhere; capture triggers the invoice to be sent (lines 2355\u20132359). Partial capture supplies the payment amount and `additionalData.openinvoicedata` item data; manually cancel any unclaimed remainder (lines 2361\u20132411). Multiple partial captures require Support setup and create a new invoice per capture (lines 2411\u20132413). Before capture, cancel; after capture, refund. Partial refunds use `modificationAmount`, `acquirerReference` if multiple partial captures are available, and Open Invoice item data only for Open Invoice (lines 2415\u20132459).\n- Before live acceptance, the page says to request Ratepay in **live** Customer Area and provide Ratepay live credentials; test payment status can be checked in test Customer Area (lines 2461\u20132467). This does not establish that any account has live access or that a payment succeeded.\n\n## Detail locators\n\n- Purpose, shopper/order/fingerprint/capture prerequisites: raw lines 15\u201333; Web v6 import: 35\u201341.\n- Country/currency, method types and Component setup: lines 43\u201373.\n- Optional prefill and visibility by product: lines 75\u2013289; `ibanNumber` prefill labels at 127 and 216.\n- Fingerprint, Component submission and Open Invoice request table: lines 291\u2013314; Open Invoice examples: 316\u2013969.\n- Direct Debit restriction, required bank fields and request examples: lines 971\u20132321; table type at 977 and curl sample type at 1021\u20131023.\n- Response and `resultCode`: lines 2323\u20132353; Open Invoice manual/partial capture: 2355\u20132413.\n- Cancel/refund and partial-refund detail: lines 2415\u20132459; test/live gate: 2461\u20132467.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment integration concept.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15|2026-09-15 Ratepay Web Component guide]]\n",
+  "quotes": [
+    {
+      "text": "Our Ratepay Component renders Ratepay in your payment form, and collects the required payment information from the shopper.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md:19"
+    },
+    {
+      "text": "Using Ratepay's device fingerprinting,[calculate the shopper's device fingerprint](#calculate-device-fingerprint), and specify it in your [payment request](#make-a-payment). Ratepay uses the fingerprint for risk evaluation.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md:25"
+    },
+    {
+      "text": "Ratepay Direct Debit is not available for shoppers in Switzerland.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md:973"
+    },
+    {
+      "text": "All Ratepay Open invoice payments must be",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md:2359"
+    },
+    {
+      "text": "Before you can accept live Ratepay payments, you need to [submit a request for Ratepay](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/), and provide us your Ratepay live credentials.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md:2463"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c46-ratepay-web-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ratepay-web-component]] \u2014 2026-09-15-captured Ratepay Web Components guide for Open Invoice and Direct Debit request, fingerprint, result, capture/refund and live gates; source flags Direct Debit example mismatch.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Direct Debit request table requires `paymentMethod.type: ratepay_directdebit` (raw line 977), but its curl request and other samples use `ratepay` (for example lines 1021\u20131023); do not treat the sample as a validated Direct Debit request. The capture section is explicitly Open Invoice only (lines 2355\u20132359)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ratepay/web-component/2026-09-15.md",
+  "raw_sha256": "54d464663ce1d0100eda2f95bdc12c70a8dae380a5bdf480567994f7808c0f24",
+  "status": "candidate_ready"
+}

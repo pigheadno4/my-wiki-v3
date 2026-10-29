@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Adyen website C46
+
+- Fifty independently approved Cash App Afterpay, Zip, Atome, Riverty and Ratepay documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 1 concepts touched (0 new); source_count 2314 = 2300 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-46/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-29] ingest | Stripe React Native `0.84.0`
 
 - Approved additive full with focused reading and exact-SHA SPM supplement: mandatory SPM/RN floor, removed public Checkout preview exports, internal appearance/Apple Pay options, Android callback and Connect repairs. All earlier history retained; details [[stripe-log]] and [[source-github-stripe-react-native]]. No SDK/device/payment test, commit or push.

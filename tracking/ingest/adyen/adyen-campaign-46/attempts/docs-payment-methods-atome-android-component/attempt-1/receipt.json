@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-atome-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Atome Android Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/android-component/2026-09-15.md\"\ntags: [adyen, atome, android, component, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Atome to an existing Android Components integration using either Sessions or Advanced server-side flow. It gives Atome-specific additions and links to the main integration guides for shared steps. The page does not establish current account availability, a completed payment, or live enablement. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** Requires an existing Android Sessions Components integration, Checkout API v68 or later, redirect handling for `action.type=redirect`, and Atome added in Customer Area. The `/sessions` table marks shopper name, email, phone, billing address, line items and `countryCode` required; delivery address is optional when it is the same as billing. It specifies MY with MYR and SG with SGD (pinned raw lines 25\u201352).\n- **Advanced flow:** Requires an existing Android Advanced Components integration, handling the additional redirect action, and Atome in Customer Area. Its `/payments` table marks `paymentMethod.type=atome`, the same shopper/contact/billing/line-item fields, and countryCode required, with the same MY/MYR and SG/SGD pairs; delivery address has the same conditional optionality (lines 846\u2013957). The guide states Checkout API v68+ in the Sessions requirements, without repeating that requirement in the Advanced table.\n- Both flows import `com.adyen.checkout:instant`; Jetpack Compose also imports `components-compose`. They use `InstantPaymentComponent` for Atome and say no Atome-specific configuration parameters are needed. Sessions gets the method from `checkoutSession.getPaymentMethod(\"atome\")`; Advanced selects type `atome` from `/paymentMethods`. Compose examples use a unique Component key for a different screen or session (lines 732\u2013813, 856\u2013940).\n- The guide describes partial refund by specifying `amount` in `/payments/{paymentPspReference}/refunds`. The test flow needs an Atome sandbox shopper account requested through an Adyen contact; use a different test account per country/region if testing multiple. It lists QR-code test apps for MY and SG. Live Atome setup requires contacting Support to add Atome in the live Customer Area (lines 816\u2013844, 1688\u20131716).\n\n> [!warning] Redirect is not final success\n> The Advanced section calls its sample a \u201cresponse for a successful payment,\u201d but its actual `resultCode` is `RedirectShopper` with a redirect action (raw lines 1674\u20131685). That response directs the next shopper action and does not itself show final authorization or settlement. Use the linked main flow for subsequent result handling.\n\n> [!warning] Sessions curl example\n> The Sessions curl block repeats `countryCode` with the same SG value and places `-X POST` on a line before `-d` without a continuation (raw lines 55\u201378). Treat the table as the field requirements and the block as illustrative rather than a ready-to-run shell command.\n\n## Detail locators\n\n- Sessions requirements and required fields: pinned raw lines 25\u201352; example requests: lines 54\u2013730.\n- Sessions imports, launch and Atome configuration: lines 732\u2013813; partial refund and test/live steps: lines 816\u2013844.\n- Advanced requirements, imports and Component launch: lines 846\u2013940; required `/payments` fields and language examples: lines 942\u20131672.\n- Advanced redirect response, partial refund and test/live steps: lines 1674\u20131716.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-atome]] \u2014 Atome method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/android-component/2026-09-15|Atome Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Atome.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "**MY** with **MYR**, and **SG** with **SGD**.",
+      "location": "pinned raw line 52"
+    },
+    {
+      "text": "use the `InstantPaymentComponent` class.",
+      "location": "pinned raw line 765"
+    },
+    {
+      "text": "\"resultCode\":\"RedirectShopper\"",
+      "location": "pinned raw line 1678"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c46-atome-android-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-android-component]] \u2014 2026-09-15-captured Atome Android Component guide for Sessions and Advanced redirect flows, MY/MYR and SG/SGD request fields, component launch and test/live setup; its sample RedirectShopper response is labeled successful.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced sample is labeled a successful payment although its response is RedirectShopper, not final authorization; Sessions curl example repeats countryCode and lacks a shell continuation after -X POST."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/android-component/2026-09-15.md",
+  "raw_sha256": "b8cec33c32778d712a8249e4245924ebdfe461381576804dcb61d78d059c6dba",
+  "status": "candidate_ready"
+}

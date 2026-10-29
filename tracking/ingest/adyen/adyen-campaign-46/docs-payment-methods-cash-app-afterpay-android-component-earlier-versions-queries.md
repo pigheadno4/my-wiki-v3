@@ -1,0 +1,9 @@
+# Cash App Afterpay Android Redirect Component v4.x.x retrieval checks
+
+## Q1 — What is this older guide's scope and what cannot be inferred?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-cash-app-afterpay-android-component-earlier-versions]]` → `[[raw/adyen/docs/payment-methods/cash-app-afterpay/android-component/earlier-versions/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-cash-app-afterpay-android-component-earlier-versions`. Full pinned raw path: `raw/adyen/docs/payment-methods/cash-app-afterpay/android-component/earlier-versions/2026-09-15.md`. Raw lines 15–44 identify a v4.x.x Android Redirect Component guide requiring an Advanced Components integration, with US/USD and `afterpaytouch_US`. The historical guide does not establish current SDK behavior, merchant eligibility, live operation or completed payment.
+
+## Q2 — What are redirect, result, capture and conflict boundaries?
+
+Use the same root/provider/concept/source/raw route. The server `/payments` request carries the method, shopper data, items and return URL, then passes the response action to the client Redirect Component (raw lines 57–135, 532–548). The return path POSTs `/payments/details`; Pending/Received needs AUTHORISATION webhook finality, and no-return handling also uses webhooks (lines 550–603). Capture is due within 13 days, or one day in test, and normal partial capture cancels the unclaimed balance unless multiple partial captures are enabled through Support (lines 605–624). Cancel before capture, refund after; discounts use negative line items, with a non-JSON sample whose one USD language can mean per unit (lines 626–671). Warn that Advanced-flow requirements coexist with Sessions-flow Redirect Component links and `returnURL` prose differs from `returnUrl` sample spelling (lines 19, 32, 75, 99, 552, 695). Sandbox/live setup is at lines 673–691.

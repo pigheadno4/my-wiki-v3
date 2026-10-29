@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-zip-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Zip iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/zip/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/zip/ios-component/2026-09-15.md\"\ntags: [adyen, zip, ios, components, redirect, tokenization, recurring]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] page, fetched and marked last modified 2026-09-15, adds the Zip redirect payment method to an existing **iOS Components** integration. It covers Sessions as the default for Components v5.0.0 or later, a `/payments` path for an additional use case, version-specific Component setup, and a recurring-token path. See [[adyen-online-payments]]. The examples are TEST requests and do not establish current merchant eligibility or a completed payment.\n\n## Key takeaways\n\n- **Prerequisites and API branches:** Build the base iOS Components integration and add Zip in the **test** Customer Area first. The `/sessions` tab is the default with Components v5.0.0+; `/payments` is presented for an additional use case. Both API parameter tables list shopper name, email, birth date, phone, billing and delivery addresses, and line items with blank **Required** cells. Treat those as documented parameters, not as a claim that every field is mandatory. A line item may include an `imageURL` up to 500 characters for the Zip product page. Only the `/payments` table adds `paymentMethod.clickAndCollect: true` for pickup rather than delivery.\n- **Examples and redirect:** The examples show TEST Checkout `/sessions` v71 and `/payments` v72 with AU/AUD and an iOS app-scheme `returnUrl` of `my-app://adyen`. These are examples, not a complete market matrix or a reusable app scheme. The `/payments` example response contains `resultCode: RedirectShopper` and `action.type: redirect`; its action is used to redirect the shopper. The return URL or redirect response is not proof of authorization, capture, or settlement.\n- **Component versions:** For iOS Components v5.0.0+, the guide checks for payment method type `zip`, creates `InstantPaymentComponent`, assigns the session as delegate in Sessions or the app's delegate in Advanced, then calls `initiatePayment()`. Its v4.x.x example uses the older generic `Component` and presents it. It says there is no Zip-specific Component configuration.\n- **Recurring token path:** The page says Zip recurring transactions are supported. To create a token, send `storePaymentMethod: true` and `shopperReference` in an initial `/payments` request; after the payment has settled, consume the `recurring.token.created` webhook and its `storedPaymentMethodId`, with the server configured for recurring-token lifecycle events. A subsequent `/payments` request uses that stored ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. Token creation is not synchronous with the redirect or initial request. The older Java recurring example uses `recurringDetailReference` while prose and current curl use `storedPaymentMethodId`; follow the versioned API model rather than copying across SDK generations.\n- **Sample and live boundaries:** The `/payments` curl sample embeds an unrendered `{hint:...}` marker in JSON around `clickAndCollect`, so it is not copy-ready. Some recurring examples use an HTTPS web `returnUrl` despite this iOS guide's app-scheme examples; configure return handling for the actual app and flow. Testing uses Zip test accounts and Adyen test Customer Area status; live acceptance requires a separate request for Zip in the **live** Customer Area.\n\n## Detail locators\n\n- Identity and requirements: pinned raw lines 15\u201326. `/sessions` table and v71 AU/AUD request: lines 32\u2013101; language SDK examples: lines 103\u2013679.\n- `/payments` field table, pickup flag and v72 AU/AUD sample: lines 681\u2013755; language SDK examples and redirect action: lines 757\u20131389.\n- iOS Components v5 Sessions/Advanced and v4 code: lines 1391\u20131446. Recurring token creation, webhook, future payment fields and examples: lines 1448\u20131679. TEST and live setup: lines 1681\u20131693.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/zip/ios-component/2026-09-15|Zip iOS Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Components) or later.",
+      "location": "API reference > /sessions, line 34"
+    },
+    {
+      "text": "Set this to **true** if the shopper wants to pick up and collect their order, instead of having the goods delivered to them.",
+      "location": "API reference > /payments > paymentMethod.clickAndCollect, line 691"
+    },
+    {
+      "text": "There are no configuration steps specific to Zip required for Components.",
+      "location": "Component configuration, line 1446"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "Recurring payments > Create a token, line 1462"
+    },
+    {
+      "text": "Before you can accept live Zip payments, you need to submit a request for Zip in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "Test and go live, line 1687"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "zip-ios-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-zip-ios-component]] \u2014 2026-09-15 Zip iOS Components Sessions/Advanced redirect add-on with v5/v4 setup, recurring-token webhook path, and test/live enablement caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The /payments curl example includes a literal hint marker inside JSON and is not copy-ready.",
+          "The recurring Java example uses recurringDetailReference while prose and current curl name storedPaymentMethodId; version-specific API handling must be checked."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/zip/ios-component/2026-09-15.md",
+  "raw_sha256": "8e92544eb0d66d39cf24c87245e59405a36b26a5f484cac4c2ab9ee827d1a555",
+  "status": "candidate_ready"
+}

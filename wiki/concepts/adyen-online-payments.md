@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-zip-web]] — 2026-09-15-captured Zip Web chooser routing to Drop-in/Components child and main integration guides.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-web]] — 2026-09-15-captured Afterpay-titled Web chooser under the Cash App Afterpay path, linking method-specific Drop-in/Components and general Web UI guides.
+
+
+- [[source-adyen-docs-payment-methods-zip-ios]] — 2026-09-15-captured Zip iOS chooser linking Drop-in, Redirect Component, and general iOS Sessions-flow guides.
+
+
+- [[source-adyen-docs-payment-methods-zip-android]] — 2026-09-15 Zip Android chooser linking Drop-in and Redirect Component method guides plus base Android Sessions-flow routes.
+
+
+- [[source-adyen-docs-payment-methods-riverty-api-only]] — 2026-09-15-captured Riverty Advanced API-only guide for redirect, method-specific risk data, mandatory manual capture and invoice timing, partial modifications, and checkout consent.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-ios]] — 2019-modified, 2026-09-15-captured iOS chooser titled Afterpay under Cash App Afterpay path, routing Drop-in/Components children and Sessions-flow base guides.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-android]] — 2019-modified, 2026-09-15-captured Afterpay Android chooser linking Cash App Afterpay Drop-in/Components child guides and Android Sessions base guides.
+
+
+- [[source-adyen-docs-payment-methods-ratepay-web]] — 2026-09-15-captured Ratepay Web chooser linking method-specific Drop-in and Components guides and the general Web UI guides.
+
+
+- [[source-adyen-docs-payment-methods-atome-web]] — 2026-09-15 Atome Web chooser for Drop-in/Components child guides and four Sessions/Advanced base Web integration routes.
+
+
+- [[source-adyen-docs-payment-methods-atome-android]] — 2026-09-15-captured Atome Android chooser routing to Drop-in/Components children and Sessions/Advanced main integration guides.
+
+
+- [[source-adyen-docs-payment-methods-atome-ios]] — 2026-09-15-captured Atome iOS chooser linking Drop-in, AtomeComponent, and main Sessions/Advanced integration guides.
+
+
+- [[source-adyen-docs-payment-methods-riverty-web]] — 2026-09-15-captured Riverty Web chooser routing to Drop-in and Component child guides plus Sessions/Advanced main integrations.
+
+
+- [[source-adyen-docs-payment-methods-zip-android-drop-in]] — 2026-09-15 Zip Android Drop-in v5.0.0+ Sessions/Advanced add-on stating no Zip-specific request fields or Drop-in configuration, with base-flow and test/live routes.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-android-component]] — 2026-09-15-captured v5.0.0 Cash App Afterpay Android Components add-on for Sessions/Advanced flows, no extra method fields/configuration, and US sandbox/live setup.
+
+
+- [[source-adyen-docs-payment-methods-ratepay]] — 2022-modified, 2026-09-15-captured Ratepay Open Invoice/secured-direct-debit overview with conditional risk/payout claims, a capability matrix, and Web/API-only routes; source flags CH geography mismatch.
+
+
+- [[source-adyen-docs-payment-methods-zip-android-component]] — 2026-09-15-captured Android Components v5.0.0 Zip add-on for Sessions/Advanced method-specific no-extra-field/configuration guidance and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-android-drop-in]] — 2026-09-15-captured Android Drop-in v5.0.0 Cash App Afterpay add-on covering Sessions/Advanced method-specific no-extra-field/configuration guidance and sandbox/live setup.
+
+
+- [[source-adyen-docs-payment-methods-riverty-web-component]] — 2026-09-15-captured Riverty Web Components Sessions/Advanced guide for request, redirect, profile tracking, mandatory manual capture, partial modifications and checkout consent.
+
+
+- [[source-adyen-docs-payment-methods-atome-react-native-component]] — 2026-09-15 Atome React Native Components Advanced-only add-on for MY/MYR and SG/SGD requests, redirect and test/live setup; source flags base-link and sample-return caveats.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-android-drop-in-earlier-versions]] — 2026-09-15-captured Cash App Afterpay Android Drop-in v4.x.x Advanced guide for US/USD redirect, return/details/webhook results and capture/refund rules.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-api-only]] — 2026-09-15-captured Cash App Afterpay API-only guide for a custom Web form, redirect/details and webhook outcomes, capture/refund lifecycle, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-web-drop-in]] — 2026-09-15-captured Cash App Afterpay Web Drop-in guide for Sessions/Advanced requests, capture/refund lifecycle, discounts, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-android-component-earlier-versions]] — 2026-09-15-captured v4.x.x Android Redirect Component Advanced-flow guide for US/USD Cash App Afterpay, redirect/details/webhook results and 13-day capture; source links point to Sessions flow.
+
+
+- [[source-adyen-docs-payment-methods-atome-web-drop-in]] — 2026-09-15 Atome Web Drop-in Sessions/Advanced add-on for MY/MYR and SG/SGD requests, redirect, partial refunds and test/live setup; source flags misleading redirect-success heading and Web return-URL sample.
+
+
+- [[source-adyen-docs-payment-methods-atome-api-only]] — 2026-09-15 Atome Web API-only Advanced-flow add-on for merchant-built form, MY/MYR and SG/SGD discovery, redirect request, partial refund and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-ios-drop-in]] — 2026-09-15-captured US/USD Cash App Afterpay iOS Drop-in Sessions/Payments guide with 13-day capture limit, partial-capture balance behavior, refunds and test/live setup; sample shopperReference conflicts with required minimum.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-web-component]] — 2026-09-15 US/USD Web Components Sessions/Advanced add-on with v6/v5 mounting, capture expiry, partial-capture remainder behavior, refund and discount examples.
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay-ios-component]] — 2026-09-15-captured US Cash App Afterpay iOS Components guide covering Sessions/Advanced requests, versioned Component setup, capture windows, refunds and discounts.
+
+
+- [[source-adyen-docs-payment-methods-atome-ios-drop-in]] — 2026-09-15-captured Atome iOS Drop-in Sessions/Advanced add-on with MY/MYR or SG/SGD requests, redirect, partial refund and test/live setup; sample RedirectShopper is mislabeled successful.
+
+
+- [[source-adyen-docs-payment-methods-atome-android-drop-in]] — 2026-09-15-captured Atome Android Drop-in guide for Sessions/Advanced MY/MYR or SG/SGD request additions, redirect handling, partial refunds, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-atome-react-native-drop-in]] — 2026-09-15 Atome React Native Drop-in Sessions/Advanced redirect add-on for MY/MYR or SG/SGD requests, partial refunds and test/live setup; source flags link and example caveats.
+
+
+- [[source-adyen-docs-payment-methods-atome-flutter-drop-in]] — 2026-09-15-captured Atome Flutter Drop-in Sessions/Advanced guide for MY/MYR and SG/SGD request additions, redirect handling, partial refunds and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-zip-web-drop-in]] — 2026-09-15-captured Zip Web Drop-in guide with Sessions/Payments examples, redirect action and settlement-dependent recurring token webhook setup.
+
+
+- [[source-adyen-docs-payment-methods-zip-ios-drop-in]] — 2026-09-15-captured Zip iOS Drop-in guide covering v5+ Sessions and additional-use-case Payments requests, redirect action, and settlement-dependent recurring-token flow.
+
+
+- [[source-adyen-docs-payment-methods-atome-ios-component]] — 2026-09-15 Atome iOS Components Sessions/Advanced redirect add-on for MY/MYR or SG/SGD requests, partial refunds and test/live setup; source qualifies examples and Advanced base link.
+
+
+- [[source-adyen-docs-payment-methods-zip-web-component]] — 2026-09-15-captured Zip Web Components guide for Sessions/Advanced API routes, redirect Component, and after-settlement recurring-token flow.
+
+
+- [[source-adyen-docs-payment-methods-zip-api-only]] — 2026-09-15-captured Zip API-only guide for custom form, Sessions/Payments examples, redirect result handling, and settlement-dependent recurring token use; endpoint framing differs within the page.
+
+
+- [[source-adyen-docs-payment-methods-riverty-web-drop-in]] — 2026-09-15 Riverty Web Drop-in Sessions/Advanced add-on covering redirect requests, mandatory manual capture, partial modifications and checkout consent, with flow-specific field and sample caveats.
+
+
+- [[source-adyen-docs-payment-methods-atome-web-component]] — 2026-09-15-captured Atome Web Components guide for Sessions and Advanced flows, MY/MYR or SG/SGD request data, Component field visibility, redirect action, partial refunds, and sandbox/live setup.
+
+
+- [[source-adyen-docs-payment-methods-zip-ios-component]] — 2026-09-15 Zip iOS Components Sessions/Advanced redirect add-on with v5/v4 setup, recurring-token webhook path, and test/live enablement caveats.
+
+
+- [[source-adyen-docs-payment-methods-atome-android-component]] — 2026-09-15-captured Atome Android Component guide for Sessions and Advanced redirect flows, MY/MYR and SG/SGD request fields, component launch and test/live setup; its sample RedirectShopper response is labeled successful.
+
+
+- [[source-adyen-docs-payment-methods-zip-android-component-earlier-versions]] — 2019-modified, 2026-09-15-captured Zip Android Redirect Component guide titled v4.x.x but including a v5+ Sessions tab, AU/AUD discovery, redirect/details/webhook result and conditional recurring-token route.
+
+
+- [[source-adyen-docs-payment-methods-ratepay-api-only]] — 2026-09-15-captured Ratepay API-only Open Invoice and Direct Debit integration guide covering form/request fields, fingerprinting, results and modification routes.
+
+
+- [[source-adyen-docs-payment-methods-ratepay-web-component]] — 2026-09-15-captured Ratepay Web Components guide for Open Invoice and Direct Debit request, fingerprint, result, capture/refund and live gates; source flags Direct Debit example mismatch.
+
+
+- [[source-adyen-docs-payment-methods-zip-android-drop-in-earlier-versions]] — 2026-09-15 Zip Android Drop-in v4.x.x guide with AU/AUD redirect, result/webhook and recurring-token routes; source qualifies its v5 Sessions tab.
+
+
+- [[source-adyen-docs-payment-methods-ratepay-web-drop-in]] — 2026-09-15-captured Ratepay Web Drop-in Open Invoice and Direct Debit integration guide, including request fields, fingerprinting, result, capture and refund routes.
+
+
+- [[source-adyen-docs-payment-methods-riverty]] — 2024-modified, 2026-09-15-captured Riverty direct BNPL invoice overview with T+2/sales-day-payout limits, DE/AT/NL-only split installments, capability marks and Web/API-only routes.
+
+
+- [[source-adyen-docs-payment-methods-zip]] — 2024-modified, 2026-09-15-captured Zip AU/US redirect BNPL overview with capability matrix and channel routes; separate-capture note is absent in source.
+
+
+- [[source-adyen-docs-payment-methods-atome]] — 2026-09-15-captured Atome MY/SG three-installment redirect overview with portable-electronics restriction, feature matrix and card-type transaction limits (page last modified 2023-03-21).
+
+
+- [[source-adyen-docs-payment-methods-cash-app-afterpay]] — 2026-09-15 US/USD Cash App Afterpay redirect overview covering four installments, regional naming, feature matrix and chargeback windows.
+
+
 - [[source-adyen-docs-payment-methods-oney-web]] — 2026-09-15-captured Web chooser for Oney Drop-in and Components child guides and general Web routes (page last modified 2020-07-10).
 
 

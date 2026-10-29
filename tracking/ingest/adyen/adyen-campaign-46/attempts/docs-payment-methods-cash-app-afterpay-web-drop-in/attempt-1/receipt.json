@@ -1,0 +1,48 @@
+{
+  "job_id": "docs-payment-methods-cash-app-afterpay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Cash App Afterpay Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-afterpay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-afterpay/web-drop-in/2026-09-15.md\"\ntags: [adyen, cash-app-afterpay, web, drop-in, buy-now-pay-later]\n---\n\n## Overview\n\nThis 2026-09-15 capture of Adyen's Cash App Afterpay guide explains how to add the method to an existing **Web Drop-in** integration. It covers Sessions and Advanced server-side flows, checkout request data, capture and refund behavior, discounts, and testing. The page is a guide for this method and surface, not evidence of current merchant eligibility or a successful live payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Start with an existing Sessions or Advanced Web Drop-in integration and add Cash App Afterpay in Customer Area. The guide says shopper details are used for risk checks and requires purchased-item information in the payment request (raw lines 21\u201342). The `/sessions` path is described as the default for Drop-in v5.0.0 or later; `/payments` is presented for an additional use case (raw lines 44\u201350, 745\u2013758).\n- Both endpoint tables mark shopperName, shopperEmail, shopperReference (at least three characters), countryCode, billingAddress, deliveryAddress, and lineItems as required; telephoneNumber is listed without a required mark and described as provided if available (raw lines 52\u201361, 749\u2013758). The US/USD `/payments` example uses `paymentMethod.type: afterpaytouch_US`; preserve that API type without treating it as a different product from the page title (raw lines 760\u2013819).\n- There are no Cash App Afterpay-specific Drop-in configuration steps in this guide (raw lines 1215\u20131217). The examples include a `returnUrl` value of `my-app://adyen`, which is an example value and does not establish a suitable Web return URL for a merchant deployment (raw lines 65\u2013120, 760\u2013820).\n- Capture is automatic after authorization or manual according to merchant-account configuration. Delayed capture needs capture-delay setup or manual capture; partial capture needs manual capture. Production authorization must be captured within **13 days**; otherwise Cash App Afterpay cancels and refunds the first installment. Test authorizations expire in **one day** (raw lines 1219\u20131227).\n- For manual capture, amount.value is full or partial and lineItems is optional. A partial capture automatically cancels the unclaimed remainder, except when the account is enabled for multiple partial captures; that capability requires Support setup and makes a new invoice for each capture. Cancel before capture; refund after capture, with full or partial amount and optional lineItems (raw lines 1229\u20131249).\n- The discount section says \u201c1 USD on Item #2,\u201d while its two-unit sample applies a -100 minor-unit discount entry with quantity 2 and totals USD 8.00. This is consistent with USD 1 **per unit** but ambiguous if read as USD 1 for the line; the sample also lacks a comma between the Item #2 and Discount objects. Treat it as illustrative rather than copy-ready JSON (raw lines 1251\u20131285).\n\n## Detail locators\n\n- Requirements and endpoint fields: raw `## Requirements` lines 21\u201342 and `## API reference` lines 44\u201361, 745\u2013758. The `/sessions` curl example is at lines 63\u2013120, and the `/payments` curl example at lines 760\u2013820; other SDK examples are at lines 122\u2013743 and 822\u20131213.\n- Configuration and lifecycle: raw `## Drop-in configuration` lines 1215\u20131217, `## Capture the payment` lines 1219\u20131238, and `## Refunds and cancellations` lines 1240\u20131249.\n- Discount example and test/live gates: raw `## Discounts` lines 1251\u20131285 and `## Test and go live` lines 1287\u20131305. Testing calls for an Afterpay sandbox shopper account with US selected; live use requires a Cash App Afterpay request in live Customer Area.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-cash-app-afterpay]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-afterpay/web-drop-in/2026-09-15|Cash App Afterpay Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Cash App Afterpay to your existing Web Drop-in integration.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "1. Collect shopper details, and specify these in your payment request. Cash App Afterpay uses these for risk checks.",
+      "location": "raw line 41"
+    },
+    {
+      "text": "There are no configuration steps specific to Cash App Afterpay required for Drop-in.",
+      "location": "raw line 1217"
+    },
+    {
+      "text": "Cash App Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw line 1223"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "raw line 1236"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cash-app-afterpay-web-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-afterpay-web-drop-in]] \u2014 2026-09-15-captured Cash App Afterpay Web Drop-in guide for Sessions/Advanced requests, capture/refund lifecycle, discounts, and test/live setup.\n",
+        "quote_indexes": [
+          0
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-afterpay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "2225be5a1ebdf85c1ed6ab04c4862712eef47f18e26c2dc3bc0ecd6eba967807",
+  "status": "candidate_ready"
+}

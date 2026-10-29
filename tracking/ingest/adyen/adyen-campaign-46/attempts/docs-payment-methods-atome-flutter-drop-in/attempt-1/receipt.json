@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-atome-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Atome Flutter Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, atome, flutter, drop-in, redirect, malaysia, singapore]\n---\n\n## Overview\n\nThis captured guide adds Atome-specific instructions to an existing Flutter Drop-in integration, with separate Sessions and Advanced server-flow sections. It describes request additions, redirect handling, partial-refund amount and test/live setup; the main Flutter integration guide supplies shared steps. The guide does not establish current merchant eligibility or a completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Sessions flow:** existing Flutter Drop-in, Checkout API v68 or later, `action.type=redirect` handling, and Support contact to add Atome in Customer Area. The `/sessions` request table marks shopper name, email, telephone, billing address, `lineItems` and `countryCode` required; delivery address is optional when it matches billing. The supported pairs are MY/MYR and SG/SGD. This section says no extra Atome configuration parameters are needed.\n- **Advanced flow:** existing Flutter Drop-in with redirect handling and Atome added in Customer Area. Its `/payments` table adds `paymentMethod.type=atome` and the same shopper, invoice, item and country/currency fields, with the same delivery-address condition. This section also says no extra Atome configuration parameters are needed. The Advanced requirements table does not repeat the Sessions section's Checkout API v68+ gate; do not silently generalize that row to both flows.\n- **Redirect outcome warning:** the Advanced example is headed \u201csuccessful payment,\u201d yet its response is `resultCode=RedirectShopper` with a redirect `action`. This indicates a next step, not authorization, capture or settled success. The Sessions requirements link labeled Flutter Sessions flow points to an `advanced-flow` URL; use the separately linked Sessions redirect/session steps and the raw headings to distinguish the flows.\n- **Example request warning:** the Sessions and Advanced curl examples have `-X POST` without a shell continuation before `-d` (raw lines 63\u201364, 812\u2013813), so they are not ready-to-run shell commands. The Sessions curl body repeats `countryCode` with the same `SG` value (lines 72 and 78). The examples are test-environment illustrations.\n- Partial refunds specify `amount` in `/payments/{paymentPspReference}/refunds`. Testing needs an Atome sandbox shopper account requested through an Adyen contact; use separate test accounts for multiple countries. The page links MY/SG test apps for QR flow. Live Atome use requires Support to add it in the live Customer Area.\n- Related Atome overview authority says portable electronics are excluded and must be disabled in checkout business logic, and says capture is automatic after authorization. Those are overview facts, not stated in this Flutter child guide; consult that source for product eligibility and capture rules.\n\n## Detail locators\n\n- Raw `# Atome Flutter Drop-in`, lines 15\u201336: scope, Sessions prerequisites and redirect. Raw `## Add additional parameters to your /sessions request`, lines 40\u201352: required fields and MY/MYR, SG/SGD. Sessions curl lines 58\u2013114: sample syntax and duplicate country code.\n- Raw `## Advanced flow Drop-in`, lines 768\u2013801: Advanced prerequisites, no extra configuration, payment fields and regional pairs. Advanced curl lines 805\u2013866: sample syntax.\n- Raw lines 1518\u20131530: mislabeled `RedirectShopper` example. Raw `## Refunds and cancellations` and `## Test and go live`, lines 1534\u20131560: partial-refund amount, testing and live setup.\n- [[source-adyen-docs-payment-methods-atome]]: portable-electronics exclusion, automatic capture and product overview.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-atome]] \u2014 method-level restrictions and capture summary\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15|Atome Flutter Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Atome to your existing integration. The following instructions show only what you must add to your integration specifically for Atome.",
+      "location": "raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "| **Checkout API**      | Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Atome.",
+      "location": "raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md:736"
+    },
+    {
+      "text": "**Example response for a successful payment**",
+      "location": "raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md:1518"
+    },
+    {
+      "text": "To accept live Atome payments, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Atome in your live Customer Area.",
+      "location": "raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md:1560"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "atome-flutter-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-flutter-drop-in]] \u2014 2026-09-15-captured Atome Flutter Drop-in Sessions/Advanced guide for MY/MYR and SG/SGD request additions, redirect handling, partial refunds and test/live setup.\n",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "95fc5af6639b3d87c220d16e2e6421d31769762f4802df9771094cf1ccb622db",
+  "status": "candidate_ready"
+}

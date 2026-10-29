@@ -1,0 +1,9 @@
+# Zip API-only retrieval checks
+
+## Q1 — What is this guide's scope, and what cannot be inferred?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-zip-api-only]]` → `[[raw/adyen/docs/payment-methods/zip/api-only/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-zip-api-only`. Full pinned raw path: `raw/adyen/docs/payment-methods/zip/api-only/2026-09-15.md`. Raw lines 15–26 identify an API-only custom-form Zip guide requiring an existing API-only integration and Zip added in the test Customer Area. Lines 44–51 list AU/US, AUD/USD and channel values for method discovery. This 2026 capture does not establish current merchant eligibility, country/currency pairing, live operation or a successful payment.
+
+## Q2 — How do endpoint choice, redirect finality and recurring tokens work?
+
+Use the same root/provider/concept/source/raw route. Raw lines 55–65 and 712–725 distinguish the `/sessions` default for API-only v5.0.0+ from the additional-use-case `/payments` tab, although the lead says to make `/payments`; the `/payments` curl sample includes literal hint markup (lines 728–750). Raw lines 1406–1465 cover `action.url`, return `redirectResult`, and `/payments/details`. `Pending`/`Received` needs AUTHORISATION webhook finality, and no-return handling includes OFFER_CLOSED timeout (lines 1467–1483). Recurring token creation uses `storePaymentMethod` and `shopperReference`, with `recurring.token.created` after settlement; the server must be set up to receive Recurring tokens life cycle events webhooks to obtain that event and `storedPaymentMethodId` (raw lines 1499–1506); token reuse requires ContAuth and a named processing model (lines 1485–1518). Raw lines 1718–1724 distinguish test credentials from the live Customer Area request.

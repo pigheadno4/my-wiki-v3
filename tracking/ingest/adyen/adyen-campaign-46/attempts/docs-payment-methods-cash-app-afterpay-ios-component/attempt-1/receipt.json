@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-cash-app-afterpay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cash App Afterpay iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-afterpay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md\"\ntags: [adyen, cash-app-afterpay, ios, components, redirect, united-states]\n---\n\n## Overview\n\nThis captured guide adds Cash App Afterpay to an existing iOS Components integration. Its title and description call it an \u201cAfterpay Redirect Component,\u201d while the body scopes the method to Cash App Afterpay and uses `afterpaytouch_US` in the US/USD examples. It covers Sessions and Advanced server flows, iOS Component setup, capture timing, refunds, discounts and test/live setup. These examples do not prove current eligibility or a successful live payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Build a matching iOS Components Sessions or Advanced flow and add Cash App Afterpay in Customer Area. The `/sessions` tab is the default with Components v5.0.0 or later; the `/payments` tab is for an additional use case. Both endpoint tables mark shopper name, email, shopper reference, country code, billing and delivery addresses, and `lineItems` required; telephone is optional if provided. `shopperReference` has a minimum length of three characters.\n- **Example conflict:** the US/USD request examples use empty shopper first/last names and an empty `shopperReference`, despite the required-field tables and the three-character minimum. Do not copy those as valid values. The Advanced `/payments` examples specify `paymentMethod.type=afterpaytouch_US`; the Sessions example uses `my-app://adyen` as a return URL, which is an example app scheme rather than a configured universal callback.\n- **Component version split:** iOS Components v5.0.0+ checks for `.other(\"afterpaytouch_US\")`, creates an `InstantPaymentComponent`, and delegates to the session in Sessions flow or to `self` in Advanced flow before `initiatePayment()`. The earlier v4.x.x snippet uses `AfterpayPaymentMethod` and `AfterpayComponent`. The page says there are no additional method-specific Component configuration steps. The return/redirect must be handled by the selected base integration; presenting a Component does not establish payment finality.\n- Capture may be automatic or manual according to merchant account configuration. A shipment-based delay requires capture-delay setup or manual capture; partial capture requires manual capture. The stated capture deadline is **13 days after authorization**; otherwise Cash App Afterpay cancels and refunds the first installment charged at authorization. **Test authorizations expire in one day**, so manual test capture must occur within one day. A manual capture request specifies `amount.value`; `lineItems` is optional. One partial capture automatically cancels the unclaimed amount unless the account is enabled for multiple partial captures. Multiple partial captures require Support setup and create a separate invoice per capture.\n- Uncaptured payments can be cancelled; captured ones require refund to return funds. Full/partial refund specifies `amount.value`, with optional `lineItems`. For discounts, the page instructs adding a negative line amount. Its example can be read as USD 1 off each of two Item #2 units (400 + 2\u00d7300 \u2212 2\u00d7100 = 800 minor units), matching the stated total; the snippet also contains ellipsis and a missing comma before the discount object, so it is not ready-to-send JSON.\n- Testing uses a US Afterpay sandbox shopper account and test card; live acceptance requires a Cash App Afterpay request in the live Customer Area. The related method overview limits this regional product to US/USD and describes a four-installment redirect path; it does not make this child guide applicable to AU/NZ Afterpay or UK Clearpay.\n\n## Detail locators\n\n- Raw `# Afterpay Redirect Component`, lines 15\u201345: identity, integration prerequisites and Sessions default. Raw `## API reference`, lines 47\u201356 and 740\u2013753: required/optional fields and shopper-reference minimum; raw request examples lines 64\u201380, 762\u2013779 show empty values and `afterpaytouch_US`.\n- Raw `## Component configuration`, lines 1210\u20131265: v5+ Sessions/Advanced delegates, v4 Component and no added configuration.\n- Raw `## Capture the payment`, lines 1267\u20131286: merchant capture configuration, 13-day and one-day test windows, partial-capture balance and Support gate. Raw `## Refunds and cancellations`, lines 1288\u20131297: cancel/refund and optional item data.\n- Raw `## Discounts`, lines 1299\u20131333: negative line, example interpretation and syntax warning. Raw `## Test and go live`, lines 1335\u20131353: sandbox and live setup.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-cash-app-afterpay]] \u2014 US/USD product overview and regional naming\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15|Cash App Afterpay iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Cash App Afterpay to your existing iOS Components integration.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md:19"
+    },
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Components) or later.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md:45"
+    },
+    {
+      "text": "Cash App Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md:1271"
+    },
+    {
+      "text": "For testing purposes, Cash App Afterpay authorisations expire in one day. When you use manual capture, you need to capture test Cash App Afterpay payments within one day after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md:1275"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md:1284"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cash-app-afterpay-ios-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-afterpay-ios-component]] \u2014 2026-09-15-captured US Cash App Afterpay iOS Components guide covering Sessions/Advanced requests, versioned Component setup, capture windows, refunds and discounts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md",
+  "raw_sha256": "00c357241897f2a6cf6e521f9adba8cdb204a42cfc2c990385486579547eb39c",
+  "status": "candidate_ready"
+}

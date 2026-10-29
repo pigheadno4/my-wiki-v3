@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-atome-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Atome React Native Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, atome, react-native, drop-in, redirect, refunds]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Atome to an existing **React Native Drop-in** integration using Sessions or Advanced server-side flow. It covers request additions, redirect prerequisites, partial refunds and sandbox/live routes. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-atome|the Atome overview]] for broader context. Its TEST examples do not prove current account availability or completed payment.\n\n## Key takeaways\n\n- Sessions requires an existing React Native Drop-in Sessions integration, **Checkout API v68 or later**, redirect handling and Atome added in Customer Area (raw lines 25\u201336). Its Integration type label says Sessions but its URL targets the **Advanced** flow (line 33); follow the label and the correctly scoped Sessions links on the page. Advanced requires an existing React Native Drop-in Advanced integration, redirect handling and the same Customer Area setup (lines 768\u2013778).\n- Both tables mark shopper full name, email, telephone, billing address, `lineItems` and `countryCode` required; `deliveryAddress` is optional when it matches billing (Sessions lines 40\u201352; Advanced lines 788\u2013801). The supported country/currency pairs specified here are **MY/MYR** and **SG/SGD**. Advanced additionally requires `paymentMethod.type: atome` (line 794). The SG/SGD TEST samples use v71 `/sessions` and v72 `/payments`, not a general SDK or payment-success guarantee (lines 54\u2013115, 803\u2013873).\n- No additional Atome Drop-in configuration parameters are needed in either section (lines 732\u2013736, 780\u2013784). The Advanced example headed \u201csuccessful payment\u201d is `RedirectShopper` with `action.type: redirect` (lines 1518\u20131530), a shopper handoff rather than final authorisation or settlement.\n- The Sessions curl repeats `countryCode: SG` (lines 72, 78), and both curl snippets omit shell continuation between `-X POST` and `-d` (lines 63\u201364, 812\u2013813). The Sessions example uses the app-scheme `adyencheckout://your.package.name` return URL (line 70), while Advanced uses HTTPS (line 822); the page does not reconcile the difference. Use the selected base flow for return handling.\n- Both sections route partial refunds to `/payments/{paymentPspReference}/refunds` with an `amount` (lines 738\u2013746, 1532\u20131540). Testing requires an Atome sandbox shopper account requested through an Adyen contact and a separate account per tested country/region; the page lists MY/SG test apps and test Customer Area status checks (lines 748\u2013764, 1542\u20131558). For live acceptance, contact Support to add Atome to live Customer Area (lines 766, 1560). This page gives no Atome-specific capture or final-result procedure.\n\n## Detail locators\n\n- Scope and Sessions requirements/fields: raw lines 15\u201352; misrouted Sessions prerequisite at 33.\n- Sessions v71 SG/SGD TEST example: lines 54\u2013731; duplicate country code at 72/78 and curl continuation at 63\u201364.\n- Sessions configuration, partial refunds and test/live: lines 732\u2013766.\n- Advanced requirements, configuration and `/payments` fields: lines 768\u2013801.\n- Advanced v72 SG/SGD TEST request: lines 803\u20131516; curl continuation at 812\u2013813 and HTTPS return URL at 822.\n- Advanced redirect response, partial refunds and test/live: lines 1518\u20131560.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment integration concept.\n- [[source-adyen-docs-payment-methods-atome]] \u2014 Atome method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15|2026-09-15 Atome React Native Drop-in guide]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Atome.",
+      "location": "raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "Make sure that you use a supported combination of country/region and currency: **MY** with **MYR**, and **SG** with **SGD**.",
+      "location": "raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md:52"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Atome.",
+      "location": "raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md:736"
+    },
+    {
+      "text": "To accept live Atome payments, you must contact our [Support Team]",
+      "location": "raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md:1560"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c46-atome-react-native-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-react-native-drop-in]] \u2014 2026-09-15 Atome React Native Drop-in Sessions/Advanced redirect add-on for MY/MYR or SG/SGD requests, partial refunds and test/live setup; source flags link and example caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions Integration type label links to Advanced rather than Sessions (raw line 33). The Advanced response headed \u201csuccessful payment\u201d is only `RedirectShopper`/redirect (lines 1518\u20131530). Sessions repeats `countryCode` (lines 72, 78), both curls omit continuation before `-d` (lines 63\u201364, 812\u2013813), and the return-URL styles differ (lines 70, 822)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "6911090635b31f73a818b22fce3c73b4d43f31cd7dbbb82bbeb0f43cc43e552e",
+  "status": "candidate_ready"
+}

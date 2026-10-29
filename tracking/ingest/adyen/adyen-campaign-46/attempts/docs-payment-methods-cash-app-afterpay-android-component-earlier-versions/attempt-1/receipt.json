@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cash-app-afterpay-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cash App Afterpay Android Redirect Component v4.x.x\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-afterpay/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-afterpay/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, cash-app-afterpay, android, redirect-component, earlier-versions, capture]\n---\n\n## Overview\n\nThis 2026-09-15 capture is titled Cash App Afterpay Redirect Component **v4.x.x**. It describes adding the method to an existing Advanced Android Components integration, with US/USD discovery, server-side payment request, Redirect Component return, outcome handling, capture/refund limits and test/live setup. Its historical version label and examples do not establish current SDK behavior, merchant entitlement or executed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The requirements call for an existing **Advanced flow Android Components** integration and Cash App Afterpay added in Customer Area. For `/paymentMethods`, the page pairs US with USD and says the response type is `afterpaytouch_US`. The form should collect full name, email, billing and delivery addresses for risk checks and purchased-item data for the payment request (pinned raw lines 15\u201356).\n- From the server, `/payments` uses `paymentMethod.type=afterpaytouch_US`, shopper details, lineItems and a return URL. The page says to obtain that URL from `RedirectComponent.getReturnUrl(context)`, although its prose spells the request field `returnURL` while examples use `returnUrl` (lines 57\u2013135). The response's redirect `action` is passed to the Android client to initialize Redirect Component (lines 532\u2013548).\n- When the shopper returns, the server POSTs `/payments/details` with `actionComponentData.details`; `resultCode` is used to present the outcome and `pspReference` identifies the transaction. `Pending` or `Received` may take minutes or hours and requires the AUTHORISATION webhook for finality. If the shopper does not return, wait for AUTHORISATION success true/false webhooks (lines 550\u2013603).\n- Capture is automatic or manual according to merchant account configuration. Delaying capture needs a capture delay or manual capture; partial capture needs manual capture. Capture must occur within **13 days** of authorisation or Cash App Afterpay cancels and refunds the first installment charged at authorisation. Test authorisations expire in **one day**. A first partial capture normally cancels the unclaimed balance, except when multiple partial captures are enabled through Support; each multiple partial capture creates a new invoice (lines 605\u2013624).\n- An uncaptured payment can be cancelled; after capture, returning funds requires a refund. Capture and refund requests take full/partial `amount.value` and optional lineItems. The negative line-item discount example calls itself \u201c1 USD\u201d on Item #2 but quantity 2 at -100 minor units implies one USD per unit and two USD total, consistent with total 800 from 1000; its ellipsis and missing comma make it illustrative, not valid JSON (lines 626\u2013671).\n- Testing uses a US Afterpay sandbox shopper account and test card. The page says to request Cash App Afterpay in the live Customer Area before live acceptance (lines 673\u2013691).\n\n> [!warning] Flow links and field spelling\n> The requirements specify Advanced Android Components, but the Redirect Component links in the introduction, redirect section and See also point to Sessions-flow guidance (raw lines 19, 32, 552, 695). The prose calls the payment field `returnURL`; the example JSON uses `returnUrl` (lines 75, 99). Verify the correct Advanced flow redirect setup and request schema before implementing this older guide.\n\n## Detail locators\n\n- Identity, requirements and US/USD method discovery: pinned raw lines 15\u201356.\n- Server payment request and language examples: lines 57\u2013528; redirect action, return/details and result webhooks: lines 529\u2013603.\n- Capture window, partial-capture exception and cancellation/refunds: lines 605\u2013636.\n- Discount illustration and sandbox/live setup: lines 637\u2013697.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-cash-app-afterpay]] \u2014 method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-afterpay/android-component/earlier-versions/2026-09-15|Cash App Afterpay Android Redirect Component v4.x.x guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Cash App Afterpay Redirect Component v4.x.x integration",
+      "location": "pinned raw line 15"
+    },
+    {
+      "text": "Make sure that you have built an Advanced flow",
+      "location": "pinned raw line 32"
+    },
+    {
+      "text": "The response contains `paymentMethod.type`: **afterpaytouch\\_US**.",
+      "location": "pinned raw line 45"
+    },
+    {
+      "text": "`details`: The `actionComponentData.details` object from the Redirect Component.",
+      "location": "pinned raw line 556"
+    },
+    {
+      "text": "Cash App Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "pinned raw line 609"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c46-cash-app-afterpay-android-component-earlier-versions-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-afterpay-android-component-earlier-versions]] \u2014 2026-09-15-captured v4.x.x Android Redirect Component Advanced-flow guide for US/USD Cash App Afterpay, redirect/details/webhook results and 13-day capture; source links point to Sessions flow.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced-flow requirement conflicts with Sessions-flow Redirect Component links in the same page; returnURL prose spelling differs from returnUrl example field."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-afterpay/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "b818cf74b0a9d9749944c2afa3cad2a0d5a623990ed8b144ed4040f062edf271",
+  "status": "candidate_ready"
+}

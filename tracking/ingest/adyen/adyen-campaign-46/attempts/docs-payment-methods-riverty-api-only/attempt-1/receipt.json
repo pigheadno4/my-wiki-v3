@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-riverty-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Riverty API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/riverty/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/riverty/api-only/2026-09-15.md\"\ntags: [adyen, riverty, api-only, redirect, capture, refunds, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds Riverty to an existing Advanced-flow API-only integration. It covers merchant-built form data, method discovery, redirect and details handling, manual capture after shipment, partial-capture balance handling, refunds, risk data and go-live checkout consent. It is a method-specific route under [[adyen-online-payments]], not evidence of a merchant's current enablement or a completed payment.\n\n## Key takeaways\n\n- **Setup, pricing and form:** The page requires an existing API-only integration with redirect handling and Riverty added in Customer Area. Activation defaults to standard pricing; it advises contacting an account manager before activation to check Enterprise-pricing eligibility. The form collects identity, contact, birth-date and billing/delivery data; IBAN is optional in the generic form list but required for the Secure Direct Debit type (raw lines 23\u201378, 123\u2013141).\n- **Discovery and product identity:** For `/paymentMethods`, the guide lists country codes AT, BE, DE, NL and CH and currencies EUR or CHF; the NL/EUR example response has `type: riverty`. The `/payments` table distinguishes `riverty` Pay in 14, `riverty_account` Monthly Consolidated Invoice, `sepadirectdebit_riverty` Secure Direct Debit, and `riverty_installments` fixed 3/6/12/24-month installments, with required subtype `redirect`. The table's values are method-discovery inputs, not a promise that every product is available in every country/currency or to every shopper (raw lines 80\u2013141).\n- **Payment data and risk:** The `/payments` table marks billing address, shopper first/last name, email, line items and type/subtype required. Phone, birth date, shopper IP and `deviceFingerprint` are unmarked; IBAN is conditionally required for Secure Direct Debit. B2B is stated unsupported. Only send a delivery address if address or recipient differs; when sent, delivery first and last name are required even if matching the shopper, and a first-time shopper may face risk rejection if delivery differs from billing. Each line item requires quantity, description and ID; DACH VAT must not be null for the described reclaim process. Profile tracking is recommended for AT, DE and CH, requires a `profileTrackingShopId` from Riverty support, and sends an encrypted ID; its prose says `deviceFingerprint` and the table says `paymentMethod.deviceFingerprint`, while the sample places it top-level. That placement conflict needs version-specific verification before implementation (raw lines 47\u201361, 123\u2013141, 145\u2013160).\n- **Redirect and capture:** After `/payments`, the response example has `RedirectShopper` and a redirect action for Riverty-hosted profile tracking or additional risk checks; then the base flow handles redirect and additional details to obtain status. All Riverty payments must be **manually captured after goods are sent**, even where other methods auto-capture. Capture triggers the shopper invoice and payment schedule. Without capture within 30 days, the authorization expires unless Support arranges a longer period (raw lines 220\u2013245).\n- **Partial captures, cancellation and refunds:** A partial capture supplies amount and matching item lines; if the item sum differs, Adyen adds a dummy line item. Unclaimed authorization after partial capture should be manually cancelled; the page says an empty cancel request after a partial capture releases the remainder. Multiple partial captures require Support setup and generate separate invoices. Uncaptured payments can be cancelled; captured payments are refunded. Partial refund amount and item lines should match or a dummy line is added. `capturePspReference` identifies which capture to refund; omitting it selects the last capture, possibly the wrong one (raw lines 247\u2013258, 321\u2013330, 553\u2013565).\n- **Go-live and example caveats:** Riverty requires Terms & Conditions and data-protection guidelines for shopper approval before payment. The capture curl example has a malformed `https: //` URL; the shown discovery, payment, capture, cancel and refund curl snippets also place `-X POST` on a line without continuation before `-d`, so do not copy them verbatim. The example response `status: received` is request receipt, not a proven settled outcome (raw lines 89\u2013106, 143\u2013150, 264\u2013272, 333\u2013345, 571\u2013579, 997\u20131003).\n\n## Detail locators\n\n- Requirements, profile tracking and form fields: pinned raw lines 15\u201378.\n- Method discovery, payment fields and redirect: pinned raw lines 80\u2013239.\n- Capture, partial capture, remainder cancellation and examples: pinned raw lines 241\u2013552.\n- Refund/cancellation distinctions, examples and go-live: pinned raw lines 553\u20131007.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-riverty]] \u2014 captured Riverty product overview; use this page for API-only lifecycle details.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15|Riverty API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Activating Riverty defaults the pricing to our standard pricing.",
+      "location": "raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15.md:31"
+    },
+    {
+      "text": "For payments in the following countries, we recommend that you use it to improve acceptance.",
+      "location": "raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15.md:49"
+    },
+    {
+      "text": "All Riverty payments must be manually captured, even if you have enabled automatic capture for other payment methods.",
+      "location": "raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15.md:243"
+    },
+    {
+      "text": "If you do not manually capture the payment within 30 days, the authorization will expire.",
+      "location": "raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15.md:245"
+    },
+    {
+      "text": "If not specified, the last capture will be chosen automatically, whether that was the intended capture to be refunded or not.",
+      "location": "raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15.md:563"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "riverty-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-riverty-api-only]] \u2014 2026-09-15-captured Riverty Advanced API-only guide for redirect, method-specific risk data, mandatory manual capture and invoice timing, partial modifications, and checkout consent.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/riverty/api-only/2026-09-15.md",
+  "raw_sha256": "7ab827097721742dadd9c494a169e698c9caf66ae11ceccab5a8ef528fd20a4b",
+  "status": "candidate_ready"
+}

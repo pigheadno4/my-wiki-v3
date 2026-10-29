@@ -1,0 +1,51 @@
+{
+  "job_id": "docs-payment-methods-zip-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Zip Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/zip/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/zip/web-component/2026-09-15.md\"\ntags: [adyen, zip, web, components, redirect, recurring]\n---\n\n## Overview\n\nThis captured Adyen guide explains adding Zip to an existing Web Components integration, with separate Sessions and Advanced server-flow tabs, a redirect Component, and a recurring-token route. The guide's page metadata says last modified 2019-09-06; its examples and version references are retained as captured evidence, not proof of current account eligibility or live payment success. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Build the matching Sessions or Advanced Web Components flow and add Zip in Customer Area. The `/sessions` tab is described as the default with Components v5.0.0 or later; `/payments` is presented for an additional use case. The API reference tables list shopper name, email, date of birth, telephone, billing/delivery addresses and `lineItems`, but leave their **Required** column blank; do not infer that every listed field is required from these tables. Optional `lineItems.imageURL` appears on Zip's product page, limited to 500 characters. The `/payments` tab also describes `paymentMethod.clickAndCollect=true` when the shopper picks up an order.\n- The request examples use `paymentMethod.type=zip`, `AU`/`AUD` and a `returnUrl`. These are example values; the separate Zip overview lists AU and US with AUD and USD without explicitly pairing all countries and currencies. In the Advanced path, the `/payments` response's `action` provides redirect information, with a `RedirectShopper` example. Redirecting or returning is not itself payment finality.\n- For Web Components v6.0.0 or later, the page shows `new Redirect(checkout, { type: 'zip' }).mount(...)`; for v5.x.x or earlier, `checkout.create('zip').mount(...)`. The mounted Component is the client display step, separate from the server API request.\n- The page states Zip supports recurring transactions. To create a token, send `storePaymentMethod=true` and a unique `shopperReference` in a `/payments` request; **after settlement**, a `recurring.token.created` lifecycle webhook carries `storedPaymentMethodId`. The server must receive that webhook. Future token payments use that ID, the same shopper reference, `shopperInteraction=ContAuth`, and `recurringProcessingModel=Subscription` or `UnscheduledCardOnFile`. A redirect response or an initial authorization alone does not establish token creation.\n- The `/payments` curl example includes literal `{hint:...}` markup in the JSON at line 724; it should not be treated as a ready-to-send request. Other SDK snippets are examples, not verified executions. Test guidance points to Zip test accounts and Customer Area payment status; live use requires a Zip request in the live Customer Area.\n\n## Detail locators\n\n- Raw `# Zip Component`, lines 15\u201345: identity, flow prerequisites, and Sessions version/default.\n- Raw `## API reference`, lines 43\u201355 and 692\u2013705: endpoint-specific field lists, blank requiredness cells, image URL limit and click-and-collect condition. Raw `/sessions` curl lines 61\u2013112 and `/payments` curl lines 709\u2013765: AU/AUD example request details and literal hint markup.\n- Raw lines 1386\u20131399 and `## Component configuration` lines 1402\u20131432: redirect action and v6 versus v5 Component construction.\n- Raw `## Recurring payments`, lines 1434\u20131467: token creation, after-settlement webhook, future-payment fields and models. Raw `## Test and go live`, lines 1667\u20131673: test and live boundaries.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-zip]] \u2014 method overview and regional capability context\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/zip/web-component/2026-09-15|Zip Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Zip to your existing Web Components integration.",
+      "location": "raw/adyen/docs/payment-methods/zip/web-component/2026-09-15.md:19"
+    },
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components) or later.",
+      "location": "raw/adyen/docs/payment-methods/zip/web-component/2026-09-15.md:45"
+    },
+    {
+      "text": "In the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response, check the `action` object for the information that you must use to redirect the shopper.",
+      "location": "raw/adyen/docs/payment-methods/zip/web-component/2026-09-15.md:1386"
+    },
+    {
+      "text": "We support recurring transactions for Zip. To make recurring payments, you need to:",
+      "location": "raw/adyen/docs/payment-methods/zip/web-component/2026-09-15.md:1436"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/zip/web-component/2026-09-15.md:1448"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "zip-web-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-zip-web-component]] \u2014 2026-09-15-captured Zip Web Components guide for Sessions/Advanced API routes, redirect Component, and after-settlement recurring-token flow.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/zip/web-component/2026-09-15.md",
+  "raw_sha256": "dfb2a0eca8adf96f1d870e98d300442403ac0536eb40c2cc63e9d96619b28b62",
+  "status": "candidate_ready"
+}

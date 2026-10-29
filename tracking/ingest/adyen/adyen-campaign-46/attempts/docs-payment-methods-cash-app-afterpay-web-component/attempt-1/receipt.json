@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-cash-app-afterpay-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cash App Afterpay Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-afterpay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-afterpay/web-component/2026-09-15.md\"\ntags: [adyen, cash-app-afterpay, web, components, capture, refunds, discounts]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and marked last modified 2026-09-15, adds **Cash App Afterpay** to an existing **Web Components** integration. It covers Sessions and Advanced request paths, versioned Component mounting, capture and refund lifecycle, discounts, and test/live setup. See [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-cash-app-afterpay|method overview]]. The captured page does not prove live account enablement or a completed payment.\n\n## Key takeaways\n\n- **Integration and fields:** Start with an existing Sessions or Advanced Web Components integration and add Cash App Afterpay in Customer Area. The guide says to collect shopper details for risk checks, provide purchased-item information and use a supported country/currency combination. `/sessions` is default with Components v5.0.0+; `/payments` is shown for an additional use case. Both tables mark shopper full name, email, `shopperReference` of at least three characters, country code, billing and delivery addresses, and line items required; telephone number is optional. The TEST examples use US/USD; the Advanced example uses `paymentMethod.type: afterpaytouch_US`. Treat the examples as region-specific, not a global method list.\n- **Component versions:** Mount the Web Component on a checkout DOM element. For Adyen Web v6.0.0+, the example uses `new Afterpay(checkout).mount('#afterpaytouch_US-container')`; for v5.x.x or earlier it uses `checkout.create('afterpaytouch_US').mount(...)`. The request examples and mounting code span different versions and should be matched to the actual SDK/API.\n- **Capture and expiry:** Merchant configuration determines whether payments capture automatically after authorization or are manually captured. To capture after shipment, arrange capture delay or manual capture; **partial capture requires manual capture**. Cash App Afterpay must be captured within **13 days** of authorization. The shopper is charged the first installment during authorization; if uncaptured by day 13, Cash App Afterpay cancels the payment and refunds that installment. TEST authorizations expire after **one day**, so manual test captures must occur within one day.\n- **Partial capture and refund:** Manual capture specifies full or partial `amount.value`; `lineItems` are optional. Ordinarily, unclaimed amount after partial capture cancels automatically. On accounts enabled for **multiple partial captures**, the remainder stays available; Support must enable this, and every partial capture creates a new invoice. Cancel before capture; refund after capture. Full or partial refund uses `amount.value`, with optional line items.\n- **Discount and sample warnings:** The guide describes a negative line item for discounts. Its example has quantity 2 for item #2 and a -100 amount for each of two discount units, yielding the shown 800 total under a per-unit interpretation, but the displayed JSON has an ellipsis and is missing a comma between item objects; use it as an illustration, not copy-ready JSON. The TEST shopper-account procedure uses the Afterpay sandbox and test cards; live acceptance requires a separate Cash App Afterpay request in **live** Customer Area. The separate overview supplies regional naming and method-level capability limits.\n\n## Detail locators\n\n- Purpose, prerequisites and risk-check/country instructions: pinned raw lines 15\u201343. Sessions v5+ and required/optional table: lines 45\u201362; TEST v69 US/USD examples: lines 64\u2013744.\n- Advanced `/payments` field table and TEST v72 `afterpaytouch_US` examples: lines 746\u20131214. Web v6/v5 mounting: lines 1216\u20131246.\n- Capture configuration, 13-day and one-day TEST expiry, partial capture/remainder: lines 1248\u20131267. Cancel/refund: lines 1269\u20131278. Discount description and malformed example: lines 1280\u20131314. Sandbox and live setup: lines 1316\u20131334.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-cash-app-afterpay]] \u2014 method overview and regional naming\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-afterpay/web-component/2026-09-15|Cash App Afterpay Web Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Collect shopper details, and specify these in your payment request. Cash App Afterpay uses these for risk checks.",
+      "location": "Requirements > additional steps, line 41"
+    },
+    {
+      "text": "Depending on your merchant account configuration, Cash App Afterpay payments are captured automatically after authorisation, or manually captured.",
+      "location": "Capture the payment, line 1250"
+    },
+    {
+      "text": "Cash App Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "Capture the payment, line 1252"
+    },
+    {
+      "text": "For testing purposes, Cash App Afterpay authorisations expire in one day.",
+      "location": "Capture the payment, line 1256"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "Full or partial manual captures, line 1265"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "cash-app-afterpay-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-afterpay-web-component]] \u2014 2026-09-15 US/USD Web Components Sessions/Advanced add-on with v6/v5 mounting, capture expiry, partial-capture remainder behavior, refund and discount examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The discount sample is illustrative but has ellipsis and a missing comma; the 800 total is consistent with two -100 discount units.",
+          "Partial-capture remainder behavior differs when multiple partial captures are enabled."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-afterpay/web-component/2026-09-15.md",
+  "raw_sha256": "faa400cab9a08b9dbaff946e0fbee86a2acedb2d190bebc5341a1ac8d204babb",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-ratepay-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Ratepay API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ratepay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md\"\ntags: [adyen, ratepay, api-only, open-invoice, direct-debit]\n---\n\n## Overview\n\nAdyen's Ratepay API-only guide describes adding Ratepay to an existing API-only integration, where the merchant builds the payment form and calls the APIs from its server. It covers Open Invoice and Direct Debit requests, risk fingerprinting, result presentation, and payment modifications. This captured guide is not evidence of current account enablement, a valid complete implementation, or live payment success. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- Build an API-only integration and add the method in the **test** Customer Area. If using `/paymentMethods` to show available methods, the guide lists AT/EUR, DE/EUR, NL/EUR, and CH/CHF. Its types are `ratepay` (Open Invoice) and `ratepay_directdebit` (Direct Debit); Direct Debit is unavailable in Switzerland. The API-only page does not state the Web Drop-in page's version qualifiers.\n- Collect shopper first/last name, date of birth, telephone, email, billing address and a delivery address if different from billing. Implement Ratepay device fingerprinting for risk evaluation. The server `/payments` tables require those details, `deviceFingerprint` and `lineItems` for both types; Direct Debit additionally requires bank country code, IBAN and owner name.\n- **Source example conflict:** the Direct Debit parameter table says `paymentMethod.type=ratepay_directdebit`, but the Direct Debit curl and repeated SDK examples show `ratepay`. The examples do not establish a corrected Direct Debit payload or successful execution.\n- The response section describes `additionalData.openinvoicedata.descriptor` as invoice payment purpose for bank-transfer matching, plus `resultCode`, `pspReference` and `merchantReference`. The guide lists Authorised, Cancelled and Refused outcomes. Authorised means the payment is authorized; it does not establish capture.\n- **Capture scope tension:** the introduction says a Ratepay payment needs capture after goods are sent to trigger an invoice, while the detailed capture section explicitly says it applies **only to Ratepay Open Invoice**. That section requires manual capture after shipment, even if other methods use automatic capture. For Open Invoice partial capture, send `modificationAmount` and `additionalData.openinvoicedata` item data; cancel any unclaimed balance manually. Multiple partial captures require Support setup and create a separate invoice per capture.\n- Uncaptured Ratepay payments can be cancelled; captured ones need refund to return funds. Partial refund specifies `modificationAmount`, capture `acquirerReference` when multiple partial captures exist, and `additionalData.openinvoicedata` item information only for Open Invoice. Live acceptance requires a request in the live Customer Area and Ratepay live credentials.\n\n## Detail locators\n\n- Raw `# Ratepay for API only`, lines 15\u201332: identity, setup, introduction's capture language, and fingerprint preparation.\n- Raw `## Build your payment form for Ratepay` and `## Collect shopper details`, lines 34\u201365: country/currency, method types, Switzerland exclusion and shopper details.\n- Raw `## Calculate the device fingerprint` and `## Make a payment`, lines 67\u201388 and 745\u2013785: server request, required fields, Direct Debit bank data, and method-type example conflict. Many following SDK snippets are illustrative, not verified recipes.\n- Raw lines 1438\u20131474: response, results, and Open Invoice capture scope. Raw `### Partial captures` and `## Refunds and cancellations`, lines 1476\u20131573: partial modifications and Support gate. The JSON partial-capture example has a trailing comma at line 1520.\n- Raw `## Test and go live`, lines 1576\u20131582: live setup and test status.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15|Ratepay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Accept Ratepay payments using our APIs, and build your own payment form to have full control over the look and feel of your checkout page.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md:19"
+    },
+    {
+      "text": "* `paymentMethod.type`: **ratepay** (Ratepay Open invoice) and **ratepay\\_directdebit** (Ratepay Direct debit). Note that Ratepay Direct debit is not available in Switzerland.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md:47"
+    },
+    {
+      "text": "Before making a payment you need to implement [Ratepay's device fingerprinting](https://docs.ratepay.com/docs/developer/device_fingerprinting/device_fingerprinting/). Send the calculated device fingerprint when making a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) request.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md:69"
+    },
+    {
+      "text": "This section only applies to Ratepay Open invoice.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md:1472"
+    },
+    {
+      "text": "To set up multiple partial captures, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).\u00a0Multiple partial captures will create\u00a0a new invoice for each capture.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md:1528"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ratepay-api-only-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ratepay-api-only]] \u2014 2026-09-15-captured Ratepay API-only Open Invoice and Direct Debit integration guide covering form/request fields, fingerprinting, results and modification routes.\n",
+        "quote_indexes": [
+          0,
+          1,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ratepay/api-only/2026-09-15.md",
+  "raw_sha256": "21db6f77727679855cbd6e16ec8d5447467b6ff2f2bedb46d65ad5d0034e5165",
+  "status": "candidate_ready"
+}

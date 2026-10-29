@@ -1,0 +1,11 @@
+# Adyen C46 coordinator exemplar audit
+
+**PASS** — 2026-10-29. Coordinator independently read all three immutable manifest samples end-to-end, then compared each promoted source and its Q1/Q2 retrieval answers against the complete raw. No material partial or failure in final audited entries; no campaign-wide expansion triggered. Raw unchanged.
+
+| Fixed sample | Full raw read | Final source and retrieval assessment |
+| --- | --- | --- |
+| docs-payment-methods-cash-app-afterpay | All 69 lines | PASS. US/USD and US merchant scope, four installments, conditional risk/upfront statement, regional branding, no-recurring matrix, missing refund note, 120/13/30-day chargeback clocks and integration chooser boundary retained. Q1/Q2 preserve historical/account/outcome qualifications. |
+| docs-payment-methods-ratepay-web-component | All 2472 lines in contiguous untruncated ranges | PASS. Open Invoice and Direct Debit remain distinct with country/version gates, Swiss exclusion for Direct Debit, required fingerprint/shopper/item and bank data, conditional delivery address, valid Component submission and response/authorization boundary. Direct Debit request-table/sample type difference and UI-prefill versus server IBAN labels are explicit. Only Open Invoice gets mandatory manual capture after shipment, partial-capture remainder cancellation and Support enablement; refund/reference/live credential conditions retained. Corrected 1012–1014 locator and Q1/Q2 verified. No definite invoice sender chosen from differing raw wording. |
+| docs-payment-methods-zip-web-component | All 1679 lines in contiguous untruncated ranges | PASS. Existing Sessions/Advanced flow and Customer Area setup, v5 Sessions default, blank Required cells, optional image URL limit and pickup flag, redirect vs finality, v6/v5 mounting, settlement-dependent token and required lifecycle webhook receipt, future token fields/models and test/live gate retained. AU/AUD example is not general eligibility; literal hint markup is qualified. Q1/Q2 resolve through exact raw locators. |
+
+The complete pinned raw pages, not worker summaries, were the comparison authority. Initial independent review corrections were resolved before promotion. Exhaustive raw hashes, links, duplicate catalogs and counts remain campaign-close requirements.

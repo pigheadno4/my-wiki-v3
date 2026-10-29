@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-cash-app-afterpay-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Cash App Afterpay iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/cash-app-afterpay/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/cash-app-afterpay/ios-drop-in/2026-09-15.md\"\ntags: [adyen, cash-app-afterpay, ios, drop-in, capture, refunds]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Cash App Afterpay to an existing iOS Drop-in integration. It separates Sessions and Advanced flows, then covers method request fields, capture and refund behavior, discounts, and test/live setup. Its examples are US/USD and the `/payments` example uses method type `afterpaytouch_US`. The page does not establish current merchant eligibility, live operation or payment success. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Both flows require an existing iOS Drop-in integration and Cash App Afterpay added in Customer Area. The API reference calls `/sessions` the default for Drop-in v5.0.0 or later; `/payments` is shown for an additional use case. Both tables mark shopper name, email, unique `shopperReference` of at least three characters, countryCode, billing and delivery addresses, and lineItems required; phone is optional. The `/payments` sample uses `paymentMethod.type=afterpaytouch_US`, US and USD (pinned raw lines 21\u201356, 740\u2013774). The sample's empty shopper reference and name fields need the warning below.\n- The page says there is no Cash App Afterpay-specific Drop-in integration required for v5.0.0+ or v4.x.x (lines 1210\u20131218). That does not remove its base integration and API request requirements.\n- Capture depends on merchant account configuration: automatic after authorisation or manual. A delayed capture needs capture-delay setup or manual capture; a partial capture needs manual capture. Capture must occur within **13 days** of authorisation; otherwise Cash App Afterpay cancels and refunds the first installment charged during authorisation. Test authorisations expire after **one day**, so manual test captures must occur within that day (lines 1220\u20131230).\n- A manual capture request can specify full or partial `amount.value`, with optional lineItems. An initial partial capture normally cancels the unclaimed balance; when the account is enabled for multiple partial captures, that balance is retained and each capture creates a new invoice. Support must enable multiple partial captures. Uncaptured payments can be cancelled; captured payments need refunds, with full/partial `amount.value` and optional lineItems (lines 1231\u20131250).\n- Discounts are expressed as negative amounts in payment line items. The example describes a \u201c1 USD\u201d discount on Item #2 but shows quantity 2 at -100 minor units each, with total amount 800 from a 1000 base. That is consistent with one USD **per unit** (two USD total), though the prose does not say per unit. The sample also contains ellipsis and a missing comma between item objects, so it is illustrative rather than valid JSON (lines 1252\u20131286).\n- Testing requires an Afterpay sandbox shopper account for US, a test card, and the source's documented test setup. The guide says to submit a Cash App Afterpay request in the live Customer Area before accepting live payments (lines 1288\u20131306).\n\n> [!warning] Required fields versus examples\n> Both API tables require a unique `shopperReference` of at least three characters, but the Sessions and Payments examples populate it with an empty string (raw lines 51, 74, 748, 774; repeated across language samples). The tables also call for a shopper's full name while examples use empty first and last names. Do not copy the empty values as compliant request data.\n\n## Detail locators\n\n- Flow requirements and Sessions table/examples: pinned raw lines 15\u2013739.\n- Payments table, `afterpaytouch_US` and language examples: lines 740\u20131209.\n- Drop-in version notes, capture limits and partial capture conditions: lines 1210\u20131239.\n- Cancel/refund, discount sample and test/live setup: lines 1241\u20131312.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-cash-app-afterpay]] \u2014 method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/cash-app-afterpay/ios-drop-in/2026-09-15|Cash App Afterpay iOS Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "This page explains how to add Cash App Afterpay to your existing iOS Drop-in integration.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "Minimum length: three characters.",
+      "location": "pinned raw line 51"
+    },
+    {
+      "text": "Cash App Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "pinned raw line 1224"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "pinned raw line 1237"
+    },
+    {
+      "text": "Multiple partial captures will create a new invoice for each capture.",
+      "location": "pinned raw line 1239"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c46-cash-app-afterpay-ios-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-cash-app-afterpay-ios-drop-in]] \u2014 2026-09-15-captured US/USD Cash App Afterpay iOS Drop-in Sessions/Payments guide with 13-day capture limit, partial-capture balance behavior, refunds and test/live setup; sample shopperReference conflicts with required minimum.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both API tables require shopperReference of at least three characters, but examples use an empty string; name examples are also empty despite full-name table wording. Discount example is illustrative, has invalid JSON syntax, and '1 USD' is ambiguous between per-unit and total."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/cash-app-afterpay/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "de4a4bd67d0e6c1ac668dc530e0301bc6918eced2a48a9d54a5d0d06dc10413b",
+  "status": "candidate_ready"
+}

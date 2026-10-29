@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-atome-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Atome Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/atome/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/atome/web-drop-in/2026-09-15.md\"\ntags: [adyen, atome, web, drop-in, malaysia, singapore, redirect]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and marked last modified 2026-09-15, adds Atome to an existing **Web Drop-in** integration through separate Sessions and Advanced flow instructions. It covers method-specific request fields, redirect handling, partial refunds, and test/live setup; base integration remains in the linked main guides. See [[adyen-online-payments]] and the separate [[source-adyen-docs-payment-methods-atome|Atome overview]] for method-level restrictions. This snapshot does not prove present merchant eligibility or completed payment.\n\n## Key takeaways\n\n- **Prerequisites and regions:** Sessions requires existing Web Drop-in Sessions, Checkout API v68+, redirect handling, and Atome enabled in Customer Area. Advanced requires existing Web Drop-in Advanced, redirect handling, and Customer Area enablement. Both flow tables require shopper full name, email, phone, billing address, line items and `countryCode`; delivery address is optional if it equals billing. Supported pairs stated here are **MY/MYR** and **SG/SGD**. The Advanced request also requires `paymentMethod.type: atome`. These are method request rules in the captured guide, not proof of a live account configuration.\n- **Redirect and examples:** The Sessions TEST `/sessions` sample uses v71, SG/SGD, and `adyencheckout://your.package.name` for `returnUrl`, an app-style scheme in a Web guide. The Advanced TEST `/payments` sample uses v72, SG/SGD, and an HTTPS return URL. Configure the actual Web return path rather than copying the Sessions app-scheme placeholder. The Advanced response contains `resultCode: RedirectShopper` with a redirect action. Although the raw heading calls it an \u201cexample response for a successful payment,\u201d this response shows a redirect step, not completed authorization or capture. Both curl examples lack a shell continuation before `-d`, so are not copy-ready.\n- **Refunds and test setup:** Both flow sections say a partial refund uses the `amount` in `/payments/{paymentPspReference}/refunds`; their cancellation headings give no additional method-specific cancellation rule. Test payments need an Atome sandbox shopper account obtained through the Adyen contact, with a separate test account for each country/region tested. The page links regional QR test apps and says to check payment status in test Customer Area. Live acceptance requires contacting Adyen Support to add Atome in live Customer Area.\n- **Method-level boundary:** The separate captured Atome overview states portable electronics such as phones and laptops are excluded, requiring checkout logic to disable Atome for that category. This integration add-on does not repeat the restriction; use the overview when assessing product eligibility. The overview also says capture is automatic after authorization; this page does not supply a separate capture procedure.\n\n## Detail locators\n\n- Page purpose, Sessions requirements and field table: pinned raw lines 15\u201352. Sessions v71 test example and SDK variants: lines 54\u2013730. Optional tree-shaken import: lines 732\u2013742.\n- Sessions partial-refund note and test/live route: lines 744\u2013774. Advanced prerequisites, optional import and fields: lines 776\u2013815. Advanced v72 sample and SDK variants: lines 817\u20131530.\n- Redirect response with misleading heading: lines 1532\u20131544. Advanced refund, test account and live enablement: lines 1546\u20131576. Compare method-level portable-electronics and capture notes in [[source-adyen-docs-payment-methods-atome]].\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-atome]] \u2014 method overview and product restrictions\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/atome/web-drop-in/2026-09-15|Atome Web Drop-in guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "Sessions flow Drop-in > Requirements > Checkout API, line 34"
+    },
+    {
+      "text": "For Malaysia set to **MY**, for Singapore set to **SG**. Make sure that you use a supported combination of country/region and currency: **MY** with **MYR**, and **SG** with **SGD**.",
+      "location": "Sessions flow Drop-in > /sessions > countryCode, line 52"
+    },
+    {
+      "text": "Optional if `billingAddress` and `deliveryAddress` are the same.",
+      "location": "Sessions flow Drop-in > /sessions > deliveryAddress, line 51"
+    },
+    {
+      "text": "To test Atome payments, you need a test shopper account in the Atome sandbox environment. To request a test account, reach out to your Adyen contact. If you are testing in multiple countries/regions, use a different test account for each location.",
+      "location": "Sessions flow Drop-in > Test and go live, line 758"
+    },
+    {
+      "text": "To accept live Atome payments, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Atome in your live Customer Area.",
+      "location": "Advanced flow Drop-in > Test and go live, line 1576"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "atome-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-atome-web-drop-in]] \u2014 2026-09-15 Atome Web Drop-in Sessions/Advanced add-on for MY/MYR and SG/SGD requests, redirect, partial refunds and test/live setup; source flags misleading redirect-success heading and Web return-URL sample.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions Web example uses an app-style returnUrl; configure a flow-appropriate Web return URL.",
+          "The Advanced 'successful payment' heading precedes resultCode RedirectShopper; redirect is not completed payment.",
+          "The related Atome overview has a portable-electronics product restriction absent from this add-on."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/atome/web-drop-in/2026-09-15.md",
+  "raw_sha256": "7cf54c303d5eb650e727dec5e1e05c1ef70d7b8bc5777d5ecef589650d6a31cd",
+  "status": "candidate_ready"
+}

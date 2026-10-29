@@ -1,0 +1,13 @@
+# Fixed retrieval queries — Cash App Afterpay iOS Component
+
+## Q1 — Identity and scope
+
+**Query:** What regional product and iOS integration does this guide cover, and what does it not prove?
+
+**Expected:** The guide at `https://docs.adyen.com/payment-methods/cash-app-afterpay/ios-component` adds Cash App Afterpay to existing iOS Components Sessions/Advanced integrations; page title says Afterpay Redirect Component, body specifies Cash App Afterpay, Advanced examples use `afterpaytouch_US` and US/USD. It does not establish AU/NZ Afterpay or UK Clearpay behavior, current account entitlement, or a completed live payment. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-cash-app-afterpay-ios-component.md` → `raw/adyen/docs/payment-methods/cash-app-afterpay/ios-component/2026-09-15.md`. Evidence: raw lines 15–19, 43–55, 740–778 and related `wiki/sources/adyen/source-adyen-docs-payment-methods-cash-app-afterpay.md`.
+
+## Q2 — Request, component, capture and warning
+
+**Query:** What do the iOS Component request tables and capture rules require, and which examples must not be copied literally?
+
+**Expected:** `/sessions` default with Components v5+, `/payments` for an additional use case. Both tables require shopper name/email, shopper reference of at least three characters, country, billing/delivery addresses and line items; telephone is optional (raw lines 43–56, 740–753). Yet both sample families contain empty first/last names and empty shopper reference (raw lines 69–75, 769–775), so they do not demonstrate valid required values. Advanced type is `afterpaytouch_US`. v5+ uses `InstantPaymentComponent` with session delegate or `self`; v4 uses `AfterpayComponent` (raw lines 1210–1265). Capture can be automatic or manual by account configuration; partial capture requires manual. Capture within 13 days after authorization, or cancellation/refund of first installment; test authorizations expire in one day (raw lines 1267–1275). Ordinary partial capture cancels unclaimed balance, except multiple-partial-capture-enabled accounts; Support setup is required and each capture creates an invoice (raw lines 1277–1286). Uncaptured cancel, captured refund (raw lines 1288–1297). Discount example is consistent as USD 1 off each of two units, 400+600−200=800 minor units, but its ellipsis/missing comma prevent treating it as executable JSON (raw lines 1299–1333). Live acceptance needs a request in live Customer Area (raw line 1353). Route: root → provider index → `wiki/concepts/adyen-online-payments.md` → source → pinned raw.

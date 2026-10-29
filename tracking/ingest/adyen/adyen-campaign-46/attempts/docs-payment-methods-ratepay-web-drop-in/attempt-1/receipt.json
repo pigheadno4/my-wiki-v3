@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-ratepay-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Ratepay Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ratepay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md\"\ntags: [adyen, ratepay, web, drop-in, open-invoice, direct-debit]\n---\n\n## Overview\n\nAdyen's Ratepay Web Drop-in guide adds Ratepay to an existing Web Drop-in integration. Drop-in renders the method and collects shopper information; the merchant's server sends the payment request. This 2026-09-15-captured guide covers Open Invoice and Direct Debit, their setup and payment fields, result presentation, and later capture, cancellation, and refund steps. It is documentation evidence, not proof that a merchant account is enabled or a payment succeeded. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- The prerequisites are an existing Web Drop-in integration and adding Ratepay in the **test** Customer Area. Web Drop-in v6 imports `AdyenCheckout` and `RatePay`. In `/paymentMethods`, the documented country/currency combinations are AT/EUR, DE/EUR, NL/EUR (v3.22.1 or later), and CH/CHF. The method types are `ratepay` for Open Invoice and `ratepay_directdebit` for Direct Debit (v5.13.0 or later). Direct Debit is unavailable for shoppers in Switzerland.\n- The merchant must collect shopper details and `lineItems`, calculate Ratepay's device fingerprint for risk evaluation, and pass it with the payment request. Drop-in's `onSubmit` provides `state.data` to pass to the server, which calls `/payments`. Both method tables require shopper name, telephone, email, date of birth, billing address, fingerprint and line items; delivery address is required when it differs from billing. Direct Debit additionally requires bank country code, IBAN, and account owner name.\n- **Source example conflict:** the Direct Debit parameter table specifies `paymentMethod.type=ratepay_directdebit`, but its curl example and repeated SDK examples use `ratepay`. Treat those examples as inconsistent with the table; this snapshot does not verify a corrected request.\n- `/payments` returns `resultCode`, `pspReference`, and `merchantReference`; Open Invoice additionally can return `additionalData.openinvoicedata.descriptor`, which the merchant should print on the invoice for bank transfer matching. The guide lists Authorised, Cancelled, and Refused result handling; Authorised is authorization, with capture still due after shipment.\n- **Open Invoice only:** manual capture after goods are sent is required even when automatic capture is enabled for other methods; capture triggers the invoice. A partial capture specifies `modificationAmount` and item data in `additionalData.openinvoicedata`; cancel any unclaimed balance manually. Multiple partial captures require Support setup and create an invoice per capture. An uncaptured Ratepay payment can be cancelled; a captured one needs refund. Partial refund uses `modificationAmount`, `acquirerReference` if multiple captures exist, and Open Invoice item data. Live acceptance requires a request in the live Customer Area and Ratepay live credentials.\n\n## Detail locators\n\n- Raw `# Ratepay Drop-in integration`, lines 15\u201333: purpose, shopper/item/fingerprint/capture sequence, prerequisites.\n- Raw `## Show Ratepay in your payment form`, lines 43\u201361: country/currency and method/version table. `## Optional Drop-in configuration`, lines 63\u2013277: names, icons, and method-specific prefill/display settings.\n- Raw `## Calculate the device fingerprint` and `## Make a payment`, lines 279\u2013304 and 961\u20131004: server transition, Open Invoice/Direct Debit required fields, CH exclusion, and Direct Debit type conflict.\n- Raw lines 2311\u20132347: response fields, result codes, and Open Invoice manual capture. Raw `### Partial captures` and `## Refunds and cancellations`, lines 2349\u20132447: partial capture, multiple-capture support gate, cancellation/refund conditions and item data.\n- Raw `## Test and go live`, lines 2449\u20132455: live setup and test-payment status route. Request bodies and SDK examples throughout the raw are examples, not verified executable recipes.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[adyen]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15|Ratepay Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Our [Web Drop-in](/online-payments/drop-in-web) renders Ratepay in your payment form, and collects the required payment information from the shopper.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "| The Netherlands **v3.22.1 or later** | **NL**        | **EUR**           |",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md:53"
+    },
+    {
+      "text": "Ratepay Direct Debit is not available for shoppers in Switzerland.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md:963"
+    },
+    {
+      "text": "All Ratepay Open invoice payments must be\u00a0[manually captured](/online-payments/capture#manual-capture), even if you have enabled automatic capture for other payment methods.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md:2347"
+    },
+    {
+      "text": "To set up multiple partial captures, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other).\u00a0Multiple partial captures will create\u00a0a new invoice for each capture.",
+      "location": "raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md:2401"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ratepay-web-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ratepay-web-drop-in]] \u2014 2026-09-15-captured Ratepay Web Drop-in Open Invoice and Direct Debit integration guide, including request fields, fingerprinting, result, capture and refund routes.\n",
+        "quote_indexes": [
+          0,
+          2,
+          3
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ratepay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "93683be7c0a9eb89653c1ddc781a9354845944b80b4710b57e05317a673576b2",
+  "status": "candidate_ready"
+}

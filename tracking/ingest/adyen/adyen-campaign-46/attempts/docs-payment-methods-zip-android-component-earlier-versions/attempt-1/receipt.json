@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-zip-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Zip Android Redirect Component earlier versions\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/zip/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, zip, android, components, redirect, recurring, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide is titled **Zip Redirect Component v4.x.x integration** for an existing Android Components integration. It describes Zip method discovery, an AU/AUD redirect payment, return handling, result/webhook interpretation, and a recurring-token route. Its requirements say Advanced flow, while the body also has a `/sessions` tab explicitly described as the default with Components **v5.0.0 or later**. Treat those as version/flow-specific passages, not one uniform v4 recipe. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and method discovery:** The page calls for an existing Advanced Android Components integration and Zip added in Customer Area. For `/paymentMethods`, it specifies `countryCode: AU`, `amount.currency: AUD`, and `amount.value`; it says the response contains `paymentMethod.type: zip`. It also says to collect shopper details for Zip risk checks and purchased-item information (raw lines 19\u201345). Discovery and request examples do not establish current merchant or shopper eligibility.\n- **Mixed version and request scopes:** The title says v4.x.x, but the `/sessions` tab says it is default with Components v5.0.0 or later; `/payments` is presented for an additional use case. The opening payment instruction names a server `/payments` call with `paymentMethod.type: zip` and `returnUrl` obtained from `RedirectComponent.getReturnUrl(context)`. The tabs' shopper-name/email/date-of-birth/phone/address/line-item rows have blank Required cells, so the prose's collection instruction should not be expanded into a claim that every individual field is universally required. `paymentMethod.clickAndCollect: true` is conditional on pickup in the `/payments` tab. Optional line-item `imageURL` has a stated 500-character maximum (raw lines 47\u201370, 707\u2013720). The Advanced curl example contains literal `{hint:...}` markup inside its JSON body, so it is not copy-ready (raw lines 724\u2013740).\n- **Redirect and result finality:** For the `/payments` path, the response example has `RedirectShopper` and a redirect `action`; the server passes that action to the app. After the shopper returns, the guide says the server posts Redirect Component `actionComponentData.details` to `/payments/details`, then uses `resultCode` for shopper presentation. `Pending` and `Received` mean the final result is unknown and require waiting for an `AUTHORISATION` webhook; if the shopper does not return, webhooks still determine outcome. The listed webhook cases include `AUTHORISATION` true/false and `OFFER_CLOSED` true (raw lines 1401\u20131472). An example `Authorised` response is not proof of an actual payment.\n- **Recurring token route:** This page says Zip recurring transactions are supported. It instructs `storePaymentMethod: true` and `shopperReference` on initial `/payments`; after settlement, a `recurring.token.created` webhook supplies `storedPaymentMethodId`. Future `/payments` uses that ID, the same shopper reference, `shopperInteraction: ContAuth`, and `recurringProcessingModel: Subscription` or `UnscheduledCardOnFile`. Receiving a token event is conditional on a settled initial payment and webhook setup, not guaranteed by the request alone (raw lines 1474\u20131507; examples 1509\u20131705).\n- **Test/live gate:** Zip test accounts come from Zip's test-credentials page. The guide points to Adyen Customer Area for test status and says to request Zip in live Customer Area before live acceptance (raw lines 1707\u20131713).\n\n## Detail locators\n\n- Guide identity, requirements and AU/AUD method discovery: pinned raw lines 15\u201345.\n- Payment endpoint/version distinctions and `/sessions` request table/examples: pinned raw lines 47\u2013706.\n- `/payments` table, conditional pickup and examples: pinned raw lines 707\u20131400.\n- Redirect, details, result and webhook paths: pinned raw lines 1401\u20131472.\n- Recurring token creation/reuse and test/live gates: pinned raw lines 1474\u20131719.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[adyen-tokenization]] \u2014 provider tokenization context; use this pinned guide for the Zip-specific historical claims.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15|Zip Redirect Component earlier versions, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "If you have an existing Android Components integration, you can use our Redirect Component to redirect the shopper to the Zip's website where they can complete the payment.",
+      "location": "raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md:19"
+    },
+    {
+      "text": "This is the default with [Components v5.0.0](/online-payments/) or later.",
+      "location": "raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md:60"
+    },
+    {
+      "text": "After the shopper returns to your app, make a POST [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request from your server, providing:",
+      "location": "raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md:1422"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md:1463"
+    },
+    {
+      "text": "When the payment has been settled, you receive a [recurring.token.created](https://docs.adyen.com/api-explorer/Tokenization-webhooks/latest/post/recurring.token.created) [webhook](/development-resources/webhooks) containing:",
+      "location": "raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md:1488"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "zip-android-component-earlier-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-zip-android-component-earlier-versions]] \u2014 2019-modified, 2026-09-15-captured Zip Android Redirect Component guide titled v4.x.x but including a v5+ Sessions tab, AU/AUD discovery, redirect/details/webhook result and conditional recurring-token route.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/zip/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "b496963608209d48547d9ab1c54c43d36837ed7549855e313065a8158518a8cb",
+  "status": "candidate_ready"
+}

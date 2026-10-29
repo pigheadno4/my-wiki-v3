@@ -1,0 +1,9 @@
+# Cash App Afterpay iOS Drop-in retrieval checks
+
+## Q1 — What is this guide's scope, and what cannot be inferred?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-cash-app-afterpay-ios-drop-in]]` → `[[raw/adyen/docs/payment-methods/cash-app-afterpay/ios-drop-in/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-cash-app-afterpay-ios-drop-in`. Full pinned raw path: `raw/adyen/docs/payment-methods/cash-app-afterpay/ios-drop-in/2026-09-15.md`. Raw lines 15–46 identify an iOS Drop-in method add-on for Sessions or Advanced; sample Payments requests use `afterpaytouch_US`, US and USD (lines 740–774). This captured guide does not prove current merchant eligibility, live activation, or an executed payment.
+
+## Q2 — Which request fields, capture limits and example conflicts matter?
+
+Use the same root/provider/concept/source/raw route. Both API tables require name, email, three-character-minimum shopperReference, country, billing/delivery addresses and lineItems, with phone optional (raw lines 47–56, 744–753). The examples use empty shopperReference and name values, conflicting with the tables (lines 74, 774). Capture can be automatic or manual; 13 days is the production limit, with first-installment refund if uncaptured, while test authorisations expire in one day (lines 1220–1230). Normal partial capture cancels unclaimed balance unless multiple partial captures are enabled; each such capture creates an invoice (lines 1231–1239). Cancel before capture, refund after, and use the source's negative line-item discount example with care: quantity 2 at -100 means two USD total under a per-unit reading, while the prose says “1 USD”; the sample is not valid JSON (lines 1241–1286). Sandbox and live prerequisites are at lines 1288–1306.
