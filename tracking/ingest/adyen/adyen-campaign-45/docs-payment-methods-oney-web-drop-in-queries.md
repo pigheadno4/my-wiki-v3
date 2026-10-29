@@ -1,0 +1,9 @@
+# Oney Web Drop-in retrieval checks
+
+## Q1 — What integration does this guide cover, and what cannot be inferred?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-oney-web-drop-in]]` → `[[raw/adyen/docs/payment-methods/oney/web-drop-in/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-oney-web-drop-in`. Full pinned raw path: `raw/adyen/docs/payment-methods/oney/web-drop-in/2026-09-15.md`. Raw lines 15–43 specify an existing Web Drop-in Sessions or Advanced integration, Oney setup in Customer Area and authorization plus successful capture before shipping. The guide and test examples do not establish a merchant's current eligibility or a successful live payment.
+
+## Q2 — Which request, installment, lifecycle and example qualifications matter?
+
+Use the same root/provider/concept/source/raw route. Raw lines 49–70 and 763–784 distinguish default Drop-in v5+ `/sessions` from additional-use-case `/payments`; both tables require shopper/item fields and a line-item total equal to `amount.value`, while `trustFlag` needs Oney enablement. Lines 1255–1265 map 3x/4x/10x/12x to FR/ES and 6x to ES only. Capture after more than six days requires reauthorization; cancel before capture, refund after capture with EUR 1 minimum and 13-month window (1356–1376). Test amounts and live Customer Area request appear at 1378–1456. The Sessions Node v29 JavaScript and TypeScript imports omit `Config` and `EnvironmentEnum` used by both snippets (395–404/684–693); verify version-specific imports/configuration before use, without inferring a corrected SDK signature. Warn about `facilpay_3x` versus `facilypay_3x` (1261/1273/1344), C# `CountryCode = "EUR"` (1010), sample phone versus French mobile-prefix table (59–60/87), and Italy test minimum versus FR/ES installment table (1259–1265/1448–1452).

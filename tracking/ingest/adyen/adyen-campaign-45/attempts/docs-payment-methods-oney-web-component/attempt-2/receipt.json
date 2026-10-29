@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-oney-web-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Oney Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/oney/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/oney/web-component/2026-09-15.md\"\ntags: [adyen, oney, web, components, installments, capture]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] page, fetched 2026-09-15 and marked last modified 2020-07-10, adds Oney to an existing Web Components integration through Sessions or Advanced flow. It covers shopper and order details, installment Components, capture, refund and test/live steps. See [[adyen-online-payments]]. The captured examples and setup instructions do not establish current account eligibility or a successful payment.\n\n## Key takeaways\n\n- Build the selected Web Components Sessions or Advanced base integration and add Oney in Customer Area first. `/sessions` is described as the default with Components v5.0.0 or later; `/payments` is for an additional use case. TEST curl examples use Checkout API v69 for `/sessions` and v72 for `/payments`, with `facilypay_3x`, FR/EUR and a web `returnUrl`; language snippets have their own library versions. These examples are not proof of live enablement.\n- Both endpoint tables mark `lineItems`, shopper email/reference/name, telephone number and billing address required. Oney approves only if `lineItems` total matches `amount.value`; shopper reference has minimum length three, name maximum length 32, and billing postal code five characters. Delivery address, date of birth, locale and country code are unmarked; see the raw tables for country-specific phone and locale descriptions. Optional `oneydata.trustFlag` needs Oney enablement; `oneydata.merchantPays` overrides the configured interest-fee payer.\n- Create a DOM target and Component per supported installment type. The table lists `facilypay_3x` and `4x` for FR/ES, `6x` for ES, and `10x` and `12x` for FR/ES. Shopper fields default to editable; optional visibility can be hidden, readOnly or editable, but hiding fields does not remove the duty to send their information in the payment request.\n- Authorisation alone is insufficient for shipping: wait for successful capture. Capture may be manual or automatic, with or without delay; after more than six days, the authorization expires and payment must be authorised again. Cancel before capture; refund after capture. The page states EUR 1 minimum refund and refunds up to 13 months after capture, with a partial-refund request amount.\n- Test sections give France and Spain scenarios and country/installment minimum amounts; the minimum table also includes Italy, which is absent from the Component installment-country table. The page says to request Oney 3x4x in live Customer Area before accepting live payments. The French `telephoneNumber` in both TEST curl examples (`+33 1 76 35 07 90`, lines 87 and 804) conflicts with the tables' required French mobile prefix `+336` or `+337` followed by eight digits (lines 59\u201360 and 773\u2013774); do not treat the example number as validated Oney input. Its Advanced C# example sets `CountryCode = \"EUR\"`, unlike the table's FR/ES country codes and the other FR examples; do not copy that value as a validated country code.\n\n## Detail locators\n\n- Base flow, Customer Area and shipment prerequisite: pinned raw lines 15\u201343. API field tables and examples: `/sessions` lines 49\u2013762; `/payments` lines 763\u20131253.\n- Installment types and Component visibility: lines 1255\u20131323. Capture, cancellation, refund and limits: lines 1325\u20131345. Test scenarios, amount table and live request: lines 1347\u20131425.\n- Example/table discrepancies: French mobile prefixes versus TEST sample telephone number at lines 59\u201360, 87, 773\u2013774 and 804; Advanced C# `CountryCode = \"EUR\"` lines 1007\u20131012 versus FR/ES `/payments` field table lines 763\u2013785; Italy minimum test amount lines 1413\u20131421 versus Component country table lines 1270\u20131276.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/oney/web-component/2026-09-15|Oney Web Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Add Oney to an existing Components integration.",
+      "location": "Oney Component, line 17"
+    },
+    {
+      "text": "Make sure that the payment is authorised and successfully [captured](#capture) before you ship the goods.",
+      "location": "Oney payment request, line 25"
+    },
+    {
+      "text": "Oney will only approve the payment if the total amount specified in `lineItems` matches the `amount.value`.",
+      "location": "API reference > /sessions > lineItems, line 55"
+    },
+    {
+      "text": "Although you can hide the fields from your payment form, you must still provide this information in your payment request.",
+      "location": "Component configuration > Optional configuration, line 1299"
+    },
+    {
+      "text": "If a payment is captured after more than six days, the payment authorization expires and the payment must be authorised again.",
+      "location": "Capture the payment, line 1331"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "oney-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-oney-web-component]] \u2014 2026-09-15-captured Oney Web Components Sessions/Advanced guide for request data, installment UI, capture/refund limits and test/live setup (page last modified 2020-07-10).",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/oney/web-component/2026-09-15.md",
+  "raw_sha256": "e8f66aebc4083f567062193d3ad206267b6c55a5d0dd24ab359b6f168677965d",
+  "status": "candidate_ready"
+}

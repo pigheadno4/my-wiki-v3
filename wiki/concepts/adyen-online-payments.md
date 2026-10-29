@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-oney-web]] — 2026-09-15-captured Web chooser for Oney Drop-in and Components child guides and general Web routes (page last modified 2020-07-10).
+
+
+- [[source-adyen-docs-payment-methods-clearpay-web]] — 2026-09-15-captured Clearpay Web chooser linking method-specific Drop-in/Components and main Sessions/Advanced integration guides.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-android]] — 2026-09-15 Android chooser linking Clearpay Drop-in/InstantPaymentComponent child guides and Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-alma-web]] — 2026-09-15 Alma Web chooser for Drop-in and Components child guides plus Sessions/Advanced base integrations.
+
+
+- [[source-adyen-docs-payment-methods-alma-android]] — 2026-09-15 Android Alma integration chooser for Drop-in and InstantPaymentComponent, with base Sessions/Advanced routes.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-web]] — 2026-09-15 Afterpay Web chooser linking method-specific Drop-in/Components guides and Sessions/Advanced base routes.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-android]] — 2026-09-15-captured Android Afterpay chooser linking method-specific Drop-in/Components and base Sessions/Advanced guides.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-ios]] — 2026-09-15 iOS chooser linking Clearpay Drop-in/InstantPaymentComponent child guides and Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-alma-api-only]] — 2026-09-15 Alma Web API-only Advanced-flow add-on for FR/EUR discovery, optional installment selection and redirect, with request-example gaps flagged in source.
+
+
+- [[source-adyen-docs-payment-methods-alma-ios]] — 2026-09-15 Alma iOS chooser for Drop-in and InstantPaymentComponent child guides plus Sessions/Advanced base integrations.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-ios]] — 2026-09-15 iOS Afterpay integration chooser for Drop-in and InstantPaymentComponent, with base Sessions/Advanced routes.
+
+
+- [[source-adyen-docs-payment-methods-alma-react-native-component]] — 2026-09-15-captured Alma React Native Components Advanced-only add-on with optional installment choice and redirect/live request; source flags a base-link mismatch and non-copy-ready curl sample.
+
+
+- [[source-adyen-docs-payment-methods-alma-ios-drop-in]] — 2026-09-15 Alma iOS Drop-in Sessions/Advanced add-on for optional request data, 3/4-installment choice, redirect and test/live routes; source flags return-URL and curl-example caveats.
+
+
+- [[source-adyen-docs-payment-methods-alma-android-drop-in]] — 2026-09-15 Android Drop-in Sessions/Advanced Alma add-on for optional fields, installment choice and redirect/test-live routes.
+
+
+- [[source-adyen-docs-payment-methods-alma-flutter-component]] — 2026-09-15 Alma Flutter Components Sessions/Advanced add-on for request fields, optional Advanced installment choice, redirect and test/live routes; source flags prerequisite-link and curl-example defects.
+
+
+- [[source-adyen-docs-payment-methods-alma-ios-component]] — 2026-09-15-captured Alma iOS Components Sessions/Advanced guide for optional shopper fields, InstantPaymentComponent and optional 3/4-installment selection; source flags a mismatched Advanced base-guide link.
+
+
+- [[source-adyen-docs-payment-methods-alma-flutter-drop-in]] — 2026-09-15 Flutter Drop-in Sessions/Advanced Alma add-on for optional fields, installment choice and redirect/test-live routes; source flags flow-link/setup differences.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-react-native-component]] — 2026-09-15 Clearpay React Native Components Advanced-only guide for redirect, capture/refund and test/live paths, with source example and base-link caveats.
+
+
+- [[source-adyen-docs-payment-methods-alma-android-component]] — 2026-09-15 Android Components Sessions/Advanced Alma add-on for optional request fields, InstantPaymentComponent setup and redirect/test-live routes.
+
+
+- [[source-adyen-docs-payment-methods-alma-react-native-drop-in]] — 2026-09-15-captured Alma React Native Drop-in Sessions/Advanced guide for optional request fields, 3/4-installment choice, redirect and live-request gate; source flags a Sessions base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-alma-web-drop-in]] — 2026-09-15 Alma Web Drop-in Sessions/Advanced redirect add-on with optional shopper fields/import and Advanced instalment choice, with example caveats.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-api-only]] — 2026-09-15 Clearpay API-only form, GB/GBP method discovery, redirect and capture/refund/discount guide, with example caveats.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-web-component]] — 2026-09-15 Clearpay Web Components Sessions/Advanced redirect add-on with request fields, capture/refund limits and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-alma-web-component]] — 2026-09-15 Alma Web Components Sessions/Advanced redirect add-on with optional request fields, installment choice and test/live routes; source flags return-URL example mismatch.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-ios-drop-in]] — 2026-09-15 Clearpay iOS Drop-in Sessions/Advanced guide for GB/GBP request fields, redirect, 13-day capture, partial-capture Support gate and refunds; source flags example defects.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-web-drop-in]] — 2026-09-15 Clearpay Web Drop-in Sessions/Advanced add-on for GB/GBP request fields, redirect, 13-day capture and partial-capture/refund paths; source flags example and link defects.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-android-drop-in]] — 2026-09-15-captured Clearpay Android Drop-in Sessions/Advanced add-on for request fields, redirect, capture/partial capture, refund/cancel, discounts and sandbox/live gates.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-flutter-component]] — 2026-09-15 Clearpay Flutter Components Sessions/Advanced add-on for redirect, capture/refund, discount and sandbox/live routes, with example and base-link caveats.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-flutter-drop-in]] — 2026-09-15-captured Clearpay Flutter Drop-in Sessions/Advanced add-on for request/redirect, capture, refund/cancel, discounts and test/live gates; source flags flow-link and example/table mismatches.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-api-only]] — 2026-09-15 Afterpay API-only redirect guide covering discovery pairs, capture/refund and AU/NZ-only recurring/on-file tokenization.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-react-native-drop-in]] — 2026-09-15 Clearpay React Native Drop-in Sessions/Advanced guide for redirect, capture, refund and discount handling, with source example/link qualifications.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-react-native-drop-in]] — 2026-09-15 Afterpay React Native Drop-in Sessions/Advanced add-on for redirect requests and conditional capture, with a Sessions link mismatch in source.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-ios-component]] — 2026-09-15 Clearpay iOS Components Sessions/Advanced add-on for redirect, capture/refund and sandbox/live routes, with example and link caveats.
+
+
+- [[source-adyen-docs-payment-methods-clearpay-android-component]] — 2026-09-15 Clearpay Android Components Sessions/Advanced guide for redirect, capture, refund and discount handling, with example inconsistencies qualified in source.
+
+
+- [[source-adyen-docs-payment-methods-oney-api-only]] — 2023-modified, 2026-09-15-captured Oney FR/ES/IT EUR API-only guide for installment requests, redirect/details, FR pending webhook result and six-day capture/refund limits; source flags example and live-request scope tensions.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-react-native-component]] — 2026-09-15-captured Afterpay React Native Components Advanced-only guide for request/redirect, capture limits and sandbox/live gates; source flags a mismatched base-guide link.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-ios-drop-in]] — 2026-09-15 Afterpay iOS Drop-in Sessions/Advanced add-on for request data, redirect response, conditional capture and test/live routes.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-android-drop-in]] — 2026-09-15-captured Afterpay Android Drop-in Sessions/Advanced add-on for request fields, Advanced redirect, 13-day capture/one-day test deadline, partial-capture remainder and live-request gate.
+
+
+- [[source-adyen-docs-payment-methods-oney-web-drop-in]] — 2026-09-15 Oney Web Drop-in Sessions/Advanced add-on with shopper/item requirements, installment mapping, capture/refund limits and source example conflicts.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-flutter-drop-in]] — 2026-09-15 Afterpay Flutter Drop-in Sessions/Advanced add-on for request fields, redirect, capture deadlines and partial-capture gates; source flags Sessions base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-flutter-component]] — 2026-09-15 Afterpay Flutter Components Sessions/Advanced add-on for redirect requests, capture limits and sandbox/live setup; source flags a mismatched base-guide link.
+
+
+- [[source-adyen-docs-payment-methods-oney-web-component]] — 2026-09-15-captured Oney Web Components Sessions/Advanced guide for request data, installment UI, capture/refund limits and test/live setup (page last modified 2020-07-10).
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-web-drop-in]] — 2026-09-15 Afterpay Web Drop-in Sessions/Advanced redirect add-on, method request data and conditional capture/test/live routes.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-web-component]] — 2026-09-15-captured Afterpay Web Components Sessions/Advanced add-on for required fields, redirect, 13-day capture and one-day test expiry, partial-capture remainder handling and live-request gate.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-android-component]] — 2026-09-15 Afterpay Android Components Sessions/Advanced redirect add-on, method request data and conditional capture/test/live routes.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch-ios-component]] — 2026-09-15 Afterpay iOS Components Sessions/Advanced guide for request fields, redirect setup, capture deadlines and partial-capture conditions; source flags a mismatched Advanced base-guide link.
+
+
+- [[source-adyen-docs-payment-methods-oney]] — 2024-modified, 2026-09-15-captured Oney FR/ES/IT EUR redirect-installment overview with European-entity/risk condition, six-day authorization-expiry wording and Web/API-only/Pay by Link routes.
+
+
+- [[source-adyen-docs-payment-methods-alma]] — 2026-09-15 Alma FR/EUR redirect BNPL overview with installment, risk and capability matrix qualifications plus channel routes.
+
+
+- [[source-adyen-docs-payment-methods-clearpay]] — 2026-09-15 Clearpay GB/GBP buy now, pay later redirect overview, regional naming, feature matrix and chargeback windows.
+
+
+- [[source-adyen-docs-payment-methods-afterpaytouch]] — 2026-09-15 Afterpay AU/CA/NZ redirect overview covering regional branding, four installments, lifecycle directory and chargeback windows.
+
+
 - [[source-adyen-docs-payment-methods-scalapay-web]] — 2026-09-15-captured Web integration chooser for Scalapay Drop-in and Components, with general Web integration routes (page last modified 2022-11-21).
 
 

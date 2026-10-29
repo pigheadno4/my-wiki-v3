@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Adyen website C45
+
+- Fifty independently approved Afterpay, Clearpay, Alma and Oney documentation sources; first full-review approvals 38/50 and 12 targeted correction reviews. 1 concepts touched (0 new); source_count 2264 = 2250 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-45/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-29] ingest | Adyen website C44
 
 - Fifty independently approved Klarna, Klarna Debit Risk, PayBright and Scalapay documentation sources; first full-review approvals 33/50 and 18 targeted correction reviews. 1 concepts touched (0 new); source_count 2214 = 2200 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-44/`; details [[adyen-log]]. No commit/push.

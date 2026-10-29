@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Afterpay Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md\"\ntags: [adyen, afterpay, afterpaytouch, web-components, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds the Afterpay `afterpaytouch` redirect method to an **existing Web Components** integration. It splits the additions by Sessions and Advanced server-side flows; its examples do not constitute a complete standalone integration. The guide includes request additions, Component initialization, redirect response, capture deadlines and test/live gates. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Flow prerequisites:** Sessions requires an existing Web Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Afterpay added in Customer Area (raw lines 25\u201336). Advanced likewise requires an existing Advanced Web Components integration, redirect handling and the Customer Area setup; its requirement table does not repeat the Sessions v68 minimum (raw lines 813\u2013821).\n- **Request additions:** Both flow tables mark `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required, while `telephoneNumber` is conditional on being provided. The Advanced `/payments` table additionally requires `paymentMethod` with `afterpaytouch`; Sessions adds the fields to `/sessions` (raw lines 40\u201353, 849\u2013863). The AU/AUD requests are examples, not a complete regional availability matrix.\n- **Component and redirect:** Both flow sections import `Redirect` and say to initialize the Redirect class. The Sessions section says no additional Afterpay configuration parameters are needed; the Advanced section does not make that explicit statement. Advanced shows a response with `resultCode: RedirectShopper` and `action.type: redirect`; this is a redirect instruction, not final payment success (raw lines 739\u2013767, 823\u2013845, 1578\u20131592). The initialization snippets render `type:afterpaytouch` without quotes, so use the prose and method table as the guide, not those snippets as copy-ready JavaScript.\n- **Capture and cancellation:** Capture may be automatic or manual depending on merchant-account configuration. The guide says Afterpay payments must be captured within 13 days of authorization; if uncaptured by then, Afterpay cancels the payment and refunds the shopper's first installment, which it says is charged during authorization. Test authorizations expire in one day. Partial capture requires manual capture; an unclaimed remainder is automatically cancelled unless the account is enabled for multiple partial captures, which requires contacting Support and creates a new invoice per capture (raw lines 771\u2013790; repeated under Advanced at 1594\u20131613).\n- **Test/live gates:** The guide calls for an Afterpay sandbox shopper account and test card; it lists Australia, New Zealand, US and Canada for sandbox-account country selection. This test-account list is not a live merchant-method availability statement. Before accepting live Afterpay payments, the guide instructs a request in live Customer Area (raw lines 792\u2013811 and 1615\u20131634).\n\n## Detail locators\n\n- Sessions requirements, required request fields and optional telephone: pinned raw lines 25\u201353; multi-language Sessions request examples: lines 55\u2013737.\n- Sessions Redirect import/configuration/initialization: pinned raw lines 739\u2013767.\n- Advanced requirements and request-field table: pinned raw lines 813\u2013863; multi-language Advanced payment examples: lines 865\u20131576.\n- Advanced redirect response example: pinned raw lines 1578\u20131592.\n- Capture, partial-capture and test/live boundaries: pinned raw lines 771\u2013811 and 1594\u20131634.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and source routes.\n- [[source-adyen-docs-payment-methods-afterpaytouch]] \u2014 regional Afterpay overview and lifecycle directory.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15|Afterpay Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Afterpay to your existing integration. The following instructions show only what you must add to your integration specifically for Afterpay.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md:775"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md:788"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md:1578"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-web-component]] \u2014 2026-09-15-captured Afterpay Web Components Sessions/Advanced add-on for required fields, redirect, 13-day capture and one-day test expiry, partial-capture remainder handling and live-request gate.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/web-component/2026-09-15.md",
+  "raw_sha256": "5e8e4349f47b1f1f1579b5bbb4e8a04b102635c8546be08379c262eb103f2fb6",
+  "status": "candidate_ready"
+}

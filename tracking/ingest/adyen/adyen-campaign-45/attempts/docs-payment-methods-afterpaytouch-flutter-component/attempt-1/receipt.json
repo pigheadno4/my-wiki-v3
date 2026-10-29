@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Afterpay Flutter Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/flutter-component/2026-09-15.md\"\ntags: [adyen, afterpay, flutter, components, redirect, capture]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Afterpay to an existing Flutter Components integration. It separates Sessions and Advanced server flows and gives method-specific request data, redirect prerequisites, capture behavior and test/live setup. See [[adyen-online-payments]]. Its AU/AUD TEST examples and sandbox instructions do not prove present method availability or a successful payment.\n\n## Key takeaways\n\n- For Sessions, the page requires an existing Flutter Components Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Afterpay added in Customer Area. For Advanced, it requires an existing Flutter Components Advanced integration, the same redirect handling and Customer Area setup. The Requirements tables label Components but link their base-integration text to a Flutter **Drop-in** Advanced-flow URL; use the explicit Components redirect links and verify the appropriate base guide instead of treating that mismatched link as a Components implementation.\n- The `/sessions` and `/payments` tables mark shopper name/email/reference, country code, billing/delivery address and `lineItems` required; telephone number is optional. Advanced also marks `paymentMethod` (`afterpaytouch`) required. The Sessions TEST curl sample uses Checkout API v69 and AU/AUD; Advanced uses v68 and AU/AUD. Language sample library versions differ. These examples do not establish other countries or live setup.\n- No Afterpay-specific Flutter Component configuration parameters are required by either flow section. Advanced says its payment response includes `action.type: redirect`, with an example `RedirectShopper` response. Redirect handling is a prerequisite; this guide does not demonstrate a completed shopper return or final authorization.\n- Capture may be automatic after authorisation or manual according to merchant configuration. Capturing after dispatch requires capture delay or manual capture; partial capture requires manual capture. Capture within 13 days of authorisation; otherwise Afterpay cancels and refunds the first installment charged at authorization. TEST authorization expires in one day. With one partial capture, unclaimed amount is automatically cancelled unless multiple partial capture is enabled on the account; that setting requires Support and each capture creates a new invoice.\n- Testing requires an Afterpay sandbox shopper account per country/region when testing multiple markets, plus a test card; the page lists AU, NZ, US and Canada sandbox choices and test CVVs. Live acceptance requires a request for Afterpay in live Customer Area. Sandbox country choices are test setup, not a current production support matrix.\n\n## Detail locators\n\n- Sessions prerequisites, required request fields and AU/AUD example: pinned raw lines 15\u2013112; Sessions configuration and repeated capture/test guidance around lines 650\u2013760.\n- Advanced prerequisites, request fields and `afterpaytouch` AU/AUD sample: around lines 760\u20131534; redirect response: lines 1536\u20131550.\n- Capture and partial-capture conditions: lines 1552\u20131571; sandbox and live setup: lines 1573\u20131592. The same guidance appears earlier in the Sessions section.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/flutter-component/2026-09-15|Afterpay Flutter Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Afterpay to your existing integration. The following instructions show only what you must add to your integration specifically for Afterpay.",
+      "location": "Afterpay Flutter Component, line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "Sessions flow Component > Requirements, line 32"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Afterpay.",
+      "location": "Sessions flow Component > Add additional configuration for Afterpay, first occurrence after Sessions examples"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "Advanced flow Component > Capture the payment, line 1556"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "Advanced flow Component > Full or partial manual captures, line 1569"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-flutter-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-flutter-component]] \u2014 2026-09-15 Afterpay Flutter Components Sessions/Advanced add-on for redirect requests, capture limits and sandbox/live setup; source flags a mismatched base-guide link.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/flutter-component/2026-09-15.md",
+  "raw_sha256": "18ac58941a8a0621cf76dcaf5a084f3f2678348b8c8012696916dc2010311921",
+  "status": "candidate_ready"
+}

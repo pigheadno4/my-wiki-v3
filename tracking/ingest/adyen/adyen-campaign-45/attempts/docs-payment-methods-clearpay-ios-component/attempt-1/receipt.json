@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-clearpay-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Clearpay iOS Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/ios-component/2026-09-15.md\"\ntags: [adyen, clearpay, ios, components, redirect, capture, refund]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs guide adds Clearpay to an **existing iOS Components** integration using Sessions or Advanced flow. It requires Customer Area method setup and redirect handling, then uses `InstantPaymentComponent` with method type `clearpay`. The GB/GBP examples illustrate a test request, not current merchant eligibility, a successful redirect or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Sessions requires Checkout API v68 or later and an existing Sessions iOS Components integration; Advanced requires an existing Advanced integration. Both require `action.type: redirect` handling and Customer Area setup. The guide says no extra Clearpay configuration parameters are needed, and shows the Component initialized with `.other(\"clearpay\")`; Sessions delegates to the session, while Advanced delegates to `self` (pinned raw lines 25\u201336, 116\u2013142, 231\u2013268).\n- Both `/sessions` and `/payments` tables mark shopper name, email, reference (minimum three characters), country code, billing and delivery addresses and `lineItems` required; phone is optional. The Advanced example supplies `paymentMethod.type: clearpay` and returns a `redirect` action with `RedirectShopper`, which is a redirect step, not evidence of authorization or capture. Example API URLs use v71 for Sessions and v72 for payments; the stated minimum v68 applies to the Sessions requirement (lines 40\u2013114, 270\u2013365).\n- Capture depends on merchant-account configuration: automatic after authorization or manual. Capture after sending goods needs a delay or manual capture, and partial capture requires manual capture. Clearpay says capture within 13 days after authorization; otherwise it cancels and refunds the first installment charged during authorization. In test, manual capture must occur within one day (lines 144\u2013154 and 367\u2013377).\n- Manual capture uses `/payments/{paymentPspReference}/captures` with full or partial `amount.value` and optional `lineItems`. A first partial capture cancels the remaining amount unless multiple partial captures are enabled through Support; each such capture creates a new invoice. Cancel before capture; refund after capture, including full or partial refunds via `/payments/{paymentPspReference}/refunds` amount, with optional line items (lines 156\u2013176 and 379\u2013399).\n- A negative line amount is described for discounts, but the illustrated discount request has material arithmetic and JSON problems noted below. The testing section requires a Clearpay sandbox shopper account, links regional test resources and says a live Customer Area request is needed before accepting live payments (lines 178\u2013229 and 401\u2013452).\n\n> [!warning] Example and navigation inconsistencies\n> The Advanced iOS **Components** requirement links to a base URL with `integration=Drop-in` (raw line 239), while its redirect link specifies Components (line 240). The discount prose says a 1 GBP discount on Item #2, but the sample uses quantity 2 at `amountIncludingTax: \"-100\"` and lowers the order from 1000 to 800 minor units, indicating a 2 GBP discount; the sample also contains an ellipsis and lacks a comma between item objects, so it is not copy-ready JSON (lines 180\u2013212 and 403\u2013435). Both curl examples place `-X POST` on a separate line without a continuation before `-d` (lines 62\u201363 and 294\u2013295); verify shell syntax before use.\n\n## Detail locators\n\n- Sessions scope, field table, sample request and Component setup: pinned raw lines 25\u2013142.\n- Sessions capture/refund/discount/test-live sections: lines 144\u2013229.\n- Advanced scope, field table, redirect example, lifecycle and test-live sections: lines 231\u2013452.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 method overview for GB/GBP and feature qualifications\n- [[source-adyen-docs-payment-methods-clearpay-ios]] \u2014 iOS integration chooser\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/ios-component/2026-09-15|Clearpay iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Clearpay to your existing integration.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Clearpay, use the `InstantPaymentComponent` class.",
+      "location": "pinned raw line 126"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "pinned raw line 150"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "pinned raw line 163"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-clearpay-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-ios-component]] \u2014 2026-09-15 Clearpay iOS Components Sessions/Advanced add-on for redirect, capture/refund and sandbox/live routes, with example and link caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced Components base link points to Drop-in (raw line 239); discount example contradicts 1 GBP prose and has invalid JSON (180\u2013212/403\u2013435); curl samples lack line continuation before -d (62\u201363/294\u2013295)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/ios-component/2026-09-15.md",
+  "raw_sha256": "99aae55b9ed483e1a83f044cd1eb66fdc72a0b521000636a4b8aa4665ba8fa07",
+  "status": "candidate_ready"
+}

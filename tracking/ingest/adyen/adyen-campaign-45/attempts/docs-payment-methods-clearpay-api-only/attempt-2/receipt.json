@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-clearpay-api-only",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Clearpay API-only integration | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md\"\ntags: [adyen, clearpay, api-only, redirect, checkout]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page adds **Clearpay** to an existing API-only integration: the merchant builds the payment form, discovers the method, makes a server-side payment request and handles a redirect through the linked base guide. The related Clearpay overview identifies the UK brand and GB/GBP matrix. See [[adyen-online-payments]], [[source-adyen-docs-payment-methods-clearpay]] and [[adyen]].\n\n## Key takeaways\n\n- The prerequisite is an existing API-only Advanced-flow integration with redirect handling and Clearpay added in Customer Area (raw lines 23\u201329). The merchant-built form must collect full name, email, billing address and delivery address for Clearpay risk checks (lines 31\u201350). This is separate from the page's server request table.\n- For `/paymentMethods` discovery, the guide says to use `countryCode: GB` and `amount.currency: GBP` to include Clearpay in the response (lines 52\u201360). Its v72 TEST response example shows `type: clearpay` (lines 61\u201391); that response is an example, not proof the method will be enabled for a given merchant. The example curl has `-X POST` on one line and `-d` on the next without a continuation (lines 64\u201369).\n- The `/payments` table marks shopper name/email/reference (reference minimum three characters), country code, billing/delivery addresses and line items required; phone is optional (lines 93\u2013106). The v72 TEST example sets `paymentMethod.type: clearpay` (lines 108\u2013170) and has the same `-X POST`/missing-continuation issue (lines 111\u2013116). Its initial response is `RedirectShopper` with a redirect action (lines 172\u2013186), not final authorisation or capture proof. Use the linked base integration for return handling and outcome.\n- Capture may be automatic after authorisation or manual, depending on merchant-account configuration. Delay requires delay setup or manual capture; partial capture requires manual capture. Clearpay requires capture within **13 days** after authorisation; otherwise it cancels and refunds the first instalment charged during authorisation. Test authorisations expire in **one day** (lines 188\u2013196). A partial manual capture cancels the unclaimed remainder unless **multiple partial captures** are enabled by Support, which creates a new invoice per capture (lines 198\u2013207).\n- An uncaptured payment can be cancelled; captured funds are returned through refund. Full or partial refund requests specify `amount.value`, with `lineItems` optional (lines 209\u2013218). The discount prose says a negative amount is required and describes **\u00a31** off Item #2. The example uses quantity **2** at **-100** minor units, lowering the order total from 1000 to 800; this arithmetic is consistent with \u00a31 off **each** of two Item #2 units, while the prose does not settle per-unit versus total intent. The illustrative JSON also omits a comma between the second item and discount object (lines 220\u2013254), so do not copy it unchanged.\n- Testing needs a Clearpay sandbox and shopper account, with regional sandbox details and linked test-card references. In sandbox the merchant display name is Adyen; live acceptance requires submitting a Clearpay request in live Customer Area (lines 256\u2013271). Test status does not establish live enablement, capture, refund or settlement.\n\n## Detail locators\n\n- Scope, prerequisites, form and shopper details: raw lines 15\u201350.\n- GB/GBP method discovery and v72 TEST example: lines 52\u201391.\n- Payment request table, v72 TEST example and redirect response: lines 93\u2013186.\n- Capture expiry, partial capture, refunds/cancellations: lines 188\u2013218.\n- Discount per-unit/total ambiguity and illustrative JSON syntax: lines 220\u2013254.\n- Sandbox/live setup and base API-only route: lines 256\u2013275.\n- Linked overview UK/GB/GBP branding: `raw/adyen/docs/payment-methods/clearpay/2026-09-15.md` lines 23\u201331.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment architecture.\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 UK product and GB/GBP matrix.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15|2026-09-15 Clearpay API-only redirect and lifecycle guide]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Clearpay.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md:19"
+    },
+    {
+      "text": "To perform risk checks, Clearpay requires you to collect the following shopper details:",
+      "location": "raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md:44"
+    },
+    {
+      "text": "| [countryCode](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods#request-countryCode)         | **GB**  |",
+      "location": "raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md:58"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md:192"
+    },
+    {
+      "text": "The following example shows how to specify a discount of 1 GBP on Item #2:",
+      "location": "raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md:222"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-clearpay-api-only-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-api-only]] \u2014 2026-09-15 Clearpay API-only form, GB/GBP method discovery, redirect and capture/refund/discount guide, with example caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The /paymentMethods and /payments curl examples omit continuation after `-X POST` before `-d` (raw lines 64\u201369, 111\u2013116). Discount prose says \u00a31 off Item #2; quantity-two -100 minor-unit lines reduce the total by 200, consistent with \u00a31 per unit but ambiguous about prose intent. The illustrative JSON omits a comma (lines 220\u2013254)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/api-only/2026-09-15.md",
+  "raw_sha256": "3a619f766ff6d14b069a8ce123cec64a12a50b03f128f42fadf9153d97109b1e",
+  "status": "candidate_ready"
+}

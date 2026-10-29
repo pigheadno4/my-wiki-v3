@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-clearpay-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Clearpay Android Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md\"\ntags: [adyen, clearpay, android, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page adds **Clearpay** to an existing Android Components integration with separate Sessions and Advanced server-side flows. Clearpay is the UK-branded method in the linked overview, whose matrix lists **GB/GBP**; this child uses GB/GBP TEST examples rather than establishing a particular merchant's eligibility. See [[adyen-online-payments]], [[source-adyen-docs-payment-methods-clearpay]] and [[adyen]].\n\n## Key takeaways\n\n- Sessions requires an existing Android Components Sessions flow, **Checkout API v68 or later**, redirect handling and Clearpay added in Customer Area (raw lines 25\u201336). Its `/sessions` table marks shopper name/email/reference (reference minimum three characters), country code, billing/delivery addresses and line items required; phone is optional (lines 40\u201353). The GB/GBP v71 TEST curl request is illustrative; its `-X POST` line lacks a continuation before `-d`, so do not assume the literal shell block runs unchanged (lines 55\u2013114).\n- Both flows import `com.adyen.checkout:instant`; the Compose variant also imports `components-compose`. The page says no additional Clearpay configuration parameters are needed. Both use `InstantPaymentComponent`: Sessions gets method `clearpay` from the checkout session; Advanced finds `clearpay` in `/paymentMethods`. Compose examples call for a new key when a different screen/payment session needs a new Component or when resetting (Sessions lines 116\u2013198; Advanced lines 297\u2013381).\n- Advanced requires an existing Android Components Advanced flow, redirect action handling and Clearpay added in Customer Area (lines 287\u2013295). Its `/payments` table marks the same shopper/country/address/item data required, with optional phone (lines 383\u2013398); the GB/GBP v72 request example sets `paymentMethod.type: clearpay` (lines 400\u2013462). That curl block also puts `-X POST` before `-d` without a line continuation. The example response is `RedirectShopper` with a redirect action (lines 464\u2013478), not final authorisation or capture proof. Follow the linked base flow for returned-shopper handling and outcome.\n- Capture can be automatic after authorisation or manual, according to merchant-account configuration. Delayed capture needs delay setup or manual capture; partial capture needs manual capture. Clearpay requires capture within **13 days** after authorisation, or it cancels and refunds the first instalment charged during authorisation; test authorisations expire in **one day** (Sessions lines 200\u2013210; Advanced lines 480\u2013490). Partial manual capture cancels the unclaimed remainder unless the account is enabled for **multiple partial captures**, which requires Support setup and creates a new invoice per capture (lines 212\u2013221 and 492\u2013501).\n- Before capture, cancel; after capture, refund to return funds. Full or partial refunds use `amount.value`, with `lineItems` optional in the refund request (lines 223\u2013232 and 503\u2013512). The discounts section says to include a negative amount in the payment request, but its prose says **\u00a31** off Item #2 while the example gives a discount line of quantity **2** at **-100** minor units and reduces the order amount from 1000 to 800; the shown JSON also omits a comma between the second item and discount object (lines 234\u2013268; repeated 514\u2013548). Treat that example as inconsistent, not copy-ready or a universal discount rule.\n- Testing requires a Clearpay sandbox and shopper account, with separate sandbox environments/details by country/region. The page links Clearpay test-account/card documentation; in sandbox Adyen is displayed as merchant. It says a request in live Customer Area is needed before accepting live Clearpay payments (lines 270\u2013285 and 550\u2013565). A sandbox result does not establish live enablement, successful capture, refund or settlement.\n\n## Detail locators\n\n- Page scope and Sessions requirements: raw lines 15\u201336.\n- Sessions request fields and GB/GBP v71 TEST example: lines 40\u2013114; curl continuation issue at lines 58\u201363.\n- Sessions Component setup, capture, refunds/cancellations, discounts and sandbox/live: lines 116\u2013285.\n- Advanced requirements, Component setup and request table/example: lines 287\u2013462; curl continuation issue at lines 403\u2013408.\n- Advanced redirect response, capture, refunds/cancellations, discounts and sandbox/live: lines 464\u2013565.\n- Discount prose/example mismatch and malformed JSON: lines 236\u2013268 and 516\u2013548.\n- Linked overview's UK/GBP/branding scope: `raw/adyen/docs/payment-methods/clearpay/2026-09-15.md` lines 23\u201331.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment architecture.\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 UK product and GB/GBP matrix.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15|2026-09-15 Clearpay Android Component Sessions and Advanced guide]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Clearpay.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md:34"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md:206"
+    },
+    {
+      "text": "If a payment has not yet been captured, you can [cancel](/online-payments/cancel) it.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md:225"
+    },
+    {
+      "text": "The following example shows how to specify a discount of 1 GBP on Item #2:",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md:236"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-clearpay-android-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-android-component]] \u2014 2026-09-15 Clearpay Android Components Sessions/Advanced guide for redirect, capture, refund and discount handling, with example inconsistencies qualified in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions/Advanced curl examples lack continuation after `-X POST` before `-d` (raw lines 58\u201363, 403\u2013408). Discount prose says \u00a31 off Item #2, while the quantity-two -100 example lowers total by 200 minor units and omits a comma between item objects (lines 236\u2013268, 516\u2013548)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/android-component/2026-09-15.md",
+  "raw_sha256": "5010e070f3e74eb37391bb73ad5753032c7c5579041071bd737fad610caa73df",
+  "status": "candidate_ready"
+}

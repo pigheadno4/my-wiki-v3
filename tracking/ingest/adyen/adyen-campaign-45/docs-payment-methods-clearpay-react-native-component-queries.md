@@ -1,0 +1,9 @@
+# Clearpay React Native Components retrieval checks
+
+## Q1 — Which flow is supported, and what cannot this guide establish?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-clearpay-react-native-component]]` → `[[raw/adyen/docs/payment-methods/clearpay/react-native-component/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-clearpay-react-native-component`. Full pinned raw path: `raw/adyen/docs/payment-methods/clearpay/react-native-component/2026-09-15.md`. Raw lines 25–41 explicitly exclude Sessions for React Native Components and require an existing Advanced integration, redirect handling and Customer Area setup. GB/GBP test and redirect examples cannot prove live eligibility, authorization or capture.
+
+## Q2 — Which request, lifecycle and example qualifications matter?
+
+Use the same root/provider/concept/source/raw route. Raw lines 45–64 say no extra Clearpay configuration and require shopper name/email/reference, country code, billing/delivery addresses and line items; phone is optional. Advanced example uses `paymentMethod.type: clearpay` and returns a redirect action (75–144), not a final payment result. Capture is account-configured and due within 13 days, with first-installment refund on noncapture; test manual capture is due within one day (146–156). Partial capture cancels remainder unless Support enables multiple partial captures; cancellation precedes capture and refunds follow it (158–178). Warn that the Advanced Components base link points to Drop-in (39–40), discount line is quantity 2 at -100 minor units, yielding GBP 2 total that may mean the prose's GBP 1 per unit; the JSON also has an ellipsis and missing comma (182–214), and curl lacks continuation before `-d` (73–74). Sandbox and live-request routes are at 216–231.

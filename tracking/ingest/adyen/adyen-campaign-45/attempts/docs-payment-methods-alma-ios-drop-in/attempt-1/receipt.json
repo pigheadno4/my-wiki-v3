@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-alma-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Alma iOS Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alma/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/alma/ios-drop-in/2026-09-15.md\"\ntags: [adyen, alma, ios, drop-in, redirect, installments]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] guide adds **Alma** to an existing **iOS Drop-in** integration. It separates Sessions and Advanced server-flow additions, covering optional request fields, Advanced installment choice, a redirect action and test/live routes. The linked [[source-adyen-docs-payment-methods-alma]] overview scopes the captured product to FR/EUR and three or four installments. This guide's TEST examples do not prove current merchant eligibility, a completed redirect, final payment or capture. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions prerequisites:** The Sessions section requires an existing iOS Drop-in Sessions integration, Checkout API **v68 or later**, and Alma added in Customer Area (raw lines 25\u201334). Its `/sessions` table lists `telephoneNumber`, `shopperEmail`, `billingAddress` and `deliveryAddress` with **blank Required cells**; do not infer they are mandatory because the example includes them (raw lines 36\u201347).\n- **Sessions TEST example and return URL:** The sample uses TEST `/v71/sessions`, FR/EUR and an iOS app-scheme `returnUrl` placeholder, `adyencheckout://your.package.name` (raw lines 49\u201383). Its curl command puts `-X POST` and `-d` on separate lines without a continuation, so it illustrates request content rather than a verified copy-ready shell command (raw lines 51\u201357). The page says no additional Alma-specific Drop-in configuration parameters are needed (raw lines 85\u201389).\n- **Advanced prerequisites and request:** The Advanced section requires an existing iOS Drop-in Advanced integration, handling the additional `action.type: redirect` action, and Alma added in Customer Area (raw lines 99\u2013109). It also says no additional method configuration is needed (raw lines 111\u2013115). Its `/payments` table leaves the same shopper/contact/address fields optional and lists `additionalData.alma.installments_count` as optional: set `3` or `4` to fix the number of installments, or omit it for shopper choice (raw lines 117\u2013129).\n- **Advanced TEST example and action:** The sample uses TEST `/v72/payments`, FR/EUR, `shopperLocale: en-US`, an HTTPS `returnUrl`, and `alma.installments_count: 4` (raw lines 131\u2013169). The example's `-X POST` and `-d` also lack a shell continuation (raw lines 133\u2013139). The Sessions app-scheme URL and Advanced HTTPS URL are both examples; the page does not reconcile their return handling for an actual iOS app. Its `RedirectShopper`/`action.type: redirect` response is an intermediate action, not final authorization (raw lines 171\u2013185).\n- **Test/live boundary:** The page points to test payment status in Customer Area and says to submit an Alma request in live Customer Area before accepting live payments (raw lines 91\u201397, 187\u2013193). It does not define capture, refund or asynchronous final-result behavior. The linked overview's feature matrix is method-level navigation, not this guide's modification procedure; verify the selected base flow for return and outcome handling.\n\n## Detail locators\n\n- Sessions requirements and optional `/sessions` fields: pinned raw lines 25\u201347.\n- Sessions TEST example, app-scheme return URL and malformed curl continuation: pinned raw lines 49\u201383.\n- Sessions no-extra-config and test/live instructions: pinned raw lines 85\u201397.\n- Advanced prerequisites, no-extra-config and optional installment selector: pinned raw lines 99\u2013129.\n- Advanced TEST example, HTTPS return URL, malformed curl continuation and redirect action: pinned raw lines 131\u2013185.\n- Advanced test/live request: pinned raw lines 187\u2013193.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online checkout context.\n- [[source-adyen-docs-payment-methods-alma]] \u2014 FR/EUR method overview and capability matrix.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alma/ios-drop-in/2026-09-15|Alma iOS Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "line 33"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Alma.",
+      "location": "line 89"
+    },
+    {
+      "text": "Make sure that your existing integration is set up to [handle the additional action](/online-payments/build-your-integration/advanced-flow/?platform=iOS\\&integration=Drop-in#handle-the-redirect). `action.type`: ****redirect****.",
+      "location": "line 108"
+    },
+    {
+      "text": "Set to `3` or `4` to determine the number of installments the shopper will pay. Do not include if you want to let the shopper choose.",
+      "location": "line 129"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "line 171"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "alma-ios-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alma-ios-drop-in]] \u2014 2026-09-15 Alma iOS Drop-in Sessions/Advanced add-on for optional request data, 3/4-installment choice, redirect and test/live routes; source flags return-URL and curl-example caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alma/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "bfa46f7f6d652547bdcd7f80e3a421c244a768769f450b87eb7355f5f73623cb",
+  "status": "candidate_ready"
+}

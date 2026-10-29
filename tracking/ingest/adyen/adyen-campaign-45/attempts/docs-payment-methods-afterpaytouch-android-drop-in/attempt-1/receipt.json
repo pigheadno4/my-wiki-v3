@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Afterpay Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md\"\ntags: [adyen, afterpay, afterpaytouch, android, drop-in, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide describes adding Afterpay to an **existing Android Drop-in** integration, with separate Sessions and Advanced server-side flow instructions. It covers method-specific request fields, a redirect response for Advanced, capture limits and test/live gates. It is an add-on to the main Android integration guides, not a standalone SDK or payment-outcome proof. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites by flow:** The Sessions section requires an existing Android Drop-in Sessions integration using Checkout API v68 or later and adding Afterpay in Customer Area. The Advanced section requires an existing Android Drop-in Advanced integration, redirect handling for `action.type: redirect`, and adding Afterpay in Customer Area; its requirements table does not repeat the Sessions API minimum (raw lines 25\u201334, 787\u2013795).\n- **Request fields and configuration:** In both `/sessions` and `/payments` tables, the page marks `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required; `telephoneNumber` is included if provided. The Advanced `/payments` table also requires `paymentMethod: afterpaytouch`. Both sections say no additional Afterpay Drop-in configuration parameters are needed (raw lines 38\u201351, 737\u2013741, 797\u2013822). The AU/AUD sample payloads illustrate a request and do not establish a region-wide eligibility rule.\n- **Redirect boundary:** The Advanced sample response has `resultCode: RedirectShopper` and `action.type: redirect`. This describes the next shopper action, not final authorization, capture or settlement. For the return and result flow, follow the linked main Android integration guide (raw lines 789\u2013795, 1534\u20131548).\n- **Capture deadlines and effect:** Depending on merchant account configuration, capture is automatic after authorization or manual. The guide says Afterpay payments must be captured within 13 days of authorization; during authorization the shopper is charged the first installment, and if payment is not captured within 13 days, Afterpay cancels it and refunds that installment. Test authorizations expire in one day, so manual test capture must happen within one day (raw lines 745\u2013753; repeated at 1550\u20131558).\n- **Partial capture:** Partial capture requires manual capture. The capture request specifies `amount.value` and may include `lineItems`; the remaining unclaimed amount is automatically cancelled after a partial capture unless the account is enabled for multiple partial captures. The guide says to contact Support for that setup, which creates a new invoice for each capture (raw lines 755\u2013764; repeated at 1560\u20131569).\n- **Test/live gate:** Testing calls for an Afterpay sandbox shopper account and test card. The sandbox country selector lists Australia, New Zealand, US and Canada; this list is a test-account instruction, not a live acceptance matrix. The guide says to request Afterpay in live Customer Area before accepting live payments (raw lines 766\u2013785; repeated at 1571\u20131590).\n\n## Detail locators\n\n- Guide identity and add-on scope: pinned raw lines 15\u201323.\n- Sessions requirements, request table and multi-language examples: pinned raw lines 25\u2013735.\n- Sessions no-extra-configuration, capture and test/live sections: pinned raw lines 737\u2013785.\n- Advanced requirements, no-extra-configuration, request table and multi-language examples: pinned raw lines 787\u20131532.\n- Advanced redirect response, capture and test/live sections: pinned raw lines 1534\u20131590.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and source routes.\n- [[source-adyen-docs-payment-methods-afterpaytouch]] \u2014 Afterpay regional/product overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15|Afterpay Android Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Afterpay to your existing integration. The following instructions show only what you must add to your integration specifically for Afterpay.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Afterpay.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md:741"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md:749"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md:762"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-android-drop-in]] \u2014 2026-09-15-captured Afterpay Android Drop-in Sessions/Advanced add-on for request fields, Advanced redirect, 13-day capture/one-day test deadline, partial-capture remainder and live-request gate.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/android-drop-in/2026-09-15.md",
+  "raw_sha256": "49e902cad39c7261f65d4ea2863b3b39f793a5d9c3343ef485e0cec50f3ba51e",
+  "status": "candidate_ready"
+}

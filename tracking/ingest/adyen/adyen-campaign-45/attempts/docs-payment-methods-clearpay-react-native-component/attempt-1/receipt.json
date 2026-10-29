@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-clearpay-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Clearpay React Native Components integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/react-native-component/2026-09-15.md\"\ntags: [adyen, clearpay, react-native, components, redirect, capture, refund]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page adds Clearpay to an **existing React Native Components integration**. It explicitly says this Component does **not support Sessions flow** and gives an Advanced-flow path with Customer Area setup and redirect handling. Its GB/GBP test request and redirect example do not prove merchant eligibility, authorization, capture or live payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Use an existing Advanced-flow React Native Components integration, with `action.type: redirect` handling and Clearpay added in Customer Area. The guide says no additional Clearpay configuration parameters are needed. The Advanced `/payments` example uses a v72 test endpoint; the page does not state an Advanced minimum Checkout API version (pinned raw lines 25\u201353, 66\u201369).\n- The `/payments` table marks shopper name, email, reference (minimum three characters), country code, billing and delivery addresses and `lineItems` required; telephone number is optional. The example uses `paymentMethod.type: clearpay` and returns a `redirect` action with `RedirectShopper`, which is a shopper handoff, not a completed result (lines 55\u201364 and 75\u2013144).\n- Capture is automatic after authorization or manual depending on merchant-account configuration. Capture after sending goods requires delay or manual capture; partial capture requires manual capture. Clearpay says capture within 13 days after authorization. The first installment is charged during authorization; without timely capture, Clearpay cancels and refunds it. Test manual capture has a one-day limit (lines 146\u2013156).\n- Manual `/payments/{paymentPspReference}/captures` uses full or partial `amount.value`, with optional `lineItems`. A first partial capture cancels the unclaimed remainder unless Support enables multiple partial captures; each such capture creates a new invoice. Cancel before capture and refund after capture via `/payments/{paymentPspReference}/refunds`, with optional line items (lines 158\u2013178).\n- The guide includes a negative-line discount example and requires a Clearpay sandbox shopper account for testing, with a separate live Customer Area request before live acceptance. The discount example has the arithmetic and JSON problems below (lines 180\u2013231).\n\n> [!warning] Example and link inconsistencies\n> The Advanced **Components** requirement links to an Advanced **Drop-in** base URL, while its redirect link names Components (raw lines 39\u201340). The discount prose says 1 GBP off Item #2, but its quantity-2 `-100` minor-unit line lowers the order total from 1000 to 800, a 2 GBP reduction; the sample also uses an ellipsis and omits a comma between item objects, so it is not copy-ready JSON (lines 182\u2013214). The curl example lacks a line continuation after `-X POST` before `-d` (lines 73\u201374); verify shell syntax before use.\n\n## Detail locators\n\n- Sessions exclusion and Advanced prerequisites: pinned raw lines 25\u201347.\n- Advanced fields, sample payment and redirect action: lines 49\u2013144.\n- Capture/refund, discount and test/live boundaries: lines 146\u2013231.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 GB/GBP method overview\n- [[source-adyen-docs-payment-methods-clearpay-react-native-drop-in]] \u2014 separate React Native Drop-in guide\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/react-native-component/2026-09-15|Clearpay React Native Components guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "pinned raw line 29"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Clearpay.",
+      "location": "pinned raw line 47"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "pinned raw line 130"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "pinned raw line 152"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "pinned raw line 165"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-clearpay-react-native-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-react-native-component]] \u2014 2026-09-15 Clearpay React Native Components Advanced-only guide for redirect, capture/refund and test/live paths, with source example and base-link caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions is explicitly unavailable for React Native Components; the Advanced Components requirement links to Drop-in (raw 39). Discount arithmetic/JSON and curl continuation are inconsistent (182\u2013214, 73\u201374)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/react-native-component/2026-09-15.md",
+  "raw_sha256": "823953f281e693c9cc755fae402937afdc05d1e44248f71715c4cafe811519d1",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,9 @@
+# Clearpay iOS Component retrieval checks
+
+## Q1 — What integration does this guide cover, and what cannot it establish?
+
+Route `[[index]]` → `[[adyen-index]]` → `[[adyen-online-payments]]` → `[[source-adyen-docs-payment-methods-clearpay-ios-component]]` → `[[raw/adyen/docs/payment-methods/clearpay/ios-component/2026-09-15]]`. Canonical source stem: `source-adyen-docs-payment-methods-clearpay-ios-component`. Full pinned raw path: `raw/adyen/docs/payment-methods/clearpay/ios-component/2026-09-15.md`. Raw lines 15–36 and 231–241 define existing iOS Components Sessions/Advanced add-ons, Customer Area setup and redirect handling. The GB/GBP test request and `RedirectShopper` response do not prove live eligibility or completed payment.
+
+## Q2 — Which request, Component and lifecycle conditions or warnings matter?
+
+Use the same root/provider/concept/source/raw route. Sessions needs Checkout API v68+ (line 34); both request tables require shopper name/email/reference, country code, billing/delivery addresses and line items, with optional phone (46–53/278–285). `InstantPaymentComponent` is used with `clearpay` and no extra configuration (116–142/243–268); Advanced example supplies `paymentMethod.type: clearpay` and a redirect action (296–365). Capture is account-configured, due within 13 days; noncapture cancels and refunds the first installment, while test manual capture has a one-day limit (148–154/371–377). Partial capture cancels the remainder unless Support enables multiple partial captures; cancel before capture, refund after capture (156–176/379–399). Warn that the Advanced Components link targets Drop-in (239), discount prose/sample arithmetic and JSON disagree (180–212/403–435), and curl samples omit line continuation before `-d` (62–63/294–295). Sandbox and live-request routes are at 214–229/437–452.

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Afterpay React Native Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md\"\ntags: [adyen, afterpay, afterpaytouch, react-native, components, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide describes adding Afterpay to an **existing React Native Components Advanced-flow** integration. It explicitly says React Native Components do not support Sessions flow. The page supplies method-specific `/payments` fields, redirect handling, capture behavior and test/live setup, while pointing to the main integration guide for the base flow. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Flow boundary and prerequisite:** `## Sessions flow Component` is marked unavailable. Advanced requires an existing React Native Components integration, redirect handling for `action.type: redirect`, and Afterpay added in Customer Area. The requirements table's link labelled \u201cReact Native Components integration\u201d carries `integration=Drop-in`, while its redirect and payment links use `integration=Components`; follow the Components context rather than treating that link target as a separate Drop-in requirement (raw lines 25\u201341, 51\u201353).\n- **Configuration and fields:** The guide says no extra Afterpay configuration parameters are needed. The `/payments` table marks `paymentMethod: afterpaytouch`, `shopperName`, `shopperEmail`, `shopperReference` (at least three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required. It lists `telephoneNumber` if provided. The AU/AUD examples are examples, not a general availability matrix (raw lines 43\u201365; examples 67\u2013778).\n- **Redirect is an intermediate action:** The sample response has `resultCode: RedirectShopper` and `action.type: redirect`; neither proves successful authorization, capture or settlement. Use the linked base integration's redirect and return handling (raw lines 39\u201340, 780\u2013794).\n- **Capture and cancellation:** Capture is automatic after authorization or manual according to merchant-account configuration. The guide says capture must occur within 13 days; it says the first installment is charged during authorization and Afterpay cancels an uncaptured payment after that window and refunds the first installment. Test authorizations expire in one day, so manual test captures must be within one day (raw lines 796\u2013804).\n- **Partial capture:** Partial capture requires manual capture. A capture request specifies `amount.value` and may include `lineItems`. The remaining unclaimed amount is automatically cancelled unless the account is enabled for multiple partial captures; Support setup is described for that mode, with a new invoice per capture (raw lines 806\u2013815).\n- **Test/live gate:** Testing uses an Afterpay sandbox shopper account and test card. The sandbox country selector lists Australia, New Zealand, US and Canada, which is not a live acceptance matrix. The page says to submit an Afterpay request in live Customer Area before accepting live payments (raw lines 817\u2013836).\n\n## Detail locators\n\n- Add-on identity and no-Sessions-flow statement: pinned raw lines 15\u201331.\n- Advanced requirements, link-target mismatch, configuration and field table: pinned raw lines 33\u201365.\n- Example requests and redirect response: pinned raw lines 67\u2013794.\n- Capture and partial-capture rules: pinned raw lines 796\u2013815.\n- Sandbox and live request steps: pinned raw lines 817\u2013836.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and source route.\n- [[source-adyen-docs-payment-methods-afterpaytouch]] \u2014 Afterpay product/region overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15|Afterpay React Native Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md:29"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow [React Native Components integration](/online-payments/build-your-integration/advanced-flow?platform=React%2BNative\\&integration=Drop-in).",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md:39"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Afterpay.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md:47"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md:800"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md:813"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-react-native-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-react-native-component]] \u2014 2026-09-15-captured Afterpay React Native Components Advanced-only guide for request/redirect, capture limits and sandbox/live gates; source flags a mismatched base-guide link.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-component/2026-09-15.md",
+  "raw_sha256": "783615f190ed183563515e545a084320411bcfa4d3e4302cb09813de5b96b825",
+  "status": "candidate_ready"
+}

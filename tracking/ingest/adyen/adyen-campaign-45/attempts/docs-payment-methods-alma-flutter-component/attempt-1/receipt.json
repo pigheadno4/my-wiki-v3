@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-alma-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Alma Flutter Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alma/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md\"\ntags: [adyen, alma, flutter, components, installments, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide describes Alma-specific additions to an existing Flutter Components integration using Sessions or Advanced server-side flow. It covers request fields, Advanced redirect handling and an optional installment-count choice. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alma|the Alma method overview]] for broader method scope. The TEST examples do not establish merchant eligibility or a completed payment.\n\n## Key takeaways\n\n- Sessions requires an existing Flutter Components Sessions integration, Checkout API v68 or later, and Alma added in Customer Area (raw lines 25\u201333). The added `/sessions` table lists `telephoneNumber`, `shopperEmail`, `billingAddress` and `deliveryAddress` with blank **Required** cells (lines 35\u201346); this page does not mark these additions mandatory. Its v71 TEST sample uses FR/EUR and an app-scheme `adyencheckout://your.package.name` return URL (lines 48\u201382).\n- The Advanced section requires an existing Flutter Components Advanced integration, redirect action handling and Customer Area setup (lines 96\u2013106). Its `/payments` table lists the same four shopper/contact/address additions with blank **Required** cells. `additionalData.alma.installments_count` may be set to `3` or `4`; omit it if the shopper should choose (lines 114\u2013126). The v72 TEST example sets `4` for FR/EUR (lines 128\u2013166).\n- The Advanced sample response has `resultCode: RedirectShopper` and `action.type: redirect` (lines 168\u2013182). This is a shopper handoff, not proof of final authorisation, capture or settlement. Neither flow requires additional Alma configuration parameters on this page (lines 84\u201388, 108\u2013112). The page does not give an Alma-specific final-result, capture or refund procedure.\n- Both **Integration type** prerequisite URLs point to an Advanced **Drop-in** guide, although their labels name Flutter Components and the first row says Sessions (lines 31, 104). Follow the flow and integration labels, then verify the base Flutter Components guide rather than treating those URLs as matching prerequisites. The two curl examples also omit shell continuation between `-X POST` and `-d` (lines 55\u201356, 135\u2013136), so they are not copy-ready.\n- The TEST sections direct status checks in Customer Area. Before live Alma acceptance, the page says to submit an Alma request in live Customer Area (lines 90\u201394, 184\u2013188); this is an enablement step, not evidence of a particular merchant's live status.\n\n## Detail locators\n\n- Scope and Sessions requirements: raw lines 15\u201333; mismatched prerequisite URL at line 31.\n- Sessions added fields, v71 FR/EUR TEST request and return URL: lines 35\u201382; shell continuation issue at lines 55\u201356.\n- Sessions configuration and test/live route: lines 84\u201394.\n- Advanced requirements and redirect prerequisite: lines 96\u2013106; mismatched prerequisite URL at line 104.\n- Advanced request additions and optional installment count: lines 114\u2013126; v72 TEST request and shell issue at lines 128\u2013166.\n- Advanced redirect sample and test/live route: lines 168\u2013188.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment integration concept.\n- [[source-adyen-docs-payment-methods-alma]] \u2014 Alma method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15|2026-09-15 Alma Flutter Component guide]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Alma.",
+      "location": "raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md:32"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Alma.",
+      "location": "raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md:88"
+    },
+    {
+      "text": "Set to `3` or `4` to determine the number of installments the shopper will pay. Do not include if you want to let the shopper choose.",
+      "location": "raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md:126"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md:168"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-alma-flutter-component-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alma-flutter-component]] \u2014 2026-09-15 Alma Flutter Components Sessions/Advanced add-on for request fields, optional Advanced installment choice, redirect and test/live routes; source flags prerequisite-link and curl-example defects.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both Integration type links target Advanced Drop-in despite Flutter Components labels, including the Sessions row (raw lines 31, 104). Both curl examples omit a shell continuation between `-X POST` and `-d` (lines 55\u201356, 135\u2013136)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alma/flutter-component/2026-09-15.md",
+  "raw_sha256": "8205eb70c1edf1ba5dd4428fcc41e238fee8d69e9fe6b4eb995a70e763336e3e",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-clearpay-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Clearpay Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, clearpay, flutter, drop-in, buy-now-pay-later, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds Clearpay to an **existing Flutter Drop-in** integration, with separate Sessions and Advanced server-side flow instructions. It covers shopper and order request data, redirect handling, capture, refund/cancel, discounts, and test/live setup. The GBP/GB requests are examples, not a live merchant-eligibility claim. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and source link mismatch:** Sessions calls for an existing Flutter Drop-in Sessions flow, Checkout API v68 or later, redirect handling for `action.type: redirect`, and contacting Support to add Clearpay in Customer Area. Its link labelled \u201cSessions flow Flutter Drop-in integration\u201d points to an `advanced-flow` URL, while the redirect and session-creation links point to `sessions-flow`. Advanced calls for an existing Flutter Drop-in Advanced flow and redirect handling, and says to add Clearpay in Customer Area. Do not treat the Sessions prerequisite link target as changing the required flow (raw lines 25\u201342, 209\u2013231).\n- **Request data and configuration:** Both `/sessions` and `/payments` tables mark `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required, and list `telephoneNumber` if provided. Both say no extra Clearpay Drop-in configuration parameters are needed. The Advanced table does **not** have a `paymentMethod` row, but its `/payments` example includes `paymentMethod.type: clearpay`; use this as a sample/table discrepancy rather than silently treating the sample as a new table requirement (raw lines 40\u201353, 116\u2013120, 221\u2013255).\n- **Redirect and result boundary:** The Advanced example response shows `resultCode: RedirectShopper` with `action.type: redirect`, an intermediate shopper action, not a completed authorization, capture, refund or settlement (raw lines 308\u2013322).\n- **Capture and partial capture:** Account configuration determines automatic versus manual capture; partial capture requires manual capture. Clearpay must be captured within 13 days after authorization. The guide says the first installment is charged during authorization, and if uncaptured within 13 days Clearpay cancels the payment and refunds that installment. Test authorizations expire in one day. A partial capture normally cancels the unclaimed remainder, except when the account is enabled for multiple partial captures through Support; that mode creates a new invoice for each capture (raw lines 124\u2013143; repeated at 326\u2013345).\n- **Cancel, refund, discount:** Before capture, the guide routes to cancellation; after capture, returning funds routes to refund. Its refund request specifies `amount.value` and may include `lineItems`. For discounts, prose says to include a negative amount added to the original price. The illustrated \u201c1 GBP on Item #2\u201d payload uses a negative line item with `quantity: 2` and `amountIncludingTax: -100`; it also contains `...` and a missing comma between item objects, so it is not copy-ready JSON and does not independently establish discount arithmetic (raw lines 145\u2013190; repeated at 349\u2013396).\n- **Environment gates:** Testing requires the Clearpay sandbox and a test shopper account; the page says sandbox environment and test details vary by country/region, and that the sandbox shows Adyen as merchant name. It instructs a Clearpay request in live Customer Area before live acceptance (raw lines 192\u2013207; repeated at 398\u2013413).\n\n## Detail locators\n\n- Identity and Sessions requirements/request table: pinned raw lines 15\u201353.\n- Sessions request example, configuration and lifecycle: pinned raw lines 55\u2013207.\n- Advanced requirements, request table/example and redirect response: pinned raw lines 209\u2013322.\n- Advanced capture, refunds, discount and test/live: pinned raw lines 324\u2013413.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 Clearpay regional/method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15|Clearpay Flutter Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Clearpay to your existing integration. The following instructions show only what you must add to your integration specifically for Clearpay.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md:128"
+    },
+    {
+      "text": "If a payment has not yet been captured, you can [cancel](/online-payments/cancel) it. If a payment has already been captured and you want to return the funds to the shopper, you need to [refund](/online-payments/refund) the payment.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md:147"
+    },
+    {
+      "text": "To offer discounts, your payment request must include the negative amount to be added to the original price.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md:158"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "clearpay-flutter-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-flutter-drop-in]] \u2014 2026-09-15-captured Clearpay Flutter Drop-in Sessions/Advanced add-on for request/redirect, capture, refund/cancel, discounts and test/live gates; source flags flow-link and example/table mismatches.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "1d5be88fc35ffa7cd84b23f1c80ee4b399e3cb28d9d502fef1e83aa9254b87c6",
+  "status": "candidate_ready"
+}

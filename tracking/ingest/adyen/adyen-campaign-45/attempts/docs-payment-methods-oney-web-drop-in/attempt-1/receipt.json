@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-oney-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Oney Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/oney/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/oney/web-drop-in/2026-09-15.md\"\ntags: [adyen, oney, web, drop-in, installments, capture, refund]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs guide adds Oney to an **existing Web Drop-in** integration using either Sessions or Advanced flow. It requires Oney setup in Customer Area, shopper and purchased-item details, and successful authorization **and capture before shipping**. The guide is documentation, not evidence that a merchant is enabled or a transaction succeeded. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The guide has separate Sessions and Advanced base-flow requirements. Its API table calls `/sessions` the default with Drop-in v5.0.0 or later; `/payments` is presented for an additional use case. Do not treat the example Checkout API v69 Sessions and v72 payments calls, or language-specific library versions, as a single required version (pinned raw lines 27\u201351, 72\u201375, 763\u2013789).\n- Both API tables mark `lineItems`, `shopperEmail`, `shopperReference`, `shopperName`, `telephoneNumber` and `billingAddress` required. Oney approval depends on the `lineItems` total matching `amount.value`. The tables give a three-character minimum shopper reference, 32-character maximum name, country-specific mobile prefixes and five-character billing postal code. They describe delivery address (falling back to billing if absent), date of birth, locale and country code without required marks. `oneydata.trustFlag` is optional and requires Oney enablement; `merchantPays` optionally overrides the account's interest-fee setting (lines 53\u201370 and 767\u2013784).\n- Optional Drop-in configuration is per supported installment type: `facilypay_3x`, `4x`, `10x` and `12x` for France/Spain, and `6x` for Spain only. Pre-filled personal and address data and form visibility can be configured; the defaults hide company and bank-account fields and make personal/billing/delivery fields editable (lines 1255\u20131354).\n- Capture can be manual or automatic, with or without delay, according to capture settings. Capture after more than six days is described as expiring authorization and requiring reauthorization; confirm capture before shipping. Cancel uncaptured payments; refund captured payments. Refunds have a EUR 1 minimum and a 13-month window after capture; partial refunds use the `/payments/{paymentPspReference}/refunds` amount field (lines 1356\u20131376).\n- Test instructions give different France amount bands for Authorised, Pending and Refused, a separate 10x/12x scenario, Spanish identification-number outcomes, and country/installment minimum test amounts. The live section directs merchants to request Oney 3x4x in live Customer Area; test samples and this request do not prove live acceptance (lines 1378\u20131456).\n\n> [!warning] Example and scope inconsistencies\n> The installment table spells the 3x type `facilypay_3x`, but two Drop-in configuration snippets use `facilpay_3x` (raw lines 1261, 1273 and 1344). The Advanced C# example sets `CountryCode = \"EUR\"` while the adjacent FR/EUR examples use `FR` as the country (line 1010). Example phone `+33 1 76 35 07 90` does not match the table's French `+336`/`+337` mobile-prefix description (lines 59\u201360 and 87). The minimum-test table mentions Italy, although the installment-configuration table lists only France and Spain (lines 1259\u20131265 and 1448\u20131452). These examples and tables should not be copied or combined as proof of an eligible, valid request.\n\n## Detail locators\n\n- Existing-integration purpose, pre-shipping capture and Sessions/Advanced requirements: pinned raw lines 15\u201343.\n- Sessions and Advanced API tables and sample requests: lines 45\u20131253.\n- Installment mapping, optional prefill and visibility: lines 1255\u20131354.\n- Capture/refund boundaries: lines 1356\u20131376; testing and live-request route: lines 1378\u20131456.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-oney]] \u2014 Oney overview for method-level scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/oney/web-drop-in/2026-09-15|Oney Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that the payment is authorised and successfully [captured](#capture) before you ship the goods.",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "Oney will only approve the payment if the total amount specified in `lineItems` matches the `amount.value`.",
+      "location": "pinned raw line 55"
+    },
+    {
+      "text": "When you [create the instance of Drop-in](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Drop-in#id1031863926), you can add optional configuration for Oney.",
+      "location": "pinned raw line 1257"
+    },
+    {
+      "text": "If a payment is captured after more than six days, the payment authorization expires and the payment must be authorised again.",
+      "location": "pinned raw line 1362"
+    },
+    {
+      "text": "The minimum refund amount is EUR 1. You can refund payments until 13 months after they have been captured.",
+      "location": "pinned raw line 1370"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-oney-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-oney-web-drop-in]] \u2014 2026-09-15 Oney Web Drop-in Sessions/Advanced add-on with shopper/item requirements, installment mapping, capture/refund limits and source example conflicts.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Source flags 3x type typo in configuration snippets, C# countryCode EUR error, French phone example mismatch and Italy test-minimum versus FR/ES configuration-table scope."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/oney/web-drop-in/2026-09-15.md",
+  "raw_sha256": "c6d996756023d63ae5e0dcb969ccf0a29199a3d878b62826e11670998c45dab2",
+  "status": "candidate_ready"
+}

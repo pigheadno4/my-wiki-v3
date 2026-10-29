@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-alma-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Alma Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alma/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/alma/android-drop-in/2026-09-15.md\"\ntags: [adyen, alma, android, drop-in, redirect, installments]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Alma to an existing Android Drop-in integration using Sessions or Advanced flow. It covers method-specific request additions, redirect handling and test/live routes. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alma|the Alma overview]] for captured FR/EUR method scope. The examples do not establish current eligibility, completed app return or payment success.\n\n## Key takeaways\n\n- Sessions requires an existing Android Drop-in Sessions integration, Checkout API v68 or later and Alma added in Customer Area. Advanced requires its Android Drop-in base integration, additional-action handling for `action.type: redirect` and Customer Area setup. Both flow sections say no Alma-specific configuration parameters are needed.\n- The Alma-specific `/sessions` and `/payments` tables list telephone number, shopper email, billing and delivery addresses with blank Required cells. Advanced also lists optional `additionalData.alma.installments_count`: `3` or `4` selects the installment count, while omission lets the shopper choose. Fields included in an example are not thereby mandatory.\n- The Sessions FR/EUR TEST v71 example uses the Android app-scheme `returnUrl` placeholder `adyencheckout://your.package.name` (raw line 63); the Advanced FR/EUR TEST v72 example uses an HTTPS return URL (line 143). The guide does not reconcile the return-route difference or show a completed app return. Advanced shows `RedirectShopper`/`action.type: redirect`, not final authorization.\n- Both curl examples split `-X POST` and `-d` without a shell continuation (raw lines 51\u201357 and 131\u2013137), so they are not verified copy-ready commands. TEST status is checked in Customer Area; accepting live Alma requires a request in live Customer Area.\n\n## Detail locators\n\n- Sessions prerequisites, optional fields and FR/EUR v71 example: pinned raw lines 25\u201383. No-extra-config and test/live: lines 85\u201397.\n- Advanced prerequisites, optional installments field, FR/EUR v72 example and redirect action: lines 99\u2013183. Test/live route: lines 185\u2013189.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-alma]] \u2014 method and feature overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alma/android-drop-in/2026-09-15|Alma Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=Android). Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "Sessions flow Drop-in > Requirements, line 33"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Alma.",
+      "location": "Sessions flow Drop-in > Add additional configuration, line 89"
+    },
+    {
+      "text": "Set to `3` or `4` to determine the number of installments the shopper will pay. Do not include if you want to let the shopper choose.",
+      "location": "Advanced flow Drop-in > /payments > additionalData.alma.installments_count, line 127"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "Advanced flow Drop-in > response, line 169"
+    },
+    {
+      "text": "Before you can accept live Alma payments, you need to [submit a request for Alma](/payment-methods/add-payment-methods) in your [live Customer Area](https://ca-live.adyen.com/).",
+      "location": "Advanced flow Drop-in > Test and go live, line 189"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "alma-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alma-android-drop-in]] \u2014 2026-09-15 Android Drop-in Sessions/Advanced Alma add-on for optional fields, installment choice and redirect/test-live routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alma/android-drop-in/2026-09-15.md",
+  "raw_sha256": "a24d4be037ed7ee02a77e2c4ce8a1f19ed53004151e3080bfce9a2a5ff0bc461",
+  "status": "candidate_ready"
+}

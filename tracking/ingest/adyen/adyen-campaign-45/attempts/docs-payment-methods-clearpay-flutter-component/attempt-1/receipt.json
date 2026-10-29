@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-clearpay-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Clearpay Flutter Components integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/flutter-component/2026-09-15.md\"\ntags: [adyen, clearpay, flutter, components, redirect, capture, refund]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page describes Clearpay-specific additions to an **existing Flutter Components** integration with Sessions or Advanced server flow. Both paths require Clearpay in Customer Area and redirect handling. The GB/GBP request examples and sandbox instructions do not establish live merchant eligibility, a completed redirect, authorization or capture. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The Sessions requirement specifies Checkout API v68 or later, while its sample uses a v71 test URL; the Advanced sample uses v72. Both paths refer back to the appropriate base integration and say no additional Clearpay configuration parameters are needed. The page does not give Flutter Component initialization code of its own (pinned raw lines 25\u201340, 53\u2013118, 207\u2013229).\n- Both request tables mark shopper name, email, reference (minimum three characters), country code, billing and delivery addresses, and `lineItems` required, with telephone number optional. The Advanced request example includes `paymentMethod.type: clearpay` and the response example has a redirect action and `RedirectShopper`; that is a handoff step, not a final payment result (lines 42\u201351, 231\u2013320).\n- Depending on merchant-account configuration, capture is automatic after authorization or manual. Capturing after shipment requires a delay or manual capture; partial capture requires manual capture. Clearpay says capture within 13 days after authorization. It charges the first installment during authorization, then cancels and refunds that installment if the payment is not captured in time. In test, manual capture has a one-day limit (lines 120\u2013130 and 322\u2013332).\n- Manual `/payments/{paymentPspReference}/captures` uses full or partial `amount.value`, with optional `lineItems`. An initial partial capture cancels the unclaimed remainder unless multiple partial captures are enabled through Support; each enabled partial capture creates a new invoice. Cancel an uncaptured payment; refund a captured one via `/payments/{paymentPspReference}/refunds`, with optional line items (lines 132\u2013152 and 334\u2013354).\n- The guide includes negative-line discount examples and a Clearpay sandbox shopper/test-card route. A live Customer Area request is stated before live acceptance; test instructions are not proof of live operation (lines 154\u2013205 and 356\u2013407).\n\n> [!warning] Example and link inconsistencies\n> Both Flutter **Components** requirement links point to an **Advanced Drop-in** URL, including the Sessions requirement (raw lines 31 and 215); their redirect links instead name the respective Sessions/Advanced Components paths (lines 33 and 216). The discount prose says 1 GBP off Item #2, but the sample uses quantity 2 at `-100` minor units and drops the total from 1000 to 800, a 2 GBP reduction; it also has an ellipsis and no comma between item objects, so it is not copy-ready JSON (lines 156\u2013188 and 358\u2013390). Both curl examples omit a line continuation after `-X POST` before `-d` (lines 60\u201361 and 249\u2013250); verify shell syntax before use.\n\n## Detail locators\n\n- Sessions requirements, fields, example and configuration statement: pinned raw lines 25\u2013118.\n- Sessions capture/refund, discount and test/live route: lines 120\u2013205.\n- Advanced requirements, request/redirect, lifecycle and test/live route: lines 207\u2013407.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 Clearpay GB/GBP method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/flutter-component/2026-09-15|Clearpay Flutter Components guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Clearpay to your existing integration.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 32"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Clearpay.",
+      "location": "pinned raw line 118"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "pinned raw line 126"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "pinned raw line 139"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-clearpay-flutter-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-flutter-component]] \u2014 2026-09-15 Clearpay Flutter Components Sessions/Advanced add-on for redirect, capture/refund, discount and sandbox/live routes, with example and base-link caveats.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both Flutter Components base-guide links point to Advanced Drop-in (raw 31/215); discount samples have arithmetic/JSON contradictions (156\u2013188/358\u2013390); curl samples omit continuation before -d (60\u201361/249\u2013250)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/flutter-component/2026-09-15.md",
+  "raw_sha256": "951885af7357dd3874e02e3b6dba10acfaa05d58b381b1c38834f86b2ba3236f",
+  "status": "candidate_ready"
+}

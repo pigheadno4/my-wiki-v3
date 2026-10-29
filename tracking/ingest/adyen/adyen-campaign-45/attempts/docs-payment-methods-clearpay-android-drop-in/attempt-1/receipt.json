@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-clearpay-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Clearpay Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md\"\ntags: [adyen, clearpay, android, drop-in, buy-now-pay-later, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds Clearpay to an **existing Android Drop-in** integration, with separate Sessions and Advanced server-side flow instructions. It describes shopper and order request fields, a redirect action, capture/partial-capture behavior, cancellation versus refund, discounts, and test/live setup. The GB/GBP payloads illustrate requests and do not prove merchant enablement or a completed payment. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Flow prerequisites:** Sessions requires an existing Android Drop-in Sessions integration with Checkout API v68 or later and Clearpay added in Customer Area. Advanced requires an existing Android Drop-in Advanced integration, handling `action.type: redirect`, and Clearpay added in Customer Area. Its requirements table does not restate the Sessions API minimum (raw lines 25\u201334, 213\u2013221).\n- **Fields and configuration:** Both flow tables mark `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required; `telephoneNumber` appears if provided. Both sections say no additional Clearpay Drop-in configuration is needed. The Advanced table omits `paymentMethod`, but its `/payments` example includes `paymentMethod.type: clearpay`; preserve this table/example distinction (raw lines 38\u201351, 114\u2013118, 225\u2013256).\n- **Redirect boundary:** The Advanced response example has `resultCode: RedirectShopper` and `action.type: redirect`. That is an intermediate shopper action, not proof of authorization, capture or settlement (raw lines 310\u2013324).\n- **Capture and partial capture:** Capture can be automatic or manual depending on account configuration, and partial capture requires manual capture. Clearpay must be captured within 13 days after authorization; the guide says the first installment is charged during authorization, and an uncaptured payment past that window is cancelled with the first installment refunded. Test authorizations expire in one day. An unclaimed remainder after partial capture is normally cancelled unless the account has multiple partial captures enabled through Support; this mode creates a new invoice per capture (raw lines 122\u2013141; repeated at 328\u2013347).\n- **Cancellation, refund and discounts:** An uncaptured payment can be cancelled; returning funds after capture uses refund. Full or partial refund requests specify `amount.value` and can include `lineItems`. The discount prose instructs a negative amount added to original price, and its \u201c1 GBP on Item #2\u201d illustration uses a negative line item. The shown payload contains `...` and lacks a comma between item objects, so it is illustrative and not copy-ready JSON (raw lines 143\u2013192; repeated at 349\u2013394).\n- **Sandbox/live gates:** Testing requires Clearpay's sandbox and a test shopper account; the page says sandbox environments/details vary by country or region and Adyen appears as sandbox merchant name. It says a request for Clearpay in live Customer Area is needed before live acceptance (raw lines 194\u2013211; repeated at 396\u2013411).\n\n## Detail locators\n\n- Identity, Sessions prerequisites and request field table: pinned raw lines 15\u201351.\n- Sessions example, no-extra-configuration and lifecycle/test sections: pinned raw lines 53\u2013211.\n- Advanced prerequisites, field table/example and redirect response: pinned raw lines 213\u2013324.\n- Advanced capture, refund/cancel, discount and test/live sections: pinned raw lines 326\u2013411.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 Clearpay regional/method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15|Clearpay Android Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Clearpay to your existing integration. The following instructions show only what you must add to your integration specifically for Clearpay.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md:126"
+    },
+    {
+      "text": "If a payment has not yet been captured, you can [cancel](/online-payments/cancel) it. If a payment has already been captured and you want to return the funds to the shopper, you need to [refund](/online-payments/refund) the payment.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md:147"
+    },
+    {
+      "text": "To offer discounts, your payment request must include the negative amount to be added to the original price.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md:160"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "clearpay-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-android-drop-in]] \u2014 2026-09-15-captured Clearpay Android Drop-in Sessions/Advanced add-on for request fields, redirect, capture/partial capture, refund/cancel, discounts and sandbox/live gates.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/android-drop-in/2026-09-15.md",
+  "raw_sha256": "5a6465de52e0691c735040ae7715dbe5c536090e887281cef17ca01da1187406",
+  "status": "candidate_ready"
+}

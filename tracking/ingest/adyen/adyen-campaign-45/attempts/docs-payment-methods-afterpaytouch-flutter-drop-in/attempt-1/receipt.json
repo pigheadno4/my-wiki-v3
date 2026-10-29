@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Afterpay Flutter Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, afterpay, flutter, drop-in, redirect, capture]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] guide adds Afterpay to an **existing Flutter Drop-in integration**, with separate Sessions and Advanced server-flow sections. It supplies method-specific additions, not a full base integration or proof of merchant enablement. The related [[source-adyen-docs-payment-methods-afterpaytouch]] overview gives the AU/CA/NZ Afterpay product scope; AUD/AU examples and a US sandbox-account option here do not establish wider live eligibility. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions prerequisites and source mismatch:** The Sessions section calls for an existing Flutter Drop-in Sessions flow, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and contacting Support to add Afterpay in Customer Area (raw lines 25\u201336). Its \u201cFlutter Drop-in integration\u201d prerequisite text links to an **Advanced** base guide (`advanced-flow?platform=Flutter&integration=Drop-in`) even though the section says Sessions (raw line 33). The redirect and create-session links point to Sessions. Choose the actual Sessions base flow rather than treating the mismatched prerequisite link as authority.\n- **Sessions request:** The `/sessions` table marks `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required; `telephoneNumber` is optional if provided (raw lines 38\u201353). The AUD/AU TEST curl and API-library examples are sample request shapes, not live product or SDK guarantees (raw lines 55\u2013737).\n- **Advanced prerequisites and request:** The Advanced section calls for an existing Advanced Flutter Drop-in integration, redirect handling and adding Afterpay in Customer Area (raw lines 789\u2013799). This setup wording differs from the Sessions section's **contact Support** instruction; neither text proves the method is already enabled. Its `/payments` table requires `paymentMethod: afterpaytouch` plus the same required shopper, country, address and line-item fields, with telephone optional (raw lines 807\u2013823). The response example's `RedirectShopper`/`action.type: redirect` is a redirect step, not a final payment outcome (raw lines 1538\u20131552).\n- **Drop-in configuration:** Both sections say no additional Afterpay-specific configuration parameters are needed (raw lines 739\u2013743, 801\u2013805). This does not remove the existing Drop-in, redirect or server-flow prerequisites.\n- **Capture deadline and first installment:** Capture is automatic after authorisation or manual, depending on merchant-account configuration. Capture delay or manual capture is needed to capture after shipping, and partial capture requires **manual** capture (raw lines 747\u2013749, 1554\u20131556). The guide says Afterpay payment capture must occur within **13 days** of authorisation. It says the first installment is charged during authorisation; if not captured by the deadline, Afterpay cancels and refunds it. In TEST, authorisations expire in **one day** and manual test capture must occur within that day (raw lines 751\u2013755, 1558\u20131562).\n- **Partial capture:** Manual `/payments/{paymentPspReference}/captures` requests specify full or partial `amount.value`; `lineItems` is optional. A partial capture normally cancels the unclaimed balance. When an account is enabled for **multiple partial captures**, the balance remains; setup requires contacting Support and each capture creates a new invoice (raw lines 757\u2013766, 1564\u20131573). This page does not provide a refund procedure.\n- **Test/live route:** Testing requires an Afterpay sandbox shopper account and test card; separate accounts are called for when testing multiple countries or regions (raw lines 768\u2013785, 1575\u20131592). The sandbox selector includes US, while the linked overview's product table lists AU/CA/NZ; sandbox choice alone does not prove live US availability. Before live acceptance, the page instructs merchants to submit an Afterpay request in live Customer Area (raw lines 787, 1594). These are documentation steps, not evidence of approval or a completed live payment.\n\n## Detail locators\n\n- Sessions prerequisites, mismatched base-flow URL, Support gate and request table: pinned raw lines 25\u201353.\n- Sessions TEST curl/API-library examples: pinned raw lines 55\u2013737.\n- Sessions configuration, capture and test/live sections: pinned raw lines 739\u2013787.\n- Advanced prerequisites, configuration and `/payments` field table: pinned raw lines 789\u2013823.\n- Advanced TEST examples and redirect response: pinned raw lines 825\u20131552.\n- Advanced capture, multiple-partial Support gate and test/live instructions: pinned raw lines 1554\u20131594.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online checkout context.\n- [[source-adyen-docs-payment-methods-afterpaytouch]] \u2014 Afterpay method and region overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/flutter-drop-in/2026-09-15|Afterpay Flutter Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have an existing Sessions flow [Flutter Drop-in integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in).",
+      "location": "line 33"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Afterpay in your Customer Area.",
+      "location": "line 36"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "line 751"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "line 764"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "line 1538"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-flutter-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-flutter-drop-in]] \u2014 2026-09-15 Afterpay Flutter Drop-in Sessions/Advanced add-on for request fields, redirect, capture deadlines and partial-capture gates; source flags Sessions base-link mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "cd33785c8a4593adafe3a5666b4d5ad5c7ab453db609b065bb89beaa94c018bd",
+  "status": "candidate_ready"
+}

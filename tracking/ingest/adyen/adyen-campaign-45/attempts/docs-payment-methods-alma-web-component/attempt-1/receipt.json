@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-alma-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Alma Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alma/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/alma/web-component/2026-09-15.md\"\ntags: [adyen, alma, web, components, redirect, installments]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Alma to an existing Web Components integration through Sessions or Advanced flow. It covers request additions, Redirect Component setup, optional installment count and test/live routes. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alma|the Alma overview]] for captured FR/EUR method scope. The TEST samples do not prove account eligibility or a completed payment.\n\n## Key takeaways\n\n- Sessions requires an existing Web Components Sessions integration, Checkout API v68 or later and Alma added in Customer Area. Advanced requires its Web Components base integration, `action.type: redirect` handling and Customer Area setup. TEST curl samples use Checkout API v71 for `/sessions` and v72 for `/payments`, both with FR/EUR.\n- The Alma-specific `/sessions` and `/payments` tables list telephone number, shopper email, billing and delivery addresses with blank Required cells. Advanced also lists optional `additionalData.alma.installments_count`: `3` or `4` chooses the installment count, while omission lets the shopper choose. The examples include optional fields but do not make them mandatory.\n- Import Adyen Web with `Redirect` and initialize that class for Alma; the Sessions flow says no extra method configuration is needed. The JavaScript example writes `{ type:alma }` without quoting or defining `alma`, so treat it as illustrative rather than verified runnable code.\n- The Web Sessions TEST sample uses an Android-style app-scheme `returnUrl` placeholder `adyencheckout://your.package.name` (line 64), while the Advanced Web sample uses HTTPS (line 184). The guide does not reconcile this cross-platform example difference or show a completed return. The Advanced example shows `RedirectShopper`/`action.type: redirect`, which is a handoff action, not final authorization.\n- TEST payment status is checked in Customer Area; live acceptance requires requesting Alma in live Customer Area. This add-on does not describe capture, refund or final asynchronous outcomes.\n\n## Detail locators\n\n- Sessions prerequisites, optional fields and FR/EUR v71 example: pinned raw lines 25\u201384. Redirect import/init and no-extra-config: lines 86\u2013114.\n- Advanced prerequisites, redirect setup and optional installments count: lines 122\u2013169. FR/EUR v72 example and redirect response: lines 170\u2013224. Test/live route: lines 226\u2013230.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-alma]] \u2014 method overview and feature matrix\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alma/web-component/2026-09-15|Alma Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "Sessions flow Component > Requirements, line 34"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Alma.",
+      "location": "Sessions flow Component > Add additional configuration, line 102"
+    },
+    {
+      "text": "To [initialize](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#initialize-the-payment-session) Alma, use the `Redirect` class.",
+      "location": "Sessions flow Component > Initialize, line 108"
+    },
+    {
+      "text": "Set to `3` or `4` to determine the number of installments the shopper will pay. Do not include if you want to let the shopper choose.",
+      "location": "Advanced flow Component > /payments > additionalData.alma.installments_count, line 168"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "Advanced flow Component > response, line 210"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "alma-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alma-web-component]] \u2014 2026-09-15 Alma Web Components Sessions/Advanced redirect add-on with optional request fields, installment choice and test/live routes; source flags return-URL example mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alma/web-component/2026-09-15.md",
+  "raw_sha256": "6f5bc982835885c0291476faf369eb560f517a22f5f56f2d7467a1440c5ccb03",
+  "status": "candidate_ready"
+}

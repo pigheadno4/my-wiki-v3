@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-clearpay-web-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Clearpay Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/web-component/2026-09-15.md\"\ntags: [adyen, clearpay, web, components, redirect, capture]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Clearpay to an existing Web Components integration through Sessions or Advanced flow. It covers request fields, Redirect Component setup, capture/refund behavior and test/live setup. See [[adyen-online-payments]]. Its GB/GBP TEST examples and sandbox instructions do not prove current merchant eligibility or a completed payment.\n\n## Key takeaways\n\n- Sessions requires an existing Web Components Sessions integration, Checkout API v68 or later, redirect handling and Clearpay added in Customer Area. Advanced requires the corresponding Advanced integration, redirect handling and Customer Area setup. The `/sessions` TEST example uses Checkout API v71 with GB/GBP; `/payments` uses v72 and `paymentMethod.type: clearpay`. These are examples, not a full country support matrix. Both curl snippets put `-X POST` and `-d` on separate lines without a shell continuation (raw lines 57\u201363 and 286\u2013292), so they are not verified copy-ready commands.\n- Both endpoint tables mark shopper name/email/reference, country code, billing/delivery address and `lineItems` required; telephone number is optional. Import Adyen Web with `Redirect` and initialize that class for Clearpay. The page says no extra Clearpay configuration parameters are needed. Its JS example writes `{ type:clearpay }` without quoting or defining `clearpay`; treat it as illustrative rather than verified runnable code.\n- Advanced shows a `RedirectShopper` response with `action.type: redirect`, which calls for the existing redirect handler; it does not establish return processing or final authorization.\n- Capture can occur automatically or manually under merchant configuration. To capture after goods are sent, configure a delay or manual capture; partial capture requires manual capture. Capture within 13 days of authorisation or Clearpay cancels and refunds the first installment charged at authorization. TEST authorization expires in one day. An unclaimed remainder after partial capture is cancelled unless multiple partial captures are enabled through Support; each capture then creates a new invoice. Cancel before capture, refund after capture.\n- The discount sections call the example a GBP 1 discount, but `quantity: 2` at `amountIncludingTax: -100` minor units reduces the line-item sum and order total by 200 minor units (GBP 2), from 1000 to 800 (raw lines 182\u2013212 and 400\u2013430). The displayed JSON also has an ellipsis and omits a comma between line items. Treat it as inconsistent illustration, not a validated request. Testing uses a Clearpay sandbox shopper account and regional test details; live acceptance requires requesting Clearpay in live Customer Area.\n\n## Detail locators\n\n- Sessions prerequisites, fields and GB/GBP v71 example: pinned raw lines 25\u2013114. Import, no-extra-config and Redirect initialization: lines 116\u2013144. Sessions capture, refund, discount and test/live: lines 146\u2013231.\n- Advanced prerequisites, import/init, fields, GB/GBP v72 example and redirect response: lines 233\u2013362. Repeated capture/refund/discount and test/live guidance: lines 364\u2013449.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/web-component/2026-09-15|Clearpay Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "Sessions flow Component > Requirements, line 34"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Clearpay.",
+      "location": "Sessions flow Component > Add additional configuration, line 132"
+    },
+    {
+      "text": "To [initialize](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#initialize-the-payment-session) Clearpay, use the `Redirect` class.",
+      "location": "Sessions flow Component > Initialize, line 138"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "Sessions flow Component > Capture the payment, line 152"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "Advanced flow Component > Full or partial manual captures, line 383"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "clearpay-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-web-component]] \u2014 2026-09-15 Clearpay Web Components Sessions/Advanced redirect add-on with request fields, capture/refund limits and test/live setup.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/web-component/2026-09-15.md",
+  "raw_sha256": "d31019d7d5ba976e0ada116b6b0f59b6964bc7c44bf81043d70afcd8d4ef5e92",
+  "status": "candidate_ready"
+}

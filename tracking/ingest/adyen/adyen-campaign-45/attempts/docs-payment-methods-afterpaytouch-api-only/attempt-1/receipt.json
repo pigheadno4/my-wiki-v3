@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Afterpay API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/api-only/2026-09-15.md\"\ntags: [adyen, afterpay, api-only, redirect, capture, tokenization]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Afterpay to an existing API-only online-payments integration. The merchant builds the form, collects shopper data, requests `afterpaytouch`, handles a redirect and captures payment. See [[adyen-online-payments]]. The captured API examples and sandbox instructions do not prove current merchant enablement, a completed redirect or successful settlement.\n\n## Key takeaways\n\n- Start with an existing API-only integration configured for `action.type: redirect`, and add Afterpay in Customer Area. The merchant form collects full name, email, billing and delivery addresses for Afterpay risk checks. The `/payments` table also marks shopper reference, country code and `lineItems` required; telephone number is optional. The AU/AUD TEST payment example uses Checkout API v68 and `paymentMethod.type: afterpaytouch`; a redirect action is shown, not final payment success.\n- `/paymentMethods` discovery table pairs AU/AUD, NZ/NZD and CA/CAD. Its AU/AUD TEST example uses Checkout API v71. These captured combinations describe method discovery requests, not current account availability or all supported markets. The sandbox setup lists AU, NZ, US and Canada as test account choices; US in that list is not a discovery-table country/currency pair.\n- Depending on account settings, capture follows authorisation automatically or manually. Shipping before capture calls for capture delay or manual capture; partial capture requires manual capture. Capture within 13 days, or Afterpay cancels and refunds the first installment charged at authorisation. TEST authorizations expire in one day. After one partial capture, the unclaimed amount is cancelled unless the account is enabled for multiple partial captures through Support; each capture then creates a new invoice. Cancel before capture and refund after capture.\n- Recurring and on-file tokenization is explicitly limited to Australia and New Zealand. With shopper permission, the initial payment or zero-value authorization redirects the shopper to approve storage; enable tokenization webhooks and save `storedPaymentMethodId` with `shopperReference` from `recurring.token.created` (response additional data is an optional route). Later token payments use `ContAuth`/`CardOnFile` and the guide says no Afterpay redirect because prior approval was given. This does not extend tokenization to Canada or prove that all future payments authorize.\n- The discount section calls for a negative line-item amount, but its illustrative JSON has an empty currency and is not a complete validated payment request. Live acceptance requires a request for Afterpay in live Customer Area.\n\n## Detail locators\n\n- API-only/redirect prerequisites and method workflow: pinned raw lines 15\u201350. Discovery pairs and sample: lines 52\u201391. `/payments` fields, AU/AUD sample and redirect response: lines 93\u2013171 and 822\u2013836.\n- Capture, cancellation/refund and discount example: lines 838\u2013904. AU/NZ tokenization and initial/later payment examples: lines 906\u20131130. Sandbox/live setup: lines 1132\u20131151.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/api-only/2026-09-15|Afterpay API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Tokenization for recurring and on-file payments is only supported for Australia and New Zealand.",
+      "location": "Requirements > Limitations, line 30"
+    },
+    {
+      "text": "To perform risk checks, Afterpay requires you to collect the following shopper details:",
+      "location": "Build your payment form, line 44"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "Capture the payment, line 842"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "Full or partial manual captures, line 855"
+    },
+    {
+      "text": "The shopper is **not redirected to Afterpay** because they have given their approval for the use of their stored payment details.",
+      "location": "Recurring and on-file payments > later token payment, line 1108"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-api-only]] \u2014 2026-09-15 Afterpay API-only redirect guide covering discovery pairs, capture/refund and AU/NZ-only recurring/on-file tokenization.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/api-only/2026-09-15.md",
+  "raw_sha256": "24f461a360da9419d04f2dc3a53eef7fc82877013c8e7cbf6c6ae2f72fd44aca",
+  "status": "candidate_ready"
+}

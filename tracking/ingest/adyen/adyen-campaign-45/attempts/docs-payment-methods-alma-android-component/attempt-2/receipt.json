@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-alma-android-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Alma Android Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alma/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/alma/android-component/2026-09-15.md\"\ntags: [adyen, alma, android, components, redirect, installments]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds Alma to an existing Android Components integration with Sessions or Advanced flow. It supplies the InstantPaymentComponent setup, optional request additions, redirect action and test/live routes. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-alma|the Alma overview]] for the captured FR/EUR and feature matrix. TEST examples do not prove current merchant eligibility or a completed payment.\n\n## Key takeaways\n\n- Sessions requires an existing Android Components Sessions integration, Checkout API v68 or later, and Alma added in Customer Area. Advanced requires its Android Components base integration, additional-action handling for `action.type: redirect`, and Customer Area setup. The Sessions example uses TEST Checkout API v71; Advanced uses v72. Both curl examples put `-X POST` and `-d` on separate shell lines without a continuation (pinned raw lines 52\u201358 and 288\u2013294), so they illustrate request data rather than verified copy-ready commands.\n- The Alma-specific `/sessions` and `/payments` tables list telephone number, shopper email, billing and delivery addresses with blank Required cells. Advanced also lists optional `additionalData.alma.installments_count`: set `3` or `4` to choose installments, or omit to let the shopper choose. Do not infer these fields are mandatory from their presence in the examples.\n- Import `com.adyen.checkout:instant`; with Jetpack Compose also import `components-compose`. Both flows use `InstantPaymentComponent`, with separate Compose and XML/non-Compose examples. Compose examples require a unique Component key for each different screen/session or reset. The guide says no additional Alma configuration parameters are needed.\n- The Sessions TEST example uses FR/EUR and an Android app-scheme `returnUrl` placeholder `adyencheckout://your.package.name` (raw line 64). The Advanced FR/EUR example instead uses an HTTPS return URL (line 300), and the response shows `RedirectShopper`/`action.type: redirect`. The capture does not explain the difference or show a completed app return; validate the return route for the actual integration. The Advanced example also uses `shopperLocale: en-US` with country FR, which is example scope only.\n- Check TEST payment status in Customer Area. The page says a live Customer Area request for Alma is needed before accepting live payments. It does not define capture, refund or final asynchronous status behavior; use the overview and main integration guides for their respective scope.\n\n## Detail locators\n\n- Sessions prerequisites, optional field table and FR/EUR app-scheme TEST example: pinned raw lines 25\u201384. Module and InstantPaymentComponent setup: lines 86\u2013168.\n- Advanced prerequisites, setup and optional installments field: lines 176\u2013285. FR/EUR HTTPS return example and redirect response: lines 286\u2013340. Test/live route: lines 342\u2013346.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-alma]] \u2014 method scope and capability matrix\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alma/android-component/2026-09-15|Alma Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "Sessions flow Component > Requirements, line 34"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Alma.",
+      "location": "Sessions flow Component > Add additional configuration, line 113"
+    },
+    {
+      "text": "To [create the Component](/online-payments/build-your-integration/sessions-flow?platform=Android\\&integration=Components#launch-and-show) for Alma, use the `InstantPaymentComponent` class.",
+      "location": "Sessions flow Component > Launch and show, line 119"
+    },
+    {
+      "text": "Set to `3` or `4` to determine the number of installments the shopper will pay. Do not include if you want to let the shopper choose.",
+      "location": "Advanced flow Component > /payments > additionalData.alma.installments_count, line 284"
+    },
+    {
+      "text": "The response includes the `action.type`: **redirect**.",
+      "location": "Advanced flow Component > response, line 326"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "alma-android-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alma-android-component]] \u2014 2026-09-15 Android Components Sessions/Advanced Alma add-on for optional request fields, InstantPaymentComponent setup and redirect/test-live routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alma/android-component/2026-09-15.md",
+  "raw_sha256": "e487ec2cf4cf0d368d4d069c2a5911aa345529e4930201efd37fda4a9e9a1840",
+  "status": "candidate_ready"
+}

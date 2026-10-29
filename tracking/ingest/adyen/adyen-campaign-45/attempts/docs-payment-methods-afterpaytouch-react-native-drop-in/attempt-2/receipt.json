@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-react-native-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Afterpay React Native Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, afterpay, react-native, drop-in, redirect, capture]\n---\n\n## Overview\n\nThis Adyen Docs guide, captured 2026-09-15, describes **Afterpay-specific additions to an existing React Native Drop-in** integration. It has separate Sessions and Advanced server-flow paths; both require Customer Area setup and redirect handling. It does not itself prove merchant enablement, shopper approval, a completed redirect, capture or live payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The Sessions path requires Checkout API v68 or later, an existing Sessions React Native Drop-in, and handling of `action.type: redirect`. Its `/sessions` table marks shopper name, email, unique reference (minimum three characters), country code, billing and delivery addresses, and `lineItems` required; telephone number is optional. The Advanced `/payments` path marks the same data required plus `paymentMethod: afterpaytouch`, again with optional phone. The guide says no extra Afterpay Drop-in configuration parameters are needed (pinned raw lines 25\u201353, 739\u2013743, 789\u2013824, 1538\u20131552).\n- The example requests use AU/AUD and test endpoints; they are examples of one region, not a region-wide eligibility matrix or a live result. The Advanced example's redirect action has `resultCode: RedirectShopper`, which requires the existing redirect handling rather than proving authorization (lines 55\u2013113, 827\u2013888, 1538\u20131552).\n- Depending on merchant-account configuration, capture is automatic after authorization or manual. Capture after shipment needs a delay or manual capture; partial capture needs manual capture. The page says capture within 13 days after authorization. The first installment is charged during authorization; if the payment is not captured by the 13-day limit, Afterpay cancels it and refunds that installment. Test authorizations expire after one day, so manual test capture has that shorter limit (lines 747\u2013755, 1554\u20131562).\n- A manual `/payments/{paymentPspReference}/captures` request specifies the full or partial `amount.value`; `lineItems` is optional. An initial partial capture cancels the unclaimed remainder unless the account is enabled for multiple partial captures. Multiple partial captures require Support setup and create a new invoice for each capture (lines 757\u2013766, 1564\u20131573).\n- Testing requires an Afterpay sandbox shopper account; separate accounts are specified for each tested region. The guide lists AU, NZ, US and CA sandbox selection, test-card CVV scenarios, and a live Customer Area request. These sandbox choices and test outcomes do not establish which regional product is available to a particular live merchant (lines 768\u2013787, 1575\u20131594).\n\n> [!warning] Sessions requirement link mismatch\n> The Sessions requirements table says to have a Sessions React Native Drop-in integration, but its integration-type link points to an **Advanced-flow** URL (raw line 33). The neighboring redirect-handling link points to Sessions (line 35). Follow the flow named in the requirement and verify the linked base guide before implementing.\n\n## Detail locators\n\n- Sessions prerequisite, required fields, samples and no-extra-configuration statement: pinned raw lines 25\u2013743.\n- Sessions capture and testing sections: lines 745\u2013787. Advanced prerequisite, request fields and examples: lines 789\u20131552.\n- Advanced capture, partial-capture effects and test/live section: lines 1554\u20131594.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-afterpaytouch]] \u2014 Afterpay regional method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/react-native-drop-in/2026-09-15|Afterpay React Native Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Afterpay to your existing integration.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "pinned raw line 1538"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "pinned raw line 1558"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled.",
+      "location": "pinned raw line 1571"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-afterpaytouch-react-native-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-react-native-drop-in]] \u2014 2026-09-15 Afterpay React Native Drop-in Sessions/Advanced add-on for redirect requests and conditional capture, with a Sessions link mismatch in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions integration-type requirement links to an Advanced-flow base guide at raw line 33; interpret it with the surrounding Sessions heading and redirect link."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "be07b00c8d7ac71728796cbd22d8f43ac917e7317bbf822b2c88649d37512ef7",
+  "status": "candidate_ready"
+}

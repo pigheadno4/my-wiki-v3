@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-clearpay-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Clearpay React Native Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, clearpay, react-native, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page describes **Clearpay-specific additions** to an existing React Native Drop-in integration, separately for Sessions and Advanced server-side flows. The linked Clearpay overview identifies the UK brand and GB/GBP method matrix. This child uses GB/GBP TEST examples without proving account eligibility or a successful payment. See [[adyen-online-payments]], [[source-adyen-docs-payment-methods-clearpay]] and [[adyen]].\n\n## Key takeaways\n\n- Sessions calls for an existing React Native Drop-in **Sessions** flow, **Checkout API v68 or later**, redirect handling and Clearpay added in Customer Area (raw lines 25\u201336). Its `/sessions` table marks shopper name/email/reference (reference minimum three characters), country code, billing/delivery addresses and line items required; phone is optional (lines 40\u201353). The requirement row's linked \u201cSessions flow\u201d base guide actually uses an **Advanced** URL at line 33, while the request and redirect links use Sessions URLs (lines 35, 42); use the matching flow rather than following that mislabeled route blindly.\n- Sessions and Advanced each say no additional Clearpay-specific Drop-in configuration is needed (lines 116\u2013120, 225\u2013229). Their GB/GBP TEST curl examples put `-X POST` on one line and `-d` on the next without a continuation (lines 58\u201363 and 251\u2013256), so the literal shell snippets are not verified copy-ready requests.\n- Advanced requires an existing React Native Drop-in Advanced flow, redirect handling and Clearpay added in Customer Area (lines 213\u2013223). Its `/payments` table marks the same shopper/country/address/item fields required, phone optional (lines 233\u2013246); the example explicitly uses `paymentMethod.type: clearpay` (lines 248\u2013310). The sample initial response is `RedirectShopper` with a redirect action (lines 312\u2013326), not final authorisation or capture proof. The base integration guide owns returned-shopper and outcome handling.\n- Capture can be automatic after authorisation or manual according to merchant-account configuration. Delayed capture needs delay setup or manual capture; partial capture needs manual capture. Clearpay requires capture within **13 days**, otherwise it cancels and refunds the first instalment charged during authorisation; test authorisations expire in **one day** (Sessions lines 124\u2013132; Advanced lines 330\u2013338). Partial manual capture cancels the unclaimed remainder unless the account is enabled for multiple partial captures, which requires Support setup and creates a new invoice per capture (lines 134\u2013143 and 340\u2013349).\n- An uncaptured payment can be cancelled; a captured payment must be refunded to return funds. Full or partial refund requests specify `amount.value`, with `lineItems` optional (lines 145\u2013156 and 351\u2013360). For discounts, the text requires a negative amount, but says the example is **\u00a31** off Item #2 while the example shows quantity **2** at **-100** minor units and lowers the total by 200; it also lacks a comma between the second item and discount object (lines 158\u2013194 and 362\u2013396). Treat the example as inconsistent, not copy-ready.\n- Testing requires a Clearpay sandbox and test shopper account, with regional sandbox details and linked test-card references. Sandbox shows Adyen as merchant; live payments require a request in live Customer Area (lines 196\u2013211 and 398\u2013413). A sandbox payment-list result does not establish live enablement, successful capture, refund or settlement.\n\n## Detail locators\n\n- Scope, Sessions prerequisites and base-link mismatch: raw lines 15\u201336.\n- Sessions request fields, GB/GBP TEST example, no-extra-configuration: lines 40\u2013120.\n- Sessions capture/refunds/discounts and sandbox/live: lines 122\u2013211.\n- Advanced requirements, no-extra-configuration, request table/example and redirect response: lines 213\u2013326.\n- Advanced capture/refunds/discounts and sandbox/live: lines 328\u2013413.\n- Discount prose/example mismatch and malformed JSON: lines 162\u2013194 and 364\u2013396.\n- Linked overview UK/GB/GBP branding: `raw/adyen/docs/payment-methods/clearpay/2026-09-15.md` lines 23\u201331.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payment architecture.\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 UK product and GB/GBP matrix.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15|2026-09-15 Clearpay React Native Drop-in Sessions and Advanced guide]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for Clearpay.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md:19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md:34"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md:128"
+    },
+    {
+      "text": "If a payment has not yet been captured, you can [cancel](/online-payments/cancel) it.",
+      "location": "raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md:149"
+    },
+    {
+      "text": "The following example shows how to specify a discount of 1 GBP on Item #2:",
+      "location": "raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md:162"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-clearpay-react-native-drop-in-online-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-react-native-drop-in]] \u2014 2026-09-15 Clearpay React Native Drop-in Sessions/Advanced guide for redirect, capture, refund and discount handling, with source example/link qualifications.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions requirement row labels a Sessions base flow but points to an Advanced URL (raw line 33). Both curl examples omit continuation after `-X POST` before `-d` (lines 58\u201363, 251\u2013256). The \u00a31 discount prose conflicts with quantity-two -100 example/200-minor-unit total decrease, and the example omits a comma (lines 162\u2013194, 364\u2013396)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "fbb05f257d5ac3f12b3999153fa7830cd789847b14d37e01f71a72038c1faf69",
+  "status": "candidate_ready"
+}

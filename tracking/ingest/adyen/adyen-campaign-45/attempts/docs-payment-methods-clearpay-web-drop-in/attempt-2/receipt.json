@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-clearpay-web-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Clearpay Web Drop-in | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/clearpay/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/clearpay/web-drop-in/2026-09-15.md\"\ntags: [adyen, clearpay, web, drop-in, redirect, capture]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] guide adds **Clearpay** to an existing **Web Drop-in** integration, with separate Sessions and Advanced server flows. It contains method-specific request, capture, refund and test instructions, not a full base integration or evidence of current enablement. The linked [[source-adyen-docs-payment-methods-clearpay]] overview scopes this product to GB/GBP, distinguishes regional Afterpay names and marks recurring unavailable. This guide's GB/GBP TEST examples do not prove merchant or shopper eligibility. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions prerequisites and request:** The guide requires existing Web Drop-in Sessions flow, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and Clearpay added in Customer Area (raw lines 25\u201336). Its `/sessions` table marks `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required; `telephoneNumber` is optional if provided (raw lines 38\u201353). The example uses TEST `/v71/sessions`, GB/GBP and placeholder credentials. Its curl command puts `-X POST` and `-d` on separate lines without continuation, so it should not be copied as a verified working command (raw lines 55\u2013114).\n- **Advanced prerequisites and request:** Advanced requires existing Web Drop-in Advanced flow, redirect handling and Customer Area method setup. Its integration prerequisite URL contains an unresolved encoded `{{getParameter('platform')}}` template rather than `platform=Web`; the surrounding Advanced redirect/payment links name Web (raw lines 221\u2013249). The `/payments` table lists the same required shopper, country, address and item fields with optional telephone; the example adds `paymentMethod.type: clearpay` and uses TEST `/v72/payments` with GB/GBP (raw lines 251\u2013324). This curl example also splits `-X POST` from `-d` without continuation (raw lines 264\u2013270). Its `RedirectShopper`/`action.type: redirect` response is a redirect step, not final authorisation or capture (raw lines 326\u2013340).\n- **Optional Web import:** If importing payment methods individually for tree shaking, the page says include `Redirect`; this is optional performance-oriented import guidance, not a payment prerequisite (raw lines 116\u2013126, 233\u2013243).\n- **Capture deadline and first installment:** Capture is automatic after authorisation or manual depending on merchant-account configuration. Capture delay or manual capture is needed to capture after shipment; partial capture requires **manual** capture. The page says capture within **13 days** after authorisation; the first installment is charged at authorisation, and if uncaptured by that deadline Clearpay cancels and refunds it. In TEST, authorisations expire in **one day**, requiring manual test capture within that day (raw lines 128\u2013138, 342\u2013352).\n- **Partial capture and refunds:** Manual `/payments/{paymentPspReference}/captures` specifies full or partial `amount.value` and optional `lineItems`. An initial partial capture normally cancels unclaimed balance; for an account enabled for **multiple partial captures**, it remains. Setup requires Support and each such capture creates a new invoice (raw lines 140\u2013149, 354\u2013363). An uncaptured payment may be cancelled; a captured payment needs refund to return funds. Full/partial refund uses `/payments/{paymentPspReference}/refunds` with `amount.value` and optional `lineItems` (raw lines 151\u2013162, 365\u2013376).\n- **Discount example warning:** The prose calls this a GBP 1 discount on Item #2, but the illustrated discount line has quantity 2 at -100 minor units each: it subtracts GBP 2, changing the original GBP 10 example amount (1000 minor units) to GBP 8 (800 minor units). The displayed JSON also lacks a comma between the second item and discount item. It is neither a valid JSON payload nor a validated GBP 1 discount recipe (raw lines 64\u201366, 164\u2013200, 274\u2013276, 378\u2013414).\n- **Testing and live gate:** Clearpay sandbox and a test shopper account are described; the page points to separate sandbox details by country/region and says Adyen appears as merchant name in sandbox (raw lines 202\u2013217, 416\u2013431). Before live acceptance, it says to submit a Clearpay request in live Customer Area (raw lines 219, 433). The captured page does not demonstrate that such a request was approved or a live payment completed.\n\n## Detail locators\n\n- Sessions requirements, fields and example: pinned raw lines 25\u2013114.\n- Optional Redirect import, capture, refund, discount and test/live sections: pinned raw lines 116\u2013219.\n- Advanced requirements, unresolved template URL, fields, example and redirect action: pinned raw lines 221\u2013340.\n- Advanced capture, refund, discount and test/live sections: pinned raw lines 342\u2013433.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider checkout architecture.\n- [[source-adyen-docs-payment-methods-clearpay]] \u2014 GB/GBP product scope, feature matrix and regional naming.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/clearpay/web-drop-in/2026-09-15|Clearpay Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "Clearpay payments have to be captured within 13 days after authorisation.",
+      "location": "line 134"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "line 147"
+    },
+    {
+      "text": "To set up multiple partial captures, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other). Multiple partial captures will create a new invoice for each capture.",
+      "location": "line 149"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "line 326"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "clearpay-web-drop-in-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-clearpay-web-drop-in]] \u2014 2026-09-15 Clearpay Web Drop-in Sessions/Advanced add-on for GB/GBP request fields, redirect, 13-day capture and partial-capture/refund paths; source flags example and link defects.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/clearpay/web-drop-in/2026-09-15.md",
+  "raw_sha256": "f7d9ae1c9f2f37578f14ed48f962adf2e07d28f29b2e09fb700ffc3bac9f2cc7",
+  "status": "candidate_ready"
+}

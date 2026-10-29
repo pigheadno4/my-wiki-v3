@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-afterpaytouch-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Afterpay iOS Component | Adyen Docs\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/afterpaytouch/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/afterpaytouch/ios-component/2026-09-15.md\"\ntags: [adyen, afterpay, ios, components, redirect, capture]\n---\n\n## Overview\n\nThis 2026-09-15-captured [[adyen]] guide adds Afterpay to an **existing iOS Components integration**, with separate Sessions and Advanced server-flow sections. It describes method-specific additions, not a complete base integration or evidence that a merchant is currently enabled. The related [[source-adyen-docs-payment-methods-afterpaytouch]] overview states the Afterpay AU/CA/NZ product scope and regional naming; this guide's AUD/AU examples and US sandbox-account option do not establish a wider live product scope. See [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions prerequisites and request:** The guide requires an existing iOS Components Sessions integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and Afterpay added in Customer Area (raw lines 25\u201336). Its `/sessions` table marks `shopperName`, `shopperEmail`, `shopperReference` (minimum three characters), `countryCode`, `billingAddress`, `deliveryAddress` and `lineItems` required; `telephoneNumber` is optional if provided (raw lines 38\u201353). The AUD/AU test request and versioned API-library examples are examples, not account eligibility or universal SDK requirements (raw lines 55\u2013737).\n- **Advanced prerequisites and request:** The Advanced section requires an existing Advanced iOS Components integration, redirect handling and Customer Area method setup; its `/payments` table adds required `paymentMethod: afterpaytouch` to the same required shopper/address/item fields and optional telephone number (raw lines 811\u2013866). The requirement text says **iOS Components** but its base integration link has `integration=Drop-in`; follow the correct Components base guide rather than assuming the linked Drop-in route proves Component setup (raw line 819). The shown `/payments` response has `resultCode: RedirectShopper` and `action.type: redirect`, not a final payment result (raw lines 1581\u20131595).\n- **Component setup:** Both flow sections say no Afterpay-specific configuration parameters are needed and initialize `InstantPaymentComponent` for method `afterpaytouch` after checking it is supported in returned payment methods. Sessions delegates to the session, while Advanced delegates to the merchant's component handler (raw lines 739\u2013765, 823\u2013848).\n- **Capture boundary:** Depending on merchant account configuration, capture is automatic after authorisation or manual. Capture delay/manual capture is needed to capture after shipping, and **manual capture is required for partial capture**. The page says capture must occur within **13 days** of authorisation; the first installment is charged during authorisation, and if uncaptured by that deadline Afterpay cancels and refunds it. Test authorisations expire in **one day**, requiring manual test capture within that day (raw lines 769\u2013777, 1597\u20131605).\n- **Partial capture:** Manual `/payments/{paymentPspReference}/captures` specifies full or partial `amount.value`; `lineItems` is optional. An initial partial capture cancels the unclaimed balance unless the account is enabled for **multiple** partial captures. The latter requires contacting Support and creates a new invoice per capture (raw lines 779\u2013788, 1607\u20131616). The guide does not give a refund procedure.\n- **Test/live distinction:** The page requires an Afterpay sandbox shopper account to test, separate accounts by country/region for multiple-region tests, and a test card. Its sandbox account selector lists AU, NZ, US and CA, whereas the overview product table lists AU, CA and NZ; the sandbox option alone does not establish live US eligibility. Before live acceptance, the guide says to submit an Afterpay request in live Customer Area (raw lines 790\u2013809, 1618\u20131637). No live approval or successful payment is evidenced by this capture.\n\n## Detail locators\n\n- Sessions requirements and `/sessions` field table: pinned raw lines 25\u201353; TEST curl and SDK examples lines 55\u2013737.\n- Sessions Component initialization and capture/test notes: pinned raw lines 739\u2013809.\n- Advanced requirements, mismatched base-guide link, Component setup and `/payments` fields: pinned raw lines 811\u2013866.\n- Advanced TEST examples and redirect response: pinned raw lines 868\u20131595.\n- Advanced capture, partial-capture Support gate, test and live request: pinned raw lines 1597\u20131637.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online checkout context.\n- [[source-adyen-docs-payment-methods-afterpaytouch]] \u2014 method and region overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/afterpaytouch/ios-component/2026-09-15|Afterpay iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Afterpay, use the `InstantPaymentComponent` class.",
+      "location": "line 749"
+    },
+    {
+      "text": "Afterpay payments have to be captured within 13 days after authorisation.",
+      "location": "line 773"
+    },
+    {
+      "text": "Any unclaimed amount that is left over after partially capturing a payment is automatically cancelled. When your account is enabled for *multiple* partial captures, the unclaimed amount after an initial capture is not automatically cancelled.",
+      "location": "line 786"
+    },
+    {
+      "text": "[iOS Components integration](/online-payments/build-your-integration/advanced-flow?platform=iOS\\&integration=Drop-in)",
+      "location": "line 819"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "afterpaytouch-ios-component-reciprocal",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-afterpaytouch-ios-component]] \u2014 2026-09-15 Afterpay iOS Components Sessions/Advanced guide for request fields, redirect setup, capture deadlines and partial-capture conditions; source flags a mismatched Advanced base-guide link.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/afterpaytouch/ios-component/2026-09-15.md",
+  "raw_sha256": "dca33103dd5bfc128a8539db5deb84c8cbfdd3e0349ebb75f8e79609236af30c",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-alma-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Alma API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/alma/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/alma/api-only/2026-09-15.md\"\ntags: [adyen, alma, api-only, redirect, installments]\n---\n\n## Overview\n\nThis 2026-09-15 Adyen Docs page describes Alma-specific additions to an **existing Web API-only Advanced-flow** integration. The merchant builds the payment form, adds Alma in Customer Area, and handles a redirect action. Its FR/EUR method-discovery request is a documented selection condition, not proof that Alma is currently enabled for a particular merchant or that a payment has completed. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- The shopper chooses Alma and enters details in the merchant-built form. The page says no additional form fields are required for Alma. It directs an existing API-only flow to handle `action.type: redirect`, rather than supplying the full base integration or a final result flow (pinned raw lines 23\u201342).\n- For `/paymentMethods`, the table specifies `countryCode: FR` and `amount.currency: EUR` to include Alma; the test response illustrates `type: alma`. This is a method-discovery example, not a guarantee of method availability across accounts or amounts (lines 44\u201383).\n- The `/payments` add-on table lists telephone number, shopper email, billing and delivery addresses and `additionalData.alma.installments_count`; none has a required mark. Set installments count to `3` or `4` to determine the shopper's installment count, or omit it to let the shopper choose. The test request illustrates four installments and returns a redirect action with `RedirectShopper`, which is a handoff, not final authorization or capture (lines 85\u2013151).\n- The guide points to Customer Area for test-payment status and says a live Customer Area request for Alma is needed before live acceptance. It gives no Alma-specific capture, refund or cancellation procedure (lines 153\u2013161).\n\n> [!warning] Request example and prose gaps\n> The \u201cHow it works\u201d step says to include information about purchased items in the payment request (raw line 35), but the add-on field table and `/payments` example show no item field (lines 85\u2013135). The example also omits a `paymentMethod` object even though it is presented as an Alma request and followed by an Alma redirect response (lines 99\u2013150). Both curl examples put `-X POST` on a line without a continuation before `-d` (lines 60\u201361 and 104\u2013105). The `/payments` example uses FR/EUR with `shopperLocale: en-US` and four-character French postal codes `2000` (lines 106\u2013129); verify these examples against the intended request and base integration before use. The page does not resolve the omissions.\n\n## Detail locators\n\n- Existing API-only prerequisites and merchant-built form: pinned raw lines 15\u201342.\n- FR/EUR method discovery and example: lines 44\u201383.\n- Payment add-on table, four-installment example and redirect response: lines 85\u2013151.\n- Test status and live request: lines 153\u2013161.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-alma]] \u2014 Alma method overview for product and capability scope\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/alma/api-only/2026-09-15|Alma API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Alma to your existing integration.",
+      "location": "pinned raw line 19"
+    },
+    {
+      "text": "When you make the payment request, you [include additional information about the items that the shopper intends to purchase](#additional-parameters-payments).",
+      "location": "pinned raw line 35"
+    },
+    {
+      "text": "There are no additional fields that you have to include in your form.",
+      "location": "pinned raw line 40"
+    },
+    {
+      "text": "Set to `3` or `4` to determine the number of installments the shopper will pay. Do not include if you want to let the shopper choose.",
+      "location": "pinned raw line 95"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "pinned raw line 137"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c45-alma-api-only-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-alma-api-only]] \u2014 2026-09-15 Alma Web API-only Advanced-flow add-on for FR/EUR discovery, optional installment selection and redirect, with request-example gaps flagged in source.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The purchased-items prose has no matching item field/example; Alma /payments example omits paymentMethod, curl samples omit continuation before -d, and FR/EUR sample uses en-US locale and four-character postal code (raw 35, 85\u2013135, 60\u201361, 104\u2013105)."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/alma/api-only/2026-09-15.md",
+  "raw_sha256": "e8c8a8d9b322df54d16dd3620fddf0e1d90f8db16a6533e3d5c863fe922746f6",
+  "status": "candidate_ready"
+}
