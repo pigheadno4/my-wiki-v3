@@ -5559,6 +5559,33 @@
   Release: [manifest](../../raw/github/adyen/adyen-3ds2-android/releases/adyen-3ds2-android/2.2.27/2026-08-17/manifest.json)
   Comparison: Not applicable
 
+## `github-dfc8b50ca037e584c6cc`
+
+- Repository: `braintree/braintree-android-drop-in`
+- SHA: `55fc0bd3a43299af800a5d94a71f8c9853069818`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/manifest.json)
+- Packet: [review packet](repos/braintree/braintree-android-drop-in/ingest-packets/github-dfc8b50ca037e584c6cc/packet.md)
+- Review priority: `normal`
+- Required reading: `13` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@55fc0bd` (recommended `delta`)
+  Ref: `main`
+  From SHA: `72c05861a0e903e19bc9baca8bc0740b0b1ed57c`
+  To SHA: `55fc0bd3a43299af800a5d94a71f8c9853069818`
+  Comparison: [manifest](repos/braintree/braintree-android-drop-in/comparisons/default-branch/72c0586--55fc0bd/comparison.json)
+
 ## `github-dfdbb9a8bd1c5274ddb3`
 
 - Repository: `adyen/adyen-node-api-library`

@@ -2,9 +2,10 @@
 title: "GitHub changelog: braintree/braintree-android-drop-in"
 type: source
 date_ingested: 2026-08-13
-date_updated: 2026-10-20
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/manifest.json"
   - "github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/manifest.json"
   - "github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/manifest.json"
 tags: [braintree, android, mobile-sdk, drop-in, changelog, github-repository]
@@ -13,6 +14,20 @@ tags: [braintree, android, mobile-sdk, drop-in, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree-android-drop-in`. Cumulative implementation knowledge belongs in [[source-github-braintree-android-drop-in]] and the linked immutable snapshots.
+
+## `default-branch@55fc0bd` (2026-10-20; ingested 2026-10-29)
+
+Approved delta from `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` to `55fc0bd3a43299af800a5d94a71f8c9853069818`. Default-branch tooling evidence only; stable `drop-in@6.17.0` and development `6.17.1-SNAPSHOT` identity remain distinct.
+
+**Changes:** root Dokka buildscript/plugin declarations converge on 1.9.20; root and library doc-plugin configurations add jsoup 1.23.1/freemarker 2.3.35. Two old root publishing classpath entries are removed, not the remaining publishing plugin. Library test-only JUnit moves 4.13 -> 4.13.2. No globally forced dependency versions or verified resolved dependency graph is claimed.
+
+**Unchanged:** Braintree modules 4.50.0, card form 5.4.0, AGP 7.2.2, Kotlin 1.7.10, API levels 34/21/35, version code 110 and 6.17.1-SNAPSHOT. No changes to payment code, public APIs, demos, README or raw changelog. No Android/build/doc-generation/device/payment execution or all-vulnerabilities-fixed claim.
+
+**Policy qualification:** tooling maintenance occurs after the README's unchanged no-updates date; it does not establish revised lifecycle dates or renewed support. Reciprocal contradiction qualification recorded in the cumulative source and Android concept. All earlier release/ref history is preserved.
+
+**Scope:** two changed/163 unchanged files in each 165-file capsule; all 330 size/SHA-256/Git blob identities verified. Both changed files and affected prior files, comparisons and cumulative wiki history read under approved focused reading; manifests/unchanged inventories mechanically checked and relevant shared sections read. All two upstream changes retained; no exclusions/gaps/unclassified changes. Existing concept first, then source/changelog/company/index/logs; source_count unchanged. No commit or push.
+
+**Evidence:** [snapshot](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/manifest.json), [root build](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/files/build.gradle), [library build](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/files/Drop-In/build.gradle), [comparison](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/72c0586--55fc0bd/comparison.json) and [patch](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/72c0586--55fc0bd/diff.patch). Five located excerpts are in [[source-github-braintree-android-drop-in]].
 
 ## `default-branch@72c0586` (2026-04-23; ingested 2026-10-20)
 

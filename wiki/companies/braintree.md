@@ -986,6 +986,8 @@ PayPal and Venmo are separate Braintree modules. Venmo can launch the Venmo app 
 
 ## Android Drop-in Surface
 
+The later `default-branch@55fc0bd` (2026-10-20; ingested 2026-10-29) changes only two Gradle files: Dokka/doc-tool dependencies, old publishing classpath entries and test-only JUnit. Payment implementation, Braintree 4.50.0 pin, API floors, 6.17.1-SNAPSHOT metadata and README lifecycle notice remain unchanged. This post-deprecation tooling maintenance does not establish a new stable release, renewed support or a tested payment change. The earlier lifecycle and release records below remain preserved. [[source-github-braintree-android-drop-in]] [[changelog-github-braintree-android-drop-in]]
+
 The later repository ref `default-branch@72c0586` (2026-04-23; ingested 2026-10-20) adds README notices scheduling deprecation for 2026-09-01, no further updates, and unsupported status for 2027-09-01, after which processing may be suspended. It recommends the independently versioned modular SDK. Its stale Inactive wording does not extend those dates. The certificate warning changes to March 30, 2026 for Drop-in 5.4.2 through 6.15.0, directing upgrades to 6.16.0+. HEAD's `6.17.1-SNAPSHOT` is development metadata, not a stable release or new payment implementation. The original baseline below and its 4.50.0 dependency boundary remain preserved. [[source-github-braintree-android-drop-in]] [[changelog-github-braintree-android-drop-in]] [[braintree-android-sdk]]
 
 `drop-in@6.17.0` provides a prebuilt Android payment-selection experience for cards, PayPal, Venmo, Google Pay, saved methods, vault management, card 3D Secure, and device-data collection. It requires Android API 21+ and pins Braintree Android `4.50.0`, so behavior from the independently retained `braintree-android@5.30.0` modular SDK cannot be attributed to it.
@@ -1062,7 +1064,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained Drop-in release: `braintree-web-drop-in@1.47.0` at `ec1c7c533c2e878545f2b25505c56b7e22dc1c17`
 - Latest ingested Android release: `braintree-android@5.33.0` at `04b82bbb1cb49e3a5ad44bac920704ba03c99317`
 - Latest retained Android Drop-in release: `drop-in@6.17.0` at `da8a702bb37e3a4567e5ba4dd8cbc2257acc37c7`
-- Latest ingested Android Drop-in documentation/build ref: `default-branch@72c0586` at `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` (2026-10-20); not a new package release
+- Latest ingested Android Drop-in documentation/build ref: `default-branch@55fc0bd` at `55fc0bd3a43299af800a5d94a71f8c9853069818` (2026-10-29); tooling-only delta, not a new package release; earlier 72c0586 history preserved
 - Latest ingested iOS release: `braintree-ios@7.13.0` at `020dfb7a7803ec3ce8b2df2a0f71e386a4bf84e3`
 - Latest retained iOS Drop-in release: `BraintreeDropIn@9.14.0` at `d951d104ac960188824bda191be2f57c57351a31`
 - Latest ingested iOS Drop-in documentation ref: `default-branch@ae66bc6` at `ae66bc646250711940d72834caab3c377d485879` (2026-10-27); not a new package release

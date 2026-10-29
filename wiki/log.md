@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Android Drop-in `default-branch@55fc0bd`
+
+- Approved focused-reading delta for Gradle documentation/build/test tooling only; unchanged payment code, stable 6.17.0 baseline and earlier lifecycle history preserved. Maintenance is not evidence of renewed support. Details [[braintree-log]] and [[source-github-braintree-android-drop-in]]. No Android/build/device/payment execution, commit or push.
+
 ## [2026-10-29] ingest | Adyen website C46
 
 - Fifty independently approved Cash App Afterpay, Zip, Atome, Riverty and Ratepay documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 1 concepts touched (0 new); source_count 2314 = 2300 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-46/`; details [[adyen-log]]. No commit/push.

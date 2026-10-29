@@ -6,6 +6,11 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-29] ingest | Android Drop-in `default-branch@55fc0bd`
+
+- Approved serial delta `github-dfc8b50ca037e584c6cc`: `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` -> `55fc0bd3a43299af800a5d94a71f8c9853069818` (upstream October 20). Focused reading: both changed root/library Gradle files and prior versions, comparison and full cumulative source/changelog; manifests/unchanged evidence checked mechanically and relevant shared sections read. All 330 file sizes/SHA-256/Git blob IDs pass; two changed/163 unchanged, two upstream dispositions, no exclusions/gaps/unclassified changes.
+- Records Dokka 1.9.20, doc-tool jsoup/freemarker declarations, removal of two old publishing classpath entries and test-only JUnit 4.13.2. Native payment code/API/pins/floors remain unchanged; 6.17.1-SNAPSHOT is not a stable release. Post-deprecation tooling maintenance versus unchanged no-updates notice qualified in source/concept, not treated as renewed support. Existing concept first, then source/changelog/company/index/logs; all 6.17.0 and 72c0586 history and source_count 797 preserved. No Android build, dependency resolution, docs/device/payment execution, extra collection, commit or push. Details [[source-github-braintree-android-drop-in]] and [[changelog-github-braintree-android-drop-in]].
+
 ## [2026-10-27] ingest | iOS Drop-in `default-branch@ae66bc6`
 
 - Approved serial delta `github-fce4c89c9e41ed166c99`: `d951d104ac960188824bda191be2f57c57351a31` -> `ae66bc646250711940d72834caab3c377d485879` (commit 2026-04-23). User approved focused reading: complete old/new README, comparisons and cumulative source/changelog; mechanically verified manifests/unchanged evidence and relevant shared company/index/log sections read.

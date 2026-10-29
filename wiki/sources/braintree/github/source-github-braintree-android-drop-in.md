@@ -2,9 +2,10 @@
 title: "GitHub: braintree/braintree-android-drop-in"
 type: source
 date_ingested: 2026-08-13
-date_updated: 2026-10-20
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/manifest.json"
   - "github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/manifest.json"
   - "github/braintree/braintree-android-drop-in/snapshots/2026-08-13-da8a702/manifest.json"
 tags: [braintree, android, mobile-sdk, drop-in, paypal, venmo, google-pay, cards, 3d-secure, github-repository]
@@ -17,6 +18,8 @@ tags: [braintree, android, mobile-sdk, drop-in, paypal, venmo, google-pay, cards
 Repository: <https://github.com/braintree/braintree-android-drop-in>
 
 The later commit-qualified delta `default-branch@72c0586` is retained below for lifecycle notices and build metadata. It is not a new package release and does not replace the `drop-in@6.17.0` implementation baseline.
+
+The newest ingested ref is `default-branch@55fc0bd`, a build/documentation-tooling delta from 72c0586. It preserves both the stable 6.17.0 implementation baseline and all earlier lifecycle evidence; it is not a released 6.17.1 SDK.
 
 ## Version and Dependency Boundary
 
@@ -118,6 +121,35 @@ Under the user's explicit focused-reading exception, the three assigned changed 
 >
 > [Root Gradle file, line 10](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/files/build.gradle#L10)
 
+## `default-branch@55fc0bd` Build and Documentation Tooling Delta
+
+Approved focused-reading delta ingested on 2026-10-29: `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` -> `55fc0bd3a43299af800a5d94a71f8c9853069818`. Author/commit time is October 20, 2026 at 11:32:23 -07:00, not the collection/ingest date. The release baseline remains `drop-in@6.17.0`; this is default-branch evidence, with no new package release record.
+
+### Exact Changes and Boundaries
+
+- Root buildscript Dokka moves from 1.7.20 to 1.9.20 and the root plugin declaration from 1.7.10 to 1.9.20. Both root and Drop-In module add `dokkaPlugin` declarations for jsoup 1.23.1 and freemarker 2.3.35. Comments describe replacing vulnerable doc-tooling transitives through normal Gradle version selection rather than globally forcing configurations; no local dependency resolution or vulnerability scan was performed.
+- Root buildscript removes `de.marcphilipp.gradle:nexus-publish-plugin:0.4.0` and `io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2`. The separately declared `io.github.gradle-nexus.publish-plugin:1.1.0` and publishing configuration remain; this is not removal of all publishing support.
+- Library test-only JUnit changes 4.13 -> 4.13.2. This is not an Android application runtime dependency upgrade.
+- Braintree modules remain 4.50.0, card form remains 5.4.0, AGP remains 7.2.2 and Kotlin remains 1.7.10. Compile/minimum/target API levels stay 34/21/35, version code stays 110 and project version stays 6.17.1-SNAPSHOT. No new modular-v5 capability or stable-release availability is inferred.
+- The exact upstream comparison changes only `build.gradle` and `Drop-In/build.gradle`; README, migration guide, changelog, demo, payment source and public APIs are unchanged. No Android build, Gradle resolution, documentation generation, app-switch or payment execution was performed. Raw upstream credential values remain immutable and are not repeated in this summary or used to access services.
+
+> [!warning] Contradiction
+> This October 20 tooling maintenance follows the unchanged README's September 1, 2026 deprecation/no-updates notice. The commit does not revise that notice or its unsupported milestone. Preserve both records; do not infer renewed support, a new stable release or extended merchant processing guarantees. The same qualification appears in [[braintree-android-sdk]].
+
+### Grounding Excerpts for the Tooling Delta
+
+All locations below are within `raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/files/`:
+
+- `build.gradle:34`: `id 'org.jetbrains.dokka' version '1.9.20'`
+- `build.gradle:61`: `dokkaPlugin 'org.jsoup:jsoup:1.23.1'`
+- `Drop-In/build.gradle:91`: `testImplementation 'junit:junit:4.13.2'`
+- `build.gradle:37`: `version '6.17.1-SNAPSHOT'`
+- `build.gradle:10`: `ext.brainTreeVersion = "4.50.0"`
+
+### Reading and Preservation
+
+Both 165-file snapshots pass all 330 size/SHA-256/Git blob identity checks; exactly two stored-hash and upstream-blob changes, 163 unchanged files, no excluded upstream changes, gaps or unclassified changes. Packet Markdown, snapshot manifest, comparison notes and patch hashes match. Under approved focused reading, both changed Gradle files and prior versions, complete cumulative source/changelog and the comparison were read; generated manifests/inventories and unchanged evidence were mechanically checked, with relevant shared wiki sections read. This is not a fresh full-repository semantic read or an execution/security guarantee. The existing concept was updated first; no new source/concept/comparison or source-count change, and all previous release/ref knowledge remains intact.
+
 ## Related
 
 - [[changelog-github-braintree-android-drop-in]] - package-qualified Android Drop-in release ledger
@@ -129,6 +161,9 @@ Under the user's explicit focused-reading exception, the three assigned changed 
 
 ## Raw Sources
 
+- [Tooling snapshot manifest](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/manifest.json)
+- [Root Gradle tooling](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/files/build.gradle) and [library Gradle tooling](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-29-55fc0bd/files/Drop-In/build.gradle)
+- [Tooling comparison](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/72c0586--55fc0bd/comparison.json), [comparison notes](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/72c0586--55fc0bd/comparison.md) and [upstream patch](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/72c0586--55fc0bd/diff.patch)
 - [Commit snapshot manifest](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/manifest.json)
 - [Exact-SHA comparison](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/da8a702--72c0586/comparison.json), [comparison notes](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/da8a702--72c0586/comparison.md) and [upstream patch](../../../../tracking/github/repos/braintree/braintree-android-drop-in/comparisons/default-branch/da8a702--72c0586/diff.patch)
 - [Commit README](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/files/README.md), [build metadata](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/files/build.gradle) and [unchanged upstream migration guide](../../../../raw/github/braintree/braintree-android-drop-in/snapshots/2026-10-20-72c0586/files/v6_MIGRATION_GUIDE.md)

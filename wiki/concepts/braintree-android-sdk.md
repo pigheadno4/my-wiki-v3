@@ -74,6 +74,13 @@ The Android Drop-in repository's exact 2026-04-23 commit `72c05861a0e903e19bc9ba
 
 HEAD build metadata says `6.17.1-SNAPSHOT`, not a new stable release; the accepted release baseline remains `drop-in@6.17.0`. This boundary changes README/build metadata, not payment implementation, and still pins Braintree Android modules to 4.50.0. Its unchanged v6 migration guide describes Drop-in v5-to-v6 migration, not migration from Drop-in to the modular SDK. Earlier nonce, vaulting and dependency boundaries remain intact. [[changelog-github-braintree-android-drop-in]]
 
+### Drop-in Tooling at `default-branch@55fc0bd`
+
+The later October 20, 2026 commit `55fc0bd3a43299af800a5d94a71f8c9853069818`, ingested October 29, changes only root/library Gradle tooling: Dokka becomes 1.9.20, both doc-plugin configurations declare jsoup 1.23.1/freemarker 2.3.35, two old publishing classpath entries disappear, and test-only JUnit becomes 4.13.2. Braintree Android remains pinned to 4.50.0, Android API levels remain 34/21/35, and project metadata remains 6.17.1-SNAPSHOT. This is not a new stable Drop-in release or a change to payment APIs/implementation. Dependency resolution and Android/device/payment behavior were not executed. [[source-github-braintree-android-drop-in]] [[changelog-github-braintree-android-drop-in]]
+
+> [!warning] Contradiction
+> This tooling commit follows the README's September 1, 2026 deprecation/no-updates date, yet leaves that notice unchanged. Preserve the source-specific discrepancy: maintenance alone does not establish renewed support, changed lifecycle dates or merchant payment availability. The same qualification is recorded in [[source-github-braintree-android-drop-in]].
+
 ## Version Boundary
 
 Release `5.30.0` makes the principal Kotlin suspend functions public, removes the unsupported Visa Checkout module, deprecates its remaining configuration fields, targets Android API 37 for compilation, and fixes PayPal/Venmo button sizing. Historical migration and removal notes remain context until their exact versions are separately retained.
