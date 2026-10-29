@@ -935,6 +935,31 @@
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.9.0/2026-08-01/manifest.json)
   Comparison: Not applicable
 
+## `github-298027a645fc102ea083`
+
+- Repository: `braintree/braintree_php`
+- SHA: `883a2199aad6f3e1e4796d0f3bea6725c981fd85`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_php/snapshots/2026-10-29-883a219/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_php/ingest-packets/github-298027a645fc102ea083/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree_php@6.39.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.39.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_php/comparisons/braintree_php/6.38.0--6.39.0/comparison.json)
+
 ## `github-2b0edf0d1bdbb692d15d`
 
 - Repository: `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration`
@@ -2996,6 +3021,31 @@
   From SHA: `baseline`
   To SHA: `5409a3b9c0b6d0049fc3be9386092759fd6a1d5c`
   Comparison: Not applicable
+
+## `github-84f7911300e61e51e4b1`
+
+- Repository: `braintree/braintree_php`
+- SHA: `b116668cb1c66b10aceb71e7753a49fbf4e44fd6`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_php/snapshots/2026-10-29-b116668/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_php/ingest-packets/github-84f7911300e61e51e4b1/packet.md)
+- Review priority: `normal`
+- Required reading: `15` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree_php@6.40.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_php/releases/braintree_php/6.40.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_php/comparisons/braintree_php/6.39.0--6.40.0/comparison.json)
 
 ## `github-85032643bec4e06f9d06`
 

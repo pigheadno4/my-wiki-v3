@@ -1,0 +1,188 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8c8c368..ffe42b0 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 6.39.0
++* Add `Transaction::reverse()` to automatically void or fully refund a transaction
++* Add `previousMastercardTransactionLinkId` to `externalVault` on `Transaction` and `CreditCardVerification::create`
++
+ ## 6.38.0
+ * Fix path traversal vulnerability in `CreditCard`, `Customer`, `MerchantAccount`, `PayPalAccount`, `PaymentMethod`, `PaymentMethodNonce`, `Plan`, `SepaDirectDebitAccount`, `Subscription`, `Testing`, `Transaction`, `TransactionLineItem`, `UsBankAccount`, and `UsBankAccountVerification` gateways by validating that IDs used in request paths do not contain path separators or relative-path segments
+ * Add `shipping`(including `company`, `countryCodeAlpha2`, `countryCodeAlpha3`, `countryCodeNumeric`, `countryName`, `extendedAddress`, `firstName`, `lastName`, `locality`, `phoneNumber`, `internationalPhone`, `postalCode`, `region`, `streetAddress`) and `shippingAddressId` to `Transaction::submitForSettlement()`
+diff --git a/lib/Braintree/CreditCardVerification.php b/lib/Braintree/CreditCardVerification.php
+index 8ff6150..5b8d6e1 100644
+--- a/lib/Braintree/CreditCardVerification.php
++++ b/lib/Braintree/CreditCardVerification.php
+@@ -86,6 +86,7 @@ class CreditCardVerification extends Result\CreditCardVerification
+                 ['externalVault' =>
+                     [
+                         'previousNetworkTransactionId',
++                        'previousMastercardTransactionLinkId',
+                         'status'
+                     ]
+                 ],
+diff --git a/lib/Braintree/Error/Codes.php b/lib/Braintree/Error/Codes.php
+index 184a07a..58bb60e 100644
+--- a/lib/Braintree/Error/Codes.php
++++ b/lib/Braintree/Error/Codes.php
+@@ -329,9 +329,11 @@ class Codes
+     const TRANSACTION_LINE_ITEM_UPC_TYPE_IS_MISSING                         = '95832';
+     const TRANSACTION_LINE_ITEM_UPC_TYPE_IS_INVALID                         = '95833';
+ 
+-    const TRANSACTION_EXTERNAL_VAULT_STATUS_IS_INVALID                                      = '915175';
+-    const TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID = '915177';
+-    const TRANSACTION_EXTERNAL_VAULT_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID             = '915179';
++    const TRANSACTION_EXTERNAL_VAULT_STATUS_IS_INVALID                                                = '915175';
++    const TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID           = '915177';
++    const TRANSACTION_EXTERNAL_VAULT_PREVIOUS_NETWORK_TRANSACTION_ID_IS_INVALID                       = '915179';
++    const TRANSACTION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID   = '915278';
++    const TRANSACTION_EXTERNAL_VAULT_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID               = '915279';
+ 
+     const MERCHANT_COUNTRY_CANNOT_BE_BLANK              = '83603';
+     const MERCHANT_COUNTRY_CODE_ALPHA2_IS_INVALID       = '93607';
+@@ -540,6 +542,7 @@ class Codes
+     const TRANSACTION_CANNOT_REFUND_WITH_PENDING_MERCHANT_ACCOUNT                     = '91559';
+     const TRANSACTION_CANNOT_REFUND_WITH_SUSPENDED_MERCHANT_ACCOUNT                   = '91538';
+     const TRANSACTION_CANNOT_RELEASE_FROM_ESCROW                                      = '91561';
++    const TRANSACTION_CANNOT_REVERSE_AT_THIS_TIME                                     = '915282';
+     const TRANSACTION_CANNOT_SIMULATE_SETTLEMENT                                      = '91575';
+     const TRANSACTION_CANNOT_SUBMIT_FOR_PARTIAL_SETTLEMENT                            = '915103';
+     const TRANSACTION_CANNOT_SUBMIT_FOR_SETTLEMENT                                    = '91507';
+@@ -691,6 +694,9 @@ class Codes
+     const VERIFICATION_OPTIONS_ACCOUNT_TYPE_IS_INVALID                         = '942184';
+     const VERIFICATION_OPTIONS_ACCOUNT_TYPE_NOT_SUPPORTED                      = '942185';
+ 
++    const VERIFICATION_EXTERNAL_VAULT_STATUS_WITH_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID  = '942205';
++    const VERIFICATION_EXTERNAL_VAULT_PREVIOUS_MASTERCARD_TRANSACTION_LINK_ID_IS_INVALID              = '942206';
++
+     const VERIFICATION_THREE_D_SECURE_ECI_FLAG_IS_REQUIRED                                                    = "942113";
+     const VERIFICATION_THREE_D_SECURE_ECI_FLAG_IS_INVALID                                                     = "942114";
+     const VERIFICATION_THREE_D_SECURE_CAVV_IS_REQUIRED                                                        = "942116";
+diff --git a/lib/Braintree/Transaction.php b/lib/Braintree/Transaction.php
+index f8625cd..6f69f89 100644
+--- a/lib/Braintree/Transaction.php
++++ b/lib/Braintree/Transaction.php
+@@ -632,6 +632,36 @@ class Transaction extends Base
+         return Configuration::gateway()->transaction()->find($id);
+     }
+ 
++    /**
++     * Static methods redirecting to gateway class
++     *
++     * @param string $transactionId unique identifier of the transaction to be reversed
++     * @param array  $attribs       containing any additional request parameters
++     *
++     * @see TransactionGateway::reverse()
++     *
++     * @return Result\Successful|Exception\NotFound
++     */
++    public static function reverse($transactionId, $attribs = [])
++    {
++        return Configuration::gateway()->transaction()->reverse($transactionId, $attribs);
++    }
++
++    /**
++     * Static methods redirecting to gateway class
++     *
++     * @param string $transactionId unique identifier of the transaction to be reversed
++     * @param array  $attribs       containing any additional request parameters
++     *
++     * @see TransactionGateway::reverseNoValidate()
++     *
++     * @return Transaction|Result\Error
++     */
++    public static function reverseNoValidate($transactionId, $attribs = [])
++    {
++        return Configuration::gateway()->transaction()->reverseNoValidate($transactionId, $attribs);
++    }
++
+     /**
+      * Static methods redirecting to gateway class
+      *
+diff --git a/lib/Braintree/TransactionGateway.php b/lib/Braintree/TransactionGateway.php
+index c211478..d99fc4b 100644
+--- a/lib/Braintree/TransactionGateway.php
++++ b/lib/Braintree/TransactionGateway.php
+@@ -131,7 +131,7 @@ class TransactionGateway
+             'discountAmount',
+             'exchangeRateQuoteId',
+             ['externalVault' =>
+-                ['status' , 'previousNetworkTransactionId'],
++                ['status' , 'previousNetworkTransactionId', 'previousMastercardTransactionLinkId'],
+             ],
+             'foreignRetailer',
+             ['googlePayCard' =>
+@@ -629,6 +629,16 @@ class TransactionGateway
+         ];
+     }
+ 
++    /**
++     * creates a full array signature of a valid gateway request
++     *
++     * @return array gateway request signature format
++     */
++    public static function reverseSignature()
++    {
++        return ['apiRequestKey'];
++    }
++
+     /**
+      * Request a credit to a payment method
+      *
+@@ -817,6 +827,40 @@ class TransactionGateway
+         return Util::returnObjectOrThrowException(__CLASS__, $result);
+     }
+ 
++    /**
++     * Reverses a transaction by id. If the transaction can still be voided, it
++     * will be; otherwise, it creates a full refund.
++     *
++     * @param string $transactionId unique identifier
++     * @param array  $attribs       containing any additional request parameters
++     *
++     * @return Result\Successful|Result\Error
++     */
++    public function reverse($transactionId, $attribs = [])
++    {
++        $this->_validateId($transactionId);
++        Util::verifyKeys(self::reverseSignature(), $attribs);
++
++        $path = $this->_config->merchantPath() . '/transactions/' . $transactionId . '/reverse';
++        $params = !empty($attribs) ? ['transaction' => $attribs] : null;
++        $response = $this->_http->post($path, $params);
++        return $this->_verifyGatewayResponse($response);
++    }
++
++    /**
++     * Reverses a transaction by id. Returns a Transaction instead of Result\Successful.
++     *
++     * @param string $transactionId unique identifier
++     * @param array  $attribs       containing any additional request parameters
++     *
++     * @return Transaction|Result\Error
++     */
++    public function reverseNoValidate($transactionId, $attribs = [])
++    {
++        $result = $this->reverse($transactionId, $attribs);
++        return Util::returnObjectOrThrowException(__CLASS__, $result);
++    }
++
+     /**
+      * Submits  an authorized transaction be captured and submitted for settlement.
+      *
+diff --git a/lib/Braintree/Version.php b/lib/Braintree/Version.php
+index 34e1547..667b3c8 100644
+--- a/lib/Braintree/Version.php
++++ b/lib/Braintree/Version.php
+@@ -9,7 +9,7 @@ namespace Braintree;
+ class Version
+ {
+     const MAJOR = 6;
+-    const MINOR = 38;
++    const MINOR = 39;
+     const TINY = 0;
+ 
+     protected function __construct()

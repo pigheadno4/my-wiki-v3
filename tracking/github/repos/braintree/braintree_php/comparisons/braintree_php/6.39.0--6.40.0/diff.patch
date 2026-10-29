@@ -1,0 +1,103 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index ffe42b0..968dda2 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,9 @@
+ # Changelog
+ 
++## 6.40.0
++* Verify compatibility with the patched PHP releases 8.2.35, 8.3.36, 8.4.27 and 8.5.12, which fix critical remote code execution (RCE) vulnerabilities in PHP (CVE-2026-109618, CVE-2026-109619). Upgrade your PHP runtime to one of these releases or later; see the README for supported and recommended PHP versions
++* Fix PHP 8.2+ deprecation notices for dynamic properties in `SignatureService` and `Error\Validation`
++
+ ## 6.39.0
+ * Add `Transaction::reverse()` to automatically void or fully refund a transaction
+ * Add `previousMastercardTransactionLinkId` to `externalVault` on `Transaction` and `CreditCardVerification::create`
+diff --git a/README.md b/README.md
+index caed6a2..dbcdd07 100644
+--- a/README.md
++++ b/README.md
+@@ -2,6 +2,14 @@
+ 
+ The Braintree PHP library provides integration access to the Braintree Gateway.
+ 
++> [!CAUTION]
++> **Critical PHP vulnerabilities: CVE-2026-109618 and CVE-2026-109619 (remote code execution, CVSS 9.2).**
++>
++> - [CVE-2026-109618](https://github.com/php/php-src/security/advisories/GHSA-w8hw-w9fx-j79w), "RCE via OOM corruption": out-of-memory errors can leave request memory uninitialized, which PHP then reads during request cleanup.
++> - [CVE-2026-109619](https://github.com/php/php-src/security/advisories/GHSA-6wmf-4rv5-p3rp), "RCE via stale global state": global state that isn't reset between requests can point into freed request memory.
++>
++> Both can be exploited over the network without authentication. They are fixed in PHP 8.2.35, 8.3.36, 8.4.27 and 8.5.12; earlier releases of those branches are affected, and PHP 8.1 and older have reached end of life and will not receive a fix. Upgrade your PHP runtime to at least one of these patched releases and keep up with the latest patch release of your PHP branch. This SDK is tested on the patched releases; see [Dependencies](#dependencies) for supported and recommended PHP versions.
++
+ ## TLS 1.2 required
+ > **The Payment Card Industry (PCI) Council has [mandated](https://blog.pcisecuritystandards.org/migrating-from-ssl-and-early-tls) that early versions of TLS be retired from service.  All organizations that handle credit card information are required to comply with this standard. As part of this obligation, Braintree has updated its services to require TLS 1.2 for all HTTPS connections. Braintrees require HTTP/1.1 for all connections. Please see our [technical documentation](https://github.com/paypal/tls-update) for more information.**
+ 
+@@ -15,7 +23,9 @@ The following PHP extensions are required:
+ * openssl
+ * xmlwriter
+ 
+-PHP version >= 7.3 is required. The Braintree PHP SDK is tested against PHP versions 7.3 and 7.4, and 8.0.
++PHP version >= 7.3 is required. The Braintree PHP SDK is tested against PHP versions 7.4, 8.2, 8.3, 8.4 and 8.5.
++
++We recommend PHP 8.4 or 8.5 at the latest patch release, and at minimum PHP 8.2.35, 8.3.36, 8.4.27 or 8.5.12 (see the security notice above). This SDK still runs on PHP 7.3 and later, but PHP 8.1 and older no longer receive security fixes, so we strongly recommend upgrading to a supported PHP version.
+ 
+ _The PHP core development community has released [End-of-Life branches](https://www.php.net/eol.php) for PHP versions 5.4 - 7.2, and are no longer receiving security updates. As a result, Braintree does not support these versions of PHP._
+ 
+diff --git a/lib/Braintree/AchMandate.php b/lib/Braintree/AchMandate.php
+index d04ff53..53b9f15 100644
+--- a/lib/Braintree/AchMandate.php
++++ b/lib/Braintree/AchMandate.php
+@@ -9,6 +9,8 @@ namespace Braintree;
+  */
+ class AchMandate extends Base
+ {
++    // TODO: Review removing in NEXT_MAJOR_VERSION
++
+     // phpcs:ignore PEAR.Commenting.FunctionComment.Missing
+     public function __toString()
+     {
+diff --git a/lib/Braintree/Error/Validation.php b/lib/Braintree/Error/Validation.php
+index fc91ccc..86768f9 100644
+--- a/lib/Braintree/Error/Validation.php
++++ b/lib/Braintree/Error/Validation.php
+@@ -12,7 +12,14 @@ use Braintree\Util;
+  *
+  * // phpcs:ignore Generic.Files.LineLength
+  * See our {@link https://developer.paypal.com/braintree/docs/reference/general/result-objects#error-results developer docs} for more information
++ *
++ * Validation errors in API responses can include keys beyond attribute, code
++ * and message (for example at_most_once_processing), which are stored as
++ * dynamic properties.
++ * AllowDynamicProperties keeps PHP 8.2+ from deprecating that; PHP 7 reads
++ * the attribute line as a comment.
+  */
++#[\AllowDynamicProperties]
+ class Validation
+ {
+     private $_attribute;
+diff --git a/lib/Braintree/SignatureService.php b/lib/Braintree/SignatureService.php
+index dc16576..4a38d47 100644
+--- a/lib/Braintree/SignatureService.php
++++ b/lib/Braintree/SignatureService.php
+@@ -5,6 +5,9 @@ namespace Braintree;
+ 
+ class SignatureService
+ {
++    public $key;
++    public $digest;
++
+     // phpcs:ignore PEAR.Commenting.FunctionComment.Missing
+     public function __construct($key, $digest)
+     {
+diff --git a/lib/Braintree/Version.php b/lib/Braintree/Version.php
+index 667b3c8..c1f57cc 100644
+--- a/lib/Braintree/Version.php
++++ b/lib/Braintree/Version.php
+@@ -9,7 +9,7 @@ namespace Braintree;
+ class Version
+ {
+     const MAJOR = 6;
+-    const MINOR = 39;
++    const MINOR = 40;
+     const TINY = 0;
+ 
+     protected function __construct()

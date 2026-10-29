@@ -926,6 +926,10 @@ The Node `braintree@3.40.0` update expands local path-ID/token validation to a n
 
 ## PHP Server SDK Surface
 
+PHP `braintree_php@6.40.0` fixes PHP 8.2+ dynamic-property deprecation notices in SignatureService and Error\Validation without changing signing or transaction logic. Composer still declares PHP >=7.3.0; the README separately updates tested branches, recommends latest-patch 8.4/8.5 and reports a PHP-runtime security advisory. These dated upstream claims are not an independent security assessment, and upgrading the SDK does not patch the interpreter. All earlier PHP knowledge remains preserved. [[source-github-braintree-php]] [[changelog-github-braintree-php]]
+
+PHP `braintree_php@6.39.0` adds `reverse()` / `reverseNoValidate()` for a gateway-selected void or full refund, plus previous Mastercard external-vault link inputs and five validation constants. Reversal allows `apiRequestKey`, not a partial-refund amount; `reverseNoValidate()` still validates and throws on an unsuccessful validation result. Static card-verification enforces its expanded signature, unlike the direct gateway wrapper. Older PHP history remains intact. [[source-github-braintree-php]] [[changelog-github-braintree-php]]
+
 `braintree_php@6.37.0` provides PHP gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
 
 The PHP package requires PHP 7.3 or later and supports key credentials or OAuth credentials without mixing them. Webhook signature verification specifically requires public/private API keys. The exact release hardens Address and Dispute path IDs, adds PayPal email validation codes, and adds preferred-payment-method context to client-token generation.
@@ -1059,7 +1063,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Ingested package releases: 15
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.40.0` at `deb5227f1c4824b1f622115caf2ba4302134d375` (ingested 2026-10-06; `3.39.0` preserved)
-- Latest ingested Braintree PHP release: `braintree_php@6.38.0` at `2a97c3d516a1ee66e710db8140a835d79789627a` (ingested 2026-10-11; `6.37.0` preserved)
+- Latest ingested Braintree PHP release: `braintree_php@6.40.0` at `b116668cb1c66b10aceb71e7753a49fbf4e44fd6` (ingested 2026-10-29; all earlier history preserved)
 - Latest retained Braintree Ruby release: `braintree@4.42.0` at `647f4bb8a45a869cb4d664077d28287881d299b1`; all 4.40.0/4.41.0 history preserved
 - Latest retained Braintree Web release: `braintree-web@3.147.0` at `f3357c49c7b71f079d031c3ddf89cdfe444f6511`
 - Latest retained card-brand detector release: `credit-card-type@10.3.0` at `fbd8ed80a411fa9b238055208c19a7323cd38e21`

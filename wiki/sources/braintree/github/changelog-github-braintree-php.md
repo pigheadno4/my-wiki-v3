@@ -2,9 +2,11 @@
 title: "GitHub changelog: braintree/braintree_php"
 type: source
 date_ingested: 2026-08-19
-date_updated: 2026-10-11
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_php/snapshots/2026-10-29-b116668/manifest.json"
+  - "github/braintree/braintree_php/snapshots/2026-10-29-883a219/manifest.json"
   - "github/braintree/braintree_php/snapshots/2026-10-10-2a97c3d/manifest.json"
   - "github/braintree/braintree_php/snapshots/2026-08-19-0f53ece/manifest.json"
 tags: [braintree, php-sdk, server-sdk, changelog, github-repository]
@@ -13,6 +15,34 @@ tags: [braintree, php-sdk, server-sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `braintree/braintree_php`. Cumulative implementation knowledge belongs in [[source-github-braintree-php]] and the linked immutable snapshots.
+
+## `braintree_php@6.40.0` (ingested 2026-10-29)
+
+- From 6.39.0, exact SHA `b116668cb1c66b10aceb71e7753a49fbf4e44fd6`; approved focused-reading delta after terminal completion of 6.39.0. Manifest October 27 timestamp is tag/commit-derived; no GitHub Release-note body.
+- Declares SignatureService's existing public key/digest properties and allows Error\Validation dynamic properties to avoid PHP 8.2+ deprecation notices. Signing/digest logic and validation extra-key conversion/getters remain unchanged. ACH mandate has only a future-major review comment; no removal or new payment API.
+- Composer minimum stays PHP >=7.3.0. README tested branches become 7.4/8.2/8.3/8.4/8.5; it recommends latest-patch 8.4/8.5 and reports patched minimum versions 8.2.35/8.3.36/8.4.27/8.5.12 in a new runtime advisory. Advisory/CVE claims are attributed to upstream, not independently assessed. SDK installation is not an interpreter security patch.
+- Migration: address runtime patching independently from SDK adoption, and distinguish declared compatibility from tested/recommended runtimes. No PHP compatibility/exploit/gateway/payment execution performed. All 6.37.0/6.38.0/6.39.0 history preserved.
+- Six modified/220 unchanged retained files; 33 upstream dispositions (six retained/27 exclusions), no gaps/unclassified changes. All changed source/content and affected prior files read, 452 file identities checked; old changelog tail identical. Concept first, then cumulative source/company/catalog/logs; source_count unchanged.
+
+Evidence:
+- `raw/github/braintree/braintree_php/snapshots/2026-10-29-b116668/manifest.json`
+- `raw/github/braintree/braintree_php/releases/braintree_php/6.40.0/2026-10-29/manifest.json`
+- `tracking/github/repos/braintree/braintree_php/comparisons/braintree_php/6.39.0--6.40.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-braintree-php]] - exact source paths, five located quotes and runtime-advisory limits
+
+## `braintree_php@6.39.0` (ingested 2026-10-29)
+
+- From 6.38.0, exact SHA `883a2199aad6f3e1e4796d0f3bea6725c981fd85`; approved serial delta with focused reading. Manifest October 19 timestamp is tag/commit-derived, not verified GitHub Release publication; no release-note body.
+- Adds static/gateway `reverse()` and `reverseNoValidate()`: one reverse POST, validated ID/options, optional `apiRequestKey`, gateway-selected void/full refund. No amount for partial refund or local fallback. `reverseNoValidate()` still validates through `reverse()` and unwraps success or throws `ValidationsFailed`, rather than returning a failed validation result as its docblock suggests.
+- Adds `previousMastercardTransactionLinkId` to transaction and static card-verification signatures, plus five error constants. Static verification enforces its signature; the unchanged direct gateway create does not invoke that wrapper check. No new card/customer fields or general merchant enablement inferred.
+- Migration: choose result versus exception-style handling deliberately; retain explicit refund for amount-specific operations and confirm gateway reversal/external-vault eligibility independently. Existing runtime, credentials, client-token, webhook and 6.37.0/6.38.0 history preserved. No PHP/gateway/payment execution.
+- Six modified/220 unchanged retained files; 11 upstream dispositions, no gaps/unclassified changes. All changed implementation and affected prior context read; 452 snapshot identities and unchanged changelog tail verified mechanically. Updated existing concept first, then source/company/index/logs; source_count unchanged.
+
+Evidence:
+- `raw/github/braintree/braintree_php/snapshots/2026-10-29-883a219/manifest.json`
+- `raw/github/braintree/braintree_php/releases/braintree_php/6.39.0/2026-10-29/manifest.json`
+- `tracking/github/repos/braintree/braintree_php/comparisons/braintree_php/6.38.0--6.39.0/comparison.json` - adjacent comparison.md/diff.patch
+- [[source-github-braintree-php]] - exact source paths, five located quotes and implementation limits
 
 ## `braintree_php@6.38.0` (2026-09-16)
 

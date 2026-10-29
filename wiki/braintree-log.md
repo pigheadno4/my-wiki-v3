@@ -6,6 +6,16 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-29] ingest | PHP `6.40.0`
+
+- Approved focused-reading delta `github-84f7911300e61e51e4b1`, exact SHA `b116668cb1c66b10aceb71e7753a49fbf4e44fd6`, after completed 6.39.0. Six changed/220 unchanged retained files, 33 upstream dispositions, no gaps/unclassified changes; 452 snapshot identities and unchanged historical changelog tail verified.
+- Records dynamic-property deprecation fixes, unchanged signing/payment logic, comment-only ACH mandate change, and separate minimum/tested/recommended PHP runtime guidance. Upstream security advisory attributed, not independently validated or fixed by SDK installation. Existing concept first, then source/changelog/company/catalog/logs; all earlier knowledge and source_count 797 preserved. No PHP/runtime/payment execution, commit or push. [[source-github-braintree-php]] [[changelog-github-braintree-php]]
+
+## [2026-10-29] ingest | PHP `6.39.0`
+
+- Approved focused-reading delta `github-298027a645fc102ea083`, exact SHA `883a2199aad6f3e1e4796d0f3bea6725c981fd85`, from 6.38.0. Six changed/220 unchanged retained files; no gaps/unclassified changes; 452 snapshot identities verified and older changelog tail identical.
+- Records reversal, NoValidate's retained checks and exception semantics, previous Mastercard external-vault inputs and five validation constants. Existing concept first, then cumulative source/changelog/company/catalog/logs; all older history and source_count 797 preserved. No PHP/gateway/payment execution, commit or push. [[source-github-braintree-php]] [[changelog-github-braintree-php]]
+
 ## [2026-10-29] ingest | Ruby `4.42.0`
 
 - Approved delta with focused reading, serially after completed 4.41.0. Exact SHA `647f4bb8a45a869cb4d664077d28287881d299b1`; seven changed/194 unchanged retained files, no gaps or unclassified changes.

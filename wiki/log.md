@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Braintree PHP `6.40.0`
+
+- Approved focused-reading delta after completed 6.39.0: dynamic-property compatibility fixes and version-qualified runtime guidance/advisory, without claiming an interpreter security patch. All earlier history preserved; details [[braintree-log]] and [[source-github-braintree-php]]. No PHP/runtime/payment execution, commit or push.
+
+## [2026-10-29] ingest | Braintree PHP `6.39.0`
+
+- Approved focused-reading delta: gateway-selected reversal, exception/result distinctions and external-vault link inputs; all 6.37.0/6.38.0 history preserved. Details [[braintree-log]] and [[source-github-braintree-php]]. No PHP/gateway/payment execution, commit or push.
+
 ## [2026-10-29] ingest | Adyen website C49
 
 - Fifty independently approved Online banking Slovakia, Boleto Bancario, Cash App Pay, OXXO and econtext Konbini documentation sources; first full-review approvals 48/50 and 2 targeted correction reviews. 1 concepts touched (0 new); source_count 2464 = 2450 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-49/`; details [[adyen-log]]. No commit/push.
