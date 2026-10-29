@@ -1,0 +1,9 @@
+# docs-payment-methods-online-banking-czech-republic retrieval checks
+
+## Q1 — identity and scope
+Query: What does the Online banking Czech Republic overview establish, and how current is its popularity claim?
+Expected: A 2026-09-15-captured CZ/CZK online-banking redirect overview. Shopper selects an issuing bank and moves to its website/mobile app. The page claims second-most-popular after cards and no separate acquiring-bank contracts through Adyen; both are attributed to this historical source, not current market or account proof. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-czech-republic]] → [[raw/adyen/docs/payment-methods/online-banking-czech-republic/2026-09-15]]. Canonical stem: `/payment-methods/online-banking-czech-republic`. Verify raw lines 15–27.
+
+## Q2 — capability matrix and integration routes
+Query: Which capabilities does the Czech overview mark, and where do implementation details live?
+Expected: Matrix marks Online Banking/redirect/CZ/CZK; recurring, separate/partial/multiple partial capture and chargebacks crossed; refund, partial refund and multiple partial refund checked. The capture crosses are for named variants, not all capture behavior. Web/iOS/Android/React Native/Flutter/API-only/Pay by Link links route to child guidance; general 3DS/Capture links are not Czech-specific claims. No current eligibility or live payment is demonstrated. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-czech-republic]] → [[raw/adyen/docs/payment-methods/online-banking-czech-republic/2026-09-15]]. Canonical stem: `/payment-methods/online-banking-czech-republic`. Verify raw lines 29–82.

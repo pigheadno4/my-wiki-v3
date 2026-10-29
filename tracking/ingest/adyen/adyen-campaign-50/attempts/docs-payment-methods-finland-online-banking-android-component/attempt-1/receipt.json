@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Finland Android Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/android-component/2026-09-15.md\"\ntags: [adyen, finland-online-banking, android, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Finland** to an existing Android Components integration. It covers Sessions and Advanced redirect flows, required shopper email, `InstantPaymentComponent` setup, and Paytrail test guidance. It is a method-specific add-on, not a complete Android integration or evidence of current merchant enablement. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-finland-online-banking]] for the separate FI/EUR method overview.\n\n## Key takeaways\n\n- **Sessions:** start with an existing Android Components Sessions flow, **Checkout API v68 or later**, redirect handling for `action.type: redirect`, and Online banking Finland added in Customer Area. The `/sessions` addition marks `shopperEmail` required. The TEST v71 request uses FI/EUR and a custom-scheme `returnUrl`; its `s.hopper@@example.com` email is visibly malformed and must not be copied as a validated shopper address. See raw lines 25\u201369.\n- For Sessions, import the `instant` Android module (plus `components-compose` when using Jetpack Compose), with no extra method configuration. The example selects `ebanking_FI` from the checkout session and creates `InstantPaymentComponent`; the Compose example uses a unique key per Component/screen/session reset. These are UI setup examples, not proof that a bank redirect completed. See raw lines 342\u2013425.\n- **Advanced:** start with an existing Android Components Advanced flow, handle the redirect action, and add the method in Customer Area. Import the same modules and initialize `InstantPaymentComponent` using an `ebanking_FI` method from the `/paymentMethods` response; no extra method configuration is specified. The v68 API minimum is stated only in the Sessions requirements table on this page. See raw lines 432\u2013527.\n- The Advanced `/payments` table marks `paymentMethod.type: ebanking_FI` and `shopperEmail` required. `paymentMethod.issuer` is not generally marked required, but its description explicitly says it is **required for the Issuer redirect flow**; `returnUrl` is unmarked and described as the post-payment return URL with maximum length 1024 characters. The TEST v72 payment examples omit `paymentMethod` despite the required type row and use an HTTPS `returnUrl` in an Android guide. Treat them as incomplete examples; obtain the actual selected method/issuer and app return handling from the appropriate base flow. The example response's `RedirectShopper`/`redirect` is an additional action, not final payment status. See raw lines 528\u2013561 and 826\u2013840.\n- Before live acceptance, the guide says to test with Paytrail's test environment/sample data. It says **testing multiple partial refunds is currently not available**. The separate method overview's matrix marks multiple partial refunds available (and its refund check points to a missing note); keep this test-environment limitation distinct from the overview capability mark and do not infer that a test can verify it. See raw lines 426\u2013430 and 842\u2013846, plus [[source-adyen-docs-payment-methods-finland-online-banking]].\n\n## Detail locators\n\n- Sessions prerequisites, required email and TEST request examples: raw lines 25\u2013340.\n- Sessions module/Component setup and test note: raw lines 342\u2013430.\n- Advanced prerequisites and module/Component setup: raw lines 432\u2013527.\n- Advanced request-field table and abbreviated TEST examples: raw lines 528\u2013824.\n- Redirect response and repeated Paytrail test limitation: raw lines 826\u2013846.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-finland-online-banking]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/android-component/2026-09-15|Fully read Online banking Finland Android Component raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "The shopper's email address.",
+      "location": "line 46"
+    },
+    {
+      "text": "use the `InstantPaymentComponent` class.",
+      "location": "line 375"
+    },
+    {
+      "text": "This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "line 537"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "line 846"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-finland-online-banking-android-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-android-component]] \u2014 2026-09-15-captured Finland online banking Android Components Sessions/Advanced redirect guide for email, conditional issuer, InstantPaymentComponent and Paytrail testing; source flags incomplete examples and refund-test limit.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced table requires ebanking_FI type but TEST request examples omit paymentMethod; sample email contains @@ and Advanced uses HTTPS returnUrl in Android guide.",
+          "Guide says multiple partial refunds cannot currently be tested, while method overview marks the capability available and points to a missing refund note."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/android-component/2026-09-15.md",
+  "raw_sha256": "c7ccc93506c2b24518d92453577eeef9ed990ade5aabdcfb35549f213d3071c9",
+  "status": "candidate_ready"
+}

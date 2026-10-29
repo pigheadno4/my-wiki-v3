@@ -1,0 +1,13 @@
+# Fixed queries — Online banking Czech Republic Web Component
+
+## Q1 — purpose, scope and limits
+
+**Query:** What does the captured Czech Republic Web Component guide cover, and what does redirect handling not prove?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/online-banking-czech-republic/web-component` is a 2026-09-15-captured Web Components add-on for Sessions and Advanced redirect flows, optional Sessions bank-picker configuration, Component import/initialization and test/live instructions. It does not prove a completed payment, current merchant enablement or a validated issuer example. Method-level CZ/CZK context is in `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-czech-republic.md` (full pinned `raw/adyen/docs/payment-methods/online-banking-czech-republic/web-component/2026-09-15.md`, `# Online banking Czech Republic Web Component` lines 15–23; flow headings lines 25, 115). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-czech-republic-web-component.md`.
+
+## Q2 — flow prerequisites and bank-picker conflict
+
+**Query:** What do Sessions and Advanced Czech Web Components require, and how should the issuer configuration example be interpreted?
+
+**Expected answer:** Sessions requires existing Web Components Sessions, Checkout API v68+, redirect handling and Customer Area setup, with no extra **method-specific** `/sessions` fields (pinned `raw/adyen/docs/payment-methods/online-banking-czech-republic/web-component/2026-09-15.md`, `## Sessions flow Component` lines 25–42). It imports/initializes `OnlineBankingCZ`; optional `showImage`, `issuer`, `highlightedIssuers` (added in Web v5.22.0) and `placeholder` configure the bank picker (lines 44–67, 91–105). **Conflict:** the descriptions call for issuer IDs and the table maps Česká spořitelna to `cs`, but the sample sets `issuer` and `highlightedIssuers` to `"Česká spořitelna"` (lines 65–88). Verify accepted ID shapes instead of copying the bank-name values. Advanced requires existing Web Components Advanced, redirect handling and Customer Area setup; no additional Czech-specific `/payments` fields are stated (lines 115–157). Its requirements do not state a Checkout API minimum, and base request fields still apply. Both flows direct test status checks to test Customer Area and method addition for live acceptance (lines 107–113, 159–165); redirect action is not paid status. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-online-banking-czech-republic-web-component.md`.

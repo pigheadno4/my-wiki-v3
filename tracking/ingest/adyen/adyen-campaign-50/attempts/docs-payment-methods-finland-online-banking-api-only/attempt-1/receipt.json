@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Finland API-only integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/api-only/2026-09-15.md\"\ntags: [adyen, online-banking-finland, paytrail, api-only, redirect, finland]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen add-on explains **Online banking Finland** in an existing Web **API-only Advanced** integration. It covers FI/EUR method discovery, two bank-selection routes, a conditional issuer ID, redirect/details processing, and asynchronous outcome checks. It is a method supplement to [[adyen-online-payments]], not a complete base integration, current issuer-availability guarantee, or evidence that a payment ran. See [[adyen]].\n\n## Key takeaways\n\n- **Prerequisites and bank choice:** The existing API-only integration must handle `action.type: redirect`, and Online banking Finland must be added in Customer Area. The default form shows an Online banking Finland button and uses a **Paytrail payment page for bank selection**. Alternatively, the merchant displays issuer banks, sends the shopper-selected issuer ID to its server and redirects directly to that issuer. The page lists eleven issuer IDs and says the listed issuers are the same in test and live, or can be obtained from `/paymentMethods`; treat this as captured documentation, not current availability (raw lines 19\u201370).\n- **Discovery and request fields:** For `/paymentMethods`, the page specifies `countryCode: FI`, `amount.currency: EUR`, and an amount value, then shows `ebanking_FI` with issuers in an example response. For `/payments`, its method table marks `paymentMethod.type: ebanking_FI` and `shopperEmail` required. `paymentMethod.issuer` has no unconditional required mark but the text says it is **required for the issuer-redirect route**; the default Paytrail-selection sample omits it. The `returnUrl` row is unmarked and gives a 1024-character maximum; redirect return handling remains part of the base flow. The examples use TEST v72, FI/EUR and `fi-FI`, without establishing a general API minimum (raw lines 72\u201380, 387\u2013455, 457\u2013480, 798\u2013823).\n- **Sample/prose limitations:** The \u201cHow it works\u201d prose says to include information about purchase items, but the later method-specific `/payments` table and examples do not name or supply an item field. The `/paymentMethods` curl/selected SDK examples include payment-like fields absent from the discovery table and other SDK examples; several snippets use `s.hopper@@example.com`, and the curl samples omit a continuation after `-X POST`. Use the documented field table and base API contract to construct a real request, rather than treating these examples as copy-ready (raw lines 31\u201336, 74\u2013138, 218\u2013251, 446\u2013480).\n- **Redirect and finality:** The sample `/payments` response is `RedirectShopper` with `action.type: redirect`. Send the shopper to the returned `action.url`; after return, submit URL-decoded `redirectResult` in `/payments/details`. The page recommends a system/default browser or platform browser component rather than WebView on mobile. `Pending` or `Received` is nonfinal and calls for an **AUTHORISATION** webhook; if the shopper never returns, use webhooks. The table distinguishes AUTHORISATION success true/false and OFFER_CLOSED success true. Its `Authorised` row says funds arrive in three days; that is a captured provider statement, not a settlement guarantee for a specific payment (raw lines 1148\u20131225).\n- **Testing and method-level boundaries:** The page directs testing with Paytrail sample data before live acceptance and states **testing multiple partial refunds is currently unavailable** (raw lines 1227\u20131231). The separately captured Online banking Finland overview's matrix marks multiple partial refunds supported (overview pinned raw lines 34\u201336); support marking and test-environment availability are different claims. Its overview describes an Adyen-hosted bank-selection page, whereas this API-only child calls the default page Paytrail; the host wording should not replace the returned `action.url` or imply a verified host invariant (overview raw lines 23\u201332; child raw lines 38\u201350, 1164\u20131176).\n\n## Detail locators\n\n- Requirements, two bank-selection modes and issuer table: pinned raw lines 23\u201370.\n- FI/EUR discovery request, SDK examples and issuer response: pinned raw lines 72\u2013444.\n- Conditional issuer, required type/email, returnUrl and two payment samples: pinned raw lines 446\u20131146.\n- Redirect/details and outcome/webhook tables: pinned raw lines 1148\u20131225.\n- Test-data and multiple-partial-refund test limitation: pinned raw lines 1227\u20131231.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[raw/adyen/docs/payment-methods/finland-online-banking/2026-09-15|Separately captured method overview for provider-level context]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/api-only/2026-09-15|Online banking Finland API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make use of the Paytrail payment page for bank selection (default).",
+      "location": "raw line 42"
+    },
+    {
+      "text": "The available issuers for Online banking Finland are the same in the test and live environment:",
+      "location": "raw line 52"
+    },
+    {
+      "text": "This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "raw line 453"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw line 1216"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "raw line 1231"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-finland-online-banking-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-api-only]] \u2014 2026-09-15-captured Online banking Finland Web API-only guide for FI/EUR discovery, Paytrail or merchant issuer selection, conditional issuer, redirect/details and webhook outcomes; source flags sample and refund-testing limits.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "paymentMethod.issuer is conditionally required for the merchant issuer-redirect flow; the default Paytrail-selection request omits it.",
+          "Pending/Received and redirect return are not final results; use AUTHORISATION or OFFER_CLOSED webhooks when needed.",
+          "The child says testing multiple partial refunds is currently unavailable, while the separately captured method overview marks multiple partial refunds supported; do not collapse test availability into overall capability.",
+          "The child calls the default bank-selection page Paytrail, while the overview describes an Adyen-hosted page; follow returned action.url rather than inferring a fixed host.",
+          "The raw's purchase-item prose is unsupported by a named item field in its payment table/examples, and several request samples contain malformed email or shell syntax."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/api-only/2026-09-15.md",
+  "raw_sha256": "d2acbe7537bb46eeea589a0d71c0d6328ea79cac1182999d130be6c446dafdd6",
+  "status": "candidate_ready"
+}

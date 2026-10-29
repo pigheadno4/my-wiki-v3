@@ -1,0 +1,11 @@
+# docs-payment-methods-payto-android-drop-in retrieval checks
+
+## Q1 — purpose, scope, and limits
+
+Query: What does the PayTo Android Drop-in page add, and what does it not prove?
+Expected: It is a 2026-09-15-captured PayTo-specific add-on to an existing Android Drop-in integration, split by Sessions and Advanced flows. Both require Checkout API v70 or later and Customer Area setup; Advanced handles await. AU/AUD and PayID in examples do not prove current merchant eligibility, bank acceptance, or live payment success. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-payto-android-drop-in]] → [[raw/adyen/docs/payment-methods/payto/android-drop-in/2026-09-15]]. Canonical stem: /payment-methods/payto/android-drop-in. Verify raw lines 15–34, 295–303, 357–402.
+
+## Q2 — agreement, later charges, and finality
+
+Query: How do PayTo subscription setup, subsequent payments, and status signals differ in Android Drop-in?
+Expected: Sessions /sessions supports the initial agreement plus first payment but later subscription payments require Advanced flow or API Only. Advanced /payments supports the later request with storedPaymentMethodId from recurring.token.created and ContAuth within agreement conditions. Bank notification and RECURRING_CONTRACT concern agreement authorization/acceptance; AUTHORISATION may still authorize or reject a payment, and REFUND_FAILED can reverse a refund expectation asynchronously. The Sessions required-field table includes storePaymentMethod=true even though its sample omits it; The page names RECURRING_CONTRACT recurringDetailReference (raw lines 218/507), its pspReference token in required-webhook sections (249/607), and recurring.token.created.data.storedPaymentMethodId for the later request (516); it establishes no single mapping or interchangeability among them. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-payto-android-drop-in]] → [[raw/adyen/docs/payment-methods/payto/android-drop-in/2026-09-15]]. Canonical stem: /payment-methods/payto/android-drop-in. Verify raw lines 47–50, 121–140, 161–193, 216–253, 404–430, 505–518, 583–613.

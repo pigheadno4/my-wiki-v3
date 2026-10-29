@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Finland iOS Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/ios-component/2026-09-15.md\"\ntags: [adyen, finland-online-banking, ios, component, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Finland to an existing iOS Components integration**, with Sessions and Advanced server-side flow instructions. It covers required shopper email, `InstantPaymentComponent`, redirect action and Paytrail testing. Redirect presentation is not proof of final payment. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-finland-online-banking]] for Paytrail/FI/EUR context and its bank-selection and refund-note qualifications.\n\n## Key takeaways\n\n- **Sessions flow** requires existing iOS Components Sessions integration, Checkout API **v68 or later**, `action.type: redirect` handling, and Online banking Finland added in Customer Area. Its `/sessions` addition is required `shopperEmail` (raw lines 25\u201346). The examples use FI/EUR and an iOS-style return URL, but repeatedly show `s.hopper@@example.com` (two `@` signs); do not copy that address as valid test data (raw lines 48\u2013339).\n- Sessions needs no Finland-specific Component configuration. The Swift example checks for payment method `.other(\"ebanking_FI\")`, creates an `InstantPaymentComponent`, assigns the session as delegate and calls `initiatePayment()` (raw lines 342\u2013368). This is Component initiation, not authorization.\n- **Advanced flow** requires existing iOS Components, redirect handling, and Customer Area setup. Its \u201ciOS Components integration\u201d link points to an **iOS Drop-in** base URL (`integration=Drop-in`), while the redirect-handling link points to Components; verify the correct base guide (raw lines 376\u2013386). It likewise needs no Finland-specific configuration and uses `InstantPaymentComponent` with the Component's own delegate (raw lines 388\u2013413).\n- Advanced `/payments` explicitly requires `paymentMethod.type: ebanking_FI` and `shopperEmail`. `paymentMethod.issuer` is required **only for the Issuer redirect flow**; `returnUrl` is listed without a required mark and has a 1024-character maximum (raw lines 415\u2013426). The examples at raw lines 430\u2013710 **omit `paymentMethod` entirely**, despite the required type. Treat them as incomplete illustrations, not executable full requests; do not infer that the issuer is always required or never required.\n- The Advanced sample response gives `resultCode: RedirectShopper` and `action.type: redirect` (raw lines 713\u2013727). The guide says to test with Paytrail's test environment/sample data before live acceptance and states **testing multiple partial refunds is currently unavailable** (raw lines 370\u2013374, 729\u2013733). This is a captured test limitation, not a reversal of the approved method overview's matrix mark for multiple partial refunds, whose own refund note is absent.\n\n> [!warning] Required field missing from Advanced examples\n> The Advanced field table marks `paymentMethod.type: ebanking_FI` required (raw line 423), but curl and SDK request examples omit `paymentMethod` (raw lines 430\u2013710). Follow the field table and API contract, and check whether the Issuer redirect flow applies before providing `paymentMethod.issuer` (raw line 424).\n\n## Detail locators\n\n- Sessions prerequisites, email field and request examples: raw `## Sessions flow Component`, lines 25\u2013339.\n- Sessions no-configuration claim and Swift Component initiation: raw lines 342\u2013368.\n- Advanced base-link mismatch, configuration and Swift initiation: raw `## Advanced flow Component`, lines 376\u2013413.\n- Advanced conditional issuer and required type/email; incomplete examples: raw lines 415\u2013710.\n- Redirect response and Paytrail testing/refund limitation: raw lines 713\u2013733.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-finland-online-banking]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/ios-component/2026-09-15|Online banking Finland iOS Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "The shopper's email address.",
+      "location": "raw line 46, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "To [initialize](#initialize-the-component) Online banking Finland, use the `InstantPaymentComponent` class.",
+      "location": "raw line 352, Sessions ## Initialize the Component for Online banking Finland"
+    },
+    {
+      "text": "The issuer ID of the shopper's selected bank. This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "raw line 424, Advanced ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "raw line 733, Advanced ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "finland-online-banking-ios-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-ios-component]] \u2014 2026-09-15-captured iOS Components Sessions/Advanced redirect guide for required email, InstantPaymentComponent and conditional issuer; source flags incomplete Advanced requests and refund test limit.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced table requires paymentMethod.type ebanking_FI but its request examples omit paymentMethod entirely.",
+          "Issuer is required only in the Issuer redirect flow, not unconditionally.",
+          "Advanced Components prerequisite links to Drop-in base URL; verify correct guide.",
+          "Testing multiple partial refunds is unavailable in this capture, distinct from the method overview's capability mark.",
+          "Sample shopperEmail repeatedly contains two @ signs; do not use as valid address."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/ios-component/2026-09-15.md",
+  "raw_sha256": "87a162ccd899e4fe7f8f17b3f56fd09437d1abe04a3e6731d740b70494c4bbb6",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-online-banking-poland-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Poland API-only integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-poland/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md\"\ntags: [adyen, online-banking-poland, api-only, redirect, pln, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online banking Poland to an existing Web Advanced-flow API-only integration. It covers bank discovery and checkout consent, method-specific payment fields, redirect return through `/payments/details`, result presentation and live setup. It is a supplement to [[adyen-online-payments]], not a complete base integration or proof that a merchant processed a payment. [[adyen]]\n\n## Key takeaways\n\n- **Prerequisites and form:** The existing API-only integration must handle `action.type: redirect`, and Online banking Poland must be added in Customer Area. The merchant builds the payment form, asks the shopper to accept the linked Online banking Poland regulations and information obligation, and discovers the method with `/paymentMethods` using `countryCode: PL` and `amount.currency: PLN`. The response example has `type: onlineBanking_PL` and an issuer list; sample issuer `141` is illustrative, not a complete bank list or current availability proof. [Raw: lines 23\u201359, 275\u2013293]\n- **Payment field requiredness:** The method-specific `/payments` table marks `shopperEmail` required with a **50-character maximum**, while the `paymentMethod.issuer` row has no required mark and describes the shopper-selected bank ID. Payment examples include `type: onlineBanking_PL`, `issuer: 141`, PLN amount 1000 minor units, a merchant reference, and `returnUrl`; the sample issuer does not turn the unmarked field into an unconditional requirement. The how-it-works prose asks for intended-item information, but the method-specific table and sample requests do not show item fields. Consult the base API contract for a complete request rather than deriving fields from that prose. [Raw: lines 31\u201335, 297\u2013327]\n- **Example completeness:** The `/paymentMethods` curl sample puts `-X POST` on a line without continuation before `-d`, as does the `/payments` curl sample. Several discovery SDK examples call `paymentMethodsRequest` without constructing it; the Node examples use `Config` and `EnvironmentEnum` without showing imports. These are incomplete documentation illustrations, not shell-ready or guaranteed runnable recipes. The displayed versions are for example API libraries, not a stated minimum Checkout API version. [Raw: lines 64\u2013176, 270\u2013276, 306\u2013327, 455\u2013491]\n- **Redirect and return:** A `/payments` example returns `resultCode: RedirectShopper` with `action.type: redirect`, GET method and `action.url`. Send the shopper to that returned URL. After website return, URL-decode `redirectResult` and send it inside `details` to `/payments/details`; use its `resultCode` to present the result and `pspReference` as the transaction ID. The mobile-default-browser/SFSafariViewController/Chrome Custom Tabs advice on this Web page is explicitly for mobile integrations, not a Web-only requirement. [Raw: lines 635\u2013706]\n- **Finality and live gate:** `Authorised` is described as a successful payment, with funds stated to arrive in **2\u20133 days**. `Pending` or `Received` means the final result is unknown and may take minutes or hours; wait for an `AUTHORISATION` webhook. `Refused` means bank refusal, with advice to try a different method. A webhook also carries outcome if the shopper does not return to the website/app. Before live acceptance, submit a request for Online banking Poland in live Customer Area. These are captured provider statements, not a guarantee of a particular transfer or merchant enablement. [Raw: lines 708\u2013727]\n\n> [!WARNING] Do not turn examples into required fields or final status\n> The table requires `shopperEmail` but leaves `paymentMethod.issuer` unmarked (raw lines 297\u2013302), despite issuer values in samples. `RedirectShopper` is an intermediate action; `Pending`/`Received` are not final results (raw lines 635\u2013720). The how-it-works item statement has no matching method-specific field in this page.\n\n## Detail locators\n\n- Requirements, checkout form, PL/PLN discovery and consent: pinned raw lines 23\u201359.\n- Discovery examples and issuer-list response: pinned raw lines 61\u2013293.\n- Payment requiredness and language request examples: pinned raw lines 295\u2013633.\n- Redirect, details, result statuses and live setup: pinned raw lines 635\u2013731.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-online-banking-poland]] \u2014 approved overview for P24 partner, PL/PLN bank redirect and method capability context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15|Online banking Poland API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "include additional information about the items that the shopper intends to purchase",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md:35"
+    },
+    {
+      "text": "Make sure that you ask the shopper to accept the Online banking Poland",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md:48"
+    },
+    {
+      "text": "The shopper's email address. Must be 50 or less characters.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md:301"
+    },
+    {
+      "text": "URL-decoded `redirectResult`",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md:680"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md:718"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-online-banking-poland-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-poland-api-only]] \u2014 2026-09-15-captured API-only guide for PL/PLN bank discovery and consent, shopperEmail/issuer field distinction, redirect/details return and pending-versus-webhook finality; source flags incomplete examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "shopperEmail is required and at most 50 characters; paymentMethod.issuer has no required mark despite example issuer.",
+          "The item-information prose does not map to a method-specific item field in the table or samples.",
+          "Pending/Received are not final; both curl examples lack a line continuation before -d, and several SDK discovery snippets lack request construction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-poland/api-only/2026-09-15.md",
+  "raw_sha256": "c46af9791fef16bbd43b2f88d30a36c70085e32701fa24a3c88de6f07e9318f1",
+  "status": "candidate_ready"
+}

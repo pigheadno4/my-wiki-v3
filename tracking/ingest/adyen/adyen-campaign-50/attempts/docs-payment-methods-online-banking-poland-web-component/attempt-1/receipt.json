@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-online-banking-poland-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Poland Web Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-poland/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md\"\ntags: [adyen, online-banking-poland, web, component, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online banking Poland to an existing Web Components integration. It separates Sessions and Advanced server-side flows, specifies method-specific email and issuer fields, imports/mounts `OnlineBankingPL`, and shows an Advanced redirect action. It is a supplement to [[adyen-online-payments]], not a complete return/finality recipe or evidence of payment success. [[adyen]]\n\n## Key takeaways\n\n- **Sessions prerequisites and request:** Start with an existing Web Components Sessions integration, Checkout API **v68 or later**, redirect handling for `action.type: redirect`, and Online banking Poland added in Customer Area. Its method-specific `/sessions` table requires `shopperEmail` of **50 characters or fewer**. The PLN amount 1000, PL country and app-scheme `returnUrl` shown in the sample are example values, not a Web return-URL prescription or current eligibility proof. [Raw: lines 25\u201368]\n- **Sessions Component:** Import `OnlineBankingPL` from `@adyen/adyen-web`, initialize it with the checkout instance and mount it. The page says no additional Online banking Poland configuration parameters are needed in this Sessions flow. This is method-specific; the base integration still supplies checkout/session configuration. [Raw: lines 271\u2013302]\n- **Advanced prerequisites and request:** Start with an existing Web Components Advanced integration that handles `action.type: redirect` and has the method added in Customer Area. Import and mount `OnlineBankingPL`. The `/payments` table requires `shopperEmail` of **50 characters or fewer** but leaves `paymentMethod.issuer` unmarked as required, describing it as the selected bank's ID. Examples include `type: onlineBanking_PL`, issuer `141`, PLN amount and HTTPS `returnUrl`; these do not make issuer universally required or list all banks. This section states no Advanced Checkout API minimum. [Raw: lines 310\u2013382]\n- **Redirect and outcome boundary:** The sample Advanced response has `resultCode: RedirectShopper` and `action.type: redirect` with a GET `action.url`. This is an intermediate redirect, not an authorized payment. The page does not explain the returned `redirectResult`, `/payments/details`, or webhook finality; use the base integration or separately approved API-only guide for those steps, with attribution. [Raw: lines 689\u2013705]\n- **Sample and live caveats:** Both curl examples place `-X POST` on a line without continuation before `-d`; several Sessions language examples call `createCheckoutSessionRequest` without constructing it, and Node samples use `Config`/`EnvironmentEnum` without shown imports. Treat these as illustrations, not runnable commands. The page says to check test payments in test Customer Area and submit a request for Online banking Poland in live Customer Area before live acceptance. The library-version labels and `liveEndpointUrlPrefix` comments in examples are scoped to those samples, not a declared API minimum or completed live setup. [Raw: lines 50\u2013268, 303\u2013308, 363\u2013689, 706\u2013711]\n\n> [!WARNING] Preserve field requiredness and redirect finality\n> `shopperEmail` is required in both method-specific tables, but Advanced `paymentMethod.issuer` is unmarked (raw lines 46, 356\u2013357). An example issuer does not override that table. `RedirectShopper` is not the final payment result (raw lines 691\u2013704).\n\n## Detail locators\n\n- Sessions requirements, required email and sample session requests: pinned raw lines 25\u2013268.\n- Sessions import, no-extra-configuration and mount: pinned raw lines 271\u2013302.\n- Advanced requirements, import/mount and method-specific payment fields: pinned raw lines 310\u2013357.\n- Advanced examples and redirect action: pinned raw lines 359\u2013705.\n- Test/live gate: pinned raw lines 303\u2013308 and 706\u2013711.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-online-banking-poland]] \u2014 approved P24/PL/PLN method overview and redirect capability context.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15|Online banking Poland Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md:34"
+    },
+    {
+      "text": "The shopper's email address. Must be 50 or less characters.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md:46"
+    },
+    {
+      "text": "include `OnlineBankingPL`.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md:274"
+    },
+    {
+      "text": "The issuer ID of the shopper's selected bank.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md:357"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md:691"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-online-banking-poland-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-poland-web-component]] \u2014 2026-09-15-captured Web Component guide for Sessions/Advanced email fields, OnlineBankingPL mounting and Advanced redirect action; source distinguishes unmarked issuer and intermediate redirect from final payment.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Both flows require shopperEmail of at most 50 characters; Advanced issuer is unmarked despite sample value.",
+          "Only Sessions states Checkout API v68+; Advanced gives no explicit minimum.",
+          "RedirectShopper is intermediate; this page omits return/details/final webhook sequence.",
+          "Both curl samples miss continuation before -d; several SDK session snippets omit request construction."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-poland/web-component/2026-09-15.md",
+  "raw_sha256": "399aed01c8cddb7a21728b7baaea331f2177b53f9db88dd5510899c54a17aebc",
+  "status": "candidate_ready"
+}

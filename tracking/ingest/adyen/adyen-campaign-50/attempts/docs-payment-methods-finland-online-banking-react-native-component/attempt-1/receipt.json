@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Finland React Native Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md\"\ntags: [adyen, finland-online-banking, react-native, component, paytrail, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online banking Finland to a React Native Components integration. It explicitly excludes Sessions flow, then describes Advanced-flow redirect, method-specific request fields, sample redirect response, and Paytrail test guidance. It supplements [[adyen-online-payments]] and does not show a completed payment or current merchant enablement. [[adyen]]\n\n## Key takeaways\n\n- **Flow scope:** The page states that React Native Components **do not support Sessions flow**. Its supported route here is an existing Advanced-flow React Native Components integration with redirect handling for `action.type: redirect` and Online banking Finland added in Customer Area. No method-specific configuration parameters are needed. The Advanced integration-type row's link points to a **Drop-in** base URL despite saying Components, while the redirect and payment links point to Components; treat that link as a navigation mismatch, not as a switch to Drop-in. The page states no Checkout API minimum. [Raw: lines 25\u201353]\n- **Advanced request fields:** The method-specific `/payments` table marks `paymentMethod.type: ebanking_FI` and `shopperEmail` required. It says `paymentMethod.issuer` is relevant and required **only for the Issuer redirect flow**. Its `returnUrl` row is unmarked, with a stated maximum of 1024 characters. The EUR amount 1000 and HTTPS return URL shown in examples are illustrations. [Raw: lines 49\u201380]\n- **Incomplete request examples:** All displayed curl and language-library `/payments` request samples omit `paymentMethod` despite the table's required type. They also use `s.hopper@@example.com`, a malformed double-`@` placeholder. The curl block lacks a continuation after `-X POST` before `-d`, and the Node snippets reference `Config`/`EnvironmentEnum` without shown imports. Do not copy these as complete runnable payment requests. The language-library version labels and `liveEndpointUrlPrefix` comments are sample-scoped, not an established API minimum. [Raw: lines 64\u2013345]\n- **Redirect and result:** The example response has `resultCode: RedirectShopper`, a GET `action.type: redirect`, `paymentMethodType: ebanking_FI` and an action URL. This is an intermediate redirect, not final authorization. The child page does not give a return/details or webhook result sequence. [Raw: lines 347\u2013361]\n- **Test/refund boundary:** Before live acceptance, the page instructs testing with Paytrail's test environment and sample data. It says **testing multiple partial refunds is currently not available**. The separately approved [[source-adyen-docs-payment-methods-finland-online-banking]] overview checks multiple partial refunds but has a missing \u201cSee note\u201d qualification; do not recast the child test limitation as proof of live refund support or impossibility. [Child raw: lines 363\u2013367; overview raw: lines 34\u201336]\n\n> [!WARNING] Required type is missing from every sample request\n> The table requires `paymentMethod.type: ebanking_FI` (raw line 57), but the curl and all language examples omit `paymentMethod` (raw lines 66\u2013345). The example email is malformed. The prose/table requirements, not these incomplete snippets, should guide a complete request.\n\n## Detail locators\n\n- Unsupported Sessions flow, Advanced prerequisites and link mismatch: pinned raw lines 25\u201347.\n- Required and conditional fields: pinned raw lines 49\u201360.\n- Incomplete test-environment request examples: pinned raw lines 62\u2013345.\n- Redirect response and Paytrail test limitation: pinned raw lines 347\u2013367.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-finland-online-banking]] \u2014 approved Paytrail/FI/EUR overview and separate bank-selection/refund-note caveats.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15|Online banking Finland React Native Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md:29"
+    },
+    {
+      "text": "`action.type`: **redirect**",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md:40"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Online banking Finland.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md:47"
+    },
+    {
+      "text": "**ebanking\\_FI**",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md:57"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md:367"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-finland-online-banking-rn-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-react-native-component]] \u2014 2026-09-15-captured React Native Component guide: Sessions unsupported, Advanced redirect and conditional issuer fields, incomplete request examples, and Paytrail test limit.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "React Native Components Sessions flow is explicitly unsupported in this child.",
+          "All Advanced request samples omit required paymentMethod.type and use malformed double-@ email.",
+          "Advanced integration-type link points to Drop-in despite Components label; test multiple partial refund unavailability does not establish live capability."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-component/2026-09-15.md",
+  "raw_sha256": "079a3f3f62e91c5be6ec4ee321cb67b4a6b944af3b1f8740c03e6f2bdd4be7d0",
+  "status": "candidate_ready"
+}

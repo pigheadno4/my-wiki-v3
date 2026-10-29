@@ -1,0 +1,13 @@
+# PayTo API-only retrieval checks
+
+## Q1 — Purpose and payment-finality boundary
+
+Query: What does the PayTo API-only guide cover, and do bank agreement acceptance, Pending/Received responses or a token prove an authorized payment?
+
+Expected route: `wiki/index.md` line 10 → `wiki/adyen-index.md` line 2769 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-payto-api-only.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/payto/api-only/2026-09-15.md` `# PayTo for API only` lines 15–21, Requirements/discovery lines 23–40, Pending/await example lines 105–121, later Received example lines 264–288 and Required webhooks lines 302–332. Expected answer: 2026-09-15-captured PayTo method add-on to an existing API-only integration; mandate consent, token creation and payment outcome are separate. Pending and Received do not prove final authorization; AUTHORISATION can report success or rejection, and no current merchant/live execution is established.
+
+## Q2 — Discovery, data tension, mandates and tokens
+
+Query: How should PayTo be discovered and requested for one-time, first-subscription and later charges, and what field/collection/token conflicts must be retained?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-payto-api-only.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/payto/api-only/2026-09-15.md` Requirements/discovery lines 23–40, form statement lines 42–46, one-time lines 58–121, subscription lines 123–226, subsequent lines 228–288, identifier formats lines 290–300, webhooks/test lines 302–351. For method setup and bank authorization, follow `wiki/sources/adyen/source-adyen-docs-payment-methods-payto.md` → `raw/adyen/docs/payment-methods/payto/2026-09-15.md` lines 23–107. Expected answer: existing API-only integration, Checkout API v70+, await handling and Customer Area PayTo; discover with AU/AUD and optional shopperReference. One-time and initial subscription require payto, shopperAccountIdentifier and shopper name, despite the page saying the merchant form need not collect shopper information; it gives no alternative source. Subscription also requires storage/Subscription/Ecommerce and mandate terms, with count >=1 for scheduled frequency; later charges use storedPaymentMethodId and ContAuth within agreement terms. Warn that recurringDetailReference, pspReference and data.storedPaymentMethodId appear in different token contexts, and the examples/regex table need independent validation. Test values are simulations.

@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-online-banking-poland-web]] — 2026-09-15-captured Web integration chooser for Poland Drop-in/Components child guides and Sessions/Advanced base guides.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-android]] — 2026-09-15-captured Android chooser for Online banking Poland Drop-in/Components child guides and four Sessions/Advanced base routes; child guides supply implementation behavior.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-web]] — 2026-09-15-captured Finland online banking Web chooser for Drop-in/Components method guides and Sessions/Advanced base-guide routes.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-android]] — 2026-09-15-captured Online banking Finland Android chooser for Drop-in/InstantPaymentComponent child guides and four Sessions/Advanced base routes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-ios]] — 2026-09-15-captured iOS integration chooser for Poland Drop-in/Components child guides and Sessions/Advanced base guides; source flags a malformed Components description.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-ios]] — 2026-09-15-captured iOS chooser routing to Finland online banking Drop-in/InstantPaymentComponent child guides and main Sessions/Advanced integration guides.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-web]] — 2026-09-15-captured Czech online banking Web chooser linking Drop-in/OnlineBankingCZ Components and four Sessions/Advanced base routes; not a request or outcome recipe.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-android]] — 2026-09-15-captured Android chooser for Online banking Czech Republic Drop-in/Components child guides and four Sessions/Advanced base routes; child guides supply implementation behavior.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-ios]] — 2026-09-15-captured Czech online banking iOS chooser for Drop-in/Components and Sessions/Advanced base-guide routes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-react-native-component]] — 2026-09-15-captured Online banking Czech Republic React Native Components Advanced-only add-on for redirect, setup and test/live guidance; source flags Sessions unavailability and mismatched Drop-in base link.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-ios-drop-in]] — 2026-09-15-captured iOS Drop-in Sessions/Advanced Czech bank-redirect add-on with no extra method fields or configuration and Advanced redirect prerequisite.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-react-native-drop-in]] — 2026-09-15-captured Czech online banking React Native Drop-in Sessions/Advanced add-on for method-specific request/configuration scope, redirect prerequisites and test/live guidance; source flags a Sessions base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-flutter-drop-in]] — 2026-09-15-captured Online banking Czech Republic Flutter Drop-in Sessions/Advanced add-on for redirect, no extra method fields, setup and test/live guidance; source flags Sessions base-link and setup-path discrepancies.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-web-drop-in]] — 2026-09-15-captured Web Drop-in Sessions/Advanced Czech redirect add-on with no extra method fields, optional OnlineBankingCZ import and test/live routes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-android-drop-in]] — 2026-09-15-captured Czech online banking Android Drop-in Sessions/Advanced add-on for no method-specific request fields, optional submit-button visibility, redirect prerequisite and test/live guidance.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-ios-component]] — 2026-09-15-captured Online banking Czech Republic iOS Components Sessions/Advanced add-on for no extra request fields, redirect handling and test/live setup; source flags unresolved Swift initialization and Advanced base-link caveats.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-web-component]] — 2026-09-15-captured Web Components Sessions/Advanced Czech bank-redirect guide with optional bank picker; source flags bank-name versus issuer-ID example mismatch.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-react-native-component]] — 2026-09-15-captured React Native Component guide: Sessions unsupported, Advanced redirect and conditional issuer fields, incomplete request examples, and Paytrail test limit.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-android-component]] — 2026-09-15-captured Online banking Czech Republic Android Components Sessions/Advanced add-on for module import, optional submit button, Component launch, redirect handling and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-react-native-component]] — 2026-09-15-captured React Native Components guide: Sessions unavailable; Advanced email/redirect, unmarked issuer and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-ios-drop-in]] — 2026-09-15-captured iOS Drop-in Sessions/Advanced bank-redirect add-on with required email, conditional issuer and Paytrail test limitation; source flags incomplete Advanced requests.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-ios-drop-in]] — 2026-09-15-captured iOS Drop-in Sessions/Advanced guide for required shopper email, no extra method configuration and Advanced redirect/issuer field.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-react-native-drop-in]] — 2026-09-15-captured React Native Drop-in Sessions/Advanced add-on for required shopper email, Advanced issuer field and redirect action; source flags Sessions base-link and return-URL example caveats.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-flutter-drop-in]] — 2026-09-15-captured Finland online banking Flutter Drop-in Sessions/Advanced add-on for email, conditional issuer, redirect handling and Paytrail testing; source flags setup and sample limitations.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-flutter-drop-in]] — 2026-09-15-captured Online banking Poland Flutter Drop-in Sessions/Advanced add-on for shopper email, redirects and test/live setup; source flags Sessions base-link and setup-path discrepancies.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-android-drop-in]] — 2026-09-15-captured Android Drop-in guide for Sessions/Advanced email and redirect fields, Issuer-flow conditional issuer, Paytrail testing and incomplete Advanced examples.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-web-drop-in]] — 2026-09-15-captured Poland online banking Web Drop-in Sessions/Advanced add-on for email limits, optional OnlineBankingPL import, redirect action and live-request setup; source flags incomplete examples.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-react-native-drop-in]] — 2026-09-15-captured React Native Drop-in Sessions/Advanced redirect guide for required email and conditional issuer; source flags base-link, incomplete request and test-refund caveats.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-android-drop-in]] — 2026-09-15-captured Online banking Poland Android Drop-in Sessions/Advanced add-on for shopper email, submit-button option, Advanced redirect and test/live setup; source flags Kotlin sample syntax.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-ios-component]] — 2026-09-15-captured Online banking Poland iOS Components Sessions/Advanced add-on for required shopper email, redirect handling and test/live setup; source flags unresolved Component initialization and base-link caveats.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-web-drop-in]] — 2026-09-15-captured Web Drop-in Sessions/Advanced redirect guide for required email, optional Redirect import and conditional issuer; source flags incomplete Advanced requests and test-refund limit.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-web-component]] — 2026-09-15-captured Web Component guide for Sessions/Advanced email fields, OnlineBankingPL mounting and Advanced redirect action; source distinguishes unmarked issuer and intermediate redirect from final payment.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-web-component]] — 2026-09-15-captured Finland online banking Web Components Sessions/Advanced redirect guide, required email, conditional issuer and Paytrail test limitation; source flags sample-code issues.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-ios-component]] — 2026-09-15-captured iOS Components Sessions/Advanced redirect guide for required email, InstantPaymentComponent and conditional issuer; source flags incomplete Advanced requests and refund test limit.
+
+
+- [[source-adyen-docs-payment-methods-payto-api-only]] — 2026-09-15-captured PayTo API-only guide for AU/AUD discovery, one-time/subscription mandates, stored-method charges and webhook finality; source flags form-versus-required-field and token-reference tensions.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-api-only]] — 2026-09-15-captured API-only guide for PL/PLN bank discovery and consent, shopperEmail/issuer field distinction, redirect/details return and pending-versus-webhook finality; source flags incomplete examples.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-android-component]] — 2026-09-15-captured Finland online banking Android Components Sessions/Advanced redirect guide for email, conditional issuer, InstantPaymentComponent and Paytrail testing; source flags incomplete examples and refund-test limit.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland-android-component]] — 2026-09-15-captured Android Components Sessions/Advanced guide for required shopper email, OnlineBankingPLComponent, optional submit-button control and redirect response.
+
+
+- [[source-adyen-docs-payment-methods-payto-android-drop-in]] — 2026-09-15-captured PayTo Android Drop-in Sessions/Advanced add-on for one-time and subscription agreement flows, later-payment route, webhook finality, and source example/token-field cautions.
+
+
+- [[source-adyen-docs-payment-methods-payto-web-drop-in]] — 2026-09-15-captured PayTo Web Drop-in v70+ Sessions/Advanced guide for one-time and subscription agreements, subsequent stored payments, asynchronous webhooks and test identifiers; source flags sample and token-reference discrepancies.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic-api-only]] — 2026-09-15-captured CZ bank-redirect API-only guide for issuer discovery, return/details and webhook finality; source flags issuer/no-extra-fields and CZK/EUR sample tensions.
+
+
+- [[source-adyen-docs-payment-methods-payto-ios-drop-in]] — 2026-09-15-captured iOS Drop-in PayTo guide for one-time and subscription mandates, bank approval, Advanced subsequent charges, and webhook outcomes.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking-api-only]] — 2026-09-15-captured Online banking Finland Web API-only guide for FI/EUR discovery, Paytrail or merchant issuer selection, conditional issuer, redirect/details and webhook outcomes; source flags sample and refund-testing limits.
+
+
+- [[source-adyen-docs-payment-methods-payto-web-component]] — 2026-09-15-captured PayTo Web Components Sessions/Advanced add-on for one-time and subscription agreement flows; source distinguishes later charges and webhook finality.
+
+
+- [[source-adyen-docs-payment-methods-payto-ios-component]] — 2026-09-15-captured PayTo iOS Components Sessions/Advanced guide for one-off and subscription agreement setup, await action, agreement-bound later payments and webhook outcomes; source flags link, token-reference and example caveats.
+
+
+- [[source-adyen-docs-payment-methods-payto-android-component]] — 2026-09-15-captured PayTo Android Components Sessions/Advanced guide for one-time and subscription mandates, bank approval, tokens, subsequent charges and asynchronous webhooks; source flags token-reference ambiguity and example syntax.
+
+
+- [[source-adyen-docs-payment-methods-payto]] — 2026-09-15-captured Australian PayTo overview for account setup, bank mandates, first/subsequent payment and webhook finality, recurring rules and post-transaction handling; source flags setup-enabled and chargeback-label conflicts.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-poland]] — 2026-09-15-captured PL/PLN Przelewy24 online-banking redirect overview with shopper bank selection, capability matrix and integration routes.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-czech-republic]] — 2026-09-15-captured CZ/CZK Online banking Czech Republic redirect overview with bank selection, capability matrix, acquiring-bank contract claim and platform routes.
+
+
+- [[source-adyen-docs-payment-methods-finland-online-banking]] — 2026-09-15-captured Paytrail-backed FI/EUR online banking redirect overview, shopper journey, capability matrix and platform routes; source flags bank-selection and refund-note ambiguities.
+
+
 - [[source-adyen-docs-payment-methods-cash-app-pay-android]] — 2026-09-15-captured Cash App Pay Android chooser for Drop-in/Components and Sessions base routes; child guides cover fuller flow and result behavior.
 
 

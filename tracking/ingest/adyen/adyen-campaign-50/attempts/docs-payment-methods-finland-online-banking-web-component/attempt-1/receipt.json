@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Finland Web Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/web-component/2026-09-15.md\"\ntags: [adyen, finland-online-banking, web, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Finland** to an existing Web Components integration. It describes Sessions and Advanced redirect flows, required shopper email, the `Redirect` Component, and Paytrail test guidance. It is a method-specific add-on, not a full Web integration or evidence of live merchant enablement. See [[adyen]], [[adyen-online-payments]], and the separate method overview [[source-adyen-docs-payment-methods-finland-online-banking]].\n\n## Key takeaways\n\n- **Sessions:** use an existing Web Components Sessions flow with Checkout API v68 or later, redirect handling for `action.type: redirect`, and Online banking Finland added in Customer Area. The `/sessions` addition marks `shopperEmail` required. The TEST v71 sample uses FI/EUR but shows an app-scheme `returnUrl` in this Web guide, malformed `s.hopper@@example.com`, and a curl command without a continuation after `-X POST`. Treat those values as illustrative, not a working Web request. See raw lines 25\u201369.\n- Import `Redirect` from `@adyen/adyen-web`; no extra method configuration is specified. The Sessions example mounts `new Redirect(checkout, { type:ebanking_FI })`, with `ebanking_FI` unquoted in the displayed JavaScript. Use the applicable base integration to determine a valid method type/configuration rather than copying this snippet literally. See raw lines 342\u2013370.\n- **Advanced:** use an existing Web Components Advanced flow with redirect handling and method setup in Customer Area. Import and mount `Redirect` again; the same unquoted `type:ebanking_FI` appears. The v68 API minimum is stated in this page's Sessions requirements, not its Advanced requirements. See raw lines 378\u2013410.\n- The Advanced `/payments` table marks `paymentMethod.type: ebanking_FI` and `shopperEmail` required. It says `paymentMethod.issuer` is relevant and required **for the Issuer redirect flow**; `returnUrl` is described as the post-payment URL, maximum 1024 characters, but is not marked required in this table. The TEST v72 examples omit `paymentMethod` despite that required type row, repeat the malformed email, and the curl example lacks a continuation after `-X POST`. The sample response returns `RedirectShopper` with a `redirect` action, which is a redirect step rather than final payment confirmation. See raw lines 412\u2013445 and 710\u2013724.\n- Before live acceptance, the guide directs testing with Paytrail's test environment and sample data. It says **testing multiple partial refunds is currently not available**. The separate method overview marks multiple partial refunds available in its capability matrix while its refund note is absent in the captured raw; retain this test limitation and capability tension rather than treating the matrix as a successful test. See raw lines 372\u2013376 and 726\u2013730, plus [[source-adyen-docs-payment-methods-finland-online-banking]].\n\n## Detail locators\n\n- Sessions prerequisites, email field and multilingual TEST request examples: raw lines 25\u2013340.\n- Sessions `Redirect` import, setup and Paytrail test note: raw lines 342\u2013376.\n- Advanced prerequisites, `Redirect` setup and request table: raw lines 378\u2013423.\n- Advanced TEST request examples and redirect response: raw lines 425\u2013724.\n- Repeated Paytrail test limitation: raw lines 726\u2013730.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-finland-online-banking]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/web-component/2026-09-15|Fully read Online banking Finland Web Component raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "The shopper's email address.",
+      "location": "line 46"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Online banking Finland.",
+      "location": "line 358"
+    },
+    {
+      "text": "This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "line 421"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "line 730"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-finland-online-banking-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-web-component]] \u2014 2026-09-15-captured Finland online banking Web Components Sessions/Advanced redirect guide, required email, conditional issuer and Paytrail test limitation; source flags sample-code issues.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions Web sample uses an app-scheme returnUrl and malformed email; both curl samples omit continuation after -X POST; Redirect examples show unquoted ebanking_FI.",
+          "Advanced table requires paymentMethod.type but TEST examples omit paymentMethod; multiple partial refunds cannot currently be tested although the separate method overview marks that capability available."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/web-component/2026-09-15.md",
+  "raw_sha256": "597c72dcda31594faad26760705b76ee9e007faff899a406dd557d59f13563c5",
+  "status": "candidate_ready"
+}

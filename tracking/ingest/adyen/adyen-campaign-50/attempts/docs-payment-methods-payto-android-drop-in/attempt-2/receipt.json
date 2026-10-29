@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-payto-android-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen PayTo Android Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/android-drop-in/2026-09-15.md\"\ntags: [adyen, payto, android, drop-in, sessions, advanced-flow, subscriptions]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds PayTo-specific steps to an **existing Android Drop-in** integration. It separates Sessions flow from Advanced flow, and one-time payments from subscription agreement setup and later subscription payments. See [[adyen]] and [[adyen-online-payments]]. Its AU/AUD values and PayID are examples and do not establish current merchant eligibility or a completed live payment.\n\n## Key takeaways\n\n- Both flows require an existing Android Drop-in integration, Checkout API **v70 or later**, and PayTo added in Customer Area. Advanced flow must also handle the **await** action. See raw lines 25\u201334 and 295\u2013303.\n- Sessions flow adds PayTo parameters to **/sessions** for a one-time payment or subscription agreement plus first payment. The subscription setup table marks shopper names, storage, recurring model, interaction, and mandate terms required. **Subsequent subscription payments can only use Advanced flow or API Only**, not the Sessions setup flow. See raw lines 38\u201350 and 121\u2013140.\n- In Advanced flow, **/payments** accepts one-time, subscription setup/first-payment, and subsequent subscription requests. The latter uses the stored payment method ID from the **recurring.token.created** webhook with **ContAuth**, only within the accepted agreement's conditions. See raw lines 329\u2013349, 404\u2013430 and 509\u2013518.\n- The shopper receives a bank notification to authorize or decline the **agreement**. Agreement acceptance and its **RECURRING_CONTRACT** notification do not establish payment success: the **AUTHORISATION** webhook can report an authorized or rejected payment on an accepted agreement. Example Advanced responses show **Pending** for initial requests and **Received** for a later request. Refunds can fail asynchronously, indicated by **REFUND_FAILED**. See raw lines 216\u2013253, 388\u2013402, 489\u2013507, 545\u2013569 and 583\u2013613.\n\n## Source cautions\n\n- The Sessions subscription table marks **storePaymentMethod=true** required, but the Sessions subscription request example omits the field. Follow the table rather than treating that example as a complete request; the example also has a missing comma after shopperReference. See raw lines 129, 161\u2013193.\n- The agreement-acceptance prose says **RECURRING_CONTRACT** includes **recurringDetailReference**; the required-webhook sections instead say its token is in **pspReference**; the subsequent-payment table requires **paymentMethod.storedPaymentMethodId** from **recurring.token.created** **data.storedPaymentMethodId**. The guide gives no single mapping or evidence that these three stated locations/identifiers are interchangeable for a subsequent request. See raw lines 218, 249, 507, 516 and 607.\n- Test email identifiers simulate agreement and payment outcomes. They are not evidence of live bank acceptance or payment finality. See raw lines 281\u2013293 and 615\u2013627.\n\n## Detail locators\n\n- Sessions one-time parameters and response mandate defaults: raw lines 52\u2013119.\n- Sessions subscription mandate and required fields: raw lines 121\u2013159.\n- Advanced configuration and request tables: raw lines 295\u2013357 and 404\u2013430.\n- Shopper account identifier formats: raw lines 571\u2013581.\n- Required webhook meanings and test cases: raw lines 583\u2013627.\n\n## Related\n\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/android-drop-in/2026-09-15|Fully read PayTo Android Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "The following instructions show only what you must add to your integration specifically for PayTo.",
+      "location": "line 19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v70 or later.",
+      "location": "line 33"
+    },
+    {
+      "text": "Subsequent subscription payments can only be performed with:",
+      "location": "line 47"
+    },
+    {
+      "text": "The shopper receives a notification from their bank (through SMS, email, or in their banking app) to authorize or decline the agreement.",
+      "location": "line 216"
+    },
+    {
+      "text": "This stored payment method can only be used according to the conditions specified in the subscription agreement.",
+      "location": "line 516"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-payto-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-android-drop-in]] \u2014 2026-09-15-captured PayTo Android Drop-in Sessions/Advanced add-on for one-time and subscription agreement flows, later-payment route, webhook finality, and source example/token-field cautions.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions subscription field table requires storePaymentMethod=true but its example omits it (raw lines 129, 161\u2013193).",
+          "Agreement prose names RECURRING_CONTRACT recurringDetailReference (raw lines 218/507), required-webhook sections name its pspReference token (249/607), and later-payment table requires recurring.token.created.data.storedPaymentMethodId (516); no single mapping or interchangeability is established."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/android-drop-in/2026-09-15.md",
+  "raw_sha256": "6b08a93a4181206f5c642f0b4799cc2b03cb7a49c379a718f3e3c32295bd7c18",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-payto-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayTo API-only integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/api-only/2026-09-15.md\"\ntags: [adyen, payto, api-only, australia, mandate, subscription]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **PayTo to an existing API-only integration**. It covers AU/AUD method discovery, one-time and subscription-agreement requests, later stored-method payments, `await` actions and asynchronous webhook outcomes. Agreement approval, a `Pending` or `Received` response, token creation and payment authorization are distinct events. This method add-on does not prove current merchant enablement, bank consent, or a successful live payment. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-payto|PayTo overview]].\n\n## Key takeaways\n\n- **Prerequisites and discovery:** use an existing API-only integration with Checkout API **v70 or later**, handle `action.type: await`, and add PayTo in Customer Area. For `/paymentMethods`, the guide specifies `countryCode: AU` and `amount.currency: AUD`; `shopperReference` is optional there to retrieve stored methods (raw lines 23\u201340). The overview separately says merchant-method setup can be asynchronous and must be confirmed by its payment-method webhook; Customer Area selection alone is not evidence of an enabled usable method (overview pinned raw lines 29\u201395).\n- **Form/field tension:** the page says the merchant payment form need not collect any information from the shopper, yet its one-time and first-subscription `/payments` tables mark `paymentMethod.shopperAccountIdentifier` (bank details or PayID) and shopper first/last name **required**. The page does not say where those required values come from if the merchant form does not collect them. Preserve both statements and verify a complete data path before implementing; do not interpret \u201cno form collection\u201d as \u201cno shopper data required\u201d (raw lines 42\u201346, 58\u201374, 123\u2013149).\n- **One-time:** add `paymentMethod: payto`, `shopperAccountIdentifier` and shopper name. Statement and line-item fields are optional; the payment reference is recommended unique but not formally required, with a PayTo **35-character maximum**. The example returns `resultCode: Pending` plus `action.type: await`; these indicate a waiting state, not successful authorization. The sample AU/AUD request is an example, not proof of a real bank account or transaction (raw lines 58\u2013121).\n- **Subscription setup and first payment:** the `/payments` table additionally marks `storePaymentMethod: true`, `recurringProcessingModel: Subscription`, `shopperInteraction: Ecommerce`, and mandate frequency, end date, amount, amount rule and remarks required. `mandate.count` is shown optional but its description requires a count of at least 1 for non-`adhoc` frequency; `startsAt` is optional. `amountRule` can be `max` or `exact`, and scheduled frequencies are described for Subscription. The weekly 30 AUD first payment and up-to-90 AUD later payment is a worked example, not a universal bank limit. The shopper receives a bank notification to authorize or decline the agreement (raw lines 123\u2013226).\n- **Subsequent subscription payment:** use `paymentMethod: payto`, required `paymentMethod.storedPaymentMethodId` from a shopper-associated `recurring.token.created` webhook's `data.storedPaymentMethodId`, and `shopperInteraction: ContAuth`, within the agreement's conditions. The later-payment example returns `Received`, not final success. Token-reference wording is inconsistent across the page: subscription prose names `recurringDetailReference` in `RECURRING_CONTRACT`, the webhook section says its token is in `pspReference`, and the later-payment table points to `storedPaymentMethodId`; do not assume the values or webhook types are interchangeable (raw lines 224\u2013288, 324\u2013332).\n- **Webhooks, tests and example cautions:** `OFFER_CLOSED` reports failed/cancelled agreements; `AUTHORISATION` on an accepted agreement can report **authorized or rejected** payment; `REFUND_FAILED` can follow a received refund; and `DISABLE_RECURRING` reports token deletion when an agreement ends or is cancelled. The test identifiers simulate agreement and payment outcomes, not live-operation proof. Subscription and subsequent-charge request examples omit a comma after `shopperReference`, and \u201cresponse\u201d snippets are rendered as `curl` requests; the account-identifier regex table also contains syntax that needs validation before reuse. Follow the field descriptions and current API schema rather than copying these snippets as validated recipes (raw lines 166\u2013222, 239\u2013300, 302\u2013351).\n\n## Detail locators\n\n- API-only prerequisites and AU/AUD method discovery: raw lines 15\u201340.\n- Form/no-collection statement versus required shopper fields: raw lines 42\u201374 and 123\u2013149.\n- One-time request and Pending/await response: raw lines 58\u2013121.\n- Subscription mandate requirements, count condition, sample and bank approval: raw lines 123\u2013226.\n- Subsequent tokenized charge, Received example and identifier formats: raw lines 228\u2013300.\n- Agreement/payment/refund/token webhooks and test simulations: raw lines 302\u2013351.\n- Method-level AU/AUD, setup confirmation, bank agreement and final webhook sequencing: [[source-adyen-docs-payment-methods-payto]] and its pinned raw lines 23\u2013107; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-payto]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/api-only/2026-09-15|PayTo API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add PayTo to your existing integration. The following instructions show only what you must add to your integration specifically for PayTo.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v70 or later.",
+      "location": "raw line 28"
+    },
+    {
+      "text": "You do not need to collect any information from the shopper in your payment form.",
+      "location": "raw line 46"
+    },
+    {
+      "text": "The shopper's banking details or PayID reference, used to complete the payment.",
+      "location": "raw line 65"
+    },
+    {
+      "text": "You will receive this notification for a payment on an accepted agreement, the payment outcome could be authorized or rejected.",
+      "location": "raw line 313"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payto-api-only-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-api-only]] \u2014 2026-09-15-captured PayTo API-only guide for AU/AUD discovery, one-time/subscription mandates, stored-method charges and webhook finality; source flags form-versus-required-field and token-reference tensions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Page says no shopper information need be collected in merchant payment form, but /payments tables require shopperAccountIdentifier and shopper first/last name; source does not resolve the data path.",
+          "Token guidance names recurringDetailReference, RECURRING_CONTRACT pspReference and recurring.token.created data.storedPaymentMethodId; do not substitute without verifying.",
+          "Subscription/subsequent examples omit commas after shopperReference and response snippets are curl-shaped; identifier regex table is not a validated copy-ready schema."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/api-only/2026-09-15.md",
+  "raw_sha256": "ff3ea34256cc6b70e85c102a742286fe17b48a795b823558b32ff53149f99c1a",
+  "status": "candidate_ready"
+}

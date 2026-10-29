@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-30] ingest | Adyen website C50
+
+- Fifty independently approved Online banking Poland, Finland Online banking, Online banking Czech Republic and selected PayTo documentation sources; first full-review approvals 45/50 and 5 targeted correction reviews. 1 concepts touched (0 new); source_count 2514 = 2500 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-50/`; details [[adyen-log]]. No commit/push.
+
 ## [2026-10-30] ingest | Braintree Node `3.41.0`
 
 - Approved focused-reading delta: reversal with Node-specific options/result handling, external-vault signature additions and validation diagnostics; all earlier history preserved. Details [[braintree-log]] and [[source-github-braintree-node]]. No SDK/payment execution, commit or push.

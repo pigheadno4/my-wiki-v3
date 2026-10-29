@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-payto-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayTo Web Component integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/web-component/2026-09-15.md\"\ntags: [adyen, payto, web, components, agreements, subscriptions]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen Docs page adds PayTo to an existing Web Components integration. It separates Sessions and Advanced server-side flows, one-time payments, subscription agreement setup with a first payment, and subsequent subscription payments. Its examples use AU/AUD. This is a historical integration source, not evidence of current account enablement, a shopper's bank consent, or a completed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Prerequisites and flow boundary.** Both flows require an existing Web Components integration, Checkout API v70 or later, and PayTo added in Customer Area (raw lines 25\u201335, 308\u2013317). The Advanced flow also requires handling an await action (line 316). Sessions /sessions covers one-time payment and subscription setup plus first payment; the page explicitly routes subsequent subscription payments to Advanced /payments or API-only, not a later /sessions request (lines 37\u201351, 221\u2013224).\n- **One-time versus agreement setup.** Sessions one-time requests require the shopper's first and last name; the returned mandate is described as adhoc, exact amount, count 1, with an end date defaulting to one day after the request (lines 53\u2013101). Subscription setup adds stored-payment consent parameters and a mandate with frequency, end date, amount, amount rule and remarks; count is conditionally required for non-adhoc frequencies (lines 122\u2013150). Advanced /payments adds the PayTo payment method and shopperAccountIdentifier, which is a bank detail or PayID reference, for the one-time or first subscription payment (lines 355\u2013383, 432\u2013458). The raw examples use AU/AUD, not a statement of universal availability.\n- **Agreement, token and payment lifecycle.** The shopper's bank can authorize or decline the agreement (lines 217\u2013219, 533\u2013535). On acceptance, the page describes RECURRING_CONTRACT for a later subscription route; the subsequent /payments table instead points to recurring.token.created data.storedPaymentMethodId, requires shopperInteraction ContAuth, and limits stored-token use to the accepted agreement's conditions (lines 537\u2013546). An Advanced initial response example is Pending with an await action; a subsequent response example is Received (lines 414\u2013429, 515\u2013530, 573\u2013596). Neither example alone proves a final successful payment. AUTHORISATION can report authorized or rejected payment on an accepted agreement; OFFER_CLOSED reports agreement failure or cancellation, and refunds can later fail through REFUND_FAILED (lines 611\u2013641).\n- **Source cautions.** Token wording differs within this page: the acceptance prose names recurringDetailReference, the RECURRING_CONTRACT list says pspReference, and the subsequent-payment table names recurring.token.created data.storedPaymentMethodId (lines 219, 248\u2013250, 535, 544, 633\u2013635). Do not equate these fields or webhooks without the flow-specific payload. Several request examples omit commas and both initialization snippets show newPayTo despite importing PayTo (lines 87\u201388, 189\u2013192, 284\u2013292, 345\u2013353, 507\u2013511, 567\u2013569); they are illustrative, not verified copy-pasteable requests. The email scenarios at lines 294\u2013306 and 643\u2013655 are test simulations, not live-payment evidence.\n\n## Detail locators\n\n- Sessions requirements, one-time and subscription request/mandate tables: raw lines 25\u2013150; Sessions webhook and UI sections: lines 217\u2013306.\n- Advanced prerequisites, one-time and subscription setup /payments tables and examples: raw lines 308\u2013535; subsequent subscription route: lines 537\u2013597.\n- Shopper account identifier patterns: raw lines 599\u2013609; required webhook descriptions: lines 611\u2013641; test email cases: lines 643\u2013655.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/web-component/2026-09-15|PayTo Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v70 or later.",
+      "location": "raw line 34, ## Sessions flow Component > ## Requirements (also line 315 Advanced requirements)"
+    },
+    {
+      "text": "Subsequent subscription payments can only be performed with:",
+      "location": "raw line 48, ## Sessions flow Component > ## Add additional parameters to your /sessions request (also line 221)"
+    },
+    {
+      "text": "The shopper receives a notification from their bank (through SMS, email, or in their banking app) to authorize or decline the agreement.",
+      "location": "raw line 217, ### Subscription setup and first payment (also line 533 Advanced flow)"
+    },
+    {
+      "text": "This stored payment method can only be used according to the conditions specified in the subscription agreement.",
+      "location": "raw line 544, ### Subsequent subscription payment"
+    },
+    {
+      "text": "the payment outcome could be authorized or rejected.",
+      "location": "raw line 622, ### Required webhooks > AUTHORISATION (also line 237 Sessions flow)"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-payto-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-web-component]] \u2014 2026-09-15-captured PayTo Web Components Sessions/Advanced add-on for one-time and subscription agreement flows; source distinguishes later charges and webhook finality.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Agreement acceptance, token creation and payment outcome are separate stages; the raw page uses different token field/webhook descriptions."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/web-component/2026-09-15.md",
+  "raw_sha256": "4f0484a22876dc3030dc0a2786bce2c2ffaad9566558c41f5dc9bbfff458adb8",
+  "status": "candidate_ready"
+}

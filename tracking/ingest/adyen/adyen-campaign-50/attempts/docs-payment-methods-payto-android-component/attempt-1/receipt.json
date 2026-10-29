@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-payto-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayTo Android Component integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/android-component/2026-09-15.md\"\ntags: [adyen, payto, android, components, australia, mandate, subscription]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **PayTo to an existing Android Components integration**. It separates Sessions and Advanced server-side flows, one-time payments from subscription-agreement setup and later subscription charges, and bank agreement approval from eventual payment outcome. The guide's examples use AU/AUD, consistent with the separate [[source-adyen-docs-payment-methods-payto|PayTo method overview]]; neither source proves current merchant enablement, bank acceptance, a live charge or final payment success. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Prerequisites and Component:** both Sessions and Advanced require an existing Android Components integration, Checkout API **v70 or later**, and PayTo added in Customer Area. Advanced additionally requires handling `action.type: await`. Import the `payto` module, plus `components-compose` for Jetpack Compose; the guide uses `PayToComponent` and `PaymentMethodTypes.PAY_TO`, with an optional `setSubmitButtonVisible` configuration. Compose examples require a unique Component key per screen/payment session (raw lines 25\u201335, 258\u2013355, 372\u2013483).\n- **One-time Sessions:** the `/sessions` table marks shopper first and last name required. It lists optional statement, line-item details and payment reference, with a PayTo **35-character maximum** for the reference. The example uses AU/AUD and includes `shopperReference` and `returnUrl`; it omits a comma after `shopperReference`, so it is not literal copy-ready JSON. The response description says Adyen creates an **adhoc**, one-count, exact-amount mandate whose `endsAt` defaults to one day after the request, rather than a reusable subscription agreement (raw lines 39\u2013120).\n- **Subscription setup and first payment:** Sessions and Advanced require shopper name, `storePaymentMethod: true`, `recurringProcessingModel: Subscription`, `shopperInteraction: Ecommerce`, and mandate frequency, end date, amount, amount rule and remarks. `mandate.count` is listed as optional in the table but its description says it **must be supplied and at least 1 when frequency is not `adhoc`**; `startsAt` is optional. Scheduled frequencies suit Subscription; `adhoc` is described for CardOnFile/UnscheduledCardOnFile models. `amountRule` is `max` or `exact`; the sample weekly 30 AUD first/90 AUD maximum future payment is an example, not a guaranteed recurring limit. The bank notifies the shopper to authorize or decline the agreement (Sessions raw lines 122\u2013219; Advanced raw lines 562\u2013665).\n- **Advanced requests and later charges:** one-time and setup `/payments` tables also require `paymentMethod: payto` and `paymentMethod.shopperAccountIdentifier` (bank details or PayID) in addition to shopper name. A successful request example returns **Pending** with an `await` action, which is not final authorization. Later subscription payments are **Advanced flow or API-only**, not Sessions; the subsequent `/payments` table requires `paymentMethod.storedPaymentMethodId` and `shopperInteraction: ContAuth`, and says the token may be used only within the agreement's conditions. Its example response is `Received`, not a final payment outcome (raw lines 48\u201351, 487\u2013560, 562\u2013727).\n- **Token and outcome lifecycle:** after the shopper accepts a subscription agreement, the text names a `RECURRING_CONTRACT` webhook with `recurringDetailReference`, while its webhook section says the token is in `pspReference`. The subsequent-payment table instead points to `data.storedPaymentMethodId` in `recurring.token.created`. These are different documented token references; do not substitute one for another or infer a single mapping from this guide. `OFFER_CLOSED` describes failed/cancelled agreements, `AUTHORISATION` can report an authorized **or rejected** payment on an accepted agreement, `REFUND_FAILED` can follow an initially received refund, and `DISABLE_RECURRING` reports token deletion when an agreement ends/cancels. Agreement acceptance, token creation and payment authorization are distinct events (raw lines 217\u2013256, 663\u2013675, 741\u2013771).\n- **Test and source-example cautions:** the guide gives `shopperAccountIdentifier` test values for agreement expiry/refusal and payment refusal/error, under both flows; these are simulations. Several request examples omit a comma after `shopperReference`, and \u201cresponse\u201d blocks are rendered as `curl` commands; use tables and actual API schemas before execution. The child guide's Test and go live sections provide test identifiers but no separate live-operation proof (raw lines 69\u2013120, 162\u2013215, 358\u2013370, 605\u2013660, 678\u2013727, 773\u2013785). The separate PayTo overview describes asynchronous method setup and bank authorization/final webhook sequencing (overview pinned raw lines 29\u2013107).\n\n## Detail locators\n\n- Sessions/Advanced prerequisites and API minimum: raw lines 25\u201335 and 372\u2013381.\n- One-time Sessions fields, reference length and default mandate: raw lines 39\u2013120.\n- Subscription setup fields, count condition and bank agreement approval: raw lines 122\u2013225 and 562\u2013665.\n- Webhook lifecycle: raw lines 226\u2013256 and 741\u2013771.\n- Android imports, optional configuration, Component launch and Compose key: raw lines 258\u2013355 and 383\u2013483.\n- Advanced one-time fields and Pending/await response: raw lines 487\u2013560.\n- Subsequent subscription payment/token source and Received example: raw lines 667\u2013727; identifier formats lines 729\u2013739.\n- Test scenario tables: raw lines 358\u2013370 and 773\u2013785.\n- Method-level AU/AUD scope and asynchronous setup/bank approval: [[source-adyen-docs-payment-methods-payto]] and its pinned raw lines 23\u2013107; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-payto]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/android-component/2026-09-15|PayTo Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add PayTo to your existing integration. The following instructions show only what you must add to your integration specifically for PayTo.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Make sure that you use Checkout API v70 or later.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "Subsequent subscription payments can only be performed with:",
+      "location": "raw line 48"
+    },
+    {
+      "text": "When the subscription agreement is accepted, you get the [RECURRING\\_CONTRACT](https://docs.adyen.com/api-explorer/Webhooks/latest/post/RECURRING_CONTRACT) webhook that includes the `recurringDetailReference` for subsequent subscription payments.",
+      "location": "raw line 219"
+    },
+    {
+      "text": "This stored payment method can only be used according to the conditions specified in the subscription agreement.",
+      "location": "raw line 674"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payto-android-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-android-component]] \u2014 2026-09-15-captured PayTo Android Components Sessions/Advanced guide for one-time and subscription mandates, bank approval, tokens, subsequent charges and asynchronous webhooks; source flags token-reference ambiguity and example syntax.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Guide names recurringDetailReference in RECURRING_CONTRACT prose, pspReference in its webhook section, and data.storedPaymentMethodId in recurring.token.created for later charges; preserve each source-specific reference without assuming interchangeability.",
+          "Several request JSON examples omit a comma after shopperReference and response examples are rendered as curl requests; do not present them as validated copy-ready recipes."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/android-component/2026-09-15.md",
+  "raw_sha256": "d463a2b392a8d8c26c9ab493701f0d14cd02b89a80c6ac801f709c075901dfc4",
+  "status": "candidate_ready"
+}

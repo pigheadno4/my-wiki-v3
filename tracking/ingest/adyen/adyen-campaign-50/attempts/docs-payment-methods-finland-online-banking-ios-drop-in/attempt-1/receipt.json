@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Finland iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/ios-drop-in/2026-09-15.md\"\ntags: [adyen, finland-online-banking, ios, drop-in, redirect, paytrail]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Finland to an existing iOS Drop-in** integration. It separates Sessions and Advanced server-side flows, required shopper email, conditional issuer selection, redirect action handling, and Paytrail test guidance. It is a method add-on, not a complete base integration or evidence of current merchant/bank coverage or a successful live payment. See [[adyen]], [[adyen-online-payments]] and the [[source-adyen-docs-payment-methods-finland-online-banking|method overview]].\n\n## Key takeaways\n\n- **Sessions:** use an existing iOS Drop-in Sessions integration with Checkout API **v68 or later** and add Online banking Finland in Customer Area. The `/sessions` table marks `shopperEmail` required. Its v71 sample uses **FI/EUR** and an app-scheme `returnUrl`; the sample email contains `@@`, so it is a placeholder, not a valid address to copy. No additional method configuration is required (raw lines 25\u201344, 46\u201367, 340\u2013344).\n- **Advanced:** use an existing iOS Drop-in Advanced integration with `action.type: redirect` handling and Customer Area setup. The `/payments` table requires `paymentMethod.type = ebanking_FI` and `shopperEmail`; `paymentMethod.issuer` is **required only for the Issuer redirect flow**, and `returnUrl` is listed as optional with a 1024-character maximum. The example response contains `RedirectShopper` and a redirect action, which is a handoff state rather than proof that the shopper completed bank payment (raw lines 354\u2013383, 670\u2013684).\n- **Advanced example warning:** the v72 curl and all shown language-specific `/payments` examples include amount, reference, returnUrl, merchantAccount and shopperEmail but **omit the required `paymentMethod` object**. They cannot be treated as complete method-selection requests. The example email again contains `@@`, and library-version labels are example environments, not minimum SDK requirements (raw lines 385\u2013668).\n- **Testing:** both flow sections say to test with the Paytrail test environment and sample data before live acceptance, and state that testing **multiple partial refunds is currently unavailable**. This is a test-environment limitation in the captured guide; the separate method overview's matrix marks multiple partial refunds available but gives a \u201cSee note\u201d refund pointer with no note in its capture. Neither statement proves live refund availability for a specific merchant (child raw lines 346\u2013352, 686\u2013692; overview raw lines 34\u201336).\n- The separate [[source-adyen-docs-payment-methods-finland-online-banking|method overview]] labels the method **FI/EUR** and describes bank authentication and return after redirect. It gives two unresolved bank-selection locations\u2014merchant checkout dropdown versus Adyen-hosted page\u2014without scoping them by integration. This iOS Drop-in guide's conditional issuer field does not settle that overview ambiguity (overview pinned raw lines 23\u201336).\n\n## Detail locators\n\n- Sessions prerequisites and required shopperEmail: raw lines 25\u201344.\n- Sessions example requests and placeholder email: raw lines 46\u2013338.\n- Sessions no-extra-configuration/test limitation: raw lines 340\u2013352.\n- Advanced prerequisites, redirect and conditional issuer/request fields: raw lines 354\u2013383.\n- Advanced examples omitting paymentMethod: raw lines 385\u2013668.\n- Advanced RedirectShopper response and Paytrail testing/refund limitation: raw lines 670\u2013692.\n- Method-level FI/EUR, bank-selection ambiguity and missing refund note: [[source-adyen-docs-payment-methods-finland-online-banking]] and its pinned raw lines 23\u201336; this entry's raw_files remains child-only.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-finland-online-banking]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/ios-drop-in/2026-09-15|Online banking Finland iOS Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add Online banking Finland to your existing integration. The following instructions show only what you must add to your integration specifically for Online banking Finland.",
+      "location": "raw line 19"
+    },
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33"
+    },
+    {
+      "text": "The shopper's email address.",
+      "location": "raw line 44"
+    },
+    {
+      "text": "This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "raw line 381"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 670"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "finland-online-banking-ios-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-ios-drop-in]] \u2014 2026-09-15-captured iOS Drop-in Sessions/Advanced bank-redirect add-on with required email, conditional issuer and Paytrail test limitation; source flags incomplete Advanced requests.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced field table requires paymentMethod.type ebanking_FI, but all shown Advanced requests omit paymentMethod; samples are incomplete method-selection recipes.",
+          "Test limitation on multiple partial refunds is environment-scoped; overview matrix checks capability but points to an absent note, so do not infer universal live behavior."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "0228c93e7430eaeaf46d39dda93a959f890f6b9a037e92d79c6071472e2817b5",
+  "status": "candidate_ready"
+}

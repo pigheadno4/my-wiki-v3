@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-online-banking-czech-republic-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Czech Republic Web Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-czech-republic/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-czech-republic/web-component/2026-09-15.md\"\ntags: [adyen, online-banking-czech-republic, web, component, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Czech Republic to an existing Web Components integration** through Sessions or Advanced server-side flow. It covers redirect prerequisites, optional bank-picker configuration, the `OnlineBankingCZ` Component and test/live setup. Redirect initiation is not payment completion. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-online-banking-czech-republic]] for CZ/CZK bank-redirect and capability context.\n\n## Key takeaways\n\n- **Sessions flow** requires existing Web Components Sessions, Checkout API **v68 or later**, `action.type: redirect` handling and Customer Area addition. The page says no Czech-specific `/sessions` parameters are needed (raw lines 25\u201342). This does not remove fields required by the underlying Sessions integration.\n- Sessions imports `OnlineBankingCZ` from `@adyen/adyen-web` and initializes that Component (raw lines 44\u201354, 91\u2013105). Optional configuration includes `showImage` (default true), `issuer` to preselect a bank, `highlightedIssuers` to put banks atop the dropdown (added in Web **v5.22.0**), and `placeholder` (default \u201cSelect your bank,\u201d overridden by custom translation) (raw lines 56\u201367). These are optional UI choices.\n- **Issuer example conflict:** the configuration descriptions request **issuer IDs**, and the table lists **\u010cesk\u00e1 spo\u0159itelna \u2192 `cs`**, but the sample configuration assigns the **bank name** `\"\u010cesk\u00e1 spo\u0159itelna\"` to both `issuer` and `highlightedIssuers` (raw lines 65\u201388). Use the ID table and relevant SDK contract to resolve accepted value shapes; do not present the displayed bank-name values as validated IDs.\n- **Advanced flow** requires existing Web Components Advanced, redirect handling and Customer Area addition (raw lines 115\u2013123). It imports and initializes `OnlineBankingCZ` (raw lines 125\u2013151) and says no **additional Czech-specific** `/payments` parameters are needed (raw lines 153\u2013157). This does not assert that the base `/payments` request has no fields. The Advanced requirements table does not state a Checkout API minimum, and this section does not separately specify the Sessions optional configuration table.\n- For both flows, the guide directs testing with real payment details and small amounts, checking status in test Customer Area **Payments > Payment list**, and adding the method in Customer Area to accept live payments (raw lines 107\u2013113, 159\u2013165). These are captured instructions, not evidence of successful test or live payment.\n\n> [!warning] Bank-name sample versus issuer IDs\n> The Sessions configuration table describes `issuer` and `highlightedIssuers` as issuer-ID values (raw lines 65\u201366), and the list maps \u010cesk\u00e1 spo\u0159itelna to `cs` (raw line 84). The sample uses the bank name instead (raw lines 73\u201374). Do not silently treat that example as a valid issuer-ID recipe.\n\n## Detail locators\n\n- Sessions prerequisites and no additional `/sessions` fields: raw `## Sessions flow Component`, lines 25\u201342.\n- Sessions import, optional bank UI and issuer ID mismatch: raw lines 44\u201388.\n- Sessions Component initialization and testing: raw lines 91\u2013113.\n- Advanced prerequisites, import/initialize and no extra `/payments` fields: raw `## Advanced flow Component`, lines 115\u2013157.\n- Advanced testing and live method addition: raw lines 159\u2013165.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-online-banking-czech-republic]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-czech-republic/web-component/2026-09-15|Online banking Czech Republic Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "raw line 42, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "Set to an [Online banking Czech Republic issuer ID](#issuer-ids) to preselect a specific bank. No bank is preselected.",
+      "location": "raw line 65, Sessions ## Add additional configuration"
+    },
+    {
+      "text": "| \u010cesk\u00e1 spo\u0159itelna       | cs",
+      "location": "raw line 84, ### List of issuer IDs"
+    },
+    {
+      "text": "You do not need to add any parameters to the [/payments]",
+      "location": "raw line 157, Advanced ## Add additional parameters to your /payments request"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "online-banking-czech-republic-web-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-czech-republic-web-component]] \u2014 2026-09-15-captured Web Components Sessions/Advanced Czech bank-redirect guide with optional bank picker; source flags bank-name versus issuer-ID example mismatch.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions optional issuer/highlightedIssuers descriptions call for issuer IDs, but sample uses bank name \u010cesk\u00e1 spo\u0159itelna instead of listed ID cs.",
+          "No extra Czech-specific /sessions or /payments fields does not remove base integration request fields.",
+          "Advanced requirements do not state the Sessions v68 minimum; redirect is not payment finality."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-czech-republic/web-component/2026-09-15.md",
+  "raw_sha256": "a5228f67b31eebeda5160999418ea31dbd1a48d74f224dc768182b593781de7b",
+  "status": "candidate_ready"
+}

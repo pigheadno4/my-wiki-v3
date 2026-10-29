@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-android-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Finland Android Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/android-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md\"\ntags: [adyen, finland-online-banking, android, drop-in, paytrail, redirect, online-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online banking Finland to an existing Android Drop-in integration. It separates Sessions and Advanced server-side flows, their method-specific email/type/issuer fields, a redirect action example, and Paytrail test guidance. It is a supplement to [[adyen-online-payments]], not a complete base integration or evidence of an enabled account or successful payment. [[adyen]]\n\n## Key takeaways\n\n- **Sessions flow:** Start with an existing Android Sessions-flow Drop-in integration using Checkout API **v68 or later** and add Online banking Finland in Customer Area. The method-specific `/sessions` table requires `shopperEmail`. Its FI/EUR amount, app-scheme `returnUrl`, and `s.hopper@@example.com` address are sample values; the double-`@` address is malformed and should not be copied as a real shopper email. The page says no extra method-specific Drop-in configuration is needed. [Raw: lines 25\u201365, 338\u2013343]\n- **Advanced flow:** Start with an existing Android Advanced-flow Drop-in integration that handles `action.type: redirect` and has the method added in Customer Area. The `/payments` table requires `paymentMethod.type: ebanking_FI` and `shopperEmail`. `paymentMethod.issuer` is required only for the **Issuer redirect flow**, not every redirect flow; the optional-row description says it is the selected bank ID. `returnUrl` is unmarked in this method-specific table, with a 1024-character maximum stated. No Advanced API minimum is given here. [Raw: lines 355\u2013381]\n- **Incomplete Advanced examples:** Every shown Advanced `/payments` sample omits the `paymentMethod` object despite the table's required `paymentMethod.type`, and carries the malformed double-`@` email placeholder. The curl examples also put `-X POST` on a line without continuation before `-d`; Node snippets refer to `Config`/`EnvironmentEnum` without imports. Use the required-field table and base integration contract rather than copying these examples as complete runnable requests. [Raw: lines 50\u201366, 386\u2013666]\n- **Redirect versus final result:** The Advanced example returns `resultCode: RedirectShopper` with a GET `action.type: redirect` URL. This is an intermediate action. This child guide does not give the Android return/details/webhook outcome sequence, so do not treat the example response as authorized payment. The approved [[source-adyen-docs-payment-methods-finland-online-banking]] overview separately describes the bank-authentication journey and contains a bank-selection-location tension; that overview should be cited for those method-level claims. [Raw: lines 668\u2013682]\n- **Test scope and refund distinction:** Before accepting live payments, the page instructs testing with Paytrail-provided test environment and sample data and says **testing multiple partial refunds is currently not available**. The separately approved overview's capability matrix checks multiple partial refunds but has an unresolved \u201cSee note\u201d pointer; the child test limitation is not itself proof that live multiple partial refunds are impossible or available for a particular merchant. The page contains no actual test result. [Child raw: lines 346\u2013352, 684\u2013688; overview raw: lines 34\u201336]\n\n> [!WARNING] Required type absent from every Advanced request sample\n> The method-specific table requires `paymentMethod.type: ebanking_FI` (raw line 378), but the curl and language requests omit `paymentMethod` (raw lines 386\u2013666). The sample email has two `@` signs. Do not use these snippets as complete payment requests or infer that Drop-in removes the required method type.\n\n## Detail locators\n\n- Sessions prerequisites, required email, examples and no-extra-config: pinned raw lines 25\u2013343.\n- Paytrail testing instruction and multiple-partial-refund test limitation: pinned raw lines 345\u2013352 and 684\u2013688.\n- Advanced prerequisites and field requiredness: pinned raw lines 355\u2013381.\n- Incomplete request examples and redirect response: pinned raw lines 383\u2013682.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration and method routes.\n- [[source-adyen-docs-payment-methods-finland-online-banking]] \u2014 approved Paytrail/FI/EUR overview and its separate bank-selection/refund-note qualifications.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15|Online banking Finland Android Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md:33"
+    },
+    {
+      "text": "The shopper's email address.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md:44"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md:352"
+    },
+    {
+      "text": "This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md:379"
+    },
+    {
+      "text": "**ebanking\\_FI**",
+      "location": "raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md:378"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-finland-online-banking-android-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-android-drop-in]] \u2014 2026-09-15-captured Android Drop-in guide for Sessions/Advanced email and redirect fields, Issuer-flow conditional issuer, Paytrail testing and incomplete Advanced examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced table requires paymentMethod.type ebanking_FI but all displayed payment requests omit paymentMethod.",
+          "Issuer is conditionally required only for Issuer redirect flow; sample email has a malformed double @.",
+          "Multiple partial refund testing is unavailable in this capture; do not conflate this test limitation with the overview capability matrix."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/android-drop-in/2026-09-15.md",
+  "raw_sha256": "e87e34851477b2ec7e1c2d4c6d277707252849308b978f7e14d6991717ad2eec",
+  "status": "candidate_ready"
+}

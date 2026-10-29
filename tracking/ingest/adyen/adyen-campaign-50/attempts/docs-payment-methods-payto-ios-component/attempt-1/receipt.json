@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-payto-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayTo iOS Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/ios-component/2026-09-15.md\"\ntags: [adyen, payto, ios, component, australia, mandate, subscription]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds PayTo to an existing iOS Components integration in either Sessions or Advanced flow. It separates a one-off bank agreement/payment from a subscription agreement and later payments. A bank notification, accepted agreement, `Pending` response, or stored token does not by itself establish an authorized payment. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-payto]] for separate AU/AUD method and merchant-enablement context.\n\n## Key takeaways\n\n- Both flows require an existing iOS Components integration, Checkout API **v70 or later**, and PayTo added in Customer Area. The Advanced requirements link names an iOS **Drop-in** base guide even though this page is Components; its action-handling link ends in `#handle-the-redirect`, while the specified `action.type` is **await**. Follow the actual Components/await contract rather than treating those link labels as the action (raw lines 25\u201335, 337\u2013348).\n- For a **one-time Sessions** payment, the additional `/sessions` table requires shopper first and last name; its response describes an `adhoc`, exact-amount, one-count mandate ending by default one day after the request. The sample is AU/AUD at a test v71 endpoint and has a missing comma between `shopperReference` and `returnUrl`; the section labeled as a response is formatted as a curl command. Treat samples as illustrative, not copy-ready or evidence of payment (raw lines 39\u2013120).\n- **Subscription setup plus first payment** requires shopper name, `storePaymentMethod: true`, `recurringProcessingModel: Subscription`, `shopperInteraction: Ecommerce`, and mandate frequency, end date, amount, amount rule and remarks. `mandate.count` is table-optional but conditionally required at one or more when frequency is not `adhoc`. The weekly example describes a 30 AUD first payment after agreement acceptance and a mandate capped at 90 AUD once per week; it is an example, not a default. The Sessions subscription request example omits the table-required `storePaymentMethod: true` and has a missing comma before `recurringProcessingModel`. After bank acceptance, `RECURRING_CONTRACT` is described as providing a reference for subsequent payments. Sessions explicitly routes **subsequent** subscription payments to Advanced flow or API-only, despite also showing a stored-method Component initialization tab (raw lines 122\u2013224, 296\u2013321).\n- Sessions uses `PayToComponent` for a one-off payment and `StoredPaymentMethodComponent` for a stored PayTo method. Advanced repeats these Component choices and requires `paymentMethod.type: payto`, `shopperAccountIdentifier` and shopper name for one-time and first subscription requests. The account identifier can be a BSB/account number or PayID form; the raw's allowed-value regex table is at lines 656\u2013666. Advanced sample requests use test v72 and include `countryCode: AU`, `currency: AUD` and an app-style `returnUrl` (raw lines 264\u2013321, 356\u2013468, 489\u2013590).\n- Advanced first-payment examples return `resultCode: Pending` with `action.type: await`; the shopper receives a bank SMS, email or app notification to authorize or decline the agreement. A later **subsequent** `/payments` request uses `paymentMethod.storedPaymentMethodId` and `shopperInteraction: ContAuth` within the accepted agreement's conditions. The raw names `recurringDetailReference` in a `RECURRING_CONTRACT` webhook, says its token is in that webhook's `pspReference`, but the subsequent-payment table points to `recurring.token.created.data.storedPaymentMethodId`. Verify the actual webhook field and token mapping before using one as another (raw lines 217\u2013254, 471\u2013485, 590\u2013653).\n- Webhooks separate agreement and transaction outcomes: `OFFER_CLOSED` reports agreement failure/cancellation with `refusalReasonRaw`; `AUTHORISATION` on an accepted agreement can report **authorized or rejected** payment. `REFUND_FAILED` can reverse the expectation after an initially received `REFUND`; `DISABLE_RECURRING` reports expiry or cancellation of an agreement/token. The test email table simulates agreement and payment success, expiry, refusal and infrastructure error; it is test behavior, not live proof (raw lines 226\u2013256, 323\u2013335, 668\u2013712).\n- The captured request examples contain missing commas, omit a required flag in the Sessions subscription example, and have Advanced curl `-X POST` lines without continuation before `-d`. The Advanced integration/prerequisite links and webhook token references also need verification against the applicable base guide and active API contract before implementation (raw lines 87\u201389, 189\u2013193, 345\u2013347, 445\u2013450, 539\u2013570, 608\u2013628).\n\n## Detail locators\n\n- Sessions prerequisites, one-off request/mandate and subscription fields: raw `## Sessions flow Component`, lines 25\u2013224.\n- Agreement/payment/refund/token webhooks and Sessions Component choices: raw lines 226\u2013335.\n- Advanced prerequisites, Components and one-time/first-subscription requests: raw `## Advanced flow Component`, lines 337\u2013592.\n- Subsequent agreement-bound payment, identifiers, repeated webhook and test sections: raw lines 594\u2013712.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-payto]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/ios-component/2026-09-15|PayTo iOS Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v70 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "Subsequent subscription payments can only be performed with:",
+      "location": "raw line 48, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "The shopper receives a notification from their bank (through SMS, email, or in their banking app) to authorize or decline the agreement.",
+      "location": "raw line 217, Sessions subscription setup"
+    },
+    {
+      "text": "You will receive this notification for a payment on an accepted agreement, the payment outcome could be authorized or rejected.",
+      "location": "raw line 237, Sessions ### Required webhooks"
+    },
+    {
+      "text": "This stored payment method can only be used according to the conditions specified in the subscription agreement.",
+      "location": "raw line 601, Advanced ### Subsequent subscription payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-payto-ios-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-ios-component]] \u2014 2026-09-15-captured PayTo iOS Components Sessions/Advanced guide for one-off and subscription agreement setup, await action, agreement-bound later payments and webhook outcomes; source flags link, token-reference and example caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "An accepted bank agreement, Pending/await response or token is not itself payment authorization; AUTHORISATION may be authorized or rejected.",
+          "Sessions routes subsequent subscriptions to Advanced/API-only even though it includes a stored-method Component initialization tab; keep server-side flow distinct.",
+          "Advanced base-guide link points to Drop-in, action link names redirect while action.type is await, and webhook token references vary across sections.",
+          "Multiple request examples contain missing commas or shell continuations; do not treat them as copy-ready.",
+          "The Sessions subscription example omits required storePaymentMethod: true; use the required-field table rather than copying it."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/ios-component/2026-09-15.md",
+  "raw_sha256": "b2616e17833d5a8c5a4698e010235770dec1f080e4d9967d4f320d53735f6520",
+  "status": "candidate_ready"
+}

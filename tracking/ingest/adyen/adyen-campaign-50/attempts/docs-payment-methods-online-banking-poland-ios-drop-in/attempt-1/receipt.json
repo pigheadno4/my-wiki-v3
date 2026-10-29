@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-online-banking-poland-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Poland iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-poland/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-poland/ios-drop-in/2026-09-15.md\"\ntags: [adyen, online-banking-poland, ios, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Poland to an existing iOS Drop-in integration** through Sessions or Advanced server-side flow. It covers required shopper email, Advanced redirect action and selected-bank issuer field, and test/live setup. RedirectShopper is an intermediate handoff, not proof of completed payment. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-online-banking-poland]] for Przelewy24 branding and PL/PLN capability context.\n\n## Key takeaways\n\n- **Sessions flow** requires an existing iOS Drop-in Sessions integration, Checkout API **v68 or later**, and Online banking Poland added in Customer Area (raw lines 25\u201334). Its `/sessions` addition is required `shopperEmail`, maximum **50 characters** (raw lines 36\u201344). The examples show PL/PLN and an app-style `adyencheckout://` return URL as sample values (raw lines 46\u2013266); they do not prove a live payment.\n- No Poland-specific Drop-in configuration parameters are needed for Sessions or Advanced (raw lines 268\u2013272, 294\u2013298).\n- **Advanced flow** requires an existing iOS Drop-in Advanced integration, `action.type: redirect` handling, and Customer Area setup (raw lines 282\u2013292). Its `/payments` addition requires `shopperEmail`, also with a **50-character maximum**, and lists `paymentMethod.issuer` as the selected bank's issuer ID **without a required mark** (raw lines 300\u2013309). Do not turn the issuer value in examples into a universal required-field claim. The Advanced requirements table does not state the Sessions v68 API minimum.\n- Advanced examples use `paymentMethod.type: onlineBanking_PL`, `issuer: 141`, PLN and a website-style `https://your-company.com/checkout...` return URL (raw lines 311\u2013641). The website URL is a placeholder in an **iOS** guide; verify the app's return/deep-link setup in the base integration rather than copying it as a verified iOS return URL. The curl snippets omit a line continuation after `-X POST` before `-d` (raw lines 50\u201367, 315\u2013335), and some SDK examples omit request-object construction, so these are not complete copy-ready commands/programs.\n- The Advanced response includes `action.type: redirect` and example `resultCode: RedirectShopper` (raw lines 643\u2013657). Check test payment status in test Customer Area **Payments > Payment list**; before live acceptance, submit a method request in live Customer Area (raw lines 274\u2013280, 659\u2013665). Neither redirect nor test lookup establishes successful live payment.\n\n## Detail locators\n\n- Sessions prerequisites, email field and request examples: raw `## Sessions flow Drop-in`, lines 25\u2013266.\n- No extra configuration and Sessions test/live gate: raw lines 268\u2013280.\n- Advanced prerequisites, no extra configuration and email/issuer fields: raw `## Advanced flow Drop-in`, lines 282\u2013309.\n- Advanced examples, website-style return URL and redirect response: raw lines 311\u2013657.\n- Advanced test/live gate: raw lines 659\u2013665.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-online-banking-poland]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-poland/ios-drop-in/2026-09-15|Online banking Poland iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Required version of [Checkout API](https://docs.adyen.com/api-explorer/Checkout/latest/overview): v68 or later.",
+      "location": "raw line 33, Sessions ## Requirements"
+    },
+    {
+      "text": "The shopper's email address. Must be 50 or less characters.",
+      "location": "raw line 44, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Online banking Poland.",
+      "location": "raw line 272, Sessions ## Add additional configuration"
+    },
+    {
+      "text": "The issuer ID of the shopper's selected bank.",
+      "location": "raw line 309, Advanced ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 643, Advanced response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "online-banking-poland-ios-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-poland-ios-drop-in]] \u2014 2026-09-15-captured iOS Drop-in Sessions/Advanced guide for required shopper email, no extra method configuration and Advanced redirect/issuer field.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced issuer is listed without a required mark; sample issuer 141 does not make it universally mandatory.",
+          "Advanced examples use a website returnUrl placeholder in an iOS guide; verify app return handling.",
+          "Sessions v68 minimum is not stated as an Advanced requirement.",
+          "Curl examples lack line continuation after -X POST before -d; some SDK snippets omit request-object construction.",
+          "RedirectShopper is not completed payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-poland/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "f6d7cac88775ea42a4258a9bd701471c8132f5160850a580f0739bbe81cc480d",
+  "status": "candidate_ready"
+}

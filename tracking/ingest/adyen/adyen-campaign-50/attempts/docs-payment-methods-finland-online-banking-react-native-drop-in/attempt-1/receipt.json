@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-react-native-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Finland React Native Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/react-native-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/react-native-drop-in/2026-09-15.md\"\ntags: [adyen, finland-online-banking, react-native, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Finland to an existing React Native Drop-in integration** through Sessions or Advanced server-side flow. It covers required shopper email, conditional Advanced issuer, redirect action and Paytrail testing. A redirect action is not proof of completed payment. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-finland-online-banking]] for Paytrail/FI/EUR context and bank-selection/refund-note qualifications.\n\n## Key takeaways\n\n- **Sessions flow** requires an existing React Native Drop-in Sessions integration, Checkout API **v68 or later**, redirect handling and Customer Area method addition (raw lines 25\u201336). Its prerequisite's \u201cSessions flow\u201d link incorrectly points to an **Advanced-flow** URL, while the redirect and session-creation links point to Sessions; verify the correct base guide (raw lines 33\u201342).\n- Sessions `/sessions` adds required `shopperEmail`. The FI/EUR test examples repeatedly show `s.hopper@@example.com`, which has two `@` signs, so it is not a valid email value to copy (raw lines 40\u2013339). The page says no Finland-specific Drop-in configuration is needed (raw lines 342\u2013346).\n- **Advanced flow** requires an existing React Native Drop-in Advanced integration, redirect handling and Customer Area setup; no Checkout API minimum is stated in its requirements (raw lines 354\u2013364). It also says no Finland-specific configuration is needed (raw lines 366\u2013370).\n- Advanced `/payments` explicitly requires `paymentMethod.type: ebanking_FI` and `shopperEmail`. `paymentMethod.issuer` is relevant and required **only for the Issuer redirect flow**; `returnUrl` is listed without a required mark and has a 1024-character maximum (raw lines 372\u2013383). The curl and SDK request examples **omit `paymentMethod` entirely** despite the required type (raw lines 385\u2013668). Treat those as incomplete illustrations, not full executable requests, and do not convert the conditional issuer into a universal requirement.\n- The Advanced sample response gives `resultCode: RedirectShopper` and `action.type: redirect` (raw lines 670\u2013684). Before accepting live payments, both sections direct testing with Paytrail's test environment/sample data and state **testing multiple partial refunds is currently unavailable** (raw lines 348\u2013352, 686\u2013690). This captured test limitation is distinct from the overview's matrix mark for multiple partial refunds.\n- The Sessions and Advanced curl snippets omit a continuation after `-X POST` before `-d` (raw lines 53\u201369, 389\u2013405); use the field table and API contract rather than copying these as complete commands.\n\n> [!warning] Advanced request examples omit a required field\n> The Advanced table marks `paymentMethod.type: ebanking_FI` required (raw line 380), but all displayed `/payments` examples omit `paymentMethod` (raw lines 385\u2013668). Verify the applicable API contract; `issuer` is required only in the Issuer redirect flow (raw line 381).\n\n## Detail locators\n\n- Sessions prerequisite and mismatched base-guide link: raw `## Sessions flow Drop-in`, lines 25\u201342.\n- Sessions required email, sample requests and no-configuration claim: raw lines 44\u2013346.\n- Sessions Paytrail testing/refund limit: raw lines 348\u2013352.\n- Advanced prerequisites and no-configuration claim: raw `## Advanced flow Drop-in`, lines 354\u2013370.\n- Advanced conditional issuer, incomplete examples and redirect response: raw lines 372\u2013684.\n- Advanced Paytrail testing/refund limit: raw lines 686\u2013690.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-finland-online-banking]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/react-native-drop-in/2026-09-15|Online banking Finland React Native Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Online banking Finland.",
+      "location": "raw line 346, Sessions ## Add additional configuration"
+    },
+    {
+      "text": "The issuer ID of the shopper's selected bank. This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "raw line 381, Advanced ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 670, Advanced response"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "raw line 690, Advanced ## Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "finland-online-banking-react-native-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-react-native-drop-in]] \u2014 2026-09-15-captured React Native Drop-in Sessions/Advanced redirect guide for required email and conditional issuer; source flags base-link, incomplete request and test-refund caveats.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions prerequisite links to an Advanced-flow base URL.",
+          "Advanced table requires paymentMethod.type ebanking_FI but all request examples omit paymentMethod.",
+          "Issuer is required only for Issuer redirect flow.",
+          "Example shopperEmail has double @, and curl snippets omit a continuation after -X POST.",
+          "Testing multiple partial refunds is unavailable in this capture, distinct from overview capability mark."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/react-native-drop-in/2026-09-15.md",
+  "raw_sha256": "8e05c2a258d410fa53456c6ab649b01c3e4518cc6669f3c6a22d13f849ff8b3a",
+  "status": "candidate_ready"
+}

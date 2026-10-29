@@ -1,0 +1,13 @@
+# Online banking Finland iOS Drop-in retrieval checks
+
+## Q1 — Purpose and payment boundary
+
+Query: What does the Online banking Finland iOS Drop-in guide cover, and does RedirectShopper prove a completed bank payment or current merchant eligibility?
+
+Expected route: `wiki/index.md` line 10 → `wiki/adyen-index.md` line 2769 → `wiki/concepts/adyen-online-payments.md` Sources → `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking-ios-drop-in.md` Overview/Detail locators → `raw/adyen/docs/payment-methods/finland-online-banking/ios-drop-in/2026-09-15.md` `# Online banking Finland iOS Drop-in` lines 15–23, Sessions requirements lines 25–44, Advanced requirements lines 354–364 and redirect response lines 670–684. Expected answer: 2026-09-15-captured method-specific additions to existing iOS Drop-in Sessions/Advanced flows. RedirectShopper/action.type redirect is a bank handoff, not final payment proof; the snapshot does not prove merchant enablement or live bank coverage.
+
+## Q2 — Email, conditional issuer, example and refund caveats
+
+Query: Which Online banking Finland iOS Drop-in fields and redirect handling differ by Sessions versus Advanced, and what example/test/overview caveats matter?
+
+Expected route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking-ios-drop-in.md` Key takeaways/Detail locators → `raw/adyen/docs/payment-methods/finland-online-banking/ios-drop-in/2026-09-15.md` Sessions lines 25–352, Advanced lines 354–692, especially fields 378–383, examples 385–668 and redirect 670–684; method-level FI/EUR, bank selection and missing refund note at `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking.md` → `raw/adyen/docs/payment-methods/finland-online-banking/2026-09-15.md` lines 23–36. Expected answer: Sessions needs existing Drop-in, Checkout API v68+, Customer Area setup and required shopperEmail; no extra configuration. Advanced needs redirect handling, setup, type ebanking_FI and shopperEmail; issuer is only required for Issuer redirect flow, and the returnUrl row has no required mark and a 1024-character max; base-flow requiredness is not established. Warning: all Advanced examples omit paymentMethod despite the required table; sample email has @@; Paytrail test data is required before live acceptance and multiple partial-refund testing is unavailable in this capture. Overview bank-selection descriptions differ, and its refund “See note” lacks a note; no universal live refund conclusion follows.

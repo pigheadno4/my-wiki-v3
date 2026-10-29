@@ -1,0 +1,15 @@
+# Fixed retrieval checks — docs-payment-methods-finland-online-banking-flutter-drop-in
+
+## Q1 — Find the Flutter Drop-in purpose and flow scope
+
+- Query: What does the Finland online banking Flutter Drop-in guide add to Sessions and Advanced, and what does it leave to the base integration?
+- Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking-flutter-drop-in.md` → `raw/adyen/docs/payment-methods/finland-online-banking/flutter-drop-in/2026-09-15.md`.
+- Expected: Method-specific add-on for an existing Flutter Drop-in integration (raw lines 15–23). Sessions assumes Checkout API v68+, redirect handling, Support contact for Customer Area setup, and required `shopperEmail` (25–46). Its integration-type row is labeled Sessions but targets an Advanced-flow Flutter Drop-in base guide (33); the redirect and create-session links target Sessions-flow guides (35, 42). Advanced assumes redirect handling and Customer Area addition, with required `paymentMethod.type: ebanking_FI` and `shopperEmail`; `issuer` is required only for Issuer redirect flow (354–383). No extra method configuration is specified in either flow (342–346, 366–370). No Flutter initialization code is provided on this page.
+- Scope: The v68 floor is stated only for Sessions. Follow the verified Sessions redirect/create-session links rather than assuming the mislabeled integration-type link is a Sessions base guide. Do not infer current enablement or successful payment execution from a method-specific page or its TEST examples.
+
+## Q2 — Recover setup, sample and testing warnings
+
+- Query: What qualifications must accompany the Flutter Drop-in request examples and multiple partial refund claim?
+- Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking-flutter-drop-in.md` → pinned raw; compare the separate method overview `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking.md`.
+- Expected: The Sessions integration-type link targets Advanced flow despite its Sessions label (raw line 33), whereas Sessions redirect/create-session links target Sessions flow (35, 42). Sessions setup calls for Support contact (36), Advanced for Customer Area addition (364). Sessions TEST v71 uses FI/EUR and app-scheme `returnUrl`, but sample email has `@@` and curl lacks continuation after `-X POST` (48–69). Advanced TEST v72 `/payments` examples omit table-required `paymentMethod.type`, repeat malformed email, use HTTPS returnUrl in the Flutter guide, and curl lacks continuation (378–405, 427–667). `RedirectShopper` is a redirect action, not final payment status (670–684). Paytrail test data is recommended; testing multiple partial refunds is currently unavailable (348–352, 686–690), while the method overview marks that capability available and has no captured refund note.
+- Scope: The source was captured 2026-09-15; no current account eligibility, live operation or successful refund test follows.

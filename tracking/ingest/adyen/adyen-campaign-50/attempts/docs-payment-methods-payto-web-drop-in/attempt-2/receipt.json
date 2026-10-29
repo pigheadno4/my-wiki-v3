@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-payto-web-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"PayTo Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/web-drop-in/2026-09-15.md\"\ntags: [adyen, payto, web, drop-in, mandate, subscription]\n---\n\n## Overview\n\nThis 2026-09-15-captured guide adds PayTo to an existing Web Drop-in integration, split between Sessions and Advanced flows. It covers one-time payments, setting up a bank agreement with the first subscription payment, subsequent subscription charges, status webhooks and test identifiers. Checkout API **v70 or later** and PayTo setup in Customer Area are stated for both flows. This is a method-specific add-on and dated example set, not proof that a merchant is enabled, an agreement was accepted, or a payment succeeded. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions:** The one-time `/sessions` table requires shopper first and last name. It lists statement, line-item and reference fields as optional, with a PayTo reference maximum of **35 characters**. The described one-time response has an `adhoc` mandate, default end date one day after the request, exact amount rule and count 1. For subscription setup plus first payment, the Sessions table additionally requires `storePaymentMethod: true`, `recurringProcessingModel: Subscription`, `shopperInteraction: Ecommerce`, and mandate frequency, end date, amount, amount rule and remarks. `mandate.count` is conditionally needed for non-`adhoc` frequency, despite its unmarked Required column; `mandate.startsAt` is optional. The example of AUD 30 first payment and up to AUD 90 weekly is illustrative. Subsequent subscription payments are routed to **Advanced or API-only**, not Sessions. See raw lines 25\u201351, 53\u2013101, 122\u2013160 and 217\u2013224.\n- **Advanced:** The `/payments` one-time table requires `paymentMethod: payto`, `paymentMethod.shopperAccountIdentifier` and shopper first/last name. Subscription setup adds stored-payment, Subscription/Ecommerce and mandate fields analogous to Sessions. The captured v72 examples use AU/AUD and a PayID email; they do not define current bank acceptance or a higher minimum than the stated v70. Example responses show `resultCode: Pending` with `action.type: await`, meaning the shopper still needs to authorize or decline the bank agreement and the payment outcome remains unresolved. See raw lines 292\u2013303, 323\u2013398 and 400\u2013503.\n- **Subsequent subscription charge:** The Advanced table requires `paymentMethod: payto`, `paymentMethod.storedPaymentMethodId` associated with the shopper, and `shopperInteraction: ContAuth`. Use of that stored method is restricted to the accepted agreement's conditions. The guide identifies `data.storedPaymentMethodId` from `recurring.token.created` for this request. Its illustrative subsequent response is `Received`, not final authorization. See raw lines 505\u2013565.\n- **Agreement and payment notifications:** The shopper receives a bank notification to authorize or decline the agreement. The guide says accepted subscription agreements yield a `RECURRING_CONTRACT` webhook; `OFFER_CLOSED` signals agreement failure/cancellation and includes `refusalReasonRaw`. An `AUTHORISATION` notification for payment on an accepted agreement may report **authorized or rejected**, so agreement acceptance does not prove payment success. Refunds are asynchronous and can later produce `REFUND_FAILED`; `DISABLE_RECURRING` reports an ended/cancelled agreement and token deletion. See raw lines 217\u2013256 and 579\u2013609.\n- **Web UI and tests:** Optional tree shaking prose says `PayTo`, while both import snippets spell the export `Payto`; verify the actual package export before copying. No extra PayTo Drop-in configuration is stated. The test tables provide `shopperAccountIdentifier` email values for agreement expiry/refusal and payment refusal/error, alongside success cases; these are simulated scenarios, not financial execution evidence. See raw lines 258\u2013290 and 305\u2013321, 611\u2013625.\n\n> [!warning] Captured example and identifier discrepancies\n> The Sessions subscription table marks `storePaymentMethod: true` required (raw line 130), but its example request omits that field (lines 162\u2013193); do not treat that sample as a complete subscription request. The Sessions one-time and subscription request examples omit commas before `returnUrl` or other following properties (raw lines 87\u201389 and 189\u2013193); the Advanced subscription example similarly omits a comma after `shopperReference` (lines 475\u2013479). The page labels several curl request-shaped blocks as \u201cexample response\u201d (lines 103\u2013120, 198\u2013215, 384\u2013398, 485\u2013499, 543\u2013565). The Advanced base link contains an unresolved encoded platform template and its `await` action points to a redirect-named anchor (lines 300\u2013302). For token retrieval, the subscription prose says `RECURRING_CONTRACT` includes `recurringDetailReference` (lines 217\u2013219, 501\u2013503), the required-webhook section says its token is in `pspReference` (lines 248\u2013250, 601\u2013603), and the subsequent-payment table instructs use of `data.storedPaymentMethodId` from `recurring.token.created` (lines 511\u2013513). Keep the webhook payload paths distinct and verify the identifier used for the request rather than treating them as interchangeable.\n\n## Detail locators\n\n- Sessions prerequisites, one-time and first-subscription tables/examples: pinned raw lines 25\u2013224.\n- Sessions webhooks, import/configuration and test matrix: raw lines 226\u2013290.\n- Advanced prerequisites, one-time and first-subscription tables/examples: raw lines 292\u2013503.\n- Subsequent charge, account identifier formats, webhooks and tests: raw lines 505\u2013625.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/web-drop-in/2026-09-15|PayTo Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v70 or later.",
+      "location": "raw line 34"
+    },
+    {
+      "text": "Subsequent subscription payments can only be performed with:",
+      "location": "raw line 48"
+    },
+    {
+      "text": "The shopper receives a notification from their bank (through SMS, email, or in their banking app) to authorize or decline the agreement.",
+      "location": "raw line 217"
+    },
+    {
+      "text": "This stored payment method can only be used according to the conditions specified in the subscription agreement.",
+      "location": "raw line 512"
+    },
+    {
+      "text": "the payment outcome could be authorized or rejected.",
+      "location": "raw line 590"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-payto-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-web-drop-in]] \u2014 2026-09-15-captured PayTo Web Drop-in v70+ Sessions/Advanced guide for one-time and subscription agreements, subsequent stored payments, asynchronous webhooks and test identifiers; source flags sample and token-reference discrepancies.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Captured import prose says PayTo but JavaScript snippets use Payto; validate export name.",
+          "Agreement token references differ among RECURRING_CONTRACT prose, webhook section and recurring.token.created table; use the required storedPaymentMethodId field for subsequent requests.",
+          "Advanced base-guide URL has unresolved platform template; await action links to redirect-named anchor."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/web-drop-in/2026-09-15.md",
+  "raw_sha256": "e3850add3f519de7aad9074d6a291fd122556acfcf70577f9021d1b0677952e7",
+  "status": "candidate_ready"
+}

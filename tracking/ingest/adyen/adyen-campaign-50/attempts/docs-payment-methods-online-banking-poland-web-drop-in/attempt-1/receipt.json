@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-online-banking-poland-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Poland Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-poland/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-poland/web-drop-in/2026-09-15.md\"\ntags: [adyen, online-banking-poland, web, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Poland** to an existing Web Drop-in integration. It covers Sessions and Advanced request additions, redirect handling, optional `OnlineBankingPL` import, and test/live setup. It is a method-specific add-on, not a complete Web integration or proof of current account enablement. See [[adyen]], [[adyen-online-payments]], and the separate PL/PLN Przelewy24 method overview [[source-adyen-docs-payment-methods-online-banking-poland]].\n\n## Key takeaways\n\n- **Sessions:** start with an existing Web Drop-in Sessions flow, Checkout API v68 or later, redirect handling for `action.type: redirect`, and Online banking Poland added in Customer Area. The `/sessions` table requires `shopperEmail` and says it must be **50 or fewer characters**. The TEST v71 examples use PL/PLN. The curl and some SDK snippets are incomplete as shown; the displayed custom-scheme `adyencheckout://your.package.name` return URL is a mobile-style example in a Web guide, not a validated Web return route. See raw lines 25\u201369 and 71\u2013268.\n- For either flow, importing `OnlineBankingPL` individually alongside Adyen Web and Drop-in is **optional**, offered for tree shaking/performance. Do not turn the optional import into a prerequisite for showing the method. See raw lines 270\u2013280 and 302\u2013312.\n- **Advanced:** start with an existing Web Drop-in Advanced flow, redirect handling, and method addition in Customer Area. Its integration-guide link contains an encoded unresolved platform template; use the guide title and the other Web-labeled links for scope rather than copying that URL as a valid target. The v68 minimum is stated only in Sessions requirements on this page. The `/payments` table requires `shopperEmail` with the same 50-character limit; it lists `paymentMethod.issuer` as the shopper-selected bank's issuer ID **without a required mark**. TEST v72 examples show `paymentMethod.type: onlineBanking_PL` and issuer `141`, but an example does not make the issuer universally required. See raw lines 290\u2013349.\n- The Advanced example response has `resultCode: RedirectShopper` and a `redirect` action; this is a redirect step, not final payment confirmation. The guide says to check test payment status in Customer Area > Payments > Payment list and to submit a request for Online banking Poland in the **live** Customer Area before accepting live payments. The curl examples omit a continuation after `-X POST`, so they should not be treated as executable verbatim. See raw lines 657\u2013679 and 50\u201369, 327\u2013349.\n\n## Detail locators\n\n- Sessions prerequisites, email limit and TEST request examples: raw lines 25\u2013268.\n- Optional Sessions import and test/live instructions: raw lines 270\u2013288.\n- Advanced prerequisites, optional import and request table: raw lines 290\u2013323.\n- Advanced TEST payment requests: raw lines 325\u2013655.\n- Redirect response and repeated test/live instructions: raw lines 657\u2013679.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-online-banking-poland]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-poland/web-drop-in/2026-09-15|Fully read Online banking Poland Web Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "The shopper's email address. Must be 50 or less characters.",
+      "location": "line 46"
+    },
+    {
+      "text": "you can optionally import individual payment methods to optimize performance",
+      "location": "line 274"
+    },
+    {
+      "text": "The issuer ID of the shopper's selected bank.",
+      "location": "line 323"
+    },
+    {
+      "text": "submit a request for Online banking Poland",
+      "location": "line 679"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-online-banking-poland-web-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-poland-web-drop-in]] \u2014 2026-09-15-captured Poland online banking Web Drop-in Sessions/Advanced add-on for email limits, optional OnlineBankingPL import, redirect action and live-request setup; source flags incomplete examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced issuer is listed without a required mark despite being populated in examples; do not assert universal requiredness.",
+          "Sessions request examples include an app-scheme returnUrl in a Web guide, several SDK snippets omit request-object construction, and both curl commands omit a continuation after -X POST.",
+          "Advanced integration link includes an encoded unresolved platform template; live acceptance requires a request in live Customer Area."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-poland/web-drop-in/2026-09-15.md",
+  "raw_sha256": "38064645dc8754eb0a16323cb7da78532033b03ebb2b6b81ab44b096851ea4d9",
+  "status": "candidate_ready"
+}

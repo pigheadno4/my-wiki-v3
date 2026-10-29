@@ -1,0 +1,58 @@
+{
+  "job_id": "docs-payment-methods-payto-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayTo iOS Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/payto/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/payto/ios-drop-in/2026-09-15.md\"\ntags: [adyen, payto, australia, ios, drop-in, mandate]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **PayTo to an existing iOS Drop-in integration**. It separates one-time payments, subscription agreement setup and first payment, and later subscription charges across Sessions and Advanced server-side flows. A bank agreement invitation, `Pending` response or `await` action is not payment authorization. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Both flows require existing iOS Drop-in, Checkout API **v70 or later**, and PayTo added in Customer Area; Advanced additionally requires handling `action.type: await` (raw lines 25\u201334, 279\u2013289). Its action-handling link points to a `#handle-the-redirect` anchor despite identifying **await**; do not recast the action as redirect. The guide says no PayTo-specific Drop-in configuration parameters are needed (raw lines 257\u2013261, 291\u2013295).\n- **Sessions one-time** `/sessions` additions require shopper first and last name. Optional statement, line items and reference are listed; the page recommends a unique reference but says it is not required, with a **35-character PayTo maximum** (raw lines 52\u201366). The response describes an `adhoc`, `exact`, one-payment mandate with amount equal to the request and a default end date one day after the request (raw lines 91\u2013100). The sample request at raw lines 70\u201389 has a missing comma between `shopperReference` and `returnUrl`; it is not copy-ready JSON.\n- **Sessions subscription setup and first payment** requires shopper name, `storePaymentMethod: true`, `recurringProcessingModel: Subscription`, `shopperInteraction: Ecommerce`, and mandate frequency, end date, amount, amount rule and remarks. `mandate.count` is conditionally needed when frequency is not `adhoc`; the table lists further optional start date, line items and reference (raw lines 121\u2013147). Its example is a first **AUD 30** payment with a **weekly up-to-AUD 90** agreement and one payment per week (raw lines 149\u2013159). This illustrates an agreement cap, not authorization of all later charges. The example request has a missing comma after `shopperReference` (raw lines 161\u2013193).\n- The shopper receives a bank notification to **authorize or decline the agreement**. After acceptance, a `RECURRING_CONTRACT` webhook includes a `recurringDetailReference`; later subscription payments are stated to be possible only through **Advanced flow or API-only**, not Sessions (raw lines 216\u2013223, 475\u2013478). Keep agreement acceptance separate from the outcome of any payment made under it.\n- **Advanced one-time** `/payments` additions require `paymentMethod: payto`, a bank or PayID `shopperAccountIdentifier`, and shopper first/last name; optional statement, line items and reference follow (raw lines 309\u2013325). The example returns `resultCode: Pending` with `action.type: await` (raw lines 327\u2013372). The listed identifier shapes include BSB-account number, PayID email, phone, ABN and organization identifier; consult the raw regex table rather than treating its sample values as a universal validator (raw lines 541\u2013551).\n- **Advanced subscription setup** adds required storage, Subscription/Ecommerce flags and mandate terms to the account identifier and shopper name (raw lines 374\u2013403). The shopper is asked to approve or decline via their bank (raw line 475). A later `/payments` charge requires `paymentMethod: payto`, a `storedPaymentMethodId` from the `recurring.token.created` webhook and `shopperInteraction: ContAuth`; the stored method may be used **only within the accepted agreement's conditions** (raw lines 479\u2013488). The guide also mentions `RECURRING_CONTRACT`/`recurringDetailReference` for agreement acceptance; do not collapse these different webhook/reference names into one identifier (raw lines 218, 477, 486, 575\u2013583).\n- **Webhook finality:** `OFFER_CLOSED` reports an agreement failure or shopper cancellation, `AUTHORISATION` reports a payment on an accepted agreement and can be authorized or rejected, `REFUND_FAILED` can follow an initially received refund, and `DISABLE_RECURRING` reports agreement termination/token deletion (raw lines 225\u2013255, 553\u2013583). Test identifiers simulate agreement expiry/refusal, payment refusal/error and successful cases (raw lines 263\u2013277, 585\u2013599). These are test scenarios, not live bank-operation evidence.\n\n> [!warning] Illustrative request examples\n> Several `/payments` curl examples omit a shell continuation after `-X POST` before `-d` (raw lines 327\u2013354, 417\u2013455, 490\u2013513), and some JSON examples omit commas (raw lines 70\u201389, 161\u2013193, 417\u2013455, 490\u2013513). The response examples are also displayed in `bash` fences as curl commands (raw lines 102\u2013119, 358\u2013372, 459\u2013473, 517\u2013539). Use the tables and API contract, not copied snippets, to build requests.\n\n## Detail locators\n\n- Sessions prerequisites, one-time fields and mandate defaults: raw `## Sessions flow Drop-in`, lines 25\u2013119.\n- Sessions subscription setup, bank agreement and later-flow restriction: raw lines 121\u2013223.\n- Sessions status webhooks and test scenarios: raw lines 225\u2013277.\n- Advanced prerequisites, one-time fields and pending await response: raw `## Advanced flow Drop-in`, lines 279\u2013372.\n- Advanced subscription and subsequent stored-method conditions: raw lines 374\u2013539.\n- Identifier formats, status webhooks and tests: raw lines 541\u2013599.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/payto/ios-drop-in/2026-09-15|PayTo iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Subsequent subscription payments can only be performed with:",
+      "location": "raw line 47, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "When the subscription agreement is accepted, you get the [RECURRING\\_CONTRACT]",
+      "location": "raw line 218, Sessions subscription setup"
+    },
+    {
+      "text": "`action.type`: ****await****.",
+      "location": "raw line 288, Advanced ## Requirements"
+    },
+    {
+      "text": "This stored payment method can only be used according to the conditions specified in the subscription agreement.",
+      "location": "raw line 486, Advanced ### Subsequent subscription payment"
+    },
+    {
+      "text": "You will receive this notification for a payment on an accepted agreement, the payment outcome could be authorized or rejected.",
+      "location": "raw line 564, Advanced ### Required webhooks"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "payto-ios-drop-in-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-payto-ios-drop-in]] \u2014 2026-09-15-captured iOS Drop-in PayTo guide for one-time and subscription mandates, bank approval, Advanced subsequent charges, and webhook outcomes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Pending/await and bank agreement invitation are not payment authorization; AUTHORISATION can report authorized or rejected outcome.",
+          "Subsequent subscription charges require Advanced/API-only and an agreement-bound stored method; Sessions is for setup/first payment only.",
+          "Advanced action is await despite #handle-the-redirect anchor.",
+          "Illustrative requests contain missing JSON commas and curl continuations; do not present snippets as copy-ready.",
+          "RECURRING_CONTRACT recurringDetailReference and recurring.token.created storedPaymentMethodId are named separately in the guide."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/payto/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "537fe9ff7cc387a21883699e310f8db08a5c9af48819a7ef466357e85bc28596",
+  "status": "candidate_ready"
+}

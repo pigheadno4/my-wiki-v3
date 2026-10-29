@@ -1,0 +1,13 @@
+# Fixed queries — Online banking Finland Web Drop-in
+
+## Q1 — purpose, scope and limits
+
+**Query:** What does the captured Finland Web Drop-in guide cover, and what does RedirectShopper not prove?
+
+**Expected answer:** The page at `https://docs.adyen.com/payment-methods/finland-online-banking/web-drop-in` is a 2026-09-15-captured Web Drop-in Sessions/Advanced add-on for shopper email, optional Redirect import, conditional Advanced issuer and Paytrail testing. `RedirectShopper`/`action.type: redirect` describes handoff, not confirmed payment or live merchant entitlement (full pinned `raw/adyen/docs/payment-methods/finland-online-banking/web-drop-in/2026-09-15.md`, `# Online banking Finland Web Drop-in` lines 15–23; Advanced response lines 684–698). Method-level FI/EUR capability and bank-selection qualifications are in `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking.md`. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking-web-drop-in.md`.
+
+## Q2 — flow fields, issuer and example warnings
+
+**Query:** What does the captured Web Drop-in guide require for Sessions and Advanced, and which example and test limitations matter?
+
+**Expected answer:** Sessions requires existing Web Drop-in Sessions, Checkout API v68+, redirect handling, Customer Area addition and required `shopperEmail` in `/sessions` (pinned `raw/adyen/docs/payment-methods/finland-online-banking/web-drop-in/2026-09-15.md`, `## Sessions flow Drop-in` lines 25–46). Its optional `Redirect` import is for tree shaking (lines 342–352). Sessions examples use an iOS-style `adyencheckout://` return URL and a double-`@` email on a Web page (lines 53–68), so they are not validated Web/valid-email values. Advanced requires Web Drop-in, redirect handling and Customer Area setup, but its base-guide URL contains unresolved platform templating (lines 362–372); it does not state an Advanced API minimum. In `/payments`, `paymentMethod.type: ebanking_FI` and `shopperEmail` are required; `issuer` is required only for **Issuer redirect flow**, and returnUrl has a 1024-character maximum (lines 386–397). Advanced request examples omit `paymentMethod` despite the required type (lines 399–682); do not use them as full requests. Response is RedirectShopper/redirect (lines 684–698). Paytrail test data is advised and multiple partial refunds cannot currently be tested (lines 354–360, 700–706), distinct from the overview matrix capability mark. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-finland-online-banking-web-drop-in.md`.

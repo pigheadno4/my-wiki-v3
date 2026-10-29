@@ -1,0 +1,57 @@
+{
+  "job_id": "docs-payment-methods-online-banking-poland-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Online banking Poland Android Component\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-poland/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-poland/android-component/2026-09-15.md\"\ntags: [adyen, online-banking-poland, android, component, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Poland to an existing Android Components integration** using Sessions or Advanced server-side flow. It covers required shopper email, the `OnlineBankingPLComponent`, redirect action, and test/live setup. A redirect action is not proof of completed payment. See [[adyen]], [[adyen-online-payments]], and the method overview [[source-adyen-docs-payment-methods-online-banking-poland]] for Przelewy24 branding and the PL/PLN capability matrix.\n\n## Key takeaways\n\n- **Sessions flow** requires an existing Android Components Sessions integration, Checkout API **v68 or later**, redirect handling, and Online banking Poland added in Customer Area (raw lines 25\u201336). Its `/sessions` addition is required `shopperEmail`, with a **50-character maximum** (raw lines 38\u201346). The curl example uses a test endpoint, PL/PLN and an Android-style return URL; these are sample values (raw lines 48\u201369).\n- Android module examples add `com.adyen.checkout:onlinebankingpl:YOUR_VERSION`; Compose also adds `components-compose`. The guide uses `OnlineBankingPLComponent` and `PaymentMethodTypes.ONLINE_BANKING_PL` to launch either Compose or non-Compose UI (raw lines 270\u2013291, 315\u2013368). The optional `setSubmitButtonVisible` defaults to **true**; setting false hides the submit button (raw lines 293\u2013313). The shown configuration block has an unlabeled nested brace and placeholder `value`, so it is not a complete runnable Kotlin sample.\n- **Advanced flow** requires an existing Android Components Advanced integration, handling `action.type: redirect`, and Customer Area setup (raw lines 376\u2013384). It repeats the module/UI and optional submit-button setup, sourcing the payment-method object from `/paymentMethods` in the examples (raw lines 386\u2013486). The Advanced requirements table specifies **no Checkout API minimum**, so do not import the Sessions v68 minimum as an Advanced requirement from this page.\n- Advanced `/payments` requires `shopperEmail` (maximum 50 characters). It lists `paymentMethod.issuer` as the selected bank's issuer ID **without a required mark** (raw lines 488\u2013497). Examples send `type: onlineBanking_PL`, `issuer: 141`, PLN and a return URL; those are sample values, not an exhaustive issuer list or proof that issuer is mandatory for every request (raw lines 499\u2013523, 653\u2013686).\n- The Advanced response includes `action.type: redirect`; its JSON example has `resultCode: RedirectShopper` and a GET redirect URL (raw lines 831\u2013845). Check test payment status in test Customer Area **Payments > Payment list**; live acceptance requires a method request in live Customer Area (raw lines 370\u2013374, 847\u2013851). Neither redirect presentation nor test status lookup establishes successful live payment.\n\n> [!warning] Illustrative sample syntax\n> The Sessions and Advanced curl examples omit a shell continuation after `-X POST` before `-d` (raw lines 53\u201369, 503\u2013523). Some SDK snippets refer to undeclared request/config objects, and the Kotlin configuration blocks contain an unlabeled nested brace (raw lines 73\u2013169, 252\u2013268, 303\u2013313, 419\u2013429). Consult the actual SDK/base integration contract rather than copying these fragments as complete code.\n\n## Detail locators\n\n- Sessions prerequisites, email field and sample request: raw `## Sessions flow Component`, lines 25\u201369.\n- Sessions SDK snippets, Android module, configuration and launch: raw lines 71\u2013368.\n- Sessions test/live gate: raw lines 370\u2013374.\n- Advanced prerequisites and Component setup: raw `## Advanced flow Component`, lines 376\u2013486.\n- Advanced email/issuer fields, examples and redirect response: raw lines 488\u2013845.\n- Advanced test/live gate: raw lines 847\u2013851.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-online-banking-poland]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-poland/android-component/2026-09-15|Online banking Poland Android Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 34, Sessions ## Requirements"
+    },
+    {
+      "text": "The shopper's email address. Must be 50 or less characters.",
+      "location": "raw line 46, Sessions ## Add additional parameters to your /sessions request"
+    },
+    {
+      "text": "Set to **false** to hide the submit button. The default is **true**.",
+      "location": "raw line 301, Sessions ## Add additional configuration"
+    },
+    {
+      "text": "The issuer ID of the shopper's selected bank.",
+      "location": "raw line 497, Advanced ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "The response includes `action.type`: **redirect**.",
+      "location": "raw line 831, Advanced response"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "online-banking-poland-android-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-poland-android-component]] \u2014 2026-09-15-captured Android Components Sessions/Advanced guide for required shopper email, OnlineBankingPLComponent, optional submit-button control and redirect response.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced issuer is shown without a required mark; examples include issuer 141 but do not make it universally mandatory.",
+          "Sessions v68 API minimum is not stated in Advanced requirements.",
+          "Sample curl and Kotlin/SDK fragments are incomplete or malformed; do not present as copy-ready.",
+          "RedirectShopper/action.type redirect is not completed payment."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-poland/android-component/2026-09-15.md",
+  "raw_sha256": "c45e06a39bbce99f29aff3fdefd2f7808a53cf84e43d06484fde129783fb0c5b",
+  "status": "candidate_ready"
+}

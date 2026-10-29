@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-finland-online-banking-flutter-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Online banking Finland Flutter Drop-in\"\ntype: source\ndate_ingested: 2026-10-30\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/finland-online-banking/flutter-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/finland-online-banking/flutter-drop-in/2026-09-15.md\"\ntags: [adyen, finland-online-banking, flutter, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds **Online banking Finland** to an existing Flutter Drop-in integration. It distinguishes Sessions and Advanced server-side flows, lists method-specific request fields and redirect handling, and points to Paytrail test data. It supplies no Flutter Drop-in initialization code; the base integration guides remain necessary. See [[adyen]], [[adyen-online-payments]], and the separate FI/EUR method overview [[source-adyen-docs-payment-methods-finland-online-banking]].\n\n## Key takeaways\n\n- **Sessions:** the guide assumes an existing Flutter Drop-in Sessions integration, Checkout API v68 or later, redirect handling for `action.type: redirect`, and says to **contact Adyen Support** to add Online banking Finland in Customer Area. It marks `shopperEmail` required for `/sessions`. Its TEST v71 sample uses FI/EUR and a custom-scheme `returnUrl`, but `s.hopper@@example.com` is malformed and the curl example lacks a line continuation after `-X POST`; do not copy either as a valid request. See raw lines 25\u201369.\n- The Sessions section says no additional Online banking Finland configuration parameters are needed. It does not provide a method-specific Flutter Drop-in constructor or payment-result recipe. See raw lines 342\u2013346.\n- **Advanced:** the guide assumes an existing Flutter Drop-in Advanced integration and redirect handling, but here says to **add the method in Customer Area**; it likewise says no additional method configuration parameters. The Checkout API v68 floor appears in the Sessions requirements table only. See raw lines 354\u2013370.\n- The Advanced `/payments` table marks `paymentMethod.type: ebanking_FI` and `shopperEmail` required. `paymentMethod.issuer` is relevant and required **for the Issuer redirect flow**; the `returnUrl` row describes a post-payment destination of at most 1024 characters without a required mark. The TEST v72 examples omit `paymentMethod` despite the required type row, repeat the malformed email, and use an HTTPS `returnUrl` in this Flutter guide. The curl example again lacks a continuation after `-X POST`. Treat these as incomplete illustrations, and follow the applicable base flow for redirect return handling. See raw lines 372\u2013405 and 427\u2013667.\n- The example `/payments` response has `resultCode: RedirectShopper` and `action.type: redirect`; this is a redirect step, not final payment confirmation. Before live acceptance, the guide directs testing with Paytrail test environment and sample data, and says **testing multiple partial refunds is currently not available**. The separate method overview marks multiple partial refunds available, but its refund note is missing in that captured page; preserve the test limitation without treating the matrix as a successful test. See raw lines 670\u2013690 and [[source-adyen-docs-payment-methods-finland-online-banking]].\n\n## Detail locators\n\n- Sessions prerequisites, Support setup, required email and TEST examples: raw lines 25\u2013340.\n- Sessions configuration and Paytrail test limitation: raw lines 342\u2013352.\n- Advanced prerequisites, Customer Area setup, no additional configuration and request table: raw lines 354\u2013383.\n- Advanced TEST examples: raw lines 385\u2013668.\n- Redirect response and repeated Paytrail test limitation: raw lines 670\u2013690.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-finland-online-banking]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/finland-online-banking/flutter-drop-in/2026-09-15|Fully read Online banking Finland Flutter Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "line 34"
+    },
+    {
+      "text": "contact our [Support Team]",
+      "location": "line 36"
+    },
+    {
+      "text": "You do not need to add any configuration parameters for Online banking Finland.",
+      "location": "line 346"
+    },
+    {
+      "text": "This is only relevant (and required) for the Issuer redirect flow.",
+      "location": "line 381"
+    },
+    {
+      "text": "Testing multiple partial refunds is currently not available.",
+      "location": "line 690"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c50-finland-online-banking-flutter-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-finland-online-banking-flutter-drop-in]] \u2014 2026-09-15-captured Finland online banking Flutter Drop-in Sessions/Advanced add-on for email, conditional issuer, redirect handling and Paytrail testing; source flags setup and sample limitations.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions setup says contact Adyen Support, whereas Advanced says add the method in Customer Area; do not flatten these into one asserted setup path.",
+          "Advanced table requires paymentMethod.type but all TEST request examples omit paymentMethod; sample email is malformed, Advanced returnUrl is HTTPS in a Flutter guide, and both curl commands lack continuation after -X POST.",
+          "Guide says multiple partial refunds cannot currently be tested while the separate method overview marks that capability available and points to a missing refund note."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/finland-online-banking/flutter-drop-in/2026-09-15.md",
+  "raw_sha256": "e3efdb9f8883875ccb5ca97577562cb48a8fc835d19d92943ce38b2e3416bde1",
+  "status": "candidate_ready"
+}
