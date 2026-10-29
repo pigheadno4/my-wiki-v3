@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-walley-android-component-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Walley Android Redirect Component v4.x.x guide\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/walley/android-component/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md\"\ntags: [adyen, walley, android, redirect, components, earlier-versions]\n---\n\n## Overview\n\nThis captured Adyen page is titled **Walley Redirect Component v4.x.x integration** and describes adding Walley to an existing Android Components integration through a server `/payments` request and client Redirect Component. The requirements text separately says Walley for Android works with **all versions** of Components; treat that as the page's claim, while retaining the earlier-versions/v4.x.x title rather than using this guide as proof of current-version behavior. It says the payment form need not collect shopper information, but a redirect return and result handling are still necessary. The 2026-09-15 snapshot is not proof of present account enablement or completed live payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Availability and product split:** Contact Adyen Support to add Walley in the **test** Customer Area. Query `/paymentMethods` with country/currency pairs DK/DKK, FI/EUR, NO/NOK, or SE/SEK and `channel: android`. Its response identifies B2C as `walley` and B2B as `walley_b2b`; **Denmark or DKK is B2C only**. Do not send the B2C example type for a B2B selection. The guide's version title and its \u201call versions\u201d claim coexist (raw lines 21\u201347).\n- **Redirect request and return:** The Component provides `paymentComponentState.data.paymentMethod`. The server makes `/payments` using the selected method type and a return URL obtained from `RedirectComponent.getReturnUrl(context)`, with a stated **1024-character maximum**. The page spells the parameter `returnURL` in prose; verify the API field in the chosen base guide. Its example response is `RedirectShopper` with `action.type: redirect`, an additional action rather than final payment success. Pass the action to the app's Redirect Component. After the shopper returns, send `actionComponentData.details` in a server POST to `/payments/details` (raw lines 51\u2013111).\n- **Result finality:** Use `/payments/details.resultCode` for shopper presentation and `pspReference` as the transaction identifier. `Authorised` means payment was completed by the shopper and sent to the bank for processing; the page says funds follow in most cases and manual capture still requires a capture. `Cancelled`, `Error`, and `Refused` have distinct handling. `Pending` or `Received` means the final result is **not yet known**; wait for an AUTHORISATION webhook. The page also says to rely on notification webhooks when the shopper does not return, distinguishing AUTHORISATION `success:false` from `success:true` (raw lines 99\u2013132).\n- **Test scope:** Walley test scenarios can use `CivRegNo` as `socialSecurityNumber`; B2B testing additionally gives a company name and registration-number example. Test payment status is checked in test Customer Area. These test requirements do not change the page's general statement about the payment form collecting no shopper information and do not establish live eligibility (raw lines 19, 134\u2013147).\n\n## Detail locators\n\n- Identity, existing integration and version-scope tension, test setup: pinned raw lines 15\u201326.\n- Country/currency pairs, Android channel, B2C/B2B type and DK/DKK restriction: lines 28\u201347.\n- Component state, server request, return URL limit, action and redirect/details handoff: lines 51\u2013111.\n- ResultCode handling and AUTHORISATION webhook finality: lines 113\u2013132.\n- CivRegNo/B2B test inputs and test Customer Area check: lines 134\u2013147.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-walley]] \u2014 method overview for separate scope and feature matrix\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15|Walley Android Redirect Component v4.x.x guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Walley for Android works with all versions of Components.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md:25"
+    },
+    {
+      "text": "Payments in Denmark (**DK**) or with the **DKK** currency are available only for *B2C* payments.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md:43"
+    },
+    {
+      "text": "This URL can have a maximum of 1024 characters. Get this URL from the Component in the `RedirectComponent.getReturnUrl(context)`.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md:58"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md:124"
+    },
+    {
+      "text": "If the shopper failed to return to your website or app, wait for notification webhooks to know the outcome of the payment.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md:127"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-walley-android-component-earlier-versions-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-walley-android-component-earlier-versions]] \u2014 2026-09-15-captured Walley Android Redirect Component v4.x.x guide covering B2C/B2B discovery, redirect/details and webhook results; requirements also claim all Components versions.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v4.x.x/earlier-versions title and the requirements' all-versions claim coexist; do not infer verified current-version behavior. The request prose spells returnURL and should be checked against the selected API contract."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/walley/android-component/earlier-versions/2026-09-15.md",
+  "raw_sha256": "ecb20150ccbdf85cb255e60191704bb5f141563b159b869a0d27c0fc992063a2",
+  "status": "candidate_ready"
+}

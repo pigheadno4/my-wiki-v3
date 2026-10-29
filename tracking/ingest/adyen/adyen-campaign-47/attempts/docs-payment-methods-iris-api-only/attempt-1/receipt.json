@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-iris-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen IRIS API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/iris/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/iris/api-only/2026-09-15.md\"\ntags:\n  - adyen\n  - iris\n  - api-only\n  - greece\n  - redirect\n  - qr-code\n---\n\n## Overview\n\nThis captured Adyen guide explains how to add IRIS to an existing API-only online payment integration for Greece and EUR. It covers issuer redirect and QR-code flows, required setup, API actions, result handling, testing, and live onboarding. It is a source for [[adyen]] and [[adyen-online-payments]]; the captured instructions do not establish a merchant's current eligibility, activation, live operation, or receipt of funds.\n\n## Key takeaways\n\n- **Prerequisites:** An existing API-only integration must handle additional actions of type **redirect** and **qrCode**. Add IRIS in Customer Area. Before live use, request IRIS from a Greek bank and Adyen with the DIAS code, merchant account, and associated stores; complete bank onboarding and enable IRIS for the live merchant account. [Raw: lines 25\u201329, 1372]\n- **Discovery and geography:** Request available methods with countryCode **GR** and currency **EUR**. The returned IRIS issuer list may include the six banks named in the captured example; treat the response as the available list rather than a fixed roster. [Raw: lines 44\u201370, 339\u2013378]\n- **Choose a flow explicitly:** For issuer redirect, pass **paymentMethod.type=iris**, **paymentMethod.issuer** from the shopper's selected bank, and **returnUrl**. The response contains a redirect URL; after the shopper returns, send the URL-decoded **redirectResult** to **/payments/details**. This flow applies to mobile and desktop. [Raw: lines 35\u201340, 380\u2013388, 712\u2013740, 980\u2013992]\n- **QR flow:** Omit **paymentMethod.issuer** to receive **action.type=qrCode** and **qrCodeData**. The field table says **returnUrl** is not required for QR, even though QR examples include it. Render the code, show the shopper the 10-minute completion window as recommended, and await the result webhook. QR is intended for desktop; the guide does not recommend it on mobile because the scanning app may be on the same device. [Raw: lines 35\u201340, 380\u2013388, 994\u20131017, 1312\u20131338, 1361]\n- **Outcome boundary:** **Pending** or **Received** means the final result is unknown; an **AUTHORISATION** webhook supplies it. QR requires webhook confirmation. Redirect also requires the webhook when the shopper fails to return. **Authorised** says the shopper completed payment and it was sent to the bank for processing; the guide says funds arrive in most cases, not that settlement is guaranteed. [Raw: lines 1340\u20131361]\n- **Test versus live:** The Adyen test simulator offers Successful, Refused, and Cancelled outcomes. Its hosted page is reached via the redirect link or URL encoded in the QR code. Live acceptance additionally requires Greek-bank onboarding and live Customer Area enablement. [Raw: lines 1363\u20131372]\n\n> [!WARNING] Redirect examples disagree with the field table\n> The field table says **paymentMethod.issuer** is required for issuer redirect and omission selects QR. Several code examples under the issuer-redirect heading omit **issuer** (Java, PHP, C#, Go, and TypeScript). Do not infer that those requests produce an issuer redirect; use the documented flow selector and verify the returned action. [Raw: lines 388, 439\u2013447, 478\u2013488, 522\u2013534, 597\u2013607, 695\u2013705]\n\n> [!WARNING] Related method overview limits\n> The separately captured IRIS overview says Adyen acts as a gateway and refunds and cancellations are handled with the contracted Greek bank, rather than through Adyen. Its capability matrix labels the flow Redirect, while this API-only guide also documents a QR branch. Read the overview's matrix as a summary, not an exclusion of the QR branch. The API-only guide does not document an Adyen refund or cancellation operation. [Related raw: raw/adyen/docs/payment-methods/iris/2026-09-15.md, lines 23\u201341]\n\n## Detail locators\n\n- Requirements and two flows: raw lines 15\u201342.\n- IRIS issuer discovery and GR/EUR request: raw lines 44\u201370 and 339\u2013378.\n- Payment field table and flow selector: raw lines 380\u2013388.\n- Issuer redirect examples, returned action, and return handling: raw lines 390\u2013992.\n- QR examples, action payload, timer, and rendering: raw lines 994\u20131338.\n- Result codes, webhooks, test simulator, and live setup: raw lines 1340\u20131372.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[raw/adyen/docs/payment-methods/iris/2026-09-15|IRIS method overview raw]] \u2014 bank contracting and refund/cancellation boundary.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/iris/api-only/2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "`action.type`: **redirect** and **qrCode**.",
+      "location": "raw/adyen/docs/payment-methods/iris/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "QR code flow is intended for Desktop only; on mobile this flow is not recommended, because often the app used for scanning the QR code resides on the same device.",
+      "location": "raw/adyen/docs/payment-methods/iris/api-only/2026-09-15.md:40"
+    },
+    {
+      "text": "Required only for Issuer-redirect flow. Not required for QR code flow.",
+      "location": "raw/adyen/docs/payment-methods/iris/api-only/2026-09-15.md:387"
+    },
+    {
+      "text": "If the issuer ID is not included, the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response will contain the QR code data.",
+      "location": "raw/adyen/docs/payment-methods/iris/api-only/2026-09-15.md:388"
+    },
+    {
+      "text": "In the QR code flow, you have to wait for [webhooks](https://docs.adyen.com/development-resources/webhooks/webhook-types) to know the outcome of the payment.",
+      "location": "raw/adyen/docs/payment-methods/iris/api-only/2026-09-15.md:1361"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "iris-api-only-online-payments-source",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-iris-api-only]] \u2014 IRIS API-only issuer redirect and QR flows, bank/Adyen onboarding, and webhook outcome handling.",
+        "quote_indexes": [
+          0,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/iris/api-only/2026-09-15.md",
+  "raw_sha256": "9093a2b4c87985942c87f0cfb61772d7e1a3e8febac939327b21e12288f47c1f",
+  "status": "candidate_ready"
+}

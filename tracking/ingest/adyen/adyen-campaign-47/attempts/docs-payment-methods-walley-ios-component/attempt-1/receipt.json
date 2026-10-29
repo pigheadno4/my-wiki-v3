@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-walley-ios-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Walley iOS Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/walley/ios-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/walley/ios-component/2026-09-15.md\"\ntags: [adyen, walley, ios, components, sessions, advanced-flow, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds Walley to an existing iOS Components integration. It lists Walley-specific fields for `/sessions` and `/payments`, shows v5+ versus v4.x.x Component setup, and points to test scenarios. Its requirements say Walley works with all Component versions, but the setup examples are version-specific; the page does not demonstrate a complete redirect/result lifecycle or live acceptance. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and fields:** The guide requires an existing iOS Components integration and contacting Support to add Walley in test Customer Area. Both endpoint tables mark a working mobile `telephoneNumber` with country code, `shopperEmail`, and line-item ID, description, amount excluding tax, tax amount, tax percentage and quantity required. Description maximum is 50 characters. `company.name` is marked required **only for `walley_b2b`** and is prefilled on Walley's form; `company.registrationNumber` is relevant to B2B but its Required cell is blank. These table requirements are Walley-specific additions to the respective base flow (raw lines 21\u201362).\n- **Versioned UI configuration:** For iOS Components v5.0.0 or later, the Sessions tab finds `.other(\"walley\")`, creates `InstantPaymentComponent`, assigns the session as delegate and calls `initiatePayment()`. The Advanced tab uses the same B2C method lookup and component but assigns `self` as delegate. For v4.x.x, the example uses `WalleyPaymentMethod`, `WalleyComponent`, and `present(component)`. The page then says there are no further Walley-specific configuration steps. These snippets look up `walley`, not `walley_b2b`; they do not show a B2B Component lookup (raw lines 344\u2013399).\n- **Payment examples need verification:** The `/payments` examples set `paymentMethod.type` to an empty string, even though this is a Walley integration page, so they cannot be copied as complete method requests. They also show `countryCode: NO` with `EUR`; the related earlier Android Walley guide explicitly pairs NO with NOK in its discovery table, while the overview lists countries and currencies without a pairing. Do not infer this NO/EUR sample is an approved Norway setup. The curl line items do not visibly reconcile to the 1000 request amount, and language examples vary in item count. Use the actual method type, country/currency and order figures from the applicable integration evidence (raw lines 64\u2013100, 106\u2013343).\n- **Testing scope:** Walley test-scenario guidance includes `CivRegNo` in `socialSecurityNumber` and a company name/registration example for B2B testing, with verification status in test Customer Area. This page provides no live enablement step or proof of actual transaction success (raw lines 401\u2013414).\n\n## Detail locators\n\n- Identity, setup and Sessions/Payments field tables: pinned raw lines 15\u201362.\n- Payments code samples and their blank method-type values: pinned raw lines 64\u2013343.\n- iOS v5+ Sessions/Advanced versus v4.x.x Component setup: pinned raw lines 344\u2013399.\n- Test data and related base guides: pinned raw lines 401\u2013421.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-walley]] \u2014 captured Walley overview for product/country context.\n- [[source-adyen-docs-payment-methods-walley-android-drop-in-earlier-versions]] \u2014 captured Android guide with an explicit Nordic country/currency discovery table; platform-specific procedures remain distinct.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15|Walley iOS Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Walley for iOS works with all versions of Components.",
+      "location": "raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15.md:25"
+    },
+    {
+      "text": "Incorrect or missing numbers will fail Walley's validation.",
+      "location": "raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15.md:36"
+    },
+    {
+      "text": "Only required for **walley\\_b2b** payments.",
+      "location": "raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15.md:38"
+    },
+    {
+      "text": "If your integration uses iOS Components v5.0.0 or later, configure and create an instance of the Walley Component:",
+      "location": "raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15.md:348"
+    },
+    {
+      "text": "There are no configuration steps specific to Walley required for Components.",
+      "location": "raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15.md:399"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "walley-ios-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-walley-ios-component]] \u2014 2026-09-15-captured Walley iOS Components guide for Sessions/Payments request fields, conditional B2B company data and v5+/v4 Component setup; source flags blank method-type examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/walley/ios-component/2026-09-15.md",
+  "raw_sha256": "b01bc8c87169dad17ffeb3ef0792b837653eb11070f1d79f01a9b0d357cd23c0",
+  "status": "candidate_ready"
+}

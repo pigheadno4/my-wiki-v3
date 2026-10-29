@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-ancv-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"ANCV Web Component integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ancv/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/ancv/web-component/2026-09-15.md\"\ntags: [adyen, ancv, web, components, partial-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured ANCV Web Component guide gives method-specific additions to an **existing Web Components** integration, separately for Sessions and Advanced server-side flows. It relies on the main flow guides and does not demonstrate merchant enablement, ANCV settlement, or a completed live payment. See [[adyen]], [[adyen-online-payments]], and the [[source-adyen-docs-payment-methods-ancv|ANCV overview]] for gateway/settlement roles and its partial-payments requirement.\n\n## Key takeaways\n\n- **Sessions:** use an existing Sessions-flow Web Components integration with Checkout API **v68+** and add ANCV in Customer Area. The page says no extra `/sessions` parameters or ANCV configuration are needed. Import `Redirect` from Adyen Web and initialize a `Redirect` Component for ANCV. After the shopper completes payment in the ANCV app, an AUTHORISATION webhook reports the outcome (raw lines 25\u201377).\n- **Advanced:** use an existing Advanced-flow Web Components integration, handle the additional action whose `action.type` is **`await`**, and add ANCV in Customer Area. Import and initialize `Redirect`. The PayPo-specific `/payments` table is not relevant here: the **ANCV** table marks `paymentMethod.type: ancv` and `paymentMethod.beneficiaryId` required. `beneficiaryId` is the shopper's ANCV ID, either an email address or an 11-digit value. The request examples also carry an `order` object with `pspReference` and `orderData` for the partial-payment context; do not infer universal order-field requiredness from the method-specific table (raw lines 149\u2013220).\n- An Advanced `/payments` response can be `Pending` with `action.type: await`. Pass `action.paymentData` to `/payments/details` to learn payment status. **Ignore `order.orderData` from `/payments`; use the `orderData` in `/payments/details`** for order continuation. The details examples distinguish `PartiallyAuthorised` and `Authorised`, and the AUTHORISATION webhook follows shopper completion in the ANCV app. `Pending` is not final authorization (raw lines 564\u2013704).\n- With partial authorization, Customer Area may show the requested amount even when the shopper authorized less. The accurate authorized amount is in `/payments/details` and AUTHORISATION webhook `additionalData.authorisedAmountValue`; use that amount rather than treating the requested amount as authorized. Both flow sections direct end-to-end testing with ANCV's test app, partial-payment tests, and live Customer Area setup with the ANCV-supplied Merchant ID (`shopID`) (raw lines 109\u2013147, 704\u2013742).\n\n> [!warning] Source sample and action distinctions\n> The Component snippet uses `type:ancv` without quoting or defining `ancv` (raw lines 69\u201370, 179\u2013180), while the request table uses the string `ancv`; do not copy the snippet as complete JavaScript. The Advanced requirements call for handling an `await` action even though the page imports a `Redirect` Component and links an anchor named \u201chandle the redirect\u201d (raw lines 155\u2013180). Preserve the stated `await` action type. The partial-authorization webhook example omits a comma before `authorisedAmountValue` (raw lines 130\u2013133 and 725\u2013729); the first `/payments/details` example likewise omits a comma after `order.pspReference` and mixes amounts 3000, 2500, and 2400 without a complete reconciliation (raw lines 613\u2013640). These examples are illustrative and cannot establish a copy-ready payload or amount arithmetic. The Advanced curl request also omits a line continuation between `-X POST` and `-d` (raw lines 203\u2013204).\n\n## Detail locators\n\n- Scope and Sessions requirements/Component: raw lines 15\u201377.\n- Sessions partial-authorization reporting and test/live steps: raw lines 109\u2013147.\n- Advanced prerequisites, `await` handling, required ANCV fields and examples: raw lines 149\u2013562.\n- Advanced `/payments` versus `/payments/details` data source, result examples and webhooks: raw lines 564\u2013736.\n- Advanced test/live steps: raw lines 738\u2013742.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-ancv]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ancv/web-component/2026-09-15|ANCV Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to add any parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#create-a-payment-session).",
+      "location": "raw line 41, Sessions /sessions request"
+    },
+    {
+      "text": "| **Action handling**  | Make sure that your existing integration is set up to [handle the additional action](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=Components#handle-the-redirect). `action.type`: **await**.",
+      "location": "raw line 156, Advanced Requirements"
+    },
+    {
+      "text": "| `paymentMethod.beneficiaryId` | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | This is the ANCV ID of the shopper collected during the checkout (either email address or 11-digit value). |",
+      "location": "raw line 192, Advanced /payments table"
+    },
+    {
+      "text": "* `order.orderData` - ignore this value and take the order.orderData from the [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) response",
+      "location": "raw line 568, Advanced /payments response"
+    },
+    {
+      "text": "With partial authorisation it is possible that if the amount authorized by the shopper is less than the amount requested by the merchant, the Customer Area only shows the requested amount. However, the correct authorized amount is shown in the [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) response and in the AUTHORISATION webhook, in `additionalData.authorisedAmountValue`.",
+      "location": "raw line 704, Advanced outcome"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ancv-web-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ancv-web-component]] \u2014 2026-09-15-captured ANCV Web Components Sessions/Advanced add-on for await action, beneficiary ID, partial authorization and details-derived orderData; source flags sample mismatches.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Advanced action is await despite Redirect Component and redirect-named guide anchor; preserve action.type await.",
+          "The Component snippet uses an unquoted/undefined ancv identifier; partial-auth JSON examples have missing commas and inconsistent amount values; Advanced curl misses a line continuation."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ancv/web-component/2026-09-15.md",
+  "raw_sha256": "3eb6ab62123182b5423ec69cb888099dd9b8a1f144388a36ddd700bc197d24aa",
+  "status": "candidate_ready"
+}

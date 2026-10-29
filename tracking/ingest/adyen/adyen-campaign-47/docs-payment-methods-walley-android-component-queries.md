@@ -1,0 +1,9 @@
+# docs-payment-methods-walley-android-component retrieval checks
+
+## Q1 — scope and version
+Query: Which Walley Android Components versions and server-side flows does this guide cover?
+Expected: The captured page identifies v5.0.0 released October 2023, with minimum 5.0.0 for both Sessions and Advanced Android Components. An existing matching integration and Walley Customer Area addition are prerequisites; earlier versions route to a separate guide. Do not generalize this page to iOS or earlier Android Components. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-walley-android-component]] → [[raw/adyen/docs/payment-methods/walley/android-component/2026-09-15]]. Canonical stem: `/payment-methods/walley/android-component`. Verify raw lines 15–39.
+
+## Q2 — method additions and testing
+Query: What does Walley add to Android Components Sessions and Advanced requests/configuration, and how is testing described?
+Expected: The guide says no additional Walley fields for Sessions `/sessions` or Advanced `/payments`, and no additional Walley Component configuration in either flow; continue the base session creation or Component launch step. For Walley test scenarios via Adyen `/payments`, map CivRegNo to socialSecurityNumber, include shown B2B company information when testing B2B, and check the test Customer Area payment list. These scoped statements do not remove base integration requirements or prove live enablement. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-walley-android-component]] → [[raw/adyen/docs/payment-methods/walley/android-component/2026-09-15]]. Canonical stem: `/payment-methods/walley/android-component`. Verify raw lines 41–82.

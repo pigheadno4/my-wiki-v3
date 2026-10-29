@@ -1,0 +1,13 @@
+# Fixed retrieval queries — Titres-Restaurant Web Component
+
+## Q1 — Purpose, scope, and version gates
+
+**Query:** What does the captured Titres-Restaurant Web Component guide add, and which version and activation requirements apply?
+
+**Expected:** The historical guide at `https://docs.adyen.com/payment-methods/titres-restaurant/web-component` adds this meal-voucher method to an existing Web Components integration (raw lines 15–25). Its base minimum is v5.4.0; the method's Sessions path says v5.18.0+, and the merchant-owned Pay-button variant says v5.21.0+ (lines 25, 66–68, 150–156). Activate to obtain the Carte de domiciliation CONECS and add the method in Customer Area with SIRET and Conecs MID (lines 25–27). Test credentials come from an issuer; live activation requires contacting Adyen Support (lines 362–366). The captured guide does not prove current eligibility, live activation or payment completion. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-titres-restaurant-web-component.md` → `raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md`. Canonical stem: `https://docs.adyen.com/payment-methods/titres-restaurant/web-component`.
+
+## Q2 — Balance, partial payment and route warnings
+
+**Query:** How do the Sessions and /payments Component paths handle a low meal-voucher balance, and what should an implementer verify in this page?
+
+**Expected:** The issuer configuration chooses Bimpli/Natixis, Sodexo or Up Dejeuner (raw lines 44–52). Sessions uses `onOrderCreated(orderStatus)` and `remainingAmount` for another payment Component when balance is low (lines 66–93); the own-Pay-button variant calls `balanceCheck()`, obtains shopper confirmation through `onRequiringConfirmation` when sufficient, then `submit()` (150–168). The /payments tab uses `onBalanceCheck` with `/paymentMethods/balance`; optional partial payment uses `onOrderRequest` to create the order and `onOrderCancel` to cancel it. If balance is insufficient no payment has yet been made; partial `/payments` calls occur outside the Component after order creation (250–271, 332–360). The v6 import link on this Components page points to a Drop-in route (29–35); use the Web Components context. The broad API-reference line calling /sessions default from v5.0.0 does not erase the method-specific v5.18.0/v5.21.0 gates (39–42, 66–68, 150–152). Same root → provider → concept → source → pinned raw route; raw path is `raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md`.

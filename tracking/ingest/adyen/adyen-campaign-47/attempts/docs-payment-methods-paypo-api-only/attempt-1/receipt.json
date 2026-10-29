@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-paypo-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayPo API-only integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypo/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypo/api-only/2026-09-15.md\"\ntags: [adyen, paypo, api-only, redirect, poland]\n---\n\n## Overview\n\nThis 2026-09-15-captured PayPo API-only add-on describes the PayPo-specific steps for an **existing Advanced-flow API-only integration**; it points to the main integration guide for the base flow. It is a documentation snapshot, not evidence of current account enablement, shopper approval, live operation, or guaranteed funding timing. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Prerequisites are an existing API-only integration, additional-action handling for `action.type: redirect`, and adding PayPo in Customer Area. The guide's main sequence is method selection, merchant-built form, `/payments`, redirect, and capture (raw lines 19\u201337).\n- For `/paymentMethods`, the page specifies `countryCode: PL` and `amount.currency: PLN`; its example available-method response has `type: paypo`. This is a discovery request/example, not proof that PayPo will be returned for every merchant (raw lines 45\u201352, 268\u2013279).\n- The PayPo-specific `/payments` table marks `paymentMethod.type: paypo`, `shopperName` with first and last name, and `shopperEmail` required; it lists billing and delivery addresses without required marks. The sample also includes amount, reference, return URL, and merchant account in the base request. The workflow prose says to include additional information about purchased items, but the PayPo-specific parameter table does **not** identify an item/order-line field. Do not infer a required item schema from that sentence or treat the sample as an exhaustive base API contract (raw lines 33\u201337, 281\u2013319).\n- The `/payments` response has a redirect action. Follow its `action.url`; for mobile, the page recommends the device's default browser, and for GET redirects shown in an app it recommends SFSafariViewController or Chrome Custom Tabs over WebView. On return, submit the URL-decoded `redirectResult` in `/payments/details`; use `resultCode` to display a result and retain `pspReference`. If the shopper does not return, use AUTHORISATION webhooks to learn the outcome. `Pending` or `Received` is not a final success state (raw lines 663\u2013676, 711\u2013771).\n- Before authorization, the payment offer/link is available for **up to 72 hours**. When the shopper accepts and the payment becomes `Authorised`, the **30-day shopper term starts at authorization**, and the merchant must capture. Only **full-amount capture** is possible; immediate automatic capture can be configured when adding PayPo in the live Customer Area. The page says the merchant is funded after capture without waiting for the shopper to pay PayPo, while the result-code table says funds arrive in 2\u20133 days; treat timing as the page's qualified statements, not a guaranteed payout SLA (raw lines 679\u2013709, 758\u2013764; repeated capture section at 773\u2013803).\n- Authorization opens a shopper credit line. If the merchant cannot fulfill the order, the page advises cancellation using the original payment `pspReference`. Test credentials and verification code are **test-environment** instructions; live acceptance requires a PayPo request in the live Customer Area (raw lines 805\u2013823).\n\n> [!warning] Source example and wording limits\n> The \u201cHow it works\u201d sentence refers to purchased-item information, but the PayPo-specific `/payments` table lists no item field (raw lines 35, 281\u2013291). Both curl request examples have `-X POST` on one line followed by `-d` on the next without a continuation (raw lines 63\u201364, 302\u2013303); copy-pasting them as shown is not a complete executable curl command. Use the verified parameter table and main API-only guide for implementation; the examples do not establish a complete recipe.\n\n## Detail locators\n\n- Prerequisites and page scope: raw `# PayPo for API only` and `## Requirements` lines 15\u201329.\n- Discovery PL/PLN values and illustrative API/library examples: raw `## Get PayPo as an available payment method` lines 45\u2013279.\n- PayPo-specific payment fields and example request: raw `## Add additional parameters to your /payments request` lines 281\u2013319; library examples continue through line 661.\n- Redirect, result handling, asynchronous webhooks: raw lines 663\u2013771.\n- Offer lifetime, authorization-based shopper term, full capture, and cancellation: raw lines 679\u2013709 and 773\u2013809.\n- Test versus live setup: raw `## Test and go live` lines 811\u2013823.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypo/api-only/2026-09-15|PayPo API-only add-on, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You can add PayPo to your existing integration. The following instructions show only what you must add to your integration specifically for PayPo.",
+      "location": "raw line 19, # PayPo for API only"
+    },
+    {
+      "text": "3. When you make the payment request, you [include additional information about the items that the shopper intends to purchase](#additional-parameters-payments).",
+      "location": "raw line 35, ## How it works"
+    },
+    {
+      "text": "| `paymentMethod.type`                                                                                         | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | **paypo**                                     |",
+      "location": "raw line 287, ## Add additional parameters to your /payments request"
+    },
+    {
+      "text": "When the payment is accepted by the shopper, its status will change to **Authorised**. The shopper has 30 days to pay according to the terms of PayPo. This is different to some other payment methods where the payment term usually starts after the capture, not after the authorization.",
+      "location": "raw line 683, ## Capture the payment"
+    },
+    {
+      "text": "| **Pending** or **Received** | The shopper has completed the payment but the final result is not yet known. | Inform the shopper that you have received their order, and are waiting for the payment to be completed. You will receive the final result of the payment in an [AUTHORISATION webhook](/development-resources/webhooks/webhook-types). |",
+      "location": "raw line 763, ## Show the payment result"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypo-api-only-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypo-api-only]] \u2014 2026-09-15-captured PayPo Advanced-flow API-only add-on for PL/PLN discovery, redirect return and webhook results, full capture, and test/live setup; source flags item-field wording and curl examples.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The source workflow mentions purchased-item information but the PayPo-specific parameter table has no item field; do not invent one.",
+          "Both curl samples omit a line continuation between -X POST and -d; avoid presenting them as executable verbatim."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypo/api-only/2026-09-15.md",
+  "raw_sha256": "c63e6479d512a59a88df8e534fcafa575b0f70a81ce916c7d4f7a2934929c934",
+  "status": "candidate_ready"
+}

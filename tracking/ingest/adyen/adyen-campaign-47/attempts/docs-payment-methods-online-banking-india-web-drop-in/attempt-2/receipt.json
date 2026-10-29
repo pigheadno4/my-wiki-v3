@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-online-banking-india-web-drop-in",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Adyen Online Banking India Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/online-banking-india/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/online-banking-india/web-drop-in/2026-09-15.md\"\ntags: [adyen, online-banking-india, web, drop-in, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Online Banking India to an existing Web Drop-in integration, with separate Sessions and Advanced flow instructions. Its Advanced example uses method type `onlinebanking_IN`, INR and an issuer value. It does not establish current issuer availability, merchant eligibility, payment success or live operation. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** Requires an existing Web Sessions Drop-in integration, Checkout API v68 or later, redirect handling for `action.type=redirect`, and Online Banking India added in Customer Area. The page says no method-specific parameters are needed in `/sessions`, and no additional Online Banking India configuration is needed in Drop-in (pinned raw lines 23\u201358).\n- **Advanced flow:** Requires an existing Web Advanced Drop-in integration, redirect handling and Online Banking India in Customer Area. The `/payments` table marks `paymentMethod.issuer` (shopper-selected issuing bank) and `browserInfo` required. Its example includes `paymentMethod.type=onlinebanking_IN`, INR, issuer CBI, returnUrl and browser details; these examples do not establish the current bank list (lines 68\u2013128).\n- The optional tree-shaking prose says to include `OnlineBankingIN` when importing individual payment methods, but the displayed import line is inconsistent and syntactically invalid; see warning below (lines 42\u201352). The guide provides no additional method-specific Drop-in configuration in either flow (lines 54\u201358, 80\u201384).\n- For testing Netbanking in India, it points to the MyStore demo and selecting India. Before live Online Banking India acceptance, it says to submit a request in the live Customer Area (lines 60\u201366, 519\u2013525). A demo route does not prove this merchant's integration or live status.\n- **Method-level gate from the separate [[source-adyen-docs-payment-methods-online-banking-india|Online Banking India overview]]:** processing requires compliance with regulations in India, a local entity, and a local integration in India; the overview directs merchants to their account manager or Support for details (overview pinned raw line 25). These requirements are from the overview, not this Web Drop-in child guide. Child-guide Customer Area setup alone does not establish current eligibility.\n\n> [!warning] Optional import and Advanced base link\n> The optional import text names `OnlineBankingIN`, but the code line reads `import { AdyenCheckout, Dropin, Online Banking India } from '@adyen/adyen-web';` (raw lines 46\u201351), which is not valid JavaScript named-import syntax. The Advanced integration requirement URL contains an unresolved encoded `{{getParameter('platform')}}` template despite Web wording (line 76). Follow the appropriate Web base guide and verified package exports rather than copying those lines as a working recipe.\n\n## Detail locators\n\n- Sessions requirements, no-extra-parameters, optional import and configuration: pinned raw lines 23\u201358.\n- Sessions test/live setup: lines 60\u201366.\n- Advanced requirements, fields and request examples: lines 68\u2013517.\n- Advanced test/live setup: lines 519\u2013525.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-online-banking-india]] \u2014 method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/online-banking-india/web-drop-in/2026-09-15|Online Banking India Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 32"
+    },
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "pinned raw line 40"
+    },
+    {
+      "text": "To do this, include `OnlineBankingIN`.",
+      "location": "pinned raw line 46"
+    },
+    {
+      "text": "`paymentMethod.issuer`",
+      "location": "pinned raw line 94"
+    },
+    {
+      "text": "[browserInfo]",
+      "location": "pinned raw line 95"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-online-banking-india-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-online-banking-india-web-drop-in]] \u2014 2026-09-15-captured Web Drop-in Sessions/Advanced guide for Online Banking India redirect, Advanced issuer/browserInfo fields and test/live routes; optional import snippet is malformed.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Optional import prose names OnlineBankingIN but code uses invalid 'Online Banking India' named import; Advanced base link contains unresolved platform template."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/online-banking-india/web-drop-in/2026-09-15.md",
+  "raw_sha256": "e7f339c72015f863e16c091fc995e038f6120aa778e57444196b1b192244ffb5",
+  "status": "candidate_ready"
+}

@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-titres-restaurant-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Titres-restaurant API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/titres-restaurant/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/titres-restaurant/api-only/2026-09-15.md\"\ntags: [adyen, titres-restaurant, meal-vouchers, france, api-only, balance-check, partial-payments]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] page, fetched 2026-09-15 and marked **last modified 2022-12-20**, adds French Titres-restaurant payments to an existing **Web API-only** integration. The merchant builds a payment form, checks meal-voucher balance, optionally uses an order for split tender, sends `/payments`, and handles result/webhook outcomes. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-titres-restaurant|method overview]]. The old examples do not prove current issuer/account eligibility, credential safety or payment execution.\n\n## Key takeaways\n\n- **Activation and channel:** Begin with an API-only integration. The page directs merchants to activate Titres-restaurant for a *Carte de domiciliation CONECS*, then add the meal-voucher method in Customer Area with the merchant's **SIRET** and **Conecs MID**. The overview separately says issuer contracts are needed; this page's test credentials must come directly from Bimpli, Sodexo or Up D\u00e9jeuner. Live activation requires Adyen Support. Do not infer that Customer Area configuration alone replaces issuer authorization/contracts.\n- **Discovery and issuer names:** If using `/paymentMethods`, request **FR/EUR** and display the available brands. Its example lists `mealVoucher_FR_groupeup` (Up), `mealVoucher_FR_natixis` (Apetiz/Bimpli, commercial brand of Natixis), and `mealVoucher_FR_sodexo` (Sodexo). These are illustrative issuer-branded discovery types, not a promise that all are available for every shopper. The displayed \u201cAPI response\u201d is malformed JSON with a double opening brace and no `paymentMethods` wrapper; use the stated response structure rather than copy it literally.\n- **Balance and split tender:** After collecting meal-voucher details, use `/paymentMethods/balance` with generic `paymentMethod.type: mealVoucher_FR`, card number, expiry month/year and a unique reference; the example includes merchant account. The example balance response has EUR 25.00 and `resultCode: Success`, a balance-check result, not a payment authorization. If balance covers the full amount, continue to payment. If it is insufficient, **create an order** and ask for partial payments using the voucher and another method. This is split tender through an order, not partial capture of one voucher payment.\n- **Payment and outcome:** From the server, `/payments` requires generic type `mealVoucher_FR`, voucher number without separators, expiry month/year and **CVC**. The `/payments` response has PSP reference, result code and merchant reference; present the result to the shopper and expect the outcome asynchronously by webhook. The page lists `Authorised`, `Cancelled`, `Error` and `Refused`; `Authorised` is successful authorization and, if manual capture is used, the payment still needs capture. Handle card number/CVC through the applicable secure base integration; this source gives no standalone card-data security or PCI procedure.\n- **Historical sample boundary:** The balance example uses TEST Checkout v72 and expiry year 2023; the payment example uses TEST Checkout v68 and the same historical expiry year. Treat these as old illustrative values, not runnable test credentials or current API guidance. The separate method overview's feature matrix marks separate capture supported but partial capture and refunds unsupported; do not confuse those marks with this page's order-based partial payments.\n\n## Detail locators\n\n- API-only purpose and activation with SIRET/Conecs MID: pinned raw lines 15\u201327. FR/EUR discovery, issuer-brand sample and Bimpli naming: lines 29\u201359.\n- Balance request fields and historical TEST examples: lines 61\u2013355. Sufficient versus insufficient balance/order branch: lines 357\u2013359.\n- Server `/payments` required voucher credentials and TEST v68 examples: lines 361\u2013484. Payment result, asynchronous webhook and result codes: lines 486\u2013503. Issuer test credentials and Support live activation: lines 505\u2013515.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-titres-restaurant]] \u2014 issuer and feature overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/titres-restaurant/api-only/2026-09-15|Titres-restaurant API-only guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "[Add the meal voucher payment method in your Customer Area](/payment-methods/add-payment-methods), providing your SIRET (your business registration ID) and the Conecs MID from your *Carte de domiciliation CONECS*.",
+      "location": "Requirements > Setup steps, line 27"
+    },
+    {
+      "text": "**Apetiz** and **mealVoucher\\_FR\\_natixis** refer to Bimpli, the commercial brand for Natixis.",
+      "location": "Build your payment form, line 57"
+    },
+    {
+      "text": "If the balance amount is equal to or greater than the full payment amount, then continue to [make a payment](#make-a-payment).",
+      "location": "Check the balance > step 2, line 357"
+    },
+    {
+      "text": "If the balance is less than the full payment amount, [create an order](/online-payments/partial-payments) and ask the shopper to make partial payments with the meal voucher and a different payment method.",
+      "location": "Check the balance > step 2, line 359"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks).",
+      "location": "Present the payment result, line 496"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "titres-restaurant-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-titres-restaurant-api-only]] \u2014 2022-modified, 2026-09-15-captured French meal-voucher API-only guide for SIRET/Conecs activation, issuer discovery, balance-based order split tender, voucher payment and webhook result.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The issuer discovery response sample is malformed JSON; do not copy it literally.",
+          "The balance example's Success is balance-check status, not payment authorization.",
+          "The card and CVC examples are historical TEST data and this page is not a standalone card-data security guide."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/titres-restaurant/api-only/2026-09-15.md",
+  "raw_sha256": "cf98c8529bf1090af3aaaca83195ca8f57f06e75a6d2223c53b14705895c2165",
+  "status": "candidate_ready"
+}

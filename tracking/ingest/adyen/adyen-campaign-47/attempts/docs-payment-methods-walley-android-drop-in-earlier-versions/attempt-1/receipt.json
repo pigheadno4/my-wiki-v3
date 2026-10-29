@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-walley-android-drop-in-earlier-versions",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Walley Android Drop-in earlier versions\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/walley/android-drop-in/earlier-versions\"\nraw_files:\n  - \"adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md\"\ntags: [adyen, walley, android, drop-in, redirect, earlier-versions, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] page is titled **Walley Android Drop-in v4.x.x integration**. It describes method discovery, a server-side `/payments` request from Drop-in data, redirect/return handling, details-result presentation, asynchronous webhook outcomes, and test data. Its requirements also say Walley works with **all** Drop-in versions, while the title says v4.x.x; read it as this captured earlier-version guide, not a universal exact-version recipe. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Prerequisites and methods:** The page assumes Android Drop-in and contacting Adyen Support to add Walley in test Customer Area. For `/paymentMethods`, its table pairs DK/DKK, FI/EUR, NO/NOK and SE/SEK. It distinguishes `walley` B2C from `walley_b2b` B2B; Denmark or DKK is B2C-only. These discovery values and a test setup step do not prove a merchant's current availability or live setup (raw lines 15\u201343).\n- **Client/server redirect sequence:** Drop-in returns `paymentComponentData.paymentMethod` to the app, which passes it to the server for `/payments`. The page says to derive the return URL from `RedirectComponent.getReturnUrl(context)`, with a 1024-character maximum, then pass the `/payments` redirect `action` back to the client. After app return, the server posts Drop-in `actionComponentData.details` to `/payments/details`; its `resultCode` is for shopper presentation. `RedirectShopper` is an intermediate action, not final success (raw lines 45\u201358, 340\u2013397).\n- **Result finality:** The table covers `Authorised`, `Cancelled`, `Error`, `Pending`/`Received`, and `Refused`. `Authorised` may still require capture if manual capture is used. `Pending`/`Received` means final outcome is unknown and requires an `AUTHORISATION` webhook; webhook outcomes also matter if the shopper never returns. The listed webhook cases have `AUTHORISATION` success true or false (raw lines 395\u2013414). An example `Authorised` response does not show a real completed transaction.\n- **Test data and example conflicts:** The page points to Walley test scenarios, says to send `CivRegNo` as `socialSecurityNumber`, and shows company name/registration data for B2B testing (raw lines 416\u2013429). Its `/payments` examples use `countryCode: NO` with `EUR`, contrary to the page's own NO/NOK discovery table; do not treat that pair as an endorsed Norway configuration. The curl item values shown do not visibly reconcile to the 1000 request amount without other amounts, and examples vary in line-item count; inspect actual order totals. The title's v4.x.x label, all-version statement, and Sessions-flow base links coexist with this page's server `/payments`/details route (raw lines 15\u201327, 36\u201341, 60\u201399, 102\u2013146, 431\u2013436).\n\n## Detail locators\n\n- Identity, requirements and B2C/B2B country/currency discovery: pinned raw lines 15\u201343.\n- Client/server payment request and examples: pinned raw lines 45\u2013338.\n- Redirect action, return/details and result/webhook paths: pinned raw lines 340\u2013414.\n- Test instructions and related base routes: pinned raw lines 416\u2013436.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-walley]] \u2014 captured Walley overview; use this page for Android earlier-version workflow.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15|Walley Android Drop-in earlier versions, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "# Walley Android Drop-in v4.x.x integration",
+      "location": "raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md:15"
+    },
+    {
+      "text": "Walley for Android works with all versions of Drop-in.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md:27"
+    },
+    {
+      "text": "Payments in Denmark (**DK**) or with the **DKK** currency are available only for *B2C* payments.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md:43"
+    },
+    {
+      "text": "From your server, make a POST [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) request providing:",
+      "location": "raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md:364"
+    },
+    {
+      "text": "The shopper has completed the payment but the final result is not yet known.",
+      "location": "raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md:406"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "walley-android-drop-in-earlier-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-walley-android-drop-in-earlier-versions]] \u2014 2026-09-15-captured Walley Android Drop-in v4.x.x-titled guide for Nordic B2C/B2B discovery, redirect/details and webhook results; source qualifies all-version claim and NO/EUR sample conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/walley/android-drop-in/earlier-versions/2026-09-15.md",
+  "raw_sha256": "286e2538fd69599178c6f3a9fcc85c288ad3aa164c550999a13e07115916fce5",
+  "status": "candidate_ready"
+}

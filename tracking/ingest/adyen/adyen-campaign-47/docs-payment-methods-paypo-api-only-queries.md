@@ -1,0 +1,13 @@
+# Fixed queries — PayPo API-only
+
+## Q1 — document purpose and scope
+
+**Query:** What does the captured PayPo API-only page add to an Adyen integration, and what must not be inferred?
+
+**Expected answer:** The 2026-09-15-captured page at `https://docs.adyen.com/payment-methods/paypo/api-only` is a PayPo-specific add-on to an **existing Advanced-flow API-only integration**, requiring redirect additional-action handling and Customer Area setup. It links to the base guide; it is not an independent complete API recipe, current PayPo entitlement, shopper approval, completed live payment, or payout SLA (full pinned `raw/adyen/docs/payment-methods/paypo/api-only/2026-09-15.md`, `# PayPo for API only` and `## Requirements`, lines 15–29). Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-paypo-api-only.md`.
+
+## Q2 — fields, redirect, finality, capture, and warnings
+
+**Query:** For the captured API-only PayPo flow, which method-specific values and lifecycle conditions govern discovery, payment, return, capture, and cancellation?
+
+**Expected answer:** `/paymentMethods` specifies PL and PLN (raw `## Get PayPo as an available payment method`, lines 45–52). The PayPo-specific `/payments` table marks `paymentMethod.type: paypo`, first/last shopper name, and shopper email required, with billing/delivery addresses unmarked (raw `## Add additional parameters to your /payments request`, lines 281–291). Handle the redirect action, send URL-decoded `redirectResult` to `/payments/details`, and use AUTHORISATION webhook outcomes if the shopper does not return; Pending/Received requires a later final result (raw lines 663–771). The offer lasts up to 72 hours before authorization; the shopper's 30-day term begins at authorization, and capture is full amount only. Automatic immediate capture is configurable in the live Customer Area; inability to fulfill leads to advised cancellation using original `pspReference` (raw `## Capture the payment` lines 679–709, repeated at 773–803, and `## Cancel a payment` lines 805–809). Test code is test-only, and live acceptance requires a PayPo request in live Customer Area (raw lines 811–823). **Warnings:** workflow prose mentions purchased-item details but gives no item field in the PayPo-specific table (lines 35, 281–291); two curl examples lack a line continuation from `-X POST` to `-d` (lines 63–64, 302–303). Do not infer an item schema or copy those snippets as executable recipes. Route: `wiki/index.md` → `wiki/adyen-index.md` → `wiki/concepts/adyen-online-payments.md` → `wiki/sources/adyen/source-adyen-docs-payment-methods-paypo-api-only.md`.

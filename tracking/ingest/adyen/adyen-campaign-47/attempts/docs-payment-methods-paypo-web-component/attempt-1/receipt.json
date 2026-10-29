@@ -1,0 +1,56 @@
+{
+  "job_id": "docs-payment-methods-paypo-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPo Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypo/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypo/web-component/2026-09-15.md\"\ntags: [adyen, paypo, poland, web, components, redirect, capture]\n---\n\n## Overview\n\nThis [[adyen|Adyen]] guide, fetched and marked last modified 2026-09-15, adds **PayPo** to an existing **Web Components** integration, with separate Sessions and Advanced flow instructions. It covers request fields, Redirect Component setup, the PayPo offer/authorization/capture timeline, and test/live steps. See [[adyen-online-payments]] and [[source-adyen-docs-payment-methods-paypo|PayPo overview]]. The TEST examples use PL/PLN; this captured guide does not establish current merchant eligibility or a completed transaction.\n\n## Key takeaways\n\n- **Flow prerequisites and fields:** Sessions requires an existing Web Components Sessions integration, Checkout API v68+, and PayPo added in Customer Area. Its `/sessions` table marks shopper first/last name and email required; billing and delivery addresses are optional. Advanced requires an existing Web Components Advanced integration, redirect action handling and Customer Area setup. Its `/payments` table adds required `paymentMethod.type: paypo` and likewise requires shopper name/email, with addresses optional. TEST examples show `/sessions` v71 and `/payments` v72 for PL/PLN.\n- **Redirect Component:** Import `Redirect` from Adyen Web; the guide says no PayPo-specific configuration parameters are required. Both flows show a `Redirect` Component mounted in a container. The Advanced response has `resultCode: RedirectShopper` and `action.type: redirect`, which is a next action rather than payment completion.\n- **Offer, authorization and capture:** Before authorization, the PayPo offer/payment link remains usable for **up to 72 hours**. Once the shopper accepts, status becomes **Authorised** and the shopper's **30-day PayPo payment period starts at authorization**, not capture. After authorization the merchant captures the payment, and **only the full authorized amount can be captured**. Automatic capture can be configured to execute immediately after authorization when PayPo is added in the live Customer Area; otherwise the guide shows a `/payments/{paymentPspReference}/captures` request using the original PSP reference. It says the merchant need not wait for the shopper's later repayment to PayPo to be funded after capture; this is source-described funding behavior, not proof of actual settlement for a transaction.\n- **Sample and live caveats:** The Sessions example uses `adyencheckout://your.package.name`, an app-style `returnUrl` in a Web guide; the Advanced example uses an HTTPS URL. Configure a Web return path appropriate to the deployed flow. The two request curl samples omit a continuation before `-d`. The Component snippets use unquoted `type:paypo`; unless a `paypo` variable exists, that is not a copy-ready JavaScript literal. Testing lists sample shopper values and verification code 123456; the page says to check test payments in test Customer Area. Live acceptance needs a separate PayPo request in live Customer Area. No method-specific refund procedure is provided here.\n\n## Detail locators\n\n- Scope, Sessions prerequisites and `/sessions` field table: pinned raw lines 15\u201348. Sessions TEST v71 request and SDK variants: lines 50\u2013389.\n- Sessions capture lifecycle: lines 391\u2013420. Redirect import, config and initialization: lines 423\u2013450; Sessions TEST/live steps: lines 453\u2013465.\n- Advanced prerequisites and Redirect initialization: lines 467\u2013499. Advanced `/payments` fields and TEST v72 examples: lines 501\u2013883; redirect response: lines 885\u2013899. Repeated capture and test/live instructions: lines 901\u2013945.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-paypo]] \u2014 method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypo/web-component/2026-09-15|PayPo Web Component guide, fetched 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "Sessions flow Component > Requirements, line 34"
+    },
+    {
+      "text": "When a payment is made, but not yet authorized, the offer will be available for up to 72 hours.",
+      "location": "Sessions flow Component > Capture the payment, line 393"
+    },
+    {
+      "text": "The shopper has 30 days to pay according to the terms of PayPo.",
+      "location": "Sessions flow Component > Capture the payment, line 395"
+    },
+    {
+      "text": "It is only possible to capture the full amount of the authorized payment.",
+      "location": "Sessions flow Component > Capture the payment, line 399"
+    },
+    {
+      "text": "It is possible to configure an automatic capture, which executes immediately after authorization.",
+      "location": "Sessions flow Component > Capture the payment, line 401"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypo-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypo-web-component]] \u2014 2026-09-15 PayPo PL/PLN Web Components Sessions/Advanced redirect guide covering 72-hour offer, authorization-started 30-day term, full-only capture and test/live routes.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Sessions Web example uses an app-scheme returnUrl; Advanced uses HTTPS.",
+          "Redirect Component snippets use an unquoted paypo identifier; check before copying.",
+          "Both request curl samples lack a continuation before -d."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypo/web-component/2026-09-15.md",
+  "raw_sha256": "b73d1dc9548ea7a478114f50b7f60b95583be885f90dc16850dd393f993a07ed",
+  "status": "candidate_ready"
+}

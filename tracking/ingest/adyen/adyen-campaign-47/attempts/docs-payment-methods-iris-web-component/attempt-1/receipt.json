@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-iris-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen IRIS Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/iris/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/iris/web-component/2026-09-15.md\"\ntags: [adyen, iris, web, components, redirect, qr-code]\n---\n\n## Overview\n\nThis 2026-09-15 [[adyen|Adyen]] guide adds IRIS to an existing **Web Components** integration. It separates Sessions and Advanced flows and, in Advanced, issuer redirect from QR code payment. See [[adyen-online-payments]]. The TEST examples and simulator do not establish current merchant enablement, a live payment, or settlement.\n\n## Key takeaways\n\n- **Prerequisites and live setup:** Sessions requires an existing Web Components Sessions integration and Checkout API v68 or later; Advanced requires an existing Advanced integration that handles both `redirect` and `qrCode` actions. Both sections say to add IRIS in Customer Area. Before live use, the merchant must request IRIS from its Greek bank and Adyen, supplying its DIAS code, merchant account and stores for activation; the test/live section also says to enable IRIS on the live merchant account in Customer Area (raw lines 29\u201335, 90\u201396, 1088\u20131097). These steps do not prove approval for a particular merchant.\n- **Sessions Component:** The method-specific Sessions section adds no `/sessions` parameters and no IRIS configuration parameters. It imports `Iris` from `@adyen/adyen-web`, constructs `new Iris(checkout, ...)` and mounts it to a page container. The existing base Sessions integration remains necessary (raw lines 39\u201375).\n- **Advanced choice of action:** The `/payments` table requires `paymentMethod.type: iris`. For **issuer redirect**, it says `paymentMethod.issuer` and `returnUrl` are required; with an issuer ID, the response contains a redirect URL. Without an issuer ID, it says the response contains QR code data and `returnUrl` is not required for that flow (raw lines 128\u2013136). The QR TEST request nevertheless includes `returnUrl`; its presence there is an example, not a QR requirement (lines 742\u2013768). The 10 EUR examples do not define a complete country/currency eligibility matrix.\n- **Redirect result:** The issuer-redirect example returns `RedirectShopper` and `action.type: redirect`; send the shopper to `action.url`. On return to the website, POST `/payments/details` with the URL-decoded `redirectResult`. The details response uses `resultCode` for shopper presentation and `pspReference` as transaction identifier. Its example `Authorised` is a TEST sample, not proof of capture or settlement (raw lines 460\u2013488, 728\u2013740). The mobile browser advice embedded in this Web guide is conditional on a mobile integration (lines 478\u2013484).\n- **QR result and time limit:** The issuer-omitted example returns `Pending`, `action.type: qrCode` and `qrCodeData`; render the QR from that data. The shopper has **10 minutes** after initiation to complete the transaction; showing a timer is recommended. After the shopper scans and completes payment, Adyen says it sends a webhook with the result, which the merchant presents. `Pending` and a QR scan do not themselves establish final success (raw lines 1060\u20131086).\n- **Sample caveat and testing:** The redirect curl includes `paymentMethod.issuer`, but its Java, PHP, C#, Go and TypeScript examples omit that field under the same redirect heading; per the request table, omission selects QR data, so do not treat those snippets as verified redirect requests (raw lines 146\u2013165, 183\u2013199, 220\u2013242, 263\u2013286, 339\u2013360, 443\u2013457). Both curl `/payments` examples put `-X POST` on a line without a shell continuation before `-d`, so they are not copy-ready (lines 151\u2013152, 755\u2013756). The IRIS simulator lets a tester select Successful, Refused or Cancelled outcomes on an Adyen-hosted page; test payment status is checked in test Customer Area (lines 77\u201386, 1088\u20131097).\n\n## Detail locators\n\n- Identity, Sessions requirements and Component setup: pinned raw lines 15\u201375; Sessions simulator/live notes: lines 77\u201386.\n- Advanced requirements, action handling, import and initialization: lines 88\u2013124; conditional payment fields: lines 126\u2013136.\n- Issuer-redirect TEST request and SDK examples: lines 138\u2013458; redirect response and `/payments/details` path: lines 460\u2013740.\n- QR TEST request, action, ten-minute completion and webhook: lines 742\u20131086; Advanced test/live notes: lines 1088\u20131097.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/iris/web-component/2026-09-15|IRIS Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Before you can go live, [request the IRIS payment method](/payment-methods/iris/#onboarding) from your Greek bank, and from Adyen, by submitting your DIAS code, as well as the merchant account and the associated stores you want to have it activated on.",
+      "location": "raw/adyen/docs/payment-methods/iris/web-component/2026-09-15.md:35"
+    },
+    {
+      "text": "You do not need to add any additional parameters when you [create a payment session](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components#create-a-payment-session).",
+      "location": "raw/adyen/docs/payment-methods/iris/web-component/2026-09-15.md:41"
+    },
+    {
+      "text": "If the issuer ID is included, the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response will contain the redirect URL. If the issuer ID is not included, the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response will contain the QR code data.",
+      "location": "raw/adyen/docs/payment-methods/iris/web-component/2026-09-15.md:136"
+    },
+    {
+      "text": "After initiating the payment, the shopper has 10 minutes to complete the transaction.",
+      "location": "raw/adyen/docs/payment-methods/iris/web-component/2026-09-15.md:1078"
+    },
+    {
+      "text": "After the shopper scans the QR code and completes the payment, we send a webhook informing you of the payment result.",
+      "location": "raw/adyen/docs/payment-methods/iris/web-component/2026-09-15.md:1085"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "iris-web-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-iris-web-component]] \u2014 2026-09-15 IRIS Web Components Sessions/Advanced add-on covering issuer redirect versus QR action, result handling, ten-minute QR window and Greek-bank/Adyen live onboarding.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Several issuer-redirect SDK snippets omit the issuer ID despite the table requiring it for redirect; omission selects QR data in the described request model."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/iris/web-component/2026-09-15.md",
+  "raw_sha256": "6d27458d57d7a7b98395e2b915eb22433d5e3324e3ae29c017f3b6eaa02b09cf",
+  "status": "candidate_ready"
+}

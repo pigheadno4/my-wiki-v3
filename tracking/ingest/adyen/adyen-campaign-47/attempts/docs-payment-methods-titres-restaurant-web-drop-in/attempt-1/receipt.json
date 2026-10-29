@@ -1,0 +1,53 @@
+{
+  "job_id": "docs-payment-methods-titres-restaurant-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Titres-restaurant Web Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/titres-restaurant/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/titres-restaurant/web-drop-in/2026-09-15.md\"\ntags: [adyen, titres-restaurant, web, drop-in, meal-vouchers, partial-payments]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen page adds French Titres-restaurant meal vouchers to an **existing Web Drop-in** integration. It distinguishes the default `/sessions` route from a `/payments` additional use case that needs balance and order callbacks. This is method-specific guidance, not a complete base integration or proof of current issuer/merchant enablement or live payment. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-titres-restaurant|the method overview]] for issuer, channel, activation, and historical usage qualifications.\n\n## Key takeaways\n\n- **Prerequisites and version:** The page requires an existing Web Drop-in integration at **version 5.4.0 or later**. Before setup, activate Titres-Restaurant to obtain the `Carte de domiciliation CONECS`, then add the meal voucher method in Customer Area with the merchant's SIRET and Conecs MID. For Web Drop-in v6, import `AdyenCheckout` and `MealVoucherFR` from `@adyen/adyen-web` (pinned raw lines 21\u201335).\n- **Endpoint split:** The guide says no additional Titres-Restaurant request fields are needed. It identifies `/sessions` as the default with Drop-in v5.0.0 or later and `/payments` for an additional use case. The `/sessions` tab says there is no method-specific Drop-in configuration; the `/payments` tab instead marks the three callbacks below as required. Do not read the no-extra-fields statement as removing the `/payments` callback requirement (lines 37\u201366).\n- **`/payments` callbacks:** `onBalanceCheck(resolve, reject, data)` calls `/paymentMethods/balance` when the shopper pays with Titres-Restaurant. If card balance is below the transaction amount, `onOrderRequest(resolve, reject, data)` calls `/orders` with the **total transaction amount**. On shopper cancellation, `onOrderCancel(order)` calls `/orders/cancel`. The examples assign one `mealVoucherConfiguration` to `mealVoucher_FR_natixis`, `mealVoucher_FR_sodexo`, and `mealVoucher_FR_groupeup`; the page says Apetiz and the Natixis key refer to Bimpli (lines 58\u2013104).\n- **Test and live:** Get test credentials **directly from the meal voucher issuer** (Bimpli, Sodexo, or Up D\u00e9jeuner). Before accepting live payments, contact Adyen Support to activate Titres-restaurant in the live environment. The captured Support hyperlink points to a test Customer Area URL, so verify the appropriate live-support route rather than treating that link as proof of live activation (lines 106\u2013110).\n\n> [!warning] Configuration examples are illustrative\n> The fenced blocks at raw lines 72\u2013102 are labeled `json` but contain JavaScript-style functions/comments, placeholder response names, and missing commas between callback entries and issuer keys. They show the callback and issuer-key arrangement, not a copy-ready configuration object. The method overview has separate issuer-contract and historical usage qualifications; follow it for those claims rather than inferring universal voucher acceptance from this page.\n\n## Detail locators\n\n- Existing Drop-in, minimum version and CONECS/SIRET setup: pinned raw lines 19\u201327.\n- Web v6 import and API endpoint split: lines 29\u201342.\n- Sessions versus additional-use-case `/payments` configuration: lines 44\u201366.\n- Callback and issuer-key examples, including Bimpli naming: lines 68\u2013104.\n- Issuer-provided test credentials and live Support step: lines 106\u2013110.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider integration concept\n- [[source-adyen-docs-payment-methods-titres-restaurant]] \u2014 meal-voucher overview and activation context\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/titres-restaurant/web-drop-in/2026-09-15|Titres-restaurant Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "The minimum required version is 5.4.0.",
+      "location": "pinned raw line 25, Requirements > Integration type"
+    },
+    {
+      "text": "You do not need to send additional fields for Titres-Restaurant.",
+      "location": "pinned raw line 39, API reference"
+    },
+    {
+      "text": "Called when the balance on the card is less than the transaction amount. Make an [/orders](https://docs.adyen.com/api-explorer/Checkout/latest/post/orders) request with the `amount` of the total transaction amount.",
+      "location": "pinned raw line 65, Drop-in configuration > /payments > Required"
+    },
+    {
+      "text": "**Apetiz** and **mealVoucher\\_FR\\_natixis** refer to Bimpli, the commercial brand for Natixis.",
+      "location": "pinned raw line 104, Drop-in configuration"
+    },
+    {
+      "text": "Before you can accept live payments, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to activate Titres-restaurant in your live environment.",
+      "location": "pinned raw line 110, Test and go live"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "titres-restaurant-web-drop-in-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-titres-restaurant-web-drop-in]] \u2014 2026-09-15-captured Titres-restaurant Web Drop-in v5.4.0+ add-on for CONECS/SIRET setup, v6 import, Sessions versus Payments configuration, balance/order callbacks and test/live steps.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "warnings": [
+          "The /payments configuration examples are not copy-ready JavaScript/JSON; the live Support link points to a test Customer Area URL."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/titres-restaurant/web-drop-in/2026-09-15.md",
+  "raw_sha256": "0dc7d4660884909b9946f11d6c3c0e10b0d827656b9b3fd45469be65591efb28",
+  "status": "candidate_ready"
+}

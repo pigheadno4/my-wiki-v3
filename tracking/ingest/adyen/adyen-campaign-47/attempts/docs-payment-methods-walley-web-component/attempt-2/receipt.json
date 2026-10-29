@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-walley-web-component",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Walley Web Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/walley/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/walley/web-component/2026-09-15.md\"\ntags: [adyen, walley, web, components, payments]\n---\n\n## Overview\n\nThis 2026-09-15 capture describes adding Walley to an existing Adyen Web Components integration. The page covers request fields for `/sessions` and `/payments`, mounting a Walley Component by Web SDK version, and testing Walley payments. Read alongside [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Walley for Web requires Components v3.23.0 or later. The guide says to contact Adyen Support to add Walley in the **test Customer Area** before beginning; this is test setup, not evidence of live enablement. See raw **Requirements**, lines 21\u201326.\n- Both the `/sessions` and `/payments` tables mark `telephoneNumber`, `shopperEmail`, and line item ID, description, amount excluding tax, tax amount, tax percentage, and quantity as required. The phone number must be a working mobile number including country code; missing or incorrect numbers fail Walley's validation. The description has a 50-character maximum. See raw **API reference**, lines 30\u201362.\n- `company.name` is required only for `walley_b2b` payments and is prefilled on Walley's payment form. `company.registrationNumber` is relevant to B2B but not marked required in these tables. See raw **API reference**, lines 38\u201339 and 55\u201356.\n- The Component configuration creates a DOM container. For v6.0.0 or later, the shown code constructs `new Redirect(checkout, { type: 'walley' })` and mounts it; for v5.x.x or earlier, it uses `checkout.create('walley').mount(...)`. Both snippets use `walley`, identified as the **B2C** method type in the linked Walley overview (raw lines 27\u201328); neither demonstrates a `walley_b2b` mount. These are version-specific snippets, not an all-version initialization recipe. See this raw **Component configuration**, lines 344\u2013374.\n- The test guidance says to send `CivRegNo` as `socialSecurityNumber`, supply company information for B2B tests, and inspect verification payment status in Customer Area. See raw **Test and go live**, lines 376\u2013389.\n\n> [!warning] Example limitations\n> The `/payments` language samples leave `paymentMethod.type` empty (lines 72\u2013341), so they do not provide a usable Walley method type. They also pair `countryCode: \"NO\"` with `currency: \"EUR\"` (for example lines 77\u201388). In the curl sample, two quantity-one line items total 872 minor units (331+69+400+72), while the requested amount is 1000 (lines 73\u2013102). This sample is not copy-ready: do not infer Norway/EUR support or valid order reconciliation from it; use the method's geographic and currency rules from the relevant Walley source. The page contains no completed live-payment proof.\n\n## Detail locators\n\n- Required field names and per-field qualifications: raw **API reference \u2192 Tab: `/sessions`** and **Tab: `/payments`**, lines 30\u201362.\n- Language-specific `/payments` samples: raw lines 64\u2013342. These are examples with the limitations above.\n- Web SDK mount snippets: raw **Component configuration**, lines 344\u2013374.\n- Test data and Customer Area status check: raw **Test and go live**, lines 376\u2013389.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-walley]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/walley/web-component/2026-09-15|Walley Web Component, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Walley for Web requires at least v3.23.0 of Components.",
+      "location": "pinned raw line 25"
+    },
+    {
+      "text": "Before you begin, contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to add Walley in your test Customer Area.",
+      "location": "pinned raw line 26"
+    },
+    {
+      "text": "Incorrect or missing numbers will fail Walley's validation.",
+      "location": "pinned raw line 36"
+    },
+    {
+      "text": "Only required for **walley\\_b2b** payments.",
+      "location": "pinned raw line 38"
+    },
+    {
+      "text": "const walley = new Redirect(checkout, { type: 'walley' }).mount('#walley-container');",
+      "location": "pinned raw line 363"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-walley-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-walley-web-component]] \u2014 2026-09-15-captured Walley Web Component add-on for v3.23.0+ setup, Sessions/Payments fields, versioned mounting and test guidance; source flags incomplete and geographically inconsistent samples.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/walley/web-component/2026-09-15.md",
+  "raw_sha256": "42f10ffb918cd2481933d22c3429b7ea3ac94e3e225cb4bc8c49ae362fcfbf9f",
+  "status": "candidate_ready"
+}

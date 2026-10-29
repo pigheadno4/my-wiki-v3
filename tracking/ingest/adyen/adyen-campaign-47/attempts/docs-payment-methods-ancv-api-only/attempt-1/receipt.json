@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ancv-api-only",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ANCV API-only integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ancv/api-only\"\nraw_files:\n  - \"adyen/docs/payment-methods/ancv/api-only/2026-09-15.md\"\ntags: [adyen, ancv, api-only, await, partial-payments, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] guide adds ANCV to an existing Web Advanced-flow API-only integration. It describes FR/EUR method discovery, required ANCV beneficiary identification, an `await` action and waiting screen, `/payments/details` outcome retrieval, partial authorization, and test/live setup. It is method-specific guidance under [[adyen-online-payments]], not proof of current merchant enablement or an operational payment.\n\n## Key takeaways\n\n- **Prerequisites and discovery:** The page assumes an existing API-only integration able to handle `action.type: await`, with ANCV added in Customer Area. To display ANCV, it specifies `countryCode: FR` and `amount.currency: EUR` for `/paymentMethods`; the response example has type `ancv`. Discovery inputs and example response do not guarantee account or shopper eligibility (raw lines 23\u201358, 335\u2013347).\n- **Request and shopper identity:** The `/payments` table marks `paymentMethod.type: ancv` and `paymentMethod.beneficiaryId` required. The beneficiary ID is the shopper's ANCV ID collected during checkout, either an email address or 11-digit value. The example request includes an `order` object with PSP reference and `orderData`; that example does not by itself make `order` universally required on an initial payment (raw lines 349\u2013385).\n- **Await and status sequence:** The `/payments` response example has `resultCode: Pending`, an `await` action, and `action.paymentData`. The shopper must finish in the ANCV app while the merchant shows a waiting screen. The guide says to send the paymentData from `/payments` to `/payments/details` to obtain status and to **ignore `order.orderData` in the `/payments` response**, using the value from `/payments/details` instead for partial-payment continuation. The examples show `PartiallyAuthorised` with remaining amount and `Authorised` with zero remaining, followed by an `AUTHORISATION` webhook after shopper completion (raw lines 728\u2013839).\n- **Partial authorization visibility:** The guide warns that Customer Area may show only the requested amount when the shopper authorizes less. It says the correct authorized amount is in `/payments/details` and the `AUTHORISATION` webhook's `additionalData.authorisedAmountValue`. The partial response's 2500 requested/2400 authorized/100 remaining figures are illustrative, not a real transaction or guaranteed outcome (raw lines 780\u2013808, 871\u2013903). The ANCV overview separately says merchants handling partial authorization must use the partial-payments feature.\n- **Testing and example caveats:** ANCV supplies the test app onboarding and credentials directly to the merchant; the page calls for end-to-end and partial-payment testing. Live setup requires adding ANCV in live Customer Area and providing the ANCV Merchant ID (`shopID`). The discovery and payment curl examples put `-X POST` on a line without a continuation before `-d`. The `/payments/details` example is fenced as JSON though it is a curl command and lacks a closing shell quote; the partial details and partial webhook JSON examples omit commas. Treat these snippets as illustrative, not copy-ready (raw lines 62\u201370, 363\u2013368, 767\u2013808, 873\u2013903, 905\u2013909).\n\n## Detail locators\n\n- Purpose, prerequisites and method discovery: pinned raw lines 15\u201358; discovery examples: lines 60\u2013347.\n- Required ANCV payment fields and request examples: pinned raw lines 349\u2013726.\n- Await/Pending action, waiting screen and details outcomes: pinned raw lines 728\u2013839.\n- Webhook, partial authorized amount caveat and test/live: pinned raw lines 839\u2013913.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-ancv]] \u2014 captured ANCV overview and partial-payment orderData rule.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15|ANCV API-only guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that your existing integration is set up to [handle the additional action](/online-payments/build-your-integration/advanced-flow/?platform=Web\\&integration=API%20only#additional-action). `action.type`: **await**.",
+      "location": "raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15.md:28"
+    },
+    {
+      "text": "This is the ANCV ID of the shopper collected during the checkout (either email address or 11-digit value).",
+      "location": "raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15.md:356"
+    },
+    {
+      "text": "`order.orderData` - ignore this value and take the order.orderData from the [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) response",
+      "location": "raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15.md:732"
+    },
+    {
+      "text": "To see the payment result, send a request to [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) that includes the `paymentData` provided in the [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response.",
+      "location": "raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15.md:765"
+    },
+    {
+      "text": "However, the correct authorized amount is shown in the [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) response and in the AUTHORISATION webhook, in `additionalData.authorisedAmountValue`.",
+      "location": "raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15.md:871"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ancv-api-only-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ancv-api-only]] \u2014 2026-09-15-captured ANCV Web API-only guide for FR/EUR discovery, beneficiary ID, await/Pending action, details-derived orderData and partial-authorization outcome.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ancv/api-only/2026-09-15.md",
+  "raw_sha256": "2157489ae1ffcd5da6324393f632b7c4561854bc7dbd8be11e3b4c1a5a329c46",
+  "status": "candidate_ready"
+}

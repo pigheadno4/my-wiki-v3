@@ -1,0 +1,9 @@
+# docs-payment-methods-walley-ios-drop-in retrieval checks
+
+## Q1 — purpose and scope
+Query: What does Adyen's Walley iOS Drop-in page add, and which Drop-in versions does it cover?
+Expected: A 2026-09-15-captured method add-on for an existing iOS Drop-in; the page says all versions, gives both v5.0.0-or-later and v4.x.x tabs with no required Walley-specific Drop-in configuration, and requires contacting Support to add Walley in the test Customer Area. It is not proof of current merchant enablement or live operation. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-walley-ios-drop-in]] → [[raw/adyen/docs/payment-methods/walley/ios-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/walley/ios-drop-in`. Verify raw lines 15–26 and 344–352.
+
+## Q2 — required fields and sample/test caveats
+Query: Which fields are marked required for Walley iOS Drop-in, how does B2B differ, and can the sample be copied?
+Expected: Both `/sessions` and `/payments` tables require a working mobile `telephoneNumber` including country code, `shopperEmail`, and six line-item fields; `company.name` is required only for `walley_b2b`, while registration number is relevant but unmarked. Description maximum 50 characters and specified monetary/tax minor units. The TEST `/payments` examples have a blank paymentMethod type and use NO/EUR, a +46 number, and HTTPS returnUrl; do not treat as executable iOS setup or eligibility proof. Testing maps CivRegNo to socialSecurityNumber and checks test Customer Area; this page does not give a live activation procedure. Route: [[wiki/index]] → [[wiki/adyen-index]] → [[wiki/concepts/adyen-online-payments]] → [[wiki/sources/adyen/source-adyen-docs-payment-methods-walley-ios-drop-in]] → [[raw/adyen/docs/payment-methods/walley/ios-drop-in/2026-09-15]]. Canonical stem: `/payment-methods/walley/ios-drop-in`. Verify raw lines 30–104 and 354–367.

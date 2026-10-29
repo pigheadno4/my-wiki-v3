@@ -1,0 +1,50 @@
+{
+  "job_id": "docs-payment-methods-paypo-android-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPo Android Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypo/android-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypo/android-component/2026-09-15.md\"\ntags: [adyen, paypo, android, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds PayPo to an existing Android Components integration with either Sessions or Advanced server-side flow. It covers PayPo-specific request fields, the `InstantPaymentComponent`, redirect handling, capture, and test/live setup. Its PLN/PL requests are examples; this page does not establish current merchant eligibility or live acceptance. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** The page requires an existing Android Sessions Components integration, Checkout API v68 or later, and PayPo added in Customer Area. Its `/sessions` table marks `shopperName.firstName`, `shopperName.lastName`, and `shopperEmail` required; billing and delivery addresses are listed without a required mark (pinned raw lines 25\u201348).\n- **Advanced flow:** The page requires an existing Android Advanced Components integration, handling the additional `action.type=redirect`, and PayPo added in Customer Area. Its `/payments` table marks `paymentMethod.type=paypo`, shopper name, and shopper email required, while billing and delivery addresses are listed without a required mark. The sample response is `RedirectShopper` with a redirect action, which is an additional step rather than evidence of final authorization (lines 521\u2013529, 617\u2013629, 1001\u20131015). The Advanced requirements table does not state the Sessions table's v68 minimum.\n- **Android Component:** Both flows import `com.adyen.checkout:instant`, with `components-compose` added for Jetpack Compose. Both use `InstantPaymentComponent` and specify no PayPo-specific configuration parameters. Sessions retrieves `paypo` from the checkout session; Advanced selects that type from `/paymentMethods`. The Compose examples call for a unique Component key when resetting or using a different screen or payment session (lines 426\u2013504, 531\u2013614).\n- **Payment and capture timing:** Before authorization, the guide says the offer/payment link remains available for up to 72 hours. Once the shopper accepts, status changes to `Authorised` and the shopper has 30 days to pay PayPo under its terms, measured from authorization. The merchant must capture after authorization; only a **full-amount capture** is possible. Automatic capture immediately after authorization can be configured when adding PayPo in the live Customer Area. The guide says the merchant is funded the full amount after capture without waiting for the shopper to pay PayPo; manual capture uses the original payment PSP reference at `/payments/{paymentPspReference}/captures` (lines 391\u2013405, repeated at 1017\u20131031).\n- **Test and live:** The test instructions give `firstName=name`, `lastName=surname`, `shopperEmail=shopper@example.com`, and verification code `123456` at the PayPo redirect. They route test status checks to Customer Area Payment list. Accepting live PayPo requires a request in the live Customer Area (lines 507\u2013519, repeated at 1049\u20131061).\n\n## Detail locators\n\n- Sessions requirements and request field table: pinned raw lines 25\u201348; server language examples: lines 50\u2013389.\n- Sessions capture, imports, Component setup, and test/live: lines 391\u2013519.\n- Advanced requirements, imports, and Component setup: lines 521\u2013614; `/payments` fields and server examples: lines 617\u2013999.\n- Advanced redirect response, capture, and test/live: lines 1001\u20131061.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypo/android-component/2026-09-15|PayPo Android Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you use Checkout API v68 or later.",
+      "location": "pinned raw line 34, Sessions flow Component > Requirements"
+    },
+    {
+      "text": "`action.type`: ****redirect****.",
+      "location": "pinned raw line 528, Advanced flow Component > Requirements > Action handling"
+    },
+    {
+      "text": "When a payment is made, but not yet authorized, the offer will be available for up to 72 hours.",
+      "location": "pinned raw line 393, Sessions flow Component > Capture the payment"
+    },
+    {
+      "text": "The shopper has 30 days to pay according to the terms of PayPo.",
+      "location": "pinned raw line 395, Sessions flow Component > Capture the payment"
+    },
+    {
+      "text": "It is only possible to capture the full amount of the authorized payment.",
+      "location": "pinned raw line 399, Sessions flow Component > Capture the payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypo-android-component-source-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypo-android-component]] \u2014 2026-09-15-captured PayPo Android Components Sessions/Advanced guide for method-specific request fields, redirect Component setup, full capture, and test/live steps.",
+        "quote_indexes": [
+          0,
+          1,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypo/android-component/2026-09-15.md",
+  "raw_sha256": "f262845b8132cb332f332e77599317163623bd5de124ce7838b5af7ca8a57234",
+  "status": "candidate_ready"
+}

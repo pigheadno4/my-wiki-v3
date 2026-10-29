@@ -1,0 +1,52 @@
+{
+  "job_id": "docs-payment-methods-ancv",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ANCV payment method overview\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ancv\"\nraw_files:\n  - \"adyen/docs/payment-methods/ancv/2026-09-15.md\"\ntags: [adyen, ancv, france, holiday-vouchers, partial-payments, online-payments]\n---\n\n## Overview\n\nThis captured [[adyen]] overview describes ANCV (National Agency for Holiday Vouchers) as a French online payment method for holiday vouchers. Adyen says it acts as a gateway; a merchant must contract directly with ANCV, which handles settlement and reporting. The page gives a capability matrix, a partial-authorization rule, and Web/API-only integration routes. It does not establish a particular merchant's enablement or an executed payment. [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Provider roles and scope:** ANCV is described as a prepaid/gift-card method for France and EUR, with an `await` payment flow. Merchants must approach ANCV directly for a contract because Adyen plays the gateway role, while ANCV handles settlement and reporting. Do not infer Adyen settlement or merchant eligibility from this overview (raw lines 23\u201329).\n- **Capabilities and matrix tension:** The table marks recurring, partial refunds, multiple partial refunds and chargebacks unavailable. It marks refunds available with \u201cSee note,\u201d but this captured page gives no clear refund note; inspect method-specific guidance before relying on refund behavior. It marks separate captures, partial captures and multiple partial captures available, yet the immediately following prose says **only one partial capture is allowed per payment**. Preserve that conflict rather than treating the multiple-partial-captures checkmark as unconditional support (raw lines 27\u201331).\n- **Partial payments:** ANCV supports partial authorization, where the shopper-authorized amount can be less than the merchant request. The page says merchants **must** use Adyen's partial-payments feature to handle this and **always** use `orderData` from a `/payments/details` response, not `/payments`, for ANCV partial payments (raw lines 33\u201339). This is an order continuation rule, not a guarantee of full authorization.\n- **Integration routes:** Web links to prebuilt UI solutions for a website; API-only links to merchant-built UI for a website, iOS or Android app. These are route choices, not complete implementation instructions (raw lines 41\u201353).\n\n## Detail locators\n\n- Identity, gateway/contract/settlement roles and capability matrix: pinned raw lines 15\u201331.\n- Partial authorization and `orderData` response-source requirement: pinned raw lines 33\u201339.\n- Web and API-only integration choices: pinned raw lines 41\u201353.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n- [[source-adyen-docs-online-payments-partial-payments]] \u2014 provider partial-payment context; use this ANCV source for the method-specific `orderData` rule.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ancv/2026-09-15|ANCV overview, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "National Agency for Holiday Vouchers (ANCV) is a French payment method that enables shoppers to pay with holiday vouchers.",
+      "location": "raw/adyen/docs/payment-methods/ancv/2026-09-15.md:23"
+    },
+    {
+      "text": "Adyen plays the gateway role in an ANCV implementation. Therefore, merchants must approach ANCV directly to sign a contract with them. Settlement and reporting are also handled by ANCV.",
+      "location": "raw/adyen/docs/payment-methods/ancv/2026-09-15.md:25"
+    },
+    {
+      "text": "Only one partial capture is allowed per payment.",
+      "location": "raw/adyen/docs/payment-methods/ancv/2026-09-15.md:31"
+    },
+    {
+      "text": "ANCV supports the concept of partial authorization, which means that the amount authorized by the shopper could be lower than the amount requested by the merchant.",
+      "location": "raw/adyen/docs/payment-methods/ancv/2026-09-15.md:35"
+    },
+    {
+      "text": "When using partial payments for ANCV, merchants must always use the `orderData` from a [/payments/details](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments/details) response, not from a [/payments](https://docs.adyen.com/api-explorer/Checkout/latest/post/payments) response.",
+      "location": "raw/adyen/docs/payment-methods/ancv/2026-09-15.md:39"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "ancv-overview-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ancv]] \u2014 2026-09-15-captured French ANCV holiday-voucher overview covering gateway versus ANCV settlement roles, partial-payment orderData, capability matrix and Web/API routes; source preserves a partial-capture matrix conflict.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": []
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ancv/2026-09-15.md",
+  "raw_sha256": "9113178452179ca932720349abc66520b5d85cd7df0b36cc6170c46c740f5dda",
+  "status": "candidate_ready"
+}

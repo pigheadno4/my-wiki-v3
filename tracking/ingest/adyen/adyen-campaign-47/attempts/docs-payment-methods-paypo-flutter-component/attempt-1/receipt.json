@@ -1,0 +1,55 @@
+{
+  "job_id": "docs-payment-methods-paypo-flutter-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"PayPo Flutter Component integration add-on\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypo/flutter-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypo/flutter-component/2026-09-15.md\"\ntags: [adyen, paypo, flutter, components, redirect]\n---\n\n## Overview\n\nThis 2026-09-15-captured PayPo Flutter Component page gives **PayPo-specific additions** for an existing Flutter Components integration, separately for Sessions and Advanced server-side flows. It relies on the main integration guides for base setup and action handling. It is not evidence of current PayPo enablement or a successfully executed payment. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** the requirements say existing Sessions-flow Flutter Components, Checkout API **v68 or later**, and PayPo added in Customer Area. The PayPo-specific `/sessions` table marks `shopperName` (first and last name) and `shopperEmail` required; billing and delivery addresses have no required mark. The PLN/PL amount, return URL, reference, and merchant account are shown in a **test** example, not as a complete standalone request contract. The page says no additional PayPo Component configuration is needed (raw lines 25\u201346, 48\u201373, 421\u2013425).\n- **Advanced flow:** the requirements say existing Advanced-flow Flutter Components, handling of the additional `redirect` action, and PayPo added in Customer Area. The PayPo-specific `/payments` table marks `paymentMethod.type: paypo`, `shopperName` (first and last), and `shopperEmail` required; billing and delivery addresses are unmarked. No additional PayPo Component configuration is needed. The response example contains `resultCode: RedirectShopper` and an `action.type: redirect`; redirect handling belongs to the linked main flow (raw lines 441\u2013471, 843\u2013857).\n- In both flow sections, the page says a pre-authorization offer/payment link remains available for **up to 72 hours**. Once the shopper accepts and the payment becomes `Authorised`, the shopper's **30-day PayPo term starts at authorization**. The merchant must capture the payment, and **only full-amount capture** is possible. Immediate automatic capture can be configured when adding PayPo in the live Customer Area. The page says the merchant is funded after capture without waiting for the shopper to complete payment to PayPo; treat that as its conditional statement, not a guaranteed payout time (raw lines 389\u2013419 and 859\u2013889).\n- The testing values and verification code are for the **test environment**. Before live PayPo acceptance, the page says to submit a PayPo request in the live Customer Area (raw lines 427\u2013439 and 891\u2013903).\n\n> [!warning] Source route and sample limits\n> The Sessions requirement calls for a Sessions-flow Flutter Components integration, but its linked URL contains `advanced-flow?platform=Flutter&integration=Drop-in` (raw line 31); do not use that link label as proof that Advanced Drop-in is the Sessions Components route. The Advanced-flow requirement's integration URL likewise names `Drop-in` while the page is titled Component (raw line 449). The Sessions and Advanced curl examples omit a continuation between `-X POST` and `-d` (raw lines 57\u201358, 482\u2013483), so they are illustrative rather than commands ready to paste.\n\n## Detail locators\n\n- Scope and flow split: raw `# PayPo Flutter Component` lines 15\u201325.\n- Sessions requirements, method-specific fields, and examples: raw lines 27\u2013387.\n- Sessions capture/configuration/test-live: raw lines 389\u2013439.\n- Advanced requirements, configuration, payment fields, and examples: raw lines 441\u2013841.\n- Advanced redirect response, capture, and test-live: raw lines 843\u2013903.\n\n## Related\n\n- [[adyen]]\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypo/flutter-component/2026-09-15|PayPo Flutter Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "| **Integration type** | Make sure that you have an existing Sessions flow [Flutter Components integration](/online-payments/build-your-integration/advanced-flow?platform=Flutter\\&integration=Drop-in). |   |",
+      "location": "raw line 31, Sessions flow Component / Requirements"
+    },
+    {
+      "text": "| **Checkout API**     | Make sure that you use Checkout API v68 or later.",
+      "location": "raw line 32, Sessions flow Component / Requirements"
+    },
+    {
+      "text": "| [shopperName](https://docs.adyen.com/api-explorer/Checkout/latest/post/sessions#request-shopperName)         | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | The shopper's `firstName` and `lastName`.     |",
+      "location": "raw line 43, Sessions /sessions table"
+    },
+    {
+      "text": "| `paymentMethod.type`                                                                                         | ![-white\\_check\\_mark-](/user/data/smileys/emoji/white_check_mark.png \"-white_check_mark-\") | **paypo**                                     |",
+      "location": "raw line 467, Advanced /payments table"
+    },
+    {
+      "text": "* It is only possible to capture the full amount of the authorized payment.",
+      "location": "raw line 867, Advanced ## Capture the payment"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "paypo-flutter-component-source-link",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypo-flutter-component]] \u2014 2026-09-15-captured PayPo Flutter Components add-on for Sessions/Advanced fields, redirect action, full capture and test/live setup; source flags mismatched base-flow links.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The Sessions Components requirement links to an Advanced-flow Drop-in URL; the Advanced Components requirement also links to Drop-in. Treat linked guide labels cautiously.",
+          "Both curl examples omit a line continuation between -X POST and -d; they are not paste-ready."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypo/flutter-component/2026-09-15.md",
+  "raw_sha256": "88662425fbacae5cc0cce25db204c4234a25b2a4f71cd047ed654b64b7feafa9",
+  "status": "candidate_ready"
+}

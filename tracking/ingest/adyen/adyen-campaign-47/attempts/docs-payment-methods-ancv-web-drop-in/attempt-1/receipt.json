@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-ancv-web-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen ANCV Web Drop-in\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/ancv/web-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/ancv/web-drop-in/2026-09-15.md\"\ntags: [adyen, ancv, web, drop-in, partial-payments, await]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds ANCV to an existing Web Drop-in integration in Sessions or Advanced flow. It covers the ANCV app outcome, partial authorization, and the Advanced `await` action with `/payments/details`. It does not establish current merchant eligibility, a completed payment or live operation. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- **Sessions flow:** Requires an existing Web Sessions Drop-in integration, Checkout API v68 or later, and ANCV added in Customer Area. The page says no ANCV-specific parameters are needed when creating `/sessions`. It optionally imports `Redirect` when importing individual Adyen Web methods for tree shaking (pinned raw lines 25\u201353).\n- After the shopper completes payment in the ANCV app, the guide says an AUTHORISATION webhook arrives. For partial authorization, Customer Area may display only the requested amount; the authorized amount appears in `/payments/details` and in the webhook's `additionalData.authorisedAmountValue` (lines 55\u2013123, repeated 641\u2013710). Do not infer the authorized balance from the Customer Area requested amount.\n- **Advanced flow:** Requires an existing Web Advanced Drop-in integration, additional-action handling for `action.type=await`, and ANCV in Customer Area. Its `/payments` table requires `paymentMethod.type=ancv` and `paymentMethod.beneficiaryId`, the shopper's ANCV ID collected at checkout as either an email address or an 11-digit value. The sample also includes `order.pspReference` and `order.orderData` but the table does not mark these as universally required fields (lines 133\u2013194).\n- The `/payments` response is `Pending` with an `await` action while the shopper still needs to finish in the ANCV app. Use `action.paymentData` in `/payments/details` to learn status. The guide explicitly says to ignore `order.orderData` from the initial `/payments` response and take `order.orderData` from `/payments/details`; that response illustrates `PartiallyAuthorised` or `Authorised` with remaining amount (lines 538\u2013645). `Pending` is not final.\n- Testing requires the ANCV test app and credentials supplied directly by ANCV to the merchant, including partial-payment tests. Live setup requires adding ANCV in the live Customer Area and providing the ANCV Merchant ID, called `shopID` by ANCV (lines 125\u2013131, 712\u2013718).\n\n> [!warning] Partial authorization example values\n> The Advanced partial `/payments/details` example shows `authorisedAmountValue=2400`, an order amount of 2500 and `remainingAmount=100` (raw lines 592\u2013612), while its preceding payment request is 3000 (lines 173\u2013194). The partial AUTHORISATION webhook example instead shows `authorisedAmountValue=2500` (lines 678\u2013710). These example figures do not form a single consistent reconciliation; use the actual details/webhook amounts for a real transaction.\n\n> [!warning] Example syntax and link\n> The partial webhook examples omit a comma before `authorisedAmountValue` (raw lines 112\u2013115, 699\u2013702), and the Advanced partial details example omits a comma before `reference` (lines 605\u2013608). The Advanced requirement links to an encoded template value for `platform` despite Web wording (line 141). Treat these snippets and link as documentation examples, not a ready-to-run request or a reliable platform route.\n\n## Detail locators\n\n- Sessions prerequisites, no-extra-parameter statement, optional import and webhook outcome: pinned raw lines 25\u2013123.\n- Advanced prerequisites, optional import and required payment fields: lines 133\u2013168; request examples: lines 169\u2013537.\n- `Pending`/`await`, `paymentData`, details and partial/full outcomes: lines 538\u2013645.\n- AUTHORISATION webhook, partial amount caveat and test/live setup: lines 646\u2013718.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online-payments concept\n- [[source-adyen-docs-payment-methods-ancv]] \u2014 ANCV method overview\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/ancv/web-drop-in/2026-09-15|ANCV Web Drop-in guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "You do not need to add any parameters when you [create a payment session]",
+      "location": "pinned raw line 41"
+    },
+    {
+      "text": "`paymentMethod.beneficiaryId`",
+      "location": "pinned raw line 166"
+    },
+    {
+      "text": "`action.type`: **await**",
+      "location": "pinned raw line 540"
+    },
+    {
+      "text": "`order.orderData` - ignore this value and take the order.orderData from the [/payments/details]",
+      "location": "pinned raw line 542"
+    },
+    {
+      "text": "the correct authorized amount is shown in the [/payments/details]",
+      "location": "pinned raw line 678"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-ancv-web-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-ancv-web-drop-in]] \u2014 2026-09-15-captured ANCV Web Drop-in Sessions/Advanced guide for await/Pending app completion, beneficiary ID, partial authorization amounts and details/webhook outcome; partial example figures differ.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "Advanced partial details example amounts (2400 authorized, 2500 order, 100 remaining) differ from the 3000 request and partial webhook's 2500 authorized; do not reconcile these as one transaction. Some JSON examples have missing commas, and Advanced base link contains an unresolved platform template."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/ancv/web-drop-in/2026-09-15.md",
+  "raw_sha256": "703d937d5c9f97cc7eb118c8be411284cb1cb3ab133c781ad660c2ec5347af0b",
+  "status": "candidate_ready"
+}

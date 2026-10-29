@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-titres-restaurant-web-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Titres-Restaurant Web Component integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/titres-restaurant/web-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md\"\ntags: [adyen, titres-restaurant, meal-voucher, web, components, partial-payments]\n---\n\n## Overview\n\nThis Adyen guide, last modified 2022-05-10 and captured 2026-09-15, adds Titres-Restaurant to an **existing Web Components integration**. It covers issuer selection, a balance-dependent split-payment path, and different `/sessions` versus `/payments` Component callbacks. It is historical implementation guidance, not proof of current issuer or merchant eligibility, live activation, or payment completion. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Setup and version gates:** The base Web Components integration requires version **5.4.0 or later**. Before integration, activate Titres-Restaurant to obtain a `Carte de domiciliation CONECS`, then add the meal-voucher method in Customer Area with SIRET and Conecs MID. The `/sessions` tab states support from Components **v5.18.0**; its own-Pay-button variant states **v5.21.0**. The general API-reference line calls `/sessions` the default from v5.0.0, which is broader than these method-specific tab gates; use the tab's stated minimum for its features. The `/payments` tab covers an additional use case or integrations before v5.18.0 (raw lines 21\u201342, 66\u201368, 150\u2013152, 250\u2013252).\n- **Issuer and Component choice:** Configure `mealVoucher_FR_natixis` for Bimpli, `mealVoucher_FR_sodexo` for Sodexo, or `mealVoucher_FR_groupeup` for Up Dejeuner; the page also says Apetiz and the Natixis type refer to Bimpli. Web Components v6 imports `MealVoucherFR` and creates it with `new MealVoucherFR(checkout, configuration)`; the v5.x path uses `checkout.create(...)`, within the overall v5.4.0 minimum. Mount after `isAvailable()` confirms availability. The v6 import link on this Components page points to a **Drop-in** integration route, so follow the Components integration context when resolving imports (raw lines 29\u201335, 44\u201352, 114\u2013147).\n- **Sessions balance path:** No additional Titres-Restaurant request fields are specified. The ordinary `/sessions` path requires `onOrderCreated(orderStatus)` when the voucher balance is below the transaction; `orderStatus.remainingAmount` can drive another payment Component for the balance. With a merchant-owned Pay button, call `balanceCheck()`; if the balance covers the full amount, the shopper must confirm via `onRequiringConfirmation` before `submit()`. This variant has its own v5.21.0 gate (raw lines 37\u201342, 66\u201393, 150\u2013168).\n- **`/payments` and optional partial payments:** The `/payments` tab requires `onBalanceCheck` to call `/paymentMethods/balance`. For partial payments, optional `onOrderRequest` creates an order for the total amount when balance is low, and `onOrderCancel` cancels it. The page says no payment is made when the balance is insufficient; after the order is created, use `/payments` **outside the Component** with the order data to make partial payments and complete the order. Do not treat order creation or the example `resultCode: Success` as final payment completion (raw lines 250\u2013271, 332\u2013360).\n- **Test and live:** Test credentials must come directly from Bimpli, Sodexo, or Up D\u00e9jeuner. Before live acceptance, contact Adyen Support to activate Titres-Restaurant in the live environment (raw lines 362\u2013366). The examples show EUR order amounts, not a complete eligibility or currency matrix.\n\n## Detail locators\n\n- Requirements, account setup, v6 import route and issuer identifiers: pinned raw lines 21\u201352.\n- Sessions event, order-status example, versioned Component creation and availability check: lines 66\u2013147.\n- Own Pay button, balance check, confirmation and versioned Component setup: lines 150\u2013248.\n- `/payments` balance/order callbacks, optional partial payments and outside-Component payment: lines 250\u2013360.\n- Test issuer credentials and live Support activation: lines 362\u2013366.\n\n## Related\n\n- [[source-adyen-docs-payment-methods-titres-restaurant]] \u2014 method overview for separate regional and capability context\n- [[adyen-online-payments]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15|Titres-Restaurant Web Component guide, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "Make sure that you have built your [Web Components integration](/online-payments/build-your-integration/sessions-flow?platform=Web\\&integration=Components). The minimum required version is 5.4.0.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md:25"
+    },
+    {
+      "text": "[Add the meal voucher payment method in your Customer Area](/payment-methods/add-payment-methods), providing your SIRET (your business registration ID) and the Conecs MID from your *Carte de domiciliation CONECS*.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md:27"
+    },
+    {
+      "text": "Supported in [Components v5.18.0](/online-payments/release-notes#releaseNote=2022-07-12-web-componentsdrop-in-5.18.0) and later.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md:68"
+    },
+    {
+      "text": "When using your own **Pay** button, you must call the `balanceCheck()` method from your button implementation. If the balance on the card is enough to pay the full payment amount, call the `submit()` method to make the payment.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md:156"
+    },
+    {
+      "text": "Before you can accept live payments, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to activate Titres-restaurant in your live environment.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md:366"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-titres-restaurant-web-component-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-titres-restaurant-web-component]] \u2014 2022-modified, 2026-09-15-captured Titres-Restaurant Web Components guide with versioned Sessions and /payments balance/partial-order paths, issuer setup and live activation requirements.\n",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The v6 import link on the Components page points to a Drop-in integration route; method-specific Sessions tabs have v5.18.0/v5.21.0 gates despite the general /sessions v5.0.0 line."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/titres-restaurant/web-component/2026-09-15.md",
+  "raw_sha256": "83b315a304b446006a50573a0656a0652c262c6ea3a6359c6a3a0c6ffd90008c",
+  "status": "candidate_ready"
+}

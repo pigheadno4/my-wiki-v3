@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-paypo-react-native-component",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen PayPo React Native Component\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/paypo/react-native-component\"\nraw_files:\n  - \"adyen/docs/payment-methods/paypo/react-native-component/2026-09-15.md\"\ntags: [adyen, paypo, react-native, component, advanced-flow]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds PayPo to an existing React Native Components integration. It covers the Advanced server-side flow; the page explicitly says React Native Components do not support Sessions. It is method-specific guidance, so use the main Advanced React Native Components guide for the complete integration. See [[adyen]] and [[adyen-online-payments]].\n\n## Key takeaways\n\n- Begin with an existing Advanced React Native Components integration, redirect action handling, and PayPo enabled in Customer Area. No additional PayPo Component configuration parameters are specified. The requirements table's integration link is labeled Components but its URL selects `integration=Drop-in`; the payment and redirect links select Components. Resolve that mismatch against the intended Components integration before using the linked base guide. See raw lines 35\u201353.\n- The `/payments` addition requires `paymentMethod.type: paypo`, `shopperName.firstName`, `shopperName.lastName`, and `shopperEmail`; billing and delivery addresses are shown without a required mark. The page's TEST v72 request is a PL/PLN example, not a statement of all eligible markets or production settings. See raw lines 55\u201389.\n- A `/payments` response can return `resultCode: RedirectShopper` and `action.type: redirect`; handle that action and the return path through the existing integration. The example redirect response is an additional action, not final payment confirmation. See raw lines 40, 433\u2013447.\n- Before authorization, the PayPo offer/payment link is available for up to 72 hours. Once the shopper accepts, status becomes `Authorised` and the 30-day shopper payment term starts at authorization. Merchant capture follows authorization and can only capture the full authorized amount. Automatic capture immediately after authorization can be configured when adding PayPo in live Customer Area; manual capture uses `/payments/{paymentPspReference}/captures` with the original payment PSP reference. The merchant need not wait for the shopper to pay PayPo before capture. See raw lines 449\u2013479.\n- Test instructions give the required field values, verification code `123456`, and test Customer Area payment-list route. Live acceptance requires submitting a PayPo request in live Customer Area. These are setup/test instructions, not evidence of current availability or a completed live payment. See raw lines 481\u2013493.\n\n## Detail locators\n\n- Requirements, redirect setup, and no additional configuration: raw lines 25\u201353.\n- Payment-field table and TEST request/code examples: raw lines 55\u2013431. The curl sample at lines 68\u201389 has a missing shell continuation after `-X POST`, and its HTTPS `returnUrl` is an example in a React Native guide; configure the actual app return handling rather than treating it as a universal mobile callback.\n- Redirect action example: raw lines 433\u2013447.\n- Offer, authorization, capture, and funding description: raw lines 449\u2013479.\n- Test and live steps: raw lines 481\u2013493.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-paypo]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/paypo/react-native-component/2026-09-15|Fully read PayPo React Native Component raw]]\n",
+  "quotes": [
+    {
+      "text": "React Native Components do not support Sessions flow.",
+      "location": "line 29"
+    },
+    {
+      "text": "Make sure that you have an existing Advanced flow",
+      "location": "line 39"
+    },
+    {
+      "text": "the offer will be available for up to 72 hours.",
+      "location": "line 451"
+    },
+    {
+      "text": "The shopper has 30 days to pay according to the terms of PayPo.",
+      "location": "line 453"
+    },
+    {
+      "text": "It is only possible to capture the full amount of the authorized payment.",
+      "location": "line 457"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-paypo-react-native-component-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-paypo-react-native-component]] \u2014 2026-09-15-captured PayPo React Native Components Advanced-only add-on for required shopper fields, redirect action, 72-hour offer, authorization-started 30-day term, full-only capture and test/live setup; source flags a mismatched base-guide link.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The requirements-table base integration link is labeled React Native Components but selects integration=Drop-in; related action/payment links select Components."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/paypo/react-native-component/2026-09-15.md",
+  "raw_sha256": "6ad5e00d4a53fc098f1b8369f01fcdbf77db8f10096b15c15b71c2a98e668dc9",
+  "status": "candidate_ready"
+}

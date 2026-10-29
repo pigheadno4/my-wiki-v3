@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-walley-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Walley iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/walley/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/walley/ios-drop-in/2026-09-15.md\"\ntags: [adyen, walley, ios, drop-in, sessions, advanced-flow]\n---\n\n## Overview\n\nThis 2026-09-15-captured Adyen guide adds Walley to an existing iOS Drop-in integration. It says Walley works with all iOS Drop-in versions, links a Sessions base integration, and gives required request fields in both `/sessions` and `/payments` tabs. It does not provide a complete payment lifecycle. See [[adyen]], [[adyen-online-payments]], and [[source-adyen-docs-payment-methods-walley]] for the B2C/B2B method types and regional overview.\n\n## Key takeaways\n\n- Build the iOS Drop-in integration first and contact Adyen Support to add Walley in the **test** Customer Area. The page says Walley works with all versions of iOS Drop-in. Its two Drop-in configuration tabs (v5.0.0 or later and v4.x.x) specify no required Walley-specific Drop-in integration. See raw lines 21\u201326 and 344\u2013352.\n- For both `/sessions` and `/payments`, the tables mark `telephoneNumber` and `shopperEmail` required. Collect a working mobile number including country code: the page says incorrect or missing numbers fail Walley validation. `company.name` is required **only for `walley_b2b`**; `company.registrationNumber` is relevant to B2B but is not marked required. See raw lines 30\u201339 and 47\u201356.\n- Each table also marks `lineItems.id`, `description`, `amountExcludingTax`, `taxAmount`, `taxPercentage`, and `quantity` required; description has a 50-character maximum, and the amount/tax fields use minor units. See raw lines 40\u201345 and 57\u201362.\n- The TEST v72 `/payments` snippets are illustrative: `paymentMethod.type` is an empty string, the sample uses `countryCode: NO`, `currency: EUR`, a `+46` telephone number, and an HTTPS `returnUrl`. Do not copy the blank type or treat that sample combination/URL as verified iOS or regional eligibility. The example line items also do not reconcile to the example `amount.value: 1000`. Use the Walley overview for distinct `walley` and `walley_b2b` types, and configure the actual iOS return path. See raw lines 64\u2013104 and the related overview.\n- For testing, the page points to Walley's test scenarios through Adyen `/payments`, maps Walley `CivRegNo` to `socialSecurityNumber`, and shows a B2B company object. It points to test Customer Area payment status; it does not document live account activation or prove a successful payment. See raw lines 354\u2013367.\n\n## Detail locators\n\n- Existing iOS Drop-in and test Support setup: raw lines 21\u201326.\n- `/sessions` and `/payments` field tables: raw lines 28\u201362.\n- TEST `/payments` examples and blank method type: raw lines 64\u2013343.\n- Versioned Drop-in configuration tabs: raw lines 344\u2013352.\n- Test-data mapping and test Customer Area status route: raw lines 354\u2013367.\n- Base integration, webhooks, tokenization, and API Explorer navigation: raw lines 369\u2013374. These links alone do not assert Walley-specific recurring or webhook behavior.\n\n## Related\n\n- [[adyen-online-payments]]\n- [[source-adyen-docs-payment-methods-walley]]\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/walley/ios-drop-in/2026-09-15|Fully read Walley iOS Drop-in raw]]\n",
+  "quotes": [
+    {
+      "text": "Walley for iOS works with all versions of Drop-in.",
+      "location": "line 25"
+    },
+    {
+      "text": "Incorrect or missing numbers will fail Walley's validation.",
+      "location": "line 36"
+    },
+    {
+      "text": "Only required for **walley\\_b2b** payments.",
+      "location": "line 38"
+    },
+    {
+      "text": "There is no required Walley-specific integration for Drop-in.",
+      "location": "line 348"
+    },
+    {
+      "text": "Include the `CivRegNo` as the [socialSecurityNumber]",
+      "location": "line 358"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-walley-ios-drop-in-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-walley-ios-drop-in]] \u2014 2026-09-15-captured Walley iOS Drop-in all-version guide for Sessions/Payments field tables, B2B company qualification, no Walley-specific Drop-in configuration, and test setup; source flags blank payment-method sample.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "TEST /payments examples leave paymentMethod.type empty; they also combine NO, EUR and a +46 number and use an HTTPS returnUrl in an iOS guide. Treat them as examples, not a validated recipe or geographic eligibility proof."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/walley/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "f6b26e959ee090ab450311c681580522b3d2a8d27fbd758097e3a3f9c8dd62a5",
+  "status": "candidate_ready"
+}

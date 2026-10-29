@@ -21,6 +21,156 @@ Card installments now accept plan configuration without numeric `values`: one-ti
 
 ## Sources
 
+- [[source-adyen-docs-payment-methods-titres-restaurant-ios]] — 2026-09-15-captured Titres-restaurant iOS router to the Drop-in child guide and iOS Drop-in Sessions base guide.
+
+
+- [[source-adyen-docs-payment-methods-walley-android]] — 2026-09-15-captured Walley Android chooser for method-specific Drop-in and Redirect Component guides plus base Android Sessions routes.
+
+
+- [[source-adyen-docs-payment-methods-walley-web]] — 2026-09-15-captured Walley Web chooser linking method-specific Drop-in and Components pages and general Web integration routes.
+
+
+- [[source-adyen-docs-payment-methods-ancv-web]] — 2026-09-15-captured ANCV Web chooser for Drop-in/Components and Sessions/Advanced base guides, with a route to method-level contract and partial-payment context.
+
+
+- [[source-adyen-docs-payment-methods-titres-restaurant-web]] — 2022-modified, 2026-09-15-captured Titres-restaurant Web chooser linking method-specific Drop-in and Components guides plus general Web UI guides.
+
+
+- [[source-adyen-docs-payment-methods-paypo-web]] — 2026-09-15-captured PayPo Web chooser linking Drop-in/Components child guides and Sessions/Advanced base integration routes.
+
+
+- [[source-adyen-docs-payment-methods-paypo-android]] — 2026-09-15-captured PayPo Android chooser linking Drop-in/InstantPaymentComponent child guides and Android Sessions/Advanced base integrations.
+
+
+- [[source-adyen-docs-payment-methods-walley-web-component]] — 2026-09-15-captured Walley Web Component add-on for v3.23.0+ setup, Sessions/Payments fields, versioned mounting and test guidance; source flags incomplete and geographically inconsistent samples.
+
+
+- [[source-adyen-docs-payment-methods-walley-ios]] — 2026-09-15-captured Walley iOS router to Drop-in and Components child guides, with Sessions base-guide links for both UIs.
+
+
+- [[source-adyen-docs-payment-methods-iris-web]] — 2026-09-15-captured IRIS Web chooser routing to Drop-in/Components child guides and four Sessions/Advanced main Web integrations; source flags incomplete Components description.
+
+
+- [[source-adyen-docs-payment-methods-paypo-ios]] — 2026-09-15-captured PayPo iOS router to Drop-in/Components child guides and Sessions/Advanced base integration routes; source flags a placeholder “None” Components description.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-india-web]] — 2026-09-15-captured Online Banking India Web router to Drop-in and OnlineBankingIN Components child guides plus Sessions/Advanced main integration routes.
+
+
+- [[source-adyen-docs-payment-methods-walley-android-component]] — 2026-09-15-captured Walley Android Components v5.0.0 guide for Sessions/Advanced prerequisites, no additional method fields or Component configuration, and test data mapping; earlier versions use a separate guide.
+
+
+- [[source-adyen-docs-payment-methods-titres-restaurant-web-drop-in]] — 2026-09-15-captured Titres-restaurant Web Drop-in v5.4.0+ add-on for CONECS/SIRET setup, v6 import, Sessions versus Payments configuration, balance/order callbacks and test/live steps.
+
+
+- [[source-adyen-docs-payment-methods-walley-web-drop-in]] — 2026-09-15-captured Walley Web Drop-in v3.23.0+ guide for Sessions/Payments fields, conditional B2B company data and test setup; source flags blank method-type examples.
+
+
+- [[source-adyen-docs-payment-methods-walley-android-drop-in]] — 2026-09-15-captured Walley Android Drop-in v5.0.0 add-on for Sessions/Advanced no-extra-field/configuration guidance and test-only B2B data.
+
+
+- [[source-adyen-docs-payment-methods-titres-restaurant-ios-drop-in]] — 2026-09-15-captured Titres-restaurant iOS Drop-in add-on for Sessions result and conditional /payments balance/order callbacks, with CONECS setup and live activation.
+
+
+- [[source-adyen-docs-payment-methods-walley-ios-drop-in]] — 2026-09-15-captured Walley iOS Drop-in all-version guide for Sessions/Payments field tables, B2B company qualification, no Walley-specific Drop-in configuration, and test setup; source flags blank payment-method sample.
+
+
+- [[source-adyen-docs-payment-methods-walley-android-component-earlier-versions]] — 2026-09-15-captured Walley Android Redirect Component v4.x.x guide covering B2C/B2B discovery, redirect/details and webhook results; requirements also claim all Components versions.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-india-web-drop-in]] — 2026-09-15-captured Web Drop-in Sessions/Advanced guide for Online Banking India redirect, Advanced issuer/browserInfo fields and test/live routes; optional import snippet is malformed.
+
+
+- [[source-adyen-docs-payment-methods-ancv-web-drop-in]] — 2026-09-15-captured ANCV Web Drop-in Sessions/Advanced guide for await/Pending app completion, beneficiary ID, partial authorization amounts and details/webhook outcome; partial example figures differ.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-india-web-component]] — 2026-09-15-captured Online Banking India Web Components Sessions/Advanced redirect add-on with issuer/browserInfo request data and test/live gates; source flags incomplete Advanced version and initializer snippets.
+
+
+- [[source-adyen-docs-payment-methods-walley-ios-component]] — 2026-09-15-captured Walley iOS Components guide for Sessions/Payments request fields, conditional B2B company data and v5+/v4 Component setup; source flags blank method-type examples.
+
+
+- [[source-adyen-docs-payment-methods-paypo-react-native-component]] — 2026-09-15-captured PayPo React Native Components Advanced-only add-on for required shopper fields, redirect action, 72-hour offer, authorization-started 30-day term, full-only capture and test/live setup; source flags a mismatched base-guide link.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-india-api-only]] — 2026-09-15-captured Online Banking India API-only add-on for IN/INR issuer discovery, required payment fields, and redirect handling; source flags method-type capitalization mismatch.
+
+
+- [[source-adyen-docs-payment-methods-titres-restaurant-web-component]] — 2022-modified, 2026-09-15-captured Titres-Restaurant Web Components guide with versioned Sessions and /payments balance/partial-order paths, issuer setup and live activation requirements.
+
+
+- [[source-adyen-docs-payment-methods-walley-android-drop-in-earlier-versions]] — 2026-09-15-captured Walley Android Drop-in v4.x.x-titled guide for Nordic B2C/B2B discovery, redirect/details and webhook results; source qualifies all-version claim and NO/EUR sample conflict.
+
+
+- [[source-adyen-docs-payment-methods-titres-restaurant-api-only]] — 2022-modified, 2026-09-15-captured French meal-voucher API-only guide for SIRET/Conecs activation, issuer discovery, balance-based order split tender, voucher payment and webhook result.
+
+
+- [[source-adyen-docs-payment-methods-ancv-web-component]] — 2026-09-15-captured ANCV Web Components Sessions/Advanced add-on for await action, beneficiary ID, partial authorization and details-derived orderData; source flags sample mismatches.
+
+
+- [[source-adyen-docs-payment-methods-ancv-api-only]] — 2026-09-15-captured ANCV Web API-only guide for FR/EUR discovery, beneficiary ID, await/Pending action, details-derived orderData and partial-authorization outcome.
+
+
+- [[source-adyen-docs-payment-methods-walley-api-only]] — 2023-modified, 2026-09-15-captured Walley API-only guide for B2C/B2B redirect, async results, capture/refund and test routes; source flags example geography and capture-reference caveats.
+
+
+- [[source-adyen-docs-payment-methods-paypo-ios-drop-in]] — 2026-09-15 PayPo PL/PLN iOS Drop-in Sessions/Advanced add-on with redirect, 72-hour offer, authorization-started 30-day term, full-only capture and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-paypo-android-drop-in]] — 2026-09-15-captured PayPo Android Drop-in Sessions/Advanced add-on for required shopper fields, redirect action, full capture and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-paypo-react-native-drop-in]] — 2026-09-15-captured PayPo React Native Drop-in Sessions/Advanced guide for request fields, redirect action, 72-hour offer and full-only capture; Sessions requirement link points to Advanced flow.
+
+
+- [[source-adyen-docs-payment-methods-paypo-flutter-component]] — 2026-09-15-captured PayPo Flutter Components add-on for Sessions/Advanced fields, redirect action, full capture and test/live setup; source flags mismatched base-flow links.
+
+
+- [[source-adyen-docs-payment-methods-paypo-web-drop-in]] — 2026-09-15-captured PayPo Web Drop-in Sessions/Advanced add-on for PL/PLN examples, redirect action, 72-hour offer, 30-day shopper term and full-only capture.
+
+
+- [[source-adyen-docs-payment-methods-paypo-flutter-drop-in]] — 2026-09-15-captured PayPo Flutter Drop-in Sessions/Advanced add-on with shopper fields, redirect action, full capture/funding conditions, and test/live setup.
+
+
+- [[source-adyen-docs-payment-methods-paypo-web-component]] — 2026-09-15 PayPo PL/PLN Web Components Sessions/Advanced redirect guide covering 72-hour offer, authorization-started 30-day term, full-only capture and test/live routes.
+
+
+- [[source-adyen-docs-payment-methods-iris]] — 2026-09-15-captured IRIS GR/EUR redirect overview with Greek-bank/DIAS onboarding, Adyen gateway role, bank-handled refunds/cancellations, and integration routes.
+
+
+- [[source-adyen-docs-payment-methods-paypo-ios-component]] — 2026-09-15-captured PayPo iOS Components Sessions/Advanced guide for PL/PLN requests, redirect action, 72-hour offer, 30-day shopper term and full-only capture; source flags `None` Component snippet and Advanced base-link mismatch.
+
+
+- [[source-adyen-docs-payment-methods-paypo-api-only]] — 2026-09-15-captured PayPo Advanced-flow API-only add-on for PL/PLN discovery, redirect return and webhook results, full capture, and test/live setup; source flags item-field wording and curl examples.
+
+
+- [[source-adyen-docs-payment-methods-iris-api-only]] — IRIS API-only issuer redirect and QR flows, bank/Adyen onboarding, and webhook outcome handling.
+
+
+- [[source-adyen-docs-payment-methods-paypo-android-component]] — 2026-09-15-captured PayPo Android Components Sessions/Advanced guide for method-specific request fields, redirect Component setup, full capture, and test/live steps.
+
+
+- [[source-adyen-docs-payment-methods-iris-web-drop-in]] — 2026-09-15-captured IRIS Web Drop-in add-on for Sessions and Advanced issuer-redirect/QR routes, with Greek-bank/Adyen live onboarding and QR webhook result.
+
+
+- [[source-adyen-docs-payment-methods-titres-restaurant]] — 2023-modified, 2026-09-15-captured French FR/EUR meal-voucher overview distinguishing online issuers from in-person Edenred, Conecs/issuer activation, feature matrix and channel routes.
+
+
+- [[source-adyen-docs-payment-methods-iris-web-component]] — 2026-09-15 IRIS Web Components Sessions/Advanced add-on covering issuer redirect versus QR action, result handling, ten-minute QR window and Greek-bank/Adyen live onboarding.
+
+
+- [[source-adyen-docs-payment-methods-online-banking-india]] — 2026-09-15-captured Online Banking India redirect overview with local India prerequisites, IN/INR capability matrix, and Web/API-only/Pay by Link routes.
+
+
+- [[source-adyen-docs-payment-methods-ancv]] — 2026-09-15-captured French ANCV holiday-voucher overview covering gateway versus ANCV settlement roles, partial-payment orderData, capability matrix and Web/API routes; source preserves a partial-capture matrix conflict.
+
+
+- [[source-adyen-docs-payment-methods-paypo]] — 2026-09-15-captured PayPo payment-method overview for PL/PLN redirect BNPL capability marks and Web/mobile/API-only integration routes.
+
+
+- [[source-adyen-docs-payment-methods-walley]] — 2024-modified, 2026-09-15-captured Nordic Walley B2C/B2B redirect overview with distinct method types, DK/DKK B2C restriction, 90-day capture limit and platform routes.
+
+
 - [[source-adyen-docs-payment-methods-zip-web]] — 2026-09-15-captured Zip Web chooser routing to Drop-in/Components child and main integration guides.
 
 

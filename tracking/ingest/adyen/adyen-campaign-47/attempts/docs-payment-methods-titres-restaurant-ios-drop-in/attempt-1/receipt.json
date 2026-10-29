@@ -1,0 +1,54 @@
+{
+  "job_id": "docs-payment-methods-titres-restaurant-ios-drop-in",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Adyen Titres-restaurant iOS Drop-in integration\"\ntype: source\ndate_ingested: 2026-10-29\noriginal_format: webpage\ncanonical_url: \"https://docs.adyen.com/payment-methods/titres-restaurant/ios-drop-in\"\nraw_files:\n  - \"adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md\"\ntags: [adyen, titres-restaurant, meal-voucher, ios, drop-in, partial-payments]\n---\n\n## Overview\n\nThis captured Adyen guide adds Titres-restaurant to an existing iOS Drop-in integration. It distinguishes the default `/sessions` path, which needs no method-specific iOS Drop-in configuration, from an additional-use-case `/payments` path with balance and order callbacks for split tender. It is documentation, not proof of current merchant or issuer eligibility, live activation, or a completed payment. [[adyen]] [[adyen-online-payments]]\n\n## Key takeaways\n\n- **Setup and version qualification:** The requirements table sets a minimum iOS Drop-in version of **5.4.0**. Activate Titres-restaurant to obtain a *Carte de domiciliation CONECS*, then add the meal-voucher method in Customer Area with SIRET and Conecs MID. The API reference and Sessions tab also call `/sessions` the default from v5.0.0; that broader statement does not remove this page's 5.4.0 requirement. The page says no additional Titres-restaurant request fields are needed. [Raw: lines 21\u201344]\n- **Sessions result:** For the `/sessions` tab, the page says no Titres-restaurant-specific iOS Drop-in integration is required. The payment result is returned in `didComplete`. This is distinct from the `/payments` callback configuration below. [Raw: lines 40\u201352]\n- **Balance and order callbacks for `/payments`:** For the additional-use-case `/payments` path, configure `checkBalance` to call `/paymentMethods/balance` when the shopper pays with the meal voucher. When balance is below the transaction total, `requestOrder` calls `/orders` for the **total transaction amount** so the voucher and another method can fund a partial-payment order. If the shopper cancels the meal-voucher transaction, `cancelOrder` calls `/orders/cancel`. The Swift `PartialPaymentDelegate` block is an illustrative callback sketch, not evidence that an order or payment succeeded. [Raw: lines 50\u201381]\n- **Outcome and capture boundary:** On the `/payments` path, use its `resultCode` to show the shopper a result and expect the outcome asynchronously by webhook. The listed outcomes are `Authorised`, `Cancelled`, `Error`, and `Refused`. If manual capture is used, an `Authorised` payment still needs capture. A low-balance order request or balance check is not itself payment authorization. [Raw: lines 83\u201394]\n- **Test and live gate:** Test credentials must come directly from Bimpli, Sodexo, or Up D\u00e9jeuner. Live acceptance requires contacting Adyen Support to activate Titres-restaurant in the live environment. [Raw: lines 96\u2013100]\n\n## Detail locators\n\n- iOS Drop-in purpose, CONECS/SIRET/MID setup, version and endpoint statements: pinned raw lines 15\u201344.\n- Sessions `didComplete` result and `/payments` conditional callbacks with Swift sketch: pinned raw lines 46\u201381.\n- `/payments` result codes, asynchronous webhook, manual capture, and test/live steps: pinned raw lines 83\u2013106.\n\n## Related\n\n- [[adyen-online-payments]] \u2014 provider online payment architecture and method routes.\n- [[source-adyen-docs-payment-methods-titres-restaurant]] \u2014 separate meal-voucher method overview.\n\n## Raw Sources\n\n- [[raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15|Titres-restaurant iOS Drop-in, captured 2026-09-15]]\n",
+  "quotes": [
+    {
+      "text": "| **Integration type** | Make sure that you have built your [iOS Drop-in integration](/online-payments/build-your-integration/sessions-flow?platform=iOS\\&integration=Drop-in). The minimum required version is 5.4.0.                                                                                                                                                                     |",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md:25"
+    },
+    {
+      "text": "There is no required Titres-restaurant specific integration for iOS Drop-in.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md:44"
+    },
+    {
+      "text": "| `checkBalance` | Called when the shopper pays with a Titres-restaurant meal voucher. Make a [/paymentMethods/balance](https://docs.adyen.com/api-explorer/Checkout/latest/post/paymentMethods/balance) request.                                            |",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md:60"
+    },
+    {
+      "text": "You will also receive the outcome of the payment asynchronously in a [webhook](/development-resources/webhooks). For Titres-restaurant payments, you can receive the following `resultCode` values:",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md:87"
+    },
+    {
+      "text": "Before you can accept live payments, you must contact our [Support Team](https://ca-test.adyen.com/ca/ca/contactUs/support.shtml?form=other) to activate Titres-restaurant in your live environment.",
+      "location": "raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md:100"
+    }
+  ],
+  "suggestions": {
+    "company": [],
+    "concepts": [
+      {
+        "update_id": "c47-titres-restaurant-ios-drop-in-online-payments-route",
+        "target_path": "wiki/concepts/adyen-online-payments.md",
+        "update_kind": "reciprocal_source_link",
+        "anchor": "## Sources",
+        "proposed_markdown": "- [[source-adyen-docs-payment-methods-titres-restaurant-ios-drop-in]] \u2014 2026-09-15-captured Titres-restaurant iOS Drop-in add-on for Sessions result and conditional /payments balance/order callbacks, with CONECS setup and live activation.",
+        "quote_indexes": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "warnings": [
+          "The page requires iOS Drop-in v5.4.0 while calling /sessions default from v5.0.0; preserve the page-specific minimum."
+        ]
+      }
+    ],
+    "index": [],
+    "log": []
+  },
+  "raw_path": "raw/adyen/docs/payment-methods/titres-restaurant/ios-drop-in/2026-09-15.md",
+  "raw_sha256": "763ed05e46e5c5f0bdfd4dbc4a3bffbf7b45e4a3c9786960ea62ff75fccd505a",
+  "status": "candidate_ready"
+}
