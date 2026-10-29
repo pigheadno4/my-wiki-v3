@@ -52,6 +52,20 @@ PHP does not use a uniform exception for these failures: private ID validators t
 
 Settlement submission gains `shipping` and `shippingAddressId`; partial-settlement requests inherit the same signature. Refund options gain an explicitly allowed `surchargeAmount` field and the validation-code constant `TRANSACTION_SURCHARGE_NOT_ON_ORIGINAL_SALE` (`97605`). Search gains `TransactionSearch::achType()` with `Transaction::ACH_TYPE_SAME_DAY` and `ACH_TYPE_STANDARD`. These are package-specific request/search surfaces, not proof of gateway acceptance, ACH enablement, settlement timing or refund success. The `6.37.0` baseline is preserved. See [[source-github-braintree-php]] and [[changelog-github-braintree-php]].
 
+## Ruby `4.41.0` Token and Security Boundary
+
+Ruby `braintree@4.41.0` at f3d70148cb0a68e8a20160b9a8e4e01e7d79d1df adds preferred_payment_method_token to client_token.generate. It shallow-copies options before defaults/remapping and sends the selected token as payment_method_id; symbol-key input wins when both symbol/string forms exist. This supersedes the 4.40.0 gap above for this version only, not frontend saved-payment support, customer authorization or merchant eligibility. [[source-github-braintree-ruby]]
+
+Path-ID validation expands across 15 gateway classes using the existing helper, which validates value.to_s against nonempty ASCII letters/digits/underscore/hyphen. Invalid affected path inputs raise ArgumentError before HTTP, unlike Node/PHP package-specific errors/type rules. Some previously lowercase-only transaction checks now allow uppercase/underscore/hyphen; this is not uniformly a narrower character set. Body identifiers are not universally checked; do not sanitize one identity into another. GET/DELETE now append query hashes through an existing helper that rejects nested hashes but does not URL-encode key/value pairs or merge existing query strings. This is not general query-injection protection.
+
+ACH search gains same_day/standard constants and refund options explicitly allow surcharge_amount. These are request/search surfaces, not ACH enablement, refund success or settlement timing guarantees. Prior 4.40.0 runtime/3DS/webhook behavior remains historical evidence, not newly introduced by 4.41.0. [[changelog-github-braintree-ruby]]
+
+## Ruby `4.42.0` Reversal and External Vault
+
+Ruby `braintree@4.42.0` adds `Transaction.reverse`/`reverse!` and gateway equivalents. The SDK validates the transaction path ID, accepts only `api_request_key` in reversal options and posts to `/transactions/{id}/reverse`. The changelog describes automatic void or full refund; the server chooses, not a local SDK status inspection or fallback. No partial-refund amount is accepted by this method. The ordinary result and bang resource/`ValidationsFailed` conventions remain; gateway eligibility and request-key processing are not guaranteed by the client code. [[source-github-braintree-ruby]]
+
+External-vault card create/update signatures gain `mastercard_transaction_link_id`; unchanged Customer signatures inherit that card surface. Transaction create/sale and the declared card-verification signature gain `previous_mastercard_transaction_link_id`. Verification create directly posts its parameters rather than invoking that signature validator, so this is not evidence of newly enforced verification allowlisting. Six new error constants cover reversal availability and Mastercard external-vault validation. Existing network IDs, response TLID readers and all 4.40.0/4.41.0 knowledge remain separate historical evidence. [[changelog-github-braintree-ruby]]
+
 ## Related
 
 - [[source-braintree-docs-reference-response-customer-node]] - 2026-09-16 unversioned Braintree Node.js website `Customer` response-reference route whose captured body supplies only a policy-based results-limitation note and no operation, containing-object list or property schema; not exact-package behavior, current result visibility, successful retrieval or payment-outcome proof

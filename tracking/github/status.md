@@ -4671,6 +4671,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-js/releases/react-paypal-js/10.0.0/2026-07-22/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-js/comparisons/react-paypal-js/9.3.0--10.0.0/comparison.json)
 
+## `github-be3efdba5e2af9ed5f3d`
+
+- Repository: `braintree/braintree_ruby`
+- SHA: `f3d70148cb0a68e8a20160b9a8e4e01e7d79d1df`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ruby/ingest-packets/github-be3efdba5e2af9ed5f3d/packet.md)
+- Review priority: `normal`
+- Required reading: `30` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree@4.41.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_ruby/releases/braintree/4.41.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_ruby/comparisons/braintree/4.40.0--4.41.0/comparison.json)
+
 ## `github-c0cd3d8649c017f9eb13`
 
 - Repository: `paypal/paypal-sdk-release`
@@ -5965,6 +5990,31 @@
 - `@paypal/paypal-server-sdk@2.3.0` (recommended `full`)
   Release: [manifest](../../raw/github/paypal/paypal-typescript-server-sdk/releases/paypal-server-sdk/2.3.0/2026-08-10/manifest.json)
   Comparison: Not applicable
+
+## `github-ef53ac97b5ca84789bf1`
+
+- Repository: `braintree/braintree_ruby`
+- SHA: `647f4bb8a45a869cb4d664077d28287881d299b1`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/manifest.json)
+- Packet: [review packet](repos/braintree/braintree_ruby/ingest-packets/github-ef53ac97b5ca84789bf1/packet.md)
+- Review priority: `normal`
+- Required reading: `16` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `braintree@4.42.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/braintree/braintree_ruby/releases/braintree/4.42.0/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/braintree/braintree_ruby/comparisons/braintree/4.41.0--4.42.0/comparison.json)
 
 ## `github-efa92d3092d7b5e29446`
 

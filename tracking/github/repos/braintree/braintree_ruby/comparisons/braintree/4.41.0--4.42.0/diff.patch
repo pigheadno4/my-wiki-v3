@@ -1,0 +1,166 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 0437b7c..515ea90 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,10 @@
+ # Changelog
+ 
++## 4.42.0
++- Add `Transaction.reverse` to automatically void or fully refund a transaction
++- Add `mastercard_transaction_link_id` to `external_vault` on `CreditCard` and `Customer`
++- Add `previous_mastercard_transaction_link_id` to `external_vault` on `Transaction` and `CreditCardVerification.create`
++
+ ## 4.41.0
+ - Add `preferred_payment_method_token` to `ClientToken.generate`
+ - Fix path traversal vulnerability in `CreditCard`, `CreditCardVerification`, `Customer`, `MerchantAccount`, `PayPalAccount`, `PaymentMethod`, `PaymentMethodNonce`, `Plan`, `SepaDirectDebitAccount`, `Subscription`, `Testing`, `Transaction`, `TransactionLineItem`, `UsBankAccount`, and `UsBankAccountVerification` gateways by validating that IDs used in request paths do not contain path separators or relative-path segments
+diff --git a/lib/braintree/credit_card_gateway.rb b/lib/braintree/credit_card_gateway.rb
+index e2915a8..f931ac3 100644
+--- a/lib/braintree/credit_card_gateway.rb
++++ b/lib/braintree/credit_card_gateway.rb
+@@ -120,7 +120,7 @@ module Braintree
+         :billing_address_id, :cardholder_name, :cvv, :expiration_date, :expiration_month,
+         :expiration_year, :number, :token, :venmo_sdk_payment_method_code, # Deprecated
+         :device_data, :payment_method_nonce,
+-        {:external_vault => [:network_transaction_id]},
++        {:external_vault => [:network_transaction_id, :mastercard_transaction_link_id]},
+         {:options => options},
+         {:billing_address => billing_address_params}
+       ]
+diff --git a/lib/braintree/credit_card_verification_gateway.rb b/lib/braintree/credit_card_verification_gateway.rb
+index 1730722..02fdcce 100644
+--- a/lib/braintree/credit_card_verification_gateway.rb
++++ b/lib/braintree/credit_card_verification_gateway.rb
+@@ -61,6 +61,7 @@ module Braintree
+         ]},
+         {:external_vault => [
+           :previous_network_transaction_id,
++          :previous_mastercard_transaction_link_id,
+           :status,
+         ]},
+         :intended_transaction_source,
+diff --git a/lib/braintree/error_codes.rb b/lib/braintree/error_codes.rb
+index c5bebd3..704d270 100644
+--- a/lib/braintree/error_codes.rb
++++ b/lib/braintree/error_codes.rb
+@@ -120,6 +120,10 @@ module Braintree
+       VerificationAccountTypeNotSupported = "91758"
+       VerificationNotSupportedOnThisMerchantAccount = "91730"
+ 
++      module ExternalVault
++        MastercardTransactionLinkIdIsInvalid = "91767"
++      end
++
+       module Options
+         UpdateExistingTokenIsInvalid = "91723"
+         UpdateExistingTokenNotAllowed = "91729"
+@@ -367,6 +371,7 @@ module Braintree
+       CannotRefundUnlessSettled = "91506"
+       CannotRefundWithPendingMerchantAccount = "91559"
+       CannotRefundWithSuspendedMerchantAccount = "91538"
++      CannotReverseAtThisTime = "915282"
+       CannotSimulateTransactionSettlement = "91575"
+       CannotSubmitForSettlement = "91507"
+       CannotUpdateTransactionDetailsNotSubmittedForSettlement = "915129"
+@@ -613,8 +618,10 @@ module Braintree
+       end
+ 
+       module ExternalVault
++        PreviousMastercardTransactionLinkIdIsInvalid = "915279"
+         PreviousNetworkTransactionIdIsInvalid = "915179"
+         StatusIsInvalid = "915175"
++        StatusWithPreviousMastercardTransactionLinkIdIsInvalid = "915278"
+         StatusWithPreviousNetworkTransactionIdIsInvalid = "915177"
+       end
+     end
+@@ -745,6 +752,11 @@ module Braintree
+     end
+ 
+     module Verification
++      module ExternalVault
++        PreviousMastercardTransactionLinkIdIsInvalid = "942206"
++        StatusWithPreviousMastercardTransactionLinkIdIsInvalid = "942205"
++      end
++
+       module Options
+         AccountTypeIsInvalid = "942184"
+         AccountTypeNotSupported = "942185"
+diff --git a/lib/braintree/transaction.rb b/lib/braintree/transaction.rb
+index 6b35630..ffbf446 100644
+--- a/lib/braintree/transaction.rb
++++ b/lib/braintree/transaction.rb
+@@ -247,6 +247,14 @@ module Braintree
+       Configuration.gateway.transaction.refund!(*args)
+     end
+ 
++    def self.reverse(*args)
++      Configuration.gateway.transaction.reverse(*args)
++    end
++
++    def self.reverse!(*args)
++      Configuration.gateway.transaction.reverse!(*args)
++    end
++
+     def self.sale(*args)
+       Configuration.gateway.transaction.sale(*args)
+     end
+diff --git a/lib/braintree/transaction_gateway.rb b/lib/braintree/transaction_gateway.rb
+index 0e1f025..ecd8b89 100644
+--- a/lib/braintree/transaction_gateway.rb
++++ b/lib/braintree/transaction_gateway.rb
+@@ -100,6 +100,22 @@ module Braintree
+       _do_create "/transactions", :transaction => attributes
+     end
+ 
++    def reverse(transaction_id, options = {})
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
++
++      Util.verify_keys(TransactionGateway._reverse_signature, options)
++      transaction_params = options.empty? ? nil : options
++      response = @config.http.post(
++        "#{@config.base_merchant_path}/transactions/#{transaction_id}/reverse",
++        transaction_params ? {:transaction => transaction_params} : nil,
++      )
++      _handle_transaction_response(response)
++    end
++
++    def reverse!(*args)
++      return_object_or_raise(:transaction) { reverse(*args) }
++    end
++
+     def sale(attributes)
+       create(attributes.merge(:type => "sale"))
+     end
+@@ -226,6 +242,7 @@ module Braintree
+         {:external_vault => [
+           :status,
+           :previous_network_transaction_id,
++          :previous_mastercard_transaction_link_id,
+         ]},
+         {:google_pay_card => [:number, :cryptogram, :google_transaction_id, :expiration_month, :expiration_year, :source_card_type, :source_card_last_four, :eci_indicator]},
+         {:industry => [
+@@ -394,6 +411,12 @@ module Braintree
+       ]
+     end
+ 
++    def self._reverse_signature
++      [
++        :api_request_key,
++      ]
++    end
++
+     def _do_create(path, params=nil)
+       if !params.nil?
+         params = Util.replace_key(params, :google_pay_card, :android_pay_card)
+diff --git a/lib/braintree/version.rb b/lib/braintree/version.rb
+index 324a8e6..76f21a4 100644
+--- a/lib/braintree/version.rb
++++ b/lib/braintree/version.rb
+@@ -1,7 +1,7 @@
+ module Braintree
+   module Version
+     Major = 4
+-    Minor = 41
++    Minor = 42
+     Tiny = 0
+ 
+     String = "#{Major}.#{Minor}.#{Tiny}"

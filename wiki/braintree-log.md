@@ -6,6 +6,16 @@ tags: [braintree, github-repository, operations]
 
 > Braintree-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-29] ingest | Ruby `4.42.0`
+
+- Approved delta with focused reading, serially after completed 4.41.0. Exact SHA `647f4bb8a45a869cb4d664077d28287881d299b1`; seven changed/194 unchanged retained files, no gaps or unclassified changes.
+- Adds reversal with gateway-selected void/full refund, external-vault Mastercard link inputs and six error constants, with partial-refund/signature/eligibility limits. Concept first; cumulative source/changelog/company/index/logs updated; all 4.40.0/4.41.0 history and source_count 797 preserved. No Ruby/gateway/payment execution, commit or push. [[source-github-braintree-ruby]] [[changelog-github-braintree-ruby]]
+
+## [2026-10-29] ingest | Ruby `4.41.0`
+
+- Approved full additive override github-be3efdba5e2af9ed5f3d, SHA f3d70148cb0a68e8a20160b9a8e4e01e7d79d1df, with focused reading of21 modified retained files, affected prior comparison context, Util dependency and cumulative wiki history; unchanged source/manifests/history mechanically verified. Both201-file capsules pass402 size/SHA-256/Git identities; full assignment210,46 upstream dispositions, no gaps. Raw changelog retains1308 prior lines,6 inserted.
+- Records preferred-token remapping/caller preservation,15-gateway path checks and Ruby-specific exceptions/stringification, ACH search/refund signature and non-encoding query forwarding. Existing concept first; cumulative source/changelog/company/catalog/logs updated, all4.40.0 history and source_count797 preserved. No Ruby/gem/gateway/payment execution, cross-company comparison, extra collection, commit or push. Details [[source-github-braintree-ruby]] and [[changelog-github-braintree-ruby]].
+
 ## [2026-10-29] ingest | Android Drop-in `default-branch@55fc0bd`
 
 - Approved serial delta `github-dfc8b50ca037e584c6cc`: `72c05861a0e903e19bc9baca8bc0740b0b1ed57c` -> `55fc0bd3a43299af800a5d94a71f8c9853069818` (upstream October 20). Focused reading: both changed root/library Gradle files and prior versions, comparison and full cumulative source/changelog; manifests/unchanged evidence checked mechanically and relevant shared sections read. All 330 file sizes/SHA-256/Git blob IDs pass; two changed/163 unchanged, two upstream dispositions, no exclusions/gaps/unclassified changes.

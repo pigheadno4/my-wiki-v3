@@ -1,0 +1,576 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index dccded8..0437b7c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,5 +1,11 @@
+ # Changelog
+ 
++## 4.41.0
++- Add `preferred_payment_method_token` to `ClientToken.generate`
++- Fix path traversal vulnerability in `CreditCard`, `CreditCardVerification`, `Customer`, `MerchantAccount`, `PayPalAccount`, `PaymentMethod`, `PaymentMethodNonce`, `Plan`, `SepaDirectDebitAccount`, `Subscription`, `Testing`, `Transaction`, `TransactionLineItem`, `UsBankAccount`, and `UsBankAccountVerification` gateways by validating that IDs used in request paths do not contain path separators or relative-path segments
++- Add `ach_type` to transaction search
++- Add `surcharge_amount` to `Transaction.refund`
++
+ ## 4.40.0
+ - Add `EmailFormatIsInvalid (92963)` and `EmailIsTooLong (92964)` validation error codes to `PayPalAccount`
+ - Add `network` to `three_d_secure_pass_thru` across `Transaction.sale`, `CreditCard`, `Customer`, `PaymentMethod`, and `CreditCardVerification`, with `ThreeDSecurePassThru::Network` constants (`Eftpos`, `Mastercard`, `Visa`)
+diff --git a/lib/braintree/client_token_gateway.rb b/lib/braintree/client_token_gateway.rb
+index 78fe355..285771c 100644
+--- a/lib/braintree/client_token_gateway.rb
++++ b/lib/braintree/client_token_gateway.rb
+@@ -9,12 +9,21 @@ module Braintree
+     end
+ 
+     def generate(options={})
++      options = options.dup
++
+       _validate_options(options)
+ 
+       options[:version] ||= ClientToken::DEFAULT_VERSION
+ 
+       Util.verify_keys(ClientTokenGateway._generate_signature, options)
+ 
++      if options.has_key?(:preferred_payment_method_token)
++        options[:payment_method_id] = options.delete(:preferred_payment_method_token)
++        options.delete("preferred_payment_method_token")
++      elsif options.has_key?("preferred_payment_method_token")
++        options[:payment_method_id] = options.delete("preferred_payment_method_token")
++      end
++
+       params = {:client_token => options}
+       result = @config.http.post("#{@config.base_merchant_path}/client_token", params)
+ 
+@@ -27,7 +36,7 @@ module Braintree
+ 
+     def self._generate_signature
+       [
+-        :address_id, :customer_id, :proxy_merchant_id, :merchant_account_id,
++        :address_id, :customer_id, :merchant_account_id, :preferred_payment_method_token, :proxy_merchant_id,
+         :version,
+         {:domains => [:_any_key_]},
+         {:options => [:fail_on_duplicate_payment_method, :fail_on_duplicate_payment_method_for_customer, :make_default, :verify_card]}
+diff --git a/lib/braintree/credit_card_gateway.rb b/lib/braintree/credit_card_gateway.rb
+index aa76119..e2915a8 100644
+--- a/lib/braintree/credit_card_gateway.rb
++++ b/lib/braintree/credit_card_gateway.rb
+@@ -39,6 +39,8 @@ module Braintree
+     end
+ 
+     def delete(token)
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       @config.http.delete("#{@config.base_merchant_path}/payment_methods/credit_card/#{token}")
+     end
+ 
+@@ -55,7 +57,8 @@ module Braintree
+     end
+ 
+     def find(token)
+-      raise ArgumentError if token.nil? || token.to_s.strip == ""
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_methods/credit_card/#{token}")
+       CreditCard._new(@gateway, response[:credit_card])
+     rescue NotFoundError
+@@ -63,7 +66,8 @@ module Braintree
+     end
+ 
+     def from_nonce(nonce)
+-      raise ArgumentError if nonce.nil? || nonce.to_s.strip == ""
++      raise ArgumentError, "nonce contains invalid characters" if Util.invalid_path_segment?(nonce)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_methods/from_nonce/#{nonce}")
+       CreditCard._new(@gateway, response[:credit_card])
+     rescue NotFoundError
+@@ -71,6 +75,8 @@ module Braintree
+     end
+ 
+     def update(token, attributes)
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       # NEXT_MAJOR_VERSION remove this check
+       if attributes.has_key?(:venmo_sdk_payment_method_code) || attributes.has_key?(:venmo_sdk_session)
+         warn "[DEPRECATED] The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead."
+diff --git a/lib/braintree/credit_card_verification_gateway.rb b/lib/braintree/credit_card_verification_gateway.rb
+index 1b989e2..1730722 100644
+--- a/lib/braintree/credit_card_verification_gateway.rb
++++ b/lib/braintree/credit_card_verification_gateway.rb
+@@ -8,6 +8,8 @@ module Braintree
+ 
+     def find(id)
+       raise ArgumentError if id.nil? || id.to_s.strip == ""
++      raise ArgumentError, "id contains invalid characters" if Util.invalid_path_segment?(id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/verifications/#{id}")
+       CreditCardVerification._new(response[:verification])
+     rescue NotFoundError
+diff --git a/lib/braintree/customer_gateway.rb b/lib/braintree/customer_gateway.rb
+index abf9b1d..2c44c14 100644
+--- a/lib/braintree/customer_gateway.rb
++++ b/lib/braintree/customer_gateway.rb
+@@ -23,15 +23,19 @@ module Braintree
+     end
+ 
+     def delete(customer_id)
++      raise ArgumentError, "customer_id contains invalid characters" if Util.invalid_path_segment?(customer_id)
++
+       @config.http.delete("#{@config.base_merchant_path}/customers/#{customer_id}")
+       SuccessfulResult.new
+     end
+ 
+     def find(customer_id, options = {})
+-      raise ArgumentError, "customer_id contains invalid characters" unless customer_id.to_s =~ /\A[\w-]+\z/
+-      raise ArgumentError, "customer_id cannot be blank" if customer_id.nil?|| customer_id.to_s.strip == ""
++      raise ArgumentError, "customer_id contains invalid characters" if Util.invalid_path_segment?(customer_id)
++
++      association_filter_id = options[:association_filter_id]
++      raise ArgumentError, "association_filter_id contains invalid characters" if association_filter_id && Util.invalid_path_segment?(association_filter_id)
+ 
+-      query_params = options[:association_filter_id].nil? ? "" : "?association_filter_id=#{options[:association_filter_id]}"
++      query_params = association_filter_id.nil? ? "" : "?association_filter_id=#{association_filter_id}"
+       response = @config.http.get("#{@config.base_merchant_path}/customers/#{customer_id}#{query_params}")
+       Customer._new(@gateway, response[:customer])
+     rescue NotFoundError
+@@ -47,11 +51,15 @@ module Braintree
+     end
+ 
+     def transactions(customer_id, options = {})
++      raise ArgumentError, "customer_id contains invalid characters" if Util.invalid_path_segment?(customer_id)
++
+       response = @config.http.post("#{@config.base_merchant_path}/customers/#{customer_id}/transaction_ids")
+       ResourceCollection.new(response) { |ids| _fetch_transactions(customer_id, ids) }
+     end
+ 
+     def update(customer_id, attributes)
++      raise ArgumentError, "customer_id contains invalid characters" if Util.invalid_path_segment?(customer_id)
++
+       Util.verify_keys(CustomerGateway._update_signature, attributes)
+       _do_update(:put, "/customers/#{customer_id}", :customer => attributes)
+     end
+diff --git a/lib/braintree/http.rb b/lib/braintree/http.rb
+index 7a0be44..eb55e58 100644
+--- a/lib/braintree/http.rb
++++ b/lib/braintree/http.rb
+@@ -8,7 +8,8 @@ module Braintree
+     end
+ 
+     def delete(path, query_params = {})
+-      response = _http_do Net::HTTP::Delete, path
++      full_path = path + _build_query_string(query_params)
++      response = _http_do Net::HTTP::Delete, full_path
+       if response.code.to_i == 200 || response.code.to_i == 204
+         true
+       elsif response.code.to_i == 422
+@@ -19,7 +20,8 @@ module Braintree
+     end
+ 
+     def get(path, query_params = {})
+-      response = _http_do Net::HTTP::Get, path
++      full_path = path + _build_query_string(query_params)
++      response = _http_do Net::HTTP::Get, full_path
+       if response.code.to_i == 200 || response.code.to_i == 422
+         Xml.hash_from_xml(_body(response))
+       else
+diff --git a/lib/braintree/merchant_account_gateway.rb b/lib/braintree/merchant_account_gateway.rb
+index cb013f8..89a7592 100644
+--- a/lib/braintree/merchant_account_gateway.rb
++++ b/lib/braintree/merchant_account_gateway.rb
+@@ -22,6 +22,8 @@ module Braintree
+ 
+     def find(merchant_account_id)
+       raise ArgumentError if merchant_account_id.nil? || merchant_account_id.to_s.strip == ""
++      raise ArgumentError, "merchant_account_id contains invalid characters" if Util.invalid_path_segment?(merchant_account_id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/merchant_accounts/#{merchant_account_id}")
+       MerchantAccount._new(@gateway, response[:merchant_account])
+     rescue NotFoundError
+diff --git a/lib/braintree/payment_method_gateway.rb b/lib/braintree/payment_method_gateway.rb
+index e0486de..530cc2b 100644
+--- a/lib/braintree/payment_method_gateway.rb
++++ b/lib/braintree/payment_method_gateway.rb
+@@ -33,6 +33,8 @@ module Braintree
+     end
+ 
+     def delete(token, options = {})
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       Util.verify_keys(PaymentMethodGateway._delete_signature, options)
+       query_param = "?" + Util.hash_to_query_string(options) if not options.empty?
+       @config.http.delete("#{@config.base_merchant_path}/payment_methods/any/#{token}#{query_param}")
+@@ -40,7 +42,8 @@ module Braintree
+     end
+ 
+     def find(token)
+-      raise ArgumentError if token.nil? || token.to_s.strip == ""
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_methods/any/#{token}")
+       if response.has_key?(:credit_card)
+         CreditCard._new(@gateway, response[:credit_card])
+@@ -64,6 +67,8 @@ module Braintree
+     end
+ 
+     def update(token, attributes)
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       # NEXT_MAJOR_VERSION remove this check
+       if attributes.has_key?(:venmo_sdk_payment_method_code) || attributes.has_key?(:venmo_sdk_session)
+         warn "[DEPRECATED] The Venmo SDK integration is Unsupported. Please update your integration to use Pay with Venmo instead."
+diff --git a/lib/braintree/payment_method_nonce_gateway.rb b/lib/braintree/payment_method_nonce_gateway.rb
+index c7ba44f..ee232c5 100644
+--- a/lib/braintree/payment_method_nonce_gateway.rb
++++ b/lib/braintree/payment_method_nonce_gateway.rb
+@@ -9,6 +9,8 @@ module Braintree
+     end
+ 
+     def create(payment_method_token, args = {payment_method_nonce: {}})
++      raise ArgumentError, "payment_method_token contains invalid characters" if Util.invalid_path_segment?(payment_method_token)
++
+       Util.verify_keys(PaymentMethodNonceGateway._create_signature, args)
+ 
+       response = @config.http.post("#{@config.base_merchant_path}/payment_methods/#{payment_method_token}/nonces", args)
+@@ -30,6 +32,8 @@ module Braintree
+     end
+ 
+     def find(payment_method_nonce)
++      raise ArgumentError, "payment_method_nonce contains invalid characters" if Util.invalid_path_segment?(payment_method_nonce)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_method_nonces/#{payment_method_nonce}")
+       payment_method_nonce = PaymentMethodNonce._new(@gateway, response.fetch(:payment_method_nonce))
+       SuccessfulResult.new(:payment_method_nonce => payment_method_nonce)
+diff --git a/lib/braintree/paypal_account_gateway.rb b/lib/braintree/paypal_account_gateway.rb
+index 18d7029..d7425c8 100644
+--- a/lib/braintree/paypal_account_gateway.rb
++++ b/lib/braintree/paypal_account_gateway.rb
+@@ -7,7 +7,8 @@ module Braintree
+     end
+ 
+     def find(token)
+-      raise ArgumentError if token.nil? || token.to_s.strip == ""
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_methods/paypal_account/#{token}")
+       PayPalAccount._new(@gateway, response[:paypal_account])
+     rescue NotFoundError
+@@ -20,11 +21,15 @@ module Braintree
+     end
+ 
+     def update(token, attributes)
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       Util.verify_keys(PayPalAccountGateway._update_signature, attributes)
+       _do_update(:put, "/payment_methods/paypal_account/#{token}", :paypal_account => attributes)
+     end
+ 
+     def delete(token)
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       @config.http.delete("#{@config.base_merchant_path}/payment_methods/paypal_account/#{token}")
+     end
+ 
+diff --git a/lib/braintree/plan_gateway.rb b/lib/braintree/plan_gateway.rb
+index 9891f01..c39cf0a 100644
+--- a/lib/braintree/plan_gateway.rb
++++ b/lib/braintree/plan_gateway.rb
+@@ -27,6 +27,8 @@ module Braintree
+ 
+     def find(id)
+       raise ArgumentError if id.nil? || id.to_s.strip == ""
++      raise ArgumentError, "id contains invalid characters" if Util.invalid_path_segment?(id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/plans/#{id}")
+       Plan._new(@gateway, response[:plan])
+     rescue NotFoundError
+@@ -34,6 +36,8 @@ module Braintree
+     end
+ 
+     def update(plan_id, attributes)
++      raise ArgumentError, "plan_id contains invalid characters" if Util.invalid_path_segment?(plan_id)
++
+       Util.verify_keys(PlanGateway._update_signature, attributes)
+       response = @config.http.put("#{@config.base_merchant_path}/plans/#{plan_id}", :plan => attributes)
+       if response[:plan]
+diff --git a/lib/braintree/sepa_direct_debit_account_gateway.rb b/lib/braintree/sepa_direct_debit_account_gateway.rb
+index 49841bc..625fc02 100644
+--- a/lib/braintree/sepa_direct_debit_account_gateway.rb
++++ b/lib/braintree/sepa_direct_debit_account_gateway.rb
+@@ -8,6 +8,8 @@ module Braintree
+ 
+     def find(token)
+       raise ArgumentError if token.nil? || token.to_s.strip == ""
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_methods/sepa_debit_account/#{token}")
+       SepaDirectDebitAccount._new(@gateway, response[:sepa_debit_account])
+     rescue NotFoundError
+@@ -16,6 +18,8 @@ module Braintree
+ 
+     def delete(token)
+       raise ArgumentError if token.nil? || token.to_s.strip == ""
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       @config.http.delete("#{@config.base_merchant_path}/payment_methods/sepa_debit_account/#{token}")
+       SuccessfulResult.new
+     rescue NotFoundError
+diff --git a/lib/braintree/subscription_gateway.rb b/lib/braintree/subscription_gateway.rb
+index 4329e4d..6149766 100644
+--- a/lib/braintree/subscription_gateway.rb
++++ b/lib/braintree/subscription_gateway.rb
+@@ -9,6 +9,8 @@ module Braintree
+     end
+ 
+     def cancel(subscription_id)
++      raise ArgumentError, "subscription_id contains invalid characters" if Util.invalid_path_segment?(subscription_id)
++
+       response = @config.http.put("#{@config.base_merchant_path}/subscriptions/#{subscription_id}/cancel")
+       if response[:subscription]
+         SuccessfulResult.new(:subscription => Subscription._new(@gateway, response[:subscription]))
+@@ -36,6 +38,8 @@ module Braintree
+ 
+     def find(id)
+       raise ArgumentError if id.nil? || id.to_s.strip == ""
++      raise ArgumentError, "id contains invalid characters" if Util.invalid_path_segment?(id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/subscriptions/#{id}")
+       Subscription._new(@gateway, response[:subscription])
+     rescue NotFoundError
+@@ -55,6 +59,8 @@ module Braintree
+     end
+ 
+     def update(subscription_id, attributes)
++      raise ArgumentError, "subscription_id contains invalid characters" if Util.invalid_path_segment?(subscription_id)
++
+       Util.verify_keys(SubscriptionGateway._update_signature, attributes)
+       response = @config.http.put("#{@config.base_merchant_path}/subscriptions/#{subscription_id}", :subscription => attributes)
+       if response[:subscription]
+diff --git a/lib/braintree/testing_gateway.rb b/lib/braintree/testing_gateway.rb
+index e5f8156..6dc09d1 100644
+--- a/lib/braintree/testing_gateway.rb
++++ b/lib/braintree/testing_gateway.rb
+@@ -10,6 +10,7 @@ module Braintree
+ 
+     def settle(transaction_id)
+       check_environment
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+ 
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/settle")
+       @transaction_gateway._handle_transaction_response(response)
+@@ -17,6 +18,7 @@ module Braintree
+ 
+     def settlement_confirm(transaction_id)
+       check_environment
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+ 
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/settlement_confirm")
+       @transaction_gateway._handle_transaction_response(response)
+@@ -24,6 +26,7 @@ module Braintree
+ 
+     def settlement_decline(transaction_id)
+       check_environment
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+ 
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/settlement_decline")
+       @transaction_gateway._handle_transaction_response(response)
+@@ -31,6 +34,7 @@ module Braintree
+ 
+     def settlement_pending(transaction_id)
+       check_environment
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+ 
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/settlement_pending")
+       @transaction_gateway._handle_transaction_response(response)
+diff --git a/lib/braintree/transaction.rb b/lib/braintree/transaction.rb
+index 7fa6a19..6b35630 100644
+--- a/lib/braintree/transaction.rb
++++ b/lib/braintree/transaction.rb
+@@ -3,6 +3,12 @@ module Braintree
+     include BaseModule
+     include Braintree::Util::IdEquality
+ 
++    module AchType
++      SameDay  = "same_day"
++      Standard = "standard"
++      All = constants.map { |c| const_get(c) }
++    end
++
+     module CreatedUsing
+       FullInformation = "full_information"
+       Token = "token"
+diff --git a/lib/braintree/transaction_gateway.rb b/lib/braintree/transaction_gateway.rb
+index f12d3be..0e1f025 100644
+--- a/lib/braintree/transaction_gateway.rb
++++ b/lib/braintree/transaction_gateway.rb
+@@ -22,7 +22,7 @@ module Braintree
+     end
+ 
+     def cancel_release(transaction_id)
+-      raise ArgumentError, "transaction_id is invalid" unless transaction_id =~ /\A[0-9a-z]+\z/
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/cancel_release")
+       _handle_transaction_response(response)
+     end
+@@ -42,6 +42,8 @@ module Braintree
+     end
+ 
+     def clone_transaction(transaction_id, attributes)
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
++
+       Util.verify_keys(TransactionGateway._clone_signature, attributes)
+       _do_create "/transactions/#{transaction_id}/clone", :transaction_clone => attributes
+     end
+@@ -59,7 +61,9 @@ module Braintree
+     end
+ 
+     def find(id)
+-      raise ArgumentError, "id can not be empty" if id.nil? || id.strip.to_s == ""
++      raise ArgumentError, "id can not be empty" if id.nil? || id.to_s.strip == ""
++      raise ArgumentError, "id contains invalid characters" if Util.invalid_path_segment?(id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/transactions/#{id}")
+       Transaction._new(@gateway, response[:transaction])
+     rescue NotFoundError
+@@ -67,6 +71,8 @@ module Braintree
+     end
+ 
+     def refund(transaction_id, amount_or_options = nil)
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
++
+       options = if amount_or_options.is_a?(Hash)
+                   amount_or_options
+                 else
+@@ -103,7 +109,7 @@ module Braintree
+     end
+ 
+     def package_tracking(transaction_id, package_tracking_request)
+-      raise ArgumentError, "transaction_id is invalid" unless transaction_id =~ /\A[0-9a-z]+\z/
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+       Util.verify_keys(TransactionGateway._package_tracking_request_signature, package_tracking_request)
+       _do_create "/transactions/#{transaction_id}/shipments", :shipment => package_tracking_request
+     end
+@@ -126,7 +132,7 @@ module Braintree
+     end
+ 
+     def submit_for_settlement(transaction_id, amount = nil, options = {})
+-      raise ArgumentError, "transaction_id is invalid" unless transaction_id =~ /\A[0-9a-z]+\z/
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+       Util.verify_keys(TransactionGateway._submit_for_settlement_signature, options)
+       transaction_params = {:amount => amount}.merge(options)
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/submit_for_settlement", :transaction => transaction_params)
+@@ -138,7 +144,7 @@ module Braintree
+     end
+ 
+     def adjust_authorization(transaction_id, amount)
+-      raise ArgumentError, "transaction_id is invalid" unless transaction_id =~ /\A[0-9a-z]+\z/
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+       Util.verify_keys(TransactionGateway._adjust_authorization_signature, {})
+       transaction_params = {:amount => amount}
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/adjust_authorization", :transaction => transaction_params)
+@@ -150,14 +156,14 @@ module Braintree
+     end
+ 
+     def update_details(transaction_id, options = {})
+-      raise ArgumentError, "transaction_id is invalid" unless transaction_id =~ /\A[0-9a-z]+\z/
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
+       Util.verify_keys(TransactionGateway._update_details_signature, options)
+       response = @config.http.put("#{@config.base_merchant_path}/transactions/#{transaction_id}/update_details", :transaction => options)
+       _handle_transaction_response(response)
+     end
+ 
+     def submit_for_partial_settlement(authorized_transaction_id, amount = nil, options = {})
+-      raise ArgumentError, "authorized_transaction_id is invalid" unless authorized_transaction_id =~ /\A[0-9a-z]+\z/
++      raise ArgumentError, "authorized_transaction_id contains invalid characters" if Util.invalid_path_segment?(authorized_transaction_id)
+       Util.verify_keys(TransactionGateway._submit_for_partial_settlement_signature, options)
+       transaction_params = {:amount => amount}.merge(options)
+       response = @config.http.post("#{@config.base_merchant_path}/transactions/#{authorized_transaction_id}/submit_for_partial_settlement", :transaction => transaction_params)
+@@ -169,6 +175,8 @@ module Braintree
+     end
+ 
+     def void(transaction_id, options = {})
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
++
+       transaction_params = options.empty? ? nil : options
+       response = @config.http.put(
+         "#{@config.base_merchant_path}/transactions/#{transaction_id}/void",
+@@ -382,6 +390,7 @@ module Braintree
+         :api_request_key,
+         :merchant_account_id,
+         :order_id,
++        :surcharge_amount,
+       ]
+     end
+ 
+diff --git a/lib/braintree/transaction_line_item_gateway.rb b/lib/braintree/transaction_line_item_gateway.rb
+index 94da2b1..a54203a 100644
+--- a/lib/braintree/transaction_line_item_gateway.rb
++++ b/lib/braintree/transaction_line_item_gateway.rb
+@@ -7,7 +7,9 @@ module Braintree
+     end
+ 
+     def find_all(transaction_id)
+-      raise ArgumentError, "transaction_id cannot be blank" if transaction_id.nil? || transaction_id.strip.to_s == ""
++      raise ArgumentError, "transaction_id cannot be blank" if transaction_id.nil? || transaction_id.to_s.strip == ""
++      raise ArgumentError, "transaction_id contains invalid characters" if Util.invalid_path_segment?(transaction_id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/transactions/#{transaction_id}/line_items")
+       response[:line_items].map do |line_item_params|
+         TransactionLineItem._new(@gateway, line_item_params)
+diff --git a/lib/braintree/transaction_search.rb b/lib/braintree/transaction_search.rb
+index e3c1555..5d1509d 100644
+--- a/lib/braintree/transaction_search.rb
++++ b/lib/braintree/transaction_search.rb
+@@ -46,6 +46,7 @@ module Braintree
+     equality_fields :credit_card_expiration_date
+     partial_match_fields :credit_card_number
+ 
++    multiple_value_field :ach_type, :allows => Transaction::AchType::All
+     multiple_value_field :created_using, :allows => [
+       Transaction::CreatedUsing::FullInformation,
+       Transaction::CreatedUsing::Token
+diff --git a/lib/braintree/us_bank_account_gateway.rb b/lib/braintree/us_bank_account_gateway.rb
+index 4e51fda..0bdad07 100644
+--- a/lib/braintree/us_bank_account_gateway.rb
++++ b/lib/braintree/us_bank_account_gateway.rb
+@@ -8,6 +8,8 @@ module Braintree
+ 
+     def find(token)
+       raise ArgumentError if token.nil? || token.to_s.strip == ""
++      raise ArgumentError, "token contains invalid characters" if Util.invalid_path_segment?(token)
++
+       response = @config.http.get("#{@config.base_merchant_path}/payment_methods/us_bank_account/#{token}")
+       UsBankAccount._new(@gateway, response[:us_bank_account])
+     rescue NotFoundError
+diff --git a/lib/braintree/us_bank_account_verification_gateway.rb b/lib/braintree/us_bank_account_verification_gateway.rb
+index fbc40a4..5cd4de9 100644
+--- a/lib/braintree/us_bank_account_verification_gateway.rb
++++ b/lib/braintree/us_bank_account_verification_gateway.rb
+@@ -8,6 +8,8 @@ module Braintree
+ 
+     def confirm_micro_transfer_amounts(id, deposit_amounts)
+       raise ArgumentError if id.nil? || id.to_s.strip == "" || !deposit_amounts.kind_of?(Array)
++      raise ArgumentError, "id contains invalid characters" if Util.invalid_path_segment?(id)
++
+       response = @config.http.put(
+         "#{@config.base_merchant_path}/us_bank_account_verifications/#{id}/confirm_micro_transfer_amounts",
+         :us_bank_account_verification => {
+@@ -27,6 +29,8 @@ module Braintree
+ 
+     def find(id)
+       raise ArgumentError if id.nil? || id.to_s.strip == ""
++      raise ArgumentError, "id contains invalid characters" if Util.invalid_path_segment?(id)
++
+       response = @config.http.get("#{@config.base_merchant_path}/us_bank_account_verifications/#{id}")
+       UsBankAccountVerification._new(response[:us_bank_account_verification])
+     rescue NotFoundError
+diff --git a/lib/braintree/version.rb b/lib/braintree/version.rb
+index 21f43fc..324a8e6 100644
+--- a/lib/braintree/version.rb
++++ b/lib/braintree/version.rb
+@@ -1,7 +1,7 @@
+ module Braintree
+   module Version
+     Major = 4
+-    Minor = 40
++    Minor = 41
+     Tiny = 0
+ 
+     String = "#{Major}.#{Minor}.#{Tiny}"

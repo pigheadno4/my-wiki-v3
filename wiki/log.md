@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Braintree Ruby `4.42.0`
+
+- Approved focused-reading delta after completed 4.41.0: reversal, Mastercard external-vault inputs and validation diagnostics with client/server limits. All earlier history preserved; details [[braintree-log]] and [[source-github-braintree-ruby]]. No Ruby/gateway/payment execution, commit or push.
+
+## [2026-10-29] ingest | Braintree Ruby `4.41.0`
+
+- Approved focused-reading additive full: preferred-token generation, broad path-ID checks, ACH/refund/query changes with language-specific and frontend/server boundaries. All4.40.0 history preserved; details [[braintree-log]] and [[source-github-braintree-ruby]]. No Ruby/gateway/payment execution, commit or push.
+
 ## [2026-10-29] ingest | Adyen website C48
 
 - Fifty independently approved Paysafecard, Multibanco, MB WAY and Pay by Bank Europe documentation sources; first full-review approvals 47/50 and 3 targeted correction reviews. 1 concepts touched (0 new); source_count 2414 = 2400 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-48/`; details [[adyen-log]]. No commit/push.

@@ -2,8 +2,11 @@
 title: "GitHub: braintree/braintree_ruby"
 type: source
 date_ingested: 2026-08-23
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/manifest.json"
+  - "github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/manifest.json"
   - "github/braintree/braintree_ruby/snapshots/2026-08-23-1217992/manifest.json"
 tags: [braintree, ruby-sdk, server-sdk, checkout, paypal, venmo, subscriptions, webhooks, github-repository]
 ---
@@ -14,8 +17,12 @@ tags: [braintree, ruby-sdk, server-sdk, checkout, paypal, venmo, subscriptions, 
 
 Repository: <https://github.com/braintree/braintree_ruby>
 
+Latest ingested Ruby release: `braintree@4.42.0`, exact SHA `647f4bb8a45a869cb4d664077d28287881d299b1`. The full 4.41.0 and delta 4.42.0 records below preserve all 4.40.0 implementation and release history; identically named Node packages remain separate evidence.
+
 ## Evidence Boundary
 
+- For 4.42.0 the user approved delta mode with focused reading: all changed implementation, affected prior context, comparison and cumulative wiki history; generated inventories and unchanged changelog history mechanically verified. The capsule has 201 files: seven modified and 194 unchanged; 17 upstream dispositions comprise seven retained and ten excluded spec changes, with no packet gaps or unclassified changes. No Ruby/gateway/payment execution or publication.
+- For 4.41.0 the user approved full additive mode with focused reading. All 21 modified retained files were read fully (new changelog block; 1,308 old lines verified mechanically), affected prior comparison code and cumulative wiki history, plus the unchanged shared Util helper. Both 201-file capsules pass 402 size/SHA-256/Git blob identities; 21 modified/180 unchanged, 46 upstream dispositions (21 retained/25 exclusions), no packet gaps/unclassified changes. Effective full assignment210 paths. Unchanged source, manifests and inventories are mechanically verified, not a new whole-repository semantic read. No Ruby/gem/gateway/payment execution, collection-policy expansion, commit or push.
 - This source proves implementation present in `braintree@4.40.0`; it does not replace current product documentation or prove merchant, buyer, country, currency, or payment-method eligibility.
 - Browser and native SDKs independently collect payment details or wallet approval and return a payment-method nonce or vaulted token. This package performs server-side gateway operations.
 - PayPal customer-session recommendations are experimental in this source. The presence of PAYPAL and VENMO enum values or app-installed inputs does not establish general availability.
@@ -102,6 +109,67 @@ The exact release adds PayPal account validation codes `92963` for invalid email
 
 All broader sections above describe cumulative implementation present at `4.40.0`, not features introduced by this patch.
 
+## `4.41.0` Additive Full Ingest
+
+**Identity:** Ruby gem braintree@4.41.0 at f3d70148cb0a68e8a20160b9a8e4e01e7d79d1df, from 4.40.0. The release manifest's September 16, 2026 timestamp is tag/commit-derived evidence; there is no GitHub Release-note body/publication record. Collected/ingested October 29. Full mode is the user's override for broad security-related behavior, not the collector's delta recommendation. All 4.40.0 history remains intact.
+
+### Preferred Payment Method Token
+
+client_token.generate accepts preferred_payment_method_token as a symbol or string key and sends it under payment_method_id. It first shallow-copies the options hash, preserving the caller's top-level input while applying default version/remapping. If both key forms are present, the symbol value wins and the string alias is removed. The option is validated against the expanded public signature before remapping; gateway response still returns the client-token string or raises ArgumentError for an API error response. The retained local option validator does not establish token ownership, customer-token association, token validity or feature enablement; those remain server/product responsibilities.
+
+This adds the Ruby SDK option missing in the 4.40.0 baseline. It is not a new frontend component or automatic proof of PayPal v6 saved-payment editing/returning-buyer support. The backend token-generation capability and independently versioned frontend integration must be verified separately.
+
+### Path Validation and Migration
+
+The existing Util.invalid_path_segment? helper checks value.to_s against `\A[A-Za-z0-9_-]+\z`. 4.41.0 extends calls across CreditCard, CreditCardVerification, Customer, MerchantAccount, PayPalAccount, PaymentMethod, PaymentMethodNonce, Plan, SepaDirectDebitAccount, Subscription, Testing, Transaction, TransactionLineItem, UsBankAccount and UsBankAccountVerification gateway paths. Customer.find also validates a truthy association_filter_id before interpolating its query field. Address/Dispute baseline protection remains historical, not newly added here.
+
+Affected invalid identifiers raise ArgumentError locally before HTTP, not proof that an object is absent or authorized. Unlike string-only rules in other language packages, Ruby stringifies inputs; for example an integer's digit representation can pass. Some transaction operations replace a lowercase-only regex with the broader shared uppercase/digit/underscore/hyphen allowlist. Empty/nil checks and exception messages vary across callers; testing operations still check Production before the path ID. Do not state that every accepted identifier set narrowed or every body ID is validated. Subscription charge retry, for example, still places its ID in a body rather than applying this path helper. Audit custom IDs and exception handling; do not strip invalid characters to manufacture another identity. No exploit test or all-paths security guarantee was performed.
+
+### Query, Search and Refund Changes
+
+Http.get/delete now append the optional query hash through the existing _build_query_string helper. It joins key=value pairs, rejects nested hash-like values and performs no URL encoding or existing-query merge. The changed forwarding is not new general encoding/security protection; higher-level methods may construct their own query strings independently.
+
+TransactionSearch adds ach_type using Transaction::AchType::SameDay=same_day and Standard=standard. This is a search filter, not a new ACH processing mode or timing guarantee. Refund's explicit signature gains surcharge_amount, with the existing scalar-amount/hash-options forms, API request key and result/error handling. Acceptance, amount rules and successful refund remain gateway decisions. Transaction's existing ACH/TLID/surcharge response readers are not new merely because the file changed.
+
+README, gemspec, runtime requirements, credentials, webhook parser and legacy Venmo warnings are unchanged. The 4.40.0 runtime/PayPal/3DS/subscription knowledge remains version-qualified above, not reattributed as 4.41.0 features. No new cross-company comparison or source count change.
+
+### Grounding Excerpts
+
+All locations below are in `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/files/`:
+- `lib/braintree/client_token_gateway.rb:12`: `options = options.dup`
+- `lib/braintree/client_token_gateway.rb:21`: `options[:payment_method_id] = options.delete(:preferred_payment_method_token)`
+- `lib/braintree/util.rb:5`: `!value.to_s.match?(/\A[A-Za-z0-9_-]+\z/)`
+- `lib/braintree/http.rb:23`: `full_path = path + _build_query_string(query_params)`
+- `lib/braintree/transaction_search.rb:49`: `multiple_value_field :ach_type, :allows => Transaction::AchType::All`
+
+## `4.42.0` Delta Ingest
+
+**Identity:** Ruby gem `braintree@4.42.0`, exact SHA `647f4bb8a45a869cb4d664077d28287881d299b1`, compared with 4.41.0. Collected/ingested October 29, 2026. The manifest's October 19 timestamp is tag/commit-derived, not a verified GitHub Release publication date; the release-note body is absent. All older sections above remain historical evidence.
+
+### Transaction Reversal
+
+`Braintree::Transaction.reverse` and `reverse!` delegate to the configured transaction gateway. `gateway.transaction.reverse(transaction_id, options = {})` validates the ID using the existing stringifying ASCII path helper and validates options against a signature containing only `api_request_key`. It posts to `/transactions/{transaction_id}/reverse`, with no body for empty options or a transaction-wrapped options body otherwise. It uses the existing transaction result handler. `reverse!` returns the transaction on success or raises `Braintree::ValidationsFailed` on a validation result; path, transport and unexpected-response exceptions remain separate.
+
+The upstream changelog says this automatically voids or fully refunds a transaction. The SDK delegates that choice to the gateway: it does not inspect settlement status, call void/refund as a client fallback, or accept an amount for partial refund. Existing explicit void/refund APIs remain. `api_request_key` is a supported input, not proof of local retries or guaranteed server idempotency semantics. New `ErrorCodes::Transaction::CannotReverseAtThisTime` is `915282`; no universal status, instrument or merchant eligibility is established by its presence.
+
+### Mastercard External-Vault Inputs
+
+- Card create/update's shared `external_vault` signature adds `mastercard_transaction_link_id` alongside `network_transaction_id`. Unchanged Customer create/update signatures inherit the card signature for nested card inputs.
+- Transaction create/sale's `external_vault` signature adds `previous_mastercard_transaction_link_id` alongside status and previous network transaction ID.
+- Card-verification's declared create signature adds that previous Mastercard link ID. Its actual create method posts parameters directly without invoking `verify_keys`; do not describe this declaration as newly enforced local allowlisting or prove that prior verification callers rejected the field.
+- Generic PaymentMethod signatures did not change. Transaction's response `mastercard_transaction_link_id` reader already existed, so it is not a new response feature here. These request inputs do not replace network IDs or establish network validation rules or merchant enablement.
+
+Six new error constants are recorded: `CreditCard::ExternalVault::MastercardTransactionLinkIdIsInvalid` (`91767`); `Transaction::CannotReverseAtThisTime` (`915282`); `Transaction::ExternalVault::PreviousMastercardTransactionLinkIdIsInvalid` (`915279`) and `StatusWithPreviousMastercardTransactionLinkIdIsInvalid` (`915278`); `Verification::ExternalVault::PreviousMastercardTransactionLinkIdIsInvalid` (`942206`) and `StatusWithPreviousMastercardTransactionLinkIdIsInvalid` (`942205`). Names are relative to `Braintree::ErrorCodes`; these are server-validation diagnostics, not independently proven required-field rules.
+
+### Grounding Excerpts
+
+Locations are under `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/`:
+- `lib/braintree/transaction_gateway.rb:103`: `def reverse(transaction_id, options = {})`
+- `lib/braintree/transaction_gateway.rb:416`: `:api_request_key,`
+- `lib/braintree/credit_card_gateway.rb:123`: `{:external_vault => [:network_transaction_id, :mastercard_transaction_link_id]},`
+- `lib/braintree/credit_card_verification_gateway.rb:64`: `:previous_mastercard_transaction_link_id,`
+- `lib/braintree/error_codes.rb:374`: `CannotReverseAtThisTime = "915282"`
+
 ## Related
 
 - [[changelog-github-braintree-ruby]] - package-qualified release ledger
@@ -112,6 +180,24 @@ All broader sections above describe cumulative implementation present at `4.40.0
 
 ## Raw Sources
 
+- Snapshot manifest: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/manifest.json`
+- Release manifest: `raw/github/braintree/braintree_ruby/releases/braintree/4.42.0/2026-10-29/manifest.json` - adjacent empty release-notes.md
+- Comparison: `tracking/github/repos/braintree/braintree_ruby/comparisons/braintree/4.41.0--4.42.0/comparison.json` - adjacent comparison.md/diff.patch
+- Reversal and transaction inputs: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/lib/braintree/transaction_gateway.rb`
+- Transaction class: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/lib/braintree/transaction.rb`
+- Card inputs: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/lib/braintree/credit_card_gateway.rb`
+- Verification inputs: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/lib/braintree/credit_card_verification_gateway.rb`
+- Error codes: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/lib/braintree/error_codes.rb`
+- Bang result handling: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/lib/braintree/base_module.rb`
+- Repository changelog: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-647f4bb/files/CHANGELOG.md`
+- Snapshot manifest: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/manifest.json`
+- Release manifest: `raw/github/braintree/braintree_ruby/releases/braintree/4.41.0/2026-10-29/manifest.json` - adjacent empty release-notes.md
+- Comparison: `tracking/github/repos/braintree/braintree_ruby/comparisons/braintree/4.40.0--4.41.0/comparison.json` - adjacent comparison.md/diff.patch
+- Client token: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/files/lib/braintree/client_token_gateway.rb`
+- Shared validator: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/files/lib/braintree/util.rb`
+- Transport: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/files/lib/braintree/http.rb`
+- Transaction gateway: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/files/lib/braintree/transaction_gateway.rb`
+- Repository changelog: `raw/github/braintree/braintree_ruby/snapshots/2026-10-29-f3d7014/files/CHANGELOG.md`
 - Snapshot manifest: `raw/github/braintree/braintree_ruby/snapshots/2026-08-23-1217992/manifest.json`
 - Release manifest: `raw/github/braintree/braintree_ruby/releases/braintree/4.40.0/2026-08-23/manifest.json`
 - Release notes: `raw/github/braintree/braintree_ruby/releases/braintree/4.40.0/2026-08-23/release-notes.md` (empty upstream body)

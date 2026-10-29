@@ -934,6 +934,10 @@ The separately retained `braintree_php@6.38.0` delta extends the existing path-s
 
 ## Ruby Server SDK Surface
 
+Ruby `braintree@4.42.0` adds gateway-selected void/full-refund reversal via `Transaction.reverse`/`reverse!`, optional `api_request_key`, Mastercard external-vault card/customer and previous-link transaction/verification inputs, and six validation constants. Reversal does not accept a partial-refund amount or implement a local fallback; verification's declared signature is not invoked by its create method. All 4.40.0/4.41.0 knowledge remains version-qualified. [[source-github-braintree-ruby]] [[changelog-github-braintree-ruby]]
+
+Ruby `braintree@4.41.0` adds preferred_payment_method_token to backend client-token generation and expands path-ID checks across15 gateways with Ruby-specific ArgumentError/stringification behavior. It also adds ACH-type search, explicit refund surcharge_amount and GET/DELETE query-hash forwarding without new encoding. This supersedes the older token-option gap below only for4.41.0; frontend saved-payment support and gateway acceptance remain separate. All4.40.0 history is preserved. [[source-github-braintree-ruby]] [[changelog-github-braintree-ruby]]
+
 `braintree@4.40.0` provides Ruby gateway configuration, client-token generation, customer and payment-method vault operations, transaction authorization and settlement, refunds and voids, PayPal and Venmo instruments, plans and subscriptions, and signed webhook parsing.
 
 The active 4.x package requires Ruby 2.6 or later and supports key credentials or OAuth credentials without mixing them. Its exact release hardens Address and Dispute path IDs, adds PayPal email validation codes, and adds network-qualified 3DS pass-through fields. Unlike the retained Node and PHP baselines, its client-token signature does not expose `preferredPaymentMethodToken`.
@@ -1056,7 +1060,7 @@ Repository evidence is not current enablement guidance. PayPal, Venmo, and Fastl
 - Latest retained GraphQL API ref: `default-branch@3a89f42` at `3a89f427466a0a978dbfcfd953913f4e76c3264a`
 - Latest retained Braintree Node release: `braintree@3.40.0` at `deb5227f1c4824b1f622115caf2ba4302134d375` (ingested 2026-10-06; `3.39.0` preserved)
 - Latest ingested Braintree PHP release: `braintree_php@6.38.0` at `2a97c3d516a1ee66e710db8140a835d79789627a` (ingested 2026-10-11; `6.37.0` preserved)
-- Latest retained Braintree Ruby release: `braintree@4.40.0` at `1217992763cc13f33dbd8b6c51ad2ae058ddd2a8`
+- Latest retained Braintree Ruby release: `braintree@4.42.0` at `647f4bb8a45a869cb4d664077d28287881d299b1`; all 4.40.0/4.41.0 history preserved
 - Latest retained Braintree Web release: `braintree-web@3.147.0` at `f3357c49c7b71f079d031c3ddf89cdfe444f6511`
 - Latest retained card-brand detector release: `credit-card-type@10.3.0` at `fbd8ed80a411fa9b238055208c19a7323cd38e21`
 - Latest retained UUID utility release: `@braintree/uuid@2.0.0` at `d134a2ca93d12705a76ff036baeba568016f9b13`
