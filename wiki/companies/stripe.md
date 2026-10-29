@@ -89,6 +89,8 @@ The `26.14.0` iOS additive baseline adds nine payment-method bindings/support an
 
 The `26.15.0` iOS additive baseline records the plural alpha KYC method/result rename, wallet funding-label forwarding, native Identity test-mode placeholder uploads and flow-stable presentation plumbing. The deferred preparation path drops one saved-method Radar helper while ordinary Radar session APIs remain; image substitution does not mean all camera/PII handling stops. Historical attribution and excluded/runtime boundaries remain in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
 
+The `26.15.1` iOS additive baseline removes CocoaPods support after its final 26.15.0 release; future updates require SPM or manually linked XCFrameworks. Existing apps do not automatically stop working. It also announces a React Native initialization fix for slow Apple Pay checks and records internal Checkout request/SEPA/challenge and SPI lifecycle changes. Those implementation findings are not public Checkout integration guarantees; all earlier history and evidence limits remain in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ### AI Developer and Token-Billing Tooling
 
 The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
@@ -216,8 +218,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
 - [[source-github-stripe-android]] — cumulative Android SDK through v23.25.1: method/display declarations, Link error-display announcement, dependency and historical attribution limits; older knowledge retained
 - [[changelog-github-stripe-android]] — package-qualified Android history through v23.25.1; contracts, announcements and retrospective attribution distinguished
-- [[source-github-stripe-ios]] — cumulative stripe-ios SDK through v26.13.0: MoMo/GoPay/ShopeePay processing distinctions, FlowController plumbing and alpha pre-auth Apple Pay/KYC; older baselines, Pix caveat and evidence limits preserved
-- [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.13.0; processing contracts, migration/evidence limits and retrospective attribution changes
+- [[source-github-stripe-ios]] — cumulative SDK through v26.15.1: CocoaPods-to-SPM/XCFramework migration, announced initialization fix and internal Checkout/SPI changes; all earlier baselines and evidence limits preserved
+- [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.15.1; migration, compatibility, release announcements and preserved historical attribution
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@6.0.0` additive major: SPM, iOS 16, capture/consent/model/delegate migration; v5.8.0/5.8.1 retained
 - [[changelog-github-stripe-terminal-ios]] — package-qualified v5/v6 Terminal iOS history, previews and divergent-branch/runtime evidence limits
 - [[source-github-stripe-terminal-android]] — `stripeterminal@6.0.0` additive major: capture/consent/models/listeners/build migration; 5.8.0/5.8.1/5.8.2 retained

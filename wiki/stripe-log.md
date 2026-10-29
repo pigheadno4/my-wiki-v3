@@ -6,6 +6,11 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-10-29] ingest | Stripe iOS `26.15.1`
+
+- Approved full additive `github-a76e7c3cf274013dd755`, SHA `2f4547639a5aed18d39e4ba44c0ba684dab3161b`, with approved focused reading: changed content, affected prior code, exact-SHA migration supplement, release/comparison and cumulative history; unchanged source/history/inventories and duplicated diff checked mechanically. Both 300-file snapshots pass size/SHA-256/blob verification: 23 modified, 277 unchanged. Full assignment 312 paths; all 6,759 upstream dispositions classified without automated gaps, not semantic review of exclusions.
+- CocoaPods ends at 26.15.0; new updates use SPM/XCFrameworks, with explicit multi-pod workspace safety. Announced Apple Pay/React Native initialization fix remains release-note-only. Internal Checkout method-data confirmation, challenge ordering, saved-SEPA guard, attribution and SPI lifecycle changes are bounded by excluded serializers/controllers/helpers. iOS concept first, cumulative source/changelog/company/index/logs; all older history and source count preserved. Raw changelog adds five lines with all 2,241 prior lines unchanged. No SDK/device/payment testing, commit or push. Details [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ## [2026-10-27] ingest | Stripe Android `23.25.1`
 
 - Approved serial delta `github-3630ef97f4ea4cfafb7b` after 23.25.0 completed, SHA `bb0d8d09289cec10d303557e7300f6f5d58b9c06`. Approved focused reading: changed authored/content/build, prior build, comparison and cumulative history; unchanged APIs/history/manifests mechanically verified and relevant shared context read. Five modified/47 unchanged retained files, all 104 raw identities pass; 170 upstream dispositions classified without gaps.

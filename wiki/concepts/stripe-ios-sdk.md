@@ -9,7 +9,7 @@ tags: [stripe, ios, swift, mobile, sdk, payments, apple-pay, payment-sheet, embe
 
 `stripe-ios` is Stripe's official modular Swift SDK for native iOS payments and adjacent products. The retained history covers the legacy `25.14.0` capsule, the approved `stripe-ios@26.4.1` baseline at commit `d9252fd0a4a6d369fa45bb06f74c4e818c914f91`, and the `26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f045d3`.
 
-Version `26.4.1` requires iOS 15 or later. Apps that still target iOS 13 or 14 must remain on `25.17.0`. The SDK supports Swift Package Manager and CocoaPods; Carthage binaries continue to be published but are no longer officially tested.
+Version `26.4.1` requires iOS 15 or later. Apps that still target iOS 13 or 14 must remain on `25.17.0`. That baseline supports Swift Package Manager and CocoaPods; Carthage binaries continue to be published but are no longer officially tested. Starting with `26.15.1`, CocoaPods support is removed; see the version-qualified migration below.
 
 The approved `26.6.0` additive baseline at `3410ff0853b66e5ade3e8763e99f3ddb5dd77bc3` expands retained Checkout implementation while preserving those earlier versions. It does not make the Checkout SPI production-ready.
 
@@ -183,6 +183,21 @@ Alpha CryptoOnramp renames `fulfillKYCRequirement`/`FulfillKYCRequirementResult`
 
 Identity's supplemental native flow passes `isTestMode: !staticContent.livemode` to uploaders. Test-mode document/selfie pixels are replaced with bundled placeholders, without cropping; missing resources fail instead of using the real image. Live-mode branches retain original-image uploads. Camera capture still exists and document metadata/scanner output still passes onward; do not claim all PII collection stops or apply this proof to the web fallback. Historical Identity annotations newly inserted under 26.5.0, 25.17.0 and 25.12.0 are not newly introduced 26.15.0 features. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for exact evidence and all preserved history.
 
+### Version-qualified `26.15.1` additive baseline
+
+> [!warning] CocoaPods support ends after 26.15.0
+> The exact-SHA migration guide identifies 26.15.0 as the last CocoaPods release. New features and fixes use Swift Package Manager or manually linked XCFrameworks. Existing apps do not automatically stop working; older CocoaPods guidance above remains historical, not a current installation recommendation. The retained podspec version bumps do not establish continued CocoaPods publication/support.
+
+Remove each Stripe module's pod declaration and run `pod install`, then add `https://github.com/stripe/stripe-ios-spm` in Xcode and select the release/modules for the app target. Only when Stripe is the **only** pod does the guide suggest committing first and removing CocoaPods/the workspace entirely. Otherwise keep the remaining pods/workspace. Manual integration requires the selected frameworks and their dependencies; future updates replace them manually. The guide points React Native users to its existing SPM migration, not a new JavaScript payment API.
+
+Release notes announce a fix for slow Apple Pay availability checks hanging React Native SDK initialization. That availability implementation is excluded, so this is announcement evidence rather than a reproduced fix. The retained Apple Pay billing-details helper becomes public STP SPI; its mapping is unchanged and does not independently prove the hang fix.
+
+Internal Checkout confirmation passes new payment-method data into the session confirmation request instead of separately creating a PaymentMethod first. Saved methods still pass an ID; the caller suppresses saving for no-payment-required sessions. Confirmation-challenge completion moves after the request, including failure, but its own comment warns that the underlying release is scheduled, not awaited. Request serialization, assertion internals and current outer Checkout/Apple Pay implementations remain excluded.
+
+Checkout adds a saved-SEPA mandate prompt when neither the element nor the continued FlowController sheet has shown the mandate, unless mandate text is explicitly disabled. Cancellation stops this path before confirmation. Intent-based public creation/update APIs remain; removed Checkout-specific creation/update overloads are internal or SPI, not a wholesale removal of ordinary Embedded/FlowController integration. Confirmation-source attribution and Link plumbing also change internally; neither establishes public Checkout availability or a new returning-buyer recipe.
+
+The approved full additive ingest uses release-specific focused reading and includes the migration supplement. All older versions remain in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]]. No SDK/device/payment testing was performed; client completion still is not settlement evidence.
+
 ## Apple Pay
 
 `STPApplePayContext` creates a Stripe PaymentMethod from a `PKPayment`, asks the delegate for confirmation details, and reports completion. It supports UIKit, SwiftUI-compatible presentation, async delegate methods, request customization, shipping and coupon changes, and explicit dismissal.
@@ -225,6 +240,7 @@ The alpha `CryptoOnrampCoordinator` supports Link account discovery and authenti
 
 | Version | Important boundary |
 | --- | --- |
+| `26.15.1` | CocoaPods removed after 26.15.0; SPM/XCFramework migration; announced React Native initialization fix; internal Checkout confirmation, SEPA and SPI lifecycle changes |
 | `26.15.0` | Alpha plural KYC API; funding-label forwarding; Identity test-mode placeholder uploads; flow-stable presentation plumbing and saved-method Radar SPI removal |
 | `26.14.0` | Nine method bindings/support announcements; processing and mandate distinctions; container presentation; alpha Apple Pay/KYC-region recollection |
 | `26.13.0` | MoMo/GoPay/ShopeePay bindings and announced PaymentIntent support; distinct processing semantics; FlowController rebuild plumbing; alpha pre-auth Apple Pay and additional KYC |

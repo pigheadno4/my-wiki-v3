@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-10-29] ingest | Stripe iOS `26.15.1`
+
+- Approved full additive ingest with focused reading and the exact-SHA CocoaPods migration supplement. Records SPM/XCFramework migration after 26.15.0, announced React Native initialization fix and bounded internal Checkout/SPI changes; all earlier history preserved. Details [[stripe-log]] and [[source-github-stripe-ios]]. No SDK/device/payment test, commit or push.
+
 ## [2026-10-27] ingest | Adyen website C43
 
 - Fifty independently approved Bancontact, EPS and Affirm documentation sources; first full-review approvals 44/50 and 6 targeted correction reviews. 6 concepts touched (0 new); source_count 2164 = 2150 website + 14 GitHub. Raw unchanged. Query/exemplar/validation evidence: `tracking/ingest/adyen/adyen-campaign-43/`; details [[adyen-log]]. No commit/push.

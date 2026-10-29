@@ -4027,6 +4027,32 @@
   Release: [manifest](../../raw/github/braintree/braintree_ios/releases/braintree-ios/7.11.0/2026-10-04/manifest.json)
   Comparison: [manifest](repos/braintree/braintree_ios/comparisons/braintree-ios/7.10.0--7.11.0/comparison.json)
 
+## `github-a76e7c3cf274013dd755`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `2f4547639a5aed18d39e4ba44c0ba684dab3161b`
+- Collection date: `2026-10-29`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-a76e7c3cf274013dd755/packet.md)
+- Evidence attachment: [manifest](repos/stripe/stripe-ios/evidence-attachments/github-a76e7c3cf274013dd755/attachment.json)
+- Review priority: `normal`
+- Required reading: `35` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.15.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.1/2026-10-29/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.15.0--26.15.1/comparison.json)
+
 ## `github-a7964cb187666bb0930f`
 
 - Repository: `paypal-examples/v6-web-sdk-sample-integration`

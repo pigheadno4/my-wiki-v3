@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-10-27`
+Generated: `2026-10-29`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -62,9 +62,9 @@ Generated: `2026-10-27`
 | paypal | `paypal/postman-collections` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `wait` |
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
 | stripe | `stripe/stripe-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-27 | ingested | 2026-11-03 | `wait` |
-| stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-20 | ingested | 2026-10-27 | `collect-baseline` |
+| stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-29 | ingested | 2026-11-05 | `wait` |
 | stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
-| stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-21 | ingested | 2026-10-28 | `wait` |
+| stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-21 | ingested | 2026-10-28 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-26 | ingested | 2026-11-02 | `wait` |
 | stripe | `stripe/stripe-terminal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `wait` |
 | stripe | `stripe/ai` | tier2 | commit / commit-tree-v1 | monthly | 2026-08-13 | ingested | 2026-09-13 | `collect-baseline` |

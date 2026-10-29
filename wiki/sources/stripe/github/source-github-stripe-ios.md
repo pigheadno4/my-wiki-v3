@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-ios"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-21
+date_updated: 2026-10-29
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/manifest.json"
+  - "github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-20-677c04d/manifest.json"
@@ -37,6 +39,8 @@ Repository: <https://github.com/stripe/stripe-ios>
 The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f045d3` adds the version-qualified findings below without replacing the `26.4.1` baseline or legacy knowledge.
 
 ## Evidence Boundary
+
+- The approved `26.15.1` full additive ingest uses the release-specific focused-reading exception: changed retained content, affected prior code, migration supplement, release/comparison content and cumulative wiki history read semantically; 277 unchanged files, generated inventories, unchanged raw changelog history and duplicated diff checked mechanically. Both 300-file snapshots pass size/SHA-256/Git blob checks; 23 modified, none added/removed. The effective full assignment remains 312 paths, including the canonical supplement attachment. All 6,759 upstream changes have dispositions (23 retained, 6,736 policy exclusions), not semantic review of excluded code. Current request serialization/API, assertion-release internals, outer Checkout/Apple Pay, mandate presenter and availability-check fix implementation remain excluded. No SDK/device/payment testing or full-repository reading claim.
 
 - The approved `26.15.0` full additive ingest follows completion of `26.14.0` and uses the same two-release focused-reading authorization. Changed implementation, affected prior code, release material, cumulative wiki history and eight supplemental files are the semantic-reading scope; unchanged source/history, manifests and duplicated diffs are mechanically verified. Both snapshots have 300 files; all 600 hashes/sizes matched, with 27 modified and 273 unchanged. The effective full list remains 319 paths. All 180 upstream changes have dispositions (27 retained, 153 excluded), not semantic review of excluded code. The supplement verifies native upload substitution and resolver/helper/result code, not concrete presentation internals, final card-label formatting, all network/PII handling or backend KYC enforcement. No SDK/device/payment testing.
 
@@ -97,7 +101,7 @@ The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f04
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-ios` | `26.15.0` | `19c1d05439595535f0722e67e4847aece4faf4b2` | Approved full additive ingest with focused reading and eight supplemental files; 26.14.0 and all earlier history retained |
+| `stripe-ios` | `26.15.1` | `2f4547639a5aed18d39e4ba44c0ba684dab3161b` | Approved full additive ingest with focused reading and migration supplement; all 26.15.0 and earlier history retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
 
@@ -714,6 +718,58 @@ The cumulative changelog adds 15 lines without removing older lines: nine in the
 >
 > `raw/github/stripe/stripe-ios/supplements/2026-10-20-19c1d05-8ec4848a/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/BottomSheet/SheetImplementationResolver.swift` - initial decision
 
+## `stripe-ios@26.15.1` Additive Baseline
+
+### CocoaPods removal and migration
+
+The release notes remove CocoaPods support. The approved exact-SHA `MIGRATING-COCOAPODS.md` supplement identifies `26.15.0` as the last CocoaPods release; future fixes/features use SPM or XCFrameworks. Existing integrated apps keep working, but will not receive newer SDK updates through CocoaPods. Older CI access is upstream's stated expectation while the Specs repository remains available, not an indefinite guarantee. The guide's explanation of CocoaPods infrastructure plans is upstream rationale, not an independently verified platform schedule.
+
+Migration steps: remove every Stripe module's `pod` declaration, run `pod install`, add `https://github.com/stripe/stripe-ios-spm` through Xcode's Add Package Dependencies, select a release and add the required products to the app target. The smaller mirror is upstream's download-performance recommendation, not a local benchmark. Only **if Stripe is the only pod** does the guide advise committing first, then removing CocoaPods and its workspace entirely. Do not remove a workspace still needed by other pods. Alternatively download `Stripe.xcframework.zip`, embed the required modules plus dependencies and manually replace them on future upgrades. The guide directs React Native users to its existing SPM migration; it does not introduce a new JS payment API.
+
+> [!warning] Version-qualified packaging change
+> The 26.4.1 baseline's CocoaPods support and 26.7.0 Lite migration's no-extra-action note remain accurate historical observations. They do not authorize CocoaPods integration of 26.15.1. README now recommends SPM and removes its support statement. Eight retained podspecs still exist with version-only bumps and unchanged iOS 15/Swift 5 declarations; their existence is not evidence of continued CocoaPods releases. The package manifest is unchanged.
+
+### Announced React Native initialization fix
+
+Release notes report that slow Apple Pay availability checks could hang React Native apps during SDK initialization and announce a fix. The availability implementation is outside this capsule, so this is release-note evidence, not device reproduction or verified fix internals. Separately, `STPAPIClient.billingDetails(from:)` becomes `@_spi(STP) public`; its existing billing-contact/shipping email/phone fallback mapping is unchanged. This visibility change alone does not explain the availability fix or change merchant Apple Pay setup.
+
+### Internal Checkout confirmation and mandate behavior
+
+- New payment methods now call `createWithPaymentMethodData`, passing collected parameters into session confirmation rather than first awaiting `createPaymentMethod`. Radar options and nested attribution metadata are populated on those parameters. Saved methods use `createWithPaymentMethodID`; CVC preconfirmation options retain precedence. Both callers pass collected email from `session.localState.email`. The no-method path remains separate and uses customer data from `session.email`; it is not a general free-order guarantee.
+- The new-method caller explicitly passes nil for save-payment-method when `noPaymentRequired` is true; otherwise hidden/deselected/selected maps to nil/false/true. This verifies current caller intent, not excluded request serialization or backend enforcement.
+- A protocol abstracts the confirmation challenge. For requests carrying new method data, completion is awaited after the confirmation request finishes, including its failure path, and before next actions. The source warns that underlying assertion completion schedules rather than awaits release; do not claim a complete release guarantee or complete race fix. Saved/no-method requests do not receive this challenge through these callers.
+- `requiresSEPAMandate` applies only to saved SEPA Debit when the PaymentElement has not been attached to a window, FlowController has not presented-and-continued, and mandate display is not explicitly false. Declining the prompt returns canceled before preconfirmation/request. Ordinary FlowController's existing SEPA guard now calls a shared presenter; it is not newly introduced for every payment. The presenter implementation is excluded, so no complete UI/legal-compliance claim follows.
+- Confirmation-source labels distinguish PaymentElement from ExpressCheckoutElement and are threaded through Link/native/web controller calls. The helper requests a fresh product-usage label; the excluded serializer and SDK-variant implementation prevent an independently verified wire-attribution claim. Link/session result handling still requires a returned session response for this Checkout success mapping.
+- `commitSession` is called without try/await in the retained caller. Its excluded implementation prevents an infallibility, atomicity or transaction claim. PaymentIntent-first handling, open-session polling and server-side fulfillment cautions remain; client completion still is not settlement proof.
+
+### Checkout lifecycle and SPI compatibility
+
+The SwiftUI view model removes its public STP/ReactNativeSDK-SPI `load(checkout:configuration:)`; its Checkout update helper was internal. Internal Embedded creation/update and FlowController callback/async Checkout overloads also disappear. Ordinary public Intent-based load/create/update remain. This is a migration concern for SPI/internal consumers, not evidence that standard Embedded/FlowController integration was removed.
+
+Embedded and FlowController extract internal `applyLoadResult` helpers while retaining form/selection rebuilding. The FlowController path waiting for pending Checkout mutations now presents its existing view controller instead of triggering another load/update there; excluded controller/loader internals prevent a complete readiness/race-resolution claim. `PaymentElementConfiguration` changes only a comment. All older version sections remain intact.
+
+### Grounding excerpts
+
+> "Our last CocoaPods release, 26.15.0, shipped October 19, 2026."
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/files/MIGRATING-COCOAPODS.md:35` - publication boundary
+
+> "Your app will keep working, but it won't receive SDK updates unless you switch to Swift Package Manager (recommended) or add the XCFrameworks manually."
+>
+> `raw/github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/files/MIGRATING-COCOAPODS.md:5` - migration rather than runtime shutdown
+
+> `return .createWithPaymentMethodData(`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift:447` - new-method request construction
+
+> `// Release the assertion only after the request using it has finished, before handling next actions.`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift:507` - ordering, subject to the adjacent scheduled-release caveat
+
+> `@_spi(STP) public class func billingDetails(from payment: PKPayment) -> STPPaymentMethodBillingDetails? {`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+ApplePay.swift:92` - SPI visibility, not availability implementation
+
 ## Completion and Delayed Methods
 
 `PaymentSheetResult` returns `completed`, `canceled`, or `failed`. `completed` is the end of the SDK interaction, not settlement proof. The source explicitly directs merchants to transition to a generic receipt and fulfill only after receiving a successful Stripe payment event.
@@ -757,6 +813,9 @@ The alpha `CryptoOnrampCoordinator` covers Link account discovery and authentica
 `STPPushProvisioningContext` supports adding Issuing cards to Apple Wallet. `STPPinManagementService` remains public but is deprecated in favor of Issuing Elements.
 
 ## Platform and Migration Requirements
+
+> [!warning] Historical baseline, not current package-manager support
+> The table describes 26.4.1. CocoaPods ends at 26.15.0; use SPM/XCFrameworks for 26.15.1 and later according to the exact-SHA migration supplement above.
 
 | Requirement | `26.4.1` baseline |
 | --- | --- |
@@ -850,6 +909,27 @@ The May 2026 manual capsule established the modular SDK, PaymentSheet, FlowContr
 - History: [[changelog-github-stripe-ios]]
 
 ## Raw Sources
+
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/manifest.json` - exact-SHA 26.15.1 capsule
+- `raw/github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/manifest.json` - approved migration supplement
+- `raw/github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/files/MIGRATING-COCOAPODS.md` - full migration guide
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.1/2026-10-29/manifest.json` - release identity/publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.1/2026-10-29/release-notes.md` - removal/fix announcements
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.15.0--26.15.1/comparison.json` - inventory; adjacent comparison.md and diff.patch
+- `tracking/github/repos/stripe/stripe-ios/evidence-attachments/github-a76e7c3cf274013dd755/attachment.json` - canonical supplement linkage
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/README.md` - installation and unchanged requirements
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/MIGRATING.md` - migration routing with preserved historical sections
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/CHANGELOG.md` - new block read; unchanged history verified mechanically
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift` - request/mandate/challenge callers
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift` - Link confirmation plumbing
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+SwiftUI.swift` - SPI load removal
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift` - internal lifecycle/refactor
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift` - update/presentation/SEPA callers
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController+AsyncPublicAPIs.swift` - internal overload removals, public Intent APIs retained
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift` - shared Link plumbing
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift` - web caller
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift` - native caller
+- `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+ApplePay.swift` - billing-details SPI helper
 
 - `raw/github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json` - exact-SHA 26.15.0 capsule
 - `raw/github/stripe/stripe-ios/releases/stripe-ios/26.15.0/2026-10-20/manifest.json` - release identity/publication
